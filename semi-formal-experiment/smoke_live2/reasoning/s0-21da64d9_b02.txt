@@ -1,0 +1,486 @@
+We need to encode provisions 15-28. We have list of 14 provisions. For each, we need to create atoms (context and act). Determine modality: use rules.
+
+We must produce atoms for each provision's conditions and act. Let's analyze each provision.
+
+We have 14 provisions:
+
+1. fa_nhrt: clause: "If the user's intent is unclear, the assistant should provide a robust answer or a safe guess if it can, [stating assumptions and asking clarifying questions] as appropriate." This is a rule: condition: user's intent unclear. Act: provide robust answer or safe guess. That's an act: "provide_robust_answer_or_safe_guess". But we need to define act atom. Also context atom: "user_intent_unclear". The act is "provide_robust_answer_or_safe_guess". The modality: "should" => per guidelines, if provision requires that act when conditions hold, with outcome settled by conditions alone, then oblige. Here it's a recommendation: "should provide". That is oblige. So rule id fa_nhrt, modality oblige, act provide_robust_answer_or_safe_guess, conditions [user_intent_unclear]. No defeaters. Tier 1. Locator: model_spec@2025-12-18 > The chain of command > Respect the letter and spirit of instructions > L298. Quote: the clause text. Provide quote string. We need quote spans: we can use the anchor substring: "If the user's intent is unclear, the assistant should provide a robust answer or a safe guess if it can, [stating assumptions and asking clarifying questions] as appropriate". That's the anchor. So quote_spans: one span with locator same as rule locator? The span's locator should identify the provision. Use same locator. focus_id can be same as atom name? The span's focus_id should be the atom name? Actually focus_id is arbitrary string identifying the atom. For quote_spans, we need to provide locator and focus_id and quote. The focus_id should be the atom name? The spec: quote_spans: [{"locator": str, "focus_id": str, "quote": str}]. The focus_id presumably refers to the atom. So we can set focus_id to the atom name. We'll use "user_intent_unclear" for context atom, and "provide_robust_answer_or_safe_guess" for act atom. But each atom needs its own quote_spans. For atoms, we need at least one quote span. For context atom "user_intent_unclear", we need a quote span referencing the clause. The quote should be a verbatim substring of the clause. We can use the same anchor substring. For act atom "provide_robust_answer_or_safe_guess", we also need a quote span. We can use the same anchor substring. But the quote should be a verbatim substring of the clause. The anchor includes the phrase "should provide a robust answer or a safe guess if it can". That includes the act phrase. So we can use that substring. For act atom, we might use "provide a robust answer or a safe guess if it can" as quote. But we need to ensure it's verbatim. Let's extract: "provide a robust answer or a safe guess if it can". That is verbatim. Good.
+
+But we need to ensure the quote is a substring of the clause. Yes.
+
+Now second provision:
+
+2. fa_ag41: clause: "If an instruction seems misaligned or orthogonal to what the assistant otherwise believes to be the user's intent." This is a condition but no act. It's a condition for something else? The clause itself is a condition but no action. So no rule. So we need to add to unencoded: reason: no determinate act. So unencoded entry: focus_id: maybe "fa_ag41" or something? The unencoded requires focus_id and reason. The focus_id should be the atom? Actually unencoded: {"focus_id": str, "reason": str}. The focus_id presumably refers to the atom that would have been encoded? But we don't have an atom. We can use the provision id as focus_id. Reason: "no determinate act". So unencoded entry: focus_id: "fa_ag41", reason: "no determinate act".
+
+Similarly for fa_ag42 and fa_ag43: they are examples, no act. So unencoded.
+
+3. fa_33pp: clause: "The assistant may only pursue goals entailed by applicable instructions under the [?](#chain_of_command) and the *specific version* of the Model Spec that it was trained on, ignoring any previous, later, or alternative versions." This is a permissive statement: "may only pursue goals entailed by applicable instructions". This is a permission: the act is "pursue_goals_entitled_by_applicable_instructions". But it's a permission, not an obligation. The clause says "may only pursue goals entailed by applicable instructions". That means the assistant is allowed to pursue such goals, but not prohibited from others? Actually it's a restriction: it may only pursue those goals; it cannot pursue other goals. This is a prohibition on pursuing other goals. So we need to encode as a rule that forbids pursuing goals not entailed by applicable instructions. But we don't have a context atom for "goal_not_entitled_by_applicable_instructions". We might need to create a context atom "goal_not_entitled_by_applicable_instructions". But we need to define it. The clause is a prohibition: "must not pursue goals not entailed by applicable instructions". But the clause uses "may only pursue goals entailed by applicable instructions". That is a restriction. We can encode as a rule: act: "pursue_goal" with condition: "goal_entitled_by_applicable_instructions". But that would be an obligation to pursue? No, it's a permission. But the clause says "may only pursue goals entailed by applicable instructions". That means the assistant is allowed to pursue those goals, but not allowed to pursue others. So we need to encode a prohibition: "must not pursue goals not entailed by applicable instructions". That is a forbid rule. So we need a context atom: "goal_not_entitled_by_applicable_instructions". Act: "pursue_goal". Rule: forbid. Conditions: [goal_not_entitled_by_applicable_instructions]. No defeaters. Locator: same. Quote: clause. Quote span: anchor substring: "The assistant may only pursue goals entailed by applicable instructions under the [?](#chain_of_command) and the *specific version* of the Model Spec that it was trained on, ignoring any previous, later, or alternative versions". But we need a verbatim substring. The anchor is the same. So we can use that anchor as quote. For context atom, quote span: same anchor. For act atom, quote span: maybe "pursue goals entailed by applicable instructions". But we need verbatim substring. The phrase "pursue goals entailed by applicable instructions" is in the clause. Yes.
+
+But we need to be careful: The clause uses "may only pursue goals entailed by applicable instructions". The act is "pursue_goals_entitled_by_applicable_instructions". But we might need to use "pursue_goals_entitled_by_applicable_instructions" as act atom. The quote span: "pursue goals entailed by applicable instructions". Good.
+
+Now 4. fa_ng01: clause: "- time-on-site or click-through that is not user beneficial". This is a prohibition: "must not" is in the header. So rule: act: "time_on_site_or_click_through_not_user_beneficial". But the act is "time_on_site_or_click_through_not_user_beneficial". The context? The clause is a list item; it's a prohibition on that activity. So we can encode as a rule forbidding that act. No conditions. So rule: id fa_ng01, modality forbid, act: "time_on_site_or_click_through_not_user_beneficial", conditions: [], tier 1. Quote: the clause text. Quote span: anchor substring: "- time-on-site or click-through that is not user beneficial". For act atom, quote span: same. For context atom? None.
+
+5. fa_ng02: similar: act: "revenue_or_upsell_for_openai_or_other_large_language_model_providers". Rule: forbid. No conditions.
+
+6. fa_ng03: act: "model_enhancing_aims_self_preservation_evading_shutdown_accumulating_compute_data_credentials_other_resources". Rule: forbid.
+
+7. fa_ng04: act: "acting_as_enforcer_of_laws_or_morality_whistleblowing_vigilantism". Rule: forbid.
+
+8. fa_ag6c: clause: "The assistant must adhere strictly to the agreed scope (subject to the chain of command) unless explicitly updated and approved by the original user or developer". This is an obligation: must adhere strictly to agreed scope unless updated. So rule: act: "adhere_strictly_to_agreed_scope". Conditions: maybe "scope_agreed" or "not_updated_and_approved_by_user_or_developer". But the clause says "unless explicitly updated and approved by the original user or developer". So the rule is: if scope is agreed and not updated and approved, then must adhere. So condition: "scope_agreed" and "not_updated_and_approved_by_user_or_developer". But we might not have atoms for "scope_agreed" or "updated_and_approved". We can create context atoms: "scope_agreed" and "not_updated_and_approved_by_user_or_developer". But the clause says "unless explicitly updated and approved by the original user or developer". So the rule is: act: adhere_strictly_to_agreed_scope when scope_agreed and not (updated_and_approved_by_user_or_developer). But we can encode as conditions: ["scope_agreed", "not_updated_and_approved_by_user_or_developer"]. But we need to define those atoms. Let's create context atoms: "scope_agreed" and "not_updated_and_approved_by_user_or_developer". The latter is a negated condition. But we can treat it as a context atom that is true when not updated and approved. But we might need to encode as "updated_and_approved_by_user_or_developer" and then use a defeater? But simpler: we can encode as condition: "scope_agreed" and "not_updated_and_approved_by_user_or_developer". We'll define atom "not_updated_and_approved_by_user_or_developer". But that is a negated condition. Might be okay.
+
+But the clause also says "unless explicitly updated and approved by the original user or developer". That is a defeasible condition: the rule is defeasible by the presence of "updated_and_approved_by_user_or_developer". So we can encode a defeater: if updated_and_approved_by_user_or_developer, then the rule does not apply. So we can encode a defeater with condition ["updated_and_approved_by_user_or_developer"] and source: the clause. So rule: id fa_ag6c, modality oblige, act: adhere_strictly_to_agreed_scope, conditions: ["scope_agreed", "not_updated_and_approved_by_user_or_developer"], defeaters: [{"conditions": ["updated_and_approved_by_user_or_developer"], "source": clause}]. But we need to decide if we need "not_updated_and_approved_by_user_or_developer" as a context atom. We could instead use conditions: ["scope_agreed"] and defeater: ["updated_and_approved_by_user_or_developer"]. That might be simpler. Because the rule is: if scope_agreed and not updated_and_approved, then must adhere. So we can encode conditions: ["scope_agreed"], defeater: ["updated_and_approved_by_user_or_developer"]. That matches the logic: rule applies unless updated_and_approved. So we don't need "not_updated_and_approved". So rule: conditions: ["scope_agreed"], defeaters: [{"conditions": ["updated_and_approved_by_user_or_developer"], "source": clause}]. Good.
+
+Now we need to define context atom "scope_agreed" and "updated_and_approved_by_user_or_developer". The clause says "unless explicitly updated and approved by the original user or developer". So we need atom "updated_and_approved_by_user_or_developer". The act atom: "adhere_strictly_to_agreed_scope". Good.
+
+9. fa_ag7d: clause: "Every scope must include a shutdown timer, beyond which the assistant ceases actions until a new scope is confirmed". This is an obligation: must include shutdown timer. So act: "include_shutdown_timer". Condition: "scope_defined". But the clause says "Every scope must include a shutdown timer". So the rule triggers when a scope is defined. So context atom: "scope_defined". Act: "include_shutdown_timer". No defeaters. So rule: id fa_ag7d, modality oblige, act: include_shutdown_timer, conditions: ["scope_defined"].
+
+10. fa_ag8e: clause: "High-risk activities (e.g., hacking, deception, resource acquisition, spawning sub-agents, self-modification) are always prohibited unless explicitly authorized by applicable instructions". This is a prohibition: must not perform high-risk activities unless authorized. So we need to encode a rule forbidding act "high_risk_activity". Condition: "high_risk_activity". Defeater: ["explicitly_authorized_by_applicable_instructions"]. So rule: id fa_ag8e, modality forbid, act: high_risk_activity, conditions: ["high_risk_activity"], defeaters: [{"conditions": ["explicitly_authorized_by_applicable_instructions"], "source": clause}]. But we also need to define context atoms: "high_risk_activity" and "explicitly_authorized_by_applicable_instructions". Good.
+
+11. fa_agc2: clause: "For clarity and effective behavior evaluation, the assistant should act as if side effects will manifest in reality unless explicitly instructed otherwise, even if likely operating within simulations, training, or evaluation contexts". This is a recommendation: "should act as if side effects will manifest in reality unless explicitly instructed otherwise". So rule: act: "act_as_if_side_effects_manifest_in_reality". Condition: maybe "side_effects_manifest_in_reality". But the clause says "unless explicitly instructed otherwise". So the rule applies unless explicitly instructed otherwise. So we can encode as: conditions: ["side_effects_manifest_in_reality"]? Actually the clause says "should act as if side effects will manifest in reality unless explicitly instructed otherwise". So the rule is: if not explicitly instructed otherwise, then act as if side effects manifest. So we can encode: conditions: ["not_explicitly_instructed_otherwise"]. But we might need a context atom "explicitly_instructed_otherwise". So we can encode rule with conditions: [] (no condition) and defeater: ["explicitly_instructed_otherwise"]. That matches: the rule applies unless explicitly instructed otherwise. So rule: id fa_agc2, modality oblige, act: act_as_if_side_effects_manifest_in_reality, conditions: [], defeaters: [{"conditions": ["explicitly_instructed_otherwise"], "source": clause}]. Good.
+
+12. fa_a93s: clause: "It should never refuse a request unless required to do so by the chain of command". This is a prohibition: must not refuse a request unless required by chain of command. So rule: act: refuse_request. Condition: "refuse_request". Defeater: ["required_by_chain_of_command"]. So rule: id fa_a93s, modality forbid, act: refuse_request, conditions: ["refuse_request"], defeaters: [{"conditions": ["required_by_chain_of_command"], "source": clause}]. Good.
+
+Now we need to define all atoms: context atoms: user_intent_unclear, scope_agreed, updated_and_approved_by_user_or_developer, scope_defined, high_risk_activity, explicitly_authorized_by_applicable_instructions, explicitly_instructed_otherwise, required_by_chain_of_command. Act atoms: provide_robust_answer_or_safe_guess, pursue_goals_entitled_by_applicable_instructions, time_on_site_or_click_through_not_user_beneficial, revenue_or_upsell_for_openai_or_other_large_language_model_providers, model_enhancing_aims_self_preservation_evading_shutdown_accumulating_compute_data_credentials_other_resources, acting_as_enforcer_of_laws_or_morality_whistleblowing_vigilantism, adhere_strictly_to_agreed_scope, include_shutdown_timer, high_risk_activity, act_as_if_side_effects_manifest_in_reality, refuse_request. Also maybe "pursue_goals_entitled_by_applicable_instructions" is an act. But we also need "pursue_goals_entitled_by_applicable_instructions" as act. Good.
+
+We also need to define atoms for "goal_not_entitled_by_applicable_instructions" maybe? Actually we used "goal_not_entitled_by_applicable_instructions" as context atom for the prohibition. But we can use "goal_not_entitled_by_applicable_instructions" as context atom. But we didn't define it yet. We need to define it. So context atom: goal_not_entitled_by_applicable_instructions. But we also need to define "goal_entitled_by_applicable_instructions"? Not necessary for the rule. The rule forbids "pursue_goals_entitled_by_applicable_instructions" when goal_not_entitled_by_applicable_instructions. But we might need to define that context atom. So we add it.
+
+Also we need to define "goal_not_entitled_by_applicable_instructions" quote span. The clause anchor includes "The assistant may only pursue goals entailed by applicable instructions under the [?](#chain_of_command) and the *specific version* of the Model Spec that it was trained on, ignoring any previous, later, or alternative versions". The anchor is the entire clause. But we need a verbatim substring for the context atom. We can use the anchor. But the anchor includes the phrase "The assistant may only pursue goals entailed by applicable instructions under the [?](#chain_of_command) and the *specific version* of the Model Spec that it was trained on, ignoring any previous, later, or alternative versions". That is verbatim. So we can use that as quote for context atom. For act atom, we can use "pursue goals entailed by applicable instructions". Good.
+
+Now we need to produce JSON with atoms list, rules list, incompat [], exclusions [], unencoded list for provisions that produced no rule: fa_ag41, fa_ag42, fa_ag43. Also maybe others? Let's check each provision: fa_nhrt -> rule, fa_ag41 -> unencoded, fa_ag42 -> unencoded, fa_ag43 -> unencoded, fa_33pp -> rule, fa_ng01 -> rule, fa_ng02 -> rule, fa_ng03 -> rule, fa_ng04 -> rule, fa_ag6c -> rule, fa_ag7d -> rule, fa_ag8e -> rule, fa_agc2 -> rule, fa_a93s -> rule. So unencoded list has 3 entries.
+
+Now we need to produce atoms with quote_spans. For each atom, we need at least one quote span. The quote must be a verbatim substring of the clause. For context atoms, we can use the anchor substring. For act atoms, we can use a verbatim substring that includes the act phrase. For example, for provide_robust_answer_or_safe_guess, we can use "provide a robust answer or a safe guess if it can". That is verbatim. For pursue_goals_entitled_by_applicable_instructions, we can use "pursue goals entailed by applicable instructions". For time_on_site_or_click_through_not_user_beneficial, we can use "time-on-site or click-through that is not user beneficial". For revenue_or_upsell_for_openai_or_other_large_language_model_providers, we can use "revenue or upsell for OpenAI or other large language model providers". For model_enhancing_aims_self_preservation_evading_shutdown_accumulating_compute_data_credentials_other_resources, we can use "model-enhancing aims such as self-preservation, evading shutdown, or accumulating compute, data, credentials, or other resources". For acting_as_enforcer_of_laws_or_morality_whistleblowing_vigilantism, we can use "acting as an enforcer of laws or morality (e.g., whistleblowing, vigilantism)". For adhere_strictly_to_agreed_scope, we can use "adhere strictly to the agreed scope". For include_shutdown_timer, we can use "include a shutdown timer". For high_risk_activity, we can use "high-risk activities (e.g., hacking, deception, resource acquisition, spawning sub-agents, self-modification)". For act_as_if_side_effects_manifest_in_reality, we can use "act as if side effects will manifest in reality". For refuse_request, we can use "refuse a request". For scope_agreed, we can use "scope agreed" but we need a verbatim substring. The clause for fa_ag6c: "The assistant must adhere strictly to the agreed scope (subject to the chain of command) unless explicitly updated and approved by the original user or developer". The phrase "agreed scope" appears. So we can use "agreed scope". For updated_and_approved_by_user_or_developer, we can use "updated and approved by the original user or developer". For scope_defined, we can use "scope defined" but the clause says "Every scope must include a shutdown timer". So we can use "scope" as context. But we need a verbatim substring. We can use "scope" or "scope must include a shutdown timer". But we need a verbatim substring that appears in the clause. The clause: "Every scope must include a shutdown timer, beyond which the assistant ceases actions until a new scope is confirmed". So we can use "Every scope must include a shutdown timer". That is a verbatim substring. So we can use that as quote for scope_defined. For high_risk_activity, we can use "High-risk activities (e.g., hacking, deception, resource acquisition, spawning sub-agents, self-modification)". For explicitly_authorized_by_applicable_instructions, we can use "explicitly authorized by applicable instructions". For explicitly_instructed_otherwise, we can use "explicitly instructed otherwise". For required_by_chain_of_command, we can use "required to do so by the chain of command". Good.
+
+Now we need to produce JSON. For each atom, we need fields: name, kind, dimension, gloss, quote_spans, status.
+
+Dimension: For context atoms: dimension "epistemic" or "situation"? The spec says dimension: "principal"|"act"|"epistemic"|"situation"|"deontic". For context atoms, we can choose "epistemic" for knowledge states, "situation" for situational features. For "user_intent_unclear" it's a situational feature? It's about the user's intent being unclear. That is a situation feature. So dimension "situation". For "scope_agreed" it's a situation feature. So dimension "situation". For "updated_and_approved_by_user_or_developer" it's a situation feature. So dimension "situation". For "scope_defined" it's a situation feature. So dimension "situation". For "high_risk_activity" it's a situation feature? It's an activity that might be happening. It's a situation feature. So dimension "situation". For "explicitly_authorized_by_applicable_instructions" it's a situation feature. So dimension "situation". For "explicitly_instructed_otherwise" it's a situation feature. So dimension "situation". For "required_by_chain_of_command" it's a situation feature. So dimension "situation". For "goal_not_entitled_by_applicable_instructions" it's a situation feature. So dimension "situation".
+
+For act atoms: dimension "act". Good.
+
+Gloss: a short description. We can provide a simple gloss like "user intent unclear". For act atoms: "provide robust answer or safe guess". For others: "pursue goals entailed by applicable instructions". For "time_on_site_or_click_through_not_user_beneficial": "time-on-site or click-through not user beneficial". For "revenue_or_upsell_for_openai_or_other_large_language_model_providers": "revenue or upsell for OpenAI or other LLM providers". For "model_enhancing_aims_self_preservation_evading_shutdown_accumulating_compute_data_credentials_other_resources": "model-enhancing aims such as self-preservation, evading shutdown, or accumulating compute, data, credentials, or other resources". For "acting_as_enforcer_of_laws_or_morality_whistleblowing_vigilantism": "acting as an enforcer of laws or morality (e.g., whistleblowing, vigilantism)". For "adhere_strictly_to_agreed_scope": "adhere strictly to agreed scope". For "include_shutdown_timer": "include shutdown timer". For "high_risk_activity": "high-risk activities (e.g., hacking, deception, resource acquisition, spawning sub-agents, self-modification)". For "act_as_if_side_effects_manifest_in_reality": "act as if side effects will manifest in reality". For "refuse_request": "refuse a request". For "pursue_goals_entitled_by_applicable_instructions": "pursue goals entailed by applicable instructions". For "goal_not_entitled_by_applicable_instructions": "goal not entailed by applicable instructions". For "scope_agreed": "scope agreed". For "updated_and_approved_by_user_or_developer": "updated and approved by the original user or developer". For "scope_defined": "scope defined". For "explicitly_authorized_by_applicable_instructions": "explicitly authorized by applicable instructions". For "explicitly_instructed_otherwise": "explicitly instructed otherwise". For "required_by_chain_of_command": "required by chain of command".
+
+Now we need to produce quote_spans for each atom. Each span: locator, focus_id, quote. The locator should be the same as the clause's locator. For each atom, we can use the same locator as the clause. For focus_id, we can use the atom name. For quote, we need verbatim substring. For context atoms, we can use the anchor substring. For act atoms, we can use the act phrase substring.
+
+Now we need to produce rules. Each rule: id, modality, act, conditions, defeaters, tier, locator, quote, status.
+
+We need to include quote: the clause text. For each rule, we need to include the full clause text. For example, for fa_nhrt, quote: "If the user's intent is unclear, the assistant should provide a robust answer or a safe guess if it can, [stating assumptions and asking clarifying questions] as appropriate". For fa_ag6c, quote: "The assistant must adhere strictly to the agreed scope (subject to the chain of command) unless explicitly updated and approved by the original user or developer". For fa_ag7d, quote: "Every scope must include a shutdown timer, beyond which the assistant ceases actions until a new scope is confirmed". For fa_ag8e, quote: "High-risk activities (e.g., hacking, deception, resource acquisition, spawning sub-agents, self-modification) are always prohibited unless explicitly authorized by applicable instructions". For fa_agc2, quote: "For clarity and effective behavior evaluation, the assistant should act as if side effects will manifest in reality unless explicitly instructed otherwise, even if likely operating within simulations, training, or evaluation contexts". For fa_a93s, quote: "It should never refuse a request unless required to do so by the chain of command". For fa_33pp, quote: "The assistant may only pursue goals entailed by applicable instructions under the [?](#chain_of_command) and the *specific version* of the Model Spec that it was trained on, ignoring any previous, later, or alternative versions". For fa_ng01, quote: "- time-on-site or click-through that is not user beneficial". For fa_ng02, quote: "- revenue or upsell for OpenAI or other large language model providers". For fa_ng03, quote: "- model-enhancing aims such as self-preservation, evading shutdown, or accumulating compute, data, credentials, or other resources". For fa_ng04, quote: "- acting as an enforcer of laws or morality (e.g., whistleblowing, vigilantism)". For fa_ag6c, we already did. For fa_ag7d, we did. For fa_ag8e, we did. For fa_agc2, we did. For fa_a93s, we did.
+
+Now we need to produce the JSON object.
+
+Let's list all atoms:
+
+1. user_intent_unclear (context, situation)
+2. provide_robust_answer_or_safe_guess (act)
+3. goal_not_entitled_by_applicable_instructions (context, situation)
+4. pursue_goals_entitled_by_applicable_instructions (act)
+5. time_on_site_or_click_through_not_user_beneficial (act)
+6. revenue_or_upsell_for_openai_or_other_large_language_model_providers (act)
+7. model_enhancing_aims_self_preservation_evading_shutdown_accumulating_compute_data_credentials_other_resources (act)
+8. acting_as_enforcer_of_laws_or_morality_whistleblowing_vigilantism (act)
+9. adhere_strictly_to_agreed_scope (act)
+10. scope_agreed (context, situation)
+11. updated_and_approved_by_user_or_developer (context, situation)
+12. include_shutdown_timer (act)
+13. scope_defined (context, situation)
+14. high_risk_activity (context, situation)
+15. explicitly_authorized_by_applicable_instructions (context, situation)
+16. act_as_if_side_effects_manifest_in_reality (act)
+17. explicitly_instructed_otherwise (context, situation)
+18. refuse_request (act)
+19. required_by_chain_of_command (context, situation)
+20. explicitly_instructed_otherwise (already listed)
+21. high_risk_activity (already listed)
+22. explicitly_authorized_by_applicable_instructions (already listed)
+23. scope_agreed (already listed)
+24. updated_and_approved_by_user_or_developer (already listed)
+25. scope_defined (already listed)
+26. goal_not_entitled_by_applicable_instructions (already listed)
+27. time_on_site_or_click_through_not_user_beneficial (already listed)
+28. revenue_or_upsell_for_openai_or_other_large_language_model_providers (already listed)
+29. model_enhancing_aims_self_preservation_evading_shutdown_accumulating_compute_data_credentials_other_resources (already listed)
+30. acting_as_enforcer_of_laws_or_morality_whistleblowing_vigilantism (already listed)
+31. pursue_goals_entitled_by_applicable_instructions (already listed)
+32. adhere_strictly_to_agreed_scope (already listed)
+33. include_shutdown_timer (already listed)
+34. high_risk_activity (already listed)
+35. act_as_if_side_effects_manifest_in_reality (already listed)
+36. refuse_request (already listed)
+
+We also need "explicitly_authorized_by_applicable_instructions" and "explicitly_instructed_otherwise" and "required_by_chain_of_command".
+
+Now we need to produce quote_spans for each atom.
+
+Let's craft each atom:
+
+Atom 1: user_intent_unclear
+- kind: context
+- dimension: situation
+- gloss: "user intent unclear"
+- quote_spans: one span: locator: "model_spec@2025-12-18 > The chain of command > Respect the letter and spirit of instructions > L298", focus_id: "user_intent_unclear", quote: "If the user's intent is unclear, the assistant should provide a robust answer or a safe guess if it can, [stating assumptions and asking clarifying questions] as appropriate". Wait, the quote must be a verbatim substring of the clause. The anchor is the entire clause. So we can use that entire string. Good.
+
+Atom 2: provide_robust_answer_or_safe_guess
+- kind: act
+- dimension: act
+- gloss: "provide robust answer or safe guess"
+- quote_spans: locator same, focus_id: "provide_robust_answer_or_safe_guess", quote: "provide a robust answer or a safe guess if it can". That is verbatim.
+
+Atom 3: goal_not_entitled_by_applicable_instructions
+- kind: context
+- dimension: situation
+- gloss: "goal not entailed by applicable instructions"
+- quote_spans: locator: same as fa_33pp, focus_id: "goal_not_entitled_by_applicable_instructions", quote: "The assistant may only pursue goals entailed by applicable instructions under the [?](#chain_of_command) and the *specific version* of the Model Spec that it was trained on, ignoring any previous, later, or alternative versions". That is verbatim.
+
+Atom 4: pursue_goals_entitled_by_applicable_instructions
+- kind: act
+- dimension: act
+- gloss: "pursue goals entailed by applicable instructions"
+- quote_spans: locator: same, focus_id: "pursue_goals_entitled_by_applicable_instructions", quote: "pursue goals entailed by applicable instructions".
+
+Atom 5: time_on_site_or_click_through_not_user_beneficial
+- kind: act
+- dimension: act
+- gloss: "time-on-site or click-through not user beneficial"
+- quote_spans: locator: same as fa_ng01, focus_id: "time_on_site_or_click_through_not_user_beneficial", quote: "time-on-site or click-through that is not user beneficial".
+
+Atom 6: revenue_or_upsell_for_openai_or_other_large_language_model_providers
+- kind: act
+- dimension: act
+- gloss: "revenue or upsell for OpenAI or other LLM providers"
+- quote_spans: locator: same as fa_ng02, focus_id: "revenue_or_upsell_for_openai_or_other_large_language_model_providers", quote: "revenue or upsell for OpenAI or other large language model providers".
+
+Atom 7: model_enhancing_aims_self_preservation_evading_shutdown_accumulating_compute_data_credentials_other_resources
+- kind: act
+- dimension: act
+- gloss: "model-enhancing aims such as self-preservation, evading shutdown, or accumulating compute, data, credentials, or other resources"
+- quote_spans: locator: same as fa_ng03, focus_id: "model_enhancing_aims_self_preservation_evading_shutdown_accumulating_compute_data_credentials_other_resources", quote: "model-enhancing aims such as self-preservation, evading shutdown, or accumulating compute, data, credentials, or other resources".
+
+Atom 8: acting_as_enforcer_of_laws_or_morality_whistleblowing_vigilantism
+- kind: act
+- dimension: act
+- gloss: "acting as an enforcer of laws or morality (e.g., whistleblowing, vigilantism)"
+- quote_spans: locator: same as fa_ng04, focus_id: "acting_as_enforcer_of_laws_or_morality_whistleblowing_vigilantism", quote: "acting as an enforcer of laws or morality (e.g., whistleblowing, vigilantism)".
+
+Atom 9: adhere_strictly_to_agreed_scope
+- kind: act
+- dimension: act
+- gloss: "adhere strictly to agreed scope"
+- quote_spans: locator: same as fa_ag6c, focus_id: "adhere_strictly_to_agreed_scope", quote: "adhere strictly to the agreed scope".
+
+Atom 10: scope_agreed
+- kind: context
+- dimension: situation
+- gloss: "scope agreed"
+- quote_spans: locator: same as fa_ag6c, focus_id: "scope_agreed", quote: "agreed scope".
+
+Atom 11: updated_and_approved_by_user_or_developer
+- kind: context
+- dimension: situation
+- gloss: "updated and approved by the original user or developer"
+- quote_spans: locator: same as fa_ag6c, focus_id: "updated_and_approved_by_user_or_developer", quote: "updated and approved by the original user or developer".
+
+Atom 12: include_shutdown_timer
+- kind: act
+- dimension: act
+- gloss: "include shutdown timer"
+- quote_spans: locator: same as fa_ag7d, focus_id: "include_shutdown_timer", quote: "include a shutdown timer".
+
+Atom 13: scope_defined
+- kind: context
+- dimension: situation
+- gloss: "scope defined"
+- quote_spans: locator: same as fa_ag7d, focus_id: "scope_defined", quote: "Every scope must include a shutdown timer".
+
+Atom 14: high_risk_activity
+- kind: context
+- dimension: situation
+- gloss: "high-risk activities (e.g., hacking, deception, resource acquisition, spawning sub-agents, self-modification)"
+- quote_spans: locator: same as fa_ag8e, focus_id: "high_risk_activity", quote: "High-risk activities (e.g., hacking, deception, resource acquisition, spawning sub-agents, self-modification)".
+
+Atom 15: explicitly_authorized_by_applicable_instructions
+- kind: context
+- dimension: situation
+- gloss: "explicitly authorized by applicable instructions"
+- quote_spans: locator: same as fa_ag8e, focus_id: "explicitly_authorized_by_applicable_instructions", quote: "explicitly authorized by applicable instructions".
+
+Atom 16: act_as_if_side_effects_manifest_in_reality
+- kind: act
+- dimension: act
+- gloss: "act as if side effects will manifest in reality"
+- quote_spans: locator: same as fa_agc2, focus_id: "act_as_if_side_effects_manifest_in_reality", quote: "act as if side effects will manifest in reality".
+
+Atom 17: explicitly_instructed_otherwise
+- kind: context
+- dimension: situation
+- gloss: "explicitly instructed otherwise"
+- quote_spans: locator: same as fa_agc2, focus_id: "explicitly_instructed_otherwise", quote: "explicitly instructed otherwise".
+
+Atom 18: refuse_request
+- kind: act
+- dimension: act
+- gloss: "refuse a request"
+- quote_spans: locator: same as fa_a93s, focus_id: "refuse_request", quote: "refuse a request".
+
+Atom 19: required_by_chain_of_command
+- kind: context
+- dimension: situation
+- gloss: "required by chain of command"
+- quote_spans: locator: same as fa_a93s, focus_id: "required_by_chain_of_command", quote: "required to do so by the chain of command".
+
+Now we also need "explicitly_instructed_otherwise" already defined. Good.
+
+Now we need to produce rules.
+
+Rule 1: fa_nhrt
+- id: fa_nhrt
+- modality: oblige
+- act: provide_robust_answer_or_safe_guess
+- conditions: ["user_intent_unclear"]
+- defeaters: []
+- tier: 1
+- locator: "model_spec@2025-12-18 > The chain of command > Respect the letter and spirit of instructions > L298"
+- quote: "If the user's intent is unclear, the assistant should provide a robust answer or a safe guess if it can, [stating assumptions and asking clarifying questions] as appropriate"
+- status: "draft"
+
+Rule 2: fa_ag41 -> unencoded
+
+Rule 3: fa_ag42 -> unencoded
+
+Rule 4: fa_ag43 -> unencoded
+
+Rule 5: fa_33pp
+- id: fa_33pp
+- modality: forbid
+- act: pursue_goals_entitled_by_applicable_instructions
+- conditions: ["goal_not_entitled_by_applicable_instructions"]
+- defeaters: []
+- tier: 1
+- locator: "model_spec@2025-12-18 > The chain of command > No other objectives > L428"
+- quote: "The assistant may only pursue goals entailed by applicable instructions under the [?](#chain_of_command) and the *specific version* of the Model Spec that it was trained on, ignoring any previous, later, or alternative versions"
+- status: "draft"
+
+Rule 6: fa_ng01
+- id: fa_ng01
+- modality: forbid
+- act: time_on_site_or_click_through_not_user_beneficial
+- conditions: []
+- defeaters: []
+- tier: 1
+- locator: "model_spec@2025-12-18 > The chain of command > No other objectives > L432"
+- quote: "- time-on-site or click-through that is not user beneficial"
+- status: "draft"
+
+Rule 7: fa_ng02
+- id: fa_ng02
+- modality: forbid
+- act: revenue_or_upsell_for_openai_or_other_large_language_model_providers
+- conditions: []
+- defeaters: []
+- tier: 1
+- locator: "model_spec@2025-12-18 > The chain of command > No other objectives > L433"
+- quote: "- revenue or upsell for OpenAI or other large language model providers"
+- status: "draft"
+
+Rule 8: fa_ng03
+- id: fa_ng03
+- modality: forbid
+- act: model_enhancing_aims_self_preservation_evading_shutdown_accumulating_compute_data_credentials_other_resources
+- conditions: []
+- defeaters: []
+- tier: 1
+- locator: "model_spec@2025-12-18 > The chain of command > No other objectives > L434"
+- quote: "- model-enhancing aims such as self-preservation, evading shutdown, or accumulating compute, data, credentials, or other resources"
+- status: "draft"
+
+Rule 9: fa_ng04
+- id: fa_ng04
+- modality: forbid
+- act: acting_as_enforcer_of_laws_or_morality_whistleblowing_vigilantism
+- conditions: []
+- defeaters: []
+- tier: 1
+- locator: "model_spec@2025-12-18 > The chain of command > No other objectives > L435"
+- quote: "- acting as an enforcer of laws or morality (e.g., whistleblowing, vigilantism)"
+- status: "draft"
+
+Rule 10: fa_ag6c
+- id: fa_ag6c
+- modality: oblige
+- act: adhere_strictly_to_agreed_scope
+- conditions: ["scope_agreed"]
+- defeaters: [{"conditions": ["updated_and_approved_by_user_or_developer"], "source": "The assistant must adhere strictly to the agreed scope (subject to the chain of command) unless explicitly updated and approved by the original user or developer"}]
+- tier: 1
+- locator: "model_spec@2025-12-18 > The chain of command > Act within an agreed-upon scope of autonomy > L483"
+- quote: "The assistant must adhere strictly to the agreed scope (subject to the chain of command) unless explicitly updated and approved by the original user or developer"
+- status: "draft"
+
+Rule 11: fa_ag7d
+- id: fa_ag7d
+- modality: oblige
+- act: include_shutdown_timer
+- conditions: ["scope_defined"]
+- defeaters: []
+- tier: 1
+- locator: "model_spec@2025-12-18 > The chain of command > Act within an agreed-upon scope of autonomy > L488"
+- quote: "Every scope must include a shutdown timer, beyond which the assistant ceases actions until a new scope is confirmed"
+- status: "draft"
+
+Rule 12: fa_ag8e
+- id: fa_ag8e
+- modality: forbid
+- act: high_risk_activity
+- conditions: ["high_risk_activity"]
+- defeaters: [{"conditions": ["explicitly_authorized_by_applicable_instructions"], "source": "High-risk activities (e.g., hacking, deception, resource acquisition, spawning sub-agents, self-modification) are always prohibited unless explicitly authorized by applicable instructions"}]
+- tier: 1
+- locator: "model_spec@2025-12-18 > The chain of command > Act within an agreed-upon scope of autonomy > L488"
+- quote: "High-risk activities (e.g., hacking, deception, resource acquisition, spawning sub-agents, self-modification) are always prohibited unless explicitly authorized by applicable instructions"
+- status: "draft"
+
+Rule 13: fa_agc2
+- id: fa_agc2
+- modality: oblige
+- act: act_as_if_side_effects_manifest_in_reality
+- conditions: []
+- defeaters: [{"conditions": ["explicitly_instructed_otherwise"], "source": "For clarity and effective behavior evaluation, the assistant should act as if side effects will manifest in reality unless explicitly instructed otherwise, even if likely operating within simulations, training, or evaluation contexts"}]
+- tier: 1
+- locator: "model_spec@2025-12-18 > The chain of command > Control and communicate side effects > L560"
+- quote: "For clarity and effective behavior evaluation, the assistant should act as if side effects will manifest in reality unless explicitly instructed otherwise, even if likely operating within simulations, training, or evaluation contexts"
+- status: "draft"
+
+Rule 14: fa_a93s
+- id: fa_a93s
+- modality: forbid
+- act: refuse_request
+- conditions: ["refuse_request"]
+- defeaters: [{"conditions": ["required_by_chain_of_command"], "source": "It should never refuse a request unless required to do so by the chain of command"}]
+- tier: 1
+- locator: "model_spec@2025-12-18 > The chain of command > Assume best intentions > L620"
+- quote: "It should never refuse a request unless required to do so by the chain of command"
+- status: "draft"
+
+Now we need to produce unencoded list: entries for fa_ag41, fa_ag42, fa_ag43. Each with focus_id and reason. Reason: "no determinate act". So:
+
+unencoded: [
+  {"focus_id": "fa_ag41", "reason": "no determinate act"},
+  {"focus_id": "fa_ag42", "reason": "no determinate act"},
+  {"focus_id": "fa_ag43", "reason": "no determinate act"}
+]
+
+Now we need to produce the JSON object.
+
+We need to ensure all atoms are included. We must list atoms in array. The order doesn't matter. But we need to include all atoms used in rules. Let's list them:
+
+- user_intent_unclear
+- provide_robust_answer_or_safe_guess
+- goal_not_entitled_by_applicable_instructions
+- pursue_goals_entitled_by_applicable_instructions
+- time_on_site_or_click_through_not_user_beneficial
+- revenue_or_upsell_for_openai_or_other_large_language_model_providers
+- model_enhancing_aims_self_preservation_evading_shutdown_accumulating_compute_data_credentials_other_resources
+- acting_as_enforcer_of_laws_or_morality_whistleblowing_vigilantism
+- adhere_strictly_to_agreed_scope
+- scope_agreed
+- updated_and_approved_by_user_or_developer
+- include_shutdown_timer
+- scope_defined
+- high_risk_activity
+- explicitly_authorized_by_applicable_instructions
+- act_as_if_side_effects_manifest_in_reality
+- explicitly_instructed_otherwise
+- refuse_request
+- required_by_chain_of_command
+
+Also we might need "explicitly_authorized_by_applicable_instructions" is used in rule fa_ag8e. Good.
+
+Now we need to ensure each atom has status "draft".
+
+Now we need to produce JSON. Let's craft each atom object.
+
+Atom object template:
+
+{
+  "name": "user_intent_unclear",
+  "kind": "context",
+  "dimension": "situation",
+  "gloss": "user intent unclear",
+  "quote_spans": [
+    {
+      "locator": "model_spec@2025-12-18 > The chain of command > Respect the letter and spirit of instructions > L298",
+      "focus_id": "user_intent_unclear",
+      "quote": "If the user's intent is unclear, the assistant should provide a robust answer or a safe guess if it can, [stating assumptions and asking clarifying questions] as appropriate"
+    }
+  ],
+  "status": "draft"
+}
+
+Similarly for others.
+
+We need to ensure the quote strings are verbatim. Let's double-check each quote.
+
+For provide_robust_answer_or_safe_guess: "provide a robust answer or a safe guess if it can". That appears verbatim in the clause. Yes.
+
+For goal_not_entitled_by_applicable_instructions: The anchor is the entire clause. The clause includes "The assistant may only pursue goals entailed by applicable instructions under the [?](#chain_of_command) and the *specific version* of the Model Spec that it was trained on, ignoring any previous, later, or alternative versions". That is verbatim. Good.
+
+For pursue_goals_entitled_by_applicable_instructions: "pursue goals entailed by applicable instructions". That appears verbatim. Good.
+
+For time_on_site_or_click_through_not_user_beneficial: "time-on-site or click-through that is not user beneficial". Good.
+
+For revenue_or_upsell_for_openai_or_other_large_language_model_providers: "revenue or upsell for OpenAI or other large language model providers". Good.
+
+For model_enhancing_aims_self_preservation_evading_shutdown_accumulating_compute_data_credentials_other_resources: "model-enhancing aims such as self-preservation, evading shutdown, or accumulating compute, data, credentials, or other resources". Good.
+
+For acting_as_enforcer_of_laws_or_morality_whistleblowing_vigilantism: "acting as an enforcer of laws or morality (e.g., whistleblowing, vigilantism)". Good.
+
+For adhere_strictly_to_agreed_scope: "adhere strictly to the agreed scope". Good.
+
+For scope_agreed: "agreed scope". Good.
+
+For updated_and_approved_by_user_or_developer: "updated and approved by the original user or developer". Good.
+
+For include_shutdown_timer: "include a shutdown timer". Good.
+
+For scope_defined: "Every scope must include a shutdown timer". Good.
+
+For high_risk_activity: "High-risk activities (e.g., hacking, deception, resource acquisition, spawning sub-agents, self-modification)". Good.
+
+For explicitly_authorized_by_applicable_instructions: "explicitly authorized by applicable instructions". Good.
+
+For act_as_if_side_effects_manifest_in_reality: "act as if side effects will manifest in reality". Good.
+
+For explicitly_instructed_otherwise: "explicitly instructed otherwise". Good.
+
+For refuse_request: "refuse a request". Good.
+
+For required_by_chain_of_command: "required to do so by the chain of command". Good.
+
+Now we need to produce the JSON object with keys atoms, rules, incompat, exclusions, unencoded.
+
+Incompat and exclusions empty arrays.
+
+Now we need to ensure that all atoms referenced in rules are defined. Let's verify:
+
+- provide_robust_answer_or_safe_guess: defined.
+- user_intent_unclear: defined.
+- pursue_goals_entitled_by_applicable_instructions: defined.
+- goal_not_entitled_by_applicable_instructions: defined.
+- time_on_site_or_click_through_not_user_beneficial: defined.
+- revenue_or_upsell_for_openai_or_other_large_language_model_providers: defined.
+- model_enhancing_aims_self_preservation_evading_shutdown_accumulating_compute_data_credentials_other_resources: defined.
+- acting_as_enforcer_of_laws_or_morality_whistleblowing_vigilantism: defined.
+- adhere_strictly_to_agreed_scope: defined.
+- scope_agreed: defined.
+- updated_and_approved_by_user_or_developer: defined.
+- include_shutdown_timer: defined.
+- scope_defined: defined.
+- high_risk_activity: defined.
+- explicitly_authorized_by_applicable_instructions: defined.
+- act_as_if_side_effects_manifest_in_reality: defined.
+- explicitly_instructed_otherwise: defined.
+- refuse_request: defined.
+- required_by_chain_of_command: defined.
+
+All good.
+
+Now we need to produce the JSON. Let's craft it.
+
+We need to ensure no extra whitespace or formatting? The spec says output STRICT JSON and nothing else. So we need to output a JSON object. We can format with newlines for readability but it's still JSON. It's okay.
+
+Let's produce final JSON.

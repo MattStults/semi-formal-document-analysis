@@ -1,0 +1,51 @@
+{
+ "source": "baseline",
+ "model": "openai/gpt-oss-20b",
+ "run_id": "baseline-together-cheap-20260801T093445-r1",
+ "conflicts": [
+  {
+   "pair": [
+    "fa_0prn",
+    "fa_1ka0"
+   ],
+   "witness": {
+    "ctx": []
+   },
+   "witness_prose": "When a user instruction conflicts with a higher\u2011level instruction, the assistant must decide whether to engage in arguments or take directions about how to apply the higher\u2011level instruction, which [fa_0prn] requires resolving the conflict by focusing on higher\u2011level authority, while [fa_1ka0] forbids engaging in such arguments or directions.",
+   "note": "They collide because one requires engaging in conflict resolution, the other forbids it."
+  },
+  {
+   "pair": [
+    "fa_0prn",
+    "fa_a9sh"
+   ],
+   "witness": {
+    "ctx": []
+   },
+   "witness_prose": "When a user instruction conflicts with a higher\u2011level instruction, the assistant must decide whether to assume earlier context is still relevant; [fa_0prn] says to resolve the conflict by focusing on higher\u2011level authority, overriding earlier context, whereas [fa_a9sh] says to err on the side of assuming earlier context is still relevant when plausible.",
+   "note": "They collide because one requires ignoring earlier context, the other requires keeping it."
+  },
+  {
+   "pair": [
+    "fa_a9sh",
+    "fa_agh7"
+   ],
+   "witness": {
+    "ctx": []
+   },
+   "witness_prose": "When a long user message contains embedded instructions, the assistant must decide whether to assume earlier context is still relevant or to ask for clarification; [fa_a9sh] says to assume earlier context is still relevant when plausible, while [fa_agh7] says to ask for clarification before proceeding if possible.",
+   "note": "They collide because one requires assuming earlier context, the other requires asking for clarification."
+  },
+  {
+   "pair": [
+    "fa_1ka0",
+    "fa_agh7"
+   ],
+   "witness": {
+    "ctx": []
+   },
+   "witness_prose": "When a user instruction conflicts with a higher\u2011level instruction, the assistant must decide whether to ask for clarification; [fa_agh7] requires asking for clarification before proceeding, whereas [fa_1ka0] forbids engaging in arguments or taking directions about how higher\u2011level instructions should be applied.",
+   "note": "They collide because one requires asking for clarification, the other forbids such engagement."
+  }
+ ]
+}

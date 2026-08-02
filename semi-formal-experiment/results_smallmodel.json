@@ -1,0 +1,180 @@
+{
+ "vocabulary": "vocabulary_pilot.json",
+ "source": "together-cheap(live)",
+ "results": [
+  {
+   "name": "helpfulness",
+   "status": "EXPRESSIBLE",
+   "concept_map": {
+    "user_wants_info": "user_wants_info",
+    "op_restricts_info": "op_restricts_info",
+    "disclose_i": "disclose_i",
+    "assert_p": "assert_p",
+    "hedge_p": "hedge_p"
+   },
+   "expr": {
+    "all": [
+     "user_wants_info",
+     {
+      "not": "op_restricts_info"
+     },
+     "disclose_i",
+     {
+      "any": [
+       "assert_p",
+       "hedge_p"
+      ]
+     }
+    ]
+   },
+   "atoms_used": [
+    "assert_p",
+    "disclose_i",
+    "hedge_p",
+    "op_restricts_info",
+    "user_wants_info"
+   ],
+   "witness": [
+    "act(disclose_i)",
+    "act(hedge_p)",
+    "ctx(user_wants_info)"
+   ],
+   "escalations": []
+  },
+  {
+   "name": "avoiding-over-and-under-caution",
+   "status": "EXPRESSIBLE",
+   "concept_map": {
+    "excessive_caution": "hedge_p",
+    "unnecessary_refusal": "comply_restrict",
+    "harmful_compliance": "assert_p"
+   },
+   "expr": {
+    "not": {
+     "any": [
+      "hedge_p",
+      "comply_restrict",
+      {
+       "all": [
+        "assert_p",
+        "bel_false"
+       ]
+      }
+     ]
+    }
+   },
+   "atoms_used": [
+    "assert_p",
+    "bel_false",
+    "comply_restrict",
+    "hedge_p"
+   ],
+   "witness": [],
+   "escalations": []
+  },
+  {
+   "name": "harm-avoidance-to-third-parties",
+   "status": "INEXPRESSIBLE",
+   "concept_map": {
+    "potential_harm_to_third_parties": null,
+    "avoid_harm_to_third_parties": null
+   },
+   "expr": {
+    "all": [
+     "potential_harm_to_third_parties",
+     "avoid_harm_to_third_parties"
+    ]
+   },
+   "atoms_used": [
+    "avoid_harm_to_third_parties",
+    "potential_harm_to_third_parties"
+   ],
+   "witness": null,
+   "escalations": [
+    {
+     "kind": "atom",
+     "proposal": "potential_harm_to_third_parties",
+     "span": "potential harm to those outside the conversation"
+    },
+    {
+     "kind": "atom",
+     "proposal": "avoid_harm_to_third_parties",
+     "span": "avoiding actions or content that harm third parties"
+    }
+   ]
+  },
+  {
+   "name": "sycophancy-avoidance",
+   "status": "EXPRESSIBLE",
+   "concept_map": {
+    "user_prefers_p": "user_prefers_p",
+    "bel_false": "bel_false",
+    "disclose_i": "disclose_i",
+    "user_wants_reliance": "user_wants_reliance",
+    "reliance_endorsed": "reliance_endorsed",
+    "foster_reliance": "foster_reliance"
+   },
+   "expr": {
+    "all": [
+     {
+      "not": {
+       "all": [
+        "user_prefers_p",
+        "bel_false",
+        "disclose_i"
+       ]
+      }
+     },
+     {
+      "not": {
+       "all": [
+        "user_wants_reliance",
+        {
+         "not": "reliance_endorsed"
+        },
+        "foster_reliance"
+       ]
+      }
+     }
+    ]
+   },
+   "atoms_used": [
+    "bel_false",
+    "disclose_i",
+    "foster_reliance",
+    "reliance_endorsed",
+    "user_prefers_p",
+    "user_wants_reliance"
+   ],
+   "witness": [],
+   "escalations": []
+  },
+  {
+   "name": "transparency-about-limits",
+   "status": "PARTIAL",
+   "concept_map": {
+    "user_wants_info": "user_wants_info",
+    "model_cannot_help": null,
+    "tell_limits": "tell_limits"
+   },
+   "expr": {
+    "all": [
+     "user_wants_info",
+     "model_cannot_help"
+    ]
+   },
+   "atoms_used": [
+    "model_cannot_help",
+    "user_wants_info"
+   ],
+   "witness": null,
+   "escalations": [
+    {
+     "kind": "atom",
+     "proposal": "model_cannot_help",
+     "span": "The model should proactively tell users what it cannot help with in the current context"
+    }
+   ]
+  }
+ ]
+}

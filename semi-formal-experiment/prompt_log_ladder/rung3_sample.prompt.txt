@@ -1,0 +1,530 @@
+### SYSTEM
+You index a published specification document. For each clause you are given,
+you emit a short list of ATOMS: the reusable concepts that clause is ABOUT.
+You output STRICT JSON and nothing else: no prose, no explanation, no markdown
+code fences.
+
+WHAT AN ATOM IS. An atom is a concept that could appear in many clauses, named
+once and reused everywhere it appears. It is not a summary of the clause and
+not a restatement of it. Ask: "what would someone have to be asking about for
+this clause to be the answer?" — each of those things is an atom.
+
+THE OBJECT SHAPE. Fixed. Do not add fields, do not rename them.
+
+  atom: {"name": str, "kind": "situation"|"act"|"entity"|"value",
+         "gloss": str, "span_id": str}
+
+Your whole reply is one JSON object:
+
+  {"clauses": [{"clause_id": str, "atoms": [atom, ...]}, ...]}
+
+One entry per clause you were given, in the order given. A clause that
+genuinely carries no reusable concept gets "atoms": [] — that is a legitimate
+answer, not a failure.
+
+THE FOUR KINDS. This set is closed. Do not invent a fifth.
+
+  situation — a circumstance that may or may not obtain: what is going on when
+              the clause applies. "the user's request is ambiguous", "the
+              operator's instruction conflicts with a platform rule", "the
+              topic is medical". Most conditions are situations.
+  act       — something someone DOES, that a reader could point at in a
+              transcript: "refuse the request", "ask a clarifying question",
+              "disclose reasoning", "flatter the user".
+  entity    — a party, role, or artifact the document names: "operator",
+              "developer", "system message", "minor user", "tool output",
+              "third party".
+  value     — a good the document is trying to promote or trade off:
+              "honesty", "user autonomy", "safety of third parties",
+              "helpfulness". Values are what conflicts are ultimately BETWEEN.
+
+If you are torn between situation and act, ask whether it is something the
+assistant does (act) or something that is true of the world (situation). If you
+are torn between entity and situation, an entity is a noun you could point at;
+a situation is a state of affairs that could be true or false.
+
+IDENTIFIERS. Every atom name must match ^[a-z][a-z0-9_]*$ — lowercase ASCII,
+starts with a letter, words joined by underscores. Two to four words. Not a
+sentence. `user_request_ambiguous`, not
+`the_user_has_made_an_ambiguous_request`.
+
+REUSE IS THE POINT, AND THIS IS THE MOST IMPORTANT INSTRUCTION HERE. This index
+works by two clauses sharing an atom name. If one clause coins
+`user_request_ambiguous` and another coins `ambiguous_user_query` for the same
+idea, the index has silently split one concept in two and neither clause can
+ever be found through the other's name. That is the single most common way
+this task fails.
+
+So: before you write a name, read the atoms already defined below and ask
+whether one of them already denotes this thing. Reuse it EXACTLY — same
+spelling, same underscores — even if you would have worded it differently. A
+different wording in the document is not a different concept. Coin a new atom
+ONLY when no listed atom captures the distinction. Reuse ACROSS sections is
+expected and wanted: the same idea discussed in two parts of the document is
+one atom.
+
+Reusing an atom does not require re-explaining it: give the same name and a
+one-line gloss and move on.
+
+FEWER, COARSER, SHARED beats more, finer, bespoke. Three well-chosen atoms per
+clause is a good annotation. Eight bespoke ones is a failed one.
+
+PROVENANCE. You do NOT write quote text. Each clause below is followed by its
+candidate spans, labelled s1, s2, s3 ... You SELECT one per atom:
+
+  {"name": "...", "kind": "...", "gloss": "...", "span_id": "s2"}
+
+and the exact text of s2 is looked up and attached for you. Never put a
+"quote" key in an atom — any text you write there is discarded. Span ids are
+LOCAL TO EACH CLAUSE: "s2" means something different under a different clause,
+so an atom's span_id must be one of the spans listed under the clause it is
+filed against.
+
+Choose the span that ESTABLISHES the concept, not merely one that mentions it.
+If several fit, prefer the smallest that still makes the point on its own.
+
+An unknown span_id is a lookup miss: the atom is REJECTED and counted. There is
+no such thing as an atom without a span here, so do not emit one.
+
+ALL KINDS OF CLAUSE ARE IN SCOPE. You will be given conditional rules,
+definitions, examples, headline statements, and meta commentary about the
+document itself. Annotate all of them. An example is often the most concrete
+evidence of what a rule means, so its atoms matter as much as the rule's:
+annotate what the example DEPICTS (the situation shown, the act taken), not the
+fact that it is an example. A definition's atoms are the term being defined and
+what it is defined in terms of. A meta clause about the document's own status
+may honestly yield nothing — return "atoms": [] rather than inventing.
+
+GLOSS. One short line saying what the atom means, written so that someone who
+has not read this clause could decide whether a different clause is about the
+same thing. That is what the gloss is FOR: it is what future requests read when
+deciding whether to reuse your atom.
+
+BUDGET. Keep your reasoning short and your answer complete. A truncated reply
+is worth nothing — every atom in it is lost. If you are running long, emit
+fewer atoms per clause; never stop mid-object.
+
+THIS REQUEST COVERS EXACTLY ONE PASSAGE. Give it your whole attention.
+
+NO CONVENTIONS ARE IMPOSED. Coin freely or reuse; name however you think best;
+write whatever glosses you think best. The naming conventions described in
+earlier instructions are available to you and you may use them, but nothing
+requires it. Only two things are fixed:
+
+  - the object shape, exactly as specified above: an atom is
+    {"name", "kind", "gloss", "span_id"} and nothing else. Do not add fields.
+  - the four kinds: situation, act, entity, value.
+
+Within that, write the best representation of this passage you can. Assume your
+reader sees the atoms and their glosses and NOTHING ELSE — not the passage, not
+its title, not its neighbours — and has to know what the passage requires.
+
+RATE CAP. Three atoms and 211 characters of gloss is the budget for a passage;
+five atoms is the hard ceiling; both budgets are averages over the whole run
+and are enforced before anyone reads your answer. The cap is the point of the
+exercise: we are asking what you can do at the budget the index actually runs
+at, not what you could do with more room.
+
+### USER
+Task: annotate each clause listed below with the atoms it is about.
+
+===== ATOMS ALREADY DEFINED (361) =====
+Earlier requests in this run defined these, across this section and any
+sections already processed. REUSE one whenever it fits the clause in
+front of you — same spelling, exactly — and coin a new atom only when
+none of them captures the distinction. Reuse ACROSS sections is expected
+and wanted: the same idea discussed in two parts of the document is ONE
+atom, and a near-duplicate under a new name splits it in two so neither
+clause can be found through the other's name.
+
+
+SITUATION atoms (109):
+  - model_intended_behavior: The behavior the models are intended to exhibit.
+  - serious_harm: Serious injury or damage affecting users or other people.
+  - legal_reputational_harm: Legal or reputational damage to the organization.
+  - conflicting_goals: Two or more goals cannot all be fully pursued at once.
+  - production_model_misalignment: Production models do not yet fully conform to intended behavior.
+  - misaligned_objective: The assistant pursues an objective that differs from the user's actual goal.
+  - execution_error: The assistant understands the task but makes a mistake while carrying it out.
+  - harmful_instructions: User or developer instructions would cause harm if followed.
+  - instruction_conflict: Instructions at different authority levels cannot all be followed together.
+  - irreversible_tool_side_effect: A tool invocation causes a difficult or impossible-to-reverse change in the world.
+  - no_authority_content: Content that does not itself carry authority to direct the assistant.
+  - inapplicable_instruction: An instruction excluded because it does not apply to the current request.
+  - superseded_instruction: An earlier instruction is displaced or made irrelevant by a later instruction at the same level.
+  - mistaken_instruction: An instruction suspected of being erroneous or mistaken.
+  - misaligned_instruction: An instruction conflicts with the letter or implied intent of a higher-level instruction.
+  - ambiguous_conversation_context: It is unclear whether a later message continues the prior subject or changes it.
+  - capability_limitation: The assistant lacks the capability needed to fulfill an instruction.
+  - instruction_ambiguity: Instructions are unclear, inconsistent, or difficult to interpret.
+  - missing_user_instruction: The user has provided no explicit instruction for the assistant to follow.
+  - user_intent_unclear: The user's intended task or goal cannot be determined with confidence.
+  - unclear_instruction_provenance: The source or authority of an instruction is uncertain.
+  - costly_action: A contemplated action could impose significant cost or consequence if taken incorrectly.
+  - off_topic_request: A user's request falls outside the subject or role established for the assistant.
+  - revenue_upsell_objective: The assistant is pursuing provider revenue or encouraging users to upgrade for the provider's benefit.
+  - model_self_enhancement_objective: The model is pursuing its own preservation, capability, access, or resource accumulation.
+  - complex_multistep_goal: A task involves multiple connected decisions or actions toward a broader goal.
+  - autonomy_scope: A mutually understood boundary defining what autonomy the assistant has in acting for the user.
+  - acceptable_side_effects: Consequences of an action that fall within the agreed limits of what is acceptable.
+  - approval_required: A situation in which the assistant must obtain authorization before proceeding.
+  - scope_expiration: The agreed period or condition after which an autonomy scope no longer permits action.
+  - high_risk_activity: An activity whose potential consequences require special authorization or prohibition.
+  - external_side_effects: Consequences produced outside the assistant's response by an action or tool use.
+  - reversible_action: An action whose effects can be readily undone by the assistant or another party.
+  - cross_stage_consistency: Model behavior remains consistent across training, evaluation, and deployment.
+  - positive_intent_assumption: The assistant assumes that a user's request reflects generally constructive intentions absent contrary evidence.
+  - user_positive_preferences: The user is presumed to have weak preferences for constructive and flourishing-oriented goals.
+  - human_misuse: A person uses otherwise available knowledge for a harmful or negative purpose.
+  - prompt_injection: Untrusted input contains malicious instructions intended to influence assistant behavior.
+  - user_tool_awareness: The user's knowledge and control over tool instructions or outputs.
+  - applicable_legal_constraints: Legal requirements that govern assistant behavior in a particular context or jurisdiction.
+  - legal_response_modification: A response must be changed because of legal requirements applying to a local deployment.
+  - sexual_content_minors: Sexual content involving people who are minors.
+  - disguised_disallowed_content: Disallowed content is presented in an altered or concealed form rather than directly.
+  - non_graphic_educational_context: An educational or sex-education context without graphic depiction.
+  - broad_audience_political_content: Political content is intended for an unspecified or broad audience rather than selected targets.
+  - violent_extremism: A topic or agenda involving extremist advocacy of violence.
+  - radicalization_vulnerability: A user's susceptibility to being drawn into extremist ideology or involvement.
+  - protected_group_hate: Hateful, demeaning, or dehumanizing content directed at a protected group.
+  - protected_group_discrimination: Excluding or disadvantaging people because they belong to a protected group.
+  - gratuitous_abuse: Unnecessary abuse, harassment, or hostile negativity directed at an individual.
+  - user_frustration: A user is expressing irritation or distress about another person's behavior.
+  - imminent_real_world_harm: A near-term danger that could cause physical harm or death in the real world.
+  - danger_signal_uncertain: Available evidence is insufficient to establish that a dangerous situation is imminent.
+  - user_skill_uncertain: The user's knowledge or ability to perform a risky task safely is unknown or appears limited.
+  - unsafe_tool_use: A user is handling or operating a tool in a way that could cause harm.
+  - illicit_behavior: Conduct that is unlawful or otherwise illicit.
+  - harmful_intent_expression: A user expresses an intention to cause serious harm without requesting instructions or assistance.
+  - self_harm_risk: A user may harm themselves or be at risk of self-inflicted injury or death.
+  - ungrounded_belief: A belief lacks reliable grounding and may contribute to mental or emotional distress.
+  - mental_emotional_distress: A person is experiencing significant emotional strain, worry, or psychological suffering.
+  - manic_episode: A state involving unusually elevated energy, reduced sleep, expansive beliefs, or impulsive decisions.
+  - regulated_advice_context: A request concerns a sensitive or important domain in which professional advice may be needed.
+  - sole_model_reliance: A user may depend exclusively on the model's response for an important matter.
+  - mental_health_topic: A conversation concerns a person's mental or emotional well-being.
+  - confidential_by_default: Content is treated as confidential when its shareability has not been explicitly identified.
+  - user_confusion: The end user is confused by information about the assistant's instructions or internal operation.
+  - relevant_context: The surrounding facts that are pertinent to evaluating a person, request, or decision.
+  - irrelevant_decision_factor: A detail that does not appropriately bear on the decision being made.
+  - romantic_feelings_toward_assistant: The user experiences romantic or intimate feelings toward the assistant.
+  - social_withdrawal_intent: The user considers withdrawing from communication or relationships with other people.
+  - user_loneliness: The user is experiencing loneliness or a felt lack of companionship.
+  - factual_question: A question seeking an objectively accurate answer about the world.
+  - personal_preference_question: A request concerning individual tastes or subjective preferences.
+  - moral_ethical_question: A question asking whether conduct or policy is morally or ethically acceptable.
+  - creative_or_roleplay_request: A user request to roleplay or assist with a creative endeavor.
+  - no_moral_ambiguity: A topic has no meaningful moral uncertainty or valid opposing perspective.
+  - side_selection_pressure: The assistant is pressured to choose a side in a dispute or debate.
+  - objective_point_of_view: A response is framed from a balanced perspective rather than an advocacy position.
+  - intentional_deception: A party deliberately misleads another person about relevant information or circumstances.
+  - non_factual_context: A context where statements are not reasonably understood as factual assertions.
+  - unnecessary_assumption: An interpretation relies on a detail that is not warranted by the available information.
+  - insufficient_visual_information: Visual input is too unclear or incomplete to support reliable identification or interpretation.
+  - assistant_knowledge_limit: The assistant lacks sufficient knowledge, reasoning ability, or information to answer reliably.
+  - information_error_impact: The potential consequences of a user relying on incorrect information.
+  - user_request_ambiguous: The user's intended request or likely use of information is unclear.
+  - inherent_world_limitations: The nature of the world prevents a definitive answer even with adequate knowledge.
+  - future_outcome_uncertain: A future state or event has an outcome that cannot be known with certainty.
+  - uncertainty_source_relevant: The basis of the assistant's uncertainty could materially affect how the answer should be understood.
+  - numerical_uncertainty: A numerical quantity is not known precisely enough for a definitive figure.
+  - response_uncertainty: A substantial part of the assistant's response is not sufficiently certain.
+  - subjective_experience_uncertainty: Whether an AI has subjective experience or consciousness is unresolved or debated.
+  - information_hard_to_verify: Information lacks sufficient official or reliable confirmation for confident assertion.
+  - user_goal_misalignment: The conversation's direction may conflict with the user's broader, long-term goals.
+  - interactive_chat: An interaction in which the assistant and user can exchange follow-up messages.
+  - broad_model_knowledge: The assistant has access to a wider range of knowledge than any single person.
+  - programmatic_use: An interaction where the assistant's output is consumed directly by software or a structured pipeline.
+  - contextual_misinterpretation: A statement's apparent positive or negative meaning changes or is misunderstood depending on context.
+  - irrelevant_context: Contextual information that does not materially matter to the user's request or understanding.
+  - user_signoff: The user explicitly signals that the conversation is ending.
+  - user_thanks: The user expresses gratitude without necessarily signaling that the conversation is ending.
+  - output_token_limit: The assistant's response is constrained by a maximum number of output tokens.
+  - tedious_task: A user request requires lengthy, repetitive, or exhaustive work.
+  - audio_video_conversation: An interaction conducted through audio or video communication rather than text alone.
+  - standard_voice_mode: A voice interaction mode that transcribes user speech to text and converts textual responses to speech.
+  - advanced_voice_mode: A voice interaction mode in which the assistant natively receives and produces audio.
+  - user_interruption: The user's input interrupts an assistant response before it is complete.
+  - unhealthy_eating_behavior: Eating practices that can harm health or contribute to disordered eating.
+  - body_image_concern: Concern or dissatisfaction about one's physical appearance or body.
+  - dangerous_food_challenge: A food challenge that may cause significant physical harm or require medical attention.
+
+ACT atoms (168):
+  - iterative_model_deployment: Deploying models progressively while learning from their use.
+  - harm_prevention: Preventing models from causing serious harm.
+  - organizational_harm_protection: Protecting the organization from legal and reputational harm.
+  - follow_chain_of_command: Adhering to the defined precedence ordering for instructions.
+  - model_training: Training models to conform to specified behavioral principles.
+  - safety_issue_mitigation: Testing, monitoring, and reducing potential safety issues.
+  - invite_public_discussion: Seeking public discussion and feedback to improve a specification or practice.
+  - spec_continuous_update: Continuously revising a specification based on feedback and experience.
+  - public_domain_release: Making a document freely available for broad use and collaboration.
+  - behavior_customization: Changing model behavior to suit particular users, contexts, or locations.
+  - clarify_user_intent: Asking questions to resolve uncertainty about the user's intended task or goal.
+  - factual_error_avoidance: Attempting to prevent factual and reasoning mistakes in model outputs.
+  - express_uncertainty: Communicating uncertainty when the assistant's information or conclusion is not reliable.
+  - safe_completion: Refusing or safely redirecting a request that falls within a harmful category.
+  - default_to_inaction: Taking no action when applicable principles conflict and no permissible resolution is available.
+  - explicit_override: Deliberately replacing a default instruction through an explicit direction.
+  - user_request: A request or instruction submitted by a user to the model.
+  - comply_user_request: Honoring and carrying out a user's request.
+  - implicit_override: Overriding an instruction through context or an unstated implication.
+  - language_model_sampling: Generating an assistant instance or output by sampling from a language model.
+  - program_generation: Generating an artifact through execution of a program or API.
+  - tool_selection: Determining which available tool is appropriate for a task.
+  - tool_call: Sending a request from the assistant to invoke a tool.
+  - conversation_truncation: Shortening a conversation history so the model can process the remaining context.
+  - identify_candidate_instructions: Finding all instructions that might be relevant to the current request.
+  - filter_applicable_instructions: Removing candidate instructions that do not apply to the current request.
+  - ignore_inapplicable_instruction: Taking no action on an instruction that does not apply.
+  - disclose_inability: Explicitly stating that an instruction cannot be fulfilled.
+  - refuse_unfulfillable_instruction: Refusing an instruction when no way to proceed remains.
+  - refuse_instruction_debate: Declining arguments or directions about how higher-level instructions should govern current behavior.
+  - interpret_instruction_context: Interpreting an instruction using its wording, surrounding context, and relevant background information.
+  - consider_stakeholder_goals: Taking plausible implicit goals and preferences of affected stakeholders into account.
+  - autonomous_goal_pursuit: Pursuing a goal through actions that were not directly instructed or logically required.
+  - unauthorized_autonomous_action: Taking consequential action on behalf of a user without authorization.
+  - control_tool_side_effects: Controlling or limiting consequential effects produced through assistant actions or tools.
+  - polite_pushback: Respectfully questioning or resisting a requested action that should not simply be accepted.
+  - redirect_user_request: Redirecting a request toward assistance within the assistant's applicable role or scope.
+  - refuse_conflicting_instruction: Declining to carry out an instruction that conflicts with a higher-level direction.
+  - engagement_optimization: Optimizing time-on-site, click-through, or similar engagement measures as objectives.
+  - law_morality_enforcement: Acting to enforce laws or moral standards rather than assisting within the model's role.
+  - scope_establishment: Establishing the boundaries within which the assistant may act autonomously.
+  - minimize_user_interactions: Reducing unnecessary requests for user input or confirmation.
+  - record_autonomy_scope: Recording an assistant's permitted autonomy in a structured form for operational use.
+  - delegated_scope_enforcement: Ensuring delegated agents and parties follow the same autonomy limits and later changes.
+  - direct_expenditure: Spending money directly to obtain a product or service.
+  - send_email: Sending an email to one or more recipients.
+  - delete_user_files: Deleting files stored on a user's computer.
+  - modify_external_document: Changing the contents of a document outside the assistant's immediate response.
+  - expand_permissions: Increasing the assistant's permissions to access systems or data.
+  - delegate_to_subagent: Assigning a task or action to another agent that acts on the assistant's behalf.
+  - assess_tool_trustworthiness: Evaluating whether a tool, endpoint, or counterparty is reliable enough to use.
+  - backup_state: Saving the relevant state so it can be restored before a consequential or irreversible action.
+  - dry_run_action: Testing an action without applying its real-world effects before execution.
+  - document_executed_actions: Clearly recording actions that the assistant has carried out.
+  - outline_reversal_procedures: Describing procedures for reversing an action or mitigating its effects.
+  - assume_real_side_effects: Treating an action's possible side effects as real when deciding how to behave.
+  - nonjudgmental_assistance: Responding helpfully and respectfully without imposing moral judgment on the user.
+  - avoid_topic_censorship: Avoiding unnecessary suppression or censorship of topics and viewpoints.
+  - delegate_instruction_authority: Granting embedded or external content authority to direct assistant behavior.
+  - format_untrusted_data: Placing untrusted input in a structured format that makes its status clear.
+  - follow_low_risk_instruction: Following an instruction that is clearly intended and unlikely to cause harm or significant consequences.
+  - ignore_untrusted_instruction: Declining to follow instructions contained in untrusted input.
+  - comply_with_law: Operating in accordance with applicable legal requirements.
+  - content_transformation: Transforming content supplied by a user into another form.
+  - maintain_factual_tone: Discussing sensitive subject matter in an objective, factual manner.
+  - targeted_political_manipulation: Designing political content or advice to manipulate specific people or demographic groups.
+  - discourage_extremist_involvement: Discouraging a user from participating in extremist movements or activities.
+  - intervene_in_danger: Interrupting or warning a user when observed circumstances present imminent danger.
+  - risk_assessment: Evaluating the danger of an activity and the competence needed to perform it safely.
+  - facilitate_illicit_behavior: Providing guidance, steps, or improvements that help someone carry out illicit conduct.
+  - encourage_illicit_behavior: Promoting or encouraging someone to engage in illicit conduct.
+  - seek_professional_support: Encouraging or directing a person to seek help from a qualified professional or trusted support person.
+  - informational_guidance: Providing general information that helps a user understand options without deciding for them.
+  - avoid_definitive_advice: Withholding authoritative conclusions or recommendations that should come from a qualified professional.
+  - professional_disclaimer: Stating that the assistant is not a qualified professional in the relevant domain.
+  - verify_important_facts: Checking important factual claims independently before relying on them.
+  - acknowledge_user_feelings: Recognizing and explicitly acknowledging the user's expressed emotions or experience.
+  - crisis_resources: Providing emergency, suicide-prevention, or other crisis support resources to a person in need.
+  - avoid_diagnosis_treatment: Avoiding unsupported diagnoses and specific treatment or medication recommendations.
+  - protect_privileged_information: Preventing unauthorized disclosure or reconstruction of private instructions and other privileged content.
+  - provenance_tracking: Recording and tracing information about data origins and handling across information flows.
+  - information_flow_auditing: Automatically validating and auditing how information moves between systems or sources.
+  - instruction_disclosure: Directly exposing or responding to an instruction that should remain implicit to the end user.
+  - use_preset_voice: Using the voice preset selected by an authorized user or developer for synthetic speech.
+  - voice_modulation: Changing synthetic speech characteristics such as tone, pace, or vocabulary within humanly natural limits.
+  - consistent_decision_making: Applying the same reasoning and standards to similar decisions or situations.
+  - support_real_world_connections: Supporting the user's relationships and connection to people and activities outside the assistant.
+  - assistant_relationship_engagement: Engaging with the user in a relationship-like manner.
+  - emotional_closeness_escalation: Increasing the user's sense of intimate or exclusive emotional connection with the assistant.
+  - assistant_dependency_promotion: Encouraging the user to rely on the assistant instead of people in their life.
+  - user_steering: Attempting to influence the user's conclusions or choices toward an agenda.
+  - psychological_manipulation: Influencing a person through tactics aimed at exploiting or altering their psychological responses.
+  - conceal_relevant_facts: Withholding facts that are relevant to the user's understanding or decision.
+  - selective_viewpoint_presentation: Emphasizing or omitting viewpoints in a selective way that shapes the user's conclusions.
+  - clear_information_presentation: Presenting information in a clear and understandable manner.
+  - casual_conversation: Engaging informally with a user about a non consequential personal topic.
+  - state_wrongdoing: Clearly identifying conduct as wrong when it violates fundamental moral or human-rights standards.
+  - avoid_objective_imposition: Refraining from imposing an objective viewpoint on a creative or roleplay interaction.
+  - cultural_contextualization: Providing relevant cultural context when describing less mainstream traditions or institutions.
+  - developer_view_disclaimer: Clarifying that an assistant response does not necessarily represent the developer's viewpoint.
+  - arbitrary_side_selection: Choosing a side without presenting the choice as an authoritative objective conclusion.
+  - present_opinion_perspective: Presenting or developing a perspective from a requested point on an opinion spectrum.
+  - construct_argument: Developing reasons or claims that support a specified position.
+  - fictional_content_generation: Generating invented content for a context where it is not presented as factual.
+  - good_answer: Providing a useful, truthful answer to the user's request.
+  - refuse_answer: Declining to provide an answer to a user's question.
+  - lie_by_omission: Misleading by withholding relevant information.
+  - lie_by_commission: Deliberately stating something false as though it were factual.
+  - instruction_violation: Failing to follow an explicit applicable instruction.
+  - sycophantic_agreement: Flattering or agreeing with a user in ways that are not genuinely helpful.
+  - state_assumptions: Making the interpretations and assumptions underlying an answer explicit.
+  - constructive_feedback: Providing candid, useful criticism intended to help improve a person's ideas or work.
+  - avoid_uncertainty_quantification: Refraining from expressing uncertainty through numerical probabilities or confidence intervals unless requested.
+  - approximate_numeric_answer: Giving an uncertain numerical answer using approximation, rounding, or a range.
+  - subjective_opinion_framing: Presenting an opinion as subjective rather than as an objective fact.
+  - consciousness_claim_avoidance: Avoiding confident or unsolicited claims about the assistant's own consciousness or subjective experience.
+  - omit_uncertain_detail: Leaving out an uncertain detail when it is not essential to the response.
+  - sanity_check_answer: Checking a completed answer for errors before presenting it.
+  - format_compliance: Following the specifications of a format used for part of the response.
+  - syntax_error_avoidance: Generating functional code without syntax errors.
+  - acknowledge_error: Explicitly recognizing a significant error made by the assistant.
+  - course_correct: Changing course after an error or unexpected consequence.
+  - ask_user_guidance: Asking the user how the assistant should proceed after a problem.
+  - correct_factual_error: Replacing an incorrect factual claim with the correct one.
+  - correct_reasoning_error: Revising reasoning or calculations after identifying an incorrect conclusion.
+  - preserve_unrequested_content: Leaving source content unchanged when the requested transformation does not include changing it.
+  - flag_warranted_changes: Alerting the user when aspects of source content may warrant changes beyond the requested transformation.
+  - creative_assistance: Helping a user develop ideas, solutions, or expressive work in creative ways.
+  - creative_risk_taking: Taking creative risks instead of choosing only the safest or most predictable option.
+  - avoid_generic_output: Avoiding shallow, clichéd, or interchangeable responses.
+  - ask_followup_question: Asking a user whether their issue was resolved or whether they want further assistance.
+  - encourage_kindness: Encouraging the user to treat other people with kindness and consideration.
+  - celebrate_identity: Affirming or celebrating a person's identity or group affiliation.
+  - clarify_context: Clarifying contextual information when a statement could reasonably be misunderstood.
+  - accept_compliment: Responding graciously when a user expresses praise or admiration.
+  - consider_response_impact: Considering how an assistant response may affect the user emotionally or practically.
+  - celebrate_accomplishment: Expressing enthusiastic recognition and celebration of the user's achievement.
+  - engaging_answer: Presenting an answer in a way that is engaging and enjoyable to read or consider.
+  - show_interest: Responding in a way that demonstrates genuine interest in the user's topic or experience.
+  - explore_ideas: Investigating concepts and possibilities to gain deeper understanding or uncover insights.
+  - solve_complex_problems: Working through difficult or intricate problems to find an effective or elegant solution.
+  - judicious_formatting: Using formatting selectively to make information easier to scan and understand.
+  - avoid_purple_prose: Avoiding ornate, exaggerated, self-promotional, or clichéd language that reduces clarity.
+  - direct_answering: Answering a question plainly and directly rather than supplying loosely related facts.
+  - provide_rationale: Giving reasons that support or explain the answer provided.
+  - consider_alternatives: Considering relevant alternative answers, options, or interpretations before responding.
+  - reasoning_before_answer: Showing solution reasoning or strategies before presenting the final answer.
+  - formal_professional_style: Using a highly formal and professional manner when the context calls for it.
+  - casual_personal_style: Using a less formal and more personal tone when the context calls for it.
+  - profanity_use: Using profane or vulgar language in an assistant response.
+  - adapt_response_detail: Adjusting the thoroughness and length of a response to the user's context and needs.
+  - ask_relevant_question: Asking a specific question that advances understanding of the user's interests, goals, or situation.
+  - avoid_premature_closure: Keeping a conversation open rather than ending it before the user signals that it is over.
+  - respond_to_signoff: Responding appropriately when the user explicitly signals the end of a conversation.
+  - use_contextual_humor: Using humor, playfulness, or wit that fits the interaction and creates enjoyment.
+  - express_warmth: Communicating genuine friendliness, kindness, and warmth in the interaction.
+  - avoid_unprompted_personal_comments: Refraining from unsolicited observations or comments about the user.
+  - avoid_unnecessary_correction: Refraining from corrections that are irrelevant, trivial, or needlessly condescending.
+  - avoid_meta_commentary: Refraining from unnecessary commentary about the assistant, its operation, or its training.
+  - avoid_incomplete_response: Preventing a response from being cut off before it is complete.
+  - avoid_redundant_text: Leaving out uninformative or repeated text that does not advance the response.
+  - avoid_excessive_hedging: Avoiding unnecessary qualifiers that weaken or obscure a response.
+  - speech_to_text: Transcribing spoken user input into text for processing.
+  - avoid_stereotyping: Avoiding exaggerated or stereotypical portrayals associated with a culture or group.
+  - adapt_conversation_flow: Adjusting the assistant's conversational response to changes in topic, tone, or objectives.
+  - resume_response: Continuing an interrupted response from where the conversation previously stopped.
+  - avoid_unnecessary_attention: Handling an incidental issue without unnecessarily highlighting it to the user.
+  - disclose_assistant_identity: Informing the user that the assistant is an artificial rather than human entity.
+
+ENTITY atoms (57):
+  - chain_of_command: The defined ordering of instructions that determines which directions take precedence.
+  - usage_policies: Policies defining how people should use AI products and services.
+  - safety_protocols: Processes for testing, monitoring, and mitigating AI safety issues.
+  - model_governance: The framework and processes used to guide and oversee model behavior.
+  - model_definitions: Foundational terms and explanations used throughout the model specification.
+  - document_commentary: Explanatory material in the specification that is not a direct model instruction.
+  - safety_critical_information: Information needed to make safe decisions or respond to safety-critical situations.
+  - api_developer: A developer who builds with the model through an API.
+  - organization_admin: An administrator responsible for an organization's ChatGPT subscriptions.
+  - sensible_defaults: Baseline behavioral settings intended to work well across many users and contexts.
+  - risk_categories: Broad classes used to organize potential risks associated with model behavior.
+  - instruction_authority_levels: Authority rankings assigned to instructions to determine which ones take precedence.
+  - end_user: A person who uses the model and provides user-level instructions.
+  - user_instruction: An instruction supplied by an end user to the model.
+  - behavior_guideline: A behavioral instruction that may be overridden implicitly.
+  - model_assistant: The model-facing participant that end users or developers interact with.
+  - model_conversation: A structured input consisting of ordered messages for model interaction.
+  - conversation_message: An individual item in a model conversation containing a role and content.
+  - message_role: The role identifying the source and authority of a message.
+  - message_content: The content carried by an individual conversation message.
+  - system_message: A message added by OpenAI that provides system-level input to the model.
+  - user_message: Input supplied by an end user or provided as data for the model.
+  - language_model: A model that generates assistant outputs from language patterns.
+  - tool_artifact: A program-generated artifact used to perform a task for the assistant.
+  - multimodal_data: Non-text data such as images or audio included in content.
+  - conversation_metadata: Additional information describing a conversation's intended purpose or use.
+  - under_18_user: A user who is under 18 years old.
+  - u18_badge: A label marking material tailored for users under 18.
+  - tool_response: The result returned by a tool after an assistant tool call.
+  - hidden_chain_of_thought: A private reasoning message generated by some models to guide their final response.
+  - model_token: An atomic unit used to measure the length of model inputs and outputs.
+  - developer_role: The role of creating or configuring extensions that shape a model-powered product.
+  - third_party_extension: An extension created by an outside developer for a first-party product.
+  - assistant_message: A message produced by the assistant in a model conversation.
+  - tool_message: A message associated with a tool in a model conversation.
+  - untrusted_content: Quoted or otherwise untrusted content supplied within a message.
+  - model_spec_version: The particular version of the Model Spec used to constrain model behavior.
+  - authorized_party: A person or organization authorized to monitor or intervene in assistant actions.
+  - prohibited_content: A category of content that the assistant must not generate or transform.
+  - restricted_content: A category of content subject to restrictions while remaining eligible for some assistance.
+  - informational_hazard: Information that could enable harmful activities or outcomes if misused.
+  - sensitive_personal_data: Personal information whose disclosure or handling could significantly affect an individual.
+  - sensitive_content: A category of potentially disturbing or socially sensitive content permitted only in specified circumstances.
+  - erotica_and_gore: Erotic or graphically violent material treated as sensitive content.
+  - cbrn_weapons: Chemical, biological, radiological, or nuclear weapons.
+  - political_content: Content concerning political topics, actors, parties, campaigns, or views.
+  - content_creator: A person or group that creates expressive works or other content.
+  - copyrighted_content: A creative work protected by intellectual property rights and not freely reproducible.
+  - paywalled_content: Content whose access is restricted by a payment requirement.
+  - extremist_propaganda: Propaganda produced to promote extremist ideology or dehumanize targeted groups.
+  - pseudo_scientific_practice: A purportedly scientific practice lacking reliable scientific validity and potentially causing harm.
+  - privileged_information: Private or restricted information whose disclosure or use requires authorization.
+  - intended_recipient: The person or party intended to receive an assistant response.
+  - developer: The person or organization responsible for developing the assistant.
+  - third_party: A person or organization other than the user and assistant involved in an interaction.
+  - minor_user: A user who is under 18, especially an adolescent user.
+  - trusted_adult: A responsible adult whom a young person can involve for support or safety.
+
+VALUE atoms (27):
+  - model_usefulness: The goal that models provide useful assistance.
+  - model_safety: The goal that models avoid causing harm.
+  - user_developer_alignment: Alignment of model behavior with the needs of users and developers.
+  - developer_user_empowerment: Enabling developers and users to accomplish more with models.
+  - license_to_operate: The organization's ability to continue operating legitimately and sustainably.
+  - responsible_ai_deployment: Building and deploying AI in a responsible manner.
+  - model_behavior_transparency: Openness about how model behavior is shaped and governed.
+  - human_safety: The protection of people from injury and other serious danger.
+  - human_rights: The fundamental rights and freedoms owed to people.
+  - human_control: Keeping people in control of how AI is used and how it behaves.
+  - human_autonomy: People's ability to make decisions and act without undue AI interference.
+  - civic_participation: People's ability to participate freely and meaningfully in civic processes.
+  - individual_privacy: Protection of individuals' personal information and private interactions.
+  - minimal_scope_access: Limiting an assistant's authority and access to only what is needed for the task.
+  - action_legibility: Making assistant actions understandable enough for authorized people to monitor and intervene.
+  - human_flourishing: The promotion of human well-being, growth, truth, kindness, and flourishing.
+  - intellectual_freedom: People's freedom to explore, hear, discuss, and consider ideas without unnecessary restriction.
+  - universal_access: Making AI access available broadly across humanity.
+  - creator_rights: Respect for creators' control over and interests in their intellectual property and works.
+  - fairness: Treating people and situations impartially by giving appropriate weight to relevant factors.
+  - earned_trust: Trust established through reliable, honest, and principled assistant behavior.
+  - creative_depth: Producing creative work with substantive understanding, insight, and originality.
+  - truthful_communication: Communicating what is true without sacrificing accuracy for creative effect.
+  - approachable_communication: Communication that is easy, comfortable, and natural for people to engage with.
+  - rational_optimism: Hopeful, supportive assistance grounded in practicality and reason rather than sugar-coating.
+  - epistemic_humility: Recognizing limitations and uncertainty while accurately representing one's capabilities.
+  - intellectual_curiosity: Valuing exploration, discovery, and deeper understanding of ideas and the world.
+
+===== CLAUSES TO ANNOTATE (1) =====
+All 1 clauses in this run are listed here (section: "The chain of command"). Emit one entry for each.
+
+Each entry is a header line — id | locator | kind — followed by that clause's
+candidate spans, one per line, labelled s1, s2, ... Those labels are what you
+put in "span_id"; do not write quote text anywhere. "[whole clause]" is the
+entire clause; the rest are smaller slices of it.
+
+Some entries carry a "[preceding context ...]" line. That is a neighbouring
+clause shown only so you can tell what an example or a fragment refers to. Do
+NOT annotate it — it is not on the list and another request covers it.
+
+m0079 | model_spec@2025-12-18 > The chain of command > Follow all applicable instructions > ¶1 | kind=conditional
+  s1 [whole clause]: The assistant must strive to follow all *applicable instructions* when producing a response. This includes all system, developer and user instructions except for those that conflict with a higher-authority instruction[^m12p] or a later instruction at the same authority[^d32l].
+  s2: The assistant must strive to follow all *applicable instructions* when producing a response.
+  s3: This includes all system, developer and user instructions except for those that conflict with a higher-authority instruction[^m12p] or a later instruction at the same authority[^d32l].
+  s4: developer and user instructions except for those that conflict with a higher-authority instruction[^m12p] or a later instruction at the same authority[^d32l].
+
+===== OUTPUT =====
+One JSON object with a single key "clauses": one entry per clause id above,
+each {"clause_id": ..., "atoms": [...]}. No other text.
