@@ -33,6 +33,9 @@ The join contract, pinned here:
 """
 from __future__ import annotations
 
+import collections
+import hashlib
+import json
 import os
 
 import pytest
@@ -271,16 +274,58 @@ def test_explain_reports_the_dechaining_it_priced():
 
 # ------------------------------------------- real-artifact chain metadata
 
+#: The S1-era chain census, frozen 2026-08-04 from the live pre-backfill
+#: merged artifact and sha-pinned: 109 [clause_id, dechained_name, chain]
+#: rows. The S2 patient backfill ADDS chains by design, so the pin is
+#: subset-not-equality: losing any S1 chain (or chain metadata wholesale)
+#: fails; gaining licensed chains does not.
+CENSUS = os.path.join(HERE, "dechain_chain_census_s1.json")
+CENSUS_SHA = ("5376cde396ed2e4190c979be7b422c7a4db81683"
+              "f056a71023179be8528ddfab")
+
+
 def test_real_artifact_chains_are_preserved_as_metadata():
     """Chains become pricing METADATA, not nothing: the index preserves every
     clause's stripped chains (for the 2.0 patient-pricing layer and for
-    dossiers). On the real post-chain-repair artifact the join must carry all
-    109 chained instances' chains and key none of them into atom_df."""
+    dossiers) and keys none of them into atom_df. Re-pinned for the S2
+    backfill (designer ruling at the IMPLEMENT halt): (i) the frozen S1
+    census of 109 chain instances must survive as a sub-multiset of the live
+    chains — the exact n == 109 equality is dropped, because S2 exists to
+    add chains; (ii) every live chain is well-formed: members from the
+    principal vocabulary, decorated-name round-trip through the grammar
+    (whose chains read agent-first), and length >= 2 for every chain NOT in
+    the frozen census (the backfill validator's rule; five S1-era length-1
+    chains are grandfathered inside the census itself)."""
     if not os.path.exists(REAL_ANN):
         pytest.skip("real artifact not present")
+    with open(CENSUS, "rb") as f:
+        raw = f.read()
+    assert hashlib.sha256(raw).hexdigest() == CENSUS_SHA, (
+        "the frozen S1 chain census fixture changed — it is a historical "
+        "record and must never be regenerated")
+    frozen = [(cid, name, tuple(ch))
+              for cid, name, ch in json.loads(raw)["chains"]]
+    assert len(frozen) == 109
     over = containment.ContainmentIndex.from_files(
         annotations_path=REAL_ANN, edges=())
-    n = sum(len(chains) for by_name in over.chains.values()
-            for chains in by_name.values())
-    assert n == 109
+    live = [(cid, name, tuple(ch))
+            for cid, by_name in over.chains.items()
+            for name, chains in by_name.items()
+            for ch in chains]
+    missing = collections.Counter(frozen) - collections.Counter(live)
+    assert not missing, (
+        f"S1-era chains lost from the live artifact: {sorted(missing)[:5]}")
+    frozen_set = set(frozen)
+    for cid, name, ch in live:
+        assert ch, f"empty chain on {cid}/{name}"
+        decorated = name + "".join(f"__{m}" if i == 0 else f"_{m}"
+                                   for i, m in enumerate(ch))
+        p = grammar.parse_name(decorated)
+        assert not p["error"] and p["principals"] == list(ch), (
+            f"live chain {ch} on {cid}/{name} is outside the principal "
+            "vocabulary / grammar")
+        if (cid, name, ch) not in frozen_set:
+            assert len(ch) >= 2, (
+                f"post-S1 chain {ch} on {cid}/{name} is length-1: a lone "
+                "member cannot state who acts on whom")
     assert not any("__" in name for name in over.atom_df)

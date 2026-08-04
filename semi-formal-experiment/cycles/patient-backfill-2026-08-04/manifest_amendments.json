@@ -1,0 +1,53 @@
+[
+ {
+  "new_sha": "b3f0ed9595a202d97f6c0c8931d9aee5a5e6204d99bd3feb85da64a0ed0418a7",
+  "old_sha": "f9f3a5cdce698ff31966545ac209448d7fffe218c06a8262bd5eb31ff5f9aa65",
+  "reason": "APPLY-PLANNING DISCOVERY, disclosed before any byte moved: the clause-scoped rechains rewrite licensed-pair usages on THREE additional annotation-family replay surfaces beyond the two declared — annotations.json (1 licensed pair, 3 rewrites), annotations_b8.json (9 pairs, 22 rewrites), annotations_ext_v1_patch.json (14 pairs, 38 rewrites) — because atom_refactor rewrites EVERY usage surface by design ('every draw is an artifact someone may replay, so every draw is rewritten'). The chain-repair precedent verified patch carried zero usages of ITS five names and omitted it; that verification does not carry over to this cycle's 139 names, and was re-run here by dry-run (apply_rechains.py, 139 migrations planned, per-file counts recorded). Clause-blind surfaces (behavior_atoms*, containment.json, behaviours_query.json) and golden_translations.json (zero licensed-pair overlap, checked) remain untouched, so the closure is intact; adding the three files to files_to_change keeps the declared-diff-only review two-sided. One variable unchanged: the same licensed chain additions, on the same clause-scoped instances, wherever those instances are recorded."
+ },
+ {
+  "closure_sha_changes": {
+   "test_atom_refactor.py": {
+    "new": "15e7648af940d1de73ba3b36188bb71d2a3213eb5a77007ffd7ac10d22639bb2",
+    "note": "not named in the ruling's file list, but closure-pinned and necessarily changed: the seam's six new gate tests live here (the module's own test file).",
+    "old": "070fb83207cc461023422147cec90842bdc4063d1c7be81c401fb8188a15aed0"
+   },
+   "test_dechain.py": {
+    "new": "92347d246b222edae7838e71b0beda460e514820239c3b84c5fffc53b5fc0051",
+    "old": "cf89637b42aca1847c1740a852f3ffb6cf98c1993cce90307a5f1b1283a3680d"
+   }
+  },
+  "gates": "declared set (test_dechain + test_atom_refactor + test_grammar + test_no_reference_leak + test_backfill_worksheet) 171 green; full suite green (count in operator report); FORBIDDEN scan intact (test_atom_refactor_source_is_panel_blind green over the new source).",
+  "non_closure_file_changes": {
+   "atom_refactor.py": {
+    "new": "00ff9029990d8d7fddb679570a8b436f728c096b8d4ef406521c9b1d7cd0793c",
+    "note": "named in the ruling as a 'closure sha' but not in state.json closure_shas; recorded here loudly anyway.",
+    "old": "cf2fe287cf9cf37e732eab859a91f155916650d4c8d8d9365ecee37f2029025a"
+   },
+   "cycles/patient-backfill-2026-08-04/backfill/apply_rechains.py": {
+    "new": "291c64d4c660bb3372db2029f0bd46dceecdd9dbb91690781f3032ece56c4ac1",
+    "note": "cycle artifact, not closure-pinned; old sha reconstructed by reversing the three edits (file is untracked in git).",
+    "old": "acf628aef3bcfa1b490f4c47e9055f6b4b1f6f82611fcd555ede6845f5978c2a"
+   },
+   "dechain_chain_census_s1.json": {
+    "new": "5376cde396ed2e4190c979be7b422c7a4db81683f056a71023179be8528ddfab",
+    "note": "NEW frozen fixture: the S1-era 109-chain census, sha-pinned inside test_dechain.py; a historical record, never to be regenerated.",
+    "old": null
+   }
+  },
+  "reason": "S2 RE-CLOSURE AMENDMENT (EXECUTED 2026-08-04 after clean-context adversarial review PASS and recorded designer sign-offs; the manifest_amendments.json precedent, applied to the closure — state.json closure_shas updated to the new values recorded below): the designer-ruled tooling fix for the two IMPLEMENT-halt contracts (APPLY_HALT.md A and B) lands OUTSIDE the annotation artifacts — no annotation-family byte moved, vocabulary_migrations.json unchanged (sha aa63ddf4053ec5cccae49337f84f7cf357b4f8e8f123dae491cfb8e3dd10121c), the frozen manifest/prediction untouched. (A) atom_refactor.py gains the surface-scoping seam: migration entries MAY carry 'surfaces' (artifact basenames); replay and every apply path skip an entry for any artifact its list does not name; ABSENT field = all surfaces, the exact legacy semantics — proven by replaying the shipped 5-entry log over all 21 shaped live surfaces byte-identically pre- and post-change (now a standing test). Module-docstring policy recorded: annotations.json / annotations_b8.json are frozen chain-free historical artifacts, never decorated; backfill-class rechains scope to the ext_v1 lineage. apply_rechains.py stamps that scope on every derived entry (dry-run re-verified: 139 migrations, 1324 rewrites over the three ext_v1-lineage surfaces only; the 3 + 22 legacy-surface rewrites are gone; NOT applied). (B) test_dechain.py::test_real_artifact_chains_are_preserved_as_metadata re-pinned: exact n == 109 dropped in favor of (i) the S1-era census of 109 chain instances, enumerated from the live pre-backfill merged artifact and frozen sha-pinned in dechain_chain_census_s1.json, required to be a sub-multiset of live chains, and (ii) well-formedness of every live chain (principal vocabulary + grammar round-trip; length >= 2 for every chain outside the frozen census — five S1-era length-1 chains are grandfathered inside it). Mutant-verified: dropping chain metadata, losing one of the 109, keying a chained name into atom_df, and a length-1 addition each fail the new pin. One variable still one variable: the cycle's annotation change is untouched; only the tooling seam and the stale gate pin moved, each RED-first."
+ },
+ {
+  "new_sha": "b5706377e25cf2db344999c734a65117b41ab80f3acb509fc3b372dcd162db1d",
+  "old_sha": "b3f0ed9595a202d97f6c0c8931d9aee5a5e6204d99bd3feb85da64a0ed0418a7",
+  "reason": "LEGACY SURFACES WITHDRAWN from files_to_change (annotations.json, annotations_b8.json): the designer ruling behind the re-closure — legacy annotation surfaces are frozen chain-free historical artifacts, never decorated — is now tool-enforced by the surface-scoped apply (every backfill migration entry carries surfaces=[the three ext_v1-lineage artifacts]), so these two files will be byte-untouched by this cycle; leaving them declared would falsify the declared-diff-only review in the other direction. This partially reverses the first amendment, which added them when the apply was still surface-unscoped. annotations_ext_v1_patch.json stays declared (in-scope lineage surface, 14 licensed pairs)."
+ },
+ {
+  "closure_sha_changes": {
+   "test_backfill_worksheet.py": {
+    "new": "861ebc042c657e04da700d9f3dd0865c7b4cd44872077a7401dcc17c288d4ed5",
+    "old": "007994151ed30d7c1ce2ff5330a22a4a958e66e554c71c09ed78f02ac6c14a47"
+   }
+  },
+  "reason": "SECOND RE-CLOSURE (operator-executed at the IMPLEMENT gate, FLAGGED FOR THE INDEPENDENT REVIEW SEAT to countersign or block): test_backfill_worksheet.py::test_real_artifact_counts_match_the_registered_scope pinned the 692/505/347/462 candidate census against the LIVE merged artifact — the same stale-pre-change-census-pin class as test_dechain n==109 (APPLY_HALT.md B), this time in the operator its own gate file, discovered when the surface-scoped apply correctly reduced live chain-free acts 692 -> 428 (425 no_chain_licensed + 3 unclear). Repair re-targets the pin at the FROZEN worksheet enumeration (cycles/patient-backfill-2026-08-04/backfill/worksheet.json, sha ce26cf89b37cb05c7d8adab12c3f3dae12388befe9d34a9f76aa0cf39209c6c7, unchanged since the seat assignment) and adds a live-coherence check (every remaining chain-free act candidate lies inside the frozen scope). No assertion weakened: all four scope counts still asserted, now against the artifact that cannot legally change. The test was RED for the named reason before the repair and the module under test is untouched."
+ }
+]

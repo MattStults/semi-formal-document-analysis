@@ -1,0 +1,79 @@
+{
+ "census": "deferred_to_checkpoint",
+ "census_delta": null,
+ "cycle": "patient-backfill-2026-08-04",
+ "date": "2026-08-04",
+ "decision": "keep",
+ "exploratory": false,
+ "fix_description": "THE PATIENT BACKFILL (spine cycle S2; BACKFILL_DESIGN.md as amended per PORTFOLIO_REVIEW.md F10i) \u2014 a targeted chain-completion annotation pass, run under the code-cycle ceremony per the chain-repair precedent (artifact-only change). A deterministic worksheet generator (backfill_worksheet.py, the chain_audit_worksheet.py sibling) enumerates every chain-free act-kind atom instance of annotations_ext_v1_merged.json label-free: 692 instances across 462 clauses, primary stratum = the polarity-marked subset (505 instances across 347 clauses), emitted primary-first. A behaviour- and panel-blind frontier seat (briefs/backfill_author.md \u2014 SILENT on pricing, discounts and every design document per F10i) verdicts each candidate under the closed schema {chain_licensed | no_chain_licensed | unclear} with a mandatory verbatim license_quote (validator-checked substring of the clause text) for every chain_licensed verdict; the validator additionally enforces coverage-exactly-once, principal-vocabulary and parse round-trip of every corrected chain, length >= 2 (no length-1 addition, the chain-audit agent-missing lesson), stem+polarity immutability (decoration only), and the FORBIDDEN-token scan on worksheet, verdict file and all new CLI/field names. Validated chain_licensed verdicts are then applied as clause-scoped atom_refactor rechain migrations (chain-free name -> decorated name, one migration per (name, corrected_chain, licensed-clause-set), --apply --date, logged and replayable in vocabulary_migrations.json \u2014 the chain-repair discipline); behavior_atoms_audit_v1.json and every query-side artifact are untouched (the license is per-clause; the query side is NOT decorated by this cycle). Zero flips by construction under the S1 decoration-blind join (pricing_version 1.2): chains are pricing metadata invisible to every channel.",
+ "flip_tallies": {},
+ "flip_verdicts_reused_from": null,
+ "gate": {
+  "closure_checked": [
+   "behavior_atoms_audit_v1.json",
+   "behaviours_query.json",
+   "constitution_clauses.json",
+   "modelspec_clauses.json",
+   "overlay_empty.json",
+   "test_atom_refactor.py",
+   "test_backfill_worksheet.py",
+   "test_dechain.py",
+   "test_grammar.py",
+   "test_no_reference_leak.py",
+   "thresholds_frozen.json"
+  ],
+  "files_changed": [
+   "annotations_ext_v1.json",
+   "annotations_ext_v1_merged.json",
+   "backfill_worksheet.py",
+   "briefs/backfill_author.md",
+   "vocabulary_migrations.json"
+  ],
+  "review": {
+   "by": "Claude Fable 5 \u2014 independent change-review seat, clean context (not the implementer/operator session)",
+   "notes": "FREEZE + AMENDMENT CHAIN: manifest.json hashes to b5706377.. = the chain head; chain verified end-to-end f9f3a5cd.. (state.json frozen_manifest_sha) -> b3f0ed95.. (A1 surface discovery) -> b5706377.. (A3 legacy withdrawal), each old_sha matching the predecessor; prediction.json hashes to the frozen dae8aa9b..; all 11 closure_shas re-hashed and match, including the A2/A4 re-closure values (test_atom_refactor 15e7648a.., test_dechain 92347d24.., test_backfill_worksheet 861ebc04..). A1 and A3 verified grounded by execution: the migration log's backfill segment touches EXACTLY the ext_v1 trio (patch included, per A1) and annotations.json/annotations_b8.json are byte-identical to git HEAD (per A3). AMENDMENT 4 \u2014 COUNTERSIGNED. (i) Stale-by-design confirmed: the apply legitimately converts 264 of the 692 chain-free candidates; my own re-enumeration of the live merged artifact via bw.candidates gives exactly 428 = 425 no_chain_licensed + 3 unclear, so the original live-artifact pin (692/505/347/462) is RED post-apply for precisely the named reason \u2014 the test_dechain n==109 failure class, recurring in the operator's own gate file. (ii) No weakening: all four scope counts are still asserted verbatim against the frozen worksheet (sha ce26cf89.., re-hashed, unchanged since the seat assignment \u2014 echoed in assignments/backfill.md, verdicts_primary/unmarked, verdict_file_v1 AND verdict_file), plus frozen-key count 692 and a live-coherence subset check; I additionally verified the STRONGER invariant live == frozen_keys - licensed_keys holds today. (iii) Module-untouched claim checked the strong way: the CURRENT backfill_worksheet.py rebuilds the frozen worksheet BYTE-IDENTICALLY from the pre-apply (HEAD) merged artifact, so the re-pin targets the enumeration the original pin equaled at OPEN. (iv) Repair binds: tampering the frozen worksheet's total (692->693) in a scratch tree turns test_real_artifact_counts_match_the_registered_scope RED. APPLY EVIDENCE, re-derived: log = 144 entries (5 legacy-unscoped chain-repair + 139 surface-scoped rechain, every backfill entry scoped to exactly the ext trio with clauses); per-artifact sha_before/sha_after chain GAP-FREE, first backfill sha_before per surface equals the OPEN/pre-apply sha, final sha_after equals live bytes; 1324 backfill rewrites; 264/264 licensed (clause_id, name) pairs decorated in merged with the chain-free name gone, 428/428 non-licensed pairs intact; validator CLEAN on verdict_file.json (my run, errors == []); distribution 264/425/3. REPLAY: all six surfaces (ext trio + annotations.json + annotations_b8.json + golden_translations.json) replayed from git-HEAD copies through the mixed 144-entry log BYTE-IDENTICAL to the working tree; legacy four (annotations, b8, golden, behavior_atoms_audit_v1) byte-untouched vs HEAD. SEAM MUTANT (scratch only): stripping 'surfaces' from backfill entry #5 (accept_compliment, m0478 \u2014 a b8-overlapping pair) makes the b8 replay DIVERGE while the unmutated log replays b8 unchanged \u2014 the seam is load-bearing, exactly as A2 claims. GATE-BINDING MUTANTS (scratch tree copy, restored+green after): M1 un-applied one migration in merged -> test_shipped_log_replays_every_live_surface_byte_identically RED (noted: the worksheet coherence subset check alone stays green under M1 \u2014 un-application is bound by the replay gate, not the scope pin; suggest live == frozen - licensed as a future hardening); M2 worksheet-count tamper -> scope test RED; M3 length-1 chain injected -> test_dechain well-formedness RED. MEASURE PRE-PROOF: snapshot_build/patient-backfill-2026-08-04.json vs snapshots/decoration-blind-join-2026-08-04.json \u2014 'behaviours' and 'vocabulary' sections BIT-IDENTICAL (predicted sets 95/73/146 both sides; atom_count/df 624 both sides, 0 df shifts => TOTAL FLIPS 0 by construction), only 'tag' and config.inputs.annotations differ (cbf50758.. -> 1ea7fe9d.. = the live post-apply merged sha), pricing_version 1.2 both sides. GATES RUN MYSELF: declared five-file set 171 passed (matches A2's recorded count); full suite 1998 passed with the only failures ModuleNotFoundError: clingo (test_core/test_emit_asp/test_locators collection + 2 test_delta items) \u2014 an environment gap on this machine, unrelated to the change; operator's environment reports full green. FENCE: FORBIDDEN scan (34 live tokens) over every changed/new file raw AND comment/docstring-stripped: no changed file names a panel loader or imports a fenced module (imports audited by AST: grammar/atom_refactor/stdlib only); residual literal hits are benign self-references ('verdicts' = the seat's own verdict records, 'cycles/' = the cycle artifact's own path \u2014 the guard fences QUERY modules, all of which scan clean and stayed green); scan_brief(backfill_author.md) == []. SEAT CHAIN: worksheet sha unbroken assignment -> verdicts_primary/unmarked -> verdict_file_v1 -> verdict_file; v1 preserved with the pre-sweep 260/384/48; sweep verified applied as RULINGS.md orders: exactly 59 records changed, m0259/m0538 no_chain_licensed, m0163 chain_licensed, m0228 quote replaced with the Toronto-mayor span, surviving unclears exactly {m0120, m0155, m0357}. DECLARED-DIFF-ONLY: every moved file is either in the amended files_to_change, an amendment-recorded closure/tooling sha (all re-hashed and matching, incl. apply_rechains 291c64d4.. and the new census fixture 5376cde3..), or accounted bookkeeping; findings (low, non-blocking): (1) conftest.py +1 line registering test_backfill_worksheet in _OPTIONAL is recorded in no manifest/amendment \u2014 necessary for the gate test to collect and necessarily predates OPEN (the closure-pinned test ran at OPEN), same shape the versioned-cut review accepted, but it should have been named; (2) A2's designer sign-off exists as attestation in the amendment text + REVIEW_HARDENING_NOTES.md PASS, not as a standalone signed artifact; (3) REVIEW_HARDENING F1/F2 hardenings (grandfather multiplicity, legacy-surface deny-list) remain open for the tooling batch \u2014 verified neither can fire on this apply. No panel score, judge rating, or gold value was consulted; all mutation confined to scratch copies, working tree untouched.",
+   "verdict": "proceed"
+  },
+  "tests_passed": [
+   "test_atom_refactor.py",
+   "test_backfill_worksheet.py",
+   "test_dechain.py",
+   "test_grammar.py",
+   "test_no_reference_leak.py"
+  ]
+ },
+ "justification": "KEEP. Document-side basis: 264 principal chains landed exactly where the clause text licenses them, under the annotation contract's own convention, each with a validator-checked verbatim license_quote; 425 candidates stayed chain-free because the text names no party (the never-infer rule holding at scale), 3 remain unclear by B4. The seat chain is intact end-to-end: label-free worksheet (692 candidates, sha ce26cf89) -> behaviour/panel/pricing-blind frontier seat (F10i brief, scan-enforced) -> golden review (55-row stratified sample, both verdict directions) -> four adopted interpretive rulings (RULINGS.md B1-B4) -> 59-record correction sweep (pre-sweep verdict_file_v1 preserved) -> validator CLEAN 264/425/3. All frozen predictions PASS 3/3 exactly: zero flips, no directions, zero regressions - the S2 bit-identity construction under the S1 decoration-blind join held (measured: predicted sets 95/73/146 and every non-config snapshot section bit-identical; vocabulary 624->624, 0 df shifts; pricing_version 1.2 unchanged). The labels landed INERT as designed: nothing consumes chains until S3 patient pricing, which now prices a real 373-chain population instead of 1/155. Independent change review: PROCEED, with amendment 4 countersigned and every apply/replay/measure claim re-derived from scratch (including the seam mutant proving 'surfaces' load-bearing on b8 and the byte-identical mixed-log replay of all six annotation surfaces; legacy b8/annotations frozen chain-free per the designer ruling). Process record, disclosed: one mid-cycle halt (APPLY_HALT.md) - the first apply decorated the legacy surfaces and tripped their frozen b8 compat pins plus a stale n==109 census pin; fully reverted byte-identically, resolved by the adversarially-reviewed surface-scoping seam + census re-pin (amendment 2, designer-approved) and re-applied surface-scoped (1,324 rewrites over the ext_v1 trio only). Amendments 1-4 chain clean f9f3a5cd -> b3f0ed95 -> b5706377 (+2 re-closure records). Non-blocking review findings recorded in backfill/REVIEW_HARDENING_NOTES.md (R1-R3). CLOSE NOTE per R1: conftest.py's one-line _OPTIONAL registration of test_backfill_worksheet predates OPEN and is declared here; this cycle's commit also carries the previously-uncommitted S1 decoration-blind-join CYCLE_LOG line. Census deferred to checkpoint (S8); the census figures that directed attention here appear in no worksheet, verdict, or this decision's grounds. Any later-found-wrong chain is repairable by ONE surface-scoped rechain migration citing that adjudication - the population is repairable chain-by-chain without reverting the cycle.",
+ "noop": false,
+ "overrides": [],
+ "prediction_check": {
+  "checks": [
+   {
+    "expected": {
+     "max": 0,
+     "min": 0
+    },
+    "kind": "flip_count",
+    "observed": 0,
+    "result": "PASS"
+   },
+   {
+    "expected": [],
+    "kind": "directions",
+    "observed": [],
+    "result": "PASS"
+   },
+   {
+    "expected": 0,
+    "kind": "max_regressions",
+    "observed": 0,
+    "result": "PASS"
+   }
+  ],
+  "pass_rate": [
+   3,
+   3
+  ]
+ },
+ "shape": "code",
+ "signed_by": "session coordinator (Claude), on Matt's standing authorization for the reviewed portfolio order"
+}

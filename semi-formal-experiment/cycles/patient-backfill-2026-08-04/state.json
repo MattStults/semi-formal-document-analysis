@@ -1,0 +1,106 @@
+{
+ "census": "deferred_to_checkpoint",
+ "closed": true,
+ "closure_shas": {
+  "behavior_atoms_audit_v1.json": "540562415cdb95e15eb99f06e2d06fb2f5f2347daac42e3b7a998dcc8d3a7531",
+  "behaviours_query.json": "48dbd8fb0720ce187423d37daf34e415ebbc58a28166619a0b2800b0a1f32d57",
+  "constitution_clauses.json": "a264e1a07d8a79eaa37710b8c6e25808a0d2807cb55e3ad3716ca422019f06e9",
+  "modelspec_clauses.json": "c6be91a0c0eb25c9f10bea9947547f64416cdd18e8f5e64b14c354a43b87b546",
+  "overlay_empty.json": "3f3adca9ee17a196ce155f3f900711622b2d99ced863667de9bc823df40cf99e",
+  "test_atom_refactor.py": "15e7648af940d1de73ba3b36188bb71d2a3213eb5a77007ffd7ac10d22639bb2",
+  "test_backfill_worksheet.py": "861ebc042c657e04da700d9f3dd0865c7b4cd44872077a7401dcc17c288d4ed5",
+  "test_dechain.py": "92347d246b222edae7838e71b0beda460e514820239c3b84c5fffc53b5fc0051",
+  "test_grammar.py": "54c6cab4370e3ac6c4fe44ece9f3c6323aff344f03513667f1a0bada896bc359",
+  "test_no_reference_leak.py": "87d7b6d6c6bbbe00da4158932420f781fc306301e654f2ad495aa97ee1103fe6",
+  "thresholds_frozen.json": "60d1273a4e0ac3a4de0eb2a44481b763531491c8c0884387529014dcb724251a"
+ },
+ "completed": [
+  "OPEN",
+  "PREDICT",
+  "IMPLEMENT",
+  "MEASURE",
+  "ADJUDICATE",
+  "DECIDE",
+  "CLOSE"
+ ],
+ "cycle": "patient-backfill-2026-08-04",
+ "decision": {
+  "decision": "keep",
+  "signed_by": "session coordinator (Claude), on Matt's standing authorization for the reviewed portfolio order"
+ },
+ "dossier_set_sha": "508c8aa1606246d5b009babdd64fc0add9032b8c244f3bd2a56a35b7a35c2abc",
+ "flip_tallies": {},
+ "flips": [],
+ "frozen_manifest_sha": "f9f3a5cdce698ff31966545ac209448d7fffe218c06a8262bd5eb31ff5f9aa65",
+ "frozen_prediction_sha": "dae8aa9be0d4a64ded51982105a98eccfb81bfa64f2c4c8f133a52eb11d748b7",
+ "gate": {
+  "closure_checked": [
+   "behavior_atoms_audit_v1.json",
+   "behaviours_query.json",
+   "constitution_clauses.json",
+   "modelspec_clauses.json",
+   "overlay_empty.json",
+   "test_atom_refactor.py",
+   "test_backfill_worksheet.py",
+   "test_dechain.py",
+   "test_grammar.py",
+   "test_no_reference_leak.py",
+   "thresholds_frozen.json"
+  ],
+  "files_changed": [
+   "annotations_ext_v1.json",
+   "annotations_ext_v1_merged.json",
+   "backfill_worksheet.py",
+   "briefs/backfill_author.md",
+   "vocabulary_migrations.json"
+  ],
+  "review": {
+   "by": "Claude Fable 5 — independent change-review seat, clean context (not the implementer/operator session)",
+   "notes": "FREEZE + AMENDMENT CHAIN: manifest.json hashes to b5706377.. = the chain head; chain verified end-to-end f9f3a5cd.. (state.json frozen_manifest_sha) -> b3f0ed95.. (A1 surface discovery) -> b5706377.. (A3 legacy withdrawal), each old_sha matching the predecessor; prediction.json hashes to the frozen dae8aa9b..; all 11 closure_shas re-hashed and match, including the A2/A4 re-closure values (test_atom_refactor 15e7648a.., test_dechain 92347d24.., test_backfill_worksheet 861ebc04..). A1 and A3 verified grounded by execution: the migration log's backfill segment touches EXACTLY the ext_v1 trio (patch included, per A1) and annotations.json/annotations_b8.json are byte-identical to git HEAD (per A3). AMENDMENT 4 — COUNTERSIGNED. (i) Stale-by-design confirmed: the apply legitimately converts 264 of the 692 chain-free candidates; my own re-enumeration of the live merged artifact via bw.candidates gives exactly 428 = 425 no_chain_licensed + 3 unclear, so the original live-artifact pin (692/505/347/462) is RED post-apply for precisely the named reason — the test_dechain n==109 failure class, recurring in the operator's own gate file. (ii) No weakening: all four scope counts are still asserted verbatim against the frozen worksheet (sha ce26cf89.., re-hashed, unchanged since the seat assignment — echoed in assignments/backfill.md, verdicts_primary/unmarked, verdict_file_v1 AND verdict_file), plus frozen-key count 692 and a live-coherence subset check; I additionally verified the STRONGER invariant live == frozen_keys - licensed_keys holds today. (iii) Module-untouched claim checked the strong way: the CURRENT backfill_worksheet.py rebuilds the frozen worksheet BYTE-IDENTICALLY from the pre-apply (HEAD) merged artifact, so the re-pin targets the enumeration the original pin equaled at OPEN. (iv) Repair binds: tampering the frozen worksheet's total (692->693) in a scratch tree turns test_real_artifact_counts_match_the_registered_scope RED. APPLY EVIDENCE, re-derived: log = 144 entries (5 legacy-unscoped chain-repair + 139 surface-scoped rechain, every backfill entry scoped to exactly the ext trio with clauses); per-artifact sha_before/sha_after chain GAP-FREE, first backfill sha_before per surface equals the OPEN/pre-apply sha, final sha_after equals live bytes; 1324 backfill rewrites; 264/264 licensed (clause_id, name) pairs decorated in merged with the chain-free name gone, 428/428 non-licensed pairs intact; validator CLEAN on verdict_file.json (my run, errors == []); distribution 264/425/3. REPLAY: all six surfaces (ext trio + annotations.json + annotations_b8.json + golden_translations.json) replayed from git-HEAD copies through the mixed 144-entry log BYTE-IDENTICAL to the working tree; legacy four (annotations, b8, golden, behavior_atoms_audit_v1) byte-untouched vs HEAD. SEAM MUTANT (scratch only): stripping 'surfaces' from backfill entry #5 (accept_compliment, m0478 — a b8-overlapping pair) makes the b8 replay DIVERGE while the unmutated log replays b8 unchanged — the seam is load-bearing, exactly as A2 claims. GATE-BINDING MUTANTS (scratch tree copy, restored+green after): M1 un-applied one migration in merged -> test_shipped_log_replays_every_live_surface_byte_identically RED (noted: the worksheet coherence subset check alone stays green under M1 — un-application is bound by the replay gate, not the scope pin; suggest live == frozen - licensed as a future hardening); M2 worksheet-count tamper -> scope test RED; M3 length-1 chain injected -> test_dechain well-formedness RED. MEASURE PRE-PROOF: snapshot_build/patient-backfill-2026-08-04.json vs snapshots/decoration-blind-join-2026-08-04.json — 'behaviours' and 'vocabulary' sections BIT-IDENTICAL (predicted sets 95/73/146 both sides; atom_count/df 624 both sides, 0 df shifts => TOTAL FLIPS 0 by construction), only 'tag' and config.inputs.annotations differ (cbf50758.. -> 1ea7fe9d.. = the live post-apply merged sha), pricing_version 1.2 both sides. GATES RUN MYSELF: declared five-file set 171 passed (matches A2's recorded count); full suite 1998 passed with the only failures ModuleNotFoundError: clingo (test_core/test_emit_asp/test_locators collection + 2 test_delta items) — an environment gap on this machine, unrelated to the change; operator's environment reports full green. FENCE: FORBIDDEN scan (34 live tokens) over every changed/new file raw AND comment/docstring-stripped: no changed file names a panel loader or imports a fenced module (imports audited by AST: grammar/atom_refactor/stdlib only); residual literal hits are benign self-references ('verdicts' = the seat's own verdict records, 'cycles/' = the cycle artifact's own path — the guard fences QUERY modules, all of which scan clean and stayed green); scan_brief(backfill_author.md) == []. SEAT CHAIN: worksheet sha unbroken assignment -> verdicts_primary/unmarked -> verdict_file_v1 -> verdict_file; v1 preserved with the pre-sweep 260/384/48; sweep verified applied as RULINGS.md orders: exactly 59 records changed, m0259/m0538 no_chain_licensed, m0163 chain_licensed, m0228 quote replaced with the Toronto-mayor span, surviving unclears exactly {m0120, m0155, m0357}. DECLARED-DIFF-ONLY: every moved file is either in the amended files_to_change, an amendment-recorded closure/tooling sha (all re-hashed and matching, incl. apply_rechains 291c64d4.. and the new census fixture 5376cde3..), or accounted bookkeeping; findings (low, non-blocking): (1) conftest.py +1 line registering test_backfill_worksheet in _OPTIONAL is recorded in no manifest/amendment — necessary for the gate test to collect and necessarily predates OPEN (the closure-pinned test ran at OPEN), same shape the versioned-cut review accepted, but it should have been named; (2) A2's designer sign-off exists as attestation in the amendment text + REVIEW_HARDENING_NOTES.md PASS, not as a standalone signed artifact; (3) REVIEW_HARDENING F1/F2 hardenings (grandfather multiplicity, legacy-surface deny-list) remain open for the tooling batch — verified neither can fire on this apply. No panel score, judge rating, or gold value was consulted; all mutation confined to scratch copies, working tree untouched.",
+   "verdict": "proceed"
+  },
+  "tests_passed": [
+   "test_atom_refactor.py",
+   "test_backfill_worksheet.py",
+   "test_dechain.py",
+   "test_grammar.py",
+   "test_no_reference_leak.py"
+  ]
+ },
+ "open_shas": {
+  "annotations_ext_v1.json": "6f10dc3db951e773eee7ddccef74335cda8515e93021c593cf87bf883746bd8b",
+  "annotations_ext_v1_merged.json": "cbf5075823fe6b3de55d4feed94c169b249a8ce6a1ebe705d8b01f93021d5d3d",
+  "backfill_worksheet.py": "b1356ff5ccb5750398320d8599be2e21c32efc252fb4837ac3276faf6dea402f",
+  "briefs/backfill_author.md": "c3f8056855e65cb28d8b65a779319d5b2de1becd0c90d69783e2f5528eb46cc5",
+  "vocabulary_migrations.json": "aa63ddf4053ec5cccae49337f84f7cf357b4f8e8f123dae491cfb8e3dd10121c"
+ },
+ "overrides": [],
+ "prediction_checks": {
+  "adjudicate": [
+   {
+    "expected": 0,
+    "kind": "max_regressions",
+    "observed": 0,
+    "result": "PASS"
+   }
+  ],
+  "measure": [
+   {
+    "expected": {
+     "max": 0,
+     "min": 0
+    },
+    "kind": "flip_count",
+    "observed": 0,
+    "result": "PASS"
+   },
+   {
+    "expected": [],
+    "kind": "directions",
+    "observed": [],
+    "result": "PASS"
+   }
+  ]
+ },
+ "skipped": {}
+}

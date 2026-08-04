@@ -65,6 +65,19 @@ WHAT THIS MODULE MUST NEVER DO
     identity on every unrelated name, pinned stem_of-style over the real
     b8 vocabulary.
 
+SURFACE SCOPE (the S2 seam, ruled after the patient-backfill APPLY halt)
+------------------------------------------------------------------------
+A migration log entry MAY carry an optional `surfaces` field: a list of
+artifact BASENAMES the entry applies to. Replay and every apply path honor
+it — an entry whose surfaces list does not name the artifact being
+rewritten is skipped for that artifact. An ABSENT field applies to all
+surfaces, the exact legacy semantics: every pre-seam log entry replays
+byte-identically. POLICY: the b8/legacy annotation surfaces
+(annotations.json, annotations_b8.json) are frozen chain-free historical
+artifacts and may never be decorated; backfill-class rechains scope to the
+ext_v1 lineage (annotations_ext_v1.json, annotations_ext_v1_patch.json,
+annotations_ext_v1_merged.json).
+
 Artifacts are round-tripped through the repo's canonical serialization
 (json.dumps indent=1; the trailing newline AND the ascii-escaping are each
 a per-file STYLE, detected from the file's own bytes and preserved —
@@ -518,6 +531,18 @@ def transform_document(data, shape, entry, rel=None):
     deterministic — the same function serves planning and replay. For
     `split`, `rel` selects the entry's per-artifact assignment map.
     """
+    surfaces = entry.get("surfaces")
+    if surfaces is not None:
+        if rel is None:
+            raise RefactorError(
+                "this migration entry is surface-scoped (it carries a "
+                "'surfaces' list), so applying it needs to know which "
+                "surface this document is a copy of — pass the surface "
+                "basename (replay: --as <relpath>).")
+        if os.path.basename(rel) not in surfaces:
+            # The entry declares its surfaces; this artifact is not one of
+            # them, so the entry is skipped for it (the S2 seam).
+            return data, 0, []
     op, old, new = entry["op"], entry["old"], entry["new"]
     scope = None
     if op in ("rename", "merge"):
@@ -657,8 +682,27 @@ def _check_reason(reason):
                             "outcome is not a reason a migration may carry.")
 
 
+def _check_surfaces(surfaces, root):
+    """Validate an explicit surface scope: non-empty, basenames only, every
+    name a scanned surface — a typo must never silently narrow or widen a
+    migration."""
+    if not (isinstance(surfaces, (list, tuple)) and surfaces
+            and all(isinstance(s, str) and s for s in surfaces)):
+        raise RefactorError(
+            "--surface takes artifact basenames (repeatable); an empty "
+            "surface list would scope the migration to nothing.")
+    known = set(surface_paths(root))
+    unknown = sorted(set(surfaces) - known)
+    if unknown:
+        raise RefactorError(
+            f"unknown surface(s) {unknown}: a surface scope names artifact "
+            "basenames from the fixed scan list, so a misspelling cannot "
+            "silently drop a surface from the migration.")
+    return sorted(set(surfaces))
+
+
 def plan_migration(root, op, old, new, date=None, reason=None,
-                   assignments=None, clauses=None):
+                   assignments=None, clauses=None, surfaces=None):
     """Compute a migration without writing anything.
 
     Returns (entry, changes): the log entry to append, and
@@ -717,6 +761,8 @@ def plan_migration(root, op, old, new, date=None, reason=None,
         entry["assignments"] = assignments
     if op == "rechain" and clauses:
         entry["clauses"] = sorted(clauses)
+    if surfaces is not None:
+        entry["surfaces"] = _check_surfaces(surfaces, root)
 
     changes = {}
     artifacts = {}
@@ -1011,6 +1057,11 @@ def main(argv=None):
                     metavar="ID", default=None,
                     help="rewrite only this clause's usages (repeatable); "
                          "required when the target name already exists")
+    pc.add_argument("--surface", action="append", dest="surfaces",
+                    metavar="BASENAME", default=None,
+                    help="record the entry as applying ONLY to this "
+                         "artifact basename (repeatable); absent = all "
+                         "surfaces, the legacy semantics")
     add_migration_args(pc)
 
     ps = sub.add_parser("split", help="emit the per-usage worklist for a "
@@ -1071,7 +1122,8 @@ def main(argv=None):
             entry, changes = plan_migration(args.root, "rechain", args.old,
                                             args.new, date=args.date,
                                             reason=args.reason,
-                                            clauses=args.clauses)
+                                            clauses=args.clauses,
+                                            surfaces=args.surfaces)
             if args.apply:
                 apply_changes(args.root, entry, changes)
             _print_plan(entry, changes, args.apply)

@@ -893,6 +893,132 @@ def test_rechain_replays(ext_root):
             "current bytes")
 
 
+# ------------------------------------- surface-scoped entries (the S2 seam)
+
+EXT_LINEAGE = ["annotations_ext_v1.json", "annotations_ext_v1_patch.json",
+               "annotations_ext_v1_merged.json"]
+
+
+def test_surface_scoped_entry_is_not_applied_to_an_unlisted_surface():
+    """THE S2 BLOCKER (APPLY_HALT.md contract A, designer-ruled seam): a
+    migration entry MAY carry `surfaces` — the artifact basenames it applies
+    to — and an entry whose list does not name the artifact being rewritten
+    must be SKIPPED for that artifact. The b8/legacy annotation surfaces are
+    frozen chain-free; a backfill entry scoped to the ext_v1 lineage must
+    leave them byte-for-byte alone while still rewriting a listed surface."""
+    legacy = _ext_ann()  # annotations-shaped: stands in for annotations_b8
+    entry = {"op": "rechain", "old": HELP_OLD, "new": HELP_NEW,
+             "date": "2026-08-04", "reason": "r", "clauses": ["m0276"],
+             "surfaces": list(EXT_LINEAGE)}
+    new_data, n, touched = ar.transform_document(
+        copy.deepcopy(legacy), "annotations", entry, "annotations_b8.json")
+    assert n == 0 and new_data == legacy, (
+        "a surface-scoped entry was applied to the b8 legacy surface it "
+        "does not list")
+    new_data, n, _ = ar.transform_document(
+        copy.deepcopy(legacy), "annotations", entry,
+        "annotations_ext_v1.json")
+    assert n > 0, "the scoped entry no longer applies to a LISTED surface"
+
+
+def test_surface_scoped_apply_records_the_scope_and_spares_b8(ext_root):
+    """The apply path end to end: a rechain scoped to the ext_v1 lineage
+    leaves an annotations_b8.json carrying the same licensed usage
+    byte-untouched, records `surfaces` in the log entry, and replays the b8
+    copy back to its own (unchanged) bytes."""
+    _wjson_style(os.path.join(ext_root, "annotations_b8.json"), _ext_ann())
+    b8_before = _read_bytes(ext_root, "annotations_b8.json")
+    rc = ar.main(["rechain", HELP_OLD, HELP_NEW, "--clause", "m0276",
+                  "--surface", "annotations_ext_v1.json",
+                  "--surface", "annotations_ext_v1_patch.json",
+                  "--surface", "annotations_ext_v1_merged.json",
+                  "--date", "2026-08-04", "--reason", "agent missing",
+                  "--root", ext_root, "--apply"])
+    assert rc == 0
+    assert _read_bytes(ext_root, "annotations_b8.json") == b8_before, (
+        "the frozen b8 surface moved under an ext_v1-scoped rechain")
+    for f in ("annotations_ext_v1.json", "annotations_ext_v1_merged.json"):
+        ann = _read_json(ext_root, f)
+        assert [a["name"] for a in ann["by_clause"]["m0276"]] == [HELP_NEW]
+    log = _read_json(ext_root, "vocabulary_migrations.json")
+    e = log["migrations"][0]
+    assert e["surfaces"] == sorted(EXT_LINEAGE)
+    assert "annotations_b8.json" not in e["artifacts"]
+    # replay: the scoped entry is skipped for the b8 copy, applied to ext
+    migrated = ar.replay_artifact(
+        os.path.join(ext_root, "annotations_b8.json"),
+        os.path.join(ext_root, "vocabulary_migrations.json"),
+        as_rel="annotations_b8.json")
+    assert migrated == b8_before
+
+
+def test_replay_of_a_scoped_entry_needs_the_surface_identity(ext_root):
+    """The split precedent: an old annotations copy under an arbitrary
+    filename does not say which surface it is a copy of, so replaying a
+    surface-scoped entry over it without --as is a NAMED refusal, never a
+    guess."""
+    _wjson_style(os.path.join(ext_root, "annotations_b8.json"), _ext_ann())
+    ar.main(["rechain", HELP_OLD, HELP_NEW, "--clause", "m0276",
+             "--surface", "annotations_ext_v1.json",
+             "--date", "2026-08-04", "--reason", "agent missing",
+             "--root", ext_root, "--apply"])
+    with pytest.raises(ar.RefactorError) as ei:
+        ar.replay_artifact(
+            os.path.join(ext_root, "annotations_b8.json"),
+            os.path.join(ext_root, "vocabulary_migrations.json"))
+    assert "surface" in str(ei.value) and "--as" in str(ei.value)
+
+
+def test_surface_scope_refuses_empty_and_unknown_lists(ext_root):
+    with pytest.raises(ar.RefactorError):
+        ar.plan_migration(ext_root, "rechain", HELP_OLD, HELP_NEW,
+                          date="2026-08-04", reason="r",
+                          clauses=["m0276"], surfaces=[])
+    with pytest.raises(ar.RefactorError) as ei:
+        ar.plan_migration(ext_root, "rechain", HELP_OLD, HELP_NEW,
+                          date="2026-08-04", reason="r", clauses=["m0276"],
+                          surfaces=["annotations_ext_v2.json"])
+    assert "unknown surface" in str(ei.value)
+
+
+def test_absent_surfaces_field_keeps_the_legacy_all_surfaces_semantics(
+        ext_root):
+    """An entry WITHOUT the field applies everywhere, exactly as before the
+    seam — the byte-level guarantee that every pre-seam log entry means what
+    it always meant."""
+    _wjson_style(os.path.join(ext_root, "annotations_b8.json"), _ext_ann())
+    ar.main(["rechain", HELP_OLD, HELP_NEW, "--clause", "m0276",
+             "--date", "2026-08-04", "--reason", "agent missing",
+             "--root", ext_root, "--apply"])
+    for f in ("annotations_b8.json", "annotations_ext_v1.json",
+              "annotations_ext_v1_merged.json"):
+        ann = _read_json(ext_root, f)
+        assert [a["name"] for a in ann["by_clause"]["m0276"]] == [HELP_NEW]
+    e = _read_json(ext_root, "vocabulary_migrations.json")["migrations"][0]
+    assert "surfaces" not in e
+
+
+def test_shipped_log_replays_every_live_surface_byte_identically():
+    """LEGACY REPLAY, PROVEN ON THE REAL REPO: the shipped migration log
+    (5 chain-repair rechains at the S2 halt), replayed over every live
+    surface, reproduces that surface's current bytes exactly. Every entry
+    predates the surface seam, so the absent-field path IS the legacy path —
+    this pins that the seam changed nothing about how the existing log
+    replays."""
+    log_path = os.path.join(HERE, ar.MIGRATIONS_NAME)
+    if not os.path.exists(log_path):
+        pytest.skip("shipped migration log not present")
+    for rel in ar.surface_paths(HERE):
+        path = os.path.join(HERE, rel)
+        data, raw, _ = ar._load(path)
+        if ar.detect_shape(data) is None:
+            continue
+        migrated = ar.replay_artifact(path, log_path, as_rel=rel)
+        assert migrated == raw, (
+            f"replaying the shipped log over live {rel} no longer "
+            "reproduces its current bytes")
+
+
 # ------------------------------------------------------------ panel fence
 
 def test_atom_refactor_source_is_panel_blind():
