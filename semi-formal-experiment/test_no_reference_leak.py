@@ -131,6 +131,18 @@ FORBIDDEN = (
                             # importing it (or reading audit_dossiers/) could
                             # launder gold wholesale; its fence is disclosure
                             # to the AUDIT seat only, never to query time.
+    "drift_dossiers",       # the drift-standing pass's producer: reads the
+                            # census verdict file to extract the 60
+                            # threshold-family case ids (label-derived
+                            # attention, DRIFT_STANDING_DESIGN.md §3). A
+                            # query module importing it reaches a panel-
+                            # derived id list without naming any token
+                            # above — fenced like audit_disagreements.
+    "drift_standing/",      # ...and the pass's on-disk state: the seat
+                            # verdict files under drift_standing/ are
+                            # our-authored labels (the design's ban list);
+                            # nothing mechanical may read them at query
+                            # time.
     "import cycle",         # the cycle DRIVER orchestrates the panel-reading
     "from cycle import",    # census tooling (checkpoint cycles drive
                             # audit_disagreements and hold census deltas +
