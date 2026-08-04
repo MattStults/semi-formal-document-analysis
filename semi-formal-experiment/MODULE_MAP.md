@@ -3,6 +3,8 @@
 Generated from the import graph (not from memory) on 2026-08-01, then hand-annotated.
 **Partially refreshed 2026-08-02** after a drift review found it predated panel v2 and
 described the query modules as they no longer are. Rows corrected below carry a ⚠️.
+**Refreshed 2026-08-04** for the iteration-loop arc: §1b (loop modules), §1c (loop
+data + directories), an updated §8 preferred-artifact table, and briefs/ in §10.
 Read `HANDOFF.md` first for state and results; this file answers "what is all this code
 and which of it matters to me?"
 
@@ -43,6 +45,47 @@ behaviour → which spec passages bear on it. This is what the project is for.
 
 **Run order:** `annotate.py --live` → `behavior_atoms.py --live --annotations …` →
 `benchmark.py --tool --annotations … --behaviour-atoms …` (add `--ablate` for channels).
+
+## 1b. The iteration loop (added 2026-08-04 — live)
+
+The loop's contract is `ITERATION_LOOP.md`; the orchestrator's is `CYCLE_DESIGN.md`
+(with its 2026-08-04 BINDING AMENDMENTS). Classification discipline as elsewhere in
+this file: **panel-blind** modules are statically scanned by `test_no_reference_leak.py`
+forever; **FORBIDDEN** modules read the panel by design and are themselves tokens in
+the anti-cheat list, so no query module can import them (or read their output dirs)
+without the fence firing.
+
+| module | role | panel status |
+|---|---|---|
+| `snapshot.py` | Unit 1: freeze a tool run (per-clause scores, channels, predicted sets, config shas incl. overlay + `--thresholds` artifact) → `snapshots/<tag>.json`; `diff` → flip lists. Deterministic, byte-identical on same inputs | **panel-blind, scanned** (query-adjacent) |
+| `dossier.py` | Unit 2: one flip → one self-contained case file (Haiku-operability: dossier in → verdict out, no repo access); `validate` checks verdict files with check_taxonomy discipline; build-time reconstruction self-check fails loudly on drifted inputs | **panel-blind, scanned**; holds NO panel fields |
+| `atom_refactor.py` | Unit 3: `usages` / `rename` / `merge` / `rechain` / `split` over every vocabulary surface, dry-run by default, every apply appended + replayable via `vocabulary_migrations.json` | panel-blind |
+| `containment.py` | Unit 4: licensed `child ⊑ parent` overlay (`containment.json`) over the atom matcher; PRICING_VERSION 1.1 (one credit per atom, kind factor + min-idf cap, never-outprice invariant, required budget, one-child rejection, unanimous-child kind inheritance). The shippable config after containment cycles 1–3 | **query module OUTRIGHT** — scanned |
+| `cycle.py` | the cycle DRIVER: state machine OPEN → PREDICT → IMPLEMENT → MEASURE → ADJUDICATE → DECIDE → CLOSE over typed artifacts in `cycles/<name>/`; census only in the CHECKPOINT shape, `census: deferred_to_checkpoint` otherwise. Ran the versioned-cut and chain-repair cycles end-to-end | **FORBIDDEN token** (`import cycle`, `cycles/`) — it orchestrates panel-reading census tooling; the fence is disclosure to the driver, never to query time |
+| `audit_disagreements.py` | the disagreement-census instrument: one dossier per tool-vs-panel disagreement + closed cause taxonomy + validator. Produced the 294-case census in `audit_dossiers/ext_v1_merged__audit_v1/` | **FORBIDDEN token — PANEL-READING BY DESIGN**, like `diagnose_disagreement`; seat brief `briefs/disagreement_autopsy.md` |
+| `select_audit.py` | the SELECT-step instrument: vocabulary sweep (sufficient direction) + query read-back (faithful direction). **v2 contract**: seats score 0–3, only score 3 actionable, budget overflow = measured miscalibration (binary v1 sweeps returned 32–47% in-scope — unusable). Its v2 findings produced `behavior_atoms_audit_v1.json` mechanically | diagnostic-only, **panel-free** |
+| `cut_stability.py` | the cut-stability diagnostic that the containment cycles' m0422 escalation demanded: perturbs recorded score distributions label-free and reports cut movement bands + the near-cut bystander census → `cut_stability_results.json`. Its verdict (class is structural) motivated the frozen cut | label-free, reads snapshots only |
+| `chain_audit_worksheet.py` | builds/validates the principal-chain audit (`chain_audit/worksheet.json` / `verdicts.json`): every chained atom with its agent-first reading + licensing clause text; closed verdict vocabulary. Fed the chain-repair cycle (97 correct / 11 agent_missing / 1 unlicensed) | document-side, deterministic |
+| `grammar.py` | the atom notation: `parse_name` / `stem_of` / `format_name` / `describe` — polarity prefixes, AGENT-FIRST principal chains, roles. Imported by containment (edge licensing) and the query side | panel-blind, scanned |
+| `threshold.py` (update) | unchanged as the rule library; the OPERATING POINT is now frozen per behaviour in `thresholds_frozen.json` (cycle `versioned-cut-2026-08-04`) — `snapshot.py --thresholds` consumes it; omitting the flag keeps the old rule-derived behavior reachable (F9 version dispatch) |
+
+## 1c. Iteration-loop data + directories (added 2026-08-04)
+
+| path | what it is |
+|---|---|
+| `snapshots/` | frozen tool runs: `baseline-2026-08-03`, `containment-v0/v1/v1.1`, `ext-v1`, `baseline-2026-08-04-auditv1`, `versioned-cut-2026-08-04`, `chain-repair-2026-08-04` |
+| `cycles/` | ⚠️ FORBIDDEN-fenced dir: per-cycle state (`manifest`, sha-frozen `prediction`, `review_verdict`, `decision`, `state.json`) for the versioned-cut and chain-repair cycles + `CYCLE_LOG.jsonl` (one line per closed cycle) |
+| `dossiers/` | containment cycles 1–3: flip dossiers, blinded adjudication verdicts, and the three KEEP `decision.json` records (cycle 3 = the shippable overlay config; the m0422 standing escalation lives there) |
+| `audit_dossiers/ext_v1_merged__audit_v1/` | ⚠️ panel-derived: the 294-case census + `verdicts_merged.json` (155 `fp_promiscuous_atom` / 59 `fp_threshold_drift` / 30 `fp_section_prior` / 26 `fn_family_absent_from_vocabulary` / 19 `fn_names_cannot_meet` / 2+2+1 join/unexplained/fn_threshold). Query modules may not read this dir |
+| `chain_audit/` | worksheet + verdicts of the principal-chain audit (plus the pre-repair worksheet backup) |
+| `select_audit/` | rosters, sweep verdicts and findings, v1 and **v2** (`findings_v2_*.json` — the source of `behavior_atoms_audit_v1.json`) |
+| `containment.json` | the licensed overlay edges + required budget (declared readable by scanned modules) |
+| `thresholds_frozen.json` | v1 frozen per-behaviour cuts (0.2162/0.2365/0.3131) with label-free provenance chain |
+| `cut_stability_results.json` | the diagnostic's artifact: cut-movement bands + bystander ids per behaviour × snapshot |
+| `vocabulary_migrations.json` | the replayable migration log every `atom_refactor --apply` appends to |
+| `golden_second_author.json` | 6 clauses translated cold by a second panel-blind author — source of the human ceiling 0.29 name / 0.79 span / 0.91 decoration that made `golden.py`'s scoring span-anchored |
+| `golden_expansion_a.json`, `golden_constitution.json` | hand-authored, panel-blind golden expansions (structure-rich Model-Spec picks; constitution side) |
+| `expert_salience.json` | the first HUMAN-expert relevance signal (salience-flattening finding + 2 core-passage anchors, reserved with the sealed TEST) |
 
 ## 2. Priority 2 — BEHAVIOUR-VS-DOCUMENT CONFLICT (built, blocked on Matt)
 
@@ -128,8 +171,12 @@ agreement, never one reading.
 | file | size | status |
 |---|---|---|
 | `modelspec_clauses.json` | 496 KB | **live** — 593 clauses, the analysis unit |
-| `annotations_b8.json` | 1.7 MB | **PREFERRED** — 1,629 atoms, **99% coverage, 183/183 example blocks**, 0 truncated, reuse 0.78 |
-| `behavior_atoms_b8.json` | small | **PREFERRED** — 70 atoms, 100% in-vocabulary, pairs with `annotations_b8` |
+| `annotations_ext_v1_merged.json` | large | **PREFERRED (2026-08-04)** — gpt-5.6-luna, 1,442 atoms / 589 clauses / 590-name vocabulary; the first structure-bearing annotation (force, agent-first principal chains post chain-repair, roles). The census configuration |
+| `behavior_atoms_audit_v1.json` | small | **PREFERRED (2026-08-04)** — 42/31/37 query atoms for the 3 DEV behaviours; mechanical re-selection from `select_audit/findings_v2_*.json`, no LLM in that step |
+| `annotations_ext_v1.json`, `annotations_ext_v1_patch.json`, `patch_clauses_ext_v1.json` | — | inputs the merged artifact was built from; keep for provenance |
+| `behavior_atoms_ext_v1.json` | small | superseded by `behavior_atoms_audit_v1.json` (it was the pre-audit selection the DISAGREEMENT_REPORT_ext_v1 survey ran under) |
+| `annotations_b8.json` | 1.7 MB | ⚠️ was PREFERRED until 2026-08-04 — 1,629 atoms, 99% coverage, 183/183 example blocks, reuse 0.78. Now the b8 comparison config in JOIN_INTEGRITY_DESIGN's re-measurement protocol |
+| `behavior_atoms_b8.json` | small | ⚠️ was PREFERRED — 70 atoms, 100% in-vocabulary, pairs with `annotations_b8` |
 | `annotations.json` | 1510 KB | superseded — 1,423 atoms, 91% coverage, 3 truncated batches lost 24 example blocks |
 | `behavior_atoms.json` | small | superseded — 65 atoms, pairs with `annotations.json` |
 | `constitution_clauses.json` | 311 KB | **live for swappability** — 616 clauses, same schema, loads today |
@@ -139,8 +186,15 @@ agreement, never one reading.
 
 ## 9. Reproducing the current numbers
 
+⚠️ 2026-08-04: the commands below still run but quote the b8 config; the preferred
+config is `annotations_ext_v1_merged.json` + `behavior_atoms_audit_v1.json` (+ frozen
+thresholds via `snapshot.py --thresholds thresholds_frozen.json`). The suite is now
+~1,960 tests. Loop equivalents: `python3 snapshot.py <tag>` / `python3 snapshot.py diff
+a b`, `python3 cycle.py status|next`, `python3 audit_disagreements.py dossiers`
+(panel-reading — audit seat only).
+
 ```
-.venv/bin/python -m pytest . -q                      # 808 passing
+.venv/bin/python -m pytest . -q                      # 808 passing (2026-08-01 count)
 .venv/bin/python measure_join.py                     # join ceiling (re-derive; do not quote a remembered number)
 .venv/bin/python measure_kinds.py                    # relevance signal by clause kind
 .venv/bin/python spend.py                            # budget + unlogged-spend audit
@@ -154,3 +208,21 @@ agreement, never one reading.
 
 `pytest.ini` excludes `external/` (vendored third-party repos whose tests need deps this
 project does not install; collecting them fails the run before ours execute).
+
+## 10. briefs/ — the judgment-seat contracts (added 2026-08-04)
+
+REPRODUCIBILITY.md's sandwich rule: every LLM/human judgment seat runs under a
+versioned brief in the repo, between a deterministic producer and a mechanical
+validator. Seats are Haiku-operable by default (a small/frontier divergence is
+diagnosed as a seat defect first); three ⚠️ seats are explicitly frontier/human.
+
+| brief | seat | producer → validator |
+|---|---|---|
+| `flip_adjudicator.md` | dossier → verdict, the loop's document-side adjudication | `dossier.py` → `dossier.py validate` |
+| `disagreement_autopsy.md` | ⚠️ the ONE panel-seeing seat (disclosure, not blindness): cause attribution over census dossiers | `audit_disagreements.py dossiers` → `validate` |
+| `select_audit.md` | vocabulary sweep + query read-back (v2: 0–3 scoring) | `select_audit.py` both sides |
+| `blind_coder.md` | two-coder open coding over the frozen loss corpus | `prep_hole_corpus.py` → `check_taxonomy.py`/`taxonomy_agreement.py` |
+| `golden_author.md` | panel-blind hand-author of golden translations | — → `golden.load` sha-freeze + `test_golden.py` |
+| `golden_review.md` | ⚠️ frontier/human: golden-set audit (catches the author) | — |
+| `change_reviewer.md` | ⚠️ frontier/careful: the cycle IMPLEMENT-gate review (freeze shas, declared-diff-only, tests bind incl. a mutant, fence scan) | `cycle.py` writes the assignment → `review_verdict.json` |
+| `decision_signer.md` | ⚠️ careful/authorized: the cycle DECIDE seat — document-side adjudications decide, census numbers inform | `cycle.py` drafts → signed `decision.json` |

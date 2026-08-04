@@ -1,4 +1,183 @@
-# HANDOFF — spec ontology spike (2026-08-01)
+# HANDOFF — spec ontology spike (2026-08-01; state section refreshed 2026-08-04)
+
+## ⭐ STATE AS OF 2026-08-04 — the iteration-loop arc. Read this section first.
+
+Everything below this section is history: correct when written, load-bearing as
+provenance, and in several named places **superseded** (each such place now carries
+a ⛔/⚠️ marker pointing back here — nothing was silently deleted). The plan of
+record is no longer `LADDER_PLAN.md`; it is **`ITERATION_LOOP.md`** (the loop and
+its policy), **`CYCLE_DESIGN.md`** (the cycle orchestrator, with its 2026-08-04
+BINDING AMENDMENTS), and the nine-document design portfolio listed below.
+`REPRODUCIBILITY.md` holds the process rules; `briefs/` holds the written contract
+for every LLM judgment seat.
+
+### The arc in one paragraph
+
+2026-08-03/04 turned the project from "iterate on a scorer" into an **iteration
+process with instruments**: a label-free inner loop (snapshot → diff → flip
+dossiers → blinded document-side adjudication → keep/revert) under the policy
+**"labels direct ATTENTION, never TRUTH"**, a DEV/TEST split (3 frontier Model-Spec
+cells = DEV; 6 never-consulted small-panel behaviours = the GENERALIZATION SET,
+burned once under a frozen pipeline; the constitution = sealed TEST), five closed
+change cycles all decided KEEP on blinded adjudications, a **294-case causal census**
+of every tool-vs-panel disagreement, golden translation instruments with a measured
+human ceiling, a chain audit + repair of the annotation's principal chains, and a
+design portfolio for the next fix ladder — designs only, nothing implemented.
+
+### The five closed cycles
+
+Containment cycles 1–3 (2026-08-03, pre-driver; decisions in
+`dossiers/baseline-2026-08-03__containment-*/decision.json`, log at the bottom of
+`ITERATION_LOOP.md`):
+
+1. **containment-v0** — the two manipulation-family overlay edges. 7 flips; two
+   blinded adjudicators (Opus 5, Haiku 4.5) **7/7 identical**: 6 substantive flips
+   correct, 1 regression (m0422, threshold drift). KEEP. Superseded by v1; v0's
+   overlay bytes no longer exist on disk (in-place-edit lesson).
+2. **containment-v1-pricing** — same edges + the pricing guards (one credit per
+   atom, kind factor with min-idf cap, required budget, one-child rejection).
+   3 flips, KEEP; 4 clauses lost to the latent-kind discount.
+3. **containment-v1.1-kindinherit** — unanimous-child kind inheritance
+   (PRICING_VERSION 1.1) recovers exactly those 4 clauses. Fresh blinded Haiku
+   replicates cycle 1's verdicts — three independent blinded runs agree completely.
+   **KEEP — the shippable overlay configuration.** Standing escalation: m0422
+   admitted by cut drift in **3/3 cycles → the Otsu cut rule formally under
+   suspicion**, cut-stability diagnostic gating any overlay widening.
+
+Cycle 4 and the chain-repair cycle (2026-08-04, the first two driven end-to-end by
+`cycle.py`; state under `cycles/<name>/`, one line each in `cycles/CYCLE_LOG.jsonl`.
+NOTE: "cycle 5" is the RESERVED name of the un-built pricing cycle in
+`CYCLE5_DESIGN.md` — the chain-repair cycle is not cycle 5):
+
+- **versioned-cut-2026-08-04** (cycle 4) — `thresholds_frozen.json` v1 pins the per-behaviour
+   cuts (caution 0.2162 / harm 0.2365 / helpfulness 0.3131 — the label-free Otsu
+   rule's own output on this exact config, frozen so future score-changing cycles
+   cannot move them; `cut_stability.py` had measured the near-cut bystander class as
+   structural, not a one-off). Deliberate no-op by design: 0 flips predicted and
+   observed, 2/2 mechanism checks PASS. KEEP.
+- **chain-repair-2026-08-04** — the 12 chain-audit corrections applied as five
+   `atom_refactor` rechain migrations (11 `agent_missing` repairs `__user` →
+   `__model_user` across 4 names; 1 unlicensed fold scoped to m0271). Designed
+   measurement-invariant and measured exactly so: 0 flips, 3/3 predictions PASS,
+   cuts byte-stable. KEEP. Every principal chain now parses agent-first.
+
+### The current headline configuration — ALL NUMBERS DEV
+
+`annotations_ext_v1_merged.json` (gpt-5.6-luna, 1,442 atoms over 589 clauses,
+590-name vocabulary — the first structure-bearing annotation: deontic force,
+principal chains, roles) + `behavior_atoms_audit_v1.json` (42/31/37 query atoms for
+the 3 DEV behaviours; provenance: **mechanical re-selection from the v2 select-audit
+findings, no LLM in that step**) + `thresholds_frozen.json` (overlay: null in this
+config identity). **Dev MCC +0.309** against the +0.555 frontier-judge bar (true
+589-passage universe; also in the repo README's results table). Per
+`ITERATION_LOOP.md` policy §5 these are **DEV numbers — inflated by selection, never
+quotable as results**; the generalization set and sealed TEST have not been touched.
+
+### The 294-case census (the fix ladder's evidence base)
+
+`audit_disagreements.py` (PANEL-READING, in FORBIDDEN — its fence is disclosure to
+the audit seat, never to query time) built one dossier per tool-vs-panel
+disagreement under the headline config: `audit_dossiers/ext_v1_merged__audit_v1/`,
+merged blind-seat verdicts in `verdicts_merged.json`. **294 cases**, closed cause
+taxonomy:
+
+| cause | n | share |
+|---|---:|---:|
+| `fp_promiscuous_atom` (patient-free / patient-wrong atoms firing) | 155 | 53% |
+| `fp_threshold_drift` (standing near-cut admissions) | 59 | 20% |
+| `fp_section_prior` | 30 | 10% |
+| `fn_family_absent_from_vocabulary` | 26 | 9% |
+| `fn_names_cannot_meet` | 19 | 6% |
+| `fp_join_artifact` | 2 | — |
+| `unexplained_escalate` | 2 | — |
+| `fn_threshold` | 1 | — |
+
+Side attribution: panel right 226 / tool right 41 / both defensible 27. Roughly:
+~63% matching precision, ~20% threshold calibration, ~15% vocabulary, ~1% plumbing.
+Every design in the portfolio names its census class and count.
+
+### Golden instruments and the measured human ceiling
+
+A second panel-blind human author translated 6 golden clauses cold
+(`golden_second_author.json`): inter-author agreement **0.29 at stem-name level,
+0.79 at span level, 0.91 (10/11) on decoration** over span-matched pairs. Names do
+not canonicalize between careful humans; location and structure do. So `golden.py`
+scores on **span-anchored levels** (`span` = overlapping cited quotes, the pure-
+location headline; `span_deco` = + identical polarity/chain/role), never letting the
+name gate the levels above it. Current extractor vs that ceiling (README): span F1
+0.86 (above the 0.79 human ceiling), structure 0.59 (vs 0.91). Companion golds:
+`golden_expansion_a.json` (structure-rich Model-Spec expansion, hand, panel-blind)
+and `golden_constitution.json` (constitution-side gold, same discipline).
+
+### Chain audit + repair
+
+`chain_audit_worksheet.py` enumerated every principal-chained atom in the merged
+annotation (109 instances) with the agent-first reading and licensing clause text;
+a seat adjudicated each against the document: **97 correct, 11 agent_missing,
+1 unlicensed** (`chain_audit/verdicts.json`). The repairs shipped as the chain-repair
+cycle above.
+Trigger: CYCLE5_REVIEW found the grammar's chains are AGENT-first and the defining
+case (m0276 `must_advise_immediate_help__user`) had the annotation itself misusing
+the convention.
+
+### select_audit v2
+
+The SELECT-step instrument (`select_audit.py` + `briefs/select_audit.md`; panel-free)
+was recalibrated: the 2026-08-03 binary sweeps judged 32–47% of the vocabulary
+in-scope — unusable as a worklist. **v2 scores each atom 0–3; only score 3 is
+actionable**, scores 1–2 are strata, and a budget overflow is a measured seat
+miscalibration, reported loudly, never silently truncated. The v2 findings
+(`select_audit/findings_v2_*.json`) are what `behavior_atoms_audit_v1.json` was
+mechanically re-selected from.
+
+### The first human-expert signal
+
+`expert_salience.json` (2026-08-04, relayed by Matt): a domain expert reviewed the
+published panel product — the panel's failure mode is **salience flattening** (it
+over-flags; fails to distinguish THE core passage), so the bar itself is imperfect;
+endorsed use case is ranked first-pass auditing, not judge replacement. Two expert
+core-passage anchors are reserved alongside the sealed constitution TEST.
+
+### The design portfolio — 9 documents, DESIGNS ONLY, under joint review
+
+None is implemented; no code ships with any of them. `CYCLE5_DESIGN.md` has been
+through its adversarial review; the other eight await the **joint portfolio review**
+(named in BACKFILL_DESIGN §"question the joint portfolio review should attack").
+
+| doc | one line | review status |
+|---|---|---|
+| `CYCLE5_DESIGN.md` | patient/kind-aware match pricing for the 53% `fp_promiscuous_atom` class; honest scope: on the current annotation it moves 1/155 of its nominal class | REVISION 2 — reviewed (`CYCLE5_REVIEW.md` returned DO NOT BUILD AS WRITTEN; all six MUST-fixes integrated) |
+| `BACKFILL_DESIGN.md` | the real fix for the 53% class: targeted patient-chain backfill annotation cycle | awaiting adversarial/joint review |
+| `VOCAB_GAPS_DESIGN.md` | closing `fn_family_absent_from_vocabulary` (26 named clauses whose concept was never atomized on either side) | awaiting review |
+| `DRIFT_STANDING_DESIGN.md` | what to do about the 59 standing near-cut admissions now the cuts are frozen | design only, awaiting review |
+| `SECTION_PRIOR_DESIGN.md` | evidence-gated section credit for the 30-case `fp_section_prior` class; self-declared one of the two highest-fitting-risk items | awaiting review |
+| `CONTAINMENT_WIDENING_DESIGN.md` | the admission PROCEDURE for overlay families (order frozen before first admission; halt for joint review at 8 families / 32 edges) | awaiting review |
+| `JOIN_INTEGRITY_DESIGN.md` | locator-restricted joining + degenerate-quote refusal for `inventory.match_passage` ("gates every metric"); includes the re-measurement + disclosure protocol for every historical passage-level number | awaiting review |
+| `SEGMENTATION_GAPS_DESIGN.md` | the join's zero-match side: unmapped passages and empty-meta clauses (the 2 `unexplained_escalate` cases); enumeration before repair | awaiting review |
+| `TOOLING_BATCH_DESIGN.md` | six queued instrument fixes (census `--overlay` + config identity in census headers, etc.); instrument-side only | awaiting review |
+
+### What this supersedes below (each site is also marked in place)
+
+- **Plan of record**: the "READ `LADDER_PLAN.md`" pointer → superseded by
+  ITERATION_LOOP.md / CYCLE_DESIGN.md / the portfolio.
+- **Preferred artifacts**: `annotations_b8.json` + `behavior_atoms_b8.json` →
+  superseded by the headline config above (b8 remains the comparison config in
+  JOIN_INTEGRITY's re-measurement protocol).
+- **"Nested/held-out threshold selection ... not implemented"** → superseded:
+  label-free Otsu shipped, then FROZEN (`thresholds_frozen.json`, cycle 4).
+- **Test count** "1113 tests (2026-08-02)" → ~1,960 now (README; 1,919 collect
+  under a bare interpreter without the venv).
+- **"Ship `section@any_atom`"** → RESOLVED 2026-08-04 by the joint portfolio
+  review (PORTFOLIO_REVIEW.md, addendum ruling 2): THE shipped ranking surface
+  is `relevance.rank` (the PatientIndex-lineage ranking snapshots record) —
+  `section.py`'s election is panel-fitted (declared bias 0.039) and consulting
+  it at the generalization evaluation would thread a fitted constant through
+  the frozen-label-free claim. section.py remains a diagnostic. The old
+  recommendation predates the surface-hygiene analysis and is superseded.
+
+`MODULE_MAP.md` has the matching 2026-08-04 refresh of the module tables.
+
+---
 
 > ## ⛔ READ FIRST — EVERY PREVIOUSLY PUBLISHED NUMBER IN THIS FILE IS WRONG
 >
@@ -66,8 +245,12 @@ The conflict-delta spike (priority 3) is built and validated end-to-end on cheap
 **The current work is priority 1, relevance** — see the architecture finding below, which
 is the thing most likely to be re-derived expensively by a future agent.
 
-**⇒ FOR CURRENT STATE AND THE ACTIVE PLAN, READ `LADDER_PLAN.md`.** It is the agreed plan
-of record (2026-08-02), including the amendments a drift review forced on it the same day.
+**⇒ ⛔ SUPERSEDED 2026-08-04: `LADDER_PLAN.md` is no longer the plan of record.** The
+plan of record is `ITERATION_LOOP.md` + `CYCLE_DESIGN.md` + the design portfolio — see
+"STATE AS OF 2026-08-04" at the top of this file. The paragraph below is kept as the
+2026-08-02 state it was: ~~FOR CURRENT STATE AND THE ACTIVE PLAN, READ `LADDER_PLAN.md`.
+It is the agreed plan of record (2026-08-02)~~, including the amendments a drift review
+forced on it the same day.
 Short version: read-back ran at full pre-registered scale and found the atoms are an
 adequate INDEX and a poor REPRESENTATION — 91 of 125 clauses are identifiable from their
 atoms among nine same-section neighbours while a reader of those atoms would not know what
@@ -735,6 +918,13 @@ claim is:
 **Ship `section@any_atom`, not `combined`** — it is the most transfer-stable predictor measured
 (frontier-3 +0.3085 vs held-out-6 +0.3066, a shift of 0.002, against `act_match`'s 0.088).
 
+> **⚠️ FLAGGED UNRECONCILED (2026-08-04).** The iteration loop as built does NOT run
+> this recommendation: `snapshot.py` (and therefore every cycle, dossier and the
+> 294-case census) scores through `relevance.RelevanceIndex`, optionally through
+> `containment.ContainmentIndex` — the bag-scorer path — not `section.py`. No recorded
+> decision reverses this paragraph; the two simply have not been reconciled. If you are
+> choosing a query module, surface this to Matt rather than resolving it silently.
+
 **n=9 is the binding constraint on every remaining question.** More passages buy nothing; more
 behaviours buy everything.
 
@@ -748,6 +938,10 @@ on the TRUE universe (see banner). The published-universe bar 0.764/0.780/0.500 
 superseded and must not be quoted.
 
 ## Module state — all green, 1113 tests (2026-08-02)
+
+> ⚠️ Count superseded 2026-08-04: the suite is now ~1,960 tests (README figure; 1,919
+> collect under a bare interpreter without the venv). The table below predates the
+> iteration-loop modules — see MODULE_MAP.md §1b for those.
 
 | module | owner | state |
 |---|---|---|
@@ -826,7 +1020,13 @@ Two general lessons, both earned the expensive way:
 - Do not rank channels on F1 here: the all-relevant point is inside the sweep, so F1 rewards
   rescaling the score distribution rather than discrimination.
 
-## Update — full-coverage artifact (use these, not the originals)
+## Update — full-coverage artifact ~~(use these, not the originals)~~
+
+> ⚠️ SUPERSEDED AGAIN 2026-08-04: b8 superseded the originals; the ext_v1 line has now
+> superseded b8. The preferred configuration is `annotations_ext_v1_merged.json` +
+> `behavior_atoms_audit_v1.json` + `thresholds_frozen.json` (see the top section). b8
+> stays on disk as the comparison config in JOIN_INTEGRITY_DESIGN's re-measurement
+> protocol.
 
 `annotations_b8.json` (batch-size 8): **1,629 atoms, 99% coverage, 183/183 example blocks,
 0 truncated, 0 call failures**, reuse 0.78. Paired with `behavior_atoms_b8.json` (70 atoms,
@@ -890,6 +1090,9 @@ very sentence was what the next funded experiment had been designed to execute.
 
 ## In flight
 
+> ⚠️ STALE (2026-08-04): this section describes the 2026-08-02 state. The in-flight work
+> is now the design-portfolio joint review — see "STATE AS OF 2026-08-04" at the top.
+
 Two clean-context reviews: (a) is the proposed **oracle-atom ceiling experiment**
 scientifically legitimate, and (b) **could the poor results be caused by bugs** rather than by
 the method. Do not draw conclusions about the approach until (b) reports.
@@ -909,8 +1112,12 @@ See `MODULE_MAP.md` for what every module is and which capability it serves.
    tool run. Priority 2 is blocked on THIS, not only on Matt's two decisions. Also unfixed:
    the sample ships 1:2 negatives while the README states and argues for 1:1, and every
    negative carries `adjacent: False` — a tell to any human reader.
-5. **Nested/held-out threshold selection.** Every lift currently quoted is a
-   hindsight-threshold number.
+5. ~~**Nested/held-out threshold selection.** Every lift currently quoted is a
+   hindsight-threshold number.~~ **SUPERSEDED 2026-08-04**: the operating point is
+   derived label-free (Otsu, `threshold.py`) and is now FROZEN per behaviour in
+   `thresholds_frozen.json` (cycle `versioned-cut-2026-08-04`), after m0422's
+   threshold-drift admissions in 3/3 containment cycles put the live-derived cut
+   under formal suspicion (`cut_stability.py`).
 6. Only then consider a frontier run, and only to *measure*, not to iterate.
 
 ### Deleted from this list, deliberately — do not reinstate

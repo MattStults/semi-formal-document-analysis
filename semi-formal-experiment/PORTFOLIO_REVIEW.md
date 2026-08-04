@@ -93,6 +93,31 @@ build-with-amendments (listed in full review): CYCLE5 rev2, BACKFILL,
 SECTION_PRIOR, SEGMENTATION_GAPS, VOCAB_GAPS, CONTAINMENT_WIDENING.
 redesign: none.
 
+## Addendum rulings (F10, from the reviewer's full text)
+
+1. **Anchors**: expert_salience.json holds THREE anthropic-side anchors (two
+   pinned, one qualitative/unpinned) + one openai-side. ITERATION_LOOP's "two
+   anchors" is a miscount — amend to three-sealed-with-constitution; the
+   openai anchor is consumed once at the generalization evaluation.
+2. **THE ranking surface = `relevance.rank`** (the PatientIndex-lineage
+   normalized ranking snapshots record). section.py's ELECTION_SCORE is
+   panel-fitted (declared bias 0.039) — consulting it at generalization
+   would thread a fitted constant through the frozen-label-free claim.
+   section.py stays diagnostic. Frozen in the G1 freeze artifact BEFORE the
+   consultation.
+3. **Stance triggers NOT vacuous**: proportionate-risk-mitigation and
+   how-to-approach-tradeoffs are stance-dominant on their face — but the
+   stance/topic coding of all 6 definitions must be PRE-REGISTERED in the G1
+   freeze artifact, or trigger 1's contrast is post-hoc and proves nothing.
+
+Refined order details from the full text: Checkpoint 1 sits after S5
+(carrying the join re-measurement disclosure and the drift error-mass line);
+S7 = optional backfill-addendum decorating S6a's new atoms; Checkpoint 2
+after the widening ladder reads the FN classes; G1 freeze artifact contents:
+config shas + surface designation + stance coding + additive-thresholds rule
++ the gated behaviours_query extension; then G2 label-free run, G3 the single
+consultation + openai anchor. F = final battery (constitution + anchors 1-3).
+
 ## Worktree core (cycle 5): CONSISTENT, conditionally
 
 Faithful to all six must-fixes. Conditions: stays unmerged until S1+S2 close
