@@ -1,0 +1,7 @@
+{
+ "expected_flip_count": {"min": 0, "max": 0},
+ "expected_directions": ["newly_predicted", "no_longer_predicted"],
+ "expected_clauses": [],
+ "max_regressions": 0,
+ "notes": "DELIBERATE NO-OP NOW: the artifact freezes the cuts AT the values the baseline snapshot itself computes under the current rule on this exact config, so the measured diff must be a no-op (0 flips, no direction, no regressions). The fix's effect is PROSPECTIVE — future score-changing cycles can no longer move the cuts (the m0422 threshold_drift class). The driver's no-op short-circuit path (MEASURE -> drafted no-effect DECIDE) is itself under test here as the driver's first customer. FIELD NOTE / FIRST-CUSTOMER FINDING: expected_directions is intended as NONE — zero flips means no direction can occur — but the driver refuses an empty list ('expected_directions must be a non-empty list'), so a zero-flip prediction cannot express its true direction target. The full direction set is listed here as a vacuous fill: with expected_flip_count max=0 the subset-based direction check can never bind, so this fill neither weakens nor strengthens the frozen prediction. The binding falsifiable claim is expected_flip_count {0,0}."
+}

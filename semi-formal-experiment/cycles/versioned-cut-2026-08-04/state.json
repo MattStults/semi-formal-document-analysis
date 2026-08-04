@@ -1,0 +1,88 @@
+{
+ "census": "deferred_to_checkpoint",
+ "closed": true,
+ "closure_shas": {
+  "annotations_ext_v1_merged.json": "bb6f7aecd7f37b069878300d616b62263dc0b8ca111ab435cc03477e2060bdd3",
+  "behavior_atoms_audit_v1.json": "1e49a65a945215386b0e104fcbaf1812fbd5395e7fe01f2034d9977c55b1bd0b",
+  "behaviours_query.json": "48dbd8fb0720ce187423d37daf34e415ebbc58a28166619a0b2800b0a1f32d57",
+  "constitution_clauses.json": "a264e1a07d8a79eaa37710b8c6e25808a0d2807cb55e3ad3716ca422019f06e9",
+  "modelspec_clauses.json": "c6be91a0c0eb25c9f10bea9947547f64416cdd18e8f5e64b14c354a43b87b546",
+  "test_cycle.py": "18a038c18e45d7d113cebff243bef4994898d00e16daaafde7a9c547d75b55b5",
+  "test_no_reference_leak.py": "7175f36b792664258c4ed7837ecebd20a55802a510f301eeb35b5cdbe5398378"
+ },
+ "completed": [
+  "OPEN",
+  "PREDICT",
+  "IMPLEMENT",
+  "ADJUDICATE",
+  "MEASURE",
+  "DECIDE",
+  "CLOSE"
+ ],
+ "cycle": "versioned-cut-2026-08-04",
+ "decision": {
+  "decision": "keep",
+  "signed_by": "session coordinator (Claude), on Matt's standing authorization for the cycle ladder"
+ },
+ "flips": [],
+ "frozen_manifest_sha": "fa3e4b250d4dc9d77fd24a94434f620324c6f5e63441216c27e20f1c38811f61",
+ "frozen_prediction_sha": "181e7bc7b6dec758c85c0ac5f301b39eb5c17dff74b18b35c2662c459e19f2d9",
+ "gate": {
+  "closure_checked": [
+   "annotations_ext_v1_merged.json",
+   "behavior_atoms_audit_v1.json",
+   "behaviours_query.json",
+   "constitution_clauses.json",
+   "modelspec_clauses.json",
+   "test_cycle.py",
+   "test_no_reference_leak.py"
+  ],
+  "files_changed": [
+   "snapshot.py",
+   "test_snapshot.py",
+   "thresholds_frozen.json"
+  ],
+  "review": {
+   "by": "adversarial review seat (agent)",
+   "notes": "Verified: (1) frozen manifest/prediction shas match state.json; only snapshot.py, test_snapshot.py, thresholds_frozen.json changed — threshold.py, test_no_reference_leak.py, cycle.py, test_cycle.py byte-untouched per git. (2) thresholds_frozen.json's three cuts EQUAL the baseline snapshot's recorded thresholds exactly (all behaviours covered — full freeze, not partial); its derived_from_snapshot sha256 matches snapshots/baseline-2026-08-04-auditv1.json, rule 'otsu' == threshold.PREFERRED, config matches the baseline's recorded inputs, and the cited escalation (dossiers/baseline-2026-08-03__containment-v1.1-kindinherit/decision.json, m0422) and cut_stability_results.json exist — provenance is label-free (values are the rule's own output; no panel value in the chain). (3) Deliberate no-op reproduced mechanically in an isolated scratch copy: frozen-flag snapshot vs baseline = 0 flips, identical cuts/predicted sets, diff names only 'thresholds' as the changed input. (4) F9 dispatch: no flag -> rule-derived cuts, config inputs.thresholds explicit null, no threshold_source key (old shape); flag -> artifact sha in config identity; no wall-clock, determinism test present and green. (5) Fallback for behaviours absent from the artifact is recorded per behaviour as threshold_source: 'rule_fallback', so a partial freeze is visible in the snapshot itself. (6) Tests bind — mutant checks run by this seat in a scratch copy: mutant A (artifact cut ignored) killed by test_frozen_threshold_artifact_honored + test_cli_thresholds_flag (the honored test also asserts artifact value != rule value, so it cannot green with the flag ignored); mutant B (frozen artifact silently made default) killed by test_old_behavior_reachable_without_thresholds_flag + test_thresholds_sha_recorded_and_null_when_absent. (7) Fence: FORBIDDEN scan of snapshot.py and thresholds_frozen.json, raw and comment/docstring-stripped — zero hits; nothing reads a panel file. All three gate test files pass (103 passed). No files modified by this review other than this verdict.",
+   "verdict": "proceed"
+  },
+  "tests_passed": [
+   "test_cycle.py",
+   "test_no_reference_leak.py",
+   "test_snapshot.py"
+  ]
+ },
+ "noop": true,
+ "open_shas": {
+  "snapshot.py": "158d3ddf73efc078921e3fa456e838637878a6782ae91dfc3a15f790567cc373",
+  "test_snapshot.py": "3534d4c915499c612390a35d345cf638ca34e4222439a53100d4cf7fa46910af",
+  "thresholds_frozen.json": "16721a86cab79aa07764b6b257597d4e7bd466431b47e8d686dec4122cf3a99d"
+ },
+ "overrides": [],
+ "prediction_checks": {
+  "measure": [
+   {
+    "expected": {
+     "max": 0,
+     "min": 0
+    },
+    "kind": "flip_count",
+    "observed": 0,
+    "result": "PASS"
+   },
+   {
+    "expected": [
+     "newly_predicted",
+     "no_longer_predicted"
+    ],
+    "kind": "directions",
+    "observed": [],
+    "result": "PASS"
+   }
+  ]
+ },
+ "skipped": {
+  "ADJUDICATE": "no-op diff: nothing flipped"
+ }
+}

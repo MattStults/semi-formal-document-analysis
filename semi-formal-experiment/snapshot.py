@@ -115,12 +115,25 @@ def load_behaviours(atoms_path: str = BEHAVIOUR_ATOMS,
     return out
 
 
+def load_frozen_thresholds(path: str) -> dict:
+    """`{slug: cut}` from a frozen-thresholds artifact — per-behaviour cut
+    VALUES frozen from a named baseline snapshot's own label-free derivation,
+    so future score-changing cycles cannot move them (the m0422
+    threshold_drift escalation). The artifact carries its own provenance;
+    this loader reads only the `thresholds` map."""
+    with open(path) as f:
+        raw = json.load(f)
+    return {slug: float(v)
+            for slug, v in (raw.get("thresholds") or {}).items()}
+
+
 def build_snapshot(tag: str, *,
                    annotations_path: str = ANNOTATIONS,
                    atoms_path: str = BEHAVIOUR_ATOMS,
                    clauses_path: str = CLAUSES,
                    queries_path: str = QUERIES,
-                   overlay_path: str | None = None) -> dict:
+                   overlay_path: str | None = None,
+                   thresholds_path: str | None = None) -> dict:
     """One frozen record of what the scorer says under this configuration.
 
     Per behaviour: normalized per-clause scores (the numbers the threshold
@@ -135,7 +148,21 @@ def build_snapshot(tag: str, *,
     under the key "overlay" — recorded as an explicit null when absent, so
     overlay-on and overlay-off snapshots diff cleanly instead of differing
     by a missing key. There is no default overlay; None means none.
+
+    `thresholds_path` is the OPT-IN frozen-thresholds artifact (the
+    versioned-cut fix answering the m0422 threshold_drift escalation): when
+    given, a behaviour named in the artifact takes its cut FROM the artifact
+    instead of re-deriving it, a behaviour absent from it falls back to the
+    rule, and each behaviour records which happened under
+    `threshold_source` ("frozen_artifact" | "rule_fallback"). The artifact's
+    sha joins the config identity under "thresholds" — an explicit null when
+    absent, exactly the overlay pattern — so the OLD behavior stays reachable
+    by omitting the flag and reconstructs from the recorded config
+    (amendment F9's version dispatch). The predicted set uses predict()'s
+    decision rule (strictly positive AND at-or-above the cut) either way.
     """
+    frozen_cuts = (load_frozen_thresholds(thresholds_path)
+                   if thresholds_path else None)
     if overlay_path:
         import containment
         idx = containment.ContainmentIndex.from_files(
@@ -158,14 +185,23 @@ def build_snapshot(tag: str, *,
         scores = {cid: _r(v / top if top > 0 else 0.0)
                   for cid, v in true_raw.items()}
 
-        # the label-free operating point, derived exactly as predict(None)
-        # derives it — the preferred rule over this query's positive scores —
-        # but computed over the RECORDED (rounded) numbers, so recorded
-        # threshold and recorded scores can never disagree at the last ulp
-        positives = [s for s in scores.values() if s > 0]
-        cut = _r(threshold_rules.apply_rule(threshold_rules.PREFERRED,
-                                            positives)
-                 if positives else 0.0)
+        # the operating point. Default path: the label-free preferred rule,
+        # derived exactly as predict(None) derives it — over this query's
+        # positive RECORDED (rounded) scores, so recorded threshold and
+        # recorded scores can never disagree at the last ulp. Frozen path:
+        # the artifact's cut for this behaviour, with the rule as recorded
+        # fallback for behaviours the artifact does not name.
+        source = None
+        if frozen_cuts is not None and slug in frozen_cuts:
+            cut = _r(frozen_cuts[slug])
+            source = "frozen_artifact"
+        else:
+            positives = [s for s in scores.values() if s > 0]
+            cut = _r(threshold_rules.apply_rule(threshold_rules.PREFERRED,
+                                                positives)
+                     if positives else 0.0)
+            if frozen_cuts is not None:
+                source = "rule_fallback"
         # honored on the recorded numbers, with predict()'s exact decision
         # rule (strictly positive AND at-or-above the cut)
         predicted = {cid for cid, s in scores.items() if s > 0 and s >= cut}
@@ -178,6 +214,8 @@ def build_snapshot(tag: str, *,
             "channels": {cid: {ch: _r(v) for ch, v in channels[cid].items()}
                          for cid in channels},
         }
+        if source is not None:
+            per_behaviour[slug]["threshold_source"] = source
 
     weights = {k: getattr(idx.weights, k)
                for k in sorted(vars(idx.weights))}
@@ -195,6 +233,9 @@ def build_snapshot(tag: str, *,
             "overlay": ({"path": os.path.basename(overlay_path),
                          "sha256": _sha256_file(overlay_path)}
                         if overlay_path else None),
+            "thresholds": ({"path": os.path.basename(thresholds_path),
+                            "sha256": _sha256_file(thresholds_path)}
+                           if thresholds_path else None),
         },
         "weights": weights,
         "threshold_rule": threshold_rules.PREFERRED,
@@ -444,6 +485,10 @@ def main(argv=None):
     ps.add_argument("--overlay", default=None,
                     help="opt-in containment overlay (licensed edges); "
                          "absent means none, recorded as null")
+    ps.add_argument("--thresholds", default=None,
+                    help="opt-in frozen-thresholds artifact (per-behaviour "
+                         "cut values, label-free provenance); absent means "
+                         "rule-derived cuts, recorded as null")
     add_inputs(ps)
 
     pd = sub.add_parser("diff", help="flip lists between two tags")
@@ -461,7 +506,8 @@ def main(argv=None):
                               atoms_path=args.atoms,
                               clauses_path=args.clauses,
                               queries_path=args.queries,
-                              overlay_path=args.overlay)
+                              overlay_path=args.overlay,
+                              thresholds_path=args.thresholds)
         path = write_snapshot(snap, out_dir=args.dir)
         for slug in sorted(snap["behaviours"]):
             beh = snap["behaviours"][slug]

@@ -1,0 +1,21 @@
+{
+ "cycle_name": "versioned-cut-2026-08-04",
+ "date": "2026-08-04",
+ "shape": "code",
+ "census_scope": "dev",
+ "fix_description": "Versioned cut: new artifact thresholds_frozen.json carrying per-behaviour cut values with provenance; snapshot.py gains --thresholds <artifact> / build_snapshot(thresholds_path=None) so that, when given, per-behaviour cuts come FROM the artifact (behaviours absent from it fall back to the derivation rule, recorded per behaviour), and the artifact's sha joins the config identity under 'thresholds' (explicit null when absent, like overlay). The OLD behavior remains reachable by omitting the flag — that is the F9 version dispatch; threshold.py itself is NOT modified.",
+ "document_side_rationale": "m0422 was admitted by threshold drift in ALL THREE closed cycles (3/3), each time adjudicated against the document as a regression charged to the Otsu cut, not the edges — the standing escalation in dossiers/baseline-2026-08-03__containment-v1.1-kindinherit/decision.json formally puts the cut rule under suspicion. cut_stability.py (cut_stability_results.json) then measured the class as STRUCTURAL, not a one-off: a standing population of near-cut bystanders (11-91 clauses per behaviour depending on epsilon) sits inside the cut's movement band, so ANY score movement can flip clauses whose own evidence never changed. The fix freezes the cuts this exact config computes, so future score-changing cycles cannot move them. Provenance is label-free: the frozen values are the Otsu cuts the label-free rule itself computed on this configuration (recorded in the fresh baseline snapshot); no panel value was consulted in choosing them.",
+ "files_to_change": ["snapshot.py", "test_snapshot.py", "thresholds_frozen.json"],
+ "gate_tests": ["test_snapshot.py", "test_cycle.py", "test_no_reference_leak.py"],
+ "review_required": true,
+ "baseline_snapshot_tag": "baseline-2026-08-04-auditv1",
+ "compatibility": {
+  "version_key": "thresholds",
+  "statement": "Config-identity dispatch (amendment F9, the overlay/PRICING_VERSION pattern): the frozen-thresholds artifact's sha is recorded in snapshot config under 'thresholds' when the flag is passed and as explicit null when absent. The OLD behavior (per-snapshot rule-derived cuts) remains fully reachable by omitting --thresholds; the baseline side reconstructs unchanged."
+ },
+ "config": {
+  "annotations": "annotations_ext_v1_merged.json",
+  "atoms": "behavior_atoms_audit_v1.json",
+  "overlay": null
+ }
+}

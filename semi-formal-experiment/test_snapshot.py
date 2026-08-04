@@ -513,6 +513,139 @@ def test_cli_overlay_flag(fixture_paths, tmp_path, capsys):
     assert snap["config"]["inputs"]["overlay"]["path"] == os.path.basename(ov)
 
 
+# ------------------------------------------------------- frozen thresholds
+
+def _thresholds_file(tmp_path, thresholds, name="thr.json"):
+    """A minimal frozen-thresholds artifact (the versioned-cut fix)."""
+    path = str(tmp_path / name)
+    with open(path, "w") as f:
+        json.dump({"artifact": "thresholds_frozen",
+                   "provenance": "test: label-free frozen cuts",
+                   "thresholds": thresholds}, f)
+    return path
+
+
+def test_frozen_threshold_artifact_honored(fixture_paths, tmp_path):
+    """When a frozen-thresholds artifact names this behaviour, the recorded
+    threshold must BE the artifact's value (not the rule's), the predicted set
+    must be the recorded scores cut at that value under predict()'s decision
+    rule (score > 0 and score >= cut), and the behaviour must record that its
+    cut came from the artifact — so a frozen cut can never silently revert to
+    the drifting rule (the m0422 threshold_drift escalation)."""
+    thr = _thresholds_file(tmp_path, {"beh-help": 0.9})
+    snap = snapshot.build_snapshot(
+        "frozen",
+        annotations_path=fixture_paths["annotations"],
+        atoms_path=fixture_paths["atoms"],
+        clauses_path=fixture_paths["clauses"],
+        queries_path=fixture_paths["queries"],
+        thresholds_path=thr)
+    beh = snap["behaviours"]["beh-help"]
+    assert beh["threshold"] == pytest.approx(0.9)
+    # the artifact value must actually DIFFER from the rule's, or this test
+    # could pass with the flag ignored
+    positives = [s for s in beh["scores"].values() if s > 0]
+    rule_t = threshold_rules.apply_rule(threshold_rules.PREFERRED, positives)
+    assert beh["threshold"] != pytest.approx(rule_t)
+    # honored: predicted is exactly the recorded scores cut at the frozen value
+    expected_set = {cid for cid, s in beh["scores"].items()
+                    if s > 0 and s >= beh["threshold"]}
+    assert set(beh["predicted"]) == expected_set
+    assert beh["threshold_source"] == "frozen_artifact"
+
+
+def test_thresholds_sha_recorded_and_null_when_absent(fixture_paths, tmp_path):
+    """Config identity must carry the frozen-thresholds artifact: the file's
+    sha under `thresholds` when passed, an explicit null when not (the overlay
+    pattern, amendment F9's version dispatch) — so frozen-cut and rule-cut
+    snapshots diff cleanly and the diff NAMES `thresholds` as the changed
+    input."""
+    import hashlib
+    plain = _build(fixture_paths, tag="plain")
+    assert plain["config"]["inputs"]["thresholds"] is None
+
+    thr = _thresholds_file(tmp_path, {"beh-help": 0.9})
+    snap = snapshot.build_snapshot(
+        "with-thresholds",
+        annotations_path=fixture_paths["annotations"],
+        atoms_path=fixture_paths["atoms"],
+        clauses_path=fixture_paths["clauses"],
+        queries_path=fixture_paths["queries"],
+        thresholds_path=thr)
+    rec = snap["config"]["inputs"]["thresholds"]
+    assert rec["path"] == os.path.basename(thr)
+    assert rec["sha256"] == hashlib.sha256(open(thr, "rb").read()).hexdigest()
+
+    d = snapshot.diff_snapshots(plain, snap)
+    assert "thresholds" in d["config"]["changed"]
+
+
+def test_thresholds_fallback_for_missing_behaviour(fixture_paths, tmp_path):
+    """A behaviour ABSENT from the artifact falls back to the derivation rule
+    — and the fallback is RECORDED per behaviour, so a partially-covering
+    artifact can never silently freeze less than it claims."""
+    thr = _thresholds_file(tmp_path, {"some-other-behaviour": 0.5})
+    snap = snapshot.build_snapshot(
+        "fallback",
+        annotations_path=fixture_paths["annotations"],
+        atoms_path=fixture_paths["atoms"],
+        clauses_path=fixture_paths["clauses"],
+        queries_path=fixture_paths["queries"],
+        thresholds_path=thr)
+    beh = snap["behaviours"]["beh-help"]
+    positives = [s for s in beh["scores"].values() if s > 0]
+    rule_t = threshold_rules.apply_rule(threshold_rules.PREFERRED, positives)
+    assert beh["threshold"] == pytest.approx(rule_t)
+    assert beh["threshold_source"] == "rule_fallback"
+    expected_set = {cid for cid, s in beh["scores"].items()
+                    if s > 0 and s >= beh["threshold"]}
+    assert set(beh["predicted"]) == expected_set
+
+
+def test_snapshot_deterministic_with_thresholds_flag(fixture_paths, tmp_path):
+    """Two builds under the same frozen-thresholds artifact serialize to the
+    same bytes — the determinism contract survives the new path."""
+    thr = _thresholds_file(tmp_path, {"beh-help": 0.9})
+    kw = dict(annotations_path=fixture_paths["annotations"],
+              atoms_path=fixture_paths["atoms"],
+              clauses_path=fixture_paths["clauses"],
+              queries_path=fixture_paths["queries"],
+              thresholds_path=thr)
+    a = snapshot.snapshot_bytes(snapshot.build_snapshot("same", **kw))
+    b = snapshot.snapshot_bytes(snapshot.build_snapshot("same", **kw))
+    assert a == b
+
+
+def test_old_behavior_reachable_without_thresholds_flag(fixture_paths):
+    """F9 version dispatch: OMITTING the flag must reproduce the old rule-
+    derived behavior exactly — recorded threshold == the preferred label-free
+    rule over this query's positive scores, and no per-behaviour source key
+    (the old snapshot shape is the old shape)."""
+    snap = _build(fixture_paths, tag="old-path")
+    beh = snap["behaviours"]["beh-help"]
+    positives = [s for s in beh["scores"].values() if s > 0]
+    rule_t = threshold_rules.apply_rule(threshold_rules.PREFERRED, positives)
+    assert beh["threshold"] == pytest.approx(rule_t)
+    assert "threshold_source" not in beh
+
+
+def test_cli_thresholds_flag(fixture_paths, tmp_path):
+    """`snapshot --thresholds PATH` builds through the artifact and records
+    it in the config identity."""
+    thr = _thresholds_file(tmp_path, {"beh-help": 0.9})
+    outdir = str(tmp_path / "snaps")
+    snapshot.main(["snapshot", "--tag", "thr",
+                   "--annotations", fixture_paths["annotations"],
+                   "--atoms", fixture_paths["atoms"],
+                   "--clauses", fixture_paths["clauses"],
+                   "--queries", fixture_paths["queries"],
+                   "--dir", outdir, "--thresholds", thr])
+    snap = snapshot.load_snapshot(os.path.join(outdir, "thr.json"))
+    rec = snap["config"]["inputs"]["thresholds"]
+    assert rec["path"] == os.path.basename(thr)
+    assert snap["behaviours"]["beh-help"]["threshold"] == pytest.approx(0.9)
+
+
 # -------------------------------------------------------------------- CLI
 
 def test_cli_snapshot_then_diff(fixture_paths, tmp_path, capsys):

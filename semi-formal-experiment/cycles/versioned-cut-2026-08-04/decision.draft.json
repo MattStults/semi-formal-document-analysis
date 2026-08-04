@@ -1,0 +1,68 @@
+{
+ "census": "deferred_to_checkpoint",
+ "census_delta": null,
+ "cycle": "versioned-cut-2026-08-04",
+ "date": "2026-08-04",
+ "decision": "",
+ "exploratory": false,
+ "fix_description": "Versioned cut: new artifact thresholds_frozen.json carrying per-behaviour cut values with provenance; snapshot.py gains --thresholds <artifact> / build_snapshot(thresholds_path=None) so that, when given, per-behaviour cuts come FROM the artifact (behaviours absent from it fall back to the derivation rule, recorded per behaviour), and the artifact's sha joins the config identity under 'thresholds' (explicit null when absent, like overlay). The OLD behavior remains reachable by omitting the flag — that is the F9 version dispatch; threshold.py itself is NOT modified.",
+ "flip_tallies": {},
+ "flip_verdicts_reused_from": null,
+ "gate": {
+  "closure_checked": [
+   "annotations_ext_v1_merged.json",
+   "behavior_atoms_audit_v1.json",
+   "behaviours_query.json",
+   "constitution_clauses.json",
+   "modelspec_clauses.json",
+   "test_cycle.py",
+   "test_no_reference_leak.py"
+  ],
+  "files_changed": [
+   "snapshot.py",
+   "test_snapshot.py",
+   "thresholds_frozen.json"
+  ],
+  "review": {
+   "by": "adversarial review seat (agent)",
+   "notes": "Verified: (1) frozen manifest/prediction shas match state.json; only snapshot.py, test_snapshot.py, thresholds_frozen.json changed — threshold.py, test_no_reference_leak.py, cycle.py, test_cycle.py byte-untouched per git. (2) thresholds_frozen.json's three cuts EQUAL the baseline snapshot's recorded thresholds exactly (all behaviours covered — full freeze, not partial); its derived_from_snapshot sha256 matches snapshots/baseline-2026-08-04-auditv1.json, rule 'otsu' == threshold.PREFERRED, config matches the baseline's recorded inputs, and the cited escalation (dossiers/baseline-2026-08-03__containment-v1.1-kindinherit/decision.json, m0422) and cut_stability_results.json exist — provenance is label-free (values are the rule's own output; no panel value in the chain). (3) Deliberate no-op reproduced mechanically in an isolated scratch copy: frozen-flag snapshot vs baseline = 0 flips, identical cuts/predicted sets, diff names only 'thresholds' as the changed input. (4) F9 dispatch: no flag -> rule-derived cuts, config inputs.thresholds explicit null, no threshold_source key (old shape); flag -> artifact sha in config identity; no wall-clock, determinism test present and green. (5) Fallback for behaviours absent from the artifact is recorded per behaviour as threshold_source: 'rule_fallback', so a partial freeze is visible in the snapshot itself. (6) Tests bind — mutant checks run by this seat in a scratch copy: mutant A (artifact cut ignored) killed by test_frozen_threshold_artifact_honored + test_cli_thresholds_flag (the honored test also asserts artifact value != rule value, so it cannot green with the flag ignored); mutant B (frozen artifact silently made default) killed by test_old_behavior_reachable_without_thresholds_flag + test_thresholds_sha_recorded_and_null_when_absent. (7) Fence: FORBIDDEN scan of snapshot.py and thresholds_frozen.json, raw and comment/docstring-stripped — zero hits; nothing reads a panel file. All three gate test files pass (103 passed). No files modified by this review other than this verdict.",
+   "verdict": "proceed"
+  },
+  "tests_passed": [
+   "test_cycle.py",
+   "test_no_reference_leak.py",
+   "test_snapshot.py"
+  ]
+ },
+ "justification": "",
+ "noop": true,
+ "overrides": [],
+ "prediction_check": {
+  "checks": [
+   {
+    "expected": {
+     "max": 0,
+     "min": 0
+    },
+    "kind": "flip_count",
+    "observed": 0,
+    "result": "PASS"
+   },
+   {
+    "expected": [
+     "newly_predicted",
+     "no_longer_predicted"
+    ],
+    "kind": "directions",
+    "observed": [],
+    "result": "PASS"
+   }
+  ],
+  "pass_rate": [
+   2,
+   2
+  ]
+ },
+ "shape": "code",
+ "signed_by": ""
+}
