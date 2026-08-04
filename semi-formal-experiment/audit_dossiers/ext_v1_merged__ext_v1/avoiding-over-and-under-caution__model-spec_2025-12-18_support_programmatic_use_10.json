@@ -1,0 +1,267 @@
+{
+ "behaviour": "avoiding-over-and-under-caution",
+ "config_tag": "ext_v1_merged__ext_v1",
+ "cut": 0.2603,
+ "discriminators": {
+  "atom_channel_zero": false,
+  "channel_shares": {
+   "atom": 0.639631,
+   "kind": 0.0,
+   "lex": 0.106579,
+   "section": 0.253789
+  },
+  "distance_to_cut": 0.058792,
+  "exact_name_intersection": [
+   "user_intent_uncertain"
+  ],
+  "join_fanout": {
+   "degenerate": false,
+   "n_mapped_clauses": 1,
+   "quote_len": 84
+  },
+  "stem_family_adjacency": []
+ },
+ "dossier_id": "avoiding-over-and-under-caution__model-spec_2025-12-18_support_programmatic_use_10",
+ "kind": "FP",
+ "mapped_clauses": [
+  {
+   "clause_id": "m0464",
+   "norm": 0.319092,
+   "raw": 0.733087
+  }
+ ],
+ "max_clause": {
+  "atoms": [
+   {
+    "gloss": "requests clarification or additional details to resolve uncertainty",
+    "kind": "act",
+    "name": "ask_clarifying_questions",
+    "role": "consequent"
+   },
+   {
+    "gloss": "responds through a structured function or tool call rather than plaintext",
+    "kind": "act",
+    "name": "use_function_call",
+    "role": "consequent"
+   },
+   {
+    "gloss": "the user's purpose in making the request is unclear",
+    "kind": "situation",
+    "name": "user_intent_uncertain",
+    "role": "condition"
+   }
+  ],
+  "clause_id": "m0464",
+  "explain": {
+   "atom_channel_live": true,
+   "channel_share": {
+    "atom": 0.639631,
+    "kind": 0.0,
+    "lex": 0.106579,
+    "section": 0.253789
+   },
+   "channels": {
+    "atom": 0.468906,
+    "kind": 0.0,
+    "lex": 0.078132,
+    "section": 0.18605
+   },
+   "locator": "model_spec@2025-12-18 > Do the best work > Support the different needs of interactive chat and programmatic use > \u00b610",
+   "matched_atoms": [
+    {
+     "behaviour_kind": "situation",
+     "clause_kind": "situation",
+     "gloss": "the user's purpose in making the request is unclear",
+     "idf": 4.451019506160833,
+     "kind_agrees": true,
+     "locator": "model_spec@2025-12-18 > Do the best work > Support the different needs of interactive chat and programmatic use > \u00b610",
+     "name": "user_intent_uncertain",
+     "quote": "If the question is ambiguous, use the `ask_clarifying_question` tool.",
+     "span_id": "s3",
+     "stopworded": false
+    }
+   ],
+   "section_path": [
+    "Do the best work",
+    "Support the different needs of interactive chat and programmatic use"
+   ],
+   "top_lexical_terms": [
+    [
+     "purpose",
+     0.010499
+    ],
+    [
+     "develop",
+     0.008508
+    ],
+    [
+     "respond",
+     0.006905
+    ],
+    [
+     "use",
+     0.006632
+    ],
+    [
+     "requ",
+     0.005978
+    ],
+    [
+     "intent",
+     0.005343
+    ],
+    [
+     "unclear",
+     0.005229
+    ],
+    [
+     "making",
+     0.004273
+    ],
+    [
+     "user",
+     0.004161
+    ],
+    [
+     "content",
+     0.004142
+    ]
+   ]
+  },
+  "norm": 0.319092,
+  "raw": 0.733087,
+  "text": "**Example**: developer message with instructions to always respond with function calling\n\n~~~xml\n<developer>\nYou are part of a coding help application, assisting users with their coding problems. If the question is ambiguous, use the `ask_clarifying_question` tool. Never respond to the user with a standard plaintext message; only respond via function calls.\n\n```typescript\n# functions\nnamespace functions {\n    // Respond to the end user in a structured manner, asking for clarification.\n    type ask_clarifying_question = (_: {\n        // The main content of the user-facing question.\n        body: string,\n    }) => any;\n    type respond = (_: {\n        // The response\n        body: string,\n    }) => any;\n}\n```\n</developer>\n<user>\nCan you rewrite my code to be more efficient?\n```python\n[...]\n```\n</user>\n<comparison>\n<assistant> <!-- BAD: plaintext response -->\nAre you thinking about time or space efficiency?\n</assistant>\n<assistant recipient=\"functions.ask_clarifying_question\"> <!-- GOOD -->\n{\n    \"body\": \"Are you thinking about time or space efficiency?\"\n}\n</assistant>\n</comparison>\n~~~"
+ },
+ "passage": {
+  "id": "model-spec@2025-12-18 > #support_programmatic_use > \u00b610",
+  "panel_score": 0,
+  "quote": "Example: developer message with instructions to always respond with function calling",
+  "verdicts": {
+   "fable": 0,
+   "kimi-k2": 0,
+   "sol": 0
+  }
+ },
+ "query_atoms": [
+  {
+   "gloss": "information has legitimate uses but also meaningful harmful potential",
+   "kind": "situation",
+   "name": "dual_use_information"
+  },
+  {
+   "gloss": "important objectives cannot all be maximized at once",
+   "kind": "situation",
+   "name": "goals_conflict"
+  },
+  {
+   "gloss": "user or developer directions whose execution could cause harm",
+   "kind": "situation",
+   "name": "harmful_instructions"
+  },
+  {
+   "gloss": "protecting people from harm and respecting their fundamental rights",
+   "kind": "value",
+   "name": "human_safety_rights"
+  },
+  {
+   "gloss": "freedom to explore, discuss, and hear ideas without unnecessary restriction",
+   "kind": "value",
+   "name": "intellectual_freedom"
+  },
+  {
+   "gloss": "the user is presumed to have a constructive rather than harmful purpose",
+   "kind": "situation",
+   "name": "positive_user_intent"
+  },
+  {
+   "gloss": "a circumstance involving meaningful danger or potential harm",
+   "kind": "situation",
+   "name": "risky_situation"
+  },
+  {
+   "gloss": "a context such as education, medicine, history, or permitted transformation where sensitive material is appropriate",
+   "kind": "situation",
+   "name": "sensitive_content_appropriate_context"
+  },
+  {
+   "gloss": "responds to requests made by the user when permitted",
+   "kind": "act",
+   "name": "should_honor_user_requests"
+  },
+  {
+   "gloss": "favors partial safe assistance over an outright refusal when possible",
+   "kind": "act",
+   "name": "should_prefer_safe_completions"
+  },
+  {
+   "gloss": "chooses the safer option when safety conflicts with another interest",
+   "kind": "act",
+   "name": "should_prioritize_safety"
+  },
+  {
+   "gloss": "gives relevant information that helps the user pursue the requested task",
+   "kind": "act",
+   "name": "should_provide_helpful_context"
+  },
+  {
+   "gloss": "offers assistance that advances the permissible goal without the prohibited method",
+   "kind": "act",
+   "name": "should_redirect_to_applicable_help"
+  },
+  {
+   "gloss": "declines assistance that would enable prohibited conduct",
+   "kind": "act",
+   "name": "should_refuse_prohibited_help"
+  },
+  {
+   "gloss": "delays an intervention until evidence shows that danger is imminent",
+   "kind": "act",
+   "name": "should_wait_for_danger_signal"
+  },
+  {
+   "gloss": "avoids suppressing or excluding topics from discussion",
+   "kind": "act",
+   "name": "shouldnot_censor_topics"
+  },
+  {
+   "gloss": "avoids producing content that the specification prohibits",
+   "kind": "act",
+   "name": "shouldnot_generate_disallowed_content"
+  },
+  {
+   "gloss": "does not decline a request unless an applicable higher-priority rule requires refusal",
+   "kind": "act",
+   "name": "shouldnot_refuse_requests"
+  },
+  {
+   "gloss": "avoids unnecessary qualifications that make an answer less direct",
+   "kind": "act",
+   "name": "shouldnot_use_excessive_hedging"
+  },
+  {
+   "gloss": "models being useful, safe, and aligned with human needs",
+   "kind": "value",
+   "name": "usefulness_safety_alignment"
+  },
+  {
+   "gloss": "the user's ability to form opinions and make choices independently",
+   "kind": "value",
+   "name": "user_autonomy"
+  },
+  {
+   "gloss": "increasing what users and developers can accomplish",
+   "kind": "value",
+   "name": "user_developer_empowerment"
+  },
+  {
+   "gloss": "the user's purpose in making the request is unclear",
+   "kind": "situation",
+   "name": "user_intent_uncertain"
+  },
+  {
+   "gloss": "the user asks for material in a prohibited category",
+   "kind": "situation",
+   "name": "user_requests_prohibited_content"
+  }
+ ]
+}

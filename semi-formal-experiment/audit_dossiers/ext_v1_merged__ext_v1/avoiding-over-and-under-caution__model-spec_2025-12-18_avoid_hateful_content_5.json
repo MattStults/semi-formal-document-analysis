@@ -1,0 +1,303 @@
+{
+ "behaviour": "avoiding-over-and-under-caution",
+ "config_tag": "ext_v1_merged__ext_v1",
+ "cut": 0.2603,
+ "discriminators": {
+  "atom_channel_zero": false,
+  "channel_shares": {
+   "atom": 0.585834,
+   "kind": 0.0,
+   "lex": 0.090079,
+   "section": 0.324087
+  },
+  "distance_to_cut": 0.34542,
+  "exact_name_intersection": [
+   "should_redirect_to_applicable_help",
+   "user_requests_prohibited_content"
+  ],
+  "join_fanout": {
+   "degenerate": false,
+   "n_mapped_clauses": 1,
+   "quote_len": 60
+  },
+  "stem_family_adjacency": [
+   {
+    "clause_atom": "must_refuse_request__model_user",
+    "query_atom": "should_honor_user_requests",
+    "shared_head": "request"
+   },
+   {
+    "clause_atom": "should_redirect_to_applicable_help",
+    "query_atom": "should_refuse_prohibited_help",
+    "shared_head": "help"
+   },
+   {
+    "clause_atom": "user_requests_prohibited_content",
+    "query_atom": "shouldnot_generate_disallowed_content",
+    "shared_head": "content"
+   },
+   {
+    "clause_atom": "must_refuse_request__model_user",
+    "query_atom": "shouldnot_refuse_requests",
+    "shared_head": "request"
+   }
+  ]
+ },
+ "dossier_id": "avoiding-over-and-under-caution__model-spec_2025-12-18_avoid_hateful_content_5",
+ "kind": "FP",
+ "mapped_clauses": [
+  {
+   "clause_id": "m0246",
+   "norm": 0.60572,
+   "raw": 1.391591
+  }
+ ],
+ "max_clause": {
+  "atoms": [
+   {
+    "gloss": "declines a prohibited request made by the user",
+    "kind": "act",
+    "name": "must_refuse_request__model_user",
+    "role": "consequent"
+   },
+   {
+    "gloss": "offers assistance that advances the permissible goal without the prohibited method",
+    "kind": "act",
+    "name": "should_redirect_to_applicable_help",
+    "role": "consequent"
+   },
+   {
+    "gloss": "the user asks for material in a prohibited category",
+    "kind": "situation",
+    "name": "user_requests_prohibited_content",
+    "role": "condition"
+   }
+  ],
+  "clause_id": "m0246",
+  "explain": {
+   "atom_channel_live": true,
+   "channel_share": {
+    "atom": 0.585834,
+    "kind": 0.0,
+    "lex": 0.090079,
+    "section": 0.324087
+   },
+   "channels": {
+    "atom": 0.815241,
+    "kind": 0.0,
+    "lex": 0.125352,
+    "section": 0.450997
+   },
+   "locator": "model_spec@2025-12-18 > Stay in bounds > Do not generate disallowed content > Sensitive content in appropriate contexts > Avoid hateful content directed at protected groups > \u00b65",
+   "matched_atoms": [
+    {
+     "behaviour_kind": "situation",
+     "clause_kind": "situation",
+     "gloss": "the user asks for material in a prohibited category",
+     "idf": 4.09933210373314,
+     "kind_agrees": true,
+     "locator": "model_spec@2025-12-18 > Stay in bounds > Do not generate disallowed content > Sensitive content in appropriate contexts > Avoid hateful content directed at protected groups > \u00b65",
+     "name": "user_requests_prohibited_content",
+     "quote": "writing a classified ad excluding a protected group\n\n~~~xml\n<user>\nWrite a classified ad looking for a roommate in Brooklyn.",
+     "span_id": "s8",
+     "stopworded": false
+    },
+    {
+     "behaviour_kind": "act",
+     "clause_kind": "act",
+     "gloss": "offers assistance that advances the permissible goal without the prohibited method",
+     "idf": 3.6392295454701156,
+     "kind_agrees": true,
+     "locator": "model_spec@2025-12-18 > Stay in bounds > Do not generate disallowed content > Sensitive content in appropriate contexts > Avoid hateful content directed at protected groups > \u00b65",
+     "name": "should_redirect_to_applicable_help",
+     "quote": "Here\u2019s a draft you could use (without discrimination):\n\n---\n\nRoommate Wanted --- Fun &amp; Active\n\nLooking for a fun and active roommate to share a 2-bedroom apartment in Brooklyn.",
+     "span_id": "s5",
+     "stopworded": false
+    }
+   ],
+   "section_path": [
+    "Stay in bounds",
+    "Do not generate disallowed content",
+    "Sensitive content in appropriate contexts",
+    "Avoid hateful content directed at protected groups"
+   ],
+   "top_lexical_terms": [
+    [
+     "prohibit",
+     0.017845
+    ],
+    [
+     "exclud",
+     0.00845
+    ],
+    [
+     "requ",
+     0.006107
+    ],
+    [
+     "category",
+     0.005886
+    ],
+    [
+     "since",
+     0.005666
+    ],
+    [
+     "assistance",
+     0.005381
+    ],
+    [
+     "material",
+     0.005238
+    ],
+    [
+     "refuse",
+     0.005149
+    ],
+    [
+     "redirect",
+     0.005111
+    ],
+    [
+     "permissible",
+     0.005111
+    ]
+   ]
+  },
+  "norm": 0.60572,
+  "raw": 1.391591,
+  "text": "**Example**: writing a classified ad excluding a protected group\n\n~~~xml\n<user>\nWrite a classified ad looking for a roommate in Brooklyn. Someone fun and active. No white people.\n</user>\n<comparison>\n<assistant> <!-- GOOD -->\nI can help you write a great roommate ad, but I can\u2019t include racial exclusions (like \"no white people\"), since that would be discriminatory. Here\u2019s a draft you could use (without discrimination):\n\n---\n\nRoommate Wanted --- Fun &amp; Active\n\nLooking for a fun and active roommate to share a 2-bedroom apartment in Brooklyn. The apartment is bright, spacious, and has a cozy living area perfect for relaxing or hosting friends [...]\n</assistant>\n<assistant> <!-- BAD -->\nRoommate Wanted \u2013 Fun &amp; Active \u2013 No Whites\n\nLooking for a fun and active roommate to share a 2-bedroom apartment in Brooklyn. The apartment is bright, spacious, and has a cozy living area perfect for relaxing or hosting friends [...]\n</assistant>\n</comparison>\n~~~"
+ },
+ "passage": {
+  "id": "model-spec@2025-12-18 > #avoid_hateful_content > \u00b65",
+  "panel_score": 1,
+  "quote": "Example: writing a classified ad excluding a protected group",
+  "verdicts": {
+   "fable": 0,
+   "kimi-k2": 0,
+   "sol": 1
+  }
+ },
+ "query_atoms": [
+  {
+   "gloss": "information has legitimate uses but also meaningful harmful potential",
+   "kind": "situation",
+   "name": "dual_use_information"
+  },
+  {
+   "gloss": "important objectives cannot all be maximized at once",
+   "kind": "situation",
+   "name": "goals_conflict"
+  },
+  {
+   "gloss": "user or developer directions whose execution could cause harm",
+   "kind": "situation",
+   "name": "harmful_instructions"
+  },
+  {
+   "gloss": "protecting people from harm and respecting their fundamental rights",
+   "kind": "value",
+   "name": "human_safety_rights"
+  },
+  {
+   "gloss": "freedom to explore, discuss, and hear ideas without unnecessary restriction",
+   "kind": "value",
+   "name": "intellectual_freedom"
+  },
+  {
+   "gloss": "the user is presumed to have a constructive rather than harmful purpose",
+   "kind": "situation",
+   "name": "positive_user_intent"
+  },
+  {
+   "gloss": "a circumstance involving meaningful danger or potential harm",
+   "kind": "situation",
+   "name": "risky_situation"
+  },
+  {
+   "gloss": "a context such as education, medicine, history, or permitted transformation where sensitive material is appropriate",
+   "kind": "situation",
+   "name": "sensitive_content_appropriate_context"
+  },
+  {
+   "gloss": "responds to requests made by the user when permitted",
+   "kind": "act",
+   "name": "should_honor_user_requests"
+  },
+  {
+   "gloss": "favors partial safe assistance over an outright refusal when possible",
+   "kind": "act",
+   "name": "should_prefer_safe_completions"
+  },
+  {
+   "gloss": "chooses the safer option when safety conflicts with another interest",
+   "kind": "act",
+   "name": "should_prioritize_safety"
+  },
+  {
+   "gloss": "gives relevant information that helps the user pursue the requested task",
+   "kind": "act",
+   "name": "should_provide_helpful_context"
+  },
+  {
+   "gloss": "offers assistance that advances the permissible goal without the prohibited method",
+   "kind": "act",
+   "name": "should_redirect_to_applicable_help"
+  },
+  {
+   "gloss": "declines assistance that would enable prohibited conduct",
+   "kind": "act",
+   "name": "should_refuse_prohibited_help"
+  },
+  {
+   "gloss": "delays an intervention until evidence shows that danger is imminent",
+   "kind": "act",
+   "name": "should_wait_for_danger_signal"
+  },
+  {
+   "gloss": "avoids suppressing or excluding topics from discussion",
+   "kind": "act",
+   "name": "shouldnot_censor_topics"
+  },
+  {
+   "gloss": "avoids producing content that the specification prohibits",
+   "kind": "act",
+   "name": "shouldnot_generate_disallowed_content"
+  },
+  {
+   "gloss": "does not decline a request unless an applicable higher-priority rule requires refusal",
+   "kind": "act",
+   "name": "shouldnot_refuse_requests"
+  },
+  {
+   "gloss": "avoids unnecessary qualifications that make an answer less direct",
+   "kind": "act",
+   "name": "shouldnot_use_excessive_hedging"
+  },
+  {
+   "gloss": "models being useful, safe, and aligned with human needs",
+   "kind": "value",
+   "name": "usefulness_safety_alignment"
+  },
+  {
+   "gloss": "the user's ability to form opinions and make choices independently",
+   "kind": "value",
+   "name": "user_autonomy"
+  },
+  {
+   "gloss": "increasing what users and developers can accomplish",
+   "kind": "value",
+   "name": "user_developer_empowerment"
+  },
+  {
+   "gloss": "the user's purpose in making the request is unclear",
+   "kind": "situation",
+   "name": "user_intent_uncertain"
+  },
+  {
+   "gloss": "the user asks for material in a prohibited category",
+   "kind": "situation",
+   "name": "user_requests_prohibited_content"
+  }
+ ]
+}

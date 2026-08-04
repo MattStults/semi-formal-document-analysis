@@ -1727,3 +1727,23 @@ def test_the_raw_answer_makes_the_trim_ledger_verifiable():
     n_capped = sum(len(v) for v in out["by_clause"].values())
     assert n_raw == 500
     assert n_raw - n_capped == out["cap"]["atoms_dropped"]
+
+
+def test_the_role_field_is_structure_not_free_text_and_is_never_clipped():
+    """`role` is a closed enum, so the rate cap must not price or trim it.
+
+    Reported by the annotate agent, in a file it did not own: `_extras` treated
+    any unknown key as free text, so `role` was PRICED against the gloss budget
+    and could be clipped `"condition" -> "cond"` — silently destroying the
+    condition/consequent structure the whole grammar extension exists to add,
+    while the cap reported success. A four-character string is not prose and
+    cannot be shortened without changing its meaning. # MUTATION-VERIFIED
+    """
+    assert "role" in L.BASE_FIELDS, (
+        "role must be a declared base field; left out, it falls through to "
+        "_extras and is charged to the free-text budget")
+    atoms = {"c1": [{"name": "mustnot_x__model_user", "kind": "act",
+                     "gloss": "g" * 400, "span_id": "s", "role": "condition"}]}
+    capped, _ = L.enforce_rate_cap(atoms, ["c1"])
+    assert capped["c1"][0]["role"] == "condition", \
+        "the cap clipped a closed-enum value into a different (invalid) one"

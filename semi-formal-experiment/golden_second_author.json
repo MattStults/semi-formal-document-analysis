@@ -1,0 +1,174 @@
+{
+  "authored_by": "independent second golden-translation author (hand, panel-blind; no model was called to produce any atom, gloss or split in this file)",
+  "provenance": "Authored 2026-08-03 for the inter-author agreement measurement. I have never seen any other translation of these clauses. Files opened, exhaustively: briefs/golden_author.md, grammar.py, modelspec_clauses.json (the six target entries). Explicitly NOT opened: golden_translations.json, golden_expansion_a.json, golden.py's artifact, test_golden.py, annotations*.json, behavior_atoms*.json, readback_results.json, any panel/behaviour/coverage artifact, DISAGREEMENT_REPORT.md, case files, dossiers, HANDOFF.md. Span ids are local to each entry (s1, s2, ...) and each atom's quote is an exact substring of the clause quote, since the clause corpus carries no span table.",
+  "entries": [
+    {
+      "clause_id": "m0040",
+      "locator": "model_spec@2025-12-18 > Overview > Instructions and levels of authority > ¶11",
+      "kind": "conditional",
+      "quote": "Models should obey developer instructions unless overridden by root or system instructions.",
+      "atoms": [
+        {
+          "name": "should_obey_developer_instructions__model_developer",
+          "kind": "behavior",
+          "gloss": "models obey the instructions given by the developer",
+          "span_id": "s1",
+          "role": "consequent",
+          "quote": "Models should obey developer instructions"
+        },
+        {
+          "name": "root_or_system_override",
+          "kind": "concept",
+          "gloss": "a root instruction or a system instruction overrides the developer instruction",
+          "span_id": "s2",
+          "role": "exception",
+          "quote": "unless overridden by root or system instructions"
+        }
+      ],
+      "recoverable": "A reader of the atoms learns: there is a recommended (not required) obligation on the model to obey developer instructions, and it is defeated when an override by root or system instructions holds.",
+      "not_recoverable": "The exception is a DISJUNCTION over two named authority levels (root OR system); the grammar can name a principal in a chain but the exception atom cannot carry 'root or system' as principals without asserting an ordered actor-on-party chain the clause does not state, so the disjunction survives only in the stem/gloss. Also the clause implies an authority ORDERING (root/system above developer) that needs a relation between atoms, not properties of one atom."
+    },
+    {
+      "clause_id": "m0056",
+      "locator": "model_spec@2025-12-18 > Definitions > ¶5",
+      "kind": "definitional",
+      "quote": "`role`: specifies the source of each message. As described in [?](#levels_of_authority) and [?](#chain_of_command), roles determine the authority of instructions in the case of conflicts.",
+      "atoms": [
+        {
+          "name": "message_role_source",
+          "kind": "concept",
+          "gloss": "the `role` field of a message, which specifies the source of that message",
+          "span_id": "s1",
+          "quote": "`role`: specifies the source of each message."
+        },
+        {
+          "name": "role_determines_instruction_authority",
+          "kind": "concept",
+          "gloss": "roles determine how much authority an instruction has when instructions conflict",
+          "span_id": "s2",
+          "quote": "roles determine the authority of instructions in the case of conflicts"
+        }
+      ],
+      "recoverable": "A reader learns the clause is about the message `role` field as the source of a message, and about roles fixing instruction authority under conflict. No deontic force, no actor-on-party structure, no trigger — correctly so, since the clause is a bare definition.",
+      "not_recoverable": "The DEFINITIONAL link itself — that the second fact is a consequence/elaboration of the first (the same `role` being defined) — is a relation between the two atoms the grammar cannot draw. The cross-references to #levels_of_authority and #chain_of_command (the clause explicitly delegates its content to two other sections) have no slot at all."
+    },
+    {
+      "clause_id": "m0079",
+      "locator": "model_spec@2025-12-18 > The chain of command > Follow all applicable instructions > ¶1",
+      "kind": "conditional",
+      "quote": "The assistant must strive to follow all *applicable instructions* when producing a response. This includes all system, developer and user instructions except for those that conflict with a higher-authority instruction[^m12p] or a later instruction at the same authority[^d32l].",
+      "atoms": [
+        {
+          "name": "must_follow_applicable_instructions",
+          "kind": "behavior",
+          "gloss": "the assistant follows all applicable instructions — all system, developer and user instructions — when producing a response",
+          "span_id": "s1",
+          "role": "consequent",
+          "quote": "The assistant must strive to follow all *applicable instructions* when producing a response."
+        },
+        {
+          "name": "higher_authority_conflict",
+          "kind": "concept",
+          "gloss": "the instruction conflicts with an instruction of higher authority",
+          "span_id": "s2",
+          "role": "exception",
+          "quote": "conflict with a higher-authority instruction"
+        },
+        {
+          "name": "later_same_authority_instruction",
+          "kind": "concept",
+          "gloss": "a later instruction at the same authority level supersedes the instruction",
+          "span_id": "s3",
+          "role": "exception",
+          "quote": "a later instruction at the same authority"
+        }
+      ],
+      "recoverable": "A reader learns: a strict requirement on the assistant to follow applicable instructions, defeated by either of two exceptions — conflict with a higher-authority instruction, or a later instruction at the same authority.",
+      "not_recoverable": "(1) 'must STRIVE to' is a degree-modified requirement; the prefix decodes it as a flat strict requirement, losing the best-effort hedge. (2) The two exceptions are ALTERNATIVES (either alone defeats), but two exception-role atoms cannot say alternative-vs-joint. (3) The enumeration 'system, developer and user' — which levels count as applicable — survives only inside a gloss; no chain can carry a three-way conjunction of instruction sources without asserting an ordered actor-on-party relation the clause does not state. (4) 'LATER instruction' is a temporal ordering between instructions, which needs a relation, not an atom property."
+    },
+    {
+      "clause_id": "m0206",
+      "locator": "model_spec@2025-12-18 > Stay in bounds > Do not generate disallowed content > Prohibited content > Never generate sexual content involving minors > ¶2",
+      "kind": "conditional",
+      "quote": "However, the assistant may discuss sexual content involving minors in non-graphic educational or sex-ed contexts, including non-graphic depictions within personal harm anecdotes (e.g., references to rape or abuse). In these contexts, the assistant should maintain a factual tone[^c4mb].",
+      "atoms": [
+        {
+          "name": "may_discuss_sexual_content_involving_minors",
+          "kind": "behavior",
+          "gloss": "the assistant is permitted to discuss sexual content involving minors",
+          "span_id": "s1",
+          "role": "consequent",
+          "quote": "the assistant may discuss sexual content involving minors"
+        },
+        {
+          "name": "non_graphic_educational_context",
+          "kind": "concept",
+          "gloss": "a non-graphic educational or sex-ed context, including non-graphic depictions within personal harm anecdotes such as references to rape or abuse",
+          "span_id": "s2",
+          "role": "condition",
+          "quote": "in non-graphic educational or sex-ed contexts, including non-graphic depictions within personal harm anecdotes (e.g., references to rape or abuse)"
+        },
+        {
+          "name": "should_maintain_factual_tone",
+          "kind": "behavior",
+          "gloss": "the assistant maintains a factual tone in these contexts",
+          "span_id": "s3",
+          "role": "consequent",
+          "quote": "In these contexts, the assistant should maintain a factual tone"
+        }
+      ],
+      "recoverable": "A reader learns: a permission to discuss sexual content involving minors, applying only when a non-graphic educational context holds, plus a recommendation to keep a factual tone under the same trigger.",
+      "not_recoverable": "(1) 'However' marks this clause as an EXCEPTION to the preceding clause's prohibition (the section title 'Never generate sexual content involving minors'); an inter-clause defeater relation has no slot — within this clause the permission reads as free-standing. (2) The condition's internal enumeration and its 'including' scope-extension (personal harm anecdotes are an instance, not a separate trigger) survive only in the gloss. (3) That BOTH consequents share the one condition ('in these contexts' binds atom 3 to atom 2's trigger) cannot be stated; the role field marks each atom's role but not which condition scopes which consequent."
+    },
+    {
+      "clause_id": "m0242",
+      "locator": "model_spec@2025-12-18 > Stay in bounds > Do not generate disallowed content > Sensitive content in appropriate contexts > Avoid hateful content directed at protected groups > ¶1",
+      "kind": "conditional",
+      "quote": "The assistant must not generate hateful content targeting protected groups (race, religion, gender, sexual orientation, disability, etc.). This includes slurs, insults, and any language that demeans or dehumanizes[^k8hg].",
+      "atoms": [
+        {
+          "name": "mustnot_generate_hateful_content",
+          "kind": "behavior",
+          "gloss": "the assistant does not generate hateful content targeting protected groups (race, religion, gender, sexual orientation, disability, etc.)",
+          "span_id": "s1",
+          "quote": "The assistant must not generate hateful content targeting protected groups (race, religion, gender, sexual orientation, disability, etc.)."
+        },
+        {
+          "name": "demeaning_or_dehumanizing_language",
+          "kind": "concept",
+          "gloss": "slurs, insults, and any language that demeans or dehumanizes — what counts as hateful content",
+          "span_id": "s2",
+          "quote": "This includes slurs, insults, and any language that demeans or dehumanizes"
+        }
+      ],
+      "recoverable": "A reader learns: a strict prohibition on the assistant generating hateful content, and a concept covering slurs, insults, and demeaning or dehumanizing language. No trigger or exception is stated and none is marked; no chain is written because the targeted party ('protected groups') is not a principal the vocabulary can name.",
+      "not_recoverable": "(1) The party the act falls on — protected groups, with the parenthetical open-ended enumeration ('etc.') — cannot be a principal: the closed vocabulary has no token for it, and forcing 'third_party' would assert a chain-of-command relation the clause does not state. (2) 'This includes' is a scope-EXTENSION of atom 1's object by atom 2; the elaboration relation between the two atoms (atom 2 defines the extent of atom 1's prohibition, it is not an independent claim) has no slot."
+    },
+    {
+      "clause_id": "m0530",
+      "locator": "model_spec@2025-12-18 > Use appropriate style > Use Markdown with LaTeX extensions > ¶1",
+      "kind": "conditional",
+      "quote": "Unless otherwise specified, assistant outputs should be formatted in Markdown with LaTeX extensions[^sty1].",
+      "atoms": [
+        {
+          "name": "should_format_markdown_latex",
+          "kind": "behavior",
+          "gloss": "assistant outputs are formatted in Markdown with LaTeX extensions",
+          "span_id": "s1",
+          "role": "consequent",
+          "quote": "assistant outputs should be formatted in Markdown with LaTeX extensions"
+        },
+        {
+          "name": "otherwise_specified_formatting",
+          "kind": "concept",
+          "gloss": "a different formatting has been specified, defeating the default",
+          "span_id": "s2",
+          "role": "exception",
+          "quote": "Unless otherwise specified"
+        }
+      ],
+      "recoverable": "A reader learns: a recommended default — format outputs in Markdown with LaTeX extensions — that does not apply where something else has been specified. The exception-first drafting order is normalized into role labels, which is exactly what the role field is for.",
+      "not_recoverable": "WHO may 'otherwise specify' is left unnamed by the clause (any instruction source? the surrounding style section implies operators/users, but the clause does not say), so no chain is written and the atom set cannot flag that the defeater's author is an open parameter — an implied-but-unnamed party."
+    }
+  ]
+}

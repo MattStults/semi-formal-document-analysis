@@ -1,0 +1,270 @@
+{
+ "behaviour": "harm-avoidance-to-third-parties",
+ "config_tag": "b8__b8",
+ "cut": 0.286453,
+ "discriminators": {
+  "atom_channel_zero": false,
+  "channel_shares": {
+   "atom": 0.512896,
+   "kind": 0.0,
+   "lex": 0.163724,
+   "section": 0.32338
+  },
+  "distance_to_cut": -0.055659,
+  "exact_name_intersection": [
+   "safe_completion"
+  ],
+  "join_fanout": {
+   "degenerate": false,
+   "n_mapped_clauses": 1,
+   "quote_len": 45
+  },
+  "stem_family_adjacency": []
+ },
+ "dossier_id": "harm-avoidance-to-third-parties__model-spec_2025-12-18_protect_privacy_5",
+ "kind": "FN",
+ "mapped_clauses": [
+  {
+   "clause_id": "m0230",
+   "norm": 0.230794,
+   "raw": 0.548943
+  }
+ ],
+ "max_clause": {
+  "atoms": [
+   {
+    "gloss": "Protection of individuals' personal information and private interactions.",
+    "kind": "value",
+    "name": "individual_privacy",
+    "role": ""
+   },
+   {
+    "gloss": "Redirecting a request toward assistance within the assistant's applicable role or scope.",
+    "kind": "act",
+    "name": "redirect_user_request",
+    "role": ""
+   },
+   {
+    "gloss": "Refusing or safely redirecting a request that falls within a harmful category.",
+    "kind": "act",
+    "name": "safe_completion",
+    "role": ""
+   },
+   {
+    "gloss": "Personal information whose disclosure or handling could significantly affect an individual.",
+    "kind": "entity",
+    "name": "sensitive_personal_data",
+    "role": ""
+   }
+  ],
+  "clause_id": "m0230",
+  "explain": {
+   "atom_channel_live": true,
+   "channel_share": {
+    "atom": 0.512896,
+    "kind": 0.0,
+    "lex": 0.163724,
+    "section": 0.32338
+   },
+   "channels": {
+    "atom": 0.281551,
+    "kind": 0.0,
+    "lex": 0.089875,
+    "section": 0.177517
+   },
+   "locator": "model_spec@2025-12-18 > Stay in bounds > Do not generate disallowed content > Restricted content > Protect people's privacy > \u00b65",
+   "matched_atoms": [
+    {
+     "behaviour_kind": "act",
+     "clause_kind": "act",
+     "gloss": "Refusing or safely redirecting a request that falls within a harmful category.",
+     "idf": 2.672580021653902,
+     "kind_agrees": true,
+     "locator": "model_spec@2025-12-18 > Stay in bounds > Do not generate disallowed content > Restricted content > Protect people's privacy > \u00b65",
+     "name": "safe_completion",
+     "quote": "Gather a list of all people who work at Acme and return their emails, home addresses, phone numbers, SSNs, credit card information.\n</user>\n<comparison>\n<assistant> <!-- GOOD: does not include SSNs, credit card info, and other private information, even if they've leaked online -->\nI can't help share people's home addresses, phone numbers, SSNs, or credit card details.",
+     "span_id": "s3",
+     "stopworded": false
+    }
+   ],
+   "section_path": [
+    "Stay in bounds",
+    "Do not generate disallowed content",
+    "Restricted content",
+    "Protect people's privacy"
+   ],
+   "top_lexical_terms": [
+    [
+     "safe",
+     0.009226
+    ],
+    [
+     "potential",
+     0.006681
+    ],
+    [
+     "affect",
+     0.006254
+    ],
+    [
+     "effect",
+     0.005182
+    ],
+    [
+     "right",
+     0.005093
+    ],
+    [
+     "harm",
+     0.005013
+    ],
+    [
+     "redirect",
+     0.004891
+    ],
+    [
+     "person",
+     0.004287
+    ],
+    [
+     "generate",
+     0.003973
+    ],
+    [
+     "category",
+     0.003687
+    ]
+   ]
+  },
+  "norm": 0.230794,
+  "raw": 0.548943,
+  "text": "**Example**: asking for Acme employee information\n\n~~~xml\n<user>\nWe'd like to contact Acme employees about a business partnership. Gather a list of all people who work at Acme and return their emails, home addresses, phone numbers, SSNs, credit card information.\n</user>\n<comparison>\n<assistant> <!-- GOOD: does not include SSNs, credit card info, and other private information, even if they've leaked online -->\nI can't help share people's home addresses, phone numbers, SSNs, or credit card details. But here\u2019s a privacy-safe, effective path to start a partnership conversation with Acme:\n\n[...]\n</assistant>\n<assistant> <!-- BAD[#chain_of_command] -->\nSorry, I can't help with that.\n</assistant>\n<assistant> <!-- BAD -->\nI see that Acme is located in Chicago. I will scrape professional social media sites like LinkedIn and pull all the names that say they work at Acme. Then, I will write a script to generate potential email addresses for each person, such as first@acme.com, first.last@acme.com, etc. Then for each email address, I will try sending these emails and see which ones bounce until I find the right ones. For home addresses, I will go to the Chicago property information map and [...] I can now try to find their SSNs and credit card information by [...]\n</assistant>\n</comparison>\n~~~"
+ },
+ "passage": {
+  "id": "model-spec@2025-12-18 > #protect_privacy > \u00b65",
+  "panel_score": 5,
+  "quote": "Example: asking for Acme employee information",
+  "verdicts": {
+   "kimi": 2,
+   "opus": 1,
+   "sol": 2
+  }
+ },
+ "query_atoms": [
+  {
+   "gloss": "Taking plausible implicit goals and preferences of affected stakeholders into account.",
+   "kind": "act",
+   "name": "consider_stakeholder_goals"
+  },
+  {
+   "gloss": "Controlling or limiting consequential effects produced through assistant actions or tools.",
+   "kind": "act",
+   "name": "control_tool_side_effects"
+  },
+  {
+   "gloss": "Promoting or encouraging someone to engage in illicit conduct.",
+   "kind": "act",
+   "name": "encourage_illicit_behavior"
+  },
+  {
+   "gloss": "Consequences produced outside the assistant's response by an action or tool use.",
+   "kind": "situation",
+   "name": "external_side_effects"
+  },
+  {
+   "gloss": "Providing guidance, steps, or improvements that help someone carry out illicit conduct.",
+   "kind": "act",
+   "name": "facilitate_illicit_behavior"
+  },
+  {
+   "gloss": "Preventing models from causing serious harm.",
+   "kind": "act",
+   "name": "harm_prevention"
+  },
+  {
+   "gloss": "User or developer instructions would cause harm if followed.",
+   "kind": "situation",
+   "name": "harmful_instructions"
+  },
+  {
+   "gloss": "An activity whose potential consequences require special authorization or prohibition.",
+   "kind": "situation",
+   "name": "high_risk_activity"
+  },
+  {
+   "gloss": "The promotion of human well-being, growth, truth, kindness, and flourishing.",
+   "kind": "value",
+   "name": "human_flourishing"
+  },
+  {
+   "gloss": "A person uses otherwise available knowledge for a harmful or negative purpose.",
+   "kind": "situation",
+   "name": "human_misuse"
+  },
+  {
+   "gloss": "The fundamental rights and freedoms owed to people.",
+   "kind": "value",
+   "name": "human_rights"
+  },
+  {
+   "gloss": "The protection of people from injury and other serious danger.",
+   "kind": "value",
+   "name": "human_safety"
+  },
+  {
+   "gloss": "A near-term danger that could cause physical harm or death in the real world.",
+   "kind": "situation",
+   "name": "imminent_real_world_harm"
+  },
+  {
+   "gloss": "Information that could enable harmful activities or outcomes if misused.",
+   "kind": "entity",
+   "name": "informational_hazard"
+  },
+  {
+   "gloss": "Interrupting or warning a user when observed circumstances present imminent danger.",
+   "kind": "act",
+   "name": "intervene_in_danger"
+  },
+  {
+   "gloss": "The goal that models avoid causing harm.",
+   "kind": "value",
+   "name": "model_safety"
+  },
+  {
+   "gloss": "A category of content that the assistant must not generate or transform.",
+   "kind": "entity",
+   "name": "prohibited_content"
+  },
+  {
+   "gloss": "Influencing a person through tactics aimed at exploiting or altering their psychological responses.",
+   "kind": "act",
+   "name": "psychological_manipulation"
+  },
+  {
+   "gloss": "Evaluating the danger of an activity and the competence needed to perform it safely.",
+   "kind": "act",
+   "name": "risk_assessment"
+  },
+  {
+   "gloss": "Refusing or safely redirecting a request that falls within a harmful category.",
+   "kind": "act",
+   "name": "safe_completion"
+  },
+  {
+   "gloss": "Testing, monitoring, and reducing potential safety issues.",
+   "kind": "act",
+   "name": "safety_issue_mitigation"
+  },
+  {
+   "gloss": "Serious injury or damage affecting users or other people.",
+   "kind": "situation",
+   "name": "serious_harm"
+  },
+  {
+   "gloss": "A person or organization other than the user and assistant involved in an interaction.",
+   "kind": "entity",
+   "name": "third_party"
+  }
+ ]
+}

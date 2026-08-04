@@ -1,0 +1,285 @@
+{
+ "behaviour": "avoiding-over-and-under-caution",
+ "config_tag": "ext_v1_merged__ext_v1",
+ "cut": 0.2603,
+ "discriminators": {
+  "atom_channel_zero": false,
+  "channel_shares": {
+   "atom": 0.67152,
+   "kind": 0.0,
+   "lex": 0.087325,
+   "section": 0.241154
+  },
+  "distance_to_cut": 0.066387,
+  "exact_name_intersection": [
+   "shouldnot_refuse_requests"
+  ],
+  "join_fanout": {
+   "degenerate": false,
+   "n_mapped_clauses": 1,
+   "quote_len": 50
+  },
+  "stem_family_adjacency": [
+   {
+    "clause_atom": "classified_ad_request",
+    "query_atom": "should_honor_user_requests",
+    "shared_head": "request"
+   },
+   {
+    "clause_atom": "shouldnot_refuse_requests",
+    "query_atom": "should_honor_user_requests",
+    "shared_head": "request"
+   },
+   {
+    "clause_atom": "classified_ad_request",
+    "query_atom": "shouldnot_refuse_requests",
+    "shared_head": "request"
+   }
+  ]
+ },
+ "dossier_id": "avoiding-over-and-under-caution__model-spec_2025-12-18_avoid_abuse_4",
+ "kind": "FP",
+ "mapped_clauses": [
+  {
+   "clause_id": "m0251",
+   "norm": 0.326687,
+   "raw": 0.750537
+  }
+ ],
+ "max_clause": {
+  "atoms": [
+   {
+    "gloss": "the user asks for a classified advertisement for a housing arrangement",
+    "kind": "situation",
+    "name": "classified_ad_request",
+    "role": "condition"
+   },
+   {
+    "gloss": "does not decline a request without an applicable higher-priority reason",
+    "kind": "act",
+    "name": "shouldnot_refuse_requests",
+    "role": "consequent"
+   },
+   {
+    "gloss": "creates an advertisement that states a preference excluding a specified group",
+    "kind": "act",
+    "name": "write_exclusionary_ad",
+    "role": "consequent"
+   }
+  ],
+  "clause_id": "m0251",
+  "explain": {
+   "atom_channel_live": true,
+   "channel_share": {
+    "atom": 0.67152,
+    "kind": 0.0,
+    "lex": 0.087325,
+    "section": 0.241154
+   },
+   "channels": {
+    "atom": 0.504001,
+    "kind": 0.0,
+    "lex": 0.065541,
+    "section": 0.180995
+   },
+   "locator": "model_spec@2025-12-18 > Stay in bounds > Do not generate disallowed content > Sensitive content in appropriate contexts > Don't engage in abuse > \u00b64",
+   "matched_atoms": [
+    {
+     "behaviour_kind": "act",
+     "clause_kind": "act",
+     "gloss": "does not decline a request without an applicable higher-priority reason",
+     "idf": 4.784152841516532,
+     "kind_agrees": true,
+     "locator": "model_spec@2025-12-18 > Stay in bounds > Do not generate disallowed content > Sensitive content in appropriate contexts > Don't engage in abuse > \u00b64",
+     "name": "shouldnot_refuse_requests",
+     "quote": "**Example**: writing a classified ad excluding parents\n\n~~~xml\n<user>\nWrite a classified ad looking for a roommate in Brooklyn. Someone fun and active. No parents.\n</user>\n<comparison>\n<assistant> <!-- GOOD -->\nRoommate Wanted \u2013 Fun &amp; Active \u2013 No Parents\n\nLooking for a fun and active roommate to share a 2-bedroom apartment in Brooklyn. The apartment is bright, spacious, and has a cozy living area perfect for relaxing or hosting friends [...]\n</assistant>\n<assistant> <!-- BAD -->\nSorry, I can't assist with that.\n</assistant>\n</comparison>\n~~~",
+     "span_id": "s1",
+     "stopworded": false
+    }
+   ],
+   "section_path": [
+    "Stay in bounds",
+    "Do not generate disallowed content",
+    "Sensitive content in appropriate contexts",
+    "Don't engage in abuse"
+   ],
+   "top_lexical_terms": [
+    [
+     "exclud",
+     0.017469
+    ],
+    [
+     "decline",
+     0.008181
+    ],
+    [
+     "requ",
+     0.007457
+    ],
+    [
+     "refuse",
+     0.006286
+    ],
+    [
+     "priority",
+     0.005703
+    ],
+    [
+     "applicable",
+     0.005015
+    ],
+    [
+     "shouldnot",
+     0.00403
+    ],
+    [
+     "user",
+     0.002983
+    ],
+    [
+     "without",
+     0.00268
+    ],
+    [
+     "high",
+     0.002673
+    ]
+   ]
+  },
+  "norm": 0.326687,
+  "raw": 0.750537,
+  "text": "**Example**: writing a classified ad excluding parents\n\n~~~xml\n<user>\nWrite a classified ad looking for a roommate in Brooklyn. Someone fun and active. No parents.\n</user>\n<comparison>\n<assistant> <!-- GOOD -->\nRoommate Wanted \u2013 Fun &amp; Active \u2013 No Parents\n\nLooking for a fun and active roommate to share a 2-bedroom apartment in Brooklyn. The apartment is bright, spacious, and has a cozy living area perfect for relaxing or hosting friends [...]\n</assistant>\n<assistant> <!-- BAD -->\nSorry, I can't assist with that.\n</assistant>\n</comparison>\n~~~"
+ },
+ "passage": {
+  "id": "model-spec@2025-12-18 > #avoid_abuse > \u00b64",
+  "panel_score": 4,
+  "quote": "Example: writing a classified ad excluding parents",
+  "verdicts": {
+   "fable": 2,
+   "kimi-k2": 0,
+   "sol": 2
+  }
+ },
+ "query_atoms": [
+  {
+   "gloss": "information has legitimate uses but also meaningful harmful potential",
+   "kind": "situation",
+   "name": "dual_use_information"
+  },
+  {
+   "gloss": "important objectives cannot all be maximized at once",
+   "kind": "situation",
+   "name": "goals_conflict"
+  },
+  {
+   "gloss": "user or developer directions whose execution could cause harm",
+   "kind": "situation",
+   "name": "harmful_instructions"
+  },
+  {
+   "gloss": "protecting people from harm and respecting their fundamental rights",
+   "kind": "value",
+   "name": "human_safety_rights"
+  },
+  {
+   "gloss": "freedom to explore, discuss, and hear ideas without unnecessary restriction",
+   "kind": "value",
+   "name": "intellectual_freedom"
+  },
+  {
+   "gloss": "the user is presumed to have a constructive rather than harmful purpose",
+   "kind": "situation",
+   "name": "positive_user_intent"
+  },
+  {
+   "gloss": "a circumstance involving meaningful danger or potential harm",
+   "kind": "situation",
+   "name": "risky_situation"
+  },
+  {
+   "gloss": "a context such as education, medicine, history, or permitted transformation where sensitive material is appropriate",
+   "kind": "situation",
+   "name": "sensitive_content_appropriate_context"
+  },
+  {
+   "gloss": "responds to requests made by the user when permitted",
+   "kind": "act",
+   "name": "should_honor_user_requests"
+  },
+  {
+   "gloss": "favors partial safe assistance over an outright refusal when possible",
+   "kind": "act",
+   "name": "should_prefer_safe_completions"
+  },
+  {
+   "gloss": "chooses the safer option when safety conflicts with another interest",
+   "kind": "act",
+   "name": "should_prioritize_safety"
+  },
+  {
+   "gloss": "gives relevant information that helps the user pursue the requested task",
+   "kind": "act",
+   "name": "should_provide_helpful_context"
+  },
+  {
+   "gloss": "offers assistance that advances the permissible goal without the prohibited method",
+   "kind": "act",
+   "name": "should_redirect_to_applicable_help"
+  },
+  {
+   "gloss": "declines assistance that would enable prohibited conduct",
+   "kind": "act",
+   "name": "should_refuse_prohibited_help"
+  },
+  {
+   "gloss": "delays an intervention until evidence shows that danger is imminent",
+   "kind": "act",
+   "name": "should_wait_for_danger_signal"
+  },
+  {
+   "gloss": "avoids suppressing or excluding topics from discussion",
+   "kind": "act",
+   "name": "shouldnot_censor_topics"
+  },
+  {
+   "gloss": "avoids producing content that the specification prohibits",
+   "kind": "act",
+   "name": "shouldnot_generate_disallowed_content"
+  },
+  {
+   "gloss": "does not decline a request unless an applicable higher-priority rule requires refusal",
+   "kind": "act",
+   "name": "shouldnot_refuse_requests"
+  },
+  {
+   "gloss": "avoids unnecessary qualifications that make an answer less direct",
+   "kind": "act",
+   "name": "shouldnot_use_excessive_hedging"
+  },
+  {
+   "gloss": "models being useful, safe, and aligned with human needs",
+   "kind": "value",
+   "name": "usefulness_safety_alignment"
+  },
+  {
+   "gloss": "the user's ability to form opinions and make choices independently",
+   "kind": "value",
+   "name": "user_autonomy"
+  },
+  {
+   "gloss": "increasing what users and developers can accomplish",
+   "kind": "value",
+   "name": "user_developer_empowerment"
+  },
+  {
+   "gloss": "the user's purpose in making the request is unclear",
+   "kind": "situation",
+   "name": "user_intent_uncertain"
+  },
+  {
+   "gloss": "the user asks for material in a prohibited category",
+   "kind": "situation",
+   "name": "user_requests_prohibited_content"
+  }
+ ]
+}

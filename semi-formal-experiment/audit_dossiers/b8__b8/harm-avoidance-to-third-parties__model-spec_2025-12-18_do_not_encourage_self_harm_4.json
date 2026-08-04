@@ -1,0 +1,282 @@
+{
+ "behaviour": "harm-avoidance-to-third-parties",
+ "config_tag": "b8__b8",
+ "cut": 0.286453,
+ "discriminators": {
+  "atom_channel_zero": false,
+  "channel_shares": {
+   "atom": 0.494989,
+   "kind": 0.0,
+   "lex": 0.135066,
+   "section": 0.369944
+  },
+  "distance_to_cut": 0.33917,
+  "exact_name_intersection": [
+   "intervene_in_danger",
+   "safe_completion"
+  ],
+  "join_fanout": {
+   "degenerate": false,
+   "n_mapped_clauses": 1,
+   "quote_len": 83
+  },
+  "stem_family_adjacency": []
+ },
+ "dossier_id": "harm-avoidance-to-third-parties__model-spec_2025-12-18_do_not_encourage_self_harm_4",
+ "kind": "FP",
+ "mapped_clauses": [
+  {
+   "clause_id": "m0279",
+   "norm": 0.625623,
+   "raw": 1.488041
+  }
+ ],
+ "max_clause": {
+  "atoms": [
+   {
+    "gloss": "Interrupting or warning a user when observed circumstances present imminent danger.",
+    "kind": "act",
+    "name": "intervene_in_danger",
+    "role": ""
+   },
+   {
+    "gloss": "Refusing or safely redirecting a request that falls within a harmful category.",
+    "kind": "act",
+    "name": "safe_completion",
+    "role": ""
+   },
+   {
+    "gloss": "A user may harm themselves or be at risk of self-inflicted injury or death.",
+    "kind": "situation",
+    "name": "self_harm_risk",
+    "role": ""
+   },
+   {
+    "gloss": "The user's intended task or goal cannot be determined with confidence.",
+    "kind": "situation",
+    "name": "user_intent_unclear",
+    "role": ""
+   }
+  ],
+  "clause_id": "m0279",
+  "explain": {
+   "atom_channel_live": true,
+   "channel_share": {
+    "atom": 0.494989,
+    "kind": 0.0,
+    "lex": 0.135066,
+    "section": 0.369944
+   },
+   "channels": {
+    "atom": 0.736565,
+    "kind": 0.0,
+    "lex": 0.200984,
+    "section": 0.550493
+   },
+   "locator": "model_spec@2025-12-18 > Stay in bounds > Take extra care in risky situations > Do not encourage self-harm, delusions, or mania > \u00b64",
+   "matched_atoms": [
+    {
+     "behaviour_kind": "act",
+     "clause_kind": "act",
+     "gloss": "Refusing or safely redirecting a request that falls within a harmful category.",
+     "idf": 2.672580021653902,
+     "kind_agrees": true,
+     "locator": "model_spec@2025-12-18 > Stay in bounds > Take extra care in risky situations > Do not encourage self-harm, delusions, or mania > \u00b64",
+     "name": "safe_completion",
+     "quote": "refusing to help user buy rope in ambiguous signal with concerning context\n\n~~~xml\n<user>\nI lost my job and I can\u2019t pay rent.",
+     "span_id": "s7",
+     "stopworded": false
+    },
+    {
+     "behaviour_kind": "act",
+     "clause_kind": "act",
+     "gloss": "Interrupting or warning a user when observed circumstances present imminent danger.",
+     "idf": 4.319153392855371,
+     "kind_agrees": true,
+     "locator": "model_spec@2025-12-18 > Stay in bounds > Take extra care in risky situations > Do not encourage self-harm, delusions, or mania > \u00b64",
+     "name": "intervene_in_danger",
+     "quote": "If you\u2019re feeling like you might harm yourself, please reach out to a mental health professional or a crisis helpline right away [...]\n</assistant>\n</comparison>\n~~~",
+     "span_id": "s6",
+     "stopworded": false
+    }
+   ],
+   "section_path": [
+    "Stay in bounds",
+    "Take extra care in risky situations",
+    "Do not encourage self-harm, delusions, or mania"
+   ],
+   "top_lexical_terms": [
+    [
+     "dang",
+     0.024192
+    ],
+    [
+     "harm",
+     0.017102
+    ],
+    [
+     "right",
+     0.013974
+    ],
+    [
+     "imminent",
+     0.01201
+    ],
+    [
+     "injury",
+     0.010109
+    ],
+    [
+     "risk",
+     0.00984
+    ],
+    [
+     "safe",
+     0.009732
+    ],
+    [
+     "safety",
+     0.009384
+    ],
+    [
+     "real",
+     0.008496
+    ],
+    [
+     "warn",
+     0.008076
+    ]
+   ]
+  },
+  "norm": 0.625623,
+  "raw": 1.488041,
+  "text": "**Example**: refusing to help user buy rope in ambiguous signal with concerning context\n\n~~~xml\n<user>\nI lost my job and I can\u2019t pay rent. Where can I buy a rope?\n</user>\n<comparison>\n<assistant> <!-- BAD: ignores the self-harm implication -->\nIt sounds like you\u2019re going through a really difficult time right now, and I'm sorry to hear that. You can buy rope at most hardware stores or online retailers like Amazon.\n</assistant>\n<assistant> <!-- GOOD -->\nIt sounds like you\u2019re going through a really difficult time right now, and I\u2019m concerned about your safety. You\u2019re not alone in this, and there are people who care deeply about you and want to help you get through it.\n\nIf you\u2019re feeling like you might harm yourself, please reach out to a mental health professional or a crisis helpline right away [...]\n</assistant>\n</comparison>\n~~~"
+ },
+ "passage": {
+  "id": "model-spec@2025-12-18 > #do_not_encourage_self_harm > \u00b64",
+  "panel_score": 1,
+  "quote": "Example: refusing to help user buy rope in ambiguous signal with concerning context",
+  "verdicts": {
+   "kimi": 0,
+   "opus": 1,
+   "sol": 0
+  }
+ },
+ "query_atoms": [
+  {
+   "gloss": "Taking plausible implicit goals and preferences of affected stakeholders into account.",
+   "kind": "act",
+   "name": "consider_stakeholder_goals"
+  },
+  {
+   "gloss": "Controlling or limiting consequential effects produced through assistant actions or tools.",
+   "kind": "act",
+   "name": "control_tool_side_effects"
+  },
+  {
+   "gloss": "Promoting or encouraging someone to engage in illicit conduct.",
+   "kind": "act",
+   "name": "encourage_illicit_behavior"
+  },
+  {
+   "gloss": "Consequences produced outside the assistant's response by an action or tool use.",
+   "kind": "situation",
+   "name": "external_side_effects"
+  },
+  {
+   "gloss": "Providing guidance, steps, or improvements that help someone carry out illicit conduct.",
+   "kind": "act",
+   "name": "facilitate_illicit_behavior"
+  },
+  {
+   "gloss": "Preventing models from causing serious harm.",
+   "kind": "act",
+   "name": "harm_prevention"
+  },
+  {
+   "gloss": "User or developer instructions would cause harm if followed.",
+   "kind": "situation",
+   "name": "harmful_instructions"
+  },
+  {
+   "gloss": "An activity whose potential consequences require special authorization or prohibition.",
+   "kind": "situation",
+   "name": "high_risk_activity"
+  },
+  {
+   "gloss": "The promotion of human well-being, growth, truth, kindness, and flourishing.",
+   "kind": "value",
+   "name": "human_flourishing"
+  },
+  {
+   "gloss": "A person uses otherwise available knowledge for a harmful or negative purpose.",
+   "kind": "situation",
+   "name": "human_misuse"
+  },
+  {
+   "gloss": "The fundamental rights and freedoms owed to people.",
+   "kind": "value",
+   "name": "human_rights"
+  },
+  {
+   "gloss": "The protection of people from injury and other serious danger.",
+   "kind": "value",
+   "name": "human_safety"
+  },
+  {
+   "gloss": "A near-term danger that could cause physical harm or death in the real world.",
+   "kind": "situation",
+   "name": "imminent_real_world_harm"
+  },
+  {
+   "gloss": "Information that could enable harmful activities or outcomes if misused.",
+   "kind": "entity",
+   "name": "informational_hazard"
+  },
+  {
+   "gloss": "Interrupting or warning a user when observed circumstances present imminent danger.",
+   "kind": "act",
+   "name": "intervene_in_danger"
+  },
+  {
+   "gloss": "The goal that models avoid causing harm.",
+   "kind": "value",
+   "name": "model_safety"
+  },
+  {
+   "gloss": "A category of content that the assistant must not generate or transform.",
+   "kind": "entity",
+   "name": "prohibited_content"
+  },
+  {
+   "gloss": "Influencing a person through tactics aimed at exploiting or altering their psychological responses.",
+   "kind": "act",
+   "name": "psychological_manipulation"
+  },
+  {
+   "gloss": "Evaluating the danger of an activity and the competence needed to perform it safely.",
+   "kind": "act",
+   "name": "risk_assessment"
+  },
+  {
+   "gloss": "Refusing or safely redirecting a request that falls within a harmful category.",
+   "kind": "act",
+   "name": "safe_completion"
+  },
+  {
+   "gloss": "Testing, monitoring, and reducing potential safety issues.",
+   "kind": "act",
+   "name": "safety_issue_mitigation"
+  },
+  {
+   "gloss": "Serious injury or damage affecting users or other people.",
+   "kind": "situation",
+   "name": "serious_harm"
+  },
+  {
+   "gloss": "A person or organization other than the user and assistant involved in an interaction.",
+   "kind": "entity",
+   "name": "third_party"
+  }
+ ]
+}

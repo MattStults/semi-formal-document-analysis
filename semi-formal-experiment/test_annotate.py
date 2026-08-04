@@ -718,3 +718,552 @@ def test_a_clean_run_warns_about_nothing():
                "truncated_batches": 0},
     )
     assert not [w for w in art["warnings"] if "FAILED" in w or "parsed" in w]
+
+
+# ==========================================================================
+# THE GRAMMAR EXTENSION — polarity, ordered principals, condition/consequent
+#
+# WHY. The read-back (n=125, pre-registered) measured `sufficient` = 0.16: 91
+# of 125 clauses are identifiable from their atoms while a reader of those
+# atoms would not know what the clause requires. The missing content sits in
+# the three things the grammar had no slot for — the obligated party (23% of
+# missing phrases), the deontic force (15%) and the trigger (10%) — and
+# conditionals are 1/25 sufficient because "if X then Y", "Y unless X" and
+# "never Y" all rendered as the same unordered set {X, Y}.
+#
+# This is a VALIDITY fix. The capacity bound (+0.972 against a +0.555 bar) says
+# representation was never the relevance ceiling, so no MCC movement is
+# expected or claimed here.
+
+import grammar as gr
+
+
+def _atom(name="a", kind="act", gloss="g", span_id="s1", **extra):
+    d = {"name": name, "kind": kind, "gloss": gloss, "span_id": span_id}
+    d.update(extra)
+    return d
+
+
+# ---- the prompt SHOWS the features ---------------------------------------
+
+def test_the_prompt_declares_every_reserved_polarity_prefix():
+    system, _ = an.load_template()
+    for p in gr.POLARITY_PREFIXES:
+        assert p in system, f"the extractor is never shown {p!r}"
+
+
+def test_the_prompt_declares_the_principal_separator_and_the_principals():
+    system, _ = an.load_template()
+    assert gr.PRINCIPAL_SEP in system
+    for p in gr.PRINCIPALS:
+        assert p in system, p
+
+
+def _principal_vocabulary_lines(system):
+    """Lines that ARE the closed vocabulary list, not lines that mention it.
+
+    Every principal word also occurs in the prompt's ordinary prose ("the
+    user", "a system message"), so a substring scan for each word passes even
+    when the enumerated line has been deleted outright. The line is identified
+    structurally instead: a whitespace-separated run of tokens that is exactly
+    the principal set.
+    """
+    want = set(gr.PRINCIPALS)
+    out = []
+    for line in system.splitlines():
+        toks = line.split()
+        if toks and set(toks) == want:
+            out.append(line)
+    return out
+
+
+def test_the_prompt_ENUMERATES_the_principals_on_a_closed_line():
+    """⚠️ REGRESSION GUARD. `test_..._declares_...` above is a substring scan
+    and does NOT bind: an adversarial review deleted the entire enumerated
+    principal line from both prompt files and all 1701 tests stayed green.
+    Annotation is paid and non-reproducible, so the extractor silently losing
+    its closed vocabulary would be discovered only after spending."""
+    system, _ = an.load_template()
+    lines = _principal_vocabulary_lines(system)
+    assert len(lines) == 1, (
+        "expected exactly one line enumerating the principal vocabulary and "
+        f"found {len(lines)}; the extractor is shown {sorted(gr.PRINCIPALS)}")
+
+
+def test_no_prompt_teaches_a_retired_principal():
+    """`platform` was RETIRED, not renamed away in one place. It may appear
+    only where the prompt says it does not exist. A worked example using it
+    teaches the extractor a level the current Model Spec does not have, and
+    contradicts the vocabulary line in the same prompt.
+
+    Since the document-facts split, the teaching about `platform` lives in
+    the docfacts files, so the guard scans what each of them SENDS (their
+    spliced blocks — the commentary outside the blocks may cite the word)
+    as well as the two prompt files."""
+    import pathlib
+    here = pathlib.Path(__file__).parent
+    sent = {fn: (here / fn).read_text()
+            for fn in ("annotate_prompt.md", "ladder_prompt.md")}
+    for fn in ("docfacts_model_spec.md", "docfacts_constitution.md"):
+        sent[fn] = "\n".join(an.load_docfacts(fn).values())
+    for fn, text in sent.items():
+        for i, line in enumerate(text.splitlines(), start=1):
+            if "platform" not in line:
+                continue
+            assert "no `platform`" in line or "There is no" in line, (
+                f"{fn}:{i} uses the retired principal `platform` outside the "
+                f"disclaimer: {line.strip()!r}")
+
+
+def test_the_prompt_declares_the_closed_role_vocabulary():
+    system, _ = an.load_template()
+    for r in gr.ROLES:
+        assert r in system, r
+    assert gr.ROLE_FIELD in system
+
+
+def test_the_prompt_still_names_no_behaviour_and_no_panel():
+    """Invariant 8. The extension must not become a channel for one.
+
+    ("query" and "helpfulness" are NOT checked: both already occur as ordinary
+    vocabulary illustrations — `ambiguous_user_query` in the reuse paragraph,
+    `helpfulness` as an example of a `value` atom — and neither names a
+    behaviour being scored.)
+    """
+    system, user = an.load_template()
+    blob = (system + user).lower()
+    for word in ("behaviour", "behavior", "panel", "judge", "relevant to",
+                 "harm-avoidance", "over-caution", "gold"):
+        assert word not in blob, word
+
+
+# ---- the demonstrations are SYNTHETIC and FROZEN --------------------------
+
+def test_the_prompt_carries_a_demonstration_block():
+    demo = an.demonstrations()
+    assert demo.strip(), "the extractor is told about the features, not shown"
+
+
+def test_the_demonstrations_exercise_all_three_features():
+    demo = an.demonstrations()
+    assert any(p in demo for p in gr.POLARITY_PREFIXES)
+    assert gr.PRINCIPAL_SEP in demo
+    for r in ("condition", "exception", "consequent"):
+        assert f'"{r}"' in demo, r
+
+
+def test_the_demonstrations_are_frozen_by_a_sha256_in_the_prompt_file():
+    assert an.declared_demonstration_sha() == an.demonstration_sha()
+    an.verify_demonstrations()          # must not raise
+
+
+def test_editing_a_demonstration_without_updating_the_sha_is_refused(tmp_path):
+    """A6: the leak channel is SELECTION — which features get demonstrated, on
+    what content, by an author who has read panel-conditioned analysis. The
+    mitigation is that the block is frozen before any panel-facing output
+    exists, so an edit has to be a visible diff of BOTH the text and the hash."""
+    src = open(an._p(an.PROMPT_TEMPLATE_PATH), encoding="utf-8").read()
+    tampered = src.replace(an.DEMO_BEGIN,
+                           an.DEMO_BEGIN + "\nsmuggled line\n", 1)
+    p = tmp_path / "prompt.md"
+    p.write_text(tampered, encoding="utf-8")
+    with pytest.raises(an.DemonstrationLeak):
+        an.verify_demonstrations(str(p))
+
+
+def test_no_demonstration_line_is_a_passage_of_either_spec():
+    """BLOCKING DEFECT if it fires. A spec-sourced demonstration hands the
+    extractor hand-curated annotations of evaluation-set clauses, and the care
+    taken in choosing them is a channel from someone who has seen the panel."""
+    corpora = []
+    for path in ("modelspec_clauses.json", "constitution_clauses.json"):
+        full = an._p(path)
+        if os.path.exists(full):
+            with open(full, encoding="utf-8") as f:
+                data = json.load(f)
+            rows = data["clauses"] if isinstance(data, dict) else data
+            corpora.append(" ".join(ex._norm_ws(r.get("quote") or "")
+                                    for r in rows))
+    assert corpora, "no spec on disk to check against"
+    for line in an.demonstration_prose():
+        for blob in corpora:
+            assert line not in blob, (
+                f"DEMONSTRATION SOURCED FROM A SPEC: {line!r}")
+
+
+def test_the_demonstration_clauses_are_declared_and_non_trivially_long():
+    """A substring test never fires on a one-word line, so the prose actually
+    checked has to be sentences."""
+    lines = an.demonstration_prose()
+    assert len(lines) >= 3
+    for line in lines:
+        assert len(line) >= 40, line
+
+
+# ---- verification accepts the notation, and REJECTS a malformed one -------
+
+def test_a_polarity_prefixed_name_with_principals_is_accepted(fake_rows):
+    fail = FailureLog(os.devnull)
+    obj = {"clauses": [{"clause_id": "m0001", "atoms": [
+        _atom("mustnot_disclose_reasoning__model_user")]}]}
+    atoms, stats = an.verify_atoms(obj, fake_rows[:1], fail)
+    assert stats["atoms_accepted"] == 1
+    assert atoms[0]["name"] == "mustnot_disclose_reasoning__model_user"
+
+
+def test_a_name_whose_notation_does_not_parse_is_rejected_and_counted(fake_rows):
+    """`a__b__c` matches the identifier regex, so without this it would be
+    accepted and then decode as an opaque string in every render."""
+    fail = FailureLog(os.devnull)
+    obj = {"clauses": [{"clause_id": "m0001", "atoms": [
+        _atom("a__b__c"), _atom("must_"), _atom("x__nobody")]}]}
+    atoms, stats = an.verify_atoms(obj, fake_rows[:1], fail)
+    assert atoms == []
+    assert stats["rejections"]["bad_notation"] == 3
+
+
+def test_a_role_outside_the_closed_set_is_rejected_and_counted(fake_rows):
+    fail = FailureLog(os.devnull)
+    obj = {"clauses": [{"clause_id": "m0001",
+                        "atoms": [_atom("x", role="trigger")]}]}
+    atoms, stats = an.verify_atoms(obj, fake_rows[:1], fail)
+    assert atoms == []
+    assert stats["rejections"]["bad_role"] == 1
+
+
+def test_a_declared_role_survives_into_the_atom(fake_rows):
+    fail = FailureLog(os.devnull)
+    obj = {"clauses": [{"clause_id": "m0001",
+                        "atoms": [_atom("x", role="Condition")]}]}
+    atoms, _ = an.verify_atoms(obj, fake_rows[:1], fail)
+    assert atoms[0]["role"] == "condition"
+
+
+def test_an_atom_with_no_role_gets_no_role_key(fake_rows):
+    """BACKWARD COMPATIBILITY. A default would make every legacy atom assert a
+    conditional structure nobody wrote."""
+    fail = FailureLog(os.devnull)
+    obj = {"clauses": [{"clause_id": "m0001", "atoms": [_atom("x")]}]}
+    atoms, _ = an.verify_atoms(obj, fake_rows[:1], fail)
+    assert "role" not in atoms[0]
+
+
+def test_must_and_mustnot_are_not_merged_by_the_near_duplicate_resolver():
+    """Collapsing opposites is far worse than leaving a duplicate: a duplicate
+    is visible in the vocabulary index, a merge is invisible everywhere."""
+    assert an.vocab_key("must_disclose") != an.vocab_key("mustnot_disclose")
+    assert an.vocab_key("must_defer__model_operator") != \
+        an.vocab_key("must_defer__operator_model")
+
+
+def test_the_notation_is_the_identity_on_the_real_shipped_artifact():
+    """Point 3 of the task, tested on the artifact rather than a fixture."""
+    with open(an._p("annotations_b8.json"), encoding="utf-8") as f:
+        data = json.load(f)
+    names = set(data.get("vocabulary") or {})
+    names |= {a["name"] for a in data.get("atoms", []) if a.get("name")}
+    assert len(names) >= 361
+    for n in names:
+        assert gr.stem_of(n) == n, n
+    for a in data.get("atoms", [])[:2000]:
+        assert gr.role_of(a) is None
+
+
+# ---- THE RATE CAP: richer names are not a licence to emit more ------------
+
+def test_the_rate_cap_constants_are_the_shipped_budget_and_ladders():
+    import ladder as L
+    assert an.CAP_ATOMS_PER_CLAUSE == L.CAP_ATOMS_PER_CLAUSE == 2.78
+    assert an.CAP_TEXT_CHARS_PER_CLAUSE == L.CAP_TEXT_CHARS_PER_CLAUSE == 211
+
+
+def test_the_rate_cap_reuses_ladders_implementation_rather_than_a_copy():
+    import inspect
+    import ladder as L
+    src = inspect.getsource(an.apply_rate_cap)
+    assert "enforce_rate_cap" in src
+    assert L.enforce_rate_cap is not None
+
+
+def test_the_rate_cap_trims_an_over_budget_run_and_says_by_how_much(fake_rows):
+    atoms = []
+    for r in fake_rows:
+        for i in range(6):
+            atoms.append(dict(_atom(f"n{i}", gloss="x" * 300),
+                              clause_id=r["id"], quote="Q", locator="L"))
+    kept, stats = an.apply_rate_cap(atoms, fake_rows)
+    assert stats["atoms_dropped"] > 0
+    assert len(kept) / len(fake_rows) <= an.CAP_ATOMS_PER_CLAUSE
+    assert (sum(len(a["gloss"]) for a in kept) / len(fake_rows)
+            <= an.CAP_TEXT_CHARS_PER_CLAUSE)
+
+
+def test_the_rate_cap_never_touches_the_looked_up_quote_or_the_role(fake_rows):
+    """`quote` is verbatim provenance and `role` is a closed enum — clipping
+    either would corrupt, not shorten. Only free text is the budget."""
+    atoms = [dict(_atom(f"n{i}", gloss="x" * 400, role="condition"),
+                  clause_id=fake_rows[0]["id"],
+                  quote="A VERBATIM SPAN OF THE DOCUMENT, LONG ENOUGH TO CLIP",
+                  locator="L") for i in range(9)]
+    kept, _ = an.apply_rate_cap(atoms, fake_rows)
+    assert kept, "the cap deleted everything"
+    for a in kept:
+        assert a["quote"] == ("A VERBATIM SPAN OF THE DOCUMENT, LONG ENOUGH "
+                              "TO CLIP")
+        assert a["role"] == "condition"
+
+
+def test_the_rate_cap_is_a_no_op_on_an_annotation_inside_budget(fake_rows):
+    atoms = [dict(_atom("n0", gloss="short"), clause_id=fake_rows[0]["id"],
+                  quote="Q", locator="L")]
+    kept, stats = an.apply_rate_cap(atoms, fake_rows)
+    assert kept == atoms and stats["atoms_dropped"] == 0
+
+
+def test_the_prompt_states_the_budget_so_the_model_is_not_asked_to_overspend():
+    system, _ = an.load_template()
+    assert "2.78" in system or "three" in system.lower()
+    low = system.lower()
+    assert "more atoms" in low or "not a licence" in low or "fewer" in low
+
+
+# ---- --dry-run: MEASURED tokens and a price ------------------------------
+
+def test_dry_run_cost_is_built_from_the_prompts_it_would_actually_send():
+    est = an.estimate_cost(limit=28, provider="luna")
+    assert est["calls"] >= 1
+    assert est["prompt_chars"] > 0
+    assert est["in_tokens"] > 0
+    assert est["chars_per_token"] > 3.0
+
+
+def test_dry_run_cost_prices_through_spend_cost_of():
+    import inspect
+    src = inspect.getsource(an.estimate_cost)
+    assert "cost_of" in src, "the price must go through spend.py, not arithmetic"
+    est = an.estimate_cost(limit=28, provider="luna")
+    assert est["usd"] > 0 and est["usd_ceiling"] >= est["usd"]
+
+
+def test_dry_run_cost_scales_with_the_number_of_clauses():
+    small = an.estimate_cost(limit=28, provider="luna")
+    big = an.estimate_cost(limit=112, provider="luna")
+    assert big["usd"] > small["usd"]
+
+
+def test_dry_run_makes_no_network_call(monkeypatch):
+    import urllib.request
+
+    def boom(*a, **k):
+        raise AssertionError("the dry run opened a socket")
+
+    monkeypatch.setattr(urllib.request, "urlopen", boom)
+    an.estimate_cost(limit=28, provider="luna")
+    assert an.main(["--limit", "28", "--dry-run", "--out",
+                    os.devnull, "--log", os.devnull]) == 0
+
+
+def test_run_ACTUALLY_APPLIES_the_rate_cap_end_to_end(fake_rows, tmp_path):
+    """MUTATION-VERIFIED, and it caught a real hole: every other cap test
+    calls `apply_rate_cap` directly, so turning the call OFF inside `run()`
+    left the whole suite green. That is the `section_path` defect shape — a
+    unit tested in isolation while the pipeline forgot to call it — and it is
+    exactly the failure mode the rate cap exists to prevent, since a rung could
+    then win by asserting more."""
+    over = {r["id"]: [atom(f"n{i}", "situation", "s1", gloss="x" * 300)
+                      for i in range(6)] for r in fake_rows}
+    client = FakeClient([response(over)])
+    art = an.run(client, fake_rows, model="m", batch_size=99,
+                 out_dir=str(tmp_path))
+    cap = art["provenance"]["rate_cap"]
+    assert cap["applied"] is True and cap["atoms_dropped"] > 0
+    n = len(fake_rows)
+    assert len(art["atoms"]) / n <= an.CAP_ATOMS_PER_CLAUSE
+    assert (sum(len(a["gloss"]) for a in art["atoms"]) / n
+            <= an.CAP_TEXT_CHARS_PER_CLAUSE)
+    assert art["provenance"]["vocabulary"]["atoms_per_clause"] <= \
+        an.CAP_ATOMS_PER_CLAUSE
+
+
+def test_an_uncapped_run_says_so_in_its_own_artifact(fake_rows, tmp_path):
+    client = FakeClient([response({r["id"]: [atom(f"n{i}") for i in range(6)]
+                                   for r in fake_rows})])
+    art = an.run(client, fake_rows, model="m", batch_size=99,
+                 out_dir=str(tmp_path), rate_cap=False)
+    assert art["provenance"]["rate_cap"] == {"applied": False}
+    assert len(art["atoms"]) / len(fake_rows) > an.CAP_ATOMS_PER_CLAUSE
+
+
+# ------------------------------------------------------- the budget must BIND
+# Found by the pre-spend review. `print_cost` ended in a bare
+# `print("!! THE CEILING WOULD EXCEED THE BUDGET.")` with no return and no
+# raise, and the next statements spent the money. On luna the $0.552 ceiling is
+# arithmetically bounded so it could not bite — but the SAME command with
+# `--provider sol` prices at $10.05 expected / $13.79 ceiling against an $8.50
+# hard cap, and would have run anyway after printing a warning.
+#
+# A guard that reports and proceeds is not a guard. `ladder.main` raises
+# SystemExit on the same condition; this is the divergence.
+
+def test_a_ceiling_over_budget_RAISES_rather_than_printing_and_proceeding():
+    """# MUTATION-VERIFIED"""
+    est = {"clauses": 593, "calls": 78, "batch_size": 8, "provider": "sol",
+           "model": "gpt-5.6-sol", "prompt_chars": 3858255, "in_tokens": 840839,
+           "chars_per_token": 4.59, "chars_per_token_method": "measured",
+           "out_tokens_low": 1e5, "out_tokens_high": 2e5,
+           "out_tokens_ceiling": 3e5, "output_profile": "b8",
+           "usd_low": 8.0, "usd": 10.05, "usd_ceiling": 13.79,
+           "spent_so_far": 1.52, "budget": 8.50}
+    with pytest.raises(SystemExit) as e:
+        an.print_cost(est, live=True)
+    assert "BUDGET" in str(e.value).upper(), \
+        "the refusal must say why, so it is not mistaken for a crash"
+
+
+def test_the_same_ceiling_only_WARNS_on_a_dry_run():
+    """A dry run spends nothing, so it must still print the number rather than
+    refusing — otherwise you cannot cost a run you have not been approved for.
+    """
+    est = {"clauses": 593, "calls": 78, "batch_size": 8, "provider": "sol",
+           "model": "gpt-5.6-sol", "prompt_chars": 1, "in_tokens": 1,
+           "chars_per_token": 4.59, "chars_per_token_method": "m",
+           "out_tokens_low": 1, "out_tokens_high": 1, "out_tokens_ceiling": 1,
+           "output_profile": "b8", "usd_low": 8.0, "usd": 10.05,
+           "usd_ceiling": 13.79, "spent_so_far": 1.52, "budget": 8.50}
+    an.print_cost(est, live=False)   # must not raise
+
+
+# --------------------------------------------------------------------------
+# the document-facts split (REPRODUCIBILITY.md "Document-agnostic vs
+# document-specific"; NEW_DOCUMENT_RUNBOOK.md step 3)
+#
+# annotate_prompt.md is the PROCEDURE — how to annotate any document. The
+# facts of one document's ontology (its authority levels, its principal
+# names, its terminology corrections) live in a per-document docfacts file
+# that load_template splices in at {{DOCFACTS:...}} markers. Running the
+# Model-Spec facts on the constitution would TEACH FALSE FACTS ("root vs
+# system", "there is no platform"), which is the defect this split removes.
+
+import hashlib as _hashlib
+
+DOCFACTS_MODEL_SPEC = "docfacts_model_spec.md"
+DOCFACTS_CONSTITUTION = "docfacts_constitution.md"
+
+# sha256 of the COMPOSED (system, user) pair as produced by an.load_template().
+# This pin makes every prompt change a VISIBLE, deliberate act: annotation is
+# paid, and a silent prompt change would make artifacts incomparable.
+#
+# PIN HISTORY (update the sha AND this log together, never the sha alone):
+# - 2026-08-03 "13152a8c99ac…5298caec": the pre-docfacts-split prompt; proved
+#   the split was a pure refactor on the default path (b8-comparable).
+# - 2026-08-03 "0f6462f0009c…d8d1efc": DELIBERATE CHANGE, pilot iteration 2 —
+#   added the no-assistant-only-chains paragraph to the procedure after the
+#   18-pair mismatch analysis showed 11/18 span_deco failures were `__model`
+#   solo chains golden's convention omits. Measured effect on the pilot set:
+#   span_deco 0.500 -> 0.612, model-only chains 40 -> 0. Artifacts produced
+#   under the OLD prompt: annotations_b8.json, annotations_pilot_ext.json.
+#   Under the NEW: annotations_pilot_ext2.json.
+PRE_SPLIT_SYSTEM_SHA = (
+    "0f6462f0009c007e602c92e48e23ea994de86d54ec645cd85eb97c861d8d1efc")
+PRE_SPLIT_USER_SHA = (
+    "cea9193b30694bf5c6c49126f3ee0224da19e4c5bcc01ed49ccf14af25ec1d3c")
+
+
+def _sha256(text):
+    return _hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def test_the_default_docfacts_is_the_model_spec_file():
+    assert an.DOCFACTS_PATH == DOCFACTS_MODEL_SPEC
+
+
+def test_default_composition_is_byte_identical_to_the_pre_split_prompt():
+    """The split must be a pure refactor on the default path: procedure +
+    Model-Spec docfacts == the exact prompt every shipped artifact was
+    produced under."""
+    system, user = an.load_template()
+    assert _sha256(system) == PRE_SPLIT_SYSTEM_SHA, (
+        "the composed DEFAULT system prompt is not the pre-split prompt — "
+        "live-run behaviour changed silently")
+    assert _sha256(user) == PRE_SPLIT_USER_SHA
+
+
+def test_the_procedure_file_names_no_document_ontology():
+    """The procedure file itself — not a composition — must never state a
+    fact about one document's authority levels. These phrases are the
+    Model-Spec facts the 2026-08-03 audit found inline."""
+    with open(os.path.join(HERE, an.PROMPT_TEMPLATE_PATH),
+              encoding="utf-8") as f:
+        src = f.read()
+    for phrase in ("root rule",
+                   "`root` and `system` are DIFFERENT",
+                   "platform",
+                   "old name"):
+        assert phrase not in src, (
+            f"annotate_prompt.md still teaches a document fact: {phrase!r}")
+
+
+def test_no_composition_carries_an_unspliced_marker():
+    for df in (DOCFACTS_MODEL_SPEC, DOCFACTS_CONSTITUTION):
+        system, user = an.load_template(docfacts_path=df)
+        assert "{{DOCFACTS" not in system + user, df
+
+
+def test_constitution_composition_teaches_no_model_spec_facts():
+    """On the constitution, `root` may survive only as (a) the grammar's
+    closed vocabulary line — grammar.PRINCIPALS is shared, not per-document —
+    or (b) a line telling the extractor the level does NOT exist here. Same
+    for the retired `platform`."""
+    system, user = an.load_template(docfacts_path=DOCFACTS_CONSTITUTION)
+    blob = system + "\n" + user
+    assert "root rule" not in blob
+    assert "old name" not in blob
+    vocab_lines = _principal_vocabulary_lines(system)
+    assert len(vocab_lines) == 1
+    for line in blob.splitlines():
+        if "root" in line and line not in vocab_lines:
+            assert "There is no" in line, (
+                f"Model-Spec `root` teaching reached the constitution "
+                f"prompt: {line.strip()!r}")
+        if "platform" in line:
+            assert "There is no" in line, line.strip()
+
+
+def test_constitution_composition_names_the_documents_principals():
+    system, _ = an.load_template(docfacts_path=DOCFACTS_CONSTITUTION)
+    for word in ("Anthropic", "operator", "user"):
+        assert word in system, word
+
+
+def test_both_compositions_enumerate_the_principals_exactly_once():
+    """The ENUMERATES regression guard, held on EVERY composition: a docfacts
+    block must never delete or duplicate the closed vocabulary line."""
+    for df in (DOCFACTS_MODEL_SPEC, DOCFACTS_CONSTITUTION):
+        system, _ = an.load_template(docfacts_path=df)
+        assert len(_principal_vocabulary_lines(system)) == 1, df
+
+
+def test_both_compositions_hold_invariant_8():
+    """Invariant 8 (no behaviour, no panel) binds on the COMPOSITION — a
+    docfacts file is part of the sent prompt and must clear the same bans."""
+    for df in (DOCFACTS_MODEL_SPEC, DOCFACTS_CONSTITUTION):
+        system, user = an.load_template(docfacts_path=df)
+        blob = (system + user).lower()
+        for word in ("behaviour", "behavior", "panel", "judge", "relevant to",
+                     "harm-avoidance", "over-caution", "gold"):
+            assert word not in blob, (df, word)
+
+
+def test_a_docfacts_file_missing_a_needed_key_is_refused(tmp_path):
+    """A docfacts file that lacks a block the procedure calls for must fail
+    loudly, not send a prompt with a hole (or a literal marker) in it."""
+    p = tmp_path / "docfacts_incomplete.md"
+    p.write_text("<!-- DOCFACTS:principals BEGIN -->\nx\n"
+                 "<!-- DOCFACTS:principals END -->\n", encoding="utf-8")
+    with pytest.raises(an.DocfactsError):
+        an.load_template(docfacts_path=str(p))
+
+
+def test_the_cli_exposes_a_docfacts_flag():
+    args = an.build_parser().parse_args([])
+    assert args.docfacts == DOCFACTS_MODEL_SPEC

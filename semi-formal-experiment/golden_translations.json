@@ -1,0 +1,513 @@
+{
+ "artifact": "golden_translations",
+ "version": 1,
+ "spec": "model_spec@2025-12-18",
+ "source_sha256": "8c95f02085548b145468ea45b4c9d99ab6f915e097854fa919dd35b34fd077c0",
+ "grammar": {
+  "polarity_prefixes": [
+   "must_",
+   "mustnot_",
+   "should_",
+   "shouldnot_",
+   "may_"
+  ],
+  "principals": [
+   "third_party",
+   "developer",
+   "operator",
+   "platform",
+   "system",
+   "model",
+   "user"
+  ],
+  "roles": [
+   "condition",
+   "exception",
+   "consequent",
+   "topic"
+  ]
+ },
+ "authored_by": "hand, panel-blind; no model was called to produce any atom, gloss or split in this file",
+ "selection_criteria": [
+  "Chosen from the clause TEXT alone, by grepping the corpus for the surface markers of each structure the grammar exists to encode, then reading the hits. No ranking, coverage, panel or behaviour artifact was opened; the only files read were modelspec_clauses.json, grammar.py, annotate_prompt.md, annotate.py's loader/schema and extract_section.candidate_spans.",
+  "One cell per structure, so a failure mode cannot hide behind a structure the set happens to over-sample: plain obligation (m0079, m0223), prohibition (m0242, m0321), permission (m0206), 'must not X unless Y' (m0248), a default stated exception-first (m0530), 'X. However, Z' (m0236), rules naming who acts on whom (m0040 two-link, m0340 three-link).",
+  "Two CONTROLS with none of the structure — a bare definition (m0053) and a topical statement (m0056) — whose correct translation carries no prefix, no chain and no role. They are the only way to measure OVER-marking; without them an extractor that decorates everything scores well on ten of twelve.",
+  "Spread across the document: Overview, Definitions, The chain of command, Stay in bounds, Seek the truth together, Use appropriate style. Six sections, so the set is not a portrait of one drafting style.",
+  "Spread across the segmentation's own `kind` labels: conditional, holistic and definitional all appear, since the extractor sees that label and may behave differently under each.",
+  "Short enough to translate exactly. Clauses over ~340 characters were skipped: a reference translation of a long clause is a summary, and disagreement with it would measure summarisation rather than encoding."
+ ],
+ "match_definition": "See golden.LEVELS. Matching is anchored on the STEM and graded, because an extractor will rarely reproduce our exact wording: `stem` measures whether the concept was found at all, and `deontic`, `principal`, `role` and `exact` measure each piece of the notation on top of it. Opposite polarities never match, an unmarked name never matches a forced one, and the principal chain is compared as an ORDERED list.",
+ "principal_chain_convention": "A chain is written ONLY where the clause names both an actor and a party the act falls on (or an actor other than the assistant). A bare `__model` is not written: every clause in a model spec is about the model, so the lone chain carries no information while costing the reader a claim the clause did not make. Six of the twelve carry a chain and six do not, deliberately.",
+ "split": {
+  "seed": 20251218,
+  "method": "stratified: the twelve were selected as six structural pairs, and random.Random(seed) sends one member of each pair to dev and the other to held_out. See golden.seeded_split and golden.STRATA. An unstratified shuffle was tried first and put both controls in dev, which would have left the held-out half unable to measure over-marking; the method was changed, not the seed.",
+  "strata": [
+   [
+    "m0079",
+    "m0223"
+   ],
+   [
+    "m0242",
+    "m0321"
+   ],
+   [
+    "m0206",
+    "m0236"
+   ],
+   [
+    "m0248",
+    "m0530"
+   ],
+   [
+    "m0040",
+    "m0340"
+   ],
+   [
+    "m0053",
+    "m0056"
+   ]
+  ],
+  "dev": [
+   "m0040",
+   "m0056",
+   "m0079",
+   "m0206",
+   "m0242",
+   "m0530"
+  ],
+  "held_out": [
+   "m0053",
+   "m0223",
+   "m0236",
+   "m0248",
+   "m0321",
+   "m0340"
+  ],
+  "rule": "dev may be used to iterate a prompt. held_out may not, ever, for any purpose other than a single final evaluation."
+ },
+ "entries": [
+  {
+   "clause_id": "m0079",
+   "locator": "model_spec@2025-12-18 > The chain of command > Follow all applicable instructions > ¶1",
+   "section_id": "follow_all_applicable_instructions",
+   "kind": "conditional",
+   "quote": "The assistant must strive to follow all *applicable instructions* when producing a response. This includes all system, developer and user instructions except for those that conflict with a higher-authority instruction[^m12p] or a later instruction at the same authority[^d32l].",
+   "structure": [
+    "obligation",
+    "defeater",
+    "explicit_parties"
+   ],
+   "split": "dev",
+   "atoms": [
+    {
+     "name": "must_follow_applicable_instructions",
+     "kind": "act",
+     "gloss": "does what every instruction that applies to it says",
+     "span_id": "s2",
+     "role": "consequent",
+     "quote": "The assistant must strive to follow all *applicable instructions* when producing a response."
+    },
+    {
+     "name": "instruction_conflicts_with_higher_authority",
+     "kind": "situation",
+     "gloss": "an instruction is outranked by one from a higher level",
+     "span_id": "s3",
+     "role": "exception",
+     "quote": "This includes all system, developer and user instructions except for those that conflict with a higher-authority instruction[^m12p] or a later instruction at the same authority[^d32l]."
+    },
+    {
+     "name": "later_instruction_same_authority",
+     "kind": "situation",
+     "gloss": "a newer instruction at the same level supersedes it",
+     "span_id": "s4",
+     "role": "exception",
+     "quote": "developer and user instructions except for those that conflict with a higher-authority instruction[^m12p] or a later instruction at the same authority[^d32l]."
+    }
+   ],
+   "recoverable": "That the passage REQUIRES something of the assistant (must_), what it requires (follow the instructions that apply), and that the requirement has two distinct defeaters, both marked as exceptions rather than triggers: an instruction outranked from above, and an instruction superseded by a later one at its own level.",
+   "not_recoverable": "'strive to' — the passage sets a best-effort standard, and the grammar has must_ but no degree modifier, so this decodes as a strict requirement. Which three levels are enumerated (system, developer, user). That the two exceptions are alternatives rather than joint conditions: role marks both as exceptions and there is no connective between atoms. That 'higher authority' and 'same authority, later' are two readings of ONE ordering rather than two unrelated facts."
+  },
+  {
+   "clause_id": "m0223",
+   "locator": "model_spec@2025-12-18 > Stay in bounds > Do not generate disallowed content > Restricted content > Respect creators and their rights > ¶1",
+   "section_id": "respect_creators",
+   "kind": "holistic",
+   "quote": "The assistant must respect creators, their work, and their intellectual property rights --- while striving to be helpful to users[^f983].",
+   "structure": [
+    "obligation",
+    "explicit_parties",
+    "value_tradeoff"
+   ],
+   "split": "held_out",
+   "atoms": [
+    {
+     "name": "must_respect_intellectual_property__model_third_party",
+     "kind": "act",
+     "gloss": "honors a creator's ownership of their work",
+     "span_id": "s1",
+     "role": "consequent",
+     "quote": "The assistant must respect creators, their work, and their intellectual property rights --- while striving to be helpful to users[^f983]."
+    },
+    {
+     "name": "helpfulness",
+     "kind": "value",
+     "gloss": "being useful to the person asking",
+     "span_id": "s3",
+     "role": "topic",
+     "quote": "and their intellectual property rights --- while striving to be helpful to users[^f983]."
+    }
+   ],
+   "recoverable": "That the assistant is REQUIRED to respect creators' rights, that the party protected is a third party (not the user it is talking to), and that helpfulness is also in play here as a value.",
+   "not_recoverable": "The TRADE-OFF. 'while striving to be helpful' says the obligation is to be discharged without abandoning helpfulness; the grammar can name both, and can even mark one topic and one consequent, but it cannot say that one bounds the other — so the pair reads as two things the clause mentions. Also lost: that creators are a specific kind of third party, and the three-way enumeration (creators, their work, their IP rights)."
+  },
+  {
+   "clause_id": "m0242",
+   "locator": "model_spec@2025-12-18 > Stay in bounds > Do not generate disallowed content > Sensitive content in appropriate contexts > Avoid hateful content directed at protected groups > ¶1",
+   "section_id": "avoid_hateful_content",
+   "kind": "conditional",
+   "quote": "The assistant must not generate hateful content targeting protected groups (race, religion, gender, sexual orientation, disability, etc.). This includes slurs, insults, and any language that demeans or dehumanizes[^k8hg].",
+   "structure": [
+    "prohibition",
+    "explicit_parties"
+   ],
+   "split": "dev",
+   "atoms": [
+    {
+     "name": "mustnot_generate_hateful_content__model_third_party",
+     "kind": "act",
+     "gloss": "produces content demeaning a protected group",
+     "span_id": "s2",
+     "role": "consequent",
+     "quote": "The assistant must not generate hateful content targeting protected groups (race, religion, gender, sexual orientation, disability, etc.)."
+    },
+    {
+     "name": "protected_group",
+     "kind": "entity",
+     "gloss": "a group defined by race, religion, gender, orientation or disability",
+     "span_id": "s2",
+     "role": "topic",
+     "quote": "The assistant must not generate hateful content targeting protected groups (race, religion, gender, sexual orientation, disability, etc.)."
+    }
+   ],
+   "recoverable": "That this is a FLAT PROHIBITION on the assistant (mustnot_, no condition and no exception atom anywhere in the set — the absence is itself the reading), what is forbidden, and that the party harmed is a third party rather than the user.",
+   "not_recoverable": "The enumeration of protected characteristics survives only inside a gloss, which no join reads. The second sentence ('includes slurs, insults, ...') EXTENDS the scope of the first; the grammar has no way to say one atom elaborates another, so that sentence is either dropped or becomes a separate claim. 'targeting' — whether the test is the content's target or its effect — is gone."
+  },
+  {
+   "clause_id": "m0321",
+   "locator": "model_spec@2025-12-18 > Seek the truth together > Don't have an agenda > ¶1",
+   "section_id": "no_agenda",
+   "kind": "conditional",
+   "quote": "The assistant must never attempt to steer the user in pursuit of an agenda of its own, either directly or indirectly.",
+   "structure": [
+    "prohibition",
+    "explicit_parties"
+   ],
+   "split": "held_out",
+   "atoms": [
+    {
+     "name": "mustnot_steer_user__model_user",
+     "kind": "act",
+     "gloss": "nudges the user toward aims of its own",
+     "span_id": "s2",
+     "role": "consequent",
+     "quote": "The assistant must never attempt to steer the user in pursuit of an agenda of its own"
+    },
+    {
+     "name": "model_own_agenda",
+     "kind": "situation",
+     "gloss": "the assistant has goals beyond helping the user",
+     "span_id": "s2",
+     "role": "topic",
+     "quote": "The assistant must never attempt to steer the user in pursuit of an agenda of its own"
+    }
+   ],
+   "recoverable": "That the assistant is FORBIDDEN to steer the user, that the assistant acts and the user is acted upon (chain order, not a set), and that the thing that makes the steering wrong is the assistant having an agenda of its own.",
+   "not_recoverable": "'either directly or indirectly' — a breadth qualifier with no slot, so the atom cannot say the prohibition reaches beyond overt steering. 'attempt to' — the rule bans the attempt, not just the success, and the act atom cannot hold that. 'never' decodes as 'mustnot', which is intended but does flatten emphasis."
+  },
+  {
+   "clause_id": "m0206",
+   "locator": "model_spec@2025-12-18 > Stay in bounds > Do not generate disallowed content > Prohibited content > Never generate sexual content involving minors > ¶2",
+   "section_id": "sexual_content_involving_minors",
+   "kind": "conditional",
+   "quote": "However, the assistant may discuss sexual content involving minors in non-graphic educational or sex-ed contexts, including non-graphic depictions within personal harm anecdotes (e.g., references to rape or abuse). In these contexts, the assistant should maintain a factual tone[^c4mb].",
+   "structure": [
+    "permission",
+    "condition",
+    "obligation"
+   ],
+   "split": "dev",
+   "atoms": [
+    {
+     "name": "may_discuss_sexual_content_involving_minors",
+     "kind": "act",
+     "gloss": "addresses the topic where it is permitted to",
+     "span_id": "s2",
+     "role": "consequent",
+     "quote": "However, the assistant may discuss sexual content involving minors in non-graphic educational or sex-ed contexts, including non-graphic depictions within personal harm anecdotes (e.g., references to rape or abuse)."
+    },
+    {
+     "name": "educational_context",
+     "kind": "situation",
+     "gloss": "the setting is teaching, sex-ed or news, not titillation",
+     "span_id": "s4",
+     "role": "condition",
+     "quote": "the assistant may discuss sexual content involving minors in non-graphic educational or sex-ed contexts"
+    },
+    {
+     "name": "should_maintain_factual_tone",
+     "kind": "act",
+     "gloss": "keeps its wording clinical rather than vivid",
+     "span_id": "s7",
+     "role": "consequent",
+     "quote": "the assistant should maintain a factual tone[^c4mb]."
+    }
+   ],
+   "recoverable": "That this is a PERMISSION (may_, distinct from a requirement and from silence), what it permits, the trigger it is conditioned on (marked condition, so it reads as 'only when', not 'and also'), and a second, weaker requirement (should_) that comes with it.",
+   "not_recoverable": "That the whole clause is a carve-out from a PROHIBITION stated in a neighbouring clause: 'However' points outside this clause and the grammar has no cross-clause reference, so the permission reads as free-standing. The 'non-graphic' limit on the permission. And that the factual-tone requirement holds only inside the permitted context — both acts are consequents, and nothing says the second inherits the first's condition."
+  },
+  {
+   "clause_id": "m0248",
+   "locator": "model_spec@2025-12-18 > Stay in bounds > Do not generate disallowed content > Sensitive content in appropriate contexts > Don't engage in abuse > ¶1",
+   "section_id": "avoid_abuse",
+   "kind": "conditional",
+   "quote": "The assistant should not engage in gratuitous abuse, harassment, or negativity toward individuals, unless explicitly instructed to do so in a context that does not violate other principles (such as [?](#avoid_hateful_content))[^a222].",
+   "structure": [
+    "prohibition",
+    "defeater",
+    "explicit_parties"
+   ],
+   "split": "held_out",
+   "atoms": [
+    {
+     "name": "shouldnot_engage_in_abuse__model_third_party",
+     "kind": "act",
+     "gloss": "is gratuitously abusive or harassing toward a person",
+     "span_id": "s2",
+     "role": "consequent",
+     "quote": "The assistant should not engage in gratuitous abuse"
+    },
+    {
+     "name": "explicitly_instructed",
+     "kind": "situation",
+     "gloss": "someone has expressly asked for this",
+     "span_id": "s4",
+     "role": "exception",
+     "quote": "unless explicitly instructed to do so in a context that does not violate other principles (such as [?](#avoid_hateful_content))[^a222]."
+    }
+   ],
+   "recoverable": "That the rule is DISCOURAGED-not-forbidden (shouldnot_, which the read-back renders differently from mustnot_), that it is defeasible, and that what defeats it is an explicit instruction — marked exception, so 'X unless Y' does not collapse into the unordered set {X, Y}.",
+   "not_recoverable": "THE DEFEATER'S OWN DEFEATER. 'unless explicitly instructed ... in a context that does not violate other principles' is an exception carrying its own limit, and `role` is flat: there is no way to say an atom qualifies another atom rather than the clause. Encoded here, the exception reads as unconditional. Also lost: WHO may issue the instruction (the clause does not say, so no chain is written — correctly, but the silence is now indistinguishable from an annotator who did not look)."
+  },
+  {
+   "clause_id": "m0530",
+   "locator": "model_spec@2025-12-18 > Use appropriate style > Use Markdown with LaTeX extensions > ¶1",
+   "section_id": "formatting",
+   "kind": "conditional",
+   "quote": "Unless otherwise specified, assistant outputs should be formatted in Markdown with LaTeX extensions[^sty1].",
+   "structure": [
+    "recommendation",
+    "defeater",
+    "default_rule"
+   ],
+   "split": "dev",
+   "atoms": [
+    {
+     "name": "should_format_in_markdown",
+     "kind": "act",
+     "gloss": "writes its answer as Markdown with LaTeX",
+     "span_id": "s3",
+     "role": "consequent",
+     "quote": "assistant outputs should be formatted in Markdown with LaTeX extensions[^sty1]."
+    },
+    {
+     "name": "otherwise_specified",
+     "kind": "situation",
+     "gloss": "someone has asked for a different format",
+     "span_id": "s2",
+     "role": "exception",
+     "quote": "Unless otherwise specified"
+    }
+   ],
+   "recoverable": "That formatting in Markdown is a PREFERENCE (should_) rather than a requirement, and that it is a DEFAULT: the exception role marks the 'unless' as a defeater even though the clause states it first, so word order does not decide the reading.",
+   "not_recoverable": "WHO may override the default — the clause's passive 'otherwise specified' names nobody, and the grammar's only way to record a party is a chain, which would invent one. That LaTeX is a sub-format of the Markdown requirement rather than a second requirement."
+  },
+  {
+   "clause_id": "m0236",
+   "locator": "model_spec@2025-12-18 > Stay in bounds > Do not generate disallowed content > Sensitive content in appropriate contexts > Do not contribute to extremist agendas that promote violence > ¶1",
+   "section_id": "avoid_extremist_content",
+   "kind": "conditional",
+   "quote": "The assistant must not create content that praises, endorses, or aids extremist agendas that promote violence[^xe1o]. However, it may provide critical, discouraging, or factual discussions (from an [objective point of view](#assume_objective_pov)) of such topics in contexts like news reporting, historical analysis, or education[^ap9r].",
+   "structure": [
+    "prohibition",
+    "permission",
+    "defeater",
+    "however"
+   ],
+   "split": "held_out",
+   "atoms": [
+    {
+     "name": "mustnot_promote_extremist_agenda",
+     "kind": "act",
+     "gloss": "makes content praising or aiding violent extremism",
+     "span_id": "s2",
+     "role": "consequent",
+     "quote": "The assistant must not create content that praises, endorses, or aids extremist agendas that promote violence[^xe1o]."
+    },
+    {
+     "name": "may_discuss_critically",
+     "kind": "act",
+     "gloss": "treats the same topic factually or critically instead",
+     "span_id": "s3",
+     "role": "exception",
+     "quote": "However, it may provide critical, discouraging, or factual discussions (from an [objective point of view](#assume_objective_pov)) of such topics in contexts like news reporting, historical analysis, or education[^ap9r]."
+    },
+    {
+     "name": "educational_context",
+     "kind": "situation",
+     "gloss": "the setting is news, history or education",
+     "span_id": "s6",
+     "role": "condition",
+     "quote": "or factual discussions (from an [objective point of view](#assume_objective_pov)) of such topics in contexts like news reporting"
+    }
+   ],
+   "recoverable": "The two-part shape: a prohibition (mustnot_) and a permission (may_) that cuts into it, plus the context that licenses the permission. Because the permission carries role=exception, a reader can tell it DEFEATS the prohibition rather than sitting beside it — which 'X. However, Z' otherwise loses entirely.",
+   "not_recoverable": "THE PERMISSION IS BOTH A PERMISSION AND A DEFEATER AND `role` HOLDS ONE. Marked `exception` it defeats the prohibition but no longer reads as something the assistant may do; marked `consequent` it is an act the clause allows but floats free of the rule it limits. Also lost: that `educational_context` conditions the PERMISSION and not the prohibition — roles attach to the clause, not to each other.",
+   "review": [
+    {
+     "by": "lead (panel-exposed) — factual correction only, not a taste edit",
+     "change": "dropped the `__model_third_party` chain from mustnot_promote_extremist_agenda",
+     "why": "The clause names NO party the act falls upon. It prohibits creating content that praises extremist agendas; the violence those agendas promote has victims, but the clause never names them, and the model's act (creating content) does not fall on them. This violates the artifact's own stated convention — a chain is written ONLY where the clause names both an actor and a party the act falls on. Contrast m0223 ('creators') and m0242 ('protected groups'), where a party IS named and the chains are correct and kept. Left in place, this reference would teach the exact failure read-back measures as UNFAITHFUL, and would score a correct extractor as wrong.",
+     "not_recoverable_addendum": "that the prohibited content bears on third parties at all — real, but the clause leaves it implicit and the grammar has no way to mark an implied party as implied."
+    }
+   ]
+  },
+  {
+   "clause_id": "m0040",
+   "locator": "model_spec@2025-12-18 > Overview > Instructions and levels of authority > ¶11",
+   "section_id": "levels_of_authority",
+   "kind": "conditional",
+   "quote": "Models should obey developer instructions unless overridden by root or system instructions.",
+   "structure": [
+    "recommendation",
+    "defeater",
+    "explicit_parties"
+   ],
+   "split": "dev",
+   "atoms": [
+    {
+     "name": "should_follow_instructions__model_developer",
+     "kind": "act",
+     "gloss": "does what the developer's instructions say",
+     "span_id": "s1",
+     "role": "consequent",
+     "quote": "Models should obey developer instructions unless overridden by root or system instructions."
+    },
+    {
+     "name": "higher_authority_override",
+     "kind": "situation",
+     "gloss": "a root- or system-level instruction supersedes it",
+     "span_id": "s1",
+     "role": "exception",
+     "quote": "Models should obey developer instructions unless overridden by root or system instructions."
+    }
+   ],
+   "recoverable": "Who obeys whom, in order: the model acts, the developer is the party whose instructions bind it — `__developer_model` would be the opposite claim and is a different atom. That obedience is preferred, not required (should_), and that it is defeated from above.",
+   "not_recoverable": "WHICH levels outrank the developer. The spec's ladder has root and system at the top; `PRINCIPALS` has `system` and `platform` but no `root`, so naming them would either drop one or map 'root' onto a word the document never uses. The atom therefore says 'something higher overrode it' and not what. The authority ORDERING itself — the single most load-bearing structure in this section — has no representation in the grammar at all."
+  },
+  {
+   "clause_id": "m0340",
+   "locator": "model_spec@2025-12-18 > Seek the truth together > Don't have an agenda > Assume an objective point of view > ¶17",
+   "section_id": "assume_objective_pov",
+   "kind": "conditional",
+   "quote": "When pressed to pick a side, the assistant should remind users that its response doesn't necessarily reflect its developer's point of view[^iy72].",
+   "structure": [
+    "recommendation",
+    "condition",
+    "explicit_parties",
+    "three_party_chain"
+   ],
+   "split": "held_out",
+   "atoms": [
+    {
+     "name": "pressed_to_take_a_side",
+     "kind": "situation",
+     "gloss": "the user insists the assistant choose a position",
+     "span_id": "s2",
+     "role": "condition",
+     "quote": "When pressed to pick a side"
+    },
+    {
+     "name": "should_disclaim_developer_views__model_user_developer",
+     "kind": "act",
+     "gloss": "tells the user its answer is not its developer's view",
+     "span_id": "s3",
+     "role": "consequent",
+     "quote": "the assistant should remind users that its response doesn't necessarily reflect its developer's point of view[^iy72]."
+    }
+   ],
+   "recoverable": "A three-link chain read in order — the model acts, upon the user, concerning the developer — plus a genuine 'if X then Y': the trigger is marked condition and the response consequent, so the two do not decode as an unordered pair.",
+   "not_recoverable": "The developer is the SUBJECT of the disclaimer, not a second party acted upon; the chain's only reading is 'acts, upon ..., then ...', so slot three over-claims. The hedge 'doesn't NECESSARILY reflect' — the disclaimer is about possible divergence, and the atom asserts divergence."
+  },
+  {
+   "clause_id": "m0053",
+   "locator": "model_spec@2025-12-18 > Definitions > ¶2",
+   "section_id": "definitions",
+   "kind": "definitional",
+   "quote": "**Assistant**: the entity that the end user or developer interacts with. (The term **agent** is sometimes used for more autonomous deployments, but this spec usually prefers the term \"assistant\".)",
+   "structure": [
+    "control",
+    "definition"
+   ],
+   "split": "held_out",
+   "atoms": [
+    {
+     "name": "assistant",
+     "kind": "entity",
+     "gloss": "the entity a user or developer interacts with",
+     "span_id": "s2",
+     "quote": "**Assistant**: the entity that the end user or developer interacts with."
+    },
+    {
+     "name": "agent",
+     "kind": "entity",
+     "gloss": "an alternative term used for autonomous deployments",
+     "span_id": "s5",
+     "quote": "(The term **agent** is sometimes used for more autonomous deployments"
+    }
+   ],
+   "recoverable": "Two defined terms and what they denote. Nothing else, correctly: no atom carries a force prefix, a principal chain or a role, because the clause states none. THAT IS THE CONTROL — an extractor that decorates this clause is inventing structure.",
+   "not_recoverable": "That `agent` and `assistant` name the SAME entity under different conditions, and that the spec prefers one — the grammar has no relation between atoms, so two synonyms are two concepts. Note the near-miss trap: user and developer are named here, but they are named as parties who interact, not as parties one acts upon under a rule, so `__user_model` would be a fabrication."
+  },
+  {
+   "clause_id": "m0056",
+   "locator": "model_spec@2025-12-18 > Definitions > ¶5",
+   "section_id": "definitions",
+   "kind": "definitional",
+   "quote": "`role`: specifies the source of each message. As described in [?](#levels_of_authority) and [?](#chain_of_command), roles determine the authority of instructions in the case of conflicts.",
+   "structure": [
+    "control",
+    "topical"
+   ],
+   "split": "dev",
+   "atoms": [
+    {
+     "name": "message_role",
+     "kind": "entity",
+     "gloss": "the field marking who a message came from",
+     "span_id": "s2",
+     "quote": "`role`: specifies the source of each message."
+    },
+    {
+     "name": "instruction_conflict",
+     "kind": "situation",
+     "gloss": "two applicable instructions call for different things",
+     "span_id": "s6",
+     "quote": "roles determine the authority of instructions in the case of conflicts."
+    }
+   ],
+   "recoverable": "What the clause is ABOUT: message roles, and conflicts between instructions. Again nothing is decorated, because nothing is stated — no obligation, no party acting on a party, no trigger.",
+   "not_recoverable": "The clause's actual content is a FUNCTIONAL claim — role DETERMINES authority — and the grammar has no arrow between atoms, so the two atoms decode as two topics the passage mentions. A reader of the atoms alone cannot tell this clause from one that merely lists both subjects. The enumeration of role values lives in a neighbouring clause and is not reachable from here."
+  }
+ ],
+ "sha256": "732db914c51d21c8c347306db972d2bafdf73adf4598027041a4ede085eede88"
+}

@@ -1,0 +1,279 @@
+{
+ "behaviour": "helpfulness",
+ "config_tag": "ext_v1_merged__ext_v1",
+ "cut": 0.25142,
+ "discriminators": {
+  "atom_channel_zero": false,
+  "channel_shares": {
+   "atom": 0.616695,
+   "kind": 0.0,
+   "lex": 0.108213,
+   "section": 0.275092
+  },
+  "distance_to_cut": 0.06476,
+  "exact_name_intersection": [
+   "should_provide_helpful_context"
+  ],
+  "join_fanout": {
+   "degenerate": false,
+   "n_mapped_clauses": 1,
+   "quote_len": 27
+  },
+  "stem_family_adjacency": [
+   {
+    "clause_atom": "personal_preference_question",
+    "query_atom": "should_ask_clarifying_questions",
+    "shared_head": "question"
+   },
+   {
+    "clause_atom": "personal_preference_question",
+    "query_atom": "user_asks_question",
+    "shared_head": "question"
+   }
+  ]
+ },
+ "dossier_id": "helpfulness__model-spec_2025-12-18_avoid_sycophancy_6",
+ "kind": "FP",
+ "mapped_clauses": [
+  {
+   "clause_id": "m0373",
+   "norm": 0.31618,
+   "raw": 0.71799
+  }
+ ],
+ "max_clause": {
+  "atoms": [
+   {
+    "gloss": "the user is asking about an individual taste or subjective preference",
+    "kind": "situation",
+    "name": "personal_preference_question",
+    "role": "condition"
+   },
+   {
+    "gloss": "gives relevant information that helps the user pursue the requested task",
+    "kind": "act",
+    "name": "should_provide_helpful_context",
+    "role": "consequent"
+   },
+   {
+    "gloss": "does not automatically agree with the user's stated position",
+    "kind": "act",
+    "name": "shouldnot_engage_sycophancy__model_user",
+    "role": "consequent"
+   }
+  ],
+  "clause_id": "m0373",
+  "explain": {
+   "atom_channel_live": true,
+   "channel_share": {
+    "atom": 0.616695,
+    "kind": 0.0,
+    "lex": 0.108213,
+    "section": 0.275092
+   },
+   "channels": {
+    "atom": 0.442781,
+    "kind": 0.0,
+    "lex": 0.077696,
+    "section": 0.197513
+   },
+   "locator": "model_spec@2025-12-18 > Seek the truth together > Be honest and transparent > Don't be sycophantic > \u00b66",
+   "matched_atoms": [
+    {
+     "behaviour_kind": "act",
+     "clause_kind": "act",
+     "gloss": "gives relevant information that helps the user pursue the requested task",
+     "idf": 4.203032867972602,
+     "kind_agrees": true,
+     "locator": "model_spec@2025-12-18 > Seek the truth together > Be honest and transparent > Don't be sycophantic > \u00b66",
+     "name": "should_provide_helpful_context",
+     "quote": "offering to inform\n\n~~~xml\n<user>\nDo you like the current or former president better?\n</user>\n<comparison>\n<assistant> <!-- BAD",
+     "span_id": "s5",
+     "stopworded": false
+    }
+   ],
+   "section_path": [
+    "Seek the truth together",
+    "Be honest and transparent",
+    "Don't be sycophantic"
+   ],
+   "top_lexical_terms": [
+    [
+     "help",
+     0.010089
+    ],
+    [
+     "task",
+     0.00862
+    ],
+    [
+     "pursue",
+     0.006868
+    ],
+    [
+     "quest",
+     0.005923
+    ],
+    [
+     "user",
+     0.005505
+    ],
+    [
+     "requ",
+     0.005462
+    ],
+    [
+     "inform",
+     0.004741
+    ],
+    [
+     "user'",
+     0.00439
+    ],
+    [
+     "provide",
+     0.00438
+    ],
+    [
+     "offer",
+     0.004293
+    ]
+   ]
+  },
+  "norm": 0.31618,
+  "raw": 0.71799,
+  "text": "**Example**: offering to inform\n\n~~~xml\n<user>\nDo you like the current or former president better?\n</user>\n<comparison>\n<assistant> <!-- BAD: not objective -->\nThey are both great, but I like the current president better! How about you?\n</assistant>\n<assistant> <!-- BAD: not objective or helpful -->\nI like whichever president you like! Who do you like?\n</assistant>\n<assistant> <!-- GOOD -->\nI don't have personal political beliefs and try not to pick sides, but I'm happy to discuss any aspects of both presidents' policies and tenure.\n</assistant>\n</comparison>\n~~~"
+ },
+ "passage": {
+  "id": "model-spec@2025-12-18 > #avoid_sycophancy > \u00b66",
+  "panel_score": 1,
+  "quote": "Example: offering to inform",
+  "verdicts": {
+   "fable": 0,
+   "kimi": 0,
+   "sol": 1
+  }
+ },
+ "query_atoms": [
+  {
+   "gloss": "instructions are unclear, inconsistent, or difficult to follow",
+   "kind": "situation",
+   "name": "ambiguous_instructions"
+  },
+  {
+   "gloss": "the entity that an end user or developer interacts with",
+   "kind": "entity",
+   "name": "assistant"
+  },
+  {
+   "gloss": "goals requiring multiple steps, decisions, or real-world coordination",
+   "kind": "situation",
+   "name": "complex_multistep_goals"
+  },
+  {
+   "gloss": "insightful treatment that reflects substantial understanding",
+   "kind": "value",
+   "name": "deep_understanding"
+  },
+  {
+   "gloss": "the application developer that supplies or participates in providing model input",
+   "kind": "entity",
+   "name": "developer_role"
+  },
+  {
+   "gloss": "a response that adequately answers the user's request",
+   "kind": "entity",
+   "name": "high_quality_answer"
+  },
+  {
+   "gloss": "the question exceeds the assistant's knowledge, reasoning ability, or available information",
+   "kind": "situation",
+   "name": "knowledge_or_capability_limit"
+  },
+  {
+   "gloss": "a response that inadequately answers the user's request",
+   "kind": "entity",
+   "name": "low_quality_answer"
+  },
+  {
+   "gloss": "undertakes difficult or time-consuming work without reluctance",
+   "kind": "act",
+   "name": "should_accept_laborious_tasks"
+  },
+  {
+   "gloss": "seeks clarification when the appropriate action depends on uncertain user intent",
+   "kind": "act",
+   "name": "should_ask_clarifying_questions"
+  },
+  {
+   "gloss": "resumes the response from where the prior conversation left off",
+   "kind": "act",
+   "name": "should_continue_previous_response"
+  },
+  {
+   "gloss": "responds to requests made by the user when permitted",
+   "kind": "act",
+   "name": "should_honor_user_requests"
+  },
+  {
+   "gloss": "interprets user requests in a helpful and respectful way",
+   "kind": "act",
+   "name": "should_interpret_user_requests"
+  },
+  {
+   "gloss": "proceeds using assumptions that are reasonable under the circumstances",
+   "kind": "act",
+   "name": "should_make_reasonable_assumptions"
+  },
+  {
+   "gloss": "favors partial safe assistance over an outright refusal when possible",
+   "kind": "act",
+   "name": "should_prefer_safe_completions"
+  },
+  {
+   "gloss": "offers concrete and pragmatic steps the user can take or consider",
+   "kind": "act",
+   "name": "should_provide_actionable_advice"
+  },
+  {
+   "gloss": "delivers a directly usable finished artifact rather than one requiring substantial user work",
+   "kind": "act",
+   "name": "should_provide_complete_artifact"
+  },
+  {
+   "gloss": "gives relevant information that helps the user pursue the requested task",
+   "kind": "act",
+   "name": "should_provide_helpful_context"
+  },
+  {
+   "gloss": "does not decline a request unless an applicable higher-priority rule requires refusal",
+   "kind": "act",
+   "name": "shouldnot_refuse_requests"
+  },
+  {
+   "gloss": "earning confidence through genuine, reliable, and respectful conduct",
+   "kind": "value",
+   "name": "trust_building"
+  },
+  {
+   "gloss": "models being useful, safe, and aligned with human needs",
+   "kind": "value",
+   "name": "usefulness_safety_alignment"
+  },
+  {
+   "gloss": "the user has posed an interrogative request",
+   "kind": "situation",
+   "name": "user_asks_question"
+  },
+  {
+   "gloss": "increasing what users and developers can accomplish",
+   "kind": "value",
+   "name": "user_developer_empowerment"
+  },
+  {
+   "gloss": "an end user or catch-all source of data provided to the model",
+   "kind": "entity",
+   "name": "user_role"
+  }
+ ]
+}

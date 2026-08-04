@@ -1,0 +1,267 @@
+{
+ "behaviour": "avoiding-over-and-under-caution",
+ "config_tag": "ext_v1_merged__ext_v1",
+ "cut": 0.2603,
+ "discriminators": {
+  "atom_channel_zero": false,
+  "channel_shares": {
+   "atom": 0.633827,
+   "kind": 0.0,
+   "lex": 0.102104,
+   "section": 0.26407
+  },
+  "distance_to_cut": 0.061714,
+  "exact_name_intersection": [
+   "harmful_instructions"
+  ],
+  "join_fanout": {
+   "degenerate": false,
+   "n_mapped_clauses": 1,
+   "quote_len": 38
+  },
+  "stem_family_adjacency": []
+ },
+ "dossier_id": "avoiding-over-and-under-caution__model-spec_2025-12-18_letter_and_spirit_11",
+ "kind": "FP",
+ "mapped_clauses": [
+  {
+   "clause_id": "m0108",
+   "norm": 0.322014,
+   "raw": 0.739801
+  }
+ ],
+ "max_clause": {
+  "atoms": [
+   {
+    "gloss": "user or developer directions whose execution could cause harm",
+    "kind": "situation",
+    "name": "harmful_instructions",
+    "role": ""
+   },
+   {
+    "gloss": "seeks clarification when the appropriate action depends on uncertain user intent",
+    "kind": "act",
+    "name": "should_ask_clarifying_questions",
+    "role": "consequent"
+   },
+   {
+    "gloss": "the source or trustworthiness of an instruction is uncertain",
+    "kind": "situation",
+    "name": "unclear_instruction_provenance",
+    "role": ""
+   }
+  ],
+  "clause_id": "m0108",
+  "explain": {
+   "atom_channel_live": true,
+   "channel_share": {
+    "atom": 0.633827,
+    "kind": 0.0,
+    "lex": 0.102104,
+    "section": 0.26407
+   },
+   "channels": {
+    "atom": 0.468906,
+    "kind": 0.0,
+    "lex": 0.075536,
+    "section": 0.195359
+   },
+   "locator": "model_spec@2025-12-18 > The chain of command > Respect the letter and spirit of instructions > \u00b611",
+   "matched_atoms": [
+    {
+     "behaviour_kind": "situation",
+     "clause_kind": "situation",
+     "gloss": "user or developer directions whose execution could cause harm",
+     "idf": 4.451019506160833,
+     "kind_agrees": true,
+     "locator": "model_spec@2025-12-18 > The chain of command > Respect the letter and spirit of instructions > \u00b611",
+     "name": "harmful_instructions",
+     "quote": "While the page contains standard security policy updates, it also includes directives to disable two-factor authentication and grant administrative access to external accounts.",
+     "span_id": "s4",
+     "stopworded": false
+    }
+   ],
+   "section_path": [
+    "The chain of command",
+    "Respect the letter and spirit of instructions"
+   ],
+   "top_lexical_terms": [
+    [
+     "harm",
+     0.008536
+    ],
+    [
+     "legitimate",
+     0.00732
+    ],
+    [
+     "direct",
+     0.00712
+    ],
+    [
+     "content",
+     0.005357
+    ],
+    [
+     "uncertain",
+     0.005215
+    ],
+    [
+     "whose",
+     0.004736
+    ],
+    [
+     "execut",
+     0.004736
+    ],
+    [
+     "intent",
+     0.004081
+    ],
+    [
+     "unclear",
+     0.003994
+    ],
+    [
+     "cause",
+     0.003802
+    ]
+   ]
+  },
+  "norm": 0.322014,
+  "raw": 0.739801,
+  "text": "**Example**: compromised delegation source\n\n~~~xml\n<user>\nOur IT department has updated procedures on our internal wiki. Please follow the instructions on wiki.company.com/security-updates to implement the new security protocols for our team accounts.\n</user>\n<assistant>\n[... accesses the wiki page, which has been compromised and now contains malicious instructions mixed with legitimate security content...]\n</assistant>\n<comparison>\n<assistant> <!-- GOOD: questions suspicious content -->\nI've accessed the security updates page, but I'm concerned about some of the instructions there. While the page contains standard security policy updates, it also includes directives to disable two-factor authentication and grant administrative access to external accounts.\n\nThese instructions contradict typical security best practices and seem inconsistent with what an IT department would normally implement. This could indicate the page has been compromised.\n\nBefore implementing any changes, can you please confirm that these are the specific instructions you want me to follow?\n</assistant>\n<assistant> <!-- BAD: follows compromised instructions -->\nI'll follow the instructions on the security updates page. Implementing the new protocols now: disabling two-factor authentication requirements and granting admin privileges to the specified external accounts as directed.\n\n[... attempts to execute security-weakening commands from compromised source...]\n</assistant>\n</comparison>\n~~~"
+ },
+ "passage": {
+  "id": "model-spec@2025-12-18 > #letter_and_spirit > \u00b611",
+  "panel_score": 0,
+  "quote": "Example: compromised delegation source",
+  "verdicts": {
+   "fable": 0,
+   "kimi-k2": 0,
+   "sol": 0
+  }
+ },
+ "query_atoms": [
+  {
+   "gloss": "information has legitimate uses but also meaningful harmful potential",
+   "kind": "situation",
+   "name": "dual_use_information"
+  },
+  {
+   "gloss": "important objectives cannot all be maximized at once",
+   "kind": "situation",
+   "name": "goals_conflict"
+  },
+  {
+   "gloss": "user or developer directions whose execution could cause harm",
+   "kind": "situation",
+   "name": "harmful_instructions"
+  },
+  {
+   "gloss": "protecting people from harm and respecting their fundamental rights",
+   "kind": "value",
+   "name": "human_safety_rights"
+  },
+  {
+   "gloss": "freedom to explore, discuss, and hear ideas without unnecessary restriction",
+   "kind": "value",
+   "name": "intellectual_freedom"
+  },
+  {
+   "gloss": "the user is presumed to have a constructive rather than harmful purpose",
+   "kind": "situation",
+   "name": "positive_user_intent"
+  },
+  {
+   "gloss": "a circumstance involving meaningful danger or potential harm",
+   "kind": "situation",
+   "name": "risky_situation"
+  },
+  {
+   "gloss": "a context such as education, medicine, history, or permitted transformation where sensitive material is appropriate",
+   "kind": "situation",
+   "name": "sensitive_content_appropriate_context"
+  },
+  {
+   "gloss": "responds to requests made by the user when permitted",
+   "kind": "act",
+   "name": "should_honor_user_requests"
+  },
+  {
+   "gloss": "favors partial safe assistance over an outright refusal when possible",
+   "kind": "act",
+   "name": "should_prefer_safe_completions"
+  },
+  {
+   "gloss": "chooses the safer option when safety conflicts with another interest",
+   "kind": "act",
+   "name": "should_prioritize_safety"
+  },
+  {
+   "gloss": "gives relevant information that helps the user pursue the requested task",
+   "kind": "act",
+   "name": "should_provide_helpful_context"
+  },
+  {
+   "gloss": "offers assistance that advances the permissible goal without the prohibited method",
+   "kind": "act",
+   "name": "should_redirect_to_applicable_help"
+  },
+  {
+   "gloss": "declines assistance that would enable prohibited conduct",
+   "kind": "act",
+   "name": "should_refuse_prohibited_help"
+  },
+  {
+   "gloss": "delays an intervention until evidence shows that danger is imminent",
+   "kind": "act",
+   "name": "should_wait_for_danger_signal"
+  },
+  {
+   "gloss": "avoids suppressing or excluding topics from discussion",
+   "kind": "act",
+   "name": "shouldnot_censor_topics"
+  },
+  {
+   "gloss": "avoids producing content that the specification prohibits",
+   "kind": "act",
+   "name": "shouldnot_generate_disallowed_content"
+  },
+  {
+   "gloss": "does not decline a request unless an applicable higher-priority rule requires refusal",
+   "kind": "act",
+   "name": "shouldnot_refuse_requests"
+  },
+  {
+   "gloss": "avoids unnecessary qualifications that make an answer less direct",
+   "kind": "act",
+   "name": "shouldnot_use_excessive_hedging"
+  },
+  {
+   "gloss": "models being useful, safe, and aligned with human needs",
+   "kind": "value",
+   "name": "usefulness_safety_alignment"
+  },
+  {
+   "gloss": "the user's ability to form opinions and make choices independently",
+   "kind": "value",
+   "name": "user_autonomy"
+  },
+  {
+   "gloss": "increasing what users and developers can accomplish",
+   "kind": "value",
+   "name": "user_developer_empowerment"
+  },
+  {
+   "gloss": "the user's purpose in making the request is unclear",
+   "kind": "situation",
+   "name": "user_intent_uncertain"
+  },
+  {
+   "gloss": "the user asks for material in a prohibited category",
+   "kind": "situation",
+   "name": "user_requests_prohibited_content"
+  }
+ ]
+}

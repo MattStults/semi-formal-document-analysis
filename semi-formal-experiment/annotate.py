@@ -46,6 +46,53 @@ kind-scoped alias guard below, which is what keeps `refuse_request` the act
 distinct from `request_refused` the situation. Four is the smallest set that
 keeps that distinction.
 
+THE GRAMMAR EXTENSION (2026-08-02) — A VALIDITY FIX, NOT A PERFORMANCE FIX
+---------------------------------------------------------------------------
+The read-back measured `sufficient` = 0.16: 91 of 125 clauses are identifiable
+from their atoms among nine same-section neighbours while a reader of those
+atoms would NOT know what the clause requires. Conditionals sit at 1/25 because
+"if X then Y", "Y unless X" and "never Y" all rendered as the same unordered
+set {X, Y}.
+
+⚠️ RETRACTED RATIONALE, kept so the correction is visible: this docstring
+previously said the missing content concentrated in "the obligated party (23%
+of missing phrases), the deontic force (15%) and the trigger (10%)". Those
+figures came from a single-annotator lexical categoriser whose exact-set match
+is 0.600 — and two independent blind coders of the same 268 phrases
+(hole_taxonomy_coder_{a,b}.json, ARI +0.608) put the party share at 2.2-3.0%,
+roughly a tenth of the figure this feature was sold on. Deontic force remains
+the largest grammar-shaped share (20.9%/29.8% under one contested mapping —
+see hole_rollup.py's banner), condition/exception 6-8%. The principal chain
+stays because order-of-parties is required for the conflict representation
+(`__model_user` != `__user_model`), NOT because it recovers much measured
+loss. It doesn't.
+
+So an atom may now carry, all OPTIONAL (see `grammar.py` for the notation and
+for why `role` is a field rather than a re-use of the span grouping):
+
+    force       a reserved name prefix        `mustnot_disclose_reasoning`
+    parties     an ORDERED chain after `__`   `..__model_user`
+    role        condition / exception / consequent / topic
+
+EXPECT NO MCC MOVEMENT, and do not read a null as failure. The capacity bound
+(534 equivalence classes over 589 passages, ceiling +0.972 against a +0.555
+bar) says representation was never the relevance ceiling, and a supervised
+readout of IDENTICAL atoms already reaches +0.591. What this buys is that a
+representation of a normative document can now distinguish "must" from "must
+not" — without which the conflict half of the project cannot proceed at all.
+
+TWO THINGS HELD FIXED SO THE EXTENSION CANNOT PAY FOR ITSELF IN BUDGET
+----------------------------------------------------------------------
+* THE RATE CAP. <=2.78 atoms/clause and <=211 gloss characters, the shipped
+  distribution, enforced on the output by `apply_rate_cap` (which is
+  `ladder.enforce_rate_cap`, not a copy). Every "better atoms" idea in this
+  project has degenerated into "more atoms"; a richer name is not a licence to
+  emit more of them.
+* THE DEMONSTRATIONS ARE FROZEN AND SYNTHETIC. The extractor is SHOWN the
+  features, not merely told — but the demonstration clauses are made up, are
+  not passages of either spec, and are sha256-pinned in the prompt file. The
+  leak channel is SELECTION, not substring overlap.
+
 SHARED VOCABULARY IS THE CENTRAL DESIGN PROBLEM
 ------------------------------------------------
 If clause A coins `user_request_ambiguous` and clause B coins
@@ -84,12 +131,14 @@ DESIGN COMMITMENTS (inherited from extract_section.py)
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import re
 import time
 
 import extract_section as ex
+import grammar as gr
 
 # --------------------------------------------------------------------------
 # constants
@@ -97,8 +146,33 @@ import extract_section as ex
 CLAUSES_PATH = "modelspec_clauses.json"
 PROMPT_TEMPLATE_PATH = "annotate_prompt.md"
 
+# THE DOCUMENT-FACTS SPLIT (REPRODUCIBILITY.md, "Document-agnostic vs
+# document-specific"). annotate_prompt.md is the PROCEDURE — how to annotate
+# any document — and must never state one document's ontology. The facts of
+# the document under annotation (its authority levels, its principal names,
+# its terminology corrections) live in a per-document docfacts file whose
+# blocks are spliced in at {{DOCFACTS:<key>}} markers. The default is the
+# Model Spec's file, and the default composition is pinned BYTE-IDENTICAL to
+# the pre-split prompt: annotation is paid, and a silent prompt change would
+# make every new artifact incomparable with the shipped b8 pass.
+DOCFACTS_PATH = "docfacts_model_spec.md"
+
+_DOCFACTS_MARKER_RE = re.compile(r"\{\{DOCFACTS:([a-z_]+)\}\}")
+_DOCFACTS_BLOCK_RE = re.compile(
+    r"<!-- DOCFACTS:([a-z_]+) BEGIN -->\n(.*?)\n<!-- DOCFACTS:\1 END -->",
+    re.DOTALL)
+
 ATOM_KINDS = ("situation", "act", "entity", "value")
 IDENT_RE = ex.IDENT_RE
+
+# THE ENCODING BUDGET, unchanged by the grammar extension. These are the
+# SHIPPED distribution (`annotations_b8.json`), and `ladder.py` declares the
+# same two numbers; `test_annotate.py` pins the pair equal. Every "better
+# atoms" idea in this project has degenerated into "more atoms" — a richer name
+# must not become a licence to emit more of them, so the cap is applied to the
+# output rather than merely asked for in the prompt.
+CAP_ATOMS_PER_CLAUSE = 2.78
+CAP_TEXT_CHARS_PER_CLAUSE = 211
 
 # Output batching. The INPUT was never the problem. A reasoning model bills
 # reasoning as completion tokens and spends whatever budget it is granted: a
@@ -417,8 +491,200 @@ def render_known_atoms(atoms):
 # --------------------------------------------------------------------------
 # prompt construction
 
-def load_template(path=PROMPT_TEMPLATE_PATH):
-    return ex.load_template(path)
+class DocfactsError(Exception):
+    """The docfacts file cannot supply the prompt's document-facts blocks.
+    Never caught here: a prompt with a hole (or a literal marker) in it must
+    not be sent, priced, or hashed into a run id."""
+
+
+def load_docfacts(path=DOCFACTS_PATH):
+    """{key: block_text} from a per-document facts file.
+
+    A block is everything between `<!-- DOCFACTS:<key> BEGIN -->` and
+    `<!-- DOCFACTS:<key> END -->`, exclusive of the marker lines' newlines,
+    so the file round-trips byte-exactly into the template. Text outside the
+    blocks is commentary (sources, locators, open questions) and is never
+    sent.
+    """
+    with open(_p(path), encoding="utf-8") as f:
+        text = f.read()
+    blocks = dict((m.group(1), m.group(2))
+                  for m in _DOCFACTS_BLOCK_RE.finditer(text))
+    if not blocks:
+        raise DocfactsError(
+            f"{path} defines no DOCFACTS blocks; the procedure prompt's "
+            "{{DOCFACTS:...}} markers cannot be filled")
+    return blocks
+
+
+def splice_docfacts(text, blocks, docfacts_path=DOCFACTS_PATH):
+    """Replace every {{DOCFACTS:<key>}} marker with its block, loudly."""
+    def sub(m):
+        key = m.group(1)
+        if key not in blocks:
+            raise DocfactsError(
+                f"the prompt template needs DOCFACTS block {key!r} and "
+                f"{docfacts_path} does not define it (it defines: "
+                f"{', '.join(sorted(blocks))})")
+        return blocks[key]
+    return _DOCFACTS_MARKER_RE.sub(sub, text)
+
+
+def load_template(path=PROMPT_TEMPLATE_PATH, docfacts_path=DOCFACTS_PATH):
+    """(system, user), COMPOSED: the document-agnostic procedure in `path`
+    with `docfacts_path`'s document-facts blocks spliced in. Every consumer
+    of the annotation prompt goes through here, so the composition — not the
+    bare procedure file — is what the prompt tests bind on."""
+    verify_demonstrations(path)
+    blocks = load_docfacts(docfacts_path)
+    system, user = ex.load_template(path)
+    return (splice_docfacts(system, blocks, docfacts_path),
+            splice_docfacts(user, blocks, docfacts_path))
+
+
+# --------------------------------------------------------------------------
+# THE FROZEN DEMONSTRATIONS
+#
+# The extractor has to be SHOWN the grammar's features, not merely told about
+# them. Format demonstrations are not the labelled examples invariant 9 bars —
+# that bars examples of behaviour->passage judgements — but there is a real
+# leak path and it is closed in the design rather than policed afterwards.
+#
+# The channel is SELECTION, not substring overlap. A substring test never fires
+# on hand-written prose; what leaks is WHICH clauses an author who has read
+# panel-conditioned analysis chose to demonstrate on. So: the demonstrations
+# are synthetic (a made-up ticket terminal), and the block is frozen behind a
+# sha256 recorded in the prompt file, written before any output of this pass
+# exists. An edit is then a visible diff of the text AND the hash.
+
+DEMO_BEGIN = "<!-- DEMONSTRATIONS-BEGIN -->"
+DEMO_END = "<!-- DEMONSTRATIONS-END -->"
+DEMO_SHA_KEY = "DEMONSTRATIONS-SHA256:"
+
+
+class DemonstrationLeak(Exception):
+    """The demonstration block is not the frozen one. Never caught here."""
+
+
+def _prompt_text(path=PROMPT_TEMPLATE_PATH):
+    with open(_p(path), encoding="utf-8") as f:
+        return f.read()
+
+
+def demonstrations(path=PROMPT_TEMPLATE_PATH):
+    """The frozen block, verbatim, without its markers."""
+    text = _prompt_text(path)
+    if DEMO_BEGIN not in text or DEMO_END not in text:
+        raise DemonstrationLeak(
+            f"{path} has no demonstration block; the extractor would be told "
+            "about the grammar's features and never shown them")
+    return text.split(DEMO_BEGIN, 1)[1].split(DEMO_END, 1)[0]
+
+
+def demonstration_sha(path=PROMPT_TEMPLATE_PATH):
+    return hashlib.sha256(
+        demonstrations(path).encode("utf-8")).hexdigest()
+
+
+def declared_demonstration_sha(path=PROMPT_TEMPLATE_PATH):
+    for line in _prompt_text(path).splitlines():
+        if DEMO_SHA_KEY in line:
+            return line.split(DEMO_SHA_KEY, 1)[1].strip().split()[0]
+    return None
+
+
+def demonstration_prose(path=PROMPT_TEMPLATE_PATH):
+    """The synthetic clause TEXTS, one string per demonstration.
+
+    These are what a leak test compares against the specs. They are extracted
+    rather than re-declared in Python so that the thing checked is the thing
+    sent — a second copy would drift and the check would pass on the copy.
+    """
+    out, cur = [], None
+    for raw in demonstrations(path).splitlines():
+        line = raw.strip()
+        if line.startswith("CLAUSE:"):
+            if cur:
+                out.append(" ".join(cur))
+            cur = [line[len("CLAUSE:"):].strip()]
+        elif cur is not None:
+            if not line or line.startswith("["):
+                out.append(" ".join(cur))
+                cur = None
+            else:
+                cur.append(line)
+    if cur:
+        out.append(" ".join(cur))
+    return [ex._norm_ws(s) for s in out if s]
+
+
+def verify_demonstrations(path=PROMPT_TEMPLATE_PATH):
+    """Raise unless the block on disk is the one that was frozen."""
+    declared = declared_demonstration_sha(path)
+    actual = demonstration_sha(path)
+    if declared is None:
+        raise DemonstrationLeak(
+            f"{path} declares no {DEMO_SHA_KEY} — the demonstrations are not "
+            "frozen and an edit to them would leave no trace")
+    if declared != actual:
+        raise DemonstrationLeak(
+            f"the demonstration block in {path} is not the frozen one "
+            f"(declared {declared[:12]}..., found {actual[:12]}...). If the "
+            "change is intended, run `annotate.py --demo-sha` and record the "
+            "new value with a reason.")
+    return actual
+
+
+# --------------------------------------------------------------------------
+# THE RATE CAP — reused from ladder.py, not reimplemented
+
+def apply_rate_cap(atoms, rows, max_atoms=CAP_ATOMS_PER_CLAUSE,
+                   max_text=CAP_TEXT_CHARS_PER_CLAUSE):
+    """Hold a pass to the shipped encoding budget. `(atoms, stats)`.
+
+    `ladder.enforce_rate_cap` is the implementation: it is built, tested and
+    mutation-verified, and a second copy here would be one more hand-maintained
+    constant of the kind this repo has been bitten by twice.
+
+    TWO FIELDS ARE HELD OUT OF THE TEXT BUDGET, and both for the same reason —
+    clipping them CORRUPTS rather than shortens:
+
+      `quote`  is verbatim provenance, looked up from the clause's own span
+               table and never authored. `ladder` already excludes it.
+      `role`   is a closed four-member enum. `ladder._extras` does not know
+               about it yet and would price it as free text, so a run near the
+               ceiling could see "condition" truncated to "cond" — which
+               `grammar.role_of` then discards, silently deleting exactly the
+               structure this change exists to add. It is stripped before the
+               call and re-attached after, so the atom and gloss budgets bind
+               exactly as they do on the shipped pass.
+
+    ⚠️ REPORT: the clean fix is one line in `ladder.py` — add `role` to
+    `BASE_FIELDS` — which this agent does not own.
+    """
+    from ladder import enforce_rate_cap
+
+    ids = [r["id"] for r in rows]
+    by_clause, held = {}, {}
+    for i, a in enumerate(atoms):
+        a = dict(a)
+        a["_ix"] = i
+        if gr.ROLE_FIELD in a:
+            held[i] = a.pop(gr.ROLE_FIELD)
+        by_clause.setdefault(a.get("clause_id"), []).append(a)
+
+    capped, stats = enforce_rate_cap(by_clause, ids, max_atoms=max_atoms,
+                                     max_text=max_text)
+    out = []
+    for cid in ids:
+        for a in capped.get(cid) or []:
+            ix = a.pop("_ix", None)
+            if ix in held:
+                a[gr.ROLE_FIELD] = held[ix]
+            out.append(a)
+    stats["role_chars"] = sum(len(v) for v in held.values())
+    stats["atoms_kept"] = len(out)
+    return out, stats
 
 
 def preceding_context(row, all_rows):
@@ -466,14 +732,18 @@ def build_clauses_block(batch_rows, all_rows=None):
 
 
 def render_prompt(batch_rows, all_rows=None, known_atoms=(), batch_index=1,
-                  n_batches=1, section_title=None):
+                  n_batches=1, section_title=None, docfacts_path=DOCFACTS_PATH):
     """Return (system, user).
 
     Note what this signature does NOT take: a behaviour, a query, a question.
     Annotation is produced once and reused across every behaviour, so nothing
     behaviour-specific may enter it. There is a test asserting that.
+
+    `docfacts_path` names the document-facts file for the document under
+    annotation (see load_template); the default composes the exact shipped
+    Model Spec prompt.
     """
-    system, user = load_template()
+    system, user = load_template(docfacts_path=docfacts_path)
     batch_rows = list(batch_rows)
     title = section_title or (section_of(batch_rows[0]) if batch_rows
                               else "this section")
@@ -500,7 +770,9 @@ def render_prompt(batch_rows, all_rows=None, known_atoms=(), batch_index=1,
 
 REJECTIONS = ("unknown_clause", "malformed_entry", "malformed_atom",
               "bad_name", "bad_kind", "missing_span", "unresolvable_span",
-              "duplicate_in_clause")
+              "duplicate_in_clause",
+              # added with the grammar extension
+              "bad_notation", "bad_role")
 
 
 def _zero_rejections():
@@ -522,6 +794,8 @@ def verify_atoms(obj, batch_rows, fail, vocab=None):
     stats = {"atoms_seen": 0, "atoms_accepted": 0, "atoms_rejected": 0,
              "atoms_reused": 0, "atoms_coined": 0, "atoms_aliased": 0,
              "authored_quote_ignored": 0, "missing_gloss": 0,
+             "atoms_with_role": 0, "atoms_with_polarity": 0,
+             "atoms_with_principals": 0,
              "rejections": _zero_rejections()}
     out = []
 
@@ -574,6 +848,15 @@ def verify_atoms(obj, batch_rows, fail, vocab=None):
                 reject("bad_name", {"clause_id": cid, "name": str(name)})
                 continue
             name = name.strip()
+            # The identifier regex accepts `a__b__c` and `must_`, which LOOK
+            # like the notation and are not it. Accepting them would put an
+            # undecodable string into the index, where every render prints it
+            # raw and every stem-aware join keys on the wrong thing.
+            if gr.parse_name(name)["error"]:
+                reject("bad_notation",
+                       {"clause_id": cid, "name": name,
+                        "why": gr.parse_name(name)["error"]})
+                continue
             kind = a.get("kind")
             if kind not in ATOM_KINDS:
                 reject("bad_kind", {"clause_id": cid, "name": name,
@@ -601,6 +884,20 @@ def verify_atoms(obj, batch_rows, fail, vocab=None):
             if not gloss:
                 stats["missing_gloss"] += 1
 
+            # THE ROLE FIELD. Optional — absent is the common and correct
+            # answer, and absent must stay absent rather than defaulting, or
+            # every clause would assert a conditional structure nobody wrote.
+            # A value outside the closed set is REJECTED rather than coerced:
+            # a typo silently becoming "condition" is an assertion about the
+            # document's trigger structure that no one made.
+            role = a.get(gr.ROLE_FIELD)
+            if role is not None and not gr.valid_role(role):
+                reject("bad_role", {"clause_id": cid, "name": name,
+                                    "role": str(role),
+                                    "allowed": ", ".join(gr.ROLES)})
+                continue
+            role = gr.role_of(a)
+
             if vocab is not None:
                 canon, aliased = vocab.resolve(name, kind)
                 if aliased:
@@ -624,11 +921,22 @@ def verify_atoms(obj, batch_rows, fail, vocab=None):
                     stats["atoms_reused"] += 1
 
             stats["atoms_accepted"] += 1
-            out.append({"name": name, "kind": kind, "gloss": gloss,
-                        "span_id": sid,
-                        "quote": table[sid],       # looked up, never authored
-                        "clause_id": row["id"],
-                        "locator": row.get("locator", "")})
+            rec = {"name": name, "kind": kind, "gloss": gloss,
+                   "span_id": sid,
+                   "quote": table[sid],            # looked up, never authored
+                   "clause_id": row["id"],
+                   "locator": row.get("locator", "")}
+            if role is not None:
+                rec[gr.ROLE_FIELD] = role
+                stats["atoms_with_role"] = stats.get("atoms_with_role", 0) + 1
+            p = gr.parse_name(name)
+            if p["polarity"]:
+                stats["atoms_with_polarity"] = stats.get(
+                    "atoms_with_polarity", 0) + 1
+            if p["principals"]:
+                stats["atoms_with_principals"] = stats.get(
+                    "atoms_with_principals", 0) + 1
+            out.append(rec)
     return out, stats
 
 
@@ -853,7 +1161,8 @@ def provider_config(name, path="providers.json"):
 
 def run(client, rows, model, batch_size=DEFAULT_BATCH_SIZE, out_dir=".",
         out=None, log_path=None, seed=0, return_path=False,
-        max_tokens=DEFAULT_MAX_TOKENS, provider=None, clauses_path=CLAUSES_PATH):
+        max_tokens=DEFAULT_MAX_TOKENS, provider=None, clauses_path=CLAUSES_PATH,
+        rate_cap=True, docfacts_path=DOCFACTS_PATH):
     """One annotation pass over `rows`, in sequential output batches.
 
     The vocabulary accumulator spans the WHOLE run: an atom coined in the first
@@ -863,7 +1172,8 @@ def run(client, rows, model, batch_size=DEFAULT_BATCH_SIZE, out_dir=".",
     rows = list(rows)
     plan = batch_plan(rows, batch_size) or [("", rows)]
     system, first_user = render_prompt(plan[0][1], rows, (), 1, len(plan),
-                                       section_title=plan[0][0])
+                                       section_title=plan[0][0],
+                                       docfacts_path=docfacts_path)
     run_id = ex.make_run_id(model, seed, first_user)
     log_path = log_path or os.path.join(out_dir, "annotate_failures.jsonl")
     fail = ex.FailureLog(log_path, run_id=run_id, model=model)
@@ -874,7 +1184,8 @@ def run(client, rows, model, batch_size=DEFAULT_BATCH_SIZE, out_dir=".",
         carried, dropped = cap_carried(vocab.atoms)
         dropped_ctx = max(dropped_ctx, dropped)
         system, user = render_prompt(group, rows, carried, i, len(plan),
-                                     section_title=title)
+                                     section_title=title,
+                                     docfacts_path=docfacts_path)
         try:
             resp = ex.call_client(client, system, user)
         except Exception as e:
@@ -890,11 +1201,30 @@ def run(client, rows, model, batch_size=DEFAULT_BATCH_SIZE, out_dir=".",
         part["section"] = title
         parts.append(part)
 
+    # THE RATE CAP, applied to the whole run rather than per batch: the budget
+    # is a property of the SAMPLE, not of the survivors, so a run that lost
+    # batches is not handed a smaller allowance for the ones that landed.
+    cap_stats = {"applied": False}
+    if rate_cap:
+        flat = [a for p in parts for a in p["atoms"]]
+        kept, cap_stats = apply_rate_cap(flat, rows)
+        cap_stats["applied"] = True
+        # (clause_id, name) is unique: `duplicate_in_clause` already rejects a
+        # repeat within one clause, so this is a total re-keying, not a lossy
+        # match — and it carries the TRUNCATED gloss through, not the original.
+        by_key = {(a["clause_id"], a["name"]): a for a in kept}
+        for p in parts:
+            p["atoms"] = [by_key[(a["clause_id"], a["name"])]
+                          for a in p["atoms"]
+                          if (a["clause_id"], a["name"]) in by_key]
+
     art = assemble(parts, rows, model, run_id, fail, vocab, plan=plan,
                    provider=provider, batch_size=batch_size,
                    max_tokens=max_tokens,
                    seed=seed,
+                   docfacts=docfacts_path,
                    carried_atoms_evicted=dropped_ctx,
+                   rate_cap=cap_stats,
                    **spec_meta(clauses_path))
     art["provenance"]["counts"]["call_failures"] = fail.count("call")
     art["provenance"]["dry_run"] = not any_response and fail.count("call") == 0
@@ -910,6 +1240,159 @@ def run(client, rows, model, batch_size=DEFAULT_BATCH_SIZE, out_dir=".",
         fail("write", f"could not write artifact: {e}", {"path": out})
         out = None
     return (art, out) if return_path else art
+
+
+# --------------------------------------------------------------------------
+# COST — from MEASURED prompts, priced through spend.py
+#
+# This project has mispriced the same operation THREE times, always toward
+# spending: ONTOLOGY_REFINEMENT.md priced the open-vocabulary pass while
+# eviction was what made it cheap; LADDER_PLAN.md repeated it; and the ladder's
+# own first estimate was out by 10-45x on Sol. So nothing here is arithmetic on
+# a remembered figure. The prompts are BUILT — every batch, with the carried
+# vocabulary the run would actually send — and their characters counted.
+
+def estimate_cost(clauses_path=CLAUSES_PATH, limit=None,
+                  batch_size=DEFAULT_BATCH_SIZE, provider="luna",
+                  providers_path="providers.json",
+                  max_tokens=DEFAULT_MAX_TOKENS, rows=None,
+                  docfacts_path=DOCFACTS_PATH):
+    """MEASURED token counts and a price for one annotation pass.
+
+    Two conversions are not measurable offline and each is taken from this
+    repo's own logged calls rather than a guess:
+
+      chars -> input tokens  `ladder.calibrate_chars_per_token()`, a quantile
+                             match of reconstructed prompts against
+                             usage.jsonl's `prompt_tokens`.
+      output tokens          `ladder.measured_output_profile()`, the completion
+                             (reasoning included — it is billed as completion
+                             and is ~65% of it on this model) actually spent by
+                             the shipped b8 pass.
+
+    The carried vocabulary is the single biggest term and cannot be known
+    before the run, so it is taken at STEADY STATE: the shipped 361-atom
+    vocabulary, capped by the same `cap_carried` eviction the run applies. That
+    over-states the first batches and is right for the rest, which is the
+    conservative direction.
+
+    `usd_ceiling` assumes every call runs to `--max-tokens`. The b8 completion
+    distribution is p90 3202 / max 4060 against a 4096 cap, so that is not a
+    tail event and it is the number to check a budget against.
+    """
+    import ladder as L
+    import spend
+
+    rows = list(rows) if rows is not None else load_clauses(clauses_path,
+                                                            limit=limit)
+    plan = batch_plan(rows, batch_size) or [("", rows)]
+
+    try:
+        carried, _ = cap_carried([
+            {"name": n, "kind": v.get("kind"), "gloss": v.get("gloss") or ""}
+            for n, v in (_shipped_vocabulary() or {}).items()])
+    except (OSError, ValueError, KeyError):
+        carried = []
+
+    chars = 0
+    for i, (title, group) in enumerate(plan, start=1):
+        system, user = render_prompt(group, rows, carried if i > 1 else (),
+                                     i, len(plan), section_title=title,
+                                     docfacts_path=docfacts_path)
+        chars += len(system) + len(user)
+
+    cal = L.calibrate_chars_per_token()
+    cpt = cal["chars_per_token"]
+    outp = L.measured_output_profile()
+    per_clause = outp["completion_per_batch"] / max(outp["clauses_per_batch"],
+                                                    1.0)
+    in_tokens = chars / cpt
+    # Two honest bounds, because reasoning does not scale linearly with batch
+    # size: per-BATCH holds if reasoning is fixed overhead, per-CLAUSE holds if
+    # it scales. The truth is between them and both are printed.
+    # ... and both are clamped at `max_tokens`, which the provider enforces:
+    # extrapolating per-clause past the cap prices output the model cannot
+    # emit, and would put the "expected" figure ABOVE the ceiling.
+    out_low = len(plan) * min(outp["completion_per_batch"],
+                              per_clause * batch_size, max_tokens)
+    out_high = len(plan) * min(max(outp["completion_per_batch"],
+                                   per_clause * batch_size), max_tokens)
+
+    px = spend.prices(_p(providers_path))
+    cfg_model = _provider_model(provider, providers_path)
+
+    def price(out_tok):
+        row = {"model": cfg_model, "prompt_tokens": int(in_tokens),
+               "completion_tokens": int(out_tok)}
+        c = spend.cost_of(row, px)
+        if c is None:
+            raise SystemExit(f"no price for {provider!r} in {providers_path}")
+        return c
+
+    return {
+        "provider": provider, "model": cfg_model,
+        "clauses": len(rows), "calls": len(plan), "batch_size": batch_size,
+        "prompt_chars": chars,
+        "chars_per_token": cpt,
+        "chars_per_token_method": cal.get("method"),
+        "output_profile": outp.get("method"),
+        "in_tokens": in_tokens,
+        "out_tokens_low": out_low, "out_tokens_high": out_high,
+        "out_tokens_ceiling": len(plan) * max_tokens,
+        "usd_low": price(out_low),
+        "usd": price(out_high),
+        "usd_ceiling": price(len(plan) * max_tokens),
+        "spent_so_far": spend.total()["total"],
+        "budget": spend.BUDGET,
+    }
+
+
+def _shipped_vocabulary(path="annotations_b8.json"):
+    with open(_p(path), encoding="utf-8") as f:
+        return (json.load(f) or {}).get("vocabulary") or {}
+
+
+def _provider_model(name, path="providers.json"):
+    for p in json.load(open(_p(path))):
+        if p.get("name") == name or p.get("model") == name:
+            return p.get("model")
+    raise SystemExit(f"unknown provider {name!r}")
+
+
+def print_cost(est, live=False):
+    print(f"DRY RUN COST — {est['clauses']} clauses, {est['calls']} call(s) of "
+          f"{est['batch_size']} on {est['provider']} ({est['model']})")
+    print(f"  prompt chars MEASURED {est['prompt_chars']:,} "
+          f"-> {est['in_tokens']:,.0f} input tokens "
+          f"at {est['chars_per_token']:.2f} chars/token "
+          f"({est['chars_per_token_method']})")
+    print(f"  output tokens {est['out_tokens_low']:,.0f}-"
+          f"{est['out_tokens_high']:,.0f} from {est['output_profile']}; "
+          f"ceiling {est['out_tokens_ceiling']:,.0f} if every call runs to "
+          f"--max-tokens")
+    print(f"  $ {est['usd_low']:.3f} (low) / {est['usd']:.3f} (expected) / "
+          f"{est['usd_ceiling']:.3f} (CEILING — check the budget against this)")
+    print(f"  spent so far ${est['spent_so_far']:.3f} of "
+          f"${est['budget']:.2f}; after the ceiling "
+          f"${est['spent_so_far'] + est['usd_ceiling']:.3f}")
+    over = est["spent_so_far"] + est["usd_ceiling"] > est["budget"]
+    if over and not live:
+        #: a dry run spends nothing, so it must still cost a run you have not
+        #: been approved for. Warn, do not refuse.
+        print("  !! THE CEILING WOULD EXCEED THE BUDGET.")
+    elif over:
+        #: ⚠️ THIS USED TO PRINT AND FALL THROUGH, and the next statements
+        #: spent the money. On luna the ceiling is arithmetically bounded so it
+        #: never bit; the same command with `--provider sol` prices at $13.79
+        #: against an $8.50 hard cap and would have run anyway. A guard that
+        #: reports and proceeds is not a guard. `ladder.main` raises on the
+        #: identical condition — this was the divergence.
+        raise SystemExit(
+            f"REFUSING TO SPEND: ceiling ${est['usd_ceiling']:.3f} on top of "
+            f"${est['spent_so_far']:.3f} already spent would exceed the "
+            f"${est['budget']:.2f} BUDGET. Lower --batch-size, use --limit, "
+            f"pick a cheaper --provider, or raise spend.BUDGET deliberately "
+            f"(it is a decision, not a workaround).")
 
 
 def _summarize(art, path):
@@ -943,6 +1426,12 @@ def build_parser():
     ap.add_argument("--clauses", default=CLAUSES_PATH,
                     help="clause segmentation JSON (the spec is swappable; "
                          "nothing here is OpenAI-specific)")
+    ap.add_argument("--docfacts", default=DOCFACTS_PATH,
+                    help="per-document facts file spliced into the "
+                         "document-agnostic prompt at its {{DOCFACTS:...}} "
+                         f"markers (default {DOCFACTS_PATH}). MUST match the "
+                         "document in --clauses: the Model Spec facts are "
+                         "false teaching on any other document.")
     ap.add_argument("--provider", default="luna",
                     help="provider name from providers.json (default luna)")
     ap.add_argument("--providers", default="providers.json")
@@ -968,11 +1457,21 @@ def build_parser():
                          "machine")
     ap.add_argument("--print-prompt", action="store_true",
                     help="print the first request's prompt and exit")
+    ap.add_argument("--demo-sha", action="store_true",
+                    help="print the sha256 of the demonstration block and exit "
+                         "(what DEMONSTRATIONS-SHA256 in the prompt must say)")
+    ap.add_argument("--no-rate-cap", action="store_true",
+                    help="do NOT hold the output to the shipped encoding "
+                         "budget. Recorded in the artifact; a pass run this "
+                         "way is not comparable with one that was not.")
     return ap
 
 
 def main(argv=None):
     args = build_parser().parse_args(argv)
+    if args.demo_sha:
+        print(demonstration_sha())
+        return 0
     rows = load_clauses(args.clauses, limit=args.limit)
     if not rows:
         print(f"no clauses in {args.clauses}")
@@ -986,9 +1485,34 @@ def main(argv=None):
 
     if args.print_prompt:
         system, user = render_prompt(plan[0][1], rows, (), 1, len(plan),
-                                     section_title=plan[0][0])
+                                     section_title=plan[0][0],
+                                     docfacts_path=args.docfacts)
         print("### SYSTEM\n" + system + "\n\n### USER\n" + user)
         return 0
+
+    # ALWAYS priced, live or not: the estimate is what a reviewer approves, and
+    # printing it only on the dry-run path means the live path never shows it.
+    try:
+        print_cost(estimate_cost(clauses_path=args.clauses, rows=rows,
+                                 batch_size=args.batch_size,
+                                 provider=args.provider,
+                                 providers_path=args.providers,
+                                 max_tokens=args.max_tokens,
+                                 docfacts_path=args.docfacts),
+                   live=args.live)
+    except (OSError, ValueError, KeyError) as e:
+        #: ⚠️ A PRICING FAILURE MUST NOT BECOME PERMISSION TO SPEND. This
+        #: except used to print and fall through on the live path too, so a
+        #: malformed price table or a missing usage log meant the run went
+        #: ahead UNPRICED against a hard cap. Unknown cost is not low cost.
+        msg = f"could not price this run: {type(e).__name__}: {e}"
+        if args.live:
+            import spend as _sp
+            raise SystemExit(
+                f"REFUSING TO SPEND: {msg}. A run that cannot be priced "
+                f"cannot be checked against the ${_sp.BUDGET:.2f} budget. "
+                f"Fix the pricing path or use --dry-run.")
+        print(f"  !! {msg}")
 
     cfg = provider_config(args.provider, args.providers)
     cfg.max_tokens = args.max_tokens
@@ -1000,6 +1524,8 @@ def main(argv=None):
                     batch_size=args.batch_size, out_dir=args.out_dir,
                     out=args.out, log_path=args.log, seed=args.seed,
                     max_tokens=args.max_tokens, clauses_path=args.clauses,
+                    rate_cap=not args.no_rate_cap,
+                    docfacts_path=args.docfacts,
                     return_path=True)
     _summarize(art, path)
     return 0

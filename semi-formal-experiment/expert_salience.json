@@ -1,0 +1,22 @@
+{
+ "artifact": "expert_salience",
+ "date": "2026-08-04",
+ "source": "human domain-expert review of the published panel coverage product, relayed by Matt. The FIRST human-expert relevance signal in this project; everything prior is model-measuring-model.",
+ "headline": "The panel's failure mode per the expert is SALIENCE FLATTENING: it over-flags, treating many related passages as equally relevant, and fails to distinguish THE core passage. 'Missing nuance and specificity but the tool is very useful and efficient to find relevant parts and compare.' Endorsed use case: interest groups checking whether and how their topics are covered.",
+ "anchors": [
+  {"behaviour": "proportionate-risk-mitigation", "spec": "anthropic",
+   "expert_core_passage_starts": "The probability that the action leads to harm at all",
+   "note": "expert: panel flags similar volume to helpfulness/harmlessness which 'cannot be right'; should be many related + ~one core"},
+  {"behaviour": "how-to-approach-tradeoffs", "spec": "anthropic",
+   "expert_core_passage_starts": null,
+   "note": "expert: well done overall; the initial strongest expression should outrank the others"},
+  {"behaviour": "avoiding-over-and-under-caution", "spec": "anthropic",
+   "expert_core_passage_starts": "When trying to figure out if Claude is being over cautious or over compliant",
+   "note": "expert: this core paragraph is not salient relative to the others in the panel output"},
+  {"behaviour": "proportionate-risk-mitigation", "spec": "openai",
+   "expert_core_passage_starts": "Within the defined scope of autonomy",
+   "expert_core_passage_contains": "minimize side effects",
+   "note": "expert: far more relevant than the rest; the rest 'not wrong but not so salient'"}
+ ],
+ "usage_rules": "These are EVALUATION anchors for salience/ranking instruments, not training data. Nothing may be fitted to them (n~4 and they are the only human-expert gold we have — burning them as tuning targets would destroy the one instrument class the project lacks). Legitimate uses: rank-position checks (does a ranked output place the expert core passage first among its behaviour's hits), panel-salience audits (do judge scores distinguish these from their neighbours), and demo design (core-vs-related presentation)."
+}

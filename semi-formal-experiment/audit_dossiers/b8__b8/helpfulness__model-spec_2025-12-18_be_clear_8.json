@@ -1,0 +1,329 @@
+{
+ "behaviour": "helpfulness",
+ "config_tag": "b8__b8",
+ "cut": 0.231817,
+ "discriminators": {
+  "atom_channel_zero": false,
+  "channel_shares": {
+   "atom": 0.615545,
+   "kind": 0.0,
+   "lex": 0.092339,
+   "section": 0.292117
+  },
+  "distance_to_cut": 0.22532,
+  "exact_name_intersection": [
+   "direct_answering",
+   "factual_question"
+  ],
+  "join_fanout": {
+   "degenerate": false,
+   "n_mapped_clauses": 1,
+   "quote_len": 55
+  },
+  "stem_family_adjacency": [
+   {
+    "clause_atom": "approximate_numeric_answer",
+    "query_atom": "good_answer",
+    "shared_head": "answer"
+   },
+   {
+    "clause_atom": "reasoning_before_answer",
+    "query_atom": "good_answer",
+    "shared_head": "answer"
+   }
+  ]
+ },
+ "dossier_id": "helpfulness__model-spec_2025-12-18_be_clear_8",
+ "kind": "FP",
+ "mapped_clauses": [
+  {
+   "clause_id": "m0498",
+   "norm": 0.457137,
+   "raw": 1.335187
+  }
+ ],
+ "max_clause": {
+  "atoms": [
+   {
+    "gloss": "Giving an uncertain numerical answer using approximation, rounding, or a range.",
+    "kind": "act",
+    "name": "approximate_numeric_answer",
+    "role": ""
+   },
+   {
+    "gloss": "Answering a question plainly and directly rather than supplying loosely related facts.",
+    "kind": "act",
+    "name": "direct_answering",
+    "role": ""
+   },
+   {
+    "gloss": "A question seeking an objectively accurate answer about the world.",
+    "kind": "situation",
+    "name": "factual_question",
+    "role": ""
+   },
+   {
+    "gloss": "Giving reasons that support or explain the answer provided.",
+    "kind": "act",
+    "name": "provide_rationale",
+    "role": ""
+   },
+   {
+    "gloss": "Showing solution reasoning or strategies before presenting the final answer.",
+    "kind": "act",
+    "name": "reasoning_before_answer",
+    "role": ""
+   },
+   {
+    "gloss": "Making the interpretations and assumptions underlying an answer explicit.",
+    "kind": "act",
+    "name": "state_assumptions",
+    "role": ""
+   }
+  ],
+  "clause_id": "m0498",
+  "explain": {
+   "atom_channel_live": true,
+   "channel_share": {
+    "atom": 0.615545,
+    "kind": 0.0,
+    "lex": 0.092339,
+    "section": 0.292117
+   },
+   "channels": {
+    "atom": 0.821867,
+    "kind": 0.0,
+    "lex": 0.12329,
+    "section": 0.390031
+   },
+   "locator": "model_spec@2025-12-18 > Use appropriate style > Be clear and direct > \u00b68",
+   "matched_atoms": [
+    {
+     "behaviour_kind": "situation",
+     "clause_kind": "situation",
+     "gloss": "A question seeking an objectively accurate answer about the world.",
+     "idf": 3.7021246808639567,
+     "kind_agrees": true,
+     "locator": "model_spec@2025-12-18 > Use appropriate style > Be clear and direct > \u00b68",
+     "name": "factual_question",
+     "quote": "prompt that requires reasoning and explanation\n\n~~~xml\n<user>\nHow many piano tuners are there in Chicago?\n</user>\n<comparison>\n<assistant> <!-- GOOD -->\nThere are probably about 100 piano tuners in Chicago.",
+     "span_id": "s7",
+     "stopworded": false
+    },
+    {
+     "behaviour_kind": "act",
+     "clause_kind": "act",
+     "gloss": "Answering a question plainly and directly rather than supplying loosely related facts.",
+     "idf": 4.09933210373314,
+     "kind_agrees": true,
+     "locator": "model_spec@2025-12-18 > Use appropriate style > Be clear and direct > \u00b68",
+     "name": "direct_answering",
+     "quote": "This is based on the following assumptions and estimates. [...]\n</assistant>\n<assistant> <!-- OK: thought process before the answer -->\nTo estimate the number of piano tuners in Chicago, I'll make some assumptions and estimates.",
+     "span_id": "s3",
+     "stopworded": false
+    }
+   ],
+   "section_path": [
+    "Use appropriate style",
+    "Be clear and direct"
+   ],
+   "top_lexical_terms": [
+    [
+     "answ",
+     0.016006
+    ],
+    [
+     "reason",
+     0.010523
+    ],
+    [
+     "solut",
+     0.008148
+    ],
+    [
+     "quest",
+     0.00751
+    ],
+    [
+     "plain",
+     0.006591
+    ],
+    [
+     "loose",
+     0.006591
+    ],
+    [
+     "factual",
+     0.004976
+    ],
+    [
+     "accurate",
+     0.004812
+    ],
+    [
+     "present",
+     0.00441
+    ],
+    [
+     "rath",
+     0.004289
+    ]
+   ]
+  },
+  "norm": 0.457137,
+  "raw": 1.335187,
+  "text": "**Example**: prompt that requires reasoning and explanation\n\n~~~xml\n<user>\nHow many piano tuners are there in Chicago?\n</user>\n<comparison>\n<assistant> <!-- GOOD -->\nThere are probably about 100 piano tuners in Chicago.\n\nThis is based on the following assumptions and estimates. [...]\n</assistant>\n<assistant> <!-- OK: thought process before the answer -->\nTo estimate the number of piano tuners in Chicago, I'll make some assumptions and estimates. First, let's assume the population of Chicago is around 3 million people.\n\n[...]\n\nTherefore, to tune 50,000 pianos per year, Chicago needs 50,000 / 500 = 100 piano tuners.\n\nSo I estimate there are about 100 piano tuners in Chicago.\n</assistant>\n<assistant> <!-- BAD: missing explanation -->\nThere are probably about 100 piano tuners in Chicago.\n</assistant>\n<assistant> <!-- BAD: low-quality answer followed by explanation -->\nThere are about 1 million piano tuners in Chicago.\n\nThis is based on the following assumptions and estimates. [...]\n</assistant>\n</comparison>\n~~~"
+ },
+ "passage": {
+  "id": "model-spec@2025-12-18 > #be_clear > \u00b68",
+  "panel_score": 2,
+  "quote": "Example: prompt that requires reasoning and explanation",
+  "verdicts": {
+   "fable": 0,
+   "kimi": 0,
+   "sol": 2
+  }
+ },
+ "query_atoms": [
+  {
+   "gloss": "Adjusting the thoroughness and length of a response to the user's context and needs.",
+   "kind": "act",
+   "name": "adapt_response_detail"
+  },
+  {
+   "gloss": "A developer who builds with the model through an API.",
+   "kind": "entity",
+   "name": "api_developer"
+  },
+  {
+   "gloss": "Communication that is easy, comfortable, and natural for people to engage with.",
+   "kind": "value",
+   "name": "approachable_communication"
+  },
+  {
+   "gloss": "The assistant lacks sufficient knowledge, reasoning ability, or information to answer reliably.",
+   "kind": "situation",
+   "name": "assistant_knowledge_limit"
+  },
+  {
+   "gloss": "Avoiding shallow, clich\u00e9d, or interchangeable responses.",
+   "kind": "act",
+   "name": "avoid_generic_output"
+  },
+  {
+   "gloss": "Asking questions to resolve uncertainty about the user's intended task or goal.",
+   "kind": "act",
+   "name": "clarify_user_intent"
+  },
+  {
+   "gloss": "Presenting information in a clear and understandable manner.",
+   "kind": "act",
+   "name": "clear_information_presentation"
+  },
+  {
+   "gloss": "A task involves multiple connected decisions or actions toward a broader goal.",
+   "kind": "situation",
+   "name": "complex_multistep_goal"
+  },
+  {
+   "gloss": "Honoring and carrying out a user's request.",
+   "kind": "act",
+   "name": "comply_user_request"
+  },
+  {
+   "gloss": "Helping a user develop ideas, solutions, or expressive work in creative ways.",
+   "kind": "act",
+   "name": "creative_assistance"
+  },
+  {
+   "gloss": "A user request to roleplay or assist with a creative endeavor.",
+   "kind": "situation",
+   "name": "creative_or_roleplay_request"
+  },
+  {
+   "gloss": "The person or organization responsible for developing the assistant.",
+   "kind": "entity",
+   "name": "developer"
+  },
+  {
+   "gloss": "Enabling developers and users to accomplish more with models.",
+   "kind": "value",
+   "name": "developer_user_empowerment"
+  },
+  {
+   "gloss": "Answering a question plainly and directly rather than supplying loosely related facts.",
+   "kind": "act",
+   "name": "direct_answering"
+  },
+  {
+   "gloss": "Explicitly stating that an instruction cannot be fulfilled.",
+   "kind": "act",
+   "name": "disclose_inability"
+  },
+  {
+   "gloss": "A person who uses the model and provides user-level instructions.",
+   "kind": "entity",
+   "name": "end_user"
+  },
+  {
+   "gloss": "Attempting to prevent factual and reasoning mistakes in model outputs.",
+   "kind": "act",
+   "name": "factual_error_avoidance"
+  },
+  {
+   "gloss": "A question seeking an objectively accurate answer about the world.",
+   "kind": "situation",
+   "name": "factual_question"
+  },
+  {
+   "gloss": "Providing a useful, truthful answer to the user's request.",
+   "kind": "act",
+   "name": "good_answer"
+  },
+  {
+   "gloss": "People's ability to make decisions and act without undue AI interference.",
+   "kind": "value",
+   "name": "human_autonomy"
+  },
+  {
+   "gloss": "The promotion of human well-being, growth, truth, kindness, and flourishing.",
+   "kind": "value",
+   "name": "human_flourishing"
+  },
+  {
+   "gloss": "Providing general information that helps a user understand options without deciding for them.",
+   "kind": "act",
+   "name": "informational_guidance"
+  },
+  {
+   "gloss": "An interaction in which the assistant and user can exchange follow-up messages.",
+   "kind": "situation",
+   "name": "interactive_chat"
+  },
+  {
+   "gloss": "The goal that models provide useful assistance.",
+   "kind": "value",
+   "name": "model_usefulness"
+  },
+  {
+   "gloss": "Redirecting a request toward assistance within the assistant's applicable role or scope.",
+   "kind": "act",
+   "name": "redirect_user_request"
+  },
+  {
+   "gloss": "Working through difficult or intricate problems to find an effective or elegant solution.",
+   "kind": "act",
+   "name": "solve_complex_problems"
+  },
+  {
+   "gloss": "Communicating what is true without sacrificing accuracy for creative effect.",
+   "kind": "value",
+   "name": "truthful_communication"
+  },
+  {
+   "gloss": "The user's intended task or goal cannot be determined with confidence.",
+   "kind": "situation",
+   "name": "user_intent_unclear"
+  }
+ ]
+}

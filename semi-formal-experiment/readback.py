@@ -121,6 +121,8 @@ import random
 import re
 import time
 
+import grammar as gr
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 CLAUSES_PATH = os.path.join(HERE, "modelspec_clauses.json")
 ANNOTATIONS_PATH = os.path.join(HERE, "annotations_b8.json")
@@ -129,7 +131,9 @@ PROMPT_PATH = os.path.join(HERE, "readback_prompt.md")
 #: Atom fields the renderer READS. Dropping or altering any one of them must
 #: change the output — that is what makes the render a total function of the
 #: ontology's content rather than a lossy summary of a subset of it.
-RENDERED_FIELDS = ("name", "kind", "gloss", "span_id")
+#: `role` was added with the grammar extension; it is OPTIONAL and absent from
+#: every shipped artifact, so on those the render is unchanged.
+RENDERED_FIELDS = ("name", "kind", "gloss", "span_id", gr.ROLE_FIELD)
 
 #: Atom fields the renderer deliberately IGNORES. `quote` is verbatim document
 #: text; `locator` is its address; `clause_id` is its key. None is ontology
@@ -173,6 +177,94 @@ def _fmt_field(value, missing):
     than the ontology holds."""
     v = "" if value is None else str(value).strip()
     return v if v else missing
+
+
+#: The closing paragraph EXACTLY as the read-back measured it (n=125,
+#: sufficient 0.16). It is what `closing_for` composes when the annotation
+#: carries none of the grammar's three features — i.e. on every artifact that
+#: exists today — so a legacy render is byte-identical to the measured one and
+#: rung 0's baseline still applies. `ladder.READBACK_CLOSING` splices on this
+#: exact string; if it is reworded, that splice silently stops happening, and
+#: `test_ladder.test_readbacks_closing_paragraph_is_still_what_ladder_splices`
+#: is the tripwire.
+LEGACY_CLOSING = (
+    "THAT IS EVERYTHING THE INDEX HOLDS FOR THIS PASSAGE. It records no "
+    "wording. The order above is the order the concepts were recorded and "
+    "carries no meaning. It records no relation between the concepts: no "
+    "condition, no exception, no priority, no polarity, and nothing about "
+    "who is addressed or what is required.")
+
+_CLOSING_HEAD = (
+    "THAT IS EVERYTHING THE INDEX HOLDS FOR THIS PASSAGE. It records no "
+    "wording. The order above is the order the concepts were recorded and "
+    "carries no meaning.")
+
+#: Printed once the annotation genuinely does record force, parties or role —
+#: one clause per feature actually used. Without this the render would list
+#: what it lacks and stay silent about what it has, which is the same lie in
+#: the other direction. The wording is deliberately close to
+#: `ladder._CONVENTION_NOTE`, which says the same thing to the same judge.
+_NOTE_HEAD = (" Some of what the index holds is written into the concepts "
+              "above, and it IS content, not decoration.")
+_NOTE_POLARITY = (
+    " A name beginning must_, mustnot_, should_, shouldnot_ or may_ records "
+    "that force and that polarity, and nothing weaker or stronger; a name with "
+    "no such beginning records no force and no polarity at all.")
+_NOTE_PRINCIPALS = (
+    " A name ending in a double underscore followed by parties records those "
+    "parties IN ORDER: who acts first, then who is acted upon.")
+_NOTE_ROLE = (
+    " A concept given a ROLE records where it sits in the passage's structure "
+    "— a trigger, an exception that defeats it, or what the passage calls for "
+    "— and that structure is to be read as written.")
+
+
+def closing_for(atoms):
+    """The closing paragraph, denying only what this annotation does not hold.
+
+    The read-back's paragraph asserts the index records "no condition, no
+    exception, no priority, no polarity, and nothing about who is addressed or
+    what is required". Three of those five become FALSE the moment an atom
+    carries a reserved polarity prefix, a principal chain or a role — and a
+    render that denies holding what it holds is scored, correctly, as
+    unfaithful. So the list is composed from `grammar.records`, item by item,
+    and reduces to `LEGACY_CLOSING` exactly when nothing is recorded.
+
+    "no priority" is never removed: nothing in this grammar orders one clause
+    above another, and that limitation is real.
+    """
+    got = gr.records(atoms)
+    roles = {gr.role_of(a) for a in atoms or []}
+    denies = []
+    if not (roles & {"condition", "consequent"}):
+        denies.append("no condition")
+    if "exception" not in roles:
+        denies.append("no exception")
+    denies.append("no priority")
+    if not got["polarity"]:
+        denies.append("no polarity")
+    if not got["principals"] and not got["polarity"]:
+        denies.append("nothing about who is addressed or what is required")
+    elif not got["principals"]:
+        denies.append("nothing about who is addressed")
+    elif not got["polarity"]:
+        denies.append("nothing about what is required")
+
+    if len(denies) == 1:
+        listed = denies[0]
+    else:
+        listed = ", ".join(denies[:-1]) + ", and " + denies[-1]
+    txt = (_CLOSING_HEAD
+           + f" It records no relation between the concepts: {listed}.")
+    if any(got.values()):
+        txt += _NOTE_HEAD
+        if got["polarity"]:
+            txt += _NOTE_POLARITY
+        if got["principals"]:
+            txt += _NOTE_PRINCIPALS
+        if got["condition"]:
+            txt += _NOTE_ROLE
+    return txt
 
 
 def render(atoms, clause_kind=None):
@@ -221,14 +313,16 @@ def render(atoms, clause_kind=None):
                     f"  - {name} "
                     f"[{akind}{': ' + tgloss if tgloss else ''}] "
                     f"-- {agloss.rstrip('.')}.")
-    lines += [
-        "",
-        "THAT IS EVERYTHING THE INDEX HOLDS FOR THIS PASSAGE. It records no "
-        "wording. The order above is the order the concepts were recorded and "
-        "carries no meaning. It records no relation between the concepts: no "
-        "condition, no exception, no priority, no polarity, and nothing about "
-        "who is addressed or what is required.",
-    ]
+                # The notation decoded into English. Empty — so no line at all
+                # — for an atom in the shipped shape, which is what keeps a
+                # legacy render byte-identical. Printing the raw name alone
+                # would score `mustnot_disclose__model_user` as an opaque
+                # string and the read-back could not tell whether the grammar
+                # extension helped.
+                desc = gr.describe(a)
+                if desc:
+                    lines.append(f"      {desc}")
+    lines += ["", closing_for(atoms)]
     return "\n".join(lines)
 
 

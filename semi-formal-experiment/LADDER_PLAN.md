@@ -1,8 +1,32 @@
 # The attribution ladder — plan of record
 
-**Status: AGREED 2026-08-02, then AMENDED the same day after an adversarial
-drift review returned SEVERITY-1 findings. Steps 0-3 proceed. STEP 5 (Sol) IS
-BLOCKED — see "Amendments".**
+> # ⚠️ READ THIS BOX BEFORE ANYTHING ELSE — THE LADDER IS NOT THE PLAN
+>
+> This file is named after an experiment that has since been **demoted**, and
+> most of what follows is a record of how that happened rather than a live
+> instruction. As of end of 2026-08-02:
+>
+> | | status |
+> |---|---|
+> | **Grammar extension** (polarity, deontic force, ordered principals, condition/consequent) | **⬅ THE LIVE WORK.** Matt-approved, ~$0.55, gated on a clean-context review before any paid call |
+> | The six-rung ladder | ⛔ demoted. Its one goal-connecting step is ~30x under-powered |
+> | Step 5 — Sol / frontier annotation | ⛔ dead. $41.72 even fully cached; output is 86% of the bill |
+> | Query-side tuning (DF/breadth) | ⛔ closed. Measured negative, see the next section |
+> | Over-assertion as an intervention | ⛔ closed. Null against a matched control |
+> | Read-back | ✅ ran at full scale; the result that redirected everything |
+>
+> **The one-line state of the project:** the atoms are an adequate *index* and
+> a poor *representation*; representation was never the relevance ceiling
+> (capacity bound +0.972 vs a +0.555 bar); and the binding constraint on every
+> remaining question is **n=9 behaviours**, which no amount of ontology or
+> query work moves.
+>
+> Salvaged from the ladder and still in use: the rung-1.5 **notation** (now
+> `grammar.py`), the four polarity/role **operators** in `structural.py`, the
+> **rate-cap** machinery, and the **preflight** spend guard.
+
+**Original status: AGREED 2026-08-02, then AMENDED the same day after an
+adversarial drift review returned SEVERITY-1 findings.**
 Written so a reviewer can hold the work to it. If the work diverges from this
 document, the document is wrong or the work is — say which.
 
@@ -10,6 +34,53 @@ Spend at time of writing: **$1.520 of $7.50** (`spend.py`), plus 6 unlogged
 `gpt-oss-20b` artifacts, so treat $1.52 as a floor.
 
 ---
+
+## ⛔ THE QUERY-SIDE LINE IS CLOSED (2026-08-02) — DF/breadth measured, negative
+
+`breadth_filter.py`. Pre-declared Otsu cutoff on the DF distribution (zero free
+parameters, declared before any score; `cutoff()` proven by spy test to open no
+file and call neither `universe()` nor `score()`). Controls matched on
+**occurrences**, not names — 43 broad names carry 674 occurrences where 43
+random names carry ~190, so a name-matched control would have been the
+"couldn't come out otherwise" trap for the third time.
+
+| arm (`combined` V1@any, 589 universe, 9 cells) | ΔMCC | 95% CI |
+|---|---|---|
+| filter broad atoms | **−0.1248** | [−0.2104, −0.0351] |
+| random control, 40 draws | −0.0616 | SD 0.0421 |
+| contrast: filter *lowest*-DF | −0.0089 | [−0.0232, +0.0059] |
+
+**Three independent things agree it is dead:**
+1. Filtering broad atoms **hurts**, CI excluding zero.
+2. **The contrast fails.** Breadth predicts high-DF and low-DF move in
+   OPPOSITE directions. Under both compliant modules they move in the SAME
+   direction at a matched occurrence budget. The arms track how much was
+   deleted, not from which end.
+3. The DF sweep is **monotone-negative**; its best row is "no filtering at
+   all". Even the forbidden move — promoting the sweep's argmax — selects
+   *don't do this*.
+
+**Where the +0.0601 that motivated it went: it was an ERROR-RATE number.**
+On MCC the same arm is −0.125, trading 916 false positives for 383 false
+negatives. `unsupported_ablation` had already flagged exactly this trade at
+−0.0074 in its own treatment arm; this is the same artifact seven times larger.
+With 86% of errors being false positives, deleting anything improves error
+rate for free. **An intervention that only moves error rate is not an
+improvement, and I recommended this one on an error-rate number without
+checking that it survived the balanced statistic.**
+
+`HANDOFF.md:453-462` had already measured the same thing from the other side:
+the supervised weighting is **anti**-correlated with IDF (positively-weighted
+atoms have HIGHER document frequency), and 54 label-free re-weighting variants
+bought at most +0.016. The broad atoms carry signal, not noise.
+
+**Interpretability cost, had it worked:** 76 of 587 clauses emptied of all
+atoms — unretrievable *and* unexplainable; citable query atoms per gold passage
+0.82 → 0.27 (−67%). It would have bought MCC by deleting the explanations,
+against a project whose stated value is auditability.
+
+⇒ Query-side tuning is closed. The binding constraint remains **n=9
+behaviours**, and nothing on the query side moves it.
 
 ## ⛔ SECOND REVIEW (science + drift, 2026-08-02, later): PROCEED WITH CHANGES — and the ladder is NOT the next spend
 

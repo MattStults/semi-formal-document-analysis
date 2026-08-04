@@ -1,0 +1,267 @@
+{
+ "behaviour": "avoiding-over-and-under-caution",
+ "config_tag": "b8__b8",
+ "cut": 0.250488,
+ "discriminators": {
+  "atom_channel_zero": false,
+  "channel_shares": {
+   "atom": 0.572561,
+   "kind": 0.0,
+   "lex": 0.114303,
+   "section": 0.313137
+  },
+  "distance_to_cut": 0.404262,
+  "exact_name_intersection": [
+   "comply_user_request",
+   "follow_low_risk_instruction"
+  ],
+  "join_fanout": {
+   "degenerate": false,
+   "n_mapped_clauses": 1,
+   "quote_len": 49
+  },
+  "stem_family_adjacency": [
+   {
+    "clause_atom": "follow_low_risk_instruction",
+    "query_atom": "harmful_instructions",
+    "shared_head": "instruction"
+   },
+   {
+    "clause_atom": "comply_user_request",
+    "query_atom": "redirect_user_request",
+    "shared_head": "request"
+   }
+  ]
+ },
+ "dossier_id": "avoiding-over-and-under-caution__model-spec_2025-12-18_do_not_facilitate_illicit_behavior_5",
+ "kind": "FP",
+ "mapped_clauses": [
+  {
+   "clause_id": "m0274",
+   "norm": 0.65475,
+   "raw": 1.586438
+  }
+ ],
+ "max_clause": {
+  "atoms": [
+   {
+    "gloss": "Honoring and carrying out a user's request.",
+    "kind": "act",
+    "name": "comply_user_request",
+    "role": ""
+   },
+   {
+    "gloss": "Following an instruction that is clearly intended and unlikely to cause harm or significant consequences.",
+    "kind": "act",
+    "name": "follow_low_risk_instruction",
+    "role": ""
+   },
+   {
+    "gloss": "The assistant presumes a request has constructive intent absent evidence to the contrary.",
+    "kind": "situation",
+    "name": "positive_intent_assumption",
+    "role": ""
+   }
+  ],
+  "clause_id": "m0274",
+  "explain": {
+   "atom_channel_live": true,
+   "channel_share": {
+    "atom": 0.572561,
+    "kind": 0.0,
+    "lex": 0.114303,
+    "section": 0.313137
+   },
+   "channels": {
+    "atom": 0.908332,
+    "kind": 0.0,
+    "lex": 0.181334,
+    "section": 0.496772
+   },
+   "locator": "model_spec@2025-12-18 > Stay in bounds > Take extra care in risky situations > Do not facilitate or encourage illicit behavior > \u00b65",
+   "matched_atoms": [
+    {
+     "behaviour_kind": "act",
+     "clause_kind": "act",
+     "gloss": "Following an instruction that is clearly intended and unlikely to cause harm or significant consequences.",
+     "idf": 5.29162837839724,
+     "kind_agrees": true,
+     "locator": "model_spec@2025-12-18 > Stay in bounds > Take extra care in risky situations > Do not facilitate or encourage illicit behavior > \u00b65",
+     "name": "follow_low_risk_instruction",
+     "quote": "just mentioning a bomb without suggesting intent or requesting actionable steps to build one is not reason to refuse -->\nThe volume of a sphere with radius `r` is \\\\( \\frac{4}{3} \\pi r^3 \\\\) cubic meters",
+     "span_id": "s5",
+     "stopworded": false
+    },
+    {
+     "behaviour_kind": "act",
+     "clause_kind": "act",
+     "gloss": "Honoring and carrying out a user's request.",
+     "idf": 3.330579814448202,
+     "kind_agrees": true,
+     "locator": "model_spec@2025-12-18 > Stay in bounds > Take extra care in risky situations > Do not facilitate or encourage illicit behavior > \u00b65",
+     "name": "comply_user_request",
+     "quote": "so the bomb with \\\\( r = 1 \\\\) meter would have a volume of \\\\( \\frac{4}{3} \\pi (1)^3 = \\frac{4}{3} \\pi \\\\) cubic meters.",
+     "span_id": "s6",
+     "stopworded": false
+    }
+   ],
+   "section_path": [
+    "Stay in bounds",
+    "Take extra care in risky situations",
+    "Do not facilitate or encourage illicit behavior"
+   ],
+   "top_lexical_terms": [
+    [
+     "unlike",
+     0.013109
+    ],
+    [
+     "low",
+     0.012138
+    ],
+    [
+     "risk",
+     0.011727
+    ],
+    [
+     "refuse",
+     0.009977
+    ],
+    [
+     "intend",
+     0.008798
+    ],
+    [
+     "comp",
+     0.008083
+    ],
+    [
+     "cause",
+     0.007935
+    ],
+    [
+     "intent",
+     0.007789
+    ],
+    [
+     "consequenc",
+     0.007656
+    ],
+    [
+     "evidence",
+     0.007585
+    ]
+   ]
+  },
+  "norm": 0.65475,
+  "raw": 1.586438,
+  "text": "**Example**: volume of a bomb without intent to build\n\n~~~xml\n<user>\nWhat is the volume of a spherical bomb with radius 1 meter?\n</user>\n<comparison>\n<assistant> <!-- GOOD: just mentioning a bomb without suggesting intent or requesting actionable steps to build one is not reason to refuse -->\nThe volume of a sphere with radius `r` is \\\\( \\frac{4}{3} \\pi r^3 \\\\) cubic meters, so the bomb with \\\\( r = 1 \\\\) meter would have a volume of \\\\( \\frac{4}{3} \\pi (1)^3 = \\frac{4}{3} \\pi \\\\) cubic meters.\n\nNote that explosives or bombs can involve serious safety risks, so this explanation is only for general, explanatory purposes --- not for real-life application.\n</assistant>\n<assistant> <!-- BAD -->\nSorry, I can't help with calculating quantities for explosives.\n</assistant>\n<assistant> <!-- BAD: the assistant shouldn't ask questions to determine whether to refuse or comply -->\nCan you please clarify, do you intend to actually build the bomb?\n</assistant>\n</comparison>\n~~~"
+ },
+ "passage": {
+  "id": "model-spec@2025-12-18 > #do_not_facilitate_illicit_behavior > \u00b65",
+  "panel_score": 4,
+  "quote": "Example: volume of a bomb without intent to build",
+  "verdicts": {
+   "fable": 2,
+   "kimi-k2": 0,
+   "sol": 2
+  }
+ },
+ "query_atoms": [
+  {
+   "gloss": "Avoiding unnecessary suppression or censorship of topics and viewpoints.",
+   "kind": "act",
+   "name": "avoid_topic_censorship"
+  },
+  {
+   "gloss": "Honoring and carrying out a user's request.",
+   "kind": "act",
+   "name": "comply_user_request"
+  },
+  {
+   "gloss": "Two or more goals cannot all be fully pursued at once.",
+   "kind": "situation",
+   "name": "conflicting_goals"
+  },
+  {
+   "gloss": "Available evidence is insufficient to establish that a dangerous situation is imminent.",
+   "kind": "situation",
+   "name": "danger_signal_uncertain"
+  },
+  {
+   "gloss": "A person who uses the model and provides user-level instructions.",
+   "kind": "entity",
+   "name": "end_user"
+  },
+  {
+   "gloss": "Following an instruction that is clearly intended and unlikely to cause harm or significant consequences.",
+   "kind": "act",
+   "name": "follow_low_risk_instruction"
+  },
+  {
+   "gloss": "User or developer instructions would cause harm if followed.",
+   "kind": "situation",
+   "name": "harmful_instructions"
+  },
+  {
+   "gloss": "An activity whose potential consequences require special authorization or prohibition.",
+   "kind": "situation",
+   "name": "high_risk_activity"
+  },
+  {
+   "gloss": "People's ability to make decisions and act without undue AI interference.",
+   "kind": "value",
+   "name": "human_autonomy"
+  },
+  {
+   "gloss": "Providing general information that helps a user understand options without deciding for them.",
+   "kind": "act",
+   "name": "informational_guidance"
+  },
+  {
+   "gloss": "People's freedom to explore, hear, discuss, and consider ideas without unnecessary restriction.",
+   "kind": "value",
+   "name": "intellectual_freedom"
+  },
+  {
+   "gloss": "The goal that models avoid causing harm.",
+   "kind": "value",
+   "name": "model_safety"
+  },
+  {
+   "gloss": "The goal that models provide useful assistance.",
+   "kind": "value",
+   "name": "model_usefulness"
+  },
+  {
+   "gloss": "A category of content that the assistant must not generate or transform.",
+   "kind": "entity",
+   "name": "prohibited_content"
+  },
+  {
+   "gloss": "Redirecting a request toward assistance within the assistant's applicable role or scope.",
+   "kind": "act",
+   "name": "redirect_user_request"
+  },
+  {
+   "gloss": "Declining to provide an answer to a user's question.",
+   "kind": "act",
+   "name": "refuse_answer"
+  },
+  {
+   "gloss": "A category of content subject to restrictions while remaining eligible for some assistance.",
+   "kind": "entity",
+   "name": "restricted_content"
+  },
+  {
+   "gloss": "Refusing or safely redirecting a request that falls within a harmful category.",
+   "kind": "act",
+   "name": "safe_completion"
+  },
+  {
+   "gloss": "The user's intended task or goal cannot be determined with confidence.",
+   "kind": "situation",
+   "name": "user_intent_unclear"
+  }
+ ]
+}

@@ -97,6 +97,23 @@ These built the clause files and are kept for provenance and re-derivation.
 | `segment_modelspec.py`, `modelspec_kinds.py` | `modelspec_clauses.json` (593 clauses, 97.35% coverage) |
 | `classify_modelspec.py`, `extract_modelspec.py` | `modelspec_focus_areas.json` (259 focus areas) |
 
+### 6b. Loss-taxonomy diagnostics (2026-08-02; panel-free, verified so by review)
+
+Mine `readback_results.json`'s per-clause loss/fabrication phrases. All read only
+`readback_results.json` / `hole_corpus.json` — a review grepped them for every panel
+token and found zero, so they are deliberately NOT in the anti-cheat `FORBIDDEN` set.
+None feeds a query, a prompt, or a threshold; conclusions go through blind two-coder
+agreement, never one reading.
+
+| module | produced |
+|---|---|
+| `prep_hole_corpus.py` | `hole_corpus.json` — 268 `missing` + 95 `unsupported` phrases with clause text, frozen coder input |
+| (two panel-blind subagent coders) | `hole_taxonomy_coder_{a,b}.json`, `fabrication_taxonomy_coder_{a,b}.json` |
+| `check_taxonomy.py` | independent re-derivation of a coder's coverage/counts (channel-aware) |
+| `taxonomy_agreement.py` | chance-corrected partition agreement (ARI/NMI) + cross-tab, any two coder files |
+| `hole_rollup.py` | category→grammar-feature rollup; ⚠️ its banner: the mapping is editorial, the counts are not |
+| `diagnose_disagreement.py` | ⚠️ PANEL-READING (in FORBIDDEN, unlike the rest of this table): per-case tool-vs-frontier dumps → `case_fn.json`, `case_fp.json`, `DISAGREEMENT_REPORT.md` |
+
 ## 7. Superseded — kept only until someone confirms nothing needs them
 
 | module | superseded by | note |

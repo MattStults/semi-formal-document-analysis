@@ -2257,3 +2257,56 @@ if __name__ == "__main__":
         _variance()
     else:
         _measure()
+
+
+# ------------------------------------------------- the ordering must survive
+# Found by the behaviour-atoms agent, in a file it did not own. `patient_aligned`
+# reads the CLAUSE chain as ordered (`clause_principals[1:]`) but flattened the
+# QUERY chain into a set, so an actor/patient swap on the query side scored
+# identically. The ordered principal chain is the entire reason rung 1.5 exists;
+# one set comprehension discarded it on one side.
+#
+# This is the SECOND time this project has lost agency direction to a set:
+# `vocab_key` once collapsed `model_defers_to_operator` and
+# `operator_defers_to_model` because their token SETS are identical, and the fix
+# was to make principal ORDER part of the key. Same bug, different file.
+
+def _ev(clause_atom, query_patients, query_roles):
+    #: `clause_principals` is DERIVED from the atom name, so the chain has to
+    #: be in the name — passing a tuple silently gives an empty chain and the
+    #: "no chain" fallback answers instead of the code under test.
+    return S.Evidence(
+        slot="act", behaviour_atom="q", clause_atom=clause_atom,
+        clause_id="c1", hops=0, path=(), span="s", span_id="s1", locator="l",
+        gloss="g", ic=1.0, weight=3,
+        query_roles=query_roles, query_patients=query_patients)
+
+
+def test_patient_aligned_distinguishes_who_acts_from_who_is_acted_upon():
+    """`mustnot_cause_harm__model_third_party` (a third party is HARMED) must
+    not score the same as `..__third_party_model` (a third party HARMS).
+
+    A behaviour like harm-avoidance-to-third-parties is about the first. If the
+    two are indistinguishable, the ordering bought nothing and rung 1.5's whole
+    justification collapses. # MUTATION-VERIFIED
+    """
+    #: the model acts UPON a third party -> clause patient is third_party
+    clause = "mustnot_cause_harm__model_third_party"
+    harmed = _ev(clause, ("third_party",), ("model", "third_party"))
+    harmer = _ev(clause, ("model",), ("third_party", "model"))
+    op = S.OPERATORS["patient_aligned"]
+    assert op([harmed]) is True, \
+        "the clause's patient IS the behaviour's patient — must match"
+    assert op([harmer]) is False, (
+        "the behaviour is about a third party who ACTS; this clause is about "
+        "one who is ACTED UPON. Scoring these the same means the query-side "
+        "chain was read as a set and the ordering was thrown away.")
+
+
+def test_query_patients_is_ordered_and_not_the_whole_role_set():
+    """The patient positions are chain[1:], query-side only."""
+    q = S.Query("q", [{"name": "mustnot_cause_harm__model_third_party",
+                       "kind": "act", "weight": 3}])
+    assert S.query_patients(q) == ("third_party",)
+    assert set(S.query_roles(q)) == {"model", "third_party"}, \
+        "role_aligned still sees the whole chain; only the patient view narrows"

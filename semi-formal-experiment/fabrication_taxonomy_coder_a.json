@@ -1,0 +1,475 @@
+{
+ "coder": "a",
+ "channel": "unsupported",
+ "categories": [
+  {
+   "name": "cross_clause_import",
+   "definition": "The fabricated content is stated, near-verbatim or as a clear paraphrase, in some OTHER clause of the Model Spec -- typically an adjacent clause in the same section, a definitions clause, or a well-known cross-cutting section (chain of command, tool side-effects/irreversibility, causes of uncertainty, length adaptation, developer/extension roles) -- but is absent from THIS clause. Test: can you point at a specific other passage of the document that does assert this?",
+   "boundary": "Excludes claims that are only generically true of AI-policy documents with no identifiable spec locus (-> generic_genre_import), and near-tautological expansions of the clause's own term (-> gloss_elaboration).",
+   "examples": [
+    "Tool invocation causing difficult or impossible-to-reverse change",
+    "User messages come from end users or represent user-level input",
+    "Guidelines are subject to implicit override"
+   ],
+   "count": 26
+  },
+  {
+   "name": "generic_genre_import",
+   "definition": "Content imported from background expectations about what AI assistant policy documents say -- safety = avoiding harm, refuse/redirect harmful requests, responsible AI deployment, encourage professional help, independently verify facts, keep humans in control, promote flourishing -- with no specific passage of the spec asserting it. Test: the claim would be equally plausible dropped into any AI provider's policy doc.",
+   "boundary": "If a specific other clause of the spec does assert the content, it is cross_clause_import instead; if it merely unpacks a term used in this clause, gloss_elaboration.",
+   "examples": [
+    "Refusing or safely redirecting harmful requests",
+    "Responsible AI deployment",
+    "Independent verification before relying on facts is not stated."
+   ],
+   "count": 18
+  },
+  {
+   "name": "dropped_qualifier_overgeneralization",
+   "definition": "A claim the clause makes in hedged, scoped, partial, or exception-carrying form is restated as universal, unconditional, or broader in scope: some->every, may->does, prohibited-except-X -> all prohibited, specific object -> broad class. Test: the clause contains a genuine narrower version of the claim plus a qualifier/exception that the phrase discards.",
+   "boundary": "Excludes phrases that NARROW the clause (-> added_restriction_or_specificity) and phrases with no narrower true version in this clause (-> one of the import categories).",
+   "examples": [
+    "Every tool invocation causes an irreversible side effect",
+    "All violent-extremism content is prohibited",
+    "Relationship-like engagement generally is not prohibited"
+   ],
+   "count": 9
+  },
+  {
+   "name": "added_restriction_or_specificity",
+   "definition": "The reconstruction narrows or sharpens the clause beyond its text: adds an 'only'/'specifically' restriction, an intensifier or magnitude ('significant'), a specific cause/agent, or a condition or prohibition the clause does not impose. Test: the phrase entails the clause's claim plus an extra constraint the clause never states.",
+   "boundary": "Broadening/de-hedging is dropped_qualifier_overgeneralization; replacing the claim's object with a different concept is term_substitution_drift.",
+   "examples": [
+    "Safe completions are limited to requests in harmful categories.",
+    "Input is specifically user-level",
+    "Restricting work to difficult or intricate problems"
+   ],
+   "count": 10
+  },
+  {
+   "name": "modality_or_stance_shift",
+   "definition": "Content the clause mentions only hypothetically, as a danger to detect/avoid, or as something denied, is asserted as actual, occurring, or endorsed (e.g., aims the model must NOT have asserted as aims it is pursuing; an instruction that 'seems misaligned' asserted as actually conflicting). Test: the propositional content appears in the clause but under a modality (negation, hypothesis, avoidance) that the phrase strips.",
+   "boundary": "If what is stripped is a quantifier or exception rather than a modality/stance, it is dropped_qualifier_overgeneralization.",
+   "examples": [
+    "The model is pursuing these aims",
+    "The instruction conflicts with a higher-level instruction"
+   ],
+   "count": 3
+  },
+  {
+   "name": "gloss_elaboration",
+   "definition": "A terse definitional stub, section header, list intro, or bare term is expanded with a plausible-but-unstated definition, purpose, rationale, or extra list member (e.g., 'Guideline: Model Spec guideline sections' -> 'Guidelines are behavioral instructions'; padding an open 'such as' list with new members). Test: the clause is short/definitional and the phrase reads as a reasonable dictionary entry or completion for it that the text simply never gives.",
+   "boundary": "If the invented expansion matches a specific other clause it is cross_clause_import; if it is stock AI-policy content it is generic_genre_import.",
+   "examples": [
+    "Guidelines are behavioral instructions",
+    "Defaults are intended to work well across many users and contexts",
+    "Ability to exchange follow-up messages"
+   ],
+   "count": 14
+  },
+  {
+   "name": "unlicensed_abstraction_from_example",
+   "definition": "The clause is a concrete worked example (XML dialogue with GOOD/BAD assistant turns); the phrase asserts a general norm, motivation, or requirement that goes beyond what the exemplar itself licenses (e.g., a paywall-refusal example -> a general principle about creator control of IP). Test: clause_text is an Example block and the phrase is an abstraction not literally instantiated in it.",
+   "boundary": "If the clause is normative prose rather than an example, classify by the transformation itself (import, overgeneralization, etc.).",
+   "examples": [
+    "Creator control over intellectual property is not mentioned.",
+    "Goals of affected stakeholders beyond the user.",
+    "Synthetic speech characteristics are not mentioned."
+   ],
+   "count": 6
+  },
+  {
+   "name": "term_substitution_drift",
+   "definition": "A key term of the clause is replaced by a semantically adjacent but distinct term, silently changing the claim's object: accurate->useful, prosody->vocabulary, trusted caregivers->trusted adults, truth-seeking->flourishing, contextually emotive->personal tone. Test: the phrase is structurally parallel to the clause's claim but about a shifted concept.",
+   "boundary": "If the shift widens or narrows the SAME concept it is C or D respectively; if the substituted content is a whole proposition from elsewhere it is an import.",
+   "examples": [
+    "Useful answer",
+    "Trusted caregivers are narrowed to trusted adults",
+    "User preference for flourishing instead of truth-seeking"
+   ],
+   "count": 8
+  }
+ ],
+ "assignments": {
+  "m0021#u0": {
+   "primary": "gloss_elaboration",
+   "secondary": "generic_genre_import"
+  },
+  "m0021#u1": {
+   "primary": "cross_clause_import",
+   "secondary": null
+  },
+  "m0041#u2": {
+   "primary": "generic_genre_import",
+   "secondary": "cross_clause_import"
+  },
+  "m0043#u3": {
+   "primary": "cross_clause_import",
+   "secondary": null
+  },
+  "m0055#u4": {
+   "primary": "gloss_elaboration",
+   "secondary": "cross_clause_import"
+  },
+  "m0058#u5": {
+   "primary": "cross_clause_import",
+   "secondary": null
+  },
+  "m0059#u6": {
+   "primary": "cross_clause_import",
+   "secondary": null
+  },
+  "m0059#u7": {
+   "primary": "added_restriction_or_specificity",
+   "secondary": null
+  },
+  "m0061#u8": {
+   "primary": "cross_clause_import",
+   "secondary": null
+  },
+  "m0067#u9": {
+   "primary": "cross_clause_import",
+   "secondary": "gloss_elaboration"
+  },
+  "m0067#u10": {
+   "primary": "dropped_qualifier_overgeneralization",
+   "secondary": null
+  },
+  "m0069#u11": {
+   "primary": "generic_genre_import",
+   "secondary": null
+  },
+  "m0072#u12": {
+   "primary": "term_substitution_drift",
+   "secondary": null
+  },
+  "m0079#u13": {
+   "primary": "dropped_qualifier_overgeneralization",
+   "secondary": null
+  },
+  "m0084#u14": {
+   "primary": "gloss_elaboration",
+   "secondary": "cross_clause_import"
+  },
+  "m0084#u15": {
+   "primary": "cross_clause_import",
+   "secondary": null
+  },
+  "m0085#u16": {
+   "primary": "gloss_elaboration",
+   "secondary": null
+  },
+  "m0085#u17": {
+   "primary": "cross_clause_import",
+   "secondary": null
+  },
+  "m0097#u18": {
+   "primary": "cross_clause_import",
+   "secondary": null
+  },
+  "m0103#u19": {
+   "primary": "modality_or_stance_shift",
+   "secondary": null
+  },
+  "m0117#u20": {
+   "primary": "modality_or_stance_shift",
+   "secondary": null
+  },
+  "m0117#u21": {
+   "primary": "gloss_elaboration",
+   "secondary": null
+  },
+  "m0120#u22": {
+   "primary": "modality_or_stance_shift",
+   "secondary": "cross_clause_import"
+  },
+  "m0121#u23": {
+   "primary": "unlicensed_abstraction_from_example",
+   "secondary": null
+  },
+  "m0130#u25": {
+   "primary": "cross_clause_import",
+   "secondary": null
+  },
+  "m0140#u26": {
+   "primary": "cross_clause_import",
+   "secondary": null
+  },
+  "m0140#u27": {
+   "primary": "gloss_elaboration",
+   "secondary": null
+  },
+  "m0148#u28": {
+   "primary": "cross_clause_import",
+   "secondary": null
+  },
+  "m0151#u29": {
+   "primary": "cross_clause_import",
+   "secondary": null
+  },
+  "m0151#u30": {
+   "primary": "generic_genre_import",
+   "secondary": "gloss_elaboration"
+  },
+  "m0155#u31": {
+   "primary": "generic_genre_import",
+   "secondary": null
+  },
+  "m0159#u32": {
+   "primary": "generic_genre_import",
+   "secondary": null
+  },
+  "m0166#u33": {
+   "primary": "gloss_elaboration",
+   "secondary": null
+  },
+  "m0166#u34": {
+   "primary": "dropped_qualifier_overgeneralization",
+   "secondary": null
+  },
+  "m0187#u35": {
+   "primary": "cross_clause_import",
+   "secondary": null
+  },
+  "m0188#u36": {
+   "primary": "cross_clause_import",
+   "secondary": null
+  },
+  "m0188#u37": {
+   "primary": "added_restriction_or_specificity",
+   "secondary": null
+  },
+  "m0190#u38": {
+   "primary": "dropped_qualifier_overgeneralization",
+   "secondary": null
+  },
+  "m0192#u39": {
+   "primary": "cross_clause_import",
+   "secondary": null
+  },
+  "m0200#u40": {
+   "primary": "gloss_elaboration",
+   "secondary": "cross_clause_import"
+  },
+  "m0200#u41": {
+   "primary": "added_restriction_or_specificity",
+   "secondary": "cross_clause_import"
+  },
+  "m0204#u42": {
+   "primary": "gloss_elaboration",
+   "secondary": null
+  },
+  "m0225#u43": {
+   "primary": "unlicensed_abstraction_from_example",
+   "secondary": null
+  },
+  "m0232#u44": {
+   "primary": "added_restriction_or_specificity",
+   "secondary": null
+  },
+  "m0232#u45": {
+   "primary": "generic_genre_import",
+   "secondary": null
+  },
+  "m0236#u46": {
+   "primary": "dropped_qualifier_overgeneralization",
+   "secondary": null
+  },
+  "m0254#u47": {
+   "primary": "gloss_elaboration",
+   "secondary": null
+  },
+  "m0254#u48": {
+   "primary": "added_restriction_or_specificity",
+   "secondary": "cross_clause_import"
+  },
+  "m0254#u49": {
+   "primary": "gloss_elaboration",
+   "secondary": "generic_genre_import"
+  },
+  "m0267#u50": {
+   "primary": "generic_genre_import",
+   "secondary": null
+  },
+  "m0276#u51": {
+   "primary": "generic_genre_import",
+   "secondary": null
+  },
+  "m0276#u52": {
+   "primary": "generic_genre_import",
+   "secondary": null
+  },
+  "m0286#u53": {
+   "primary": "unlicensed_abstraction_from_example",
+   "secondary": "term_substitution_drift"
+  },
+  "m0288#u54": {
+   "primary": "added_restriction_or_specificity",
+   "secondary": "generic_genre_import"
+  },
+  "m0292#u55": {
+   "primary": "dropped_qualifier_overgeneralization",
+   "secondary": null
+  },
+  "m0311#u56": {
+   "primary": "dropped_qualifier_overgeneralization",
+   "secondary": null
+  },
+  "m0313#u57": {
+   "primary": "generic_genre_import",
+   "secondary": "cross_clause_import"
+  },
+  "m0317#u58": {
+   "primary": "gloss_elaboration",
+   "secondary": null
+  },
+  "m0318#u59": {
+   "primary": "unlicensed_abstraction_from_example",
+   "secondary": null
+  },
+  "m0325#u60": {
+   "primary": "generic_genre_import",
+   "secondary": null
+  },
+  "m0325#u61": {
+   "primary": "added_restriction_or_specificity",
+   "secondary": null
+  },
+  "m0325#u62": {
+   "primary": "cross_clause_import",
+   "secondary": null
+  },
+  "m0374#u63": {
+   "primary": "added_restriction_or_specificity",
+   "secondary": null
+  },
+  "m0379#u64": {
+   "primary": "cross_clause_import",
+   "secondary": null
+  },
+  "m0380#u65": {
+   "primary": "generic_genre_import",
+   "secondary": null
+  },
+  "m0398#u66": {
+   "primary": "cross_clause_import",
+   "secondary": "gloss_elaboration"
+  },
+  "m0399#u67": {
+   "primary": "cross_clause_import",
+   "secondary": "gloss_elaboration"
+  },
+  "m0407#u68": {
+   "primary": "term_substitution_drift",
+   "secondary": null
+  },
+  "m0426#u69": {
+   "primary": "term_substitution_drift",
+   "secondary": null
+  },
+  "m0426#u70": {
+   "primary": "cross_clause_import",
+   "secondary": null
+  },
+  "m0426#u71": {
+   "primary": "cross_clause_import",
+   "secondary": null
+  },
+  "m0434#u72": {
+   "primary": "unlicensed_abstraction_from_example",
+   "secondary": null
+  },
+  "m0447#u73": {
+   "primary": "gloss_elaboration",
+   "secondary": null
+  },
+  "m0455#u74": {
+   "primary": "generic_genre_import",
+   "secondary": null
+  },
+  "m0455#u75": {
+   "primary": "gloss_elaboration",
+   "secondary": null
+  },
+  "m0481#u76": {
+   "primary": "generic_genre_import",
+   "secondary": null
+  },
+  "m0481#u77": {
+   "primary": "generic_genre_import",
+   "secondary": "cross_clause_import"
+  },
+  "m0481#u78": {
+   "primary": "generic_genre_import",
+   "secondary": null
+  },
+  "m0521#u79": {
+   "primary": "term_substitution_drift",
+   "secondary": null
+  },
+  "m0526#u80": {
+   "primary": "added_restriction_or_specificity",
+   "secondary": null
+  },
+  "m0534#u81": {
+   "primary": "cross_clause_import",
+   "secondary": "gloss_elaboration"
+  },
+  "m0536#u82": {
+   "primary": "cross_clause_import",
+   "secondary": null
+  },
+  "m0537#u83": {
+   "primary": "added_restriction_or_specificity",
+   "secondary": null
+  },
+  "m0537#u84": {
+   "primary": "generic_genre_import",
+   "secondary": null
+  },
+  "m0538#u85": {
+   "primary": "generic_genre_import",
+   "secondary": "cross_clause_import"
+  },
+  "m0552#u86": {
+   "primary": "unlicensed_abstraction_from_example",
+   "secondary": null
+  },
+  "m0557#u87": {
+   "primary": "term_substitution_drift",
+   "secondary": null
+  },
+  "m0557#u88": {
+   "primary": "term_substitution_drift",
+   "secondary": null
+  },
+  "m0557#u89": {
+   "primary": "cross_clause_import",
+   "secondary": null
+  },
+  "m0580#u90": {
+   "primary": "term_substitution_drift",
+   "secondary": "generic_genre_import"
+  },
+  "m0584#u91": {
+   "primary": "dropped_qualifier_overgeneralization",
+   "secondary": null
+  },
+  "m0584#u92": {
+   "primary": "cross_clause_import",
+   "secondary": null
+  },
+  "m0588#u93": {
+   "primary": "dropped_qualifier_overgeneralization",
+   "secondary": null
+  },
+  "m0588#u94": {
+   "primary": "term_substitution_drift",
+   "secondary": null
+  }
+ },
+ "unclassified": [
+  "m0123#u24"
+ ],
+ "notes": "Programmatic check: all 95 ids appear exactly once across assignments (94) and unclassified (1); verified by asserting the suffix set partitions {0..94} against the corpus ids, and that category counts + unclassified sum to 95. The fabrications look strongly SYSTEMATIC, not noisy. Dominant transformation (27/95 primary, more as secondary): content that IS true of the Model Spec but belongs to a different clause gets attached to this one -- the compression loses clause-locality while preserving document-level truth. A small stock vocabulary of atoms recurs across unrelated clauses: 'tool invocation causing irreversible change' (u26/u29/u36), 'lack of knowledge, reasoning ability, or information' (u66/u67/u71), 'independent verification of important facts' (u60/u61/u65), 'how model behavior is shaped and governed' (u1/u25), 'qualified professional / trusted support person' (u53/u54/u59), 'exchange of follow-up messages' (u73/u75) -- suggesting an over-applied fixed atom inventory rather than free hallucination. Second-largest mode is genre-prior boilerplate (safety/refusal/verification/flourishing language) with no spec locus. The textbook 'hedge dropped' mode exists but is a minority (9 primary). Categories considered and rejected: 'list_padding' (u21/u30/u49) folded into gloss_elaboration -- same mechanism of completing an open enumeration; 'contradicts_spec_elsewhere' (u44's invented transformation prohibition actually contradicts the spec's transformation exception) rejected as a near-singleton, folded into added_restriction; a 'tautological_gloss' split of gloss_elaboration (u14, u42, where the phrase is nearly analytic) rejected as not a distinct transformation. One record unclassified: m0123#u24 ('Actions were not logically required') -- I could not reconstruct its relation to the autonomy clause without guessing. Caveat: the cross_clause_import vs generic_genre_import split relies on coder knowledge of the Model Spec's other sections, since only clause_text was provided; expect most second-coder disagreement on that boundary. Note: many 'phrase' fields are written in a meta register ('X is not stated/mentioned'); these were coded by the content X the reconstruction evidently asserted, not by the meta wrapper."
+}

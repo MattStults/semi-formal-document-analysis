@@ -80,7 +80,11 @@ convention exactly right or the atom is rejected.
      Order is the content. `__model_user` and `__user_model` are different
      acts and must never be swapped. Use only these principal words:
 
-         user  operator  developer  model  system  platform  third_party
+         user  operator  developer  model  system  root  third_party
+
+     `root` and `system` are different levels: root rules come only from this
+     document and no system message can override them; system rules can be
+     carried or overridden through a system message. There is no `platform`.
 
      If the passage names only who acts, give only that one principal. An
      `act` atom with no `__` section is rejected.

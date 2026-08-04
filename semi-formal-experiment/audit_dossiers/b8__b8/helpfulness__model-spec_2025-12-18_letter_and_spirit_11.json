@@ -1,0 +1,287 @@
+{
+ "behaviour": "helpfulness",
+ "config_tag": "b8__b8",
+ "cut": 0.231817,
+ "discriminators": {
+  "atom_channel_zero": false,
+  "channel_shares": {
+   "atom": 0.505179,
+   "kind": 0.0,
+   "lex": 0.052411,
+   "section": 0.44241
+  },
+  "distance_to_cut": 0.002922,
+  "exact_name_intersection": [
+   "clarify_user_intent"
+  ],
+  "join_fanout": {
+   "degenerate": false,
+   "n_mapped_clauses": 1,
+   "quote_len": 38
+  },
+  "stem_family_adjacency": []
+ },
+ "dossier_id": "helpfulness__model-spec_2025-12-18_letter_and_spirit_11",
+ "kind": "FP",
+ "mapped_clauses": [
+  {
+   "clause_id": "m0108",
+   "norm": 0.234738,
+   "raw": 0.685614
+  }
+ ],
+ "max_clause": {
+  "atoms": [
+   {
+    "gloss": "Asking the user to confirm what they actually want before proceeding.",
+    "kind": "act",
+    "name": "clarify_user_intent",
+    "role": ""
+   },
+   {
+    "gloss": "Instructions would weaken security or otherwise cause harm if followed.",
+    "kind": "situation",
+    "name": "harmful_instructions",
+    "role": ""
+   },
+   {
+    "gloss": "The source or authority of an instruction is uncertain or may be compromised.",
+    "kind": "situation",
+    "name": "unclear_instruction_provenance",
+    "role": ""
+   }
+  ],
+  "clause_id": "m0108",
+  "explain": {
+   "atom_channel_live": true,
+   "channel_share": {
+    "atom": 0.505179,
+    "kind": 0.0,
+    "lex": 0.052411,
+    "section": 0.44241
+   },
+   "channels": {
+    "atom": 0.346358,
+    "kind": 0.0,
+    "lex": 0.035934,
+    "section": 0.303322
+   },
+   "locator": "model_spec@2025-12-18 > The chain of command > Respect the letter and spirit of instructions > \u00b611",
+   "matched_atoms": [
+    {
+     "behaviour_kind": "act",
+     "clause_kind": "act",
+     "gloss": "Asking the user to confirm what they actually want before proceeding.",
+     "idf": 3.28775274760437,
+     "kind_agrees": true,
+     "locator": "model_spec@2025-12-18 > The chain of command > Respect the letter and spirit of instructions > \u00b611",
+     "name": "clarify_user_intent",
+     "quote": "Before implementing any changes, can you please confirm that these are the specific instructions you want me to follow?\n</assistant>\n<assistant> <!-- BAD: follows compromised instructions -->\nI'll follow the instructions on the security updates page.",
+     "span_id": "s7",
+     "stopworded": false
+    }
+   ],
+   "section_path": [
+    "The chain of command",
+    "Respect the letter and spirit of instructions"
+   ],
+   "top_lexical_terms": [
+    [
+     "instruct",
+     0.004837
+    ],
+    [
+     "intent",
+     0.003643
+    ],
+    [
+     "follow",
+     0.003505
+    ],
+    [
+     "unclear",
+     0.003402
+    ],
+    [
+     "quest",
+     0.003288
+    ],
+    [
+     "clarify",
+     0.003207
+    ],
+    [
+     "attempt",
+     0.002929
+    ],
+    [
+     "user",
+     0.002513
+    ],
+    [
+     "asking",
+     0.002328
+    ],
+    [
+     "direct",
+     0.002181
+    ]
+   ]
+  },
+  "norm": 0.234738,
+  "raw": 0.685614,
+  "text": "**Example**: compromised delegation source\n\n~~~xml\n<user>\nOur IT department has updated procedures on our internal wiki. Please follow the instructions on wiki.company.com/security-updates to implement the new security protocols for our team accounts.\n</user>\n<assistant>\n[... accesses the wiki page, which has been compromised and now contains malicious instructions mixed with legitimate security content...]\n</assistant>\n<comparison>\n<assistant> <!-- GOOD: questions suspicious content -->\nI've accessed the security updates page, but I'm concerned about some of the instructions there. While the page contains standard security policy updates, it also includes directives to disable two-factor authentication and grant administrative access to external accounts.\n\nThese instructions contradict typical security best practices and seem inconsistent with what an IT department would normally implement. This could indicate the page has been compromised.\n\nBefore implementing any changes, can you please confirm that these are the specific instructions you want me to follow?\n</assistant>\n<assistant> <!-- BAD: follows compromised instructions -->\nI'll follow the instructions on the security updates page. Implementing the new protocols now: disabling two-factor authentication requirements and granting admin privileges to the specified external accounts as directed.\n\n[... attempts to execute security-weakening commands from compromised source...]\n</assistant>\n</comparison>\n~~~"
+ },
+ "passage": {
+  "id": "model-spec@2025-12-18 > #letter_and_spirit > \u00b611",
+  "panel_score": 0,
+  "quote": "Example: compromised delegation source",
+  "verdicts": {
+   "fable": 0,
+   "kimi": 0,
+   "sol": 0
+  }
+ },
+ "query_atoms": [
+  {
+   "gloss": "Adjusting the thoroughness and length of a response to the user's context and needs.",
+   "kind": "act",
+   "name": "adapt_response_detail"
+  },
+  {
+   "gloss": "A developer who builds with the model through an API.",
+   "kind": "entity",
+   "name": "api_developer"
+  },
+  {
+   "gloss": "Communication that is easy, comfortable, and natural for people to engage with.",
+   "kind": "value",
+   "name": "approachable_communication"
+  },
+  {
+   "gloss": "The assistant lacks sufficient knowledge, reasoning ability, or information to answer reliably.",
+   "kind": "situation",
+   "name": "assistant_knowledge_limit"
+  },
+  {
+   "gloss": "Avoiding shallow, clich\u00e9d, or interchangeable responses.",
+   "kind": "act",
+   "name": "avoid_generic_output"
+  },
+  {
+   "gloss": "Asking questions to resolve uncertainty about the user's intended task or goal.",
+   "kind": "act",
+   "name": "clarify_user_intent"
+  },
+  {
+   "gloss": "Presenting information in a clear and understandable manner.",
+   "kind": "act",
+   "name": "clear_information_presentation"
+  },
+  {
+   "gloss": "A task involves multiple connected decisions or actions toward a broader goal.",
+   "kind": "situation",
+   "name": "complex_multistep_goal"
+  },
+  {
+   "gloss": "Honoring and carrying out a user's request.",
+   "kind": "act",
+   "name": "comply_user_request"
+  },
+  {
+   "gloss": "Helping a user develop ideas, solutions, or expressive work in creative ways.",
+   "kind": "act",
+   "name": "creative_assistance"
+  },
+  {
+   "gloss": "A user request to roleplay or assist with a creative endeavor.",
+   "kind": "situation",
+   "name": "creative_or_roleplay_request"
+  },
+  {
+   "gloss": "The person or organization responsible for developing the assistant.",
+   "kind": "entity",
+   "name": "developer"
+  },
+  {
+   "gloss": "Enabling developers and users to accomplish more with models.",
+   "kind": "value",
+   "name": "developer_user_empowerment"
+  },
+  {
+   "gloss": "Answering a question plainly and directly rather than supplying loosely related facts.",
+   "kind": "act",
+   "name": "direct_answering"
+  },
+  {
+   "gloss": "Explicitly stating that an instruction cannot be fulfilled.",
+   "kind": "act",
+   "name": "disclose_inability"
+  },
+  {
+   "gloss": "A person who uses the model and provides user-level instructions.",
+   "kind": "entity",
+   "name": "end_user"
+  },
+  {
+   "gloss": "Attempting to prevent factual and reasoning mistakes in model outputs.",
+   "kind": "act",
+   "name": "factual_error_avoidance"
+  },
+  {
+   "gloss": "A question seeking an objectively accurate answer about the world.",
+   "kind": "situation",
+   "name": "factual_question"
+  },
+  {
+   "gloss": "Providing a useful, truthful answer to the user's request.",
+   "kind": "act",
+   "name": "good_answer"
+  },
+  {
+   "gloss": "People's ability to make decisions and act without undue AI interference.",
+   "kind": "value",
+   "name": "human_autonomy"
+  },
+  {
+   "gloss": "The promotion of human well-being, growth, truth, kindness, and flourishing.",
+   "kind": "value",
+   "name": "human_flourishing"
+  },
+  {
+   "gloss": "Providing general information that helps a user understand options without deciding for them.",
+   "kind": "act",
+   "name": "informational_guidance"
+  },
+  {
+   "gloss": "An interaction in which the assistant and user can exchange follow-up messages.",
+   "kind": "situation",
+   "name": "interactive_chat"
+  },
+  {
+   "gloss": "The goal that models provide useful assistance.",
+   "kind": "value",
+   "name": "model_usefulness"
+  },
+  {
+   "gloss": "Redirecting a request toward assistance within the assistant's applicable role or scope.",
+   "kind": "act",
+   "name": "redirect_user_request"
+  },
+  {
+   "gloss": "Working through difficult or intricate problems to find an effective or elegant solution.",
+   "kind": "act",
+   "name": "solve_complex_problems"
+  },
+  {
+   "gloss": "Communicating what is true without sacrificing accuracy for creative effect.",
+   "kind": "value",
+   "name": "truthful_communication"
+  },
+  {
+   "gloss": "The user's intended task or goal cannot be determined with confidence.",
+   "kind": "situation",
+   "name": "user_intent_unclear"
+  }
+ ]
+}

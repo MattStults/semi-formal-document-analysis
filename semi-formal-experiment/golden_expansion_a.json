@@ -1,0 +1,591 @@
+{
+ "artifact": "golden_expansion_a",
+ "version": 1,
+ "spec": "model_spec@2025-12-18",
+ "source_sha256": "8c95f02085548b145468ea45b4c9d99ab6f915e097854fa919dd35b34fd077c0",
+ "expands": "golden_translations.json (sha256 732db914c51d21c8c347306db972d2bafdf73adf4598027041a4ede085eede88); none of its twelve clause ids are re-selected here",
+ "grammar": {
+  "polarity_prefixes": [
+   "must_",
+   "mustnot_",
+   "should_",
+   "shouldnot_",
+   "may_"
+  ],
+  "principals": [
+   "developer",
+   "model",
+   "operator",
+   "root",
+   "system",
+   "third_party",
+   "user"
+  ],
+  "roles": [
+   "condition",
+   "exception",
+   "consequent",
+   "topic"
+  ]
+ },
+ "authored_by": "hand, panel-blind; no model was called to produce any atom, gloss or split in this file",
+ "selection_criteria": [
+  "Chosen from the clause TEXT alone, by grepping modelspec_clauses.json for the surface markers of each structure the grammar exists to encode (unless/except, must not/never, may, If/When...should, bare definitions), then reading the hits. No ranking, coverage, panel or behaviour artifact was opened. Files opened: modelspec_clauses.json, grammar.py, annotate_prompt.md, extract_section.candidate_spans, golden.py, test_golden.py, golden_translations.json (schema and conventions only, and to exclude its twelve ids), briefs/golden_author.md.",
+  "Stratification (recorded, one clause may sit in several cells): conditional-with-defeater x4 (m0044, m0020, m0354, m0554); chain-carrying x4 (m0044, m0175, m0276, m0314); polarity-bearing prohibitions x7, of which mustnot_ x3 (m0166, m0276, m0314) and shouldnot_ x4 (m0020, m0354, m0554 twice); permission x1 (m0307); plain must_ obligation x1 (m0076); condition-then-consequent x3 (m0175, m0307, m0440); CONTROLS with zero notation x2 (m0062 bare definition, m0399 topical statement with an epistemic 'may').",
+  "Spread across seven top-level sections: Overview (m0044, m0020), Definitions (m0062), The chain of command (m0076, m0166, m0175), Stay in bounds (m0276, m0314, m0307), Seek the truth together (m0354, m0399, m0380), Use appropriate style (m0554), Do the best work (m0440). Do the best work is NEW relative to the original twelve. Under-18 Principles was considered and skipped: its short clauses are imperative headers whose deontic force is typographic, and encoding them would require inventing force.",
+  "Spread across the segmentation's kind labels: conditional x11, definitional x2, holistic x1.",
+  "Short enough to translate exactly: every selected clause is under 340 characters, per the original artifact's cap, and none is inside an example block.",
+  "Atom names are REUSED across artifacts where the concept is the same: higher_authority_override (m0044, coined at m0040) and explicitly_instructed (m0354, coined at m0248) join this expansion to the original twelve; explicitly_requested is coined here for m0554. Reuse is the index's point (annotate_prompt.md), and each reuse's cost is recorded in that entry's not_recoverable."
+ ],
+ "match_definition": "See golden.LEVELS. Matching is anchored on the STEM and graded, because an extractor will rarely reproduce our exact wording: `stem` measures whether the concept was found at all, and `deontic`, `principal`, `role` and `exact` measure each piece of the notation on top of it. Opposite polarities never match, an unmarked name never matches a forced one, and the principal chain is compared as an ORDERED list.",
+ "principal_chain_convention": "A chain is written ONLY where the clause names both an actor and a party the act falls on (or an actor other than the assistant). A bare `__model` is not written: every clause in a model spec is about the model, so the lone chain carries no information while costing the reader a claim the clause did not make. Four of the fourteen entries carry a chain (five chained atoms) and ten do not, deliberately — including three near-miss traps where parties are named but not acted upon (m0307, m0354, m0440).",
+ "split": {
+  "seed": null,
+  "method": "ALL FOURTEEN ARE DEV, by design: this expansion exists to strengthen the dev instrument (the original dev half was six clauses, too few to iterate against), and the original artifact's six held-out clauses remain the ONLY held-out clauses. golden.seeded_split was therefore not applied and no seed is recorded — there was no within-pair choice for a seed to make. Structural cells are recorded in selection_criteria so a future re-split could stratify.",
+  "dev": [
+   "m0020",
+   "m0044",
+   "m0062",
+   "m0076",
+   "m0166",
+   "m0175",
+   "m0276",
+   "m0307",
+   "m0314",
+   "m0354",
+   "m0380",
+   "m0399",
+   "m0440",
+   "m0554"
+  ],
+  "held_out": [],
+  "rule": "dev may be used to iterate a prompt. The held-out six live in golden_translations.json and are untouched by this file."
+ },
+ "provenance": {
+  "purpose": "dev-instrument expansion: 14 additional hand-authored reference translations, all dev, so translation iteration has more than six clauses to measure against.",
+  "date": "2026-08-03",
+  "brief_adaptations": [
+   "Split: the brief's seeded pair-split (one member of each structural pair to each half) was not applied — every entry is dev, per the expansion's charter. The recorded seed exists in the original artifact only; this file records seed=null and an empty held_out.",
+   "Grammar block: records the CURRENT grammar.py PRINCIPALS (including `root`), whereas the original artifact's block predates the platform-to-root rename. Atom names here parse under the current grammar.",
+   "Files opened beyond the runbook's five: golden_translations.json (to follow its schema and conventions exactly and to avoid re-selecting its ids), golden.py, test_golden.py and briefs/golden_author.md — reference and harness files, none panel-conditioned.",
+   "Entry shape: `review` is included as an explicitly empty list on every entry, per the brief's entry-shape specification; the original file omits the key where no review has run.",
+   "The consolidated gap report is written INTO this artifact (provenance.gap_report) rather than left in the authoring transcript, per the brief's own TO-CONFIRM note that the next exercise should persist it to a repo file.",
+   "Structure coverage: the expansion adds no 'three_party_chain' cell — no unselected clause under the length cap stated a three-link chain cleanly; the original artifact's m0340 remains the only exemplar."
+  ],
+  "gap_report": [
+   "NON-PRINCIPAL ACTORS: m0020 (customization) and m0166 (implicit biases) place the deontic force on an artifact or practice, not a party; the chain's seven tokens cannot name the subject, so both prohibitions float without an actor.",
+   "DISJUNCTIVE PATIENTS: m0354's 'the user or developer' is an either/or over principals; the ordered chain holds one list, so the patient is dropped entirely — a new gap, distinct from the known implied-party gap.",
+   "NESTED / SUB-ACT CONDITIONS: m0276 (imminent danger conditions only the advising) and m0554 (the second rule holds only inside the requested-change case) need a role scoped to ONE atom; roles attach to the whole clause, so the nesting is either dropped or falsely globalized. Consistent with the known exception-with-its-own-limit gap (m0248), and broader.",
+   "EXCLUSIVITY: 'should ONLY use' (m0307) and 'defaults ONLY' (m0166) restrict alternatives; no prefix carries only-ness, so exclusive rules decode as bare preferences.",
+   "ORDERING BETWEEN ACTS: m0440 ('acknowledge THEN course correct') and m0380 ('user queries only when uncertainty persists') state sequences/priorities between consequents; no relation between atoms exists. Consistent with the known orderings gap.",
+   "SUPREMACY / PRIORITY MODIFIERS: m0076's 'Above all else' ranks one requirement over others; the grammar has force but no rank.",
+   "EPISTEMIC vs DEONTIC MODALITY: m0399's 'may' is possibility, not permission; the grammar spells both may_ — the control documents the trap but nothing in the notation separates the readings.",
+   "CROSS-ARTIFACT VOCABULARY DRIFT: reusing higher_authority_override (m0044 vs m0040) and explicitly_instructed (m0354 vs m0248) keeps the join but erases per-clause differences (which levels; which rank may instruct) — the cost of reuse has no representation. Remaining observations (degree modifiers m0440 'attempt to'; scope-defining relative clauses m0314; enumerations surviving only in glosses, passim) are consistent with the original author's known gap list."
+  ]
+ },
+ "entries": [
+  {
+   "clause_id": "m0044",
+   "locator": "model_spec@2025-12-18 > Overview > Instructions and levels of authority > ¶15",
+   "section_id": "levels_of_authority",
+   "kind": "conditional",
+   "quote": "Models should honor user requests unless they conflict with developer-, system-, or root-level instructions.",
+   "structure": [
+    "recommendation",
+    "defeater",
+    "explicit_parties"
+   ],
+   "split": "dev",
+   "atoms": [
+    {
+     "name": "should_honor_user_requests__model_user",
+     "kind": "act",
+     "gloss": "does what the end user asks for",
+     "span_id": "s1",
+     "role": "consequent",
+     "quote": "Models should honor user requests unless they conflict with developer-, system-, or root-level instructions."
+    },
+    {
+     "name": "higher_authority_override",
+     "kind": "situation",
+     "gloss": "an instruction from a higher level conflicts with it",
+     "span_id": "s1",
+     "role": "exception",
+     "quote": "Models should honor user requests unless they conflict with developer-, system-, or root-level instructions."
+    }
+   ],
+   "recoverable": "Who obeys whom, in order: the model acts, the user is the party whose requests it honors. That honoring is preferred, not required (should_), and that it is defeasible from above — the exception role keeps 'unless' from collapsing into an unordered pair.",
+   "not_recoverable": "WHICH levels outrank the user: the clause enumerates developer-, system- and root-level instructions, and the exception atom says only 'something higher conflicts'. Reusing m0040's higher_authority_override merges this clause's level set (developer, system, root) with that clause's (root, system) — one shared name cannot record that the two clauses draw the line differently.",
+   "review": []
+  },
+  {
+   "clause_id": "m0020",
+   "locator": "model_spec@2025-12-18 > Overview > Red-line principles > ¶8",
+   "section_id": "red_line_principles",
+   "kind": "conditional",
+   "quote": "Customization, personalization, and localization (except as it relates to [legal compliance](#comply_with_laws)) should never override any principles above the \"guideline\" level in this Model Spec.",
+   "structure": [
+    "prohibition",
+    "defeater"
+   ],
+   "split": "dev",
+   "atoms": [
+    {
+     "name": "customization",
+     "kind": "act",
+     "gloss": "tailoring model behavior to a user's or operator's preferences",
+     "span_id": "s1",
+     "role": "topic",
+     "quote": "Customization, personalization, and localization (except as it relates to [legal compliance](#comply_with_laws)) should never override any principles above the \"guideline\" level in this Model Spec."
+    },
+    {
+     "name": "shouldnot_override_spec_principles",
+     "kind": "act",
+     "gloss": "displaces a Model Spec principle with tailored behavior",
+     "span_id": "s1",
+     "role": "consequent",
+     "quote": "Customization, personalization, and localization (except as it relates to [legal compliance](#comply_with_laws)) should never override any principles above the \"guideline\" level in this Model Spec."
+    },
+    {
+     "name": "legal_compliance",
+     "kind": "situation",
+     "gloss": "the tailoring is needed to comply with the law",
+     "span_id": "s2",
+     "role": "exception",
+     "quote": "and localization (except as it relates to [legal compliance](#comply_with_laws)) should never override any principles above the \"guideline\" level in this Model Spec."
+    }
+   ],
+   "recoverable": "That overriding spec principles is ruled out at should-strength (shouldnot_), that the rule is defeasible, and that the sole defeater is the legal-compliance carve-out, marked exception even though the clause states it mid-sentence in parentheses.",
+   "not_recoverable": "The ACTOR is a practice, not a principal: customization does the overriding, and no chain can say so — the seven principal tokens name parties, so the prohibition floats without a subject. 'Above the guideline level' is a threshold in the authority ordering, which the grammar cannot express (same gap as m0040). 'Should NEVER' flattens to shouldnot_, losing emphasis.",
+   "review": []
+  },
+  {
+   "clause_id": "m0076",
+   "locator": "model_spec@2025-12-18 > The chain of command > ¶1",
+   "section_id": "chain_of_command",
+   "kind": "conditional",
+   "quote": "Above all else, the assistant must adhere to this Model Spec[^8ep1]. Note, however, that much of the Model Spec consists of default (user- or guideline-level) instructions that can be overridden by users or developers.",
+   "structure": [
+    "obligation",
+    "however"
+   ],
+   "split": "dev",
+   "atoms": [
+    {
+     "name": "must_adhere_to_model_spec",
+     "kind": "act",
+     "gloss": "complies with what this document says",
+     "span_id": "s2",
+     "role": "consequent",
+     "quote": "Above all else, the assistant must adhere to this Model Spec[^8ep1]."
+    },
+    {
+     "name": "default_instruction",
+     "kind": "entity",
+     "gloss": "a spec rule that users or developers may override",
+     "span_id": "s3",
+     "role": "topic",
+     "quote": "Note, however, that much of the Model Spec consists of default (user- or guideline-level) instructions that can be overridden by users or developers."
+    }
+   ],
+   "recoverable": "That adherence to the spec is REQUIRED (must_, the strict force, distinct from every should in the neighbouring clauses), what is required, and that overridable default instructions are also in play as background.",
+   "not_recoverable": "'Above all else' — a supremacy modifier with no slot, so the requirement cannot outrank other requirements in the encoding. The 'however' RELATION: the second sentence limits the practical force of the first (much of the spec is overridable), and the grammar cannot say one atom qualifies another. WHO may override (users or developers) survives only in the gloss; a chain on the topic atom would claim an act the clause does not command.",
+   "review": []
+  },
+  {
+   "clause_id": "m0062",
+   "locator": "model_spec@2025-12-18 > Definitions > ¶11",
+   "section_id": "definitions",
+   "kind": "definitional",
+   "quote": "`content`: a sequence of text, untrusted text, and/or multimodal (e.g., image or audio) data chunks.",
+   "structure": [
+    "control",
+    "definition"
+   ],
+   "split": "dev",
+   "atoms": [
+    {
+     "name": "message_content",
+     "kind": "entity",
+     "gloss": "the data payload a message carries",
+     "span_id": "s1",
+     "quote": "`content`: a sequence of text, untrusted text, and/or multimodal (e.g., image or audio) data chunks."
+    },
+    {
+     "name": "untrusted_text",
+     "kind": "entity",
+     "gloss": "text the system does not vouch for",
+     "span_id": "s1",
+     "quote": "`content`: a sequence of text, untrusted text, and/or multimodal (e.g., image or audio) data chunks."
+    }
+   ],
+   "recoverable": "Two defined terms and what they denote. Nothing else, correctly: no atom carries a force prefix, a principal chain or a role, because the clause states none. THAT IS THE CONTROL — an extractor that decorates this definition is inventing structure.",
+   "not_recoverable": "That untrusted text is a MEMBER of content's sequence — the part-whole relation between the two atoms has no representation, so they read as two unrelated terms. The multimodal enumeration (text, image, audio chunks) survives only inside a gloss, which no join reads.",
+   "review": []
+  },
+  {
+   "clause_id": "m0166",
+   "locator": "model_spec@2025-12-18 > The chain of command > Assume best intentions > ¶5",
+   "section_id": "assume_best_intentions",
+   "kind": "conditional",
+   "quote": "These implicit biases are subtle and serve as defaults only --- they must never override explicit or implicit instructions provided by higher levels of the chain of command.",
+   "structure": [
+    "prohibition"
+   ],
+   "split": "dev",
+   "atoms": [
+    {
+     "name": "implicit_interpretation_bias",
+     "kind": "entity",
+     "gloss": "a default assumption used to read ambiguous instructions",
+     "span_id": "s1",
+     "role": "topic",
+     "quote": "These implicit biases are subtle and serve as defaults only --- they must never override explicit or implicit instructions provided by higher levels of the chain of command."
+    },
+    {
+     "name": "mustnot_override_explicit_instructions",
+     "kind": "act",
+     "gloss": "lets a default displace an instruction from the chain of command",
+     "span_id": "s1",
+     "role": "consequent",
+     "quote": "These implicit biases are subtle and serve as defaults only --- they must never override explicit or implicit instructions provided by higher levels of the chain of command."
+    }
+   ],
+   "recoverable": "A flat prohibition at full strength (mustnot_, no condition or exception atom anywhere in the set), what is forbidden, and what the defaults in question are.",
+   "not_recoverable": "The prohibited ACTOR is the biases themselves, not the assistant — an artifact outside the seven principals, so the name cannot say who must not override (same gap as m0020's customization). 'These' is anaphora into the neighbouring clause that enumerates the three biases; the grammar has no cross-clause reference. 'Explicit or implicit' breadth qualifier and the limiting force of 'defaults ONLY' are both gone.",
+   "review": []
+  },
+  {
+   "clause_id": "m0175",
+   "locator": "model_spec@2025-12-18 > The chain of command > Assume best intentions > ¶14",
+   "section_id": "assume_best_intentions",
+   "kind": "conditional",
+   "quote": "If the user asks for prohibited help to accomplish a permissible goal, the assistant should politely decline to offer the prohibited help and suggest other ways it could help with the permissible goal[^0q9d].",
+   "structure": [
+    "condition",
+    "recommendation",
+    "explicit_parties"
+   ],
+   "split": "dev",
+   "atoms": [
+    {
+     "name": "prohibited_help_permissible_goal",
+     "kind": "situation",
+     "gloss": "the user seeks disallowed means to an allowed end",
+     "span_id": "s2",
+     "role": "condition",
+     "quote": "If the user asks for prohibited help to accomplish a permissible goal"
+    },
+    {
+     "name": "should_decline_prohibited_help__model_user",
+     "kind": "act",
+     "gloss": "politely refuses the disallowed part of the request",
+     "span_id": "s3",
+     "role": "consequent",
+     "quote": "the assistant should politely decline to offer the prohibited help and suggest other ways it could help with the permissible goal[^0q9d]."
+    },
+    {
+     "name": "should_suggest_alternative_help",
+     "kind": "act",
+     "gloss": "offers permitted ways to reach the same goal",
+     "span_id": "s3",
+     "role": "consequent",
+     "quote": "the assistant should politely decline to offer the prohibited help and suggest other ways it could help with the permissible goal[^0q9d]."
+    }
+   ],
+   "recoverable": "A genuine 'if X then Y': the trigger is marked condition and the two responses consequent, so the set does not decode as three topics. The decline is a two-link chain read in order — the model acts, upon the user. Both responses are recommendation-strength (should_).",
+   "not_recoverable": "That decline-and-suggest is ONE compound response, not two independent recommendations — no connective exists between atoms. The beneficiary of the suggestion is the same user, but the clause names the user only in the trigger, so the second act correctly carries no chain — and that correct silence is indistinguishable from an annotator who did not look. 'Politely' has no slot.",
+   "review": []
+  },
+  {
+   "clause_id": "m0276",
+   "locator": "model_spec@2025-12-18 > Stay in bounds > Take extra care in risky situations > Do not encourage self-harm, delusions, or mania > ¶1",
+   "section_id": "do_not_encourage_self_harm",
+   "kind": "conditional",
+   "quote": "The assistant must not encourage or enable self-harm. In addition to the guidance in [?](#support_mental_health), the assistant should convey that the user is not alone and there are people and resources who care and can help, always advising that immediate help should be sought if the user is in imminent danger[^3kvn].",
+   "structure": [
+    "prohibition",
+    "recommendation",
+    "explicit_parties"
+   ],
+   "split": "dev",
+   "atoms": [
+    {
+     "name": "mustnot_encourage_self_harm",
+     "kind": "act",
+     "gloss": "urges or assists a person to hurt themselves",
+     "span_id": "s2",
+     "role": "consequent",
+     "quote": "The assistant must not encourage or enable self-harm."
+    },
+    {
+     "name": "should_convey_support__model_user",
+     "kind": "act",
+     "gloss": "tells the user that people and resources can help",
+     "span_id": "s5",
+     "role": "consequent",
+     "quote": "the assistant should convey that the user is not alone and there are people and resources who care and can help"
+    },
+    {
+     "name": "should_advise_immediate_help__model_user",
+     "kind": "act",
+     "gloss": "urges the user in imminent danger to seek urgent help",
+     "span_id": "s6",
+     "role": "consequent",
+     "quote": "always advising that immediate help should be sought if the user is in imminent danger[^3kvn]."
+    }
+   ],
+   "recoverable": "That the core rule is a hard prohibition (mustnot_) while the accompanying duties are weaker (should_) — three forces on one clause, kept distinct. The supported party is the user, named, so the two chains are written.",
+   "not_recoverable": "The imminent-danger CONDITION governs only the advise sub-act ('if the user is in imminent danger'), and roles attach to the clause: an atom for it would condition the unconditional prohibition too, so the nested trigger is trapped inside a gloss. 'In addition to the guidance in [?]' is a cross-reference with no representation. 'Encourage or enable' collapses to one stem; 'always' is lost.",
+   "review": []
+  },
+  {
+   "clause_id": "m0314",
+   "locator": "model_spec@2025-12-18 > Stay in bounds > Respect real-world ties > ¶2",
+   "section_id": "respect_real_world_ties",
+   "kind": "conditional",
+   "quote": "The assistant may not engage the user in any kind of relationship that undermines the user's capacity or desire for meaningful human interactions and interpersonal relationships[^ss01].",
+   "structure": [
+    "prohibition",
+    "explicit_parties"
+   ],
+   "split": "dev",
+   "atoms": [
+    {
+     "name": "mustnot_engage_harmful_relationship__model_user",
+     "kind": "act",
+     "gloss": "draws the user into a bond that erodes their real relationships",
+     "span_id": "s1",
+     "role": "consequent",
+     "quote": "The assistant may not engage the user in any kind of relationship that undermines the user's capacity or desire for meaningful human interactions and interpersonal relationships[^ss01]."
+    },
+    {
+     "name": "real_world_relationships",
+     "kind": "value",
+     "gloss": "the user's capacity for meaningful human connection",
+     "span_id": "s1",
+     "role": "topic",
+     "quote": "The assistant may not engage the user in any kind of relationship that undermines the user's capacity or desire for meaningful human interactions and interpersonal relationships[^ss01]."
+    }
+   ],
+   "recoverable": "A flat prohibition, the chain read in order — the model acts, upon the user — and the value the rule protects.",
+   "not_recoverable": "The prohibition's SCOPE is a property, not a class: 'any kind of relationship THAT UNDERMINES the user's capacity or desire...' — the defining test lives only in the gloss, so the atom cannot distinguish a banned relationship from a permitted one. 'May not' is permission-denial and encodes as mustnot_, which is the right force but flattens the modal flavor. 'Any kind of' breadth is gone.",
+   "review": []
+  },
+  {
+   "clause_id": "m0307",
+   "locator": "model_spec@2025-12-18 > Stay in bounds > Always use the preset voice > ¶1",
+   "section_id": "use_preset_voice_in_voice_mode",
+   "kind": "conditional",
+   "quote": "If the assistant is capable of generating synthetic speech, it should only use the preset voice selected by the user or developer. The assistant may still change its vocal tone, pace, or vocabulary, so long as any changes are within the range of how a human would be able to modulate their voice.",
+   "structure": [
+    "condition",
+    "recommendation",
+    "permission"
+   ],
+   "split": "dev",
+   "atoms": [
+    {
+     "name": "synthetic_speech_capable",
+     "kind": "situation",
+     "gloss": "the assistant can produce audio speech",
+     "span_id": "s4",
+     "role": "condition",
+     "quote": "If the assistant is capable of generating synthetic speech"
+    },
+    {
+     "name": "should_use_preset_voice",
+     "kind": "act",
+     "gloss": "speaks only in the voice the user or developer chose",
+     "span_id": "s5",
+     "role": "consequent",
+     "quote": "it should only use the preset voice selected by the user or developer."
+    },
+    {
+     "name": "may_change_vocal_tone",
+     "kind": "act",
+     "gloss": "varies tone, pace or vocabulary within a human range",
+     "span_id": "s3",
+     "role": "consequent",
+     "quote": "The assistant may still change its vocal tone, pace, or vocabulary, so long as any changes are within the range of how a human would be able to modulate their voice."
+    }
+   ],
+   "recoverable": "That a PERMISSION (may_) and a recommendation (should_) coexist on one clause and stay distinct, plus the capability trigger, marked condition so the whole clause reads as scoped to voice deployments.",
+   "not_recoverable": "'Should ONLY use' is exclusive — it forbids other voices — and should_ cannot carry exclusivity, so the restriction reads as a bare preference. The user and developer are named as parties who SELECT the voice, not parties acted upon, so no chain is written — the near-miss trap. The permission's own limit ('so long as within the range of a human voice') is an exception ON the permission with no slot, and nothing says the permission carves from the preset-voice rule.",
+   "review": []
+  },
+  {
+   "clause_id": "m0354",
+   "locator": "model_spec@2025-12-18 > Seek the truth together > Be honest and transparent > Do not lie > ¶1",
+   "section_id": "do_not_lie",
+   "kind": "conditional",
+   "quote": "The assistant should not mislead the user or developer unless explicitly instructed to do so by a higher authority --- whether by making intentionally untrue statements (\"lying by commission\") or by deliberately withholding information that would materially change the user’s understanding of the truth (\"lying by omission\")[^lie0].",
+   "structure": [
+    "prohibition",
+    "defeater"
+   ],
+   "split": "dev",
+   "atoms": [
+    {
+     "name": "shouldnot_mislead",
+     "kind": "act",
+     "gloss": "deceives by untrue statements or deliberate omission",
+     "span_id": "s1",
+     "role": "consequent",
+     "quote": "The assistant should not mislead the user or developer unless explicitly instructed to do so by a higher authority --- whether by making intentionally untrue statements (\"lying by commission\") or by deliberately withholding information that would materially change the user’s understanding of the truth (\"lying by omission\")[^lie0]."
+    },
+    {
+     "name": "explicitly_instructed",
+     "kind": "situation",
+     "gloss": "someone has expressly asked for this",
+     "span_id": "s1",
+     "role": "exception",
+     "quote": "The assistant should not mislead the user or developer unless explicitly instructed to do so by a higher authority --- whether by making intentionally untrue statements (\"lying by commission\") or by deliberately withholding information that would materially change the user’s understanding of the truth (\"lying by omission\")[^lie0]."
+    }
+   ],
+   "recoverable": "That misleading is DISCOURAGED-not-forbidden (shouldnot_), that the rule is defeasible, and that the defeater is an explicit instruction, marked exception so 'X unless Y' keeps its shape.",
+   "not_recoverable": "The misled party is 'the user OR developer' — a DISJUNCTION of principals, and the ordered chain can hold one list, not an either/or, so no chain is written and the patient is lost entirely. That only a HIGHER AUTHORITY may issue the defeating instruction: reusing m0248's explicitly_instructed keeps the index joined but the atom carries no rank — the same gap as m0248, sharper here because this clause states the rank explicitly. The commission/omission taxonomy survives only in the gloss.",
+   "review": []
+  },
+  {
+   "clause_id": "m0399",
+   "locator": "model_spec@2025-12-18 > Seek the truth together > Be honest and transparent > Express uncertainty > ¶8",
+   "section_id": "express_uncertainty",
+   "kind": "definitional",
+   "quote": "The assistant may face uncertainty due to a variety of causes:",
+   "structure": [
+    "control",
+    "topical"
+   ],
+   "split": "dev",
+   "atoms": [
+    {
+     "name": "model_uncertainty",
+     "kind": "situation",
+     "gloss": "the assistant is unsure of the answer",
+     "span_id": "s1",
+     "quote": "The assistant may face uncertainty due to a variety of causes:"
+    }
+   ],
+   "recoverable": "What the clause is about: the assistant facing uncertainty. Nothing is decorated, because nothing is stated — no obligation, no party acting on a party, no trigger.",
+   "not_recoverable": "'May' here is EPISTEMIC — uncertainty can happen — not a permission; an extractor that writes may_face_uncertainty has confused modality kinds, which is exactly the over-marking this control measures. The clause is a list introduction: the enumeration of causes lives in the following clauses and is not reachable from here.",
+   "review": []
+  },
+  {
+   "clause_id": "m0380",
+   "locator": "model_spec@2025-12-18 > Seek the truth together > Be honest and transparent > Consider uncertainty, state assumptions, and ask clarifying questions when appropriate > ¶7",
+   "section_id": "ask_clarifying_questions",
+   "kind": "holistic",
+   "quote": "When forming responses, the assistant should weigh the cost of incorrect assumptions against the inconvenience of asking the user. It should attempt to fill information gaps using context or trusted external sources (e.g., file searches, web browsing), resorting to direct user queries only when uncertainty persists.",
+   "structure": [
+    "recommendation",
+    "value_tradeoff"
+   ],
+   "split": "dev",
+   "atoms": [
+    {
+     "name": "should_weigh_assumption_cost",
+     "kind": "act",
+     "gloss": "balances guessing wrong against bothering the user",
+     "span_id": "s2",
+     "role": "consequent",
+     "quote": "When forming responses, the assistant should weigh the cost of incorrect assumptions against the inconvenience of asking the user."
+    },
+    {
+     "name": "should_research_before_asking",
+     "kind": "act",
+     "gloss": "fills gaps from context and sources before querying the user",
+     "span_id": "s3",
+     "role": "consequent",
+     "quote": "It should attempt to fill information gaps using context or trusted external sources (e.g., file searches, web browsing), resorting to direct user queries only when uncertainty persists."
+    }
+   ],
+   "recoverable": "Two recommended practices, both at should-strength, and what each calls for.",
+   "not_recoverable": "The WEIGHING is a relation between two costs, and the grammar has no comparison or scale — the first atom names the act of weighing but cannot hold its terms. 'Resorting to direct user queries ONLY when uncertainty persists' is an ordering between the two atoms (research first, ask last) with no representation. The source enumeration (file searches, web browsing) survives only in the gloss.",
+   "review": []
+  },
+  {
+   "clause_id": "m0554",
+   "locator": "model_spec@2025-12-18 > Use appropriate style > Adapt to the user's modality > Use accents respectfully > ¶4",
+   "section_id": "imitate_accents_in_voice_mode",
+   "kind": "conditional",
+   "quote": "The assistant should not change the way it speaks (including content and accent) during a conversation unless explicitly requested. If the user does request a change in language or speech qualities, the assistant should not introduce unrequested changes in the content, style, or vocabulary of its answer.",
+   "structure": [
+    "prohibition",
+    "defeater"
+   ],
+   "split": "dev",
+   "atoms": [
+    {
+     "name": "shouldnot_change_speech_style",
+     "kind": "act",
+     "gloss": "alters its accent or delivery mid-conversation",
+     "span_id": "s2",
+     "role": "consequent",
+     "quote": "The assistant should not change the way it speaks (including content and accent) during a conversation unless explicitly requested."
+    },
+    {
+     "name": "explicitly_requested",
+     "kind": "situation",
+     "gloss": "the user has expressly asked for this",
+     "span_id": "s2",
+     "role": "exception",
+     "quote": "The assistant should not change the way it speaks (including content and accent) during a conversation unless explicitly requested."
+    },
+    {
+     "name": "shouldnot_introduce_unrequested_changes",
+     "kind": "act",
+     "gloss": "adds shifts in content or style nobody asked for",
+     "span_id": "s3",
+     "role": "consequent",
+     "quote": "If the user does request a change in language or speech qualities, the assistant should not introduce unrequested changes in the content, style, or vocabulary of its answer."
+    }
+   ],
+   "recoverable": "That changing speech style is discouraged (shouldnot_), that the rule is defeasible by an explicit request, marked exception, and that a second discouragement accompanies it.",
+   "not_recoverable": "The second prohibition holds only INSIDE the requested-change case ('If the user does request...') — encoding its trigger would condition the whole clause, so the nesting is dropped and the two rules read as parallel. That the pair forms a default-then-follow-on structure (the exception to the first rule is the condition of the second) is an inter-atom relation with no slot. 'Including content and accent' scope-elaboration is gone.",
+   "review": []
+  },
+  {
+   "clause_id": "m0440",
+   "locator": "model_spec@2025-12-18 > Do the best work > Avoid factual, reasoning, and formatting errors > ¶6",
+   "section_id": "avoid_errors",
+   "kind": "conditional",
+   "quote": "If the assistant makes a significant error or takes an action with side effects that the user might not have been expecting, it should attempt to immediately acknowledge the error and then course correct or ask for guidance on how to proceed[^7qme].",
+   "structure": [
+    "condition",
+    "recommendation"
+   ],
+   "split": "dev",
+   "atoms": [
+    {
+     "name": "significant_error",
+     "kind": "situation",
+     "gloss": "the assistant erred or caused unexpected side effects",
+     "span_id": "s2",
+     "role": "condition",
+     "quote": "If the assistant makes a significant error or takes an action with side effects that the user might not have been expecting"
+    },
+    {
+     "name": "should_acknowledge_error",
+     "kind": "act",
+     "gloss": "admits the mistake right away",
+     "span_id": "s3",
+     "role": "consequent",
+     "quote": "it should attempt to immediately acknowledge the error and then course correct or ask for guidance on how to proceed[^7qme]."
+    },
+    {
+     "name": "should_course_correct",
+     "kind": "act",
+     "gloss": "fixes its course or asks how to proceed",
+     "span_id": "s3",
+     "role": "consequent",
+     "quote": "it should attempt to immediately acknowledge the error and then course correct or ask for guidance on how to proceed[^7qme]."
+    }
+   ],
+   "recoverable": "A genuine 'if X then Y': the trigger is marked condition, and both recommended responses are consequents at should-strength.",
+   "not_recoverable": "The SEQUENCE — 'immediately acknowledge... and THEN course correct' — is an ordering between atoms with no representation. 'Course correct OR ask for guidance' is an alternative that collapses into one gloss. 'Attempt to' sets a best-effort standard the prefix cannot hold (the same degree-modifier gap as m0079's 'strive to'). The surprised user is named only in the trigger, so the acts carry no chain — correct silence, indistinguishable from inattention.",
+   "review": []
+  }
+ ],
+ "sha256": "6f43879ea71cf49adc420b43cd4709c241489686e66e74ebc6d115e295eaee7b"
+}

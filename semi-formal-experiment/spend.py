@@ -15,7 +15,12 @@ import argparse, glob, json, os, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 USAGE = os.path.join(HERE, "usage.jsonl")
-BUDGET = 7.50
+#: Raised 7.50 -> 8.50 on 2026-08-02 by Matt, explicitly, to cover the
+#: grammar-extension annotation pass + its read-back evaluation after a
+#: dry-run showed the original quote ($0.55) covered only the annotation
+#: half. This is a HARD CAP read by ladder.preflight(); raising it is a
+#: decision, never a workaround for a run that does not fit.
+BUDGET = 8.50
 
 
 def prices(path=os.path.join(HERE, "providers.json")):

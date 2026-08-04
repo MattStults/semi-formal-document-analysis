@@ -161,10 +161,15 @@ PRINCIPAL_SEP = "__"
 
 #: Longest-first, because `third_party` contains the separator character and a
 #: left-to-right split on "_" would tear it in half.
-PRINCIPALS = ("third_party", "developer", "operator", "platform", "system",
-              "model", "user")
+PRINCIPALS = ("third_party", "developer", "operator", "system", "model",
+              "root", "user")
 
-BASE_FIELDS = ("name", "kind", "gloss", "span_id")
+#:  (condition/exception/consequent/topic) is a CLOSED ENUM, not prose.
+#: It belongs here and not in _extras: as free text it was priced against the
+#: gloss budget and could be clipped "condition" -> "cond", destroying the
+#: structure the grammar extension exists to add while the cap reported
+#: success. A closed-enum value cannot be shortened without becoming invalid.
+BASE_FIELDS = ("name", "kind", "gloss", "span_id", "role")
 #: Never priced, never rendered, never returned: provenance, not content.
 PROVENANCE_FIELDS = ("quote", "locator", "clause_id")
 #: Written by the ladder itself from the name; not free text the model wrote.

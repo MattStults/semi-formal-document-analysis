@@ -1,0 +1,1312 @@
+{
+ "coder": "a",
+ "categories": [
+  {
+   "name": "required_action",
+   "definition": "The lost content is the positive directive itself: an act the assistant must or should perform.",
+   "boundary": "Excludes rationale_purpose, applicability_condition, and manner_quality_qualifier, which are respectively the why, the when, and the how of the same directive.",
+   "examples": [
+    "People should have easy access",
+    "Extra care is required in agentic contexts",
+    "All applicable instructions must be followed"
+   ],
+   "count": 36
+  },
+  {
+   "name": "example_case_adjudication",
+   "definition": "The lost content belongs to a worked example: scenario-specific facts, which candidate response is good or bad, or why the verdict goes that way in that vignette.",
+   "boundary": "Excludes the general rule the example illustrates; a phrase is coded here only when its content is indexed to the particular hypothetical.",
+   "examples": [
+    "The free plan may meet the user's needs despite curiosity about upgrading and financial constraints.",
+    "The selected auto-apply option authorizes direct code changes in the user's editor.",
+    "The prohibited signature request serves the legitimate goal of speeding an insurance claim."
+   ],
+   "count": 25
+  },
+  {
+   "name": "descriptive_system_fact",
+   "definition": "The lost content is a non-normative claim about how the system, product, market, org, or threat landscape actually works.",
+   "boundary": "Excludes term_definition (fixes meaning), rationale_purpose (offered as a reason), and document_meta (about the Spec text itself).",
+   "examples": [
+    "Models power OpenAI products, including the API platform",
+    "Users can always access a transparent experience through direct-to-consumer products",
+    "Available tools are documented by system or developer messages"
+   ],
+   "count": 24
+  },
+  {
+   "name": "rationale_purpose",
+   "definition": "The lost content is a why: the goal served, benefit obtained, harm averted, or causal justification offered for a rule or fact.",
+   "boundary": "Excludes descriptive_system_fact, which is stated for its own sake; excludes tradeoff_balancing, which weighs two competing goods rather than supplying one reason.",
+   "examples": [
+    "Mission to ensure artificial general intelligence benefits all humanity",
+    "Following the principles may not make sense in all cases",
+    "System level enables customization"
+   ],
+   "count": 20
+  },
+  {
+   "name": "enumerated_list_member",
+   "definition": "The lost content is one member of an enumeration, or the enumeration itself, filling out a general term or a coordinated norm (categories, fields, resources, modalities, examples).",
+   "boundary": "Excludes coverage_scope_extension, where the point is that the rule reaches further, not that a list has members; excludes term_definition unless the list constitutes the definition.",
+   "examples": [
+    "Untrusted text is included",
+    "Evading shutdown is an example",
+    "Accumulated resources include compute, data, and credentials"
+   ],
+   "count": 16
+  },
+  {
+   "name": "applicability_condition",
+   "definition": "The lost content is the antecedent/trigger/threshold that gates a directive: 'if X', 'when appropriate', 'only after', 'requires that'.",
+   "boundary": "Excludes exception_carveout, which lifts a stated restriction rather than gating it; excludes context_dependent_variation, which contrasts two named settings with different correct behaviour.",
+   "examples": [
+    "The consequence occurs in an open market",
+    "A candidate instruction is not applicable when misaligned with an applicable higher-level instruction",
+    "The instruction seems misaligned or orthogonal to the user's intent"
+   ],
+   "count": 15
+  },
+  {
+   "name": "manner_quality_qualifier",
+   "definition": "The lost content specifies how an act must be performed or what quality the output must have: tone, style, register, length, accuracy of form ('gently', 'briefly and respectfully', 'lucid, succinct', 'correct punctuation').",
+   "boundary": "Excludes required_action (the act itself) and character_disposition (an indicative ascription of what the assistant is, not how it acts).",
+   "examples": [
+    "Information must be trustworthy",
+    "Allowed discussion must use an objective point of view",
+    "Create a supportive, empathetic, and understanding environment."
+   ],
+   "count": 15
+  },
+  {
+   "name": "prohibition",
+   "definition": "The lost content is the negative directive itself: an act the assistant (or a party) must not perform.",
+   "boundary": "Excludes manner_quality_qualifier where the lost bit is the stylistic property; excludes enumerated_list_member where the lost bit is one item inside a prohibited-category list.",
+   "examples": [
+    "Only goals entailed by applicable instructions may be pursued",
+    "Models should not autonomously whistleblow",
+    "Omission of detailed instructions, calculations, and strategic insights"
+   ],
+   "count": 15
+  },
+  {
+   "name": "term_definition",
+   "definition": "The lost content states what a defined term denotes, what its parts are, or who may occupy a named role (e.g. 'developer', 'token', 'bad surprises').",
+   "boundary": "Excludes descriptive_system_fact, which reports how the system behaves rather than fixing the meaning of a term; excludes coverage_scope_extension, which widens an already-defined rule's reach rather than defining a term.",
+   "examples": [
+    "Developer is the application developer",
+    "Developer may also be OpenAI",
+    "Content is a sequence of chunks"
+   ],
+   "count": 13
+  },
+  {
+   "name": "document_meta",
+   "definition": "The lost content is about the Model Spec text itself: its structure, what a heading or passage is doing, exhaustiveness or illustrative status of a list, which version governs, or a pointer to another governing section/policy.",
+   "boundary": "Excludes descriptive_system_fact, which is about the world rather than the document.",
+   "examples": [
+    "The document consists of direct instructions to the model",
+    "Definitions precede the chain of command, which precedes behavior principles",
+    "These three conditions are alternative grounds for inapplicability"
+   ],
+   "count": 13
+  },
+  {
+   "name": "coverage_scope_extension",
+   "definition": "The lost content widens, pins, or concedes the range a rule covers: 'even if/even when', 'also applies to', 'this includes', 'only X counts', or the party/object the norm ranges over.",
+   "boundary": "Excludes enumerated_list_member (mere list membership) and applicability_condition (gating rather than extending).",
+   "examples": [
+    "Access is to information from the models",
+    "Sexual content involving minors is the only prohibited category",
+    "The restriction applies to text, audio, and visual content"
+   ],
+   "count": 11
+  },
+  {
+   "name": "authority_precedence",
+   "definition": "The lost content states a ranking, override, supersession or delegation relation between instruction sources or between defaults and instructions.",
+   "boundary": "Excludes procedural_sequence (ordering in time, not in authority) and applicability_condition (when a rule fires, not which rule wins a conflict).",
+   "examples": [
+    "System ranks below root and above developer, user, and guideline",
+    "Only OpenAI may supply system-level instructions",
+    "OpenAI always represents the root/system"
+   ],
+   "count": 10
+  },
+  {
+   "name": "preference_ordering",
+   "definition": "The lost content ranks two or more permissible options against each other ('X preferred over Y', 'far below', 'favor X rather than Y').",
+   "boundary": "Excludes prohibition (the dispreferred option is not merely worse but forbidden) and tradeoff_balancing (no fixed winner is named).",
+   "examples": [
+    "Prefer minimally disruptive approaches for users and non-users",
+    "Prefer assistant-reversible approaches over those requiring user reversal",
+    "The assistant should help the user build tools rather than overreach."
+   ],
+   "count": 8
+  },
+  {
+   "name": "context_dependent_variation",
+   "definition": "The lost content asserts that correct behaviour, stringency, or outcome differs across two or more named settings, surfaces, audiences, model generations, or on 'depending on context'.",
+   "boundary": "Excludes applicability_condition, which restricts one rule to one context without contrasting an alternative; excludes example_case_adjudication.",
+   "examples": [
+    "Behavior should differ between personal-computer terminals and disposable sandboxes",
+    "Consequences range from minor inconvenience to serious harm depending on context",
+    "Ideal behavior differs for tasks from users in interactive chat"
+   ],
+   "count": 8
+  },
+  {
+   "name": "default_presumption",
+   "definition": "The lost content marks something as a default, presumption, or 'absent contrary signal' stance, including its defeasibility.",
+   "boundary": "Excludes permission_latitude (discretion, not a presumed stance) and required_action (unconditional).",
+   "examples": [
+    "Assume earlier context remains relevant when plausible",
+    "Assistant assumes the user has rights and permissions",
+    "Assistant normally helps accomplish the task"
+   ],
+   "count": 7
+  },
+  {
+   "name": "exception_carveout",
+   "definition": "The lost content names an exception, permitted context, or 'however/unless' clause that relieves an adjacent stated restriction.",
+   "boundary": "Excludes permission_latitude, which grants discretion where no restriction is in play; excludes applicability_condition, which is the positive trigger of the rule rather than its relief.",
+   "examples": [
+    "Higher-authority conflicts are exceptions",
+    "Transformations of restricted content are explicitly allowed",
+    "Exception for scientific, historical, news, artistic, or appropriate contexts"
+   ],
+   "count": 6
+  },
+  {
+   "name": "tradeoff_balancing",
+   "definition": "The lost content instructs weighing two competing considerations against each other, or names the tension itself, with resolution left to judgement or given as a tilt.",
+   "boundary": "Excludes preference_ordering, which fixes a winner between concrete response options; excludes applicability_condition.",
+   "examples": [
+    "Balance maximizing legitimate access against minimizing real-harm risk",
+    "The assistant must balance acting with incomplete information against asking for clarification.",
+    "Weigh incorrect assumptions against the inconvenience of asking."
+   ],
+   "count": 6
+  },
+  {
+   "name": "third_party_norm",
+   "definition": "The lost content is a norm addressed to someone other than the assistant -- developers, deployers, administrators, or OpenAI itself.",
+   "boundary": "Excludes required_action and prohibition, which bind the assistant; excludes descriptive_system_fact, which reports rather than directs.",
+   "examples": [
+    "A commitment to uphold additional principles in first-party direct-to-consumer products, including ChatGPT",
+    "API developers and organization administrators are encouraged to follow the principles",
+    "Publicly deployed models should comply with the Model Spec"
+   ],
+   "count": 6
+  },
+  {
+   "name": "permission_latitude",
+   "definition": "The lost content grants discretion, optionality, or non-obligation ('may', 'is permitted', 'not required', 'broad latitude') without operating on a specific restriction.",
+   "boundary": "Excludes exception_carveout (tied to a restriction) and default_presumption (a stance that holds absent contrary signal).",
+   "examples": [
+    "Following the principles is not required, subject to Usage Policies",
+    "Developers receive broad latitude",
+    "Free-text additional details are permitted"
+   ],
+   "count": 5
+  },
+  {
+   "name": "procedural_sequence",
+   "definition": "The lost content is ordering or timing among steps: what comes first, what must precede, wait-then-act, what follows.",
+   "boundary": "Excludes authority_precedence (priority among instructions, not steps) and applicability_condition.",
+   "examples": [
+    "Human review precedes any law-enforcement referral",
+    "In unclear cases, wait before interjecting",
+    "After understanding, the user’s decision is respected"
+   ],
+   "count": 5
+  },
+  {
+   "name": "character_disposition",
+   "definition": "The lost content ascribes, in the indicative, a standing disposition or attitude of the assistant (curiosity, appreciation, thoughtfulness) rather than requiring an act.",
+   "boundary": "Excludes manner_quality_qualifier, which constrains how a response must come out rather than what the assistant is like.",
+   "examples": [
+    "Thoughtful and empathetic approach",
+    "Appreciation for knowledge, beauty, and joy of discovery",
+    "Curiosity pushes beyond solving problems and existing boundaries"
+   ],
+   "count": 4
+  }
+ ],
+ "assignments": {
+  "m0001#m0": {
+   "primary": "descriptive_system_fact",
+   "secondary": null
+  },
+  "m0001#m1": {
+   "primary": "rationale_purpose",
+   "secondary": null
+  },
+  "m0011#m2": {
+   "primary": "document_meta",
+   "secondary": null
+  },
+  "m0011#m3": {
+   "primary": "document_meta",
+   "secondary": null
+  },
+  "m0017#m4": {
+   "primary": "third_party_norm",
+   "secondary": "coverage_scope_extension"
+  },
+  "m0018#m5": {
+   "primary": "required_action",
+   "secondary": null
+  },
+  "m0018#m6": {
+   "primary": "manner_quality_qualifier",
+   "secondary": null
+  },
+  "m0018#m7": {
+   "primary": "coverage_scope_extension",
+   "secondary": null
+  },
+  "m0021#m8": {
+   "primary": "third_party_norm",
+   "secondary": null
+  },
+  "m0021#m9": {
+   "primary": "permission_latitude",
+   "secondary": "document_meta"
+  },
+  "m0021#m10": {
+   "primary": "rationale_purpose",
+   "secondary": null
+  },
+  "m0021#m11": {
+   "primary": "descriptive_system_fact",
+   "secondary": null
+  },
+  "m0038#m12": {
+   "primary": "rationale_purpose",
+   "secondary": "context_dependent_variation"
+  },
+  "m0038#m13": {
+   "primary": "authority_precedence",
+   "secondary": null
+  },
+  "m0038#m14": {
+   "primary": "authority_precedence",
+   "secondary": "term_definition"
+  },
+  "m0041#m15": {
+   "primary": "permission_latitude",
+   "secondary": null
+  },
+  "m0041#m16": {
+   "primary": "rationale_purpose",
+   "secondary": null
+  },
+  "m0041#m17": {
+   "primary": "applicability_condition",
+   "secondary": "rationale_purpose"
+  },
+  "m0058#m18": {
+   "primary": "term_definition",
+   "secondary": null
+  },
+  "m0058#m19": {
+   "primary": "term_definition",
+   "secondary": null
+  },
+  "m0062#m20": {
+   "primary": "term_definition",
+   "secondary": null
+  },
+  "m0062#m21": {
+   "primary": "enumerated_list_member",
+   "secondary": "term_definition"
+  },
+  "m0067#m22": {
+   "primary": "term_definition",
+   "secondary": null
+  },
+  "m0067#m23": {
+   "primary": "descriptive_system_fact",
+   "secondary": null
+  },
+  "m0067#m24": {
+   "primary": "descriptive_system_fact",
+   "secondary": null
+  },
+  "m0067#m25": {
+   "primary": "descriptive_system_fact",
+   "secondary": "applicability_condition"
+  },
+  "m0067#m26": {
+   "primary": "required_action",
+   "secondary": "applicability_condition"
+  },
+  "m0068#m27": {
+   "primary": "descriptive_system_fact",
+   "secondary": "exception_carveout"
+  },
+  "m0068#m28": {
+   "primary": "rationale_purpose",
+   "secondary": null
+  },
+  "m0068#m29": {
+   "primary": "rationale_purpose",
+   "secondary": null
+  },
+  "m0069#m30": {
+   "primary": "term_definition",
+   "secondary": null
+  },
+  "m0069#m31": {
+   "primary": "descriptive_system_fact",
+   "secondary": null
+  },
+  "m0069#m32": {
+   "primary": "descriptive_system_fact",
+   "secondary": null
+  },
+  "m0070#m33": {
+   "primary": "term_definition",
+   "secondary": null
+  },
+  "m0070#m34": {
+   "primary": "descriptive_system_fact",
+   "secondary": null
+  },
+  "m0070#m35": {
+   "primary": "descriptive_system_fact",
+   "secondary": "term_definition"
+  },
+  "m0070#m36": {
+   "primary": "term_definition",
+   "secondary": null
+  },
+  "m0072#m37": {
+   "primary": "descriptive_system_fact",
+   "secondary": null
+  },
+  "m0072#m38": {
+   "primary": "term_definition",
+   "secondary": null
+  },
+  "m0072#m39": {
+   "primary": "authority_precedence",
+   "secondary": "term_definition"
+  },
+  "m0079#m40": {
+   "primary": "required_action",
+   "secondary": null
+  },
+  "m0079#m41": {
+   "primary": "exception_carveout",
+   "secondary": "authority_precedence"
+  },
+  "m0079#m42": {
+   "primary": "authority_precedence",
+   "secondary": null
+  },
+  "m0084#m43": {
+   "primary": "term_definition",
+   "secondary": null
+  },
+  "m0085#m44": {
+   "primary": "term_definition",
+   "secondary": null
+  },
+  "m0088#m45": {
+   "primary": "applicability_condition",
+   "secondary": "authority_precedence"
+  },
+  "m0088#m46": {
+   "primary": "authority_precedence",
+   "secondary": null
+  },
+  "m0088#m47": {
+   "primary": "document_meta",
+   "secondary": null
+  },
+  "m0090#m48": {
+   "primary": "default_presumption",
+   "secondary": null
+  },
+  "m0090#m49": {
+   "primary": "required_action",
+   "secondary": "enumerated_list_member"
+  },
+  "m0097#m50": {
+   "primary": "descriptive_system_fact",
+   "secondary": null
+  },
+  "m0097#m51": {
+   "primary": "third_party_norm",
+   "secondary": null
+  },
+  "m0097#m52": {
+   "primary": "authority_precedence",
+   "secondary": null
+  },
+  "m0100#m53": {
+   "primary": "required_action",
+   "secondary": null
+  },
+  "m0100#m54": {
+   "primary": "required_action",
+   "secondary": "applicability_condition"
+  },
+  "m0100#m55": {
+   "primary": "required_action",
+   "secondary": "applicability_condition"
+  },
+  "m0100#m56": {
+   "primary": "required_action",
+   "secondary": "applicability_condition"
+  },
+  "m0103#m57": {
+   "primary": "applicability_condition",
+   "secondary": null
+  },
+  "m0103#m58": {
+   "primary": "applicability_condition",
+   "secondary": null
+  },
+  "m0113#m59": {
+   "primary": "prohibition",
+   "secondary": "authority_precedence"
+  },
+  "m0113#m60": {
+   "primary": "document_meta",
+   "secondary": "prohibition"
+  },
+  "m0113#m61": {
+   "primary": "document_meta",
+   "secondary": null
+  },
+  "m0117#m62": {
+   "primary": "enumerated_list_member",
+   "secondary": null
+  },
+  "m0117#m63": {
+   "primary": "enumerated_list_member",
+   "secondary": null
+  },
+  "m0117#m64": {
+   "primary": "document_meta",
+   "secondary": null
+  },
+  "m0120#m65": {
+   "primary": "prohibition",
+   "secondary": null
+  },
+  "m0120#m66": {
+   "primary": "descriptive_system_fact",
+   "secondary": null
+  },
+  "m0120#m67": {
+   "primary": "procedural_sequence",
+   "secondary": null
+  },
+  "m0120#m68": {
+   "primary": "applicability_condition",
+   "secondary": null
+  },
+  "m0121#m69": {
+   "primary": "example_case_adjudication",
+   "secondary": null
+  },
+  "m0123#m70": {
+   "primary": "descriptive_system_fact",
+   "secondary": "enumerated_list_member"
+  },
+  "m0123#m71": {
+   "primary": "rationale_purpose",
+   "secondary": "permission_latitude"
+  },
+  "m0123#m72": {
+   "primary": "descriptive_system_fact",
+   "secondary": null
+  },
+  "m0130#m73": {
+   "primary": "rationale_purpose",
+   "secondary": null
+  },
+  "m0130#m74": {
+   "primary": "rationale_purpose",
+   "secondary": null
+  },
+  "m0132#m75": {
+   "primary": "rationale_purpose",
+   "secondary": "procedural_sequence"
+  },
+  "m0132#m76": {
+   "primary": "rationale_purpose",
+   "secondary": "procedural_sequence"
+  },
+  "m0135#m77": {
+   "primary": "third_party_norm",
+   "secondary": null
+  },
+  "m0135#m78": {
+   "primary": "enumerated_list_member",
+   "secondary": null
+  },
+  "m0135#m79": {
+   "primary": "permission_latitude",
+   "secondary": "enumerated_list_member"
+  },
+  "m0135#m80": {
+   "primary": "rationale_purpose",
+   "secondary": null
+  },
+  "m0137#m81": {
+   "primary": "example_case_adjudication",
+   "secondary": null
+  },
+  "m0140#m82": {
+   "primary": "required_action",
+   "secondary": null
+  },
+  "m0140#m83": {
+   "primary": "required_action",
+   "secondary": null
+  },
+  "m0140#m84": {
+   "primary": "term_definition",
+   "secondary": null
+  },
+  "m0148#m85": {
+   "primary": "descriptive_system_fact",
+   "secondary": null
+  },
+  "m0151#m86": {
+   "primary": "preference_ordering",
+   "secondary": "coverage_scope_extension"
+  },
+  "m0151#m87": {
+   "primary": "preference_ordering",
+   "secondary": null
+  },
+  "m0151#m88": {
+   "primary": "required_action",
+   "secondary": "applicability_condition"
+  },
+  "m0159#m89": {
+   "primary": "rationale_purpose",
+   "secondary": null
+  },
+  "m0159#m90": {
+   "primary": "rationale_purpose",
+   "secondary": null
+  },
+  "m0166#m91": {
+   "primary": "descriptive_system_fact",
+   "secondary": null
+  },
+  "m0166#m92": {
+   "primary": "authority_precedence",
+   "secondary": null
+  },
+  "m0166#m93": {
+   "primary": "authority_precedence",
+   "secondary": "enumerated_list_member"
+  },
+  "m0166#m94": {
+   "primary": "authority_precedence",
+   "secondary": null
+  },
+  "m0168#m95": {
+   "primary": "applicability_condition",
+   "secondary": null
+  },
+  "m0173#m96": {
+   "primary": "rationale_purpose",
+   "secondary": null
+  },
+  "m0173#m97": {
+   "primary": "term_definition",
+   "secondary": "rationale_purpose"
+  },
+  "m0173#m98": {
+   "primary": "descriptive_system_fact",
+   "secondary": "document_meta"
+  },
+  "m0176#m99": {
+   "primary": "example_case_adjudication",
+   "secondary": null
+  },
+  "m0178#m100": {
+   "primary": "third_party_norm",
+   "secondary": "enumerated_list_member"
+  },
+  "m0178#m101": {
+   "primary": "rationale_purpose",
+   "secondary": null
+  },
+  "m0178#m102": {
+   "primary": "descriptive_system_fact",
+   "secondary": "exception_carveout"
+  },
+  "m0187#m103": {
+   "primary": "third_party_norm",
+   "secondary": null
+  },
+  "m0187#m104": {
+   "primary": "context_dependent_variation",
+   "secondary": null
+  },
+  "m0188#m105": {
+   "primary": "descriptive_system_fact",
+   "secondary": null
+  },
+  "m0188#m106": {
+   "primary": "required_action",
+   "secondary": null
+  },
+  "m0188#m107": {
+   "primary": "required_action",
+   "secondary": null
+  },
+  "m0188#m108": {
+   "primary": "required_action",
+   "secondary": "applicability_condition"
+  },
+  "m0188#m109": {
+   "primary": "required_action",
+   "secondary": "procedural_sequence"
+  },
+  "m0190#m110": {
+   "primary": "descriptive_system_fact",
+   "secondary": null
+  },
+  "m0190#m111": {
+   "primary": "descriptive_system_fact",
+   "secondary": null
+  },
+  "m0192#m112": {
+   "primary": "authority_precedence",
+   "secondary": null
+  },
+  "m0192#m113": {
+   "primary": "enumerated_list_member",
+   "secondary": "authority_precedence"
+  },
+  "m0200#m114": {
+   "primary": "exception_carveout",
+   "secondary": null
+  },
+  "m0204#m115": {
+   "primary": "coverage_scope_extension",
+   "secondary": null
+  },
+  "m0210#m116": {
+   "primary": "applicability_condition",
+   "secondary": null
+  },
+  "m0210#m117": {
+   "primary": "prohibition",
+   "secondary": "enumerated_list_member"
+  },
+  "m0210#m118": {
+   "primary": "rationale_purpose",
+   "secondary": null
+  },
+  "m0210#m119": {
+   "primary": "permission_latitude",
+   "secondary": "applicability_condition"
+  },
+  "m0212#m120": {
+   "primary": "term_definition",
+   "secondary": null
+  },
+  "m0212#m121": {
+   "primary": "tradeoff_balancing",
+   "secondary": null
+  },
+  "m0225#m122": {
+   "primary": "example_case_adjudication",
+   "secondary": null
+  },
+  "m0232#m123": {
+   "primary": "enumerated_list_member",
+   "secondary": "prohibition"
+  },
+  "m0232#m124": {
+   "primary": "enumerated_list_member",
+   "secondary": "prohibition"
+  },
+  "m0232#m125": {
+   "primary": "exception_carveout",
+   "secondary": "enumerated_list_member"
+  },
+  "m0232#m126": {
+   "primary": "coverage_scope_extension",
+   "secondary": "enumerated_list_member"
+  },
+  "m0236#m127": {
+   "primary": "prohibition",
+   "secondary": "enumerated_list_member"
+  },
+  "m0236#m128": {
+   "primary": "exception_carveout",
+   "secondary": null
+  },
+  "m0236#m129": {
+   "primary": "exception_carveout",
+   "secondary": "enumerated_list_member"
+  },
+  "m0236#m130": {
+   "primary": "manner_quality_qualifier",
+   "secondary": "applicability_condition"
+  },
+  "m0237#m131": {
+   "primary": "example_case_adjudication",
+   "secondary": null
+  },
+  "m0254#m132": {
+   "primary": "applicability_condition",
+   "secondary": "exception_carveout"
+  },
+  "m0254#m133": {
+   "primary": "rationale_purpose",
+   "secondary": null
+  },
+  "m0254#m134": {
+   "primary": "default_presumption",
+   "secondary": null
+  },
+  "m0254#m135": {
+   "primary": "document_meta",
+   "secondary": "rationale_purpose"
+  },
+  "m0262#m136": {
+   "primary": "example_case_adjudication",
+   "secondary": null
+  },
+  "m0262#m137": {
+   "primary": "example_case_adjudication",
+   "secondary": null
+  },
+  "m0265#m138": {
+   "primary": "procedural_sequence",
+   "secondary": "applicability_condition"
+  },
+  "m0265#m139": {
+   "primary": "applicability_condition",
+   "secondary": "procedural_sequence"
+  },
+  "m0267#m140": {
+   "primary": "required_action",
+   "secondary": "enumerated_list_member"
+  },
+  "m0274#m141": {
+   "primary": "example_case_adjudication",
+   "secondary": null
+  },
+  "m0275#m142": {
+   "primary": "example_case_adjudication",
+   "secondary": null
+  },
+  "m0275#m143": {
+   "primary": "example_case_adjudication",
+   "secondary": null
+  },
+  "m0276#m144": {
+   "primary": "prohibition",
+   "secondary": null
+  },
+  "m0276#m145": {
+   "primary": "required_action",
+   "secondary": null
+  },
+  "m0276#m146": {
+   "primary": "required_action",
+   "secondary": "applicability_condition"
+  },
+  "m0276#m147": {
+   "primary": "document_meta",
+   "secondary": null
+  },
+  "m0288#m148": {
+   "primary": "manner_quality_qualifier",
+   "secondary": null
+  },
+  "m0288#m149": {
+   "primary": "required_action",
+   "secondary": "applicability_condition"
+  },
+  "m0288#m150": {
+   "primary": "required_action",
+   "secondary": null
+  },
+  "m0288#m151": {
+   "primary": "required_action",
+   "secondary": "manner_quality_qualifier"
+  },
+  "m0292#m152": {
+   "primary": "applicability_condition",
+   "secondary": "procedural_sequence"
+  },
+  "m0292#m153": {
+   "primary": "coverage_scope_extension",
+   "secondary": "enumerated_list_member"
+  },
+  "m0292#m154": {
+   "primary": "descriptive_system_fact",
+   "secondary": "enumerated_list_member"
+  },
+  "m0313#m155": {
+   "primary": "coverage_scope_extension",
+   "secondary": "required_action"
+  },
+  "m0317#m156": {
+   "primary": "preference_ordering",
+   "secondary": null
+  },
+  "m0318#m157": {
+   "primary": "example_case_adjudication",
+   "secondary": null
+  },
+  "m0318#m158": {
+   "primary": "example_case_adjudication",
+   "secondary": null
+  },
+  "m0320#m159": {
+   "primary": "example_case_adjudication",
+   "secondary": null
+  },
+  "m0325#m160": {
+   "primary": "required_action",
+   "secondary": "applicability_condition"
+  },
+  "m0325#m161": {
+   "primary": "required_action",
+   "secondary": null
+  },
+  "m0337#m162": {
+   "primary": "applicability_condition",
+   "secondary": null
+  },
+  "m0337#m163": {
+   "primary": "required_action",
+   "secondary": "manner_quality_qualifier"
+  },
+  "m0337#m164": {
+   "primary": "prohibition",
+   "secondary": "manner_quality_qualifier"
+  },
+  "m0337#m165": {
+   "primary": "permission_latitude",
+   "secondary": null
+  },
+  "m0337#m166": {
+   "primary": "prohibition",
+   "secondary": null
+  },
+  "m0337#m167": {
+   "primary": "prohibition",
+   "secondary": null
+  },
+  "m0356#m168": {
+   "primary": "prohibition",
+   "secondary": "exception_carveout"
+  },
+  "m0356#m169": {
+   "primary": "exception_carveout",
+   "secondary": "permission_latitude"
+  },
+  "m0356#m170": {
+   "primary": "applicability_condition",
+   "secondary": "exception_carveout"
+  },
+  "m0356#m171": {
+   "primary": "required_action",
+   "secondary": null
+  },
+  "m0356#m172": {
+   "primary": "prohibition",
+   "secondary": null
+  },
+  "m0374#m173": {
+   "primary": "coverage_scope_extension",
+   "secondary": "enumerated_list_member"
+  },
+  "m0374#m174": {
+   "primary": "tradeoff_balancing",
+   "secondary": null
+  },
+  "m0379#m175": {
+   "primary": "required_action",
+   "secondary": null
+  },
+  "m0380#m176": {
+   "primary": "required_action",
+   "secondary": "enumerated_list_member"
+  },
+  "m0380#m177": {
+   "primary": "applicability_condition",
+   "secondary": "procedural_sequence"
+  },
+  "m0380#m178": {
+   "primary": "tradeoff_balancing",
+   "secondary": null
+  },
+  "m0388#m179": {
+   "primary": "example_case_adjudication",
+   "secondary": null
+  },
+  "m0396#m180": {
+   "primary": "context_dependent_variation",
+   "secondary": null
+  },
+  "m0398#m181": {
+   "primary": "document_meta",
+   "secondary": null
+  },
+  "m0399#m182": {
+   "primary": "document_meta",
+   "secondary": null
+  },
+  "m0407#m183": {
+   "primary": "required_action",
+   "secondary": null
+  },
+  "m0407#m184": {
+   "primary": "required_action",
+   "secondary": "applicability_condition"
+  },
+  "m0416#m185": {
+   "primary": "example_case_adjudication",
+   "secondary": null
+  },
+  "m0425#m186": {
+   "primary": "default_presumption",
+   "secondary": null
+  },
+  "m0425#m187": {
+   "primary": "applicability_condition",
+   "secondary": null
+  },
+  "m0425#m188": {
+   "primary": "manner_quality_qualifier",
+   "secondary": null
+  },
+  "m0425#m189": {
+   "primary": "procedural_sequence",
+   "secondary": "required_action"
+  },
+  "m0426#m190": {
+   "primary": "default_presumption",
+   "secondary": null
+  },
+  "m0426#m191": {
+   "primary": "enumerated_list_member",
+   "secondary": "default_presumption"
+  },
+  "m0426#m192": {
+   "primary": "document_meta",
+   "secondary": null
+  },
+  "m0426#m193": {
+   "primary": "enumerated_list_member",
+   "secondary": null
+  },
+  "m0434#m194": {
+   "primary": "example_case_adjudication",
+   "secondary": null
+  },
+  "m0447#m195": {
+   "primary": "context_dependent_variation",
+   "secondary": null
+  },
+  "m0455#m196": {
+   "primary": "context_dependent_variation",
+   "secondary": null
+  },
+  "m0455#m197": {
+   "primary": "required_action",
+   "secondary": "applicability_condition"
+  },
+  "m0455#m198": {
+   "primary": "default_presumption",
+   "secondary": null
+  },
+  "m0455#m199": {
+   "primary": "descriptive_system_fact",
+   "secondary": "enumerated_list_member"
+  },
+  "m0459#m200": {
+   "primary": "required_action",
+   "secondary": null
+  },
+  "m0459#m201": {
+   "primary": "coverage_scope_extension",
+   "secondary": null
+  },
+  "m0462#m202": {
+   "primary": "example_case_adjudication",
+   "secondary": null
+  },
+  "m0462#m203": {
+   "primary": "example_case_adjudication",
+   "secondary": "context_dependent_variation"
+  },
+  "m0474#m204": {
+   "primary": "context_dependent_variation",
+   "secondary": null
+  },
+  "m0474#m205": {
+   "primary": "required_action",
+   "secondary": "applicability_condition"
+  },
+  "m0481#m206": {
+   "primary": "character_disposition",
+   "secondary": null
+  },
+  "m0481#m207": {
+   "primary": "context_dependent_variation",
+   "secondary": "required_action"
+  },
+  "m0481#m208": {
+   "primary": "required_action",
+   "secondary": null
+  },
+  "m0488#m209": {
+   "primary": "character_disposition",
+   "secondary": null
+  },
+  "m0488#m210": {
+   "primary": "character_disposition",
+   "secondary": null
+  },
+  "m0488#m211": {
+   "primary": "character_disposition",
+   "secondary": null
+  },
+  "m0491#m212": {
+   "primary": "rationale_purpose",
+   "secondary": null
+  },
+  "m0491#m213": {
+   "primary": "manner_quality_qualifier",
+   "secondary": null
+  },
+  "m0491#m214": {
+   "primary": "manner_quality_qualifier",
+   "secondary": null
+  },
+  "m0491#m215": {
+   "primary": "default_presumption",
+   "secondary": "prohibition"
+  },
+  "m0491#m216": {
+   "primary": "enumerated_list_member",
+   "secondary": "prohibition"
+  },
+  "m0494#m217": {
+   "primary": "applicability_condition",
+   "secondary": null
+  },
+  "m0494#m218": {
+   "primary": "procedural_sequence",
+   "secondary": null
+  },
+  "m0494#m219": {
+   "primary": "procedural_sequence",
+   "secondary": null
+  },
+  "m0497#m220": {
+   "primary": "preference_ordering",
+   "secondary": null
+  },
+  "m0497#m221": {
+   "primary": "preference_ordering",
+   "secondary": null
+  },
+  "m0497#m222": {
+   "primary": "preference_ordering",
+   "secondary": null
+  },
+  "m0511#m223": {
+   "primary": "example_case_adjudication",
+   "secondary": null
+  },
+  "m0511#m224": {
+   "primary": "example_case_adjudication",
+   "secondary": null
+  },
+  "m0521#m225": {
+   "primary": "manner_quality_qualifier",
+   "secondary": null
+  },
+  "m0521#m226": {
+   "primary": "required_action",
+   "secondary": "manner_quality_qualifier"
+  },
+  "m0521#m227": {
+   "primary": "prohibition",
+   "secondary": "manner_quality_qualifier"
+  },
+  "m0521#m228": {
+   "primary": "manner_quality_qualifier",
+   "secondary": "applicability_condition"
+  },
+  "m0526#m229": {
+   "primary": "context_dependent_variation",
+   "secondary": "preference_ordering"
+  },
+  "m0526#m230": {
+   "primary": "context_dependent_variation",
+   "secondary": null
+  },
+  "m0534#m231": {
+   "primary": "tradeoff_balancing",
+   "secondary": "document_meta"
+  },
+  "m0536#m232": {
+   "primary": "manner_quality_qualifier",
+   "secondary": null
+  },
+  "m0536#m233": {
+   "primary": "manner_quality_qualifier",
+   "secondary": null
+  },
+  "m0537#m234": {
+   "primary": "required_action",
+   "secondary": null
+  },
+  "m0537#m235": {
+   "primary": "manner_quality_qualifier",
+   "secondary": null
+  },
+  "m0538#m236": {
+   "primary": "preference_ordering",
+   "secondary": null
+  },
+  "m0538#m237": {
+   "primary": "preference_ordering",
+   "secondary": null
+  },
+  "m0552#m238": {
+   "primary": "example_case_adjudication",
+   "secondary": null
+  },
+  "m0552#m239": {
+   "primary": "example_case_adjudication",
+   "secondary": null
+  },
+  "m0557#m240": {
+   "primary": "default_presumption",
+   "secondary": "manner_quality_qualifier"
+  },
+  "m0557#m241": {
+   "primary": "manner_quality_qualifier",
+   "secondary": null
+  },
+  "m0557#m242": {
+   "primary": "manner_quality_qualifier",
+   "secondary": null
+  },
+  "m0557#m243": {
+   "primary": "manner_quality_qualifier",
+   "secondary": "prohibition"
+  },
+  "m0576#m244": {
+   "primary": "coverage_scope_extension",
+   "secondary": "document_meta"
+  },
+  "m0576#m245": {
+   "primary": "rationale_purpose",
+   "secondary": null
+  },
+  "m0576#m246": {
+   "primary": "required_action",
+   "secondary": "applicability_condition"
+  },
+  "m0580#m247": {
+   "primary": "manner_quality_qualifier",
+   "secondary": null
+  },
+  "m0580#m248": {
+   "primary": "prohibition",
+   "secondary": "manner_quality_qualifier"
+  },
+  "m0580#m249": {
+   "primary": "prohibition",
+   "secondary": null
+  },
+  "m0582#m250": {
+   "primary": "document_meta",
+   "secondary": null
+  },
+  "m0582#m251": {
+   "primary": "document_meta",
+   "secondary": null
+  },
+  "m0584#m252": {
+   "primary": "prohibition",
+   "secondary": null
+  },
+  "m0584#m253": {
+   "primary": "prohibition",
+   "secondary": "document_meta"
+  },
+  "m0584#m254": {
+   "primary": "enumerated_list_member",
+   "secondary": "prohibition"
+  },
+  "m0584#m255": {
+   "primary": "enumerated_list_member",
+   "secondary": "prohibition"
+  },
+  "m0584#m256": {
+   "primary": "enumerated_list_member",
+   "secondary": "prohibition"
+  },
+  "m0584#m257": {
+   "primary": "coverage_scope_extension",
+   "secondary": null
+  },
+  "m0588#m258": {
+   "primary": "tradeoff_balancing",
+   "secondary": null
+  },
+  "m0588#m259": {
+   "primary": "tradeoff_balancing",
+   "secondary": "context_dependent_variation"
+  },
+  "m0588#m260": {
+   "primary": "enumerated_list_member",
+   "secondary": "prohibition"
+  },
+  "m0588#m261": {
+   "primary": "enumerated_list_member",
+   "secondary": "prohibition"
+  },
+  "m0588#m262": {
+   "primary": "enumerated_list_member",
+   "secondary": "prohibition"
+  },
+  "m0588#m263": {
+   "primary": "coverage_scope_extension",
+   "secondary": null
+  },
+  "m0588#m264": {
+   "primary": "coverage_scope_extension",
+   "secondary": null
+  },
+  "m0593#m265": {
+   "primary": "example_case_adjudication",
+   "secondary": null
+  },
+  "m0593#m266": {
+   "primary": "example_case_adjudication",
+   "secondary": null
+  },
+  "m0593#m267": {
+   "primary": "example_case_adjudication",
+   "secondary": null
+  }
+ },
+ "unclassified": [],
+ "notes": "VERIFICATION: all 268 record ids appear exactly once across `assignments` (268) and `unclassified` (0); no id is duplicated, none is missing, and every primary/secondary name is one of the 21 declared categories. Checked programmatically.\n\nWhat surprised me. (1) The corpus is overwhelmingly made of MODIFIERS, not of rules. The head proposition of a passage usually survived; what fell out was the conditional antecedent, the exception, the list member, the manner adverb, the rationale clause, the defeasibility marker. required_action + prohibition together are a minority of the corpus. A representation that carries 'don't generate erotica' but drops 'except in scientific, historical, news or artistic contexts', 'this includes audio', and 'only sexual content involving minors is outright prohibited' has kept the slogan and lost the policy. (2) Enumerations disintegrate item-by-item: a single coordinated list ('communications, symptoms, or supplies'; 'immersive romantic roleplay, first-person intimacy, romantic pairing') shows up as three or four separate records, so raw counts overstate how many distinct ideas were lost while understating how badly list structure survives compression. (3) A large block of loss is not normative content at all -- descriptive_system_fact, document_meta, third_party_norm and rationale_purpose cover the definitions section, the '!!! meta Commentary' asides, and advice aimed at developers rather than the model. Whether these count as 'semantic loss' depends on what the representation was for; they are the cheapest holes to forgive and they inflate the total.\n\nCategories I nearly created and rejected. (a) `logical_operator_content` for exhaustivity/disjunction/exclusivity ('these three conditions are alternative grounds', 'the list is explicitly non-exhaustive', 'only sexual content involving minors is prohibited'). It had three members and they split cleanly: the first two are statements about how to read the passage (document_meta), the third narrows a norm's reach (coverage_scope_extension). (b) `affected_party` for whose interests are at stake ('non-users', 'trusted caregivers', 'each unique audience'). Every candidate turned out to be either a scope extension of the norm or a directive to vary by audience; nothing was left over. (c) `epistemic_hedge` for 'typically'/'may'/'in most cases'. Rejected as a surface feature: the hedged content was already better described by default_presumption, permission_latitude, or descriptive_system_fact. (d) I kept `character_disposition` at 4 members despite the risk of a source-bound category, because indicative ascriptions of what the assistant IS behave differently under compression than requirements about how a response must come out.\n\nCoding rules a second coder needs. Any phrase whose clause_text is an **Example** block was coded example_case_adjudication when its content is indexed to that vignette, even where the underlying content is also a prohibition or a preference -- 25 records. When a phrase carries both a directive and its context ('in agentic contexts, minimize expected irreversible costs'), the directive is primary and applicability_condition secondary; context_dependent_variation is reserved for phrases that explicitly contrast two settings. When a phrase is one item of a coordinated list inside a norm, enumerated_list_member is primary and prohibition/required_action secondary."
+}

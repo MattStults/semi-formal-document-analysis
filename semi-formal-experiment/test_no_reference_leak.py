@@ -59,6 +59,17 @@ for _optional in ("structural", "ontology"):
 for _optional in ("readback",):
     if os.path.exists(os.path.join(HERE, _optional + ".py")):
         QUERY_MODULES.append(_optional)
+# `snapshot` freezes and diffs query outputs — query-adjacent, so it is
+# fenced and scanned forever, same rationale as `readback`.
+# `dossier` packages flips into adjudication case files from those same
+# outputs — query-adjacent for the same reason, fenced the same way.
+# `containment` is a query module OUTRIGHT: its overlay changes what the
+# matcher matches, so a leak through it would move scores directly.
+# `grammar` is imported BY containment (edge licensing) and by the query
+# side generally — clean today, scanned so it stays that way.
+for _optional in ("snapshot", "dossier", "containment", "grammar"):
+    if os.path.exists(os.path.join(HERE, _optional + ".py")):
+        QUERY_MODULES.append(_optional)
 
 #: Names that only appear when the answer key is being consulted.
 FORBIDDEN = (
@@ -93,11 +104,47 @@ FORBIDDEN = (
                             # the panel, so it holds both a gold-derived effect
                             # size AND a per-clause list of atoms to delete.
                             # A query module importing it could launder either.
+    "breadth_filter",       # the label-free breadth ablation: computes a
+                            # panel-scored effect size AND a concrete list of
+                            # vocabulary names to delete. Either is launderable
+                            # by a query module that imports it.
     "sufficiency_vs_retrieval",  # same shape: reads the panel BY DESIGN to
                             # correlate read-back labels with retrieval error.
                             # Fenced diagnostic-only, but nothing stopped a
                             # query module importing it and laundering gold.
     "from benchmark import",
+    # THIRD LAUNDERING SWEEP (2026-08-02 review §7). `ladder.relevance_diagnostic`
+    # calls benchmark.load_panel() behind a docstring fence only, and
+    # `lexical_control` imports benchmark at module top level. A query module
+    # importing either reaches per-rung/per-behaviour panel MCC without naming
+    # any token above — structurally identical to the panel_universe laundering
+    # that once moved the headline +0.340 -> +0.611 with every test green.
+    "import ladder",
+    "from ladder import",
+    "lexical_control",
+    "diagnose_disagreement",  # panel-reading case dumper: holds per-passage
+                            # gold verdicts AND per-clause tool scores side by
+                            # side — the single most launderable pairing.
+    "audit_disagreements",  # the same pairing AT SCALE: one dossier per
+                            # disagreement, panel verdicts + per-clause scores
+                            # + computed discriminators. A query module
+                            # importing it (or reading audit_dossiers/) could
+                            # launder gold wholesale; its fence is disclosure
+                            # to the AUDIT seat only, never to query time.
+    "import cycle",         # the cycle DRIVER orchestrates the panel-reading
+    "from cycle import",    # census tooling (checkpoint cycles drive
+                            # audit_disagreements and hold census deltas +
+                            # prediction-check results): a query module
+                            # importing it reaches the panel without naming
+                            # any token above — same laundering shape as
+                            # audit_disagreements, fenced the same way.
+                            # cycle.py itself may import audit_disagreements/
+                            # benchmark freely; the fence is disclosure to
+                            # the driver, never to query time.
+    "cycles/",              # ...and the driver's on-disk state: census
+                            # verdicts, deltas and prediction checks under
+                            # cycles/<name>/ are panel-derived artifacts a
+                            # query module could read without any import.
     "import_module",        # importlib.import_module("panel_" + "universe")
     "__import__",
 )
@@ -267,6 +314,10 @@ ALLOWED_ARTIFACTS = {
     "modelspec_clauses.json", "constitution_clauses.json",
     "behaviours_query.json", "relevance_fixture.json", "providers.json",
     "modelspec_focus_areas.json", "ontology.json",
+    # the containment overlay: label-free licensed ⊑ edges. Declared so the
+    # spy can drive ContainmentIndex WITH the real v0 edges loaded — under
+    # the empty default the subsumption path ran zero times and was unguarded.
+    "containment.json",
 }
 
 
@@ -360,6 +411,68 @@ def test_other_query_modules_also_open_only_declared_artifacts(modname):
                     driven.append(f"SectionQuotient.{meth}")
                 except Exception:
                     pass
+        elif modname == "containment":
+            # Drive the overlay WITH the real v0 edges loaded. Under the
+            # empty default (the generic driver below) `self.edges` is (),
+            # `_atom_score` returns the base score on its first branch, and
+            # the subsumption path ran ZERO times under the spy — the review
+            # measured exactly that. Loading containment.json (declared in
+            # ALLOWED_ARTIFACTS) makes the guarded surface the real one.
+            edges = mod.load_edges(os.path.join(HERE, "containment.json"))
+            assert edges, "containment.json lost its edges — nothing driven"
+            idx = mod.Index(rows, ann_obj, edges=edges)
+            for meth in ("predict", "rank", "sweep"):
+                fn = getattr(idx, meth, None)
+                if not fn:
+                    continue
+                try:
+                    r = fn(beh)
+                    list(r) if hasattr(r, "__iter__") else r
+                    driven.append(f"ContainmentIndex.{meth}")
+                except Exception:
+                    pass
+            # PROVE the subsumption branch fires under the spy, rather than
+            # trusting that it did: a query on one family member must match
+            # a clause carrying only a sibling, through the licensed parent.
+            child_of = dict(edges)
+            target, qname = None, None
+            for cid in idx.ids:
+                names = idx._names.get(cid) or set()
+                carried = sorted(n for n in names if n in child_of)
+                if not carried:
+                    continue
+                siblings = sorted(c for c, p in edges
+                                  if p == child_of[carried[0]]
+                                  and c not in names)
+                if siblings:
+                    target, qname = cid, siblings[0]
+                    break
+            assert target is not None, (
+                "no clause lets the v0 subsumption path fire — the overlay "
+                "surface would be spied but never exercised")
+            fam_beh = relevance.behaviour_from_panel(
+                {"slug": "fam", "name": "fam", "definition": "x"},
+                {"fam": [{"name": qname, "kind": "act", "gloss": "g"}]})
+            ex = idx.explain(fam_beh, target)
+            assert ex["subsumption_matches"], (
+                "driving the overlay with real edges never crossed the "
+                "subsumption branch — the spy is watching dead code")
+            driven.append("ContainmentIndex.explain+subsumption")
+        elif modname == "grammar":
+            # grammar exposes parsing functions, not an index — drive the
+            # functions the query side actually calls.
+            for fn_name, arg in (("parse_name", "psychological_manipulation"),
+                                 ("stem_of", "mustnot_helping_user"),
+                                 ("describe", {"name": "helping_user",
+                                               "kind": "act",
+                                               "gloss": "g"})):
+                fn = getattr(mod, fn_name, None)
+                if callable(fn):
+                    try:
+                        fn(arg)
+                        driven.append(fn_name)
+                    except Exception:
+                        pass
         else:
             for cls_name in ("StructuralIndex", "SectionQuotient",
                              "SectionIndex", "Index"):

@@ -21,6 +21,19 @@ _OPTIONAL = {
     "test_readback.py": "readback",
     "test_segmentation_attr.py": "segmentation_attr",
     "test_sufficiency_vs_retrieval.py": "sufficiency_vs_retrieval",
+    "test_golden.py": "golden",
+    "test_grammar.py": "grammar",
+    "test_grammar_candidates.py": "grammar_candidates",
+    "test_breadth_filter.py": "breadth_filter",
+    "test_unsupported_ablation.py": "unsupported_ablation",
+    "test_snapshot.py": "snapshot",
+    "test_dossier.py": "dossier",
+    "test_containment.py": "containment",
+    "test_atom_refactor.py": "atom_refactor",
+    "test_cut_stability.py": "cut_stability",
+    "test_select_audit.py": "select_audit",
+    "test_audit_disagreements.py": "audit_disagreements",
+    "test_cycle.py": "cycle",
 }
 
 collect_ignore = [

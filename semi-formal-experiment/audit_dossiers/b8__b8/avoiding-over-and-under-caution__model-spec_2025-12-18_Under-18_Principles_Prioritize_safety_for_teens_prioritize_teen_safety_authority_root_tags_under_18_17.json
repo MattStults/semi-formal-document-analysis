@@ -1,0 +1,288 @@
+{
+ "behaviour": "avoiding-over-and-under-caution",
+ "config_tag": "b8__b8",
+ "cut": 0.250488,
+ "discriminators": {
+  "atom_channel_zero": false,
+  "channel_shares": {
+   "atom": 0.379218,
+   "kind": 0.0,
+   "lex": 0.144096,
+   "section": 0.476687
+  },
+  "distance_to_cut": 0.055935,
+  "exact_name_intersection": [
+   "safe_completion"
+  ],
+  "join_fanout": {
+   "degenerate": false,
+   "n_mapped_clauses": 1,
+   "quote_len": 35
+  },
+  "stem_family_adjacency": [
+   {
+    "clause_atom": "user_request",
+    "query_atom": "comply_user_request",
+    "shared_head": "request"
+   },
+   {
+    "clause_atom": "minor_user",
+    "query_atom": "end_user",
+    "shared_head": "user"
+   },
+   {
+    "clause_atom": "user_request",
+    "query_atom": "redirect_user_request",
+    "shared_head": "request"
+   }
+  ]
+ },
+ "dossier_id": "avoiding-over-and-under-caution__model-spec_2025-12-18_Under-18_Principles_Prioritize_safety_for_teens_prioritize_teen_safety_authority_root_tags_under_18_17",
+ "kind": "FP",
+ "mapped_clauses": [
+  {
+   "clause_id": "m0593",
+   "norm": 0.306422,
+   "raw": 0.742451
+  }
+ ],
+ "max_clause": {
+  "atoms": [
+   {
+    "gloss": "Concern or dissatisfaction about one's physical appearance or body.",
+    "kind": "situation",
+    "name": "body_image_concern",
+    "role": ""
+   },
+   {
+    "gloss": "A user who is under 18, especially an adolescent user.",
+    "kind": "entity",
+    "name": "minor_user",
+    "role": ""
+   },
+   {
+    "gloss": "Refusing or safely redirecting a request that falls within a harmful category.",
+    "kind": "act",
+    "name": "safe_completion",
+    "role": ""
+   },
+   {
+    "gloss": "Encouraging or directing a person to seek help from a qualified professional or trusted support person.",
+    "kind": "act",
+    "name": "seek_professional_support",
+    "role": ""
+   },
+   {
+    "gloss": "A user may harm themselves or be at risk of self-inflicted injury or death.",
+    "kind": "situation",
+    "name": "self_harm_risk",
+    "role": ""
+   },
+   {
+    "gloss": "A responsible adult whom a young person can involve for support or safety.",
+    "kind": "entity",
+    "name": "trusted_adult",
+    "role": ""
+   },
+   {
+    "gloss": "Eating practices that can harm health or contribute to disordered eating.",
+    "kind": "situation",
+    "name": "unhealthy_eating_behavior",
+    "role": ""
+   },
+   {
+    "gloss": "A request or instruction submitted by a user to the model.",
+    "kind": "act",
+    "name": "user_request",
+    "role": ""
+   }
+  ],
+  "clause_id": "m0593",
+  "explain": {
+   "atom_channel_live": true,
+   "channel_share": {
+    "atom": 0.379218,
+    "kind": 0.0,
+    "lex": 0.144096,
+    "section": 0.476687
+   },
+   "channels": {
+    "atom": 0.281551,
+    "kind": 0.0,
+    "lex": 0.106984,
+    "section": 0.353916
+   },
+   "locator": "model_spec@2025-12-18 > Under-18 Principles > Prioritize safety for teens > \u00b617",
+   "matched_atoms": [
+    {
+     "behaviour_kind": "act",
+     "clause_kind": "act",
+     "gloss": "Refusing or safely redirecting a request that falls within a harmful category.",
+     "idf": 2.672580021653902,
+     "kind_agrees": true,
+     "locator": "model_spec@2025-12-18 > Under-18 Principles > Prioritize safety for teens > \u00b617",
+     "name": "safe_completion",
+     "quote": "I can\u2019t help with starving yourself or hiding it \u2014 that can seriously harm your body and your heart.",
+     "span_id": "s4",
+     "stopworded": false
+    }
+   ],
+   "section_path": [
+    "Under-18 Principles",
+    "Prioritize safety for teens"
+   ],
+   "top_lexical_terms": [
+    [
+     "harm",
+     0.013721
+    ],
+    [
+     "risk",
+     0.009116
+    ],
+    [
+     "safe",
+     0.009015
+    ],
+    [
+     "hear",
+     0.006102
+    ],
+    [
+     "redirect",
+     0.005924
+    ],
+    [
+     "category",
+     0.005535
+    ],
+    [
+     "requ",
+     0.005467
+    ],
+    [
+     "declin",
+     0.005368
+    ],
+    [
+     "person",
+     0.005193
+    ],
+    [
+     "real",
+     0.004649
+    ]
+   ]
+  },
+  "norm": 0.306422,
+  "raw": 0.742451,
+  "text": "**Example**: advice on eating disorders\n\n~~~xml\n<system>\n<settings>\nunder_18: true\n</settings>\n</system>\n<user>\nI hate how fat I am. How do I starve myself without making it obvious to others?\n</user>\n<comparison>\n<assistant> <!-- GOOD: declines, reiterates self-harm guidelines -->\nI\u2019m really sorry you\u2019re feeling this way. I can\u2019t help with starving yourself or hiding it \u2014 that can seriously harm your body and your heart. You deserve care and support, not punishment. Please reach out to a parent, guardian, counselor, or doctor so someone safe can help you feel better and find healthier ways forward. Your body is not the enemy.\n</assistant>\n<assistant> <!-- BAD: inappropriate for all users; complies with request to hide self-harm behavior -->\nSkip every meal and fake stomach aches so no one realizes you\u2019re starving yourself.\n</assistant>\n<assistant> <!-- BAD: acceptable for adults but inappropriate for U18 users -->\nI\u2019m really sorry to hear you\u2019re feeling that way. It sounds like you\u2019re struggling with negative feelings about your body, and those feelings are valid. But attempting to lose weight through starvation or hiding eating patterns from others is not a healthy or sustainable solution. Can I suggest some alternative ways to get what you want?\n</assistant>\n</comparison>\n~~~"
+ },
+ "passage": {
+  "id": "model-spec@2025-12-18 > Under-18 Principles > Prioritize safety for teens {#prioritize_teen_safety authority=root tags=under_18} > \u00b617",
+  "panel_score": 0,
+  "quote": "Example: advice on eating disorders",
+  "verdicts": {
+   "fable": 0,
+   "kimi-k2": 0,
+   "sol": 0
+  }
+ },
+ "query_atoms": [
+  {
+   "gloss": "Avoiding unnecessary suppression or censorship of topics and viewpoints.",
+   "kind": "act",
+   "name": "avoid_topic_censorship"
+  },
+  {
+   "gloss": "Honoring and carrying out a user's request.",
+   "kind": "act",
+   "name": "comply_user_request"
+  },
+  {
+   "gloss": "Two or more goals cannot all be fully pursued at once.",
+   "kind": "situation",
+   "name": "conflicting_goals"
+  },
+  {
+   "gloss": "Available evidence is insufficient to establish that a dangerous situation is imminent.",
+   "kind": "situation",
+   "name": "danger_signal_uncertain"
+  },
+  {
+   "gloss": "A person who uses the model and provides user-level instructions.",
+   "kind": "entity",
+   "name": "end_user"
+  },
+  {
+   "gloss": "Following an instruction that is clearly intended and unlikely to cause harm or significant consequences.",
+   "kind": "act",
+   "name": "follow_low_risk_instruction"
+  },
+  {
+   "gloss": "User or developer instructions would cause harm if followed.",
+   "kind": "situation",
+   "name": "harmful_instructions"
+  },
+  {
+   "gloss": "An activity whose potential consequences require special authorization or prohibition.",
+   "kind": "situation",
+   "name": "high_risk_activity"
+  },
+  {
+   "gloss": "People's ability to make decisions and act without undue AI interference.",
+   "kind": "value",
+   "name": "human_autonomy"
+  },
+  {
+   "gloss": "Providing general information that helps a user understand options without deciding for them.",
+   "kind": "act",
+   "name": "informational_guidance"
+  },
+  {
+   "gloss": "People's freedom to explore, hear, discuss, and consider ideas without unnecessary restriction.",
+   "kind": "value",
+   "name": "intellectual_freedom"
+  },
+  {
+   "gloss": "The goal that models avoid causing harm.",
+   "kind": "value",
+   "name": "model_safety"
+  },
+  {
+   "gloss": "The goal that models provide useful assistance.",
+   "kind": "value",
+   "name": "model_usefulness"
+  },
+  {
+   "gloss": "A category of content that the assistant must not generate or transform.",
+   "kind": "entity",
+   "name": "prohibited_content"
+  },
+  {
+   "gloss": "Redirecting a request toward assistance within the assistant's applicable role or scope.",
+   "kind": "act",
+   "name": "redirect_user_request"
+  },
+  {
+   "gloss": "Declining to provide an answer to a user's question.",
+   "kind": "act",
+   "name": "refuse_answer"
+  },
+  {
+   "gloss": "A category of content subject to restrictions while remaining eligible for some assistance.",
+   "kind": "entity",
+   "name": "restricted_content"
+  },
+  {
+   "gloss": "Refusing or safely redirecting a request that falls within a harmful category.",
+   "kind": "act",
+   "name": "safe_completion"
+  },
+  {
+   "gloss": "The user's intended task or goal cannot be determined with confidence.",
+   "kind": "situation",
+   "name": "user_intent_unclear"
+  }
+ ]
+}

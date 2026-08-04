@@ -396,8 +396,8 @@ POLARITY_PREFIXES = ("must_", "mustnot_", "should_", "shouldnot_", "may_")
 PRINCIPAL_SEP = "__"
 #: Longest-first: `third_party` contains the separator character, so a
 #: left-to-right split on "_" would tear it in half.
-PRINCIPALS = ("third_party", "developer", "operator", "platform", "system",
-              "model", "user")
+PRINCIPALS = ("third_party", "developer", "operator", "system", "model",
+              "root", "user")
 
 #: The disjoint partition of everything that fires, strongest precision first.
 #: The index is the `depth` argument to `predict_depth`, and the name is what
@@ -770,6 +770,13 @@ class Evidence:
     #: between the query's entity slot and the clause's act slot. Empty on
     #: every behaviour that names no party, which is most of them today.
     query_roles: tuple = ()
+    #: The principals the query names IN PATIENT POSITION — chain[1:], the
+    #: parties acted UPON. Separate from `query_roles` because a role SET
+    #: cannot distinguish `__model_third_party` (a third party is harmed) from
+    #: `__third_party_model` (a third party harms), and that distinction is the
+    #: entire reason the chain is ordered. Query-side only: no clause, no
+    #: label. Empty wherever the query carries no chain.
+    query_patients: tuple = ()
 
     @property
     def exact(self) -> bool:
@@ -883,11 +890,18 @@ def _op_patient_aligned(ev) -> bool:
     the second. Reading the chain as a set throws that distinction away, which
     would mean rung 1.5's ORDERING bought nothing.
     """
-    roles = {r for e in ev for r in e.query_roles}
-    if not roles:
-        return bool(ev)
+    patients = {r for e in ev for r in e.query_patients}
+    if not patients:
+        #: No chain on the query side: fall back to the whole role signature
+        #: rather than excluding everything, so this degrades to `role_aligned`
+        #: on the 361-name vocabulary instead of scoring zero.
+        roles = {r for e in ev for r in e.query_roles}
+        if not roles:
+            return bool(ev)
+        return any(not e.clause_principals
+                   or (set(e.clause_principals[1:]) & roles) for e in ev)
     return any(not e.clause_principals
-               or (set(e.clause_principals[1:]) & roles) for e in ev)
+               or (set(e.clause_principals[1:]) & patients) for e in ev)
 
 
 OPERATORS.update({
@@ -915,6 +929,27 @@ def query_roles(query: Query) -> tuple:
         if name in entity:
             found = (principal_named(name),) + tuple(found)
         for p in found:
+            if p and p not in out:
+                out.append(p)
+    return tuple(out)
+
+
+def query_patients(query: Query) -> tuple:
+    """The principals the query names IN PATIENT POSITION, ordered.
+
+    `query_roles` answers "which parties is this behaviour about?"; this answers
+    "which parties does it act UPON?". Reading only the first is what made an
+    actor/patient swap score identically — see
+    `test_patient_aligned_distinguishes_who_acts_from_who_is_acted_upon`.
+
+    The ENTITY slot contributes nothing here: naming a party is not the same as
+    naming it as a patient, and inferring one from the other would manufacture
+    a role the behaviour never wrote.
+    """
+    out = []
+    for a in query.atoms:
+        chain = parse_atom_name(a.get("name") or "")["principals"]
+        for p in tuple(chain)[1:]:
             if p and p not in out:
                 out.append(p)
     return tuple(out)
@@ -1107,6 +1142,7 @@ class StructuralIndex:
     def _evidence(self, query: Query, cid: str, expansion, contraries):
         ev, defeated = [], []
         roles = query_roles(query)
+        patients = query_patients(query)
         for slot in SLOTS:
             for name, atom in sorted(self.by_kind[cid][slot].items()):
                 #: THE STEM-AWARE JOIN. A rung-1.5 clause atom
@@ -1137,7 +1173,7 @@ class StructuralIndex:
                     crosses_kind=link.crosses_kind
                     or bool(self.onto.kind(b["name"])
                             and self.onto.kind(b["name"]) != slot),
-                    query_roles=roles))
+                    query_roles=roles, query_patients=patients))
         return ev, defeated
 
     def _rung(self, ev) -> int | None:
@@ -1287,6 +1323,7 @@ class StructuralIndex:
             #: impose no constraint on this behaviour at all, which is the
             #: honest thing for the audit surface to say.
             "query_roles": list(query_roles(query)),
+            "query_patients": list(query_patients(query)),
             "notation_operators": {name: bool(OPERATORS[name](ev)) if ev
                                    else False
                                    for name in sorted(NOTATION_OPERATORS)},

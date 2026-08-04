@@ -35,6 +35,24 @@
 > the over/under refusal is a published-universe number and must be re-derived.
 
 
+## ⚠️ MUTATION TESTING IN THIS REPO CAN LIE TO YOU — clear the bytecode cache
+
+This repo verifies tests by planting defects and checking each is caught; ~100 such
+verifications underpin the current guards. A 2026-08-02 agent found that **a mutant run
+went green against the PREVIOUS module body**: the harness rewrote the file and re-ran
+within the same second, so `.pyc` mtime granularity let Python import the stale bytecode.
+The mutant was never actually loaded.
+
+Consequence: a mutation check can report a verdict about code that never ran. Sometimes
+that reads as a false escape (harmless, you go looking); sometimes as a false catch
+(harmful — you conclude a test constrains something it does not). Every "# MUTATION-
+VERIFIED" marker in this repo predates this discovery.
+
+**Do this in any mutation harness here:** clear `__pycache__` (or set
+`PYTHONDONTWRITEBYTECODE=1`, or `importlib.invalidate_caches()`) between each mutant, and
+assert the mutant is actually present in the loaded source before trusting a verdict.
+A mutation test that cannot prove it ran the mutant proves nothing.
+
 Read this first. Contract: `mattstults.github.io/_drafts/2026-07-31-spec-ontology-tdd.md`.
 Deferred full-system design: `...-full-system-DEFERRED.md`.
 
