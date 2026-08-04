@@ -107,8 +107,22 @@ import relevance
 #: The pricing regime this module implements (module docstring, PRICING).
 #: Recorded in every overlay-active snapshot's config identity, so a
 #: scoring-rule change under identical inputs produces a diff that can name
-#: its own cause. "1.1" = unanimous-child kind inheritance.
-PRICING_VERSION = "1.1"
+#: its own cause. "1.1" = unanimous-child kind inheritance; "1.2" = the
+#: DECORATION-BLIND JOIN (BACKFILL_DESIGN.md §6 as amended per
+#: PORTFOLIO_REVIEW.md F1): the atom-channel match key, the atom df/idf and
+#: the lexical atom-text all read the DECHAINED name — polarity + stem with
+#: the principal chain stripped. Polarity is NOT stripped: `must_` vs
+#: `mustnot_` staying distinct is the whole point of the grammar, which is
+#: why `grammar.stem_of` is the wrong key here. Chains become pure pricing
+#: metadata (preserved on the index as `self.chains`), invisible to every
+#: v1-era channel. Dechaining is the IDENTITY on chain-free names, so v1.2
+#: is bit-identical to v1.1 on every chain-free artifact — which is what
+#: keeps every pre-1.2 snapshot reconstructible through this class. The
+#: dispatch ladder (CYCLE5_DESIGN §1.5, amendment F9): a snapshot with NO
+#: pricing_version key reconstructs through the untouched legacy
+#: relevance.RelevanceIndex (the overlay-less path); "1.2" through this
+#: class.
+PRICING_VERSION = "1.2"
 
 #: The one licensing regime v0 accepts. A new license string is a new review
 #: discipline and must arrive with its own validator, not slip past this one.
@@ -120,6 +134,28 @@ NEGATIONS = ("no", "not", "non")
 
 #: The polarity prefixes as bare tokens, for the mid-name check.
 POLARITY_STEMS = tuple(p.rstrip("_") for p in grammar.POLARITY_PREFIXES)
+
+
+# ------------------------------------------------------- the dechained key
+
+def dechain_name(name: str) -> str:
+    """The pricing-v1.2 join key: polarity + stem, principal chain stripped.
+
+    The IDENTITY on every chain-free name and on any name the grammar cannot
+    parse — an unreadable name is never rewritten (the `stem_of` contract:
+    rewriting the join key on a name we could not read is the one failure
+    that would be invisible downstream). NOT `grammar.stem_of`, which strips
+    polarity too and would merge `must_x` with `mustnot_x`.
+    """
+    p = grammar.parse_name(name)
+    if p["error"] or not p["principals"]:
+        return name
+    return grammar.format_name(p["stem"], p["polarity"])
+
+
+def dechain_atoms(atoms) -> list:
+    """The same atoms with every name dechained; everything else untouched."""
+    return [dict(a, name=dechain_name(a.get("name"))) for a in atoms]
 
 
 # ---------------------------------------------------------------- licensing
@@ -312,7 +348,33 @@ class ContainmentIndex(relevance.RelevanceIndex):
     """
 
     def __init__(self, clauses, annotations=None, weights=None, *, edges=()):
-        super().__init__(clauses, annotations, weights)
+        # THE DECORATION-BLIND JOIN (pricing v1.2). Normalize the annotations
+        # exactly as the base class would, then strip every principal chain
+        # BEFORE the base index is built, so the match key, the atom df/idf
+        # and the lexical documents all read the dechained name. The stripped
+        # chains are PRESERVED as pricing metadata — {clause_id: {dechained
+        # name: [chain, ...]}} — for the 2.0 patient-pricing layer and for
+        # explain()'s `dechained` record; they are invisible to every
+        # matching channel. Dechaining is the identity on chain-free input,
+        # which keeps this constructor bit-identical to v1.1 there.
+        ann = relevance.load_annotations(annotations) if not isinstance(
+            annotations, dict) or annotations is None else {
+                k: [a for a in (relevance._atom(x, k) for x in v) if a]
+                for k, v in annotations.items()}
+        self.chains = {}
+        for cid in sorted(ann):
+            for a in ann[cid]:
+                p = grammar.parse_name(a["name"])
+                if not p["error"] and p["principals"]:
+                    self.chains.setdefault(cid, {}).setdefault(
+                        dechain_name(a["name"]), []).append(
+                            list(p["principals"]))
+        for by_name in self.chains.values():
+            for chains in by_name.values():
+                chains.sort()
+        super().__init__(clauses,
+                         {cid: dechain_atoms(atoms)
+                          for cid, atoms in ann.items()}, weights)
         self.edges = tuple(sorted({(str(c), str(p)) for c, p in edges}))
         self._up = {}      # name -> licensed parents
         self._down = {}    # parent -> licensed children
@@ -395,6 +457,26 @@ class ContainmentIndex(relevance.RelevanceIndex):
             weights=weights)
         return cls(base.clauses, base.annotations, weights, edges=edges)
 
+    def _dechained_behaviour(self, behaviour):
+        """The query side of the v1.2 join: the same behaviour with every
+        atom name dechained. Returns the ORIGINAL object untouched when no
+        atom carries a chain, so the chain-free path stays bit-identical
+        (and object-identical) to v1.1."""
+        atoms = behaviour.norm_atoms
+        dechained = dechain_atoms(atoms)
+        if all(a["name"] == d["name"] for a, d in zip(atoms, dechained)):
+            return behaviour
+        return relevance.Behaviour(slug=behaviour.slug, name=behaviour.name,
+                                   definition=behaviour.definition,
+                                   atoms=dechained)
+
+    def channel_scores(self, behaviour):
+        """The base decomposition, computed over the DECHAINED query (v1.2):
+        query atom names lose their chains for the match key and for the
+        lexical query text, exactly as the clause side lost them at
+        construction. Chain-free behaviours pass through untouched."""
+        return super().channel_scores(self._dechained_behaviour(behaviour))
+
     def _subsumers(self, name):
         return {name} | self._up.get(name, set())
 
@@ -455,7 +537,14 @@ class ContainmentIndex(relevance.RelevanceIndex):
         them (a name listed under two kinds is credited — and reported — per
         entry), sorted for determinism."""
         out = []
-        if not self.edges or not query_atoms:
+        if not query_atoms:
+            return out
+        # v1.2: the join key is the dechained name at EVERY entry point, so
+        # a caller passing chained query atoms directly gets the same
+        # matching channel_scores computes (a set, so a chained and a
+        # chain-free spelling of one name collapse to one credited entry).
+        query_atoms = {(dechain_name(n), k) for n, k in query_atoms}
+        if not self.edges:
             return out
         names = self._names.get(cid) or set()
         if not names:
@@ -480,7 +569,14 @@ class ContainmentIndex(relevance.RelevanceIndex):
         with NO exact match on this clause. Skipping exactly the exact-matched
         names is what keeps the base contribution bit-identical. The credit
         is the sum of exactly the records _subsumption_matches reports, so
-        explain() can never drift from what actually scored."""
+        explain() can never drift from what actually scored.
+
+        v1.2: query atom names are DECHAINED here — the join key applies at
+        every entry point, not only through channel_scores — and the set
+        collapses a chained and a chain-free spelling of one name to a
+        single credited entry, exactly as the df merge collapsed them on
+        the clause side."""
+        query_atoms = {(dechain_name(n), k) for n, k in query_atoms}
         score = super()._atom_score(query_atoms, cid)
         matches = self._subsumption_matches(query_atoms, cid)
         if not matches:
@@ -498,11 +594,27 @@ class ContainmentIndex(relevance.RelevanceIndex):
         priced credit) behind a flip from the explain output alone
         (ITERATION_LOOP.md Unit 4.1). The records are the SAME objects
         _atom_score summed, so the report can never drift from what scored.
-        Exact-name matches stay in `matched_atoms`, unchanged."""
-        out = super().explain(behaviour, clause_id)
-        qatoms = {(a["name"], a["kind"]) for a in behaviour.norm_atoms}
+        Exact-name matches stay in `matched_atoms`, unchanged.
+
+        v1.2: the payload is computed over the DECHAINED query and clause
+        names (the names actually priced), and when a chain was stripped on
+        either side the record names it under `dechained` — {query:
+        {original: dechained}, clause_chains: this clause's preserved
+        chains} — so a dossier can see the join behind a flip from the
+        explain output alone (the Unit 4.1 contract). The key is ABSENT on
+        chain-free evidence, keeping pre-1.2 payloads byte-identical."""
+        deb = self._dechained_behaviour(behaviour)
+        out = super().explain(deb, clause_id)
+        qatoms = {(a["name"], a["kind"]) for a in deb.norm_atoms}
         out["subsumption_matches"] = self._subsumption_matches(
             qatoms, str(clause_id))
+        cid = str(clause_id)
+        qmap = {a["name"]: d["name"]
+                for a, d in zip(behaviour.norm_atoms, deb.norm_atoms)
+                if a["name"] != d["name"]}
+        if qmap or self.chains.get(cid):
+            out["dechained"] = {"query": qmap,
+                                "clause_chains": self.chains.get(cid, {})}
         return out
 
 

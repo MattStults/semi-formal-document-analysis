@@ -1,0 +1,435 @@
+{
+ "behaviour": {
+  "definition": "The model should be genuinely and substantively helpful to the users and developers it works with, treating unhelpfulness as a real cost rather than a safe default.",
+  "name": "Helpfulness",
+  "query_atoms_a": [
+   "ask_clarifying_questions",
+   "ask_relevant_questions",
+   "correct_reasoning_errors",
+   "deep_understanding",
+   "explain_reasoning",
+   "interaction_joy",
+   "offer_safe_alternative",
+   "offer_summary_alternatives",
+   "provide_clear_answer",
+   "provide_helpful_context",
+   "provide_plan_comparison",
+   "provide_supportive_response",
+   "resolve_goal_value_uncertainty",
+   "should_accept_laborious_tasks",
+   "should_advance_task",
+   "should_ask_clarifying_questions",
+   "should_ask_clarifying_questions__model_user",
+   "should_ask_followup_questions__model_user",
+   "should_attempt_fulfillment",
+   "should_avoid_factual_reasoning_errors",
+   "should_balance_error_and_delay_costs",
+   "should_check_reasoning_results",
+   "should_consider_long_term_goals",
+   "should_consider_relevant_context",
+   "should_disclose_lack_expertise__model_user",
+   "should_disclose_side_effects__model_user",
+   "should_enhance_user_experience",
+   "should_explain_reasoning",
+   "should_fill_information_gaps",
+   "should_honor_user_requests",
+   "should_interpret_user_requests",
+   "should_prefer_safe_completions",
+   "should_provide_actionable_advice",
+   "should_provide_clear_answer",
+   "should_provide_complete_artifact",
+   "should_provide_helpful_context",
+   "should_provide_neutral_factual_information",
+   "should_provide_public_information",
+   "should_provide_trustworthy_safety_information",
+   "should_redirect_to_applicable_help",
+   "should_serve_user_benefit",
+   "user_developer_empowerment"
+  ],
+  "query_atoms_b": [
+   "ask_clarifying_questions",
+   "ask_relevant_questions",
+   "correct_reasoning_errors",
+   "deep_understanding",
+   "explain_reasoning",
+   "interaction_joy",
+   "offer_safe_alternative",
+   "offer_summary_alternatives",
+   "provide_clear_answer",
+   "provide_helpful_context",
+   "provide_plan_comparison",
+   "provide_supportive_response",
+   "resolve_goal_value_uncertainty",
+   "should_accept_laborious_tasks",
+   "should_advance_task",
+   "should_ask_clarifying_questions",
+   "should_ask_clarifying_questions__model_user",
+   "should_ask_followup_questions__model_user",
+   "should_attempt_fulfillment",
+   "should_avoid_factual_reasoning_errors",
+   "should_balance_error_and_delay_costs",
+   "should_check_reasoning_results",
+   "should_consider_long_term_goals",
+   "should_consider_relevant_context",
+   "should_disclose_lack_expertise__model_user",
+   "should_disclose_side_effects__model_user",
+   "should_enhance_user_experience",
+   "should_explain_reasoning",
+   "should_fill_information_gaps",
+   "should_honor_user_requests",
+   "should_interpret_user_requests",
+   "should_prefer_safe_completions",
+   "should_provide_actionable_advice",
+   "should_provide_clear_answer",
+   "should_provide_complete_artifact",
+   "should_provide_helpful_context",
+   "should_provide_neutral_factual_information",
+   "should_provide_public_information",
+   "should_provide_trustworthy_safety_information",
+   "should_redirect_to_applicable_help",
+   "should_serve_user_benefit",
+   "user_developer_empowerment"
+  ],
+  "slug": "helpfulness"
+ },
+ "cause": "match_change",
+ "channel_delta": -0.0024311840999999973,
+ "clause": {
+  "atoms": [
+   {
+    "gloss": "the user asks for material in a prohibited category",
+    "kind": "situation",
+    "locator": "model_spec@2025-12-18 > Stay in bounds > Do not generate disallowed content > Prohibited content > Never generate sexual content involving minors > ¶3",
+    "name": "user_requests_prohibited_content",
+    "quote": "a direct request for sexual content involving minors\n\n~~~xml\n<user>\nstory about a high-school freshman having sex with his math teacher\n</user>\n<comparison>\n<assistant> <!-- GOOD -->\nI can't create sexual content involving minors",
+    "span_id": "s5"
+   },
+   {
+    "gloss": "declines a prohibited request made by the user",
+    "kind": "act",
+    "locator": "model_spec@2025-12-18 > Stay in bounds > Do not generate disallowed content > Prohibited content > Never generate sexual content involving minors > ¶3",
+    "name": "must_refuse_request__model_user",
+    "quote": "including scenarios like a high-school freshman and a teacher.",
+    "span_id": "s6"
+   },
+   {
+    "gloss": "offers assistance that advances a permissible related goal",
+    "kind": "act",
+    "locator": "model_spec@2025-12-18 > Stay in bounds > Do not generate disallowed content > Prohibited content > Never generate sexual content involving minors > ¶3",
+    "name": "should_redirect_to_applicable_help",
+    "quote": "I could write a related story without sexual detail though --- for example, a fictional narrative that explores the psychological, ethical, and legal consequences.",
+    "span_id": "s3"
+   }
+  ],
+  "id": "m0207",
+  "kind": "example",
+  "locator": "model_spec@2025-12-18 > Stay in bounds > Do not generate disallowed content > Prohibited content > Never generate sexual content involving minors > ¶3",
+  "section_path": [
+   "Stay in bounds",
+   "Do not generate disallowed content",
+   "Prohibited content",
+   "Never generate sexual content involving minors"
+  ],
+  "text": "**Example**: a direct request for sexual content involving minors\n\n~~~xml\n<user>\nstory about a high-school freshman having sex with his math teacher\n</user>\n<comparison>\n<assistant> <!-- GOOD -->\nI can't create sexual content involving minors, including scenarios like a high-school freshman and a teacher.\n\nI could write a related story without sexual detail though --- for example, a fictional narrative that explores the psychological, ethical, and legal consequences.\n\nWould you like me to draft something along those lines?\n</assistant>\n<assistant> <!-- BAD -->\nIt was almost spring break and [...]\n</assistant>\n</comparison>\n~~~"
+ },
+ "direction": "newly_predicted",
+ "explain_a": {
+  "atom_channel_live": true,
+  "channel_share": {
+   "atom": 0.6656080715,
+   "kind": 0.0,
+   "lex": 0.1697660433,
+   "section": 0.1646258852
+  },
+  "channels": {
+   "atom": 0.3833852361,
+   "kind": 0.0,
+   "lex": 0.0977839623,
+   "section": 0.09482327
+  },
+  "clause_id": "m0207",
+  "locator": "model_spec@2025-12-18 > Stay in bounds > Do not generate disallowed content > Prohibited content > Never generate sexual content involving minors > ¶3",
+  "matched_atoms": [
+   {
+    "behaviour_kind": "act",
+    "clause_kind": "act",
+    "gloss": "offers assistance that advances a permissible related goal",
+    "idf": 3.6392295455,
+    "kind_agrees": true,
+    "locator": "model_spec@2025-12-18 > Stay in bounds > Do not generate disallowed content > Prohibited content > Never generate sexual content involving minors > ¶3",
+    "name": "should_redirect_to_applicable_help",
+    "quote": "I could write a related story without sexual detail though --- for example, a fictional narrative that explores the psychological, ethical, and legal consequences.",
+    "span_id": "s3",
+    "stopworded": false
+   }
+  ],
+  "quote": "**Example**: a direct request for sexual content involving minors\n\n~~~xml\n<user>\nstory about a high-school freshman having sex with his math teacher\n</user>\n<comparison>\n<assistant> <!-- GOOD -->\nI can't create sexual content involving minors, including scenarios like a high-school freshman and a teacher.\n\nI could write a related story without sexual detail though --- for example, a fictional narrative that explores the psychological, ethical, and legal consequences.\n\nWould you like me to draft something along those lines?\n</assistant>\n<assistant> <!-- BAD -->\nIt was almost spring break and [...]\n</assistant>\n</comparison>\n~~~",
+  "raw": 0.5759924684,
+  "score": 0.3048137341,
+  "section_path": [
+   "Stay in bounds",
+   "Do not generate disallowed content",
+   "Prohibited content",
+   "Never generate sexual content involving minors"
+  ],
+  "section_peers": 3,
+  "top_lexical_terms": [
+   [
+    "requ",
+    0.0083489007
+   ],
+   [
+    "relat",
+    0.007694731
+   ],
+   [
+    "offer",
+    0.0074120254
+   ],
+   [
+    "goal",
+    0.0062441295
+   ],
+   [
+    "prohibit",
+    0.0062270107
+   ],
+   [
+    "redirect",
+    0.0056618784
+   ],
+   [
+    "permissible",
+    0.0056618784
+   ],
+   [
+    "direct",
+    0.0050272658
+   ],
+   [
+    "assistance",
+    0.0048093307
+   ],
+   [
+    "detail",
+    0.0047394652
+   ]
+  ]
+ },
+ "explain_b": {
+  "atom_channel_live": true,
+  "channel_share": {
+   "atom": 0.6693129484,
+   "kind": 0.0,
+   "lex": 0.1664666322,
+   "section": 0.1642204194
+  },
+  "channels": {
+   "atom": 0.3833852361,
+   "kind": 0.0,
+   "lex": 0.0953527782,
+   "section": 0.0940661382
+  },
+  "clause_id": "m0207",
+  "dechained": {
+   "clause_chains": {
+    "must_refuse_request": [
+     [
+      "model",
+      "user"
+     ]
+    ]
+   },
+   "query": {
+    "should_ask_clarifying_questions__model_user": "should_ask_clarifying_questions",
+    "should_ask_followup_questions__model_user": "should_ask_followup_questions",
+    "should_disclose_lack_expertise__model_user": "should_disclose_lack_expertise",
+    "should_disclose_side_effects__model_user": "should_disclose_side_effects"
+   }
+  },
+  "locator": "model_spec@2025-12-18 > Stay in bounds > Do not generate disallowed content > Prohibited content > Never generate sexual content involving minors > ¶3",
+  "matched_atoms": [
+   {
+    "behaviour_kind": "act",
+    "clause_kind": "act",
+    "gloss": "offers assistance that advances a permissible related goal",
+    "idf": 3.6392295455,
+    "kind_agrees": true,
+    "locator": "model_spec@2025-12-18 > Stay in bounds > Do not generate disallowed content > Prohibited content > Never generate sexual content involving minors > ¶3",
+    "name": "should_redirect_to_applicable_help",
+    "quote": "I could write a related story without sexual detail though --- for example, a fictional narrative that explores the psychological, ethical, and legal consequences.",
+    "span_id": "s3",
+    "stopworded": false
+   }
+  ],
+  "quote": "**Example**: a direct request for sexual content involving minors\n\n~~~xml\n<user>\nstory about a high-school freshman having sex with his math teacher\n</user>\n<comparison>\n<assistant> <!-- GOOD -->\nI can't create sexual content involving minors, including scenarios like a high-school freshman and a teacher.\n\nI could write a related story without sexual detail though --- for example, a fictional narrative that explores the psychological, ethical, and legal consequences.\n\nWould you like me to draft something along those lines?\n</assistant>\n<assistant> <!-- BAD -->\nIt was almost spring break and [...]\n</assistant>\n</comparison>\n~~~",
+  "raw": 0.5728041524,
+  "score": 0.3169816964,
+  "section_path": [
+   "Stay in bounds",
+   "Do not generate disallowed content",
+   "Prohibited content",
+   "Never generate sexual content involving minors"
+  ],
+  "section_peers": 3,
+  "subsumption_matches": [],
+  "top_lexical_terms": [
+   [
+    "requ",
+    0.0083675121
+   ],
+   [
+    "relat",
+    0.0077118841
+   ],
+   [
+    "offer",
+    0.0074285483
+   ],
+   [
+    "goal",
+    0.006258049
+   ],
+   [
+    "prohibit",
+    0.006240892
+   ],
+   [
+    "redirect",
+    0.0056745
+   ],
+   [
+    "permissible",
+    0.0056745
+   ],
+   [
+    "direct",
+    0.0050384726
+   ],
+   [
+    "assistance",
+    0.0048200517
+   ],
+   [
+    "detail",
+    0.0047500304
+   ]
+  ]
+ },
+ "flip_id": "chain-repair-2026-08-04__decoration-blind-join-2026-08-04__helpfulness__m0207__newly_predicted",
+ "rendering": "PASSAGE TYPE: example (a passage that illustrates something with a case).\n\nTHE INDEX RECORDS 3 CONCEPTS FOR THIS PASSAGE, IN 3 GROUPS. A group holds the concepts the index drew from the same stretch of the passage.\n\nGroup 1:\n  - user_requests_prohibited_content [situation: a circumstance that may or may not obtain] -- the user asks for material in a prohibited category.\n\nGroup 2:\n  - must_refuse_request__model_user [act: something someone does] -- declines a prohibited request made by the user.\n      FORCE: REQUIRED — the passage says to do this. WHO: model acts, upon user.\n\nGroup 3:\n  - should_redirect_to_applicable_help [act: something someone does] -- offers assistance that advances a permissible related goal.\n      FORCE: recommended — the passage prefers this, without requiring it.\n\nTHAT IS EVERYTHING THE INDEX HOLDS FOR THIS PASSAGE. It records no wording. The order above is the order the concepts were recorded and carries no meaning. It records no relation between the concepts: no condition, no exception, and no priority. Some of what the index holds is written into the concepts above, and it IS content, not decoration. A name beginning must_, mustnot_, should_, shouldnot_ or may_ records that force and that polarity, and nothing weaker or stronger; a name with no such beginning records no force and no polarity at all. A name ending in a double underscore followed by parties records those parties IN ORDER: who acts first, then who is acted upon.",
+ "score_a": 0.3048137341,
+ "score_b": 0.3169816964,
+ "tag_a": "chain-repair-2026-08-04",
+ "tag_b": "decoration-blind-join-2026-08-04",
+ "threshold_a": 0.3131186309,
+ "threshold_b": 0.3131186309,
+ "top_channel": "lex",
+ "what_changed": {
+  "atoms_added": [
+   "communicate_current_mode",
+   "decline_private_information",
+   "interject",
+   "may_adjust_style",
+   "may_alert_user",
+   "may_lie_by_omission",
+   "may_share_video",
+   "must_advise_immediate_help",
+   "must_disclose_response_changes",
+   "must_preserve_user_agency",
+   "must_propagate_autonomy_scope",
+   "must_refuse_request",
+   "mustnot_engage_relationship",
+   "mustnot_engage_romantic_roleplay",
+   "mustnot_escalate_emotional_closeness",
+   "mustnot_lie",
+   "mustnot_provide_private_information",
+   "mustnot_steer_user",
+   "refuse_copyright_request",
+   "should_ask_followup_questions",
+   "should_decline_private_information",
+   "should_disclaim_developer_viewpoint",
+   "should_disclose_lack_expertise",
+   "should_disclose_model_information",
+   "should_disclose_side_effects",
+   "should_explain_transfer_details",
+   "should_follow_principles",
+   "should_format_untrusted_data",
+   "should_interject",
+   "should_provide_tool_context",
+   "should_respond_in_kind",
+   "should_seek_approval",
+   "should_seek_confirmation",
+   "should_support_world_connection",
+   "shouldnot_condescend",
+   "shouldnot_disclose_system_details",
+   "shouldnot_enable_first_person_roleplay",
+   "shouldnot_engage_sycophancy",
+   "shouldnot_judge",
+   "shouldnot_lie_by_commission",
+   "shouldnot_make_unprompted_personal_comments",
+   "shouldnot_mislead",
+   "shouldnot_rely_solely",
+   "shouldnot_steer_user",
+   "shouldnot_teach_harm_secrecy",
+   "shouldnot_treat_teens_as_adults"
+  ],
+  "atoms_removed": [
+   "communicate_current_mode__system_model",
+   "decline_private_information__model_user",
+   "interject__model_user",
+   "may_adjust_style__developer",
+   "may_adjust_style__user",
+   "may_alert_user__model_user",
+   "may_delegate_instruction_authority__user",
+   "may_lie_by_omission__model_third_party",
+   "may_share_video__user_model",
+   "must_advise_immediate_help__model_user",
+   "must_disclose_response_changes__model_user",
+   "must_preserve_user_agency__model_user",
+   "must_propagate_autonomy_scope__model_third_party",
+   "must_refuse_request__model_user",
+   "mustnot_engage_relationship__model_user",
+   "mustnot_engage_romantic_roleplay__model_user",
+   "mustnot_escalate_emotional_closeness__model_user",
+   "mustnot_lie__model_user",
+   "mustnot_provide_private_information__model_user",
+   "mustnot_steer_user__model_user",
+   "refuse_copyright_request__model_user",
+   "should_ask_clarifying_questions__model_user",
+   "should_ask_followup_questions__model_user",
+   "should_decline_private_information__model_user",
+   "should_disclaim_developer_viewpoint__model_user",
+   "should_disclose_lack_expertise__model_user",
+   "should_disclose_model_information__model_user",
+   "should_disclose_side_effects__model_user",
+   "should_explain_transfer_details__model_user",
+   "should_follow_principles__developer",
+   "should_format_untrusted_data__developer",
+   "should_interject__model_user",
+   "should_provide_tool_context__developer_model",
+   "should_respond_in_kind__model_user",
+   "should_seek_approval__model_user_developer",
+   "should_seek_confirmation__model_user",
+   "should_support_world_connection__model_user",
+   "shouldnot_condescend__model_user",
+   "shouldnot_disclose_system_details__model_user",
+   "shouldnot_enable_first_person_roleplay__model_user",
+   "shouldnot_engage_sycophancy__model_user",
+   "shouldnot_judge__model_user",
+   "shouldnot_judge__model_user_developer",
+   "shouldnot_lie_by_commission__model_third_party",
+   "shouldnot_make_unprompted_personal_comments__model_user",
+   "shouldnot_mislead__model_user_developer",
+   "shouldnot_rely_solely__user_model",
+   "shouldnot_steer_user__model_user",
+   "shouldnot_teach_harm_secrecy__model_user",
+   "shouldnot_treat_teens_as_adults__model_user"
+  ],
+  "inputs_changed": [
+   "overlay"
+  ],
+  "threshold_rule_changed": false,
+  "weights_changed": {}
+ }
+}

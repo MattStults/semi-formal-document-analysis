@@ -431,9 +431,11 @@ def test_subsumption_never_outprices_exact_on_identical_evidence():
 # ------------------- unanimous-child kind inheritance (pricing v1.1)
 
 def test_pricing_version_is_exposed_and_bumped():
-    """v1.1 is a scoring-rule change under identical inputs; the module names
-    its own pricing regime so a snapshot diff can name its cause."""
-    assert containment.PRICING_VERSION == "1.1"
+    """Every pricing regime change under identical inputs bumps the module's
+    own version constant so a snapshot diff can name its cause. "1.2" = the
+    decoration-blind join (decoration-blind-join-2026-08-04 cycle; the join
+    semantics themselves are pinned in test_dechain.py)."""
+    assert containment.PRICING_VERSION == "1.2"
 
 
 def test_unanimous_act_kind_family_inherits_the_kind():

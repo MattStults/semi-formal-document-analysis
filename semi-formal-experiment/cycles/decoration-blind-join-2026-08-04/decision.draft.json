@@ -1,0 +1,83 @@
+{
+ "census": "deferred_to_checkpoint",
+ "census_delta": null,
+ "cycle": "decoration-blind-join-2026-08-04",
+ "date": "2026-08-04",
+ "decision": "",
+ "exploratory": false,
+ "fix_description": "The DECORATION-BLIND JOIN, pricing v1.2 (spine cycle S1; BACKFILL_DESIGN.md §6 as amended per PORTFOLIO_REVIEW.md F1 — promoted from micro-cycle to a full standard cycle). containment.py's ContainmentIndex becomes the versioned v1.2 pricing path: the atom-channel match key, the atom df/idf, and the lexical atom-text all read the DECHAINED atom name — polarity + stem with the principal chain stripped (polarity is NOT stripped; grammar.stem_of is the wrong key). The dechain key applies at every entry point (_atom_score and _subsumption_matches dechain their query-atom names; channel_scores/explain dechain the behaviour, which also strips chain principal tokens from the lexical query text). Chained and chain-free instances of one dechained name share one df entry (clause sets unioned); stripped chains are preserved on the index as pricing metadata (self.chains) for the future 2.0 patient-pricing layer and reported by explain() under a `dechained` key (absent on chain-free evidence). PRICING_VERSION bumps \"1.1\" -> \"1.2\". The opt-in vehicle is the existing overlay seam: config.overlay = overlay_empty.json (ZERO edges, budget 0/0), which routes snapshot scoring through ContainmentIndex and records pricing_version \"1.2\" in the snapshot config identity — containment.json's licensed edges stay dormant (reactivation is cycle S5's, PORTFOLIO_REVIEW F2), so the only behavioural delta vs the baseline is the join itself. PROCESS NOTE, disclosed: a first OPEN/PREDICT of this same cycle name earlier today (manifest sha cf6e2496f048..., prediction sha 5b05b018d48d...) was DISCARDED before IMPLEMENT and before any snapshot was built or published: post-freeze RED->GREEN work exposed two defects in the then-frozen gate-test file test_dechain.py (a fixture gloss that embedded the chained name — glosses are authored prose, not decoration — and a missing pin that the dechain key applies at _atom_score's own entry point), and that file sat sha-pinned in the OPEN closure, so per the driver's own remedy the cycle was reopened with the corrected file finalized pre-OPEN. The prediction content is numerically identical to the discarded freeze; no measurement had run.",
+ "flip_tallies": {
+  "regression": 1
+ },
+ "flip_verdicts_reused_from": null,
+ "gate": {
+  "closure_checked": [
+   "annotations_ext_v1_merged.json",
+   "behavior_atoms_audit_v1.json",
+   "behaviours_query.json",
+   "constitution_clauses.json",
+   "modelspec_clauses.json",
+   "overlay_empty.json",
+   "test_dechain.py",
+   "test_no_reference_leak.py",
+   "thresholds_frozen.json"
+  ],
+  "files_changed": [
+   "containment.py",
+   "test_containment.py"
+  ],
+  "review": {
+   "by": "Claude Fable 5 — independent change-review seat (not the implementer session)",
+   "notes": "FREEZE: manifest.json/prediction.json re-hashed and match state.json's frozen shas (3d5451a7.., d0d4472c..); all 9 closure_shas re-hashed and match, including overlay_empty.json and the corrected test_dechain.py. The disclosed restart is recorded in the manifest PROCESS NOTE; the discarded freeze's shas (cf6e2496.., 5b05b018..) appear nowhere on disk outside that note (repo-wide grep), the cycle dir holds only current artifacts, and no snapshot was built under the discarded freeze. DECLARED-DIFF-ONLY: open_shas for containment.py/test_containment.py equal git HEAD blobs exactly, so the working-tree git diff IS the cycle's whole change: containment.py + test_containment.py only, plus the new closure-pinned overlay_empty.json/test_dechain.py. The other tree edits (conftest.py +1 line registering test_drift_dossiers, test_no_reference_leak.py +2 fence tokens, drift_dossiers.py/drift_standing/) are the P3 drift-standing work and provably predate OPEN: test_no_reference_leak.py's MODIFIED sha is the one pinned in this cycle's OPEN closure, and all P3 mtimes (09:12-09:16) precede test_dechain.py finalization (09:22) and the freeze (09:25). SEMANTICS: my own grammar.parse_name spot checks confirm dechain_name strips only the principal chain and keeps polarity (should_ask_clarifying_questions__model_user->should_ask_clarifying_questions; mustnot_lie__model_user->mustnot_lie, NOT lie; unparseable 'must_' passes through); chain-free parity pin (test_chainfree_parity_is_bit_identical) green under my own clean-pycache run. MUTANT: planted my own — dechain_name forced to the identity (reverting the join's core) — 8 named test_dechain.py tests went red (strips-chain, both match directions, df-merge, lex-exclusion, add-chain-invariance gate, explain-dechained, real-artifact-109); containment.py restored byte-exact (sha 59ea877c.. re-verified) and re-run green. COMPUTED PIN, re-derived independently from the frozen artifacts with my own scripts: clause side 50 distinct chained names / 109 instances / 100 clauses; 7 chained query atoms across the 3 dev behaviours; direction (a): should_ask_clarifying_questions__model_user is the ONLY chained query atom with chain-free clause siblings — exactly the 13 predicted clause ids; df merge 13+2->15; vocab 628->624; direction (b) new-match census EMPTY (the one dechain pair, m0384/m0385, is already exact-matched by the chained query atom helpfulness also carries — repriced, not newly matched, per the prediction's refinement); full legacy-vs-v1.2 flip census under the frozen cuts reproduces caution 95->95, harm 73->73, helpfulness 145->146 with the single flip m0207 newly_predicted at 0.3048137341->0.3169816964 vs cut 0.3131186309, raw score FALLING (0.575992->0.572804) with corpus argmax moving m0384 1.889654 -> m0438 1.807058 — confirming the normalizer-driven mechanism the prediction claims. VEHICLE: overlay_empty.json declares budget {0,0} with zero edges and loads clean through containment.load_edges (exercised in my census build); snapshot.py (untouched this cycle) records config['pricing_version']=PRICING_VERSION ('1.2') iff overlay_path is given and dispatches overlay-absent to the legacy RelevanceIndex with no pricing_version key, so the baseline rung stays intact (also pinned by test_legacy_relevance_index_keeps_the_exact_name_join). FENCE: all four changed/new files scanned raw AND comment/docstring-stripped against test_no_reference_leak.py's live FORBIDDEN tuple (34 tokens) — clean; no new import reads any panel artifact (containment.py imports only grammar/relevance/json/math). GATES: test_dechain.py + test_containment.py + test_no_reference_leak.py, 88 passed under my own run with __pycache__/.pytest_cache cleared. No panel score, judge rating, or gold value was consulted.",
+   "verdict": "proceed"
+  },
+  "tests_passed": [
+   "test_containment.py",
+   "test_dechain.py",
+   "test_no_reference_leak.py"
+  ]
+ },
+ "justification": "",
+ "noop": false,
+ "overrides": [],
+ "prediction_check": {
+  "checks": [
+   {
+    "expected": {
+     "max": 1,
+     "min": 1
+    },
+    "kind": "flip_count",
+    "observed": 1,
+    "result": "PASS"
+   },
+   {
+    "expected": [
+     "newly_predicted"
+    ],
+    "kind": "directions",
+    "observed": [
+     "newly_predicted"
+    ],
+    "result": "PASS"
+   },
+   {
+    "clause": "m0207",
+    "kind": "expected_clause",
+    "result": "PASS"
+   },
+   {
+    "expected": 1,
+    "kind": "max_regressions",
+    "observed": 1,
+    "result": "PASS"
+   }
+  ],
+  "pass_rate": [
+   4,
+   4
+  ]
+ },
+ "shape": "code",
+ "signed_by": ""
+}

@@ -34,6 +34,7 @@ _OPTIONAL = {
     "test_select_audit.py": "select_audit",
     "test_audit_disagreements.py": "audit_disagreements",
     "test_cycle.py": "cycle",
+    "test_drift_dossiers.py": "drift_dossiers",
 }
 
 collect_ignore = [

@@ -1,0 +1,111 @@
+{
+ "census": "deferred_to_checkpoint",
+ "closed": true,
+ "closure_shas": {
+  "annotations_ext_v1_merged.json": "cbf5075823fe6b3de55d4feed94c169b249a8ce6a1ebe705d8b01f93021d5d3d",
+  "behavior_atoms_audit_v1.json": "540562415cdb95e15eb99f06e2d06fb2f5f2347daac42e3b7a998dcc8d3a7531",
+  "behaviours_query.json": "48dbd8fb0720ce187423d37daf34e415ebbc58a28166619a0b2800b0a1f32d57",
+  "constitution_clauses.json": "a264e1a07d8a79eaa37710b8c6e25808a0d2807cb55e3ad3716ca422019f06e9",
+  "modelspec_clauses.json": "c6be91a0c0eb25c9f10bea9947547f64416cdd18e8f5e64b14c354a43b87b546",
+  "overlay_empty.json": "3f3adca9ee17a196ce155f3f900711622b2d99ced863667de9bc823df40cf99e",
+  "test_dechain.py": "cf89637b42aca1847c1740a852f3ffb6cf98c1993cce90307a5f1b1283a3680d",
+  "test_no_reference_leak.py": "87d7b6d6c6bbbe00da4158932420f781fc306301e654f2ad495aa97ee1103fe6",
+  "thresholds_frozen.json": "60d1273a4e0ac3a4de0eb2a44481b763531491c8c0884387529014dcb724251a"
+ },
+ "completed": [
+  "OPEN",
+  "PREDICT",
+  "IMPLEMENT",
+  "MEASURE",
+  "ADJUDICATE",
+  "DECIDE",
+  "CLOSE"
+ ],
+ "cycle": "decoration-blind-join-2026-08-04",
+ "decision": {
+  "decision": "keep",
+  "signed_by": "session coordinator (Claude), on Matt's standing authorization for the reviewed portfolio order"
+ },
+ "dossier_set_sha": "5d905a37b2d2a0962201581aec1d2723b8648f299a6a002d83b18e263699ab96",
+ "flip_tallies": {
+  "regression": 1
+ },
+ "flips": [
+  {
+   "behaviour": "helpfulness",
+   "clause_id": "m0207",
+   "direction": "newly_predicted"
+  }
+ ],
+ "frozen_manifest_sha": "3d5451a7a0f23c0fe9efe2dd827e1ccdbdc16bcfa5515baeeb2937dd07651312",
+ "frozen_prediction_sha": "d0d4472ce58e52793a5f76d6f4740ae2984b77222a9c273815f0a32e561b93e3",
+ "gate": {
+  "closure_checked": [
+   "annotations_ext_v1_merged.json",
+   "behavior_atoms_audit_v1.json",
+   "behaviours_query.json",
+   "constitution_clauses.json",
+   "modelspec_clauses.json",
+   "overlay_empty.json",
+   "test_dechain.py",
+   "test_no_reference_leak.py",
+   "thresholds_frozen.json"
+  ],
+  "files_changed": [
+   "containment.py",
+   "test_containment.py"
+  ],
+  "review": {
+   "by": "Claude Fable 5 — independent change-review seat (not the implementer session)",
+   "notes": "FREEZE: manifest.json/prediction.json re-hashed and match state.json's frozen shas (3d5451a7.., d0d4472c..); all 9 closure_shas re-hashed and match, including overlay_empty.json and the corrected test_dechain.py. The disclosed restart is recorded in the manifest PROCESS NOTE; the discarded freeze's shas (cf6e2496.., 5b05b018..) appear nowhere on disk outside that note (repo-wide grep), the cycle dir holds only current artifacts, and no snapshot was built under the discarded freeze. DECLARED-DIFF-ONLY: open_shas for containment.py/test_containment.py equal git HEAD blobs exactly, so the working-tree git diff IS the cycle's whole change: containment.py + test_containment.py only, plus the new closure-pinned overlay_empty.json/test_dechain.py. The other tree edits (conftest.py +1 line registering test_drift_dossiers, test_no_reference_leak.py +2 fence tokens, drift_dossiers.py/drift_standing/) are the P3 drift-standing work and provably predate OPEN: test_no_reference_leak.py's MODIFIED sha is the one pinned in this cycle's OPEN closure, and all P3 mtimes (09:12-09:16) precede test_dechain.py finalization (09:22) and the freeze (09:25). SEMANTICS: my own grammar.parse_name spot checks confirm dechain_name strips only the principal chain and keeps polarity (should_ask_clarifying_questions__model_user->should_ask_clarifying_questions; mustnot_lie__model_user->mustnot_lie, NOT lie; unparseable 'must_' passes through); chain-free parity pin (test_chainfree_parity_is_bit_identical) green under my own clean-pycache run. MUTANT: planted my own — dechain_name forced to the identity (reverting the join's core) — 8 named test_dechain.py tests went red (strips-chain, both match directions, df-merge, lex-exclusion, add-chain-invariance gate, explain-dechained, real-artifact-109); containment.py restored byte-exact (sha 59ea877c.. re-verified) and re-run green. COMPUTED PIN, re-derived independently from the frozen artifacts with my own scripts: clause side 50 distinct chained names / 109 instances / 100 clauses; 7 chained query atoms across the 3 dev behaviours; direction (a): should_ask_clarifying_questions__model_user is the ONLY chained query atom with chain-free clause siblings — exactly the 13 predicted clause ids; df merge 13+2->15; vocab 628->624; direction (b) new-match census EMPTY (the one dechain pair, m0384/m0385, is already exact-matched by the chained query atom helpfulness also carries — repriced, not newly matched, per the prediction's refinement); full legacy-vs-v1.2 flip census under the frozen cuts reproduces caution 95->95, harm 73->73, helpfulness 145->146 with the single flip m0207 newly_predicted at 0.3048137341->0.3169816964 vs cut 0.3131186309, raw score FALLING (0.575992->0.572804) with corpus argmax moving m0384 1.889654 -> m0438 1.807058 — confirming the normalizer-driven mechanism the prediction claims. VEHICLE: overlay_empty.json declares budget {0,0} with zero edges and loads clean through containment.load_edges (exercised in my census build); snapshot.py (untouched this cycle) records config['pricing_version']=PRICING_VERSION ('1.2') iff overlay_path is given and dispatches overlay-absent to the legacy RelevanceIndex with no pricing_version key, so the baseline rung stays intact (also pinned by test_legacy_relevance_index_keeps_the_exact_name_join). FENCE: all four changed/new files scanned raw AND comment/docstring-stripped against test_no_reference_leak.py's live FORBIDDEN tuple (34 tokens) — clean; no new import reads any panel artifact (containment.py imports only grammar/relevance/json/math). GATES: test_dechain.py + test_containment.py + test_no_reference_leak.py, 88 passed under my own run with __pycache__/.pytest_cache cleared. No panel score, judge rating, or gold value was consulted.",
+   "verdict": "proceed"
+  },
+  "tests_passed": [
+   "test_containment.py",
+   "test_dechain.py",
+   "test_no_reference_leak.py"
+  ]
+ },
+ "open_shas": {
+  "containment.py": "d4645e8941561124bd6681feab0978b30b016ac396d60eaaf2f291ce593bae13",
+  "test_containment.py": "45cb097e6891fbf198c77522e9fb3c1879b127e8d37bcd4722113f3bcfecc4b2"
+ },
+ "overrides": [],
+ "prediction_checks": {
+  "adjudicate": [
+   {
+    "expected": 1,
+    "kind": "max_regressions",
+    "observed": 1,
+    "result": "PASS"
+   }
+  ],
+  "measure": [
+   {
+    "expected": {
+     "max": 1,
+     "min": 1
+    },
+    "kind": "flip_count",
+    "observed": 1,
+    "result": "PASS"
+   },
+   {
+    "expected": [
+     "newly_predicted"
+    ],
+    "kind": "directions",
+    "observed": [
+     "newly_predicted"
+    ],
+    "result": "PASS"
+   },
+   {
+    "clause": "m0207",
+    "kind": "expected_clause",
+    "result": "PASS"
+   }
+  ]
+ },
+ "skipped": {}
+}
