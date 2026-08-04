@@ -36,9 +36,12 @@ from __future__ import annotations
 
 import argparse
 import collections
+import hashlib
 import json
 import os
+import subprocess
 import sys
+import tempfile
 
 import containment
 import readback
@@ -87,15 +90,158 @@ class ReconstructionMismatch(RuntimeError):
 
 # ------------------------------------------------------------ reconstruction
 
-def _resolve_inputs(snap: dict, inputs_dir: str) -> dict:
-    """The snapshot's recorded inputs as verified on-disk paths.
+#: The migration log atom_refactor.py appends to — the ONLY thing that can
+#: turn a sha mismatch into a licensed reconstruction (TOOLING item 3).
+MIGRATION_LOG_NAME = "vocabulary_migrations.json"
+
+
+def _migration_span(log: dict, rel: str, recorded_sha: str,
+                    disk_sha: str) -> list | None:
+    """The ordered log entries linking `recorded_sha` to `disk_sha` for one
+    artifact, or None when no gap-free chain exists.
+
+    The chain must START at the recorded sha (some entry's sha_before), run
+    through consecutive entries (each sha_after feeding the next sha_before,
+    restricted to entries touching this artifact), and END exactly at the
+    current disk sha. Any gap, or a chain that never reaches disk, is NOT a
+    logged migration — reconstruction never launders corruption.
+    """
+    entries = [e for e in (log.get("migrations") or [])
+               if isinstance(e, dict) and rel in (e.get("artifacts") or {})]
+    span, cur, started = [], recorded_sha, False
+    for e in entries:
+        a = e["artifacts"][rel]
+        if not started:
+            if a.get("sha_before") != recorded_sha:
+                continue
+            started = True
+        elif a.get("sha_before") != cur:
+            return None
+        span.append(e)
+        cur = a.get("sha_after")
+        if cur == disk_sha:
+            return span
+    return None
+
+
+def _git_bytes_matching(inputs_dir: str, rel: str, sha: str) -> bytes | None:
+    """The artifact's pre-change bytes from git history, verified by sha —
+    the PRIMARY reconstruction source (F12: the repo is git-tracked; the
+    chain-repair review validated exactly this path by replaying HEAD copies
+    to byte-identity). Searches the commits that touched the file; returns
+    None on any git absence/error (git is a source, never a dependency)."""
+    try:
+        prefix = subprocess.run(
+            ["git", "-C", inputs_dir, "rev-parse", "--show-prefix"],
+            capture_output=True, text=True)
+        if prefix.returncode != 0:
+            return None
+        gitrel = (prefix.stdout.strip() + rel).replace(os.sep, "/")
+        commits = subprocess.run(
+            ["git", "-C", inputs_dir, "log", "--format=%H", "--", gitrel],
+            capture_output=True, text=True)
+        if commits.returncode != 0:
+            return None
+        for commit in commits.stdout.split():
+            blob = subprocess.run(
+                ["git", "-C", inputs_dir, "show", f"{commit}:{gitrel}"],
+                capture_output=True)
+            if blob.returncode == 0 \
+                    and hashlib.sha256(blob.stdout).hexdigest() == sha:
+                return blob.stdout
+    except OSError:
+        return None
+    return None
+
+
+def _prechange_bytes_matching(inputs_dir: str, rel: str,
+                              sha: str) -> bytes | None:
+    """The non-git fallback: a pre_change/ copy captured at MEASURE inside
+    some cycle directory, verified by sha."""
+    root = os.path.join(inputs_dir, "cycles")
+    if not os.path.isdir(root):
+        return None
+    for name in sorted(os.listdir(root)):
+        p = os.path.join(root, name, "pre_change", rel)
+        if os.path.isfile(p):
+            with open(p, "rb") as f:
+                blob = f.read()
+            if hashlib.sha256(blob).hexdigest() == sha:
+                return blob
+    return None
+
+
+def _reconstruct_input(tag: str, key: str, rel: str, recorded_sha: str,
+                       disk_sha: str, inputs_dir: str) -> tuple[str, dict]:
+    """A sha-mismatched input, rebuilt from a RECORDED pre-change copy —
+    or a hard StaleConfigError (TOOLING item 3).
+
+    Licensed only when the mismatch is a LOGGED migration: the recorded sha
+    must chain to the disk sha through vocabulary_migrations.json with no
+    gaps. The bytes come from git history first, a cycle pre_change/ copy
+    second, are sha-verified against the recorded sha before use, and load
+    from a temp path (the drifted file on disk is never touched). Returns
+    (temp_path, provenance_record). REVERSE REPLAY IS REJECTED by design:
+    merge/fold migrations are lossy (the m0271 fold), so the migration log
+    licenses the fetch — it is never itself the byte source.
+    """
+    log_path = os.path.join(inputs_dir, MIGRATION_LOG_NAME)
+    span = None
+    if os.path.exists(log_path):
+        with open(log_path) as f:
+            span = _migration_span(json.load(f), rel, recorded_sha, disk_sha)
+    if span is None:
+        raise StaleConfigError(
+            f"snapshot {tag!r} recorded {key} = {rel!r} with sha256 "
+            f"{recorded_sha[:12]}… but the file on disk hashes to "
+            f"{disk_sha[:12]}… — the input CHANGED since the snapshot was "
+            f"taken, and {MIGRATION_LOG_NAME} holds no gap-free chain "
+            f"linking the two shas, so this is NOT a logged migration. "
+            f"Refusing to dossier against the wrong artifacts; re-snapshot "
+            f"or restore the file.")
+    blob, source = _git_bytes_matching(inputs_dir, rel, recorded_sha), \
+        "git_history"
+    if blob is None:
+        blob, source = _prechange_bytes_matching(
+            inputs_dir, rel, recorded_sha), "pre_change_copy"
+    if blob is None:
+        raise StaleConfigError(
+            f"snapshot {tag!r}: {key} = {rel!r} drifted via a LOGGED "
+            f"migration ({len(span)} entr{'y' if len(span) == 1 else 'ies'} "
+            f"chain {recorded_sha[:12]}… -> {disk_sha[:12]}…), but the "
+            f"reconstruction source is unavailable: no commit in git "
+            f"history holds bytes with the recorded sha, and no pre_change "
+            f"copy in any cycle directory does either. Restore one of the "
+            f"two recorded copies; reverse replay is rejected (lossy "
+            f"folds).")
+    tmpdir = tempfile.mkdtemp(prefix="dossier_reconstructed_")
+    tp = os.path.join(tmpdir, rel)
+    with open(tp, "wb") as f:
+        f.write(blob)
+    record = {
+        "path": rel,
+        "recorded_sha256": recorded_sha,
+        "disk_sha256": disk_sha,
+        "source": source,
+        "migrations_spanned": [{k: e.get(k, "") for k in
+                                ("op", "old", "new", "date")}
+                               for e in span],
+    }
+    return tp, record
+
+
+def _resolve_inputs(snap: dict, inputs_dir: str) -> tuple[dict, dict]:
+    """The snapshot's recorded inputs as verified on-disk paths, plus the
+    reconstruction provenance for any input rebuilt from a recorded copy.
 
     Every path is resolved (basenames against `inputs_dir`) and its sha256
-    re-computed; any mismatch raises StaleConfigError naming the file and
-    both hashes. No partial result: either every input is exactly the one
-    the snapshot saw, or nothing is built.
+    re-computed. A mismatch is either a LOGGED migration — reconstructed
+    sha-verified from git history / a pre_change copy (TOOLING item 3) — or
+    a StaleConfigError naming the file and both hashes. No partial result:
+    either every input is exactly the one the snapshot saw, or nothing is
+    built.
     """
-    out = {}
+    out, recon = {}, {}
     for key in sorted(snap["config"]["inputs"]):
         rec = snap["config"]["inputs"][key]
         if rec is None:
@@ -111,14 +257,11 @@ def _resolve_inputs(snap: dict, inputs_dir: str) -> dict:
                 f"{full} does not exist — cannot rebuild this side's index")
         actual = snapshot._sha256_file(full)
         if actual != rec["sha256"]:
-            raise StaleConfigError(
-                f"snapshot {snap['tag']!r} recorded {key} = {p!r} with "
-                f"sha256 {rec['sha256'][:12]}… but the file on disk hashes "
-                f"to {actual[:12]}… — the input CHANGED since the snapshot "
-                f"was taken. Refusing to dossier against the wrong "
-                f"artifacts; re-snapshot or restore the file.")
+            out[key], recon[key] = _reconstruct_input(
+                snap["tag"], key, p, rec["sha256"], actual, inputs_dir)
+            continue
         out[key] = full
-    return out
+    return out, recon
 
 
 def _side(snap: dict, inputs_dir: str) -> dict:
@@ -131,7 +274,7 @@ def _side(snap: dict, inputs_dir: str) -> dict:
     resolved and sha-verified by _resolve_inputs like every other input. A
     plain-index rebuild of an overlay snapshot produced explain numbers that
     silently contradicted the frozen scores (2026-08-03 review)."""
-    paths = _resolve_inputs(snap, inputs_dir)
+    paths, recon = _resolve_inputs(snap, inputs_dir)
     rows = readback.load_clauses(paths["clauses"])
     if "overlay" in paths:
         index = containment.ContainmentIndex.from_files(
@@ -144,6 +287,7 @@ def _side(snap: dict, inputs_dir: str) -> dict:
             annotations_path=paths["annotations"])
     return {
         "paths": paths,
+        "reconstruction": recon,
         "index": index,
         "behaviours": snapshot.load_behaviours(
             paths["behaviour_atoms"], paths["queries"]),
@@ -188,7 +332,8 @@ def _query_atom_names(side: dict, slug: str) -> list:
 
 def _one_dossier(flip: dict, *, direction: str, slug: str,
                  snap_a: dict, snap_b: dict, side_a: dict, side_b: dict,
-                 query_raw: dict, what_changed: dict) -> dict:
+                 query_raw: dict, what_changed: dict,
+                 reconstruction: dict | None = None) -> dict:
     cid = flip["clause_id"]
     # Clause text, atoms and rendering come from the AFTER side (the
     # configuration under decision); if the clause id only exists on the
@@ -215,7 +360,7 @@ def _one_dossier(flip: dict, *, direction: str, slug: str,
                 f"configuration does not reproduce its own frozen numbers — "
                 f"a hand-edited snapshot or a reconstruction bug. Refusing "
                 f"to write a self-contradictory dossier.")
-    return {
+    out = {
         "flip_id": flip_identifier(snap_a["tag"], snap_b["tag"], slug, cid,
                                    direction),
         "direction": direction,
@@ -250,6 +395,12 @@ def _one_dossier(flip: dict, *, direction: str, slug: str,
         "cause": flip["cause"],
         "what_changed": what_changed,
     }
+    if reconstruction:
+        # present ONLY when a side was rebuilt from a recorded pre-change
+        # copy (TOOLING item 3) — absent otherwise, so dossiers built over
+        # clean inputs keep their historical bytes.
+        out["reconstruction"] = reconstruction
+    return out
 
 
 def build_dossiers(tag_a: str, tag_b: str, *, snap_dir: str | None = None,
@@ -282,6 +433,9 @@ def build_dossiers(tag_a: str, tag_b: str, *, snap_dir: str | None = None,
 
     side_a = _side(snap_a, inputs_dir)
     side_b = _side(snap_b, inputs_dir)
+    reconstruction = {side_name: side["reconstruction"]
+                      for side_name, side in (("a", side_a), ("b", side_b))
+                      if side["reconstruction"]}
 
     # behaviour name/definition, from the query-side file of the AFTER
     # configuration (slug/name/definition only — the file that exists so
@@ -309,7 +463,8 @@ def build_dossiers(tag_a: str, tag_b: str, *, snap_dir: str | None = None,
                     snap_a=snap_a, snap_b=snap_b,
                     side_a=side_a, side_b=side_b,
                     query_raw=raw_queries.get(slug, {}),
-                    what_changed=what_changed))
+                    what_changed=what_changed,
+                    reconstruction=reconstruction or None))
     out.sort(key=lambda x: x["flip_id"])
     return out
 
@@ -347,15 +502,27 @@ def write_dossiers(dossiers: list, out_dir: str) -> list:
 
 def _load_verdict_records(path: str) -> list:
     """The adjudication file: a JSON list of records, or a dict holding one
-    list under any key (tolerant, like the repo's other loaders)."""
+    list under any key (tolerant, like the repo's other loaders).
+
+    PINNED CONTRACT (TOOLING item 5, enforced by test): bare list; dict with
+    exactly ONE list-valued key, of any name; a dict with no list anywhere
+    loads as zero records (validate then reports full non-coverage). A dict
+    holding TWO OR MORE list-valued keys is AMBIGUOUS and refuses — guessing
+    the first sorted key could validate the wrong record set as clean.
+    """
     with open(path) as f:
         data = json.load(f)
     if isinstance(data, list):
         return data
     if isinstance(data, dict):
-        for key in sorted(data):
-            if isinstance(data[key], list):
-                return data[key]
+        list_keys = sorted(k for k in data if isinstance(data[k], list))
+        if len(list_keys) > 1:
+            raise ValueError(
+                f"{path}: ambiguous adjudication file — {len(list_keys)} "
+                f"list-valued keys ({', '.join(list_keys)}); a dict shape "
+                f"must hold exactly ONE list of records. Refusing to guess.")
+        if list_keys:
+            return data[list_keys[0]]
     return []
 
 

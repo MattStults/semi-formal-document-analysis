@@ -271,11 +271,43 @@ def snapshot_bytes(snap: dict) -> bytes:
                        ensure_ascii=False) + "\n").encode("utf-8")
 
 
-def write_snapshot(snap: dict, out_dir: str = SNAPSHOT_DIR) -> str:
+def write_snapshot(snap: dict, out_dir: str = SNAPSHOT_DIR, *,
+                   force: bool = False) -> str:
+    """Write snapshots/<tag>.json — NO-CLOBBER by default (TOOLING item 2).
+
+    Snapshot tags are immutable baselines (amendment F3): overwriting one
+    with different bytes destroys the artifact another cycle's dossiers
+    resolve against. The driver refuses tag reuse, but a bare CLI call used
+    to clobber silently — so the refusal lives HERE, in the writer itself:
+
+      * target absent            → write;
+      * target byte-identical    → silent no-op success (rewrite changes
+        nothing, so nothing is written);
+      * target differs, no force → SystemExit naming the tag and BOTH shas;
+      * target differs, force    → overwrite, both shas printed to stdout
+        (the driver never passes force; a forced clobber is always said).
+    """
     os.makedirs(out_dir, exist_ok=True)
     path = os.path.join(out_dir, f"{snap['tag']}.json")
+    new = snapshot_bytes(snap)
+    if os.path.exists(path):
+        with open(path, "rb") as f:
+            old = f.read()
+        if old == new:
+            return path
+        old_sha = hashlib.sha256(old).hexdigest()
+        new_sha = hashlib.sha256(new).hexdigest()
+        if not force:
+            raise SystemExit(
+                f"REFUSING to overwrite snapshot tag {snap['tag']!r} at "
+                f"{path}: the file on disk has sha256 {old_sha} but this "
+                f"build serializes to sha256 {new_sha}. Snapshot tags are "
+                f"immutable baselines (amendment F3) — pick a fresh tag, or "
+                f"pass --force to overwrite ON THE RECORD.")
+        print(f"FORCED OVERWRITE of snapshot tag {snap['tag']!r}: "
+              f"sha256 {old_sha} -> {new_sha}")
     with open(path, "wb") as f:
-        f.write(snapshot_bytes(snap))
+        f.write(new)
     return path
 
 
@@ -524,6 +556,10 @@ def main(argv=None):
                     help="opt-in frozen-thresholds artifact (per-behaviour "
                          "cut values, label-free provenance); absent means "
                          "rule-derived cuts, recorded as null")
+    ps.add_argument("--force", action="store_true",
+                    help="overwrite an existing snapshots/<tag>.json whose "
+                         "bytes differ (refused by default — amendment F3; "
+                         "both shas are printed when forced)")
     add_inputs(ps)
 
     pd = sub.add_parser("diff", help="flip lists between two tags")
@@ -543,7 +579,7 @@ def main(argv=None):
                               queries_path=args.queries,
                               overlay_path=args.overlay,
                               thresholds_path=args.thresholds)
-        path = write_snapshot(snap, out_dir=args.dir)
+        path = write_snapshot(snap, out_dir=args.dir, force=args.force)
         for slug in sorted(snap["behaviours"]):
             beh = snap["behaviours"][slug]
             print(f"{slug}: {len(beh['predicted'])} clauses predicted "

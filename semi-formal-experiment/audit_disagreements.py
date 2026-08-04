@@ -273,6 +273,42 @@ def _round(x: float) -> float:
     return round(float(x), 6)
 
 
+def config_identity(annotations_path: str, atoms_path: str,
+                    overlay_path: str | None = None,
+                    thresholds_path: str | None = None) -> dict:
+    """The census's FULL config identity (amendment F2 / TOOLING item 1),
+    in snapshot.py's exact key shape: every input as {path, sha256},
+    explicit nulls for absent overlay/thresholds, the threshold rule, and
+    pricing_version only when an overlay is active (containment's rules
+    scored the census). `join_version` is the F12 placeholder — join
+    identity belongs to the CENSUS, not the snapshot; null until the v2
+    join lands and versions itself here.
+    """
+    import snapshot
+    import threshold as T
+
+    def rec(p):
+        return ({"path": os.path.basename(p),
+                 "sha256": snapshot._sha256_file(p)} if p else None)
+
+    ident = {
+        "record": "config_identity",
+        "config_tag": config_tag(annotations_path, atoms_path),
+        "inputs": {
+            "annotations": rec(annotations_path),
+            "behaviour_atoms": rec(atoms_path),
+            "overlay": rec(overlay_path),
+            "thresholds": rec(thresholds_path),
+        },
+        "threshold_rule": T.PREFERRED,
+        "join_version": None,
+    }
+    if overlay_path:
+        import containment
+        ident["pricing_version"] = containment.PRICING_VERSION
+    return ident
+
+
 def _cut_for(index, behaviour) -> float:
     """EXACTLY relevance.predict's label-free derivation (Otsu over this
     query's own positive normalized scores)."""
@@ -282,13 +318,22 @@ def _cut_for(index, behaviour) -> float:
 
 
 def generate_dossiers(index, behaviours, panel, clauses, clause_atoms,
-                      out_dir, config_tag: str) -> list:
+                      out_dir, config_tag: str, header: dict | None = None,
+                      frozen_cuts: dict | None = None) -> list:
     """One AUDIT DOSSIER per survey disagreement, plus index.jsonl.
 
     `clause_atoms` is the raw per-clause atom map (name/kind/gloss/role —
     relevance's loader drops `role`, so the caller passes the artifact's own
     by_clause map). Returns the index records, sorted by dossier_id.
     Byte-deterministic: sorted keys, rounded floats, no wall clock.
+
+    `header` (item 0c) is the config-identity record written as the FIRST
+    line of index.jsonl — the CLI always passes one (`config_identity`);
+    `validate` refuses a headerless directory. `frozen_cuts` mirrors
+    snapshot.py's --thresholds: a behaviour named in it takes its cut FROM
+    the artifact (dossier records cut_source "frozen_artifact"), one absent
+    falls back to `_cut_for` ("rule_fallback"); when None the old shape is
+    preserved exactly (no cut_source key).
     """
     import diagnose_disagreement as DD
 
@@ -302,13 +347,21 @@ def generate_dossiers(index, behaviours, panel, clauses, clause_atoms,
     # dossier is O(passages x clauses) — measured minutes over the real set.
     _pmaps, _raws, _norms, _cuts = {}, {}, {}, {}
 
+    _cut_sources = {}
+
     def _for(slug):
         if slug not in _pmaps:
             beh = behaviours[slug]
             _pmaps[slug] = DD.passage_map(panel[slug], clauses)
             _raws[slug] = index.raw_scores(beh)
             _norms[slug] = dict(index.rank(beh))
-            _cuts[slug] = _cut_for(index, beh)
+            if frozen_cuts is not None and slug in frozen_cuts:
+                _cuts[slug] = float(frozen_cuts[slug])
+                _cut_sources[slug] = "frozen_artifact"
+            else:
+                _cuts[slug] = _cut_for(index, beh)
+                if frozen_cuts is not None:
+                    _cut_sources[slug] = "rule_fallback"
         return _pmaps[slug], _raws[slug], _norms[slug], _cuts[slug]
 
     records = []
@@ -385,6 +438,8 @@ def generate_dossiers(index, behaviours, panel, clauses, clause_atoms,
             "query_atoms": qatoms,
             "discriminators": disc,
         }
+        if slug in _cut_sources:
+            dossier["cut_source"] = _cut_sources[slug]
         fname = did + ".json"
         with open(os.path.join(out_dir, fname), "w") as f:
             json.dump(dossier, f, indent=1, sort_keys=True)
@@ -394,6 +449,8 @@ def generate_dossiers(index, behaviours, panel, clauses, clause_atoms,
 
     records.sort(key=lambda r: r["dossier_id"])
     with open(os.path.join(out_dir, "index.jsonl"), "w") as f:
+        if header is not None:
+            f.write(json.dumps(header, sort_keys=True) + "\n")
         for rec in records:
             f.write(json.dumps(rec, sort_keys=True) + "\n")
     return records
@@ -401,15 +458,27 @@ def generate_dossiers(index, behaviours, panel, clauses, clause_atoms,
 
 # ---------------------------------------------------------------- validator
 
-def _load_index(dossier_dir: str) -> dict:
+def _load_index(dossier_dir: str) -> tuple[dict | None, dict]:
+    """(config-identity header or None, {dossier_id: record}).
+
+    The header is the FIRST non-blank line iff it is a config_identity
+    record (item 0c); dossier records follow. A headerless index parses —
+    so old directories can still be read for diagnosis — but `validate`
+    refuses it."""
     path = os.path.join(dossier_dir, "index.jsonl")
-    out = {}
+    header, out, first = None, {}, True
     with open(path) as f:
         for line in f:
-            if line.strip():
-                r = json.loads(line)
-                out[r["dossier_id"]] = r
-    return out
+            if not line.strip():
+                continue
+            r = json.loads(line)
+            if first and r.get("record") == "config_identity":
+                header = r
+                first = False
+                continue
+            first = False
+            out[r["dossier_id"]] = r
+    return header, out
 
 
 def _consistency(v, d) -> list:
@@ -494,8 +563,17 @@ def validate(verdicts, dossier_dir: str, sweep_findings: str | None = None):
     """
     if isinstance(verdicts, str):
         verdicts = json.load(open(verdicts))
-    index = _load_index(dossier_dir)
+    header, index = _load_index(dossier_dir)
     errs = []
+    if header is None:
+        # item 0c / amendment F2: a census without its config-identity
+        # header cannot prove WHICH configuration produced it — the exact
+        # gap that let a plain-index rebuild contradict frozen overlay
+        # scores (2026-08-03). Refuse; regenerate the dossier set.
+        errs.append(f"{dossier_dir}: index.jsonl has no config-identity "
+                    "header record (first line must be a config_identity "
+                    "record carrying input shas) — regenerate the census "
+                    "with the current tooling")
 
     ids = [v.get("dossier_id") for v in verdicts]
     from collections import Counter
@@ -549,6 +627,18 @@ def main():
     g.add_argument("--annotations", default=ANNOTATIONS)
     g.add_argument("--atoms", default=BEHAVIOUR_ATOMS)
     g.add_argument("--out-root", default=OUT_ROOT)
+    g.add_argument("--overlay", default=None,
+                   help="opt-in containment overlay (licensed edges), "
+                        "mirroring snapshot.py: the census index scores "
+                        "through ContainmentIndex and the overlay sha joins "
+                        "the config-identity header. Absent means none, "
+                        "recorded as an explicit null.")
+    g.add_argument("--thresholds", default=None,
+                   help="opt-in frozen-thresholds artifact, mirroring "
+                        "snapshot.py: named behaviours take their cut FROM "
+                        "the artifact (cut_source frozen_artifact), others "
+                        "fall back to the label-free rule (rule_fallback); "
+                        "the artifact sha joins the header.")
     v = sub.add_parser("validate")
     v.add_argument("--verdicts", required=True)
     v.add_argument("--dossier-dir", required=True)
@@ -559,7 +649,21 @@ def main():
         import benchmark as B
         import relevance as R
         clauses, _ = B.load_clauses()
-        index = R.RelevanceIndex.from_files(annotations_path=args.annotations)
+        if args.overlay:
+            # the shipped configuration is overlay-ON with frozen cuts: a
+            # plain-index rebuild of it silently contradicts frozen scores
+            # (the 2026-08-03 dossier lesson) — thread the overlay HERE.
+            import containment
+            index = containment.ContainmentIndex.from_files(
+                annotations_path=args.annotations,
+                edges=containment.load_edges(args.overlay))
+        else:
+            index = R.RelevanceIndex.from_files(
+                annotations_path=args.annotations)
+        frozen_cuts = None
+        if args.thresholds:
+            import snapshot
+            frozen_cuts = snapshot.load_frozen_thresholds(args.thresholds)
         panel = B.load_true_panel()
         behaviours = R.behaviours_from_panel(panel, atoms_source=args.atoms)
         raw_ann = json.load(open(args.annotations))
@@ -567,8 +671,12 @@ def main():
             args.annotations)
         tag = config_tag(args.annotations, args.atoms)
         out_dir = os.path.join(args.out_root, tag)
+        header = config_identity(args.annotations, args.atoms,
+                                 overlay_path=args.overlay,
+                                 thresholds_path=args.thresholds)
         recs = generate_dossiers(index, behaviours, panel, clauses,
-                                 clause_atoms, out_dir, tag)
+                                 clause_atoms, out_dir, tag, header=header,
+                                 frozen_cuts=frozen_cuts)
         from collections import Counter
         kinds = Counter(r["kind"] for r in recs)
         print(f"wrote {len(recs)} dossiers -> {out_dir} "

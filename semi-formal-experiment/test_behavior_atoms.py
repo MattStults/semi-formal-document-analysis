@@ -101,7 +101,8 @@ def test_dry_run_makes_no_network_call(tmp_path, monkeypatch):
                  "--prompt-log", str(tmp_path / "plog"),
                  "--log", str(tmp_path / "fail.jsonl")])
     assert rc == 0
-    art = json.load(open(out))
+    # TOOLING item 4: the dry-run default writes to <name>.dryrun.json
+    art = json.load(open(tmp_path / "behavior_atoms.dryrun.json"))
     assert art["provenance"]["dry_run"] is True
 
 
@@ -456,3 +457,111 @@ def test_load_conduct_accepts_a_string_or_a_list(tmp_path):
                              "other": ["a", "b"]}))
     got = B.load_conduct(str(p))
     assert got == {"helpfulness": ["one sentence"], "other": ["a", "b"]}
+
+
+# ----------------------------------- dry-run write guards (TOOLING item 4)
+
+LIVE_SHAPED = {
+    "helpfulness": {"atoms": [{"name": "helpfulness", "kind": "value",
+                               "weight": 3, "gloss": "g"}],
+                    "source": "definition", "name": "Helpfulness",
+                    "definition": "d", "conduct": [], "counts": {},
+                    "rejections": {}, "vocabulary_shown": {},
+                    "truncated": False},
+    "provenance": {"dry_run": False, "model": "gpt-5.6-luna",
+                   "run_id": "shipped"},
+}
+
+
+def _poison_network(monkeypatch):
+    import urllib.request
+
+    def boom(*a, **k):                          # pragma: no cover
+        raise AssertionError("dry run attempted a network call")
+
+    monkeypatch.setattr(urllib.request, "urlopen", boom)
+
+
+def test_dryrun_stub_cannot_clobber_shipped_artifact(tmp_path, monkeypatch):
+    """THE README INCIDENT, reproduced as a fixture: --dry-run is the
+    DEFAULT, and a default-args dry run used to write its 0-atom stub to the
+    same literal behavior_atoms.json a live run ships — silently destroying
+    the shipped artifact. Guard 1 (TOOLING item 4): a dry-run artifact's
+    default path is <name>.dryrun.json; the live-shaped file is untouched."""
+    shipped = tmp_path / "behavior_atoms.json"
+    with open(shipped, "w") as f:
+        json.dump(LIVE_SHAPED, f)
+    before = open(shipped, "rb").read()
+    _poison_network(monkeypatch)
+    rc = B.main(["--out-dir", str(tmp_path),
+                 "--annotations", str(tmp_path / "nope.json"),
+                 "--prompt-log", str(tmp_path / "plog"),
+                 "--log", str(tmp_path / "fail.jsonl")])
+    assert rc == 0
+    assert open(shipped, "rb").read() == before, \
+        "the shipped artifact was clobbered by a dry-run stub (the README " \
+        "incident)"
+    stub_path = tmp_path / "behavior_atoms.dryrun.json"
+    assert stub_path.exists(), "dry-run output must land at *.dryrun.json"
+    stub = json.load(open(stub_path))
+    assert stub["provenance"]["dry_run"] is True
+
+
+def test_dryrun_explicit_out_gets_the_suffix(tmp_path, monkeypatch):
+    """Guard 1 covers --out too: an explicit path gains the .dryrun.json
+    suffix unless it already ends in it."""
+    _poison_network(monkeypatch)
+    rc = B.main(["--out", str(tmp_path / "custom.json"),
+                 "--out-dir", str(tmp_path),
+                 "--annotations", str(tmp_path / "nope.json"),
+                 "--prompt-log", str(tmp_path / "plog"),
+                 "--log", str(tmp_path / "fail.jsonl")])
+    assert rc == 0
+    assert not (tmp_path / "custom.json").exists()
+    assert (tmp_path / "custom.dryrun.json").exists()
+
+
+def test_dryrun_stub_may_overwrite_a_dryrun_stub(tmp_path, monkeypatch):
+    """Stubs may clobber stubs: rerunning a dry run over its own previous
+    output is a plain overwrite, no refusal."""
+    _poison_network(monkeypatch)
+    args = ["--out-dir", str(tmp_path),
+            "--annotations", str(tmp_path / "nope.json"),
+            "--prompt-log", str(tmp_path / "plog"),
+            "--log", str(tmp_path / "fail.jsonl")]
+    assert B.main(args) == 0
+    assert B.main(args) == 0
+    stub = json.load(open(tmp_path / "behavior_atoms.dryrun.json"))
+    assert stub["provenance"]["dry_run"] is True
+
+
+def test_any_write_refuses_to_overwrite_a_nonstub_without_force(tmp_path):
+    """Guard 2, independent of guard 1: ANY write path (here a live-mode
+    run with a mocked client) refuses to overwrite an existing artifact
+    whose provenance.dry_run is not true, naming the path; --force is the
+    only override."""
+    out = tmp_path / "behavior_atoms.json"
+    with open(out, "w") as f:
+        json.dump(LIVE_SHAPED, f)
+    before = open(out, "rb").read()
+    client = FakeClient(reply(selected=[
+        {"name": "helpfulness", "kind": "value", "weight": 3}]))
+    with pytest.raises(SystemExit) as e:
+        B.run(client, [BEHAVIOUR], VOCAB, out=str(out),
+              out_dir=str(tmp_path), log_path=str(tmp_path / "f.jsonl"),
+              model="m")
+    assert str(out) in str(e.value)
+    assert open(out, "rb").read() == before
+    # --force is the only override
+    client2 = FakeClient(reply(selected=[
+        {"name": "helpfulness", "kind": "value", "weight": 3}]))
+    art = B.run(client2, [BEHAVIOUR], VOCAB, out=str(out),
+                out_dir=str(tmp_path), log_path=str(tmp_path / "f.jsonl"),
+                model="m", force=True)
+    assert art["provenance"]["dry_run"] is False
+    assert open(out, "rb").read() != before
+
+
+def test_cli_has_a_force_flag(tmp_path):
+    ns = B.build_parser().parse_args([])
+    assert ns.force is False

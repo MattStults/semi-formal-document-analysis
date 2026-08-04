@@ -48,6 +48,7 @@ class FakeRun:
         self.diff = None
         self.flips = []
         self.census_index = []
+        self.census_header = True     # item 0c: real tool writes one
         self.validate_rc = 0
         self.audit_validate_rc = 0
 
@@ -97,6 +98,14 @@ class FakeRun:
             d = os.path.join(out_root, tag)
             os.makedirs(d, exist_ok=True)
             with open(os.path.join(d, "index.jsonl"), "w") as f:
+                if self.census_header:
+                    f.write(json.dumps(
+                        {"record": "config_identity", "config_tag": tag,
+                         "inputs": {"annotations": None,
+                                    "behaviour_atoms": None,
+                                    "overlay": None, "thresholds": None},
+                         "threshold_rule": "otsu", "join_version": None},
+                        sort_keys=True) + "\n")
                 for rec in self.census_index:
                     f.write(json.dumps(rec, sort_keys=True) + "\n")
             return
@@ -1133,3 +1142,158 @@ def test_full_checkpoint_cycle_end_to_end(env):
     for rel in (os.path.join("census", "verdicts_merged.json"),
                 "census_delta.json", "prediction_check.json"):
         assert os.path.exists(os.path.join(c.dir, rel)), f"missing {rel}"
+
+
+# ------------------------------------- commit-at-CLOSE (TOOLING item 6)
+
+def test_close_drafts_commit_message_and_staging_list(env):
+    """CLOSE must leave a ready-to-use commit draft: commit_message.txt
+    whose first line matches the log record's fields, a body carrying the
+    manifest's fix description and the decision's justification, the
+    standard co-author trailer, and staging_list.txt = declared files plus
+    the cycle directory. The driver itself NEVER runs git."""
+    c = advance_to(env, "CLOSE")
+    c.next()
+    cm = os.path.join(c.dir, "commit_message.txt")
+    assert os.path.exists(cm), "CLOSE must draft commit_message.txt"
+    text = open(cm).read()
+    first = text.splitlines()[0]
+    assert first == "c1: keep (code, predictions 4/4)", first
+    assert "fix the widget" in text                  # manifest fix_description
+    assert "document-side adjudications support keeping" in text
+    assert "Co-Authored-By:" in text                 # standard trailer
+    sl = os.path.join(c.dir, "staging_list.txt")
+    assert os.path.exists(sl), "CLOSE must draft staging_list.txt"
+    staged = [l.strip() for l in open(sl) if l.strip()]
+    rel_cycle_dir = os.path.relpath(c.dir, cycle.REPO)
+    assert staged == sorted(["fix_target.py"]) + [rel_cycle_dir], staged
+
+
+def test_close_runs_no_git_and_survives_a_gitfree_tree(env):
+    """The coordinator commits; the driver only drafts. CLOSE in a
+    git-free tree (env.repo has no .git) must succeed without error and
+    without invoking git through the tool runner."""
+    assert not os.path.exists(os.path.join(env.repo, ".git"))
+    c = advance_to(env, "CLOSE")
+    msg = c.next()          # must not raise
+    assert c.phase() == "CLOSED"
+    for call in env.fake.calls:
+        assert call[0] != "git" and "git" not in os.path.basename(
+            str(call[0])), f"the driver ran git: {call}"
+    assert "commit" in msg.lower(), \
+        "CLOSE should tell the operator a commit draft is ready"
+
+
+def test_close_without_prediction_check_says_no_predictions(env):
+    """An exploratory cycle (PREDICT overridden) has no prediction_check;
+    the draft's first line must degrade honestly, not crash."""
+    c = advance_to(env, "PREDICT")
+    c.next(override="PREDICT", reason="exploratory poke")
+    with open(env.path("fix_target.py"), "w") as f:
+        f.write("x = 2\n")
+    c.next()                      # IMPLEMENT
+    env.fake.diff = NOOP_DIFF
+    c.next()                      # MEASURE -> DECIDE (no-op)
+    c.next()                      # DECIDE halt: drafts
+    draft = read_json(os.path.join(c.dir, "decision.draft.json"))
+    draft.update(decision="revert", signed_by="matt",
+                 justification="exploratory")
+    write_json(os.path.join(c.dir, "decision.json"), draft)
+    c.next()                      # DECIDE
+    c.next()                      # CLOSE
+    first = open(os.path.join(c.dir, "commit_message.txt")).read() \
+        .splitlines()[0]
+    assert first == "c1: revert (code, no predictions)", first
+
+
+def _stage_prior_closed_cycle(env, name="c0", files=("fix_target.py",)):
+    """A prior cycle dir shaped as commit-at-CLOSE leaves it."""
+    cdir = os.path.join(env.cycles, name)
+    os.makedirs(cdir, exist_ok=True)
+    with open(os.path.join(cdir, "commit_message.txt"), "w") as f:
+        f.write(f"{name}: keep (code, predictions 1/1)\n")
+    with open(os.path.join(cdir, "staging_list.txt"), "w") as f:
+        f.write("\n".join(list(files) + [os.path.join("cycles", name)])
+                + "\n")
+    write_json(os.path.join(cdir, "state.json"),
+               {"closed": True, "completed": [], "overrides": []})
+    return cdir
+
+
+def test_open_warns_not_refuses_on_prior_uncommitted_cycle(env):
+    """F12 ruling: OPEN WARNS (never refuses) when a prior cycle closed
+    with a drafted commit_message.txt and its declared files are still
+    uncommitted per read-only git status."""
+    import subprocess
+    subprocess.run(["git", "init", "-q", env.repo], check=True)
+    _stage_prior_closed_cycle(env)   # fix_target.py exists and is untracked
+    c = cycle.Cycle("c1")
+    write_json(os.path.join(c.dir, "manifest.json"), MANIFEST)
+    msg = c.next()                   # OPEN must COMPLETE (warn, not refuse)
+    assert c.phase() == "PREDICT", "OPEN must still complete"
+    assert "c0" in msg and ("uncommitted" in msg.lower()
+                            or "warn" in msg.lower()), msg
+
+
+def test_open_stays_quiet_without_git_or_without_prior_drafts(env):
+    """No git repo, or no prior commit drafts: OPEN completes with no
+    warning and no error (git absence is never an OPEN failure)."""
+    _stage_prior_closed_cycle(env)   # prior draft but env.repo is git-free
+    c = cycle.Cycle("c1")
+    write_json(os.path.join(c.dir, "manifest.json"), MANIFEST)
+    msg = c.next()
+    assert c.phase() == "PREDICT"
+    assert "uncommitted" not in msg.lower()
+
+
+# ------------------------- census header + overlay threading (item 0c)
+
+def test_census_refuses_a_headerless_index(env):
+    """Item 0c: the census phase must refuse an index.jsonl with no
+    config-identity header — an unidentified census cannot prove which
+    configuration it audited (F2)."""
+    c = advance_to(env, "CENSUS", shape="checkpoint",
+                   baseline_counts={"fp_lexical_only": 2})
+    env.fake.census_header = False
+    with pytest.raises(cycle.CycleError, match="header"):
+        c.next()
+    assert c.phase() == "CENSUS"
+
+
+def test_census_threads_overlay_and_thresholds_flags(env):
+    """config.overlay / config.thresholds must thread to the census
+    dossier build exactly as they thread to the snapshot build."""
+    for name, content in (("overlay_test.json", '{"edges": []}\n'),
+                          ("thresholds_test.json", '{"thresholds": {}}\n')):
+        with open(env.path(name), "w") as f:
+            f.write(content)
+    manifest = dict(CHECKPOINT_MANIFEST,
+                    config=dict(CHECKPOINT_MANIFEST["config"],
+                                overlay="overlay_test.json",
+                                thresholds="thresholds_test.json"))
+    baseline_census(env, {"fp_lexical_only": 2, "fn_threshold": 1})
+    c = cycle.Cycle("c1")
+    write_json(os.path.join(c.dir, "manifest.json"), manifest)
+    c.next()                      # OPEN
+    pred = dict(PREDICTION, census_classes=CENSUS_CLASSES)
+    write_json(os.path.join(c.dir, "prediction.json"), pred)
+    c.next()                      # PREDICT
+    with open(env.path("fix_target.py"), "w") as f:
+        f.write("x = 2\n")
+    c.next()                      # IMPLEMENT
+    env.fake.diff = FLIP_DIFF
+    env.fake.flips = FLIP_INDEX
+    env.fake.census_index = CENSUS_INDEX
+    c.next()                      # MEASURE
+    c.next()                      # ADJUDICATE halt
+    write_flip_verdicts(c, GOOD_FLIP_RECORDS)
+    c.next()                      # ADJUDICATE completes
+    c.next()                      # CENSUS mechanical part + halt
+    census_calls = [" ".join(x) for x in env.fake.calls
+                    if "audit_disagreements.py" in " ".join(x)
+                    and "dossiers" in x]
+    assert census_calls, "no census dossier build ran"
+    assert "--overlay" in census_calls[0] \
+        and "overlay_test.json" in census_calls[0]
+    assert "--thresholds" in census_calls[0] \
+        and "thresholds_test.json" in census_calls[0]

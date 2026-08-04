@@ -527,3 +527,176 @@ def test_cli_validate_exit_codes(adjudication_env):
                          "--verdict-file", good]) == 0
     assert dossier.main(["validate", "--dir", e["dir"],
                          "--verdict-file", bad]) != 0
+
+
+# ----------------------- verdict-loader tolerance, PINNED (TOOLING item 5)
+
+def test_verdict_loader_accepted_shapes_pinned(tmp_path):
+    """The loader's tolerance is a CONTRACT, not an accident: a bare list,
+    the conventional single-key dict, and a single-list-valued key of ANY
+    name all load to the same records. A well-meaning cleanup that narrows
+    this orphans every historical adjudication artifact — this test is the
+    tripwire."""
+    records = [{"flip_id": "f1", "verdict": "correct", "document_reason": "r"}]
+    for i, shape in enumerate((
+            records,                                # bare list
+            {"records": records},                   # the driver's spelling
+            {"anything_at_all": records},           # any single list key
+            {"note": "prose", "items": records},    # non-list keys ignored
+    )):
+        p = _write(tmp_path / f"shape{i}.json", shape)
+        assert dossier._load_verdict_records(p) == records, f"shape {i}"
+
+
+def test_verdict_loader_no_list_anywhere_yields_no_records(tmp_path):
+    """A dict with no list under any key loads as ZERO records (pinned
+    current behavior) — validate then reports every dossier
+    never-adjudicated rather than guessing at a shape."""
+    p = _write(tmp_path / "nolist.json", {"note": "prose", "n": 3})
+    assert dossier._load_verdict_records(p) == []
+
+
+def test_verdict_loader_refuses_two_candidate_lists(tmp_path):
+    """AMBIGUITY MUST REFUSE, NOT GUESS (TOOLING item 5): a dict holding TWO
+    list-valued keys has no principled winner; silently taking the first
+    sorted key could validate the wrong record set as clean."""
+    p = _write(tmp_path / "two.json", {
+        "alpha": [{"flip_id": "f1"}], "beta": [{"flip_id": "f2"}]})
+    with pytest.raises(ValueError) as e:
+        dossier._load_verdict_records(p)
+    msg = str(e.value)
+    assert "alpha" in msg and "beta" in msg, \
+        "the refusal must name the competing keys"
+
+
+def test_the_two_validators_keep_their_distinct_flag_spellings(capsys):
+    """Amendment F9 hardcodes that the two validators keep their DIFFERING
+    flags — dossier.py's is --verdict-file, audit_disagreements' is
+    --verdicts — because cycle.py invokes both by exact spelling. Pinned by
+    argparse introspection: harmonizing either breaks the driver."""
+    import audit_disagreements
+
+    with pytest.raises(SystemExit) as e:
+        dossier.main(["validate", "--help"])
+    assert e.value.code == 0
+    dossier_help = capsys.readouterr().out
+    assert "--verdict-file" in dossier_help
+    assert "--verdicts " not in dossier_help and \
+        "--verdicts\n" not in dossier_help
+
+    import sys as _sys
+    old = _sys.argv
+    try:
+        _sys.argv = ["audit_disagreements.py", "validate", "--help"]
+        with pytest.raises(SystemExit) as e2:
+            audit_disagreements.main()
+        assert e2.value.code == 0
+    finally:
+        _sys.argv = old
+    audit_help = capsys.readouterr().out
+    assert "--verdicts" in audit_help
+    assert "--verdict-file" not in audit_help
+
+
+# ---------------- A-side reconstruction from a logged migration (item 3)
+
+import hashlib as _hashlib
+import subprocess as _subprocess
+
+
+def _sha(path):
+    return _hashlib.sha256(open(path, "rb").read()).hexdigest()
+
+
+def _git(env, *args):
+    return _subprocess.run(
+        ["git", "-C", str(env["tmp"]), "-c", "user.email=t@t",
+         "-c", "user.name=t"] + list(args),
+        capture_output=True, text=True, check=True)
+
+
+def _apply_logged_rename(env, sha_after_override=None):
+    """Rewrite helping_user -> assisting_user in ann.json IN PLACE and log
+    it in vocabulary_migrations.json exactly as atom_refactor logs one
+    (per-artifact sha_before/sha_after chain). Returns (old_sha, new_sha)."""
+    old_sha = _sha(env["ann"])
+    raw = open(env["ann"]).read()
+    edited = raw.replace("helping_user", "assisting_user")
+    assert edited != raw, "fixture drifted: the rename must change bytes"
+    with open(env["ann"], "w") as f:
+        f.write(edited)
+    new_sha = _sha(env["ann"])
+    log = {"artifact": "vocabulary_migrations", "version": 1,
+           "migrations": [{
+               "op": "rename", "old": "helping_user",
+               "new": "assisting_user", "date": "2026-08-04",
+               "reason": "test: reconstruction fixture",
+               "artifacts": {"ann.json": {
+                   "sha_before": old_sha,
+                   "sha_after": (sha_after_override or new_sha),
+                   "n_rewritten": 3}}}]}
+    _write(env["tmp"] / "vocabulary_migrations.json", log)
+    return old_sha, new_sha
+
+
+def test_logged_migration_reconstructs_from_git_history(env):
+    """TOOLING item 3 + F12: after an artifact cycle rewrote the
+    annotations in place (sha logged in vocabulary_migrations.json), the
+    baseline side must reconstruct its recorded input from git history —
+    sha-verified — instead of refusing forever. The dossier records
+    reconstruction provenance; the build stays byte-deterministic."""
+    _git(env, "init", "-q")
+    _git(env, "add", "ann.json")
+    _git(env, "commit", "-qm", "pre-change ann")
+    old_sha, _ = _apply_logged_rename(env)
+
+    ds = _build(env)
+    assert len(ds) == 3, "the fixture's flip set must survive reconstruction"
+    for d in ds:
+        rec = d["reconstruction"]
+        for side in ("a", "b"):     # BOTH snapshots recorded the old sha
+            r = rec[side]["annotations"]
+            assert r["source"] == "git_history"
+            assert r["recorded_sha256"] == old_sha
+            assert r["migrations_spanned"] == [
+                {"op": "rename", "old": "helping_user",
+                 "new": "assisting_user", "date": "2026-08-04"}]
+    # determinism: a second build serializes byte-identically
+    again = _build(env)
+    assert [snapshot.snapshot_bytes(d) for d in ds] == \
+        [snapshot.snapshot_bytes(d) for d in again]
+
+
+def test_prechange_copy_is_the_nongit_fallback(env):
+    """No git history: a cycle's pre_change/ copy (captured at MEASURE) is
+    the fallback source, still sha-verified."""
+    original = open(env["ann"], "rb").read()
+    _apply_logged_rename(env)
+    pc = env["tmp"] / "cycles" / "prior" / "pre_change"
+    os.makedirs(pc)
+    with open(pc / "ann.json", "wb") as f:
+        f.write(original)
+    ds = _build(env)
+    assert len(ds) == 3
+    assert ds[0]["reconstruction"]["a"]["annotations"]["source"] \
+        == "pre_change_copy"
+
+
+def test_unlogged_mutation_still_refuses(env):
+    """Reconstruction never launders corruption: a sha absent from the
+    migration chain remains a hard StaleConfigError even with the log
+    present."""
+    _apply_logged_rename(env, sha_after_override="f" * 64)  # chain broken
+    with pytest.raises(dossier.StaleConfigError):
+        _build(env)
+
+
+def test_missing_sources_error_names_both(env):
+    """A LOGGED migration whose pre-change bytes exist in neither git
+    history nor any pre_change copy gets a DISTINCT refusal naming both
+    searched sources."""
+    _apply_logged_rename(env)          # no git repo, no pre_change copy
+    with pytest.raises(dossier.StaleConfigError) as e:
+        _build(env)
+    msg = str(e.value)
+    assert "git history" in msg and "pre_change" in msg, msg

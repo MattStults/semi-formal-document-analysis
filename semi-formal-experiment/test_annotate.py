@@ -463,7 +463,8 @@ def test_cli_defaults_to_dry_run(fake_rows, tmp_path, monkeypatch):
                   "--out-dir", str(tmp_path),
                   "--prompt-log", str(tmp_path / "prompts")])
     assert rc == 0
-    art = json.load(open(out))
+    # TOOLING item 4: the dry-run default writes to <name>.dryrun.json
+    art = json.load(open(str(tmp_path / "atoms.dryrun.json")))
     assert art["provenance"]["dry_run"] is True
 
 
@@ -617,9 +618,12 @@ def test_junk_responses_never_raise(fake_rows, tmp_path):
             '{"clauses": [{"clause_id": null, "atoms": null}]}',
             '{"clauses": [{"clause_id": "m0001", "atoms": [null, 3, "x"]}]}',
             '{"clauses": [{"clause_id": "m0001", "atoms": [{}]}]}']
-    for j in junk:
+    for i, j in enumerate(junk):
         client = FakeClient([j])
+        # one out path per run: the non-stub overwrite guard (TOOLING item
+        # 4) correctly refuses a live rerun onto an existing artifact
         art = an.run(client, fake_rows, model="m", batch_size=99,
+                     out=str(tmp_path / f"junk{i}.json"),
                      out_dir=str(tmp_path))
         assert art["provenance"]["coverage"]["clauses_total"] == 5
 
@@ -1267,3 +1271,67 @@ def test_a_docfacts_file_missing_a_needed_key_is_refused(tmp_path):
 def test_the_cli_exposes_a_docfacts_flag():
     args = an.build_parser().parse_args([])
     assert args.docfacts == DOCFACTS_MODEL_SPEC
+
+
+# --------------------------------------------------------------------------
+# 10. dry-run write guards (TOOLING item 4 — the behavior_atoms.json
+#     clobber incident, guarded on BOTH annotators)
+
+LIVE_SHAPED_ANN = {
+    "atoms": [{"clause_id": "m0001", "name": "operator", "kind": "entity",
+               "gloss": "g", "quote": "q", "span_id": "s1"}],
+    "provenance": {"dry_run": False, "model": "gpt-5.6-luna",
+                   "run_id": "shipped"},
+}
+
+
+def test_dryrun_output_lands_at_dryrun_suffix(fake_rows, tmp_path,
+                                              monkeypatch):
+    """Guard 1: an artifact carrying provenance.dry_run true must default to
+    <name>.dryrun.json — for the generated default name AND for an explicit
+    out path."""
+    import urllib.request
+    monkeypatch.setattr(urllib.request, "urlopen",
+                        lambda *a, **k: (_ for _ in ()).throw(
+                            AssertionError("dry run opened a socket")))
+    cfg = an.provider_config("luna")
+    client = an.make_annotate_client(cfg, live=False,
+                                     log_dir=str(tmp_path / "prompts"))
+    art, path = an.run(client, fake_rows, model=cfg.model, batch_size=2,
+                       out_dir=str(tmp_path), return_path=True)
+    assert art["provenance"]["dry_run"] is True
+    assert path.endswith(".dryrun.json")
+    # explicit --out gains the suffix
+    art2, path2 = an.run(client, fake_rows, model=cfg.model, batch_size=2,
+                         out_dir=str(tmp_path),
+                         out=str(tmp_path / "explicit.json"),
+                         return_path=True)
+    assert path2 == str(tmp_path / "explicit.dryrun.json")
+    assert not (tmp_path / "explicit.json").exists()
+
+
+def test_live_write_refuses_nonstub_overwrite_without_force(fake_rows,
+                                                            tmp_path):
+    """Guard 2, independent of guard 1: any write refuses an existing
+    artifact whose provenance.dry_run is not true, naming the path; force
+    is the only override."""
+    out = tmp_path / "annotations.json"
+    with open(out, "w") as f:
+        json.dump(LIVE_SHAPED_ANN, f)
+    before = open(out, "rb").read()
+    client = FakeClient([good_response(fake_rows)])
+    with pytest.raises(SystemExit) as e:
+        an.run(client, fake_rows, model="m", batch_size=99, out=str(out),
+               out_dir=str(tmp_path))
+    assert str(out) in str(e.value)
+    assert open(out, "rb").read() == before
+    client2 = FakeClient([good_response(fake_rows)])
+    art = an.run(client2, fake_rows, model="m", batch_size=99, out=str(out),
+                 out_dir=str(tmp_path), force=True)
+    assert art["provenance"]["dry_run"] is False
+    assert open(out, "rb").read() != before
+
+
+def test_annotate_cli_has_a_force_flag():
+    ns = an.build_parser().parse_args([])
+    assert ns.force is False

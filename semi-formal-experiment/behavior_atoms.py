@@ -940,7 +940,7 @@ def run(client, behaviours, vocab, conduct=None, out=None, out_dir=".",
         log_path=None, model="", provider=None, seed=0,
         max_new=MAX_NEW_ATOMS, max_vocab=DEFAULT_MAX_VOCAB,
         max_tokens=DEFAULT_MAX_TOKENS, annotations_path=ANNOTATIONS_PATH,
-        return_path=False, notation=False):
+        return_path=False, notation=False, force=False):
     """One pass over the behaviours: ONE call each, then write the cache.
 
     `notation=False` is the shipped default and reproduces the shipped artifact
@@ -1070,6 +1070,14 @@ def run(client, behaviours, vocab, conduct=None, out=None, out_dir=".",
     os.makedirs(out_dir, exist_ok=True)
     if out is None:
         out = os.path.join(out_dir, OUT_PATH)
+    # TOOLING item 4, two INDEPENDENT guards (the behavior_atoms.json
+    # clobber incident happened HERE: a default-args dry run wrote its
+    # 0-atom stub over the shipped artifact). Guard 1: dry-run output is
+    # renamed to <name>.dryrun.json. Guard 2: no write, dry or live, may
+    # overwrite a non-stub artifact without force.
+    if art["provenance"]["dry_run"]:
+        out = annotate.dryrun_out_path(out)
+    annotate.refuse_nonstub_overwrite(out, force=force)
     try:
         with open(out, "w", encoding="utf-8") as f:
             json.dump(art, f, indent=1, ensure_ascii=False)
@@ -1521,6 +1529,9 @@ def build_parser():
     ap.add_argument("--spread", nargs="+", default=None, metavar="ARTIFACT",
                     help="report draw-to-draw agreement over these artifacts "
                          "and exit; makes no call")
+    ap.add_argument("--force", action="store_true",
+                    help="overwrite an existing NON-STUB artifact at the "
+                         "output path (refused by default — TOOLING item 4)")
     return ap
 
 
@@ -1637,7 +1648,8 @@ def main(argv=None):
     kw = dict(conduct=conduct, out_dir=args.out_dir, log_path=args.log,
               model=cfg.model, provider=cfg.name, max_new=args.max_new,
               max_vocab=args.max_vocab, max_tokens=args.max_tokens,
-              annotations_path=args.annotations, notation=args.notation)
+              annotations_path=args.annotations, notation=args.notation,
+              force=args.force)
     if args.draws > 1:
         paths = run_draws(client, behaviours, vocab, draws=args.draws,
                           out=args.out, **kw)

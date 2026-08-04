@@ -674,7 +674,54 @@ class Cycle:
         self._save(state)
         return True, ("OPEN complete: manifest validated; files_to_change "
                       "baseline shas and the undeclared-input closure "
-                      "recorded in state.json.")
+                      "recorded in state.json."
+                      + self._prior_uncommitted_warning())
+
+    def _prior_uncommitted_warning(self) -> str:
+        """F12 ruling: OPEN WARNS (never refuses) when a prior cycle closed
+        with a drafted commit_message.txt whose declared files are still
+        uncommitted — the exact drift the sha-closure guard exists to catch,
+        surfaced at the moment new work opens. Read-only: a single
+        `git status --porcelain` per prior draft; git absence, a non-repo
+        tree, or any git error silently yields no warning (git is never an
+        OPEN dependency)."""
+        warnings = []
+        root = os.path.dirname(self.dir)
+        if not os.path.isdir(root):
+            return ""
+        for name in sorted(os.listdir(root)):
+            if name == self.name:
+                continue
+            cdir = os.path.join(root, name)
+            slist = os.path.join(cdir, "staging_list.txt")
+            if not (os.path.isfile(os.path.join(cdir, "commit_message.txt"))
+                    and os.path.isfile(slist)):
+                continue
+            with open(slist) as f:
+                declared = [l.strip() for l in f if l.strip()]
+            declared = [rel for rel in declared
+                        if os.path.exists(os.path.join(REPO, rel))]
+            if not declared:
+                continue
+            try:
+                proc = subprocess.run(
+                    ["git", "-C", REPO, "status", "--porcelain", "--"]
+                    + declared,
+                    capture_output=True, text=True)
+            except OSError:
+                return ""      # no git binary: never an OPEN failure
+            if proc.returncode != 0:
+                continue       # not a git repo (or git unhappy): stay quiet
+            dirty = sorted({l[3:].strip() for l in proc.stdout.splitlines()
+                            if l.strip()})
+            if dirty:
+                warnings.append(
+                    f"\n⚠ WARNING (not a refusal): prior cycle {name!r} "
+                    f"closed with a drafted commit_message.txt and its "
+                    f"declared files are still uncommitted: "
+                    f"{', '.join(dirty)}. Commit that cycle before this "
+                    f"one's changes interleave with it.")
+        return "".join(warnings)
 
     # ------------------------------------------------- phase 2: PREDICT
 
@@ -1139,11 +1186,23 @@ class Cycle:
         census_root = self._p("census", "audit_dossiers")
         dossier_dir = os.path.join(census_root, tag)
         if not os.path.exists(os.path.join(dossier_dir, "index.jsonl")):
-            _run([PYTHON, os.path.join(REPO, "audit_disagreements.py"),
-                  "dossiers",
-                  "--annotations", os.path.join(REPO, cfg["annotations"]),
-                  "--atoms", os.path.join(REPO, cfg["atoms"]),
-                  "--out-root", census_root])
+            census_cmd = [PYTHON, os.path.join(REPO,
+                                               "audit_disagreements.py"),
+                          "dossiers",
+                          "--annotations",
+                          os.path.join(REPO, cfg["annotations"]),
+                          "--atoms", os.path.join(REPO, cfg["atoms"]),
+                          "--out-root", census_root]
+            # overlay/thresholds thread to the census EXACTLY as they
+            # thread to the snapshot build (item 0c): the census must audit
+            # the shipped configuration, not a plain-index rebuild of it.
+            if cfg.get("overlay"):
+                census_cmd += ["--overlay",
+                               os.path.join(REPO, cfg["overlay"])]
+            if cfg.get("thresholds"):
+                census_cmd += ["--thresholds",
+                               os.path.join(REPO, cfg["thresholds"])]
+            _run(census_cmd)
             # F2: full config identity alongside the dossier set
             ident = {"annotations": {"path": cfg["annotations"],
                                      "sha256": sha256_file(os.path.join(
@@ -1158,10 +1217,22 @@ class Cycle:
                      "config_tag": tag}
             _write_json(os.path.join(dossier_dir, "config_identity.json"),
                         ident)
-        behaviours = sorted({json.loads(line)["behaviour"]
-                             for line in open(os.path.join(
-                                 dossier_dir, "index.jsonl"))
-                             if line.strip()})
+        index_records = [json.loads(line)
+                         for line in open(os.path.join(
+                             dossier_dir, "index.jsonl"))
+                         if line.strip()]
+        # item 0c: the FIRST record must be the config-identity header —
+        # an unidentified census cannot prove which configuration it
+        # audited (amendment F2). Refuse a headerless index outright.
+        if not (index_records
+                and index_records[0].get("record") == "config_identity"):
+            raise CycleError(
+                f"census index at {dossier_dir} has no config-identity "
+                f"header record (first index.jsonl line must carry the "
+                f"input shas — amendment F2, TOOLING item 1). Delete the "
+                f"directory and regenerate with the current "
+                f"audit_disagreements.py.")
+        behaviours = sorted({r["behaviour"] for r in index_records[1:]})
         # THE SCOPE PIN (amendment F7): non-overridable held-out refusal
         held_out = [b for b in behaviours if b not in DEV_CENSUS_CELLS]
         if held_out:
@@ -1355,10 +1426,38 @@ class Cycle:
         log = os.path.join(os.path.dirname(self.dir), "CYCLE_LOG.jsonl")
         with open(log, "a") as f:
             f.write(json.dumps(rec, sort_keys=True) + "\n")
+        # COMMIT-AT-CLOSE (TOOLING item 6): draft the commit so a closed
+        # cycle never sits uncommitted for lack of a ready message — but the
+        # DRIVER NEVER RUNS GIT. The coordinator confirms and executes
+        # (committing each unit once its review resolves); the draft removes
+        # the friction, the human keeps the authority.
+        if check:
+            passed = sum(1 for c in check["checks"]
+                         if c["result"] in ("PASS", "PASS_VACUOUS"))
+            pred_note = f"predictions {passed}/{len(check['checks'])}"
+        else:
+            pred_note = "no predictions"
+        lines = [f"{self.name}: {d['decision']} ({self._shape()}, "
+                 f"{pred_note})", ""]
+        if str(m.get("fix_description", "")).strip():
+            lines += [str(m["fix_description"]).strip(), ""]
+        if str(d.get("justification", "")).strip():
+            lines += [str(d["justification"]).strip(), ""]
+        lines += ["Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>",
+                  ""]
+        _write_text(self._p("commit_message.txt"), "\n".join(lines))
+        staging = sorted(m["files_to_change"]) \
+            + [os.path.relpath(self.dir, REPO)]
+        _write_text(self._p("staging_list.txt"), "\n".join(staging) + "\n")
         state["closed"] = True
         self._save(state)
-        return True, (f"CLOSE complete: one line appended to "
-                      f"CYCLE_LOG.jsonl ({d['decision']}). Cycle closed.")
+        return True, (
+            f"CLOSE complete: one line appended to CYCLE_LOG.jsonl "
+            f"({d['decision']}). Cycle closed.\n"
+            f"Commit draft ready (the driver never runs git — the "
+            f"coordinator commits):\n"
+            f"  message: {self._p('commit_message.txt')}\n"
+            f"  staging set: {', '.join(staging)}")
 
 
 # --------------------------------------------------------------------- CLI

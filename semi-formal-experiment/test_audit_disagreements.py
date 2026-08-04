@@ -258,10 +258,18 @@ def test_unmapped_fn_dossier_has_null_clause_facts(tmp_path):
 
 # --------------------------------------------------------- 3. the validator
 
-def _fake_dossier_dir(tmp_path, dossiers):
+def _fake_dossier_dir(tmp_path, dossiers, header=True):
     out = tmp_path / "dossiers"
     out.mkdir(parents=True)
     lines = []
+    if header:
+        # every census dir carries a config-identity header (F2 / item 0c)
+        lines.append(json.dumps(
+            {"record": "config_identity", "config_tag": "fake",
+             "inputs": {"annotations": None, "behaviour_atoms": None,
+                        "overlay": None, "thresholds": None},
+             "threshold_rule": "otsu", "join_version": None},
+            sort_keys=True))
     for d in dossiers:
         fname = d["dossier_id"] + ".json"
         json.dump(d, open(out / fname, "w"))
@@ -429,3 +437,151 @@ def test_module_is_in_the_forbidden_set():
     anti-cheat scan must refuse any query module that names it."""
     import test_no_reference_leak as guard
     assert "audit_disagreements" in guard.FORBIDDEN
+
+
+# ------------------- 5. config identity header + overlay/thresholds (0c)
+
+def _tmp_input(tmp_path, name, obj):
+    p = tmp_path / name
+    json.dump(obj, open(p, "w"))
+    return str(p)
+
+
+def test_config_identity_header_shape_and_nulls(tmp_path):
+    """The header carries FULL config identity in snapshot.py's exact key
+    shape: input shas, explicit nulls for absent overlay/thresholds, the
+    threshold rule, a join_version placeholder (F12: join_version belongs
+    to CENSUS identity), and pricing_version only when an overlay is
+    active."""
+    import threshold as T
+    ann = _tmp_input(tmp_path, "annotations_x.json", {"clauses": []})
+    atoms = _tmp_input(tmp_path, "behavior_atoms_y.json", {})
+    ident = AD.config_identity(ann, atoms)
+    assert ident["record"] == "config_identity"
+    assert ident["config_tag"] == "x__y"
+    ins = ident["inputs"]
+    assert set(ins) == {"annotations", "behaviour_atoms", "overlay",
+                        "thresholds"}
+    for key in ("annotations", "behaviour_atoms"):
+        assert set(ins[key]) == {"path", "sha256"}
+        assert len(ins[key]["sha256"]) == 64
+    assert ins["overlay"] is None and ins["thresholds"] is None
+    assert ident["threshold_rule"] == T.PREFERRED
+    assert ident["join_version"] is None
+    assert "pricing_version" not in ident
+
+    ov = _tmp_input(tmp_path, "ov.json", {"edges": []})
+    thr = _tmp_input(tmp_path, "thr.json", {"thresholds": {}})
+    import containment
+    ident2 = AD.config_identity(ann, atoms, overlay_path=ov,
+                                thresholds_path=thr)
+    assert ident2["inputs"]["overlay"]["path"] == "ov.json"
+    assert ident2["inputs"]["thresholds"]["path"] == "thr.json"
+    assert ident2["pricing_version"] == containment.PRICING_VERSION
+
+
+def test_generate_writes_header_first_and_stays_deterministic(tmp_path):
+    idx, behs, panel, clauses, ann = _mini_world()
+    header = {"record": "config_identity", "config_tag": "mini",
+              "inputs": {"annotations": None, "behaviour_atoms": None,
+                         "overlay": None, "thresholds": None},
+              "threshold_rule": "otsu", "join_version": None}
+    for sub in ("a", "b"):
+        AD.generate_dossiers(idx, behs, panel, clauses, ann,
+                             str(tmp_path / sub), config_tag="mini",
+                             header=header)
+    ia = open(tmp_path / "a" / "index.jsonl", "rb").read()
+    ib = open(tmp_path / "b" / "index.jsonl", "rb").read()
+    assert ia == ib
+    first = json.loads(ia.decode().splitlines()[0])
+    assert first["record"] == "config_identity"
+
+
+def test_overlay_changes_scores_and_header_identity(tmp_path):
+    """The 2026-08-03 dossier lesson: a plain-index rebuild of an overlay
+    config silently contradicts frozen scores. With --overlay threaded to
+    index construction, the same census inputs produce different
+    max-clause pricing / distance_to_cut, and the header identity differs
+    (overlay sha + pricing_version)."""
+    import containment
+    idx, behs, panel, clauses, ann = _mini_world()
+    over = containment.ContainmentIndex(
+        clauses, {k: list(v) for k, v in ann.items()},
+        edges=[("psychological_manipulation", "human_safety")])
+    out_plain = str(tmp_path / "plain")
+    out_over = str(tmp_path / "over")
+    AD.generate_dossiers(idx, behs, panel, clauses, ann, out_plain,
+                         config_tag="mini")
+    AD.generate_dossiers(over, behs, panel, clauses, ann, out_over,
+                         config_tag="mini")
+
+    def by_pid(out):
+        got = {}
+        for l in open(os.path.join(out, "index.jsonl")):
+            r = json.loads(l)
+            if "dossier_id" not in r:
+                continue
+            d = json.load(open(os.path.join(out, r["file"])))
+            got[d["passage"]["id"]] = d
+        return got
+
+    p, o = by_pid(out_plain), by_pid(out_over)
+    fp = "#sec ¶2"    # maps to c_top, where the subsumption credit lands
+    assert o[fp]["max_clause"]["raw"] > p[fp]["max_clause"]["raw"], \
+        "the overlay's subsumption credit must reprice the max clause"
+    assert o[fp]["discriminators"]["distance_to_cut"] != \
+        p[fp]["discriminators"]["distance_to_cut"]
+
+
+def test_frozen_thresholds_cut_source_recorded_per_behaviour(tmp_path):
+    """--thresholds mirrors snapshot.py: a behaviour named in the artifact
+    takes its cut FROM the artifact (cut_source frozen_artifact); one
+    absent falls back to the rule (rule_fallback); without the flag no
+    cut_source key appears (old shape preserved)."""
+    idx, behs, panel, clauses, ann = _mini_world()
+    out0 = str(tmp_path / "none")
+    AD.generate_dossiers(idx, behs, panel, clauses, ann, out0,
+                         config_tag="mini")
+    d0 = json.load(open(os.path.join(out0, "harm__" +
+                                     AD._sanitize("#sec ¶2") + ".json")))
+    assert "cut_source" not in d0
+
+    out1 = str(tmp_path / "frozen")
+    AD.generate_dossiers(idx, behs, panel, clauses, ann, out1,
+                         config_tag="mini", frozen_cuts={"harm": 0.123456})
+    d1 = json.load(open(os.path.join(out1, "harm__" +
+                                     AD._sanitize("#sec ¶2") + ".json")))
+    assert d1["cut"] == 0.123456
+    assert d1["cut_source"] == "frozen_artifact"
+
+    out2 = str(tmp_path / "fallback")
+    AD.generate_dossiers(idx, behs, panel, clauses, ann, out2,
+                         config_tag="mini", frozen_cuts={"other-beh": 0.5})
+    d2 = json.load(open(os.path.join(out2, "harm__" +
+                                     AD._sanitize("#sec ¶2") + ".json")))
+    assert d2["cut"] == d0["cut"]
+    assert d2["cut_source"] == "rule_fallback"
+
+
+def test_validate_refuses_a_headerless_census_dir(tmp_path):
+    """F2: a census dir whose index.jsonl carries no config-identity header
+    cannot prove WHICH configuration it audited — validate refuses."""
+    dd = _fake_dossier_dir(tmp_path, [_dossier("d1", "FN", adj=_ADJ)],
+                           header=False)
+    rep = AD.validate([_verdict("d1", "fn_names_cannot_meet")], dd)
+    assert rep["ok"] is False
+    assert any("header" in v for v in rep["violations"]), rep["violations"]
+
+
+def test_cli_dossiers_accepts_overlay_and_thresholds_flags(capsys):
+    import sys as _sys
+    old = _sys.argv
+    try:
+        _sys.argv = ["audit_disagreements.py", "dossiers", "--help"]
+        with pytest.raises(SystemExit) as e:
+            AD.main()
+        assert e.value.code == 0
+    finally:
+        _sys.argv = old
+    out = capsys.readouterr().out
+    assert "--overlay" in out and "--thresholds" in out

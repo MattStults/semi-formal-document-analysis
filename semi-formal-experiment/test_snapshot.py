@@ -737,3 +737,90 @@ def test_cli_snapshot_then_diff(fixture_paths, tmp_path, capsys):
     assert "no-op change" in out
     machine = json.load(open(diff_json))
     assert machine["noop"] is True
+
+
+# --------------------------------------------- no-clobber (TOOLING item 2)
+
+def _edit_annotations(fixture_paths):
+    """A real input change: add an atom to c5, shifting the vocabulary."""
+    edited = json.load(open(fixture_paths["annotations"]))
+    edited["clauses"].append({"clause_id": "c5", "atoms": [
+        {"name": "pastry_topic", "kind": "entity", "gloss": "a pastry"}]})
+    with open(fixture_paths["annotations"], "w") as f:
+        json.dump(edited, f)
+
+
+def test_write_snapshot_refuses_clobber_with_different_bytes(fixture_paths,
+                                                             tmp_path):
+    """TOOLING_BATCH item 2: write_snapshot itself must refuse to overwrite
+    snapshots/<tag>.json with DIFFERENT bytes — a bare CLI call could destroy
+    a baseline another cycle's dossiers depend on (only cycle.py's driver
+    refused tag reuse before this). The refusal names the tag and both shas;
+    the existing file survives byte-identical."""
+    outdir = str(tmp_path / "snaps")
+    snapshot.write_snapshot(_build(fixture_paths, tag="frozen"),
+                            out_dir=outdir)
+    frozen_bytes = open(os.path.join(outdir, "frozen.json"), "rb").read()
+    import hashlib
+    old_sha = hashlib.sha256(frozen_bytes).hexdigest()
+
+    _edit_annotations(fixture_paths)
+    changed = _build(fixture_paths, tag="frozen")
+    new_sha = hashlib.sha256(snapshot.snapshot_bytes(changed)).hexdigest()
+    assert new_sha != old_sha, "fixture drifted: the edit must change bytes"
+    with pytest.raises(SystemExit) as e:
+        snapshot.write_snapshot(changed, out_dir=outdir)
+    msg = str(e.value)
+    assert "frozen" in msg
+    assert old_sha in msg and new_sha in msg, \
+        "the refusal must name BOTH shas"
+    assert open(os.path.join(outdir, "frozen.json"), "rb").read() \
+        == frozen_bytes, "the existing snapshot must survive untouched"
+
+
+def test_write_snapshot_identical_rewrite_is_noop_success(fixture_paths,
+                                                          tmp_path):
+    """Identical bytes: silent no-op success — same path returned, same
+    bytes on disk, no refusal."""
+    outdir = str(tmp_path / "snaps")
+    p1 = snapshot.write_snapshot(_build(fixture_paths, tag="same"),
+                                 out_dir=outdir)
+    before = open(p1, "rb").read()
+    p2 = snapshot.write_snapshot(_build(fixture_paths, tag="same"),
+                                 out_dir=outdir)
+    assert p1 == p2
+    assert open(p2, "rb").read() == before
+
+
+def test_write_snapshot_force_overwrites_and_names_both_shas(fixture_paths,
+                                                             tmp_path,
+                                                             capsys):
+    """--force is the only override (never used by the driver): the
+    overwrite happens and BOTH shas are printed to stdout, so a forced
+    clobber is always on the record."""
+    outdir = str(tmp_path / "snaps")
+    common = ["--annotations", fixture_paths["annotations"],
+              "--atoms", fixture_paths["atoms"],
+              "--clauses", fixture_paths["clauses"],
+              "--queries", fixture_paths["queries"],
+              "--dir", outdir]
+    assert snapshot.main(["snapshot", "--tag", "t"] + common) == 0
+    import hashlib
+    old_sha = hashlib.sha256(
+        open(os.path.join(outdir, "t.json"), "rb").read()).hexdigest()
+
+    _edit_annotations(fixture_paths)
+    # without --force the CLI must exit nonzero and leave the file alone
+    with pytest.raises(SystemExit):
+        snapshot.main(["snapshot", "--tag", "t"] + common)
+    assert hashlib.sha256(
+        open(os.path.join(outdir, "t.json"), "rb").read()).hexdigest() \
+        == old_sha
+    capsys.readouterr()
+    assert snapshot.main(["snapshot", "--tag", "t", "--force"] + common) == 0
+    new_sha = hashlib.sha256(
+        open(os.path.join(outdir, "t.json"), "rb").read()).hexdigest()
+    assert new_sha != old_sha, "--force must actually overwrite"
+    out = capsys.readouterr().out
+    assert old_sha in out and new_sha in out, \
+        "a forced overwrite must print both shas"

@@ -1159,10 +1159,53 @@ def provider_config(name, path="providers.json"):
     return by_name[name]
 
 
+def dryrun_out_path(out):
+    """The default output path for a DRY-RUN artifact: <name>.dryrun.json.
+
+    Guard 1 of TOOLING item 4 (the behavior_atoms.json clobber incident):
+    --dry-run is the DEFAULT on both annotators, and a dry-run stub written
+    to the same path a live run uses silently destroys the shipped artifact.
+    Renaming the default protects every path the caller did not think about;
+    the independent non-stub overwrite refusal (`refuse_nonstub_overwrite`)
+    protects the paths they did.
+    """
+    if out.endswith(".dryrun.json"):
+        return out
+    if out.endswith(".json"):
+        return out[:-len(".json")] + ".dryrun.json"
+    return out + ".dryrun.json"
+
+
+def refuse_nonstub_overwrite(out, force=False):
+    """Guard 2 of TOOLING item 4: ANY write (dry or live) refuses to
+    overwrite an existing artifact whose parsed provenance.dry_run is not
+    true — a non-stub artifact — unless `force`. A file that cannot be
+    parsed, or carries no provenance, is treated as non-stub: what cannot be
+    proven to be a stub is not clobbered. Raises SystemExit naming the path.
+    """
+    if force or not os.path.exists(out):
+        return
+    try:
+        with open(out, encoding="utf-8") as f:
+            existing = json.load(f)
+        is_stub = (isinstance(existing, dict)
+                   and (existing.get("provenance") or {}).get("dry_run")
+                   is True)
+    except (OSError, ValueError):
+        is_stub = False
+    if not is_stub:
+        raise SystemExit(
+            f"REFUSING to overwrite {out}: the existing artifact is not a "
+            f"dry-run stub (provenance.dry_run is not true). Overwriting a "
+            f"shipped artifact destroyed behavior_atoms.json once already "
+            f"(TOOLING item 4). Choose another --out, or pass --force to "
+            f"overwrite deliberately.")
+
+
 def run(client, rows, model, batch_size=DEFAULT_BATCH_SIZE, out_dir=".",
         out=None, log_path=None, seed=0, return_path=False,
         max_tokens=DEFAULT_MAX_TOKENS, provider=None, clauses_path=CLAUSES_PATH,
-        rate_cap=True, docfacts_path=DOCFACTS_PATH):
+        rate_cap=True, docfacts_path=DOCFACTS_PATH, force=False):
     """One annotation pass over `rows`, in sequential output batches.
 
     The vocabulary accumulator spans the WHOLE run: an atom coined in the first
@@ -1233,6 +1276,13 @@ def run(client, rows, model, batch_size=DEFAULT_BATCH_SIZE, out_dir=".",
     if out is None:
         safe = re.sub(r"[^A-Za-z0-9_.-]", "_", str(model))
         out = os.path.join(out_dir, f"annotations_{safe}_{run_id}.json")
+    # TOOLING item 4, two INDEPENDENT guards: a dry-run artifact defaults to
+    # <name>.dryrun.json, and no write may overwrite a non-stub artifact
+    # without force. The rename protects defaults; the refusal, explicit
+    # paths — they fail independently, so both exist.
+    if art["provenance"]["dry_run"]:
+        out = dryrun_out_path(out)
+    refuse_nonstub_overwrite(out, force=force)
     try:
         with open(out, "w", encoding="utf-8") as f:
             json.dump(art, f, indent=1, ensure_ascii=False)
@@ -1464,6 +1514,9 @@ def build_parser():
                     help="do NOT hold the output to the shipped encoding "
                          "budget. Recorded in the artifact; a pass run this "
                          "way is not comparable with one that was not.")
+    ap.add_argument("--force", action="store_true",
+                    help="overwrite an existing NON-STUB artifact at the "
+                         "output path (refused by default — TOOLING item 4)")
     return ap
 
 
@@ -1526,6 +1579,7 @@ def main(argv=None):
                     max_tokens=args.max_tokens, clauses_path=args.clauses,
                     rate_cap=not args.no_rate_cap,
                     docfacts_path=args.docfacts,
+                    force=args.force,
                     return_path=True)
     _summarize(art, path)
     return 0
