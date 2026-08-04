@@ -70,6 +70,15 @@ for _optional in ("readback",):
 for _optional in ("snapshot", "dossier", "containment", "grammar"):
     if os.path.exists(os.path.join(HERE, _optional + ".py")):
         QUERY_MODULES.append(_optional)
+# `patient` is a query module OUTRIGHT (cycle 5): its pricing overlay changes
+# what a match is worth, so a leak through it would move scores directly.
+# `validate_query` houses the patients-field anchor check PANEL-BLIND
+# (CYCLE5_REVIEW.md F4 — the design had put it in validate_behaviours.py,
+# which opens the reference); it licenses what patient pricing may read, so
+# it is fenced and scanned forever like every other query module.
+for _optional in ("patient", "validate_query"):
+    if os.path.exists(os.path.join(HERE, _optional + ".py")):
+        QUERY_MODULES.append(_optional)
 
 #: Names that only appear when the answer key is being consulted.
 FORBIDDEN = (
@@ -470,6 +479,41 @@ def test_other_query_modules_also_open_only_declared_artifacts(modname):
                 "driving the overlay with real edges never crossed the "
                 "subsumption branch — the spy is watching dead code")
             driven.append("ContainmentIndex.explain+subsumption")
+        elif modname == "patient":
+            # Drive the pricing overlay WITH declared patients — under the
+            # generic driver query_patients is empty, the discount path runs
+            # zero times, and the spy watches dead code (the containment
+            # lesson, measured). Real b8 names carry no principal chains, so
+            # scores are unchanged — but the pricing branch itself must
+            # execute under the spy.
+            idx = mod.PatientIndex(rows, ann_obj,
+                                   query_patients={slug: {"user"}})
+            assert idx.query_patients, "declared patients were dropped"
+            for meth in ("predict", "rank", "sweep"):
+                fn = getattr(idx, meth, None)
+                if not fn:
+                    continue
+                try:
+                    r = fn(beh)
+                    list(r) if hasattr(r, "__iter__") else r
+                    driven.append(f"PatientIndex.{meth}")
+                except Exception:
+                    pass
+            # PROVE the patient-pricing branch fired under the spy: explain
+            # under the declared set must carry the patient_pricing payload.
+            ex = idx.explain(beh, rows[0]["id"])
+            assert "patient_pricing" in ex, (
+                "driving PatientIndex with declared patients never crossed "
+                "the pricing branch — the spy is watching dead code")
+            driven.append("PatientIndex.explain+patient_pricing")
+        elif modname == "validate_query":
+            # The anchor check reads the query-side behaviour file (declared
+            # in ALLOWED_ARTIFACTS) and nothing else.
+            got = mod.check_patients()
+            assert got, "check_patients returned nothing — vacuous drive"
+            mod.load_query_patients()
+            driven.append("check_patients")
+            driven.append("load_query_patients")
         elif modname == "grammar":
             # grammar exposes parsing functions, not an index — drive the
             # functions the query side actually calls.

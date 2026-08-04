@@ -1,0 +1,42 @@
+{
+ "cycle_name": "patient-pricing-2026-08-04",
+ "date": "2026-08-04",
+ "shape": "code",
+ "census_scope": "dev",
+ "pricing_version": "2.0",
+ "depends_on": [
+  "cycle4-frozen-cut: versioned-cut-2026-08-04 (closed, keep — cycles/CYCLE_LOG.jsonl 2026-08-04)",
+  "S1 decoration-blind join: decoration-blind-join-2026-08-04 (closed, keep — pricing_version 1.2, the 2.0 ⊃ 1.2 lineage per PORTFOLIO_REVIEW F1)",
+  "S2 patient backfill: patient-backfill-2026-08-04 (closed, keep — the 373-chain population this cycle prices; CYCLE_LOG.jsonl 2026-08-04)"
+ ],
+ "fix_description": "PATIENT-AWARE MATCH PRICING v2.0 (spine cycle S3; CYCLE5_DESIGN.md REVISION 2 as amended per PORTFOLIO_REVIEW.md, incl. the worktree-core reconciliation and the F4 per-entry freeze-gate ruling) — recorded principal-chain patients discount mismatched and uniformly-mismatch-attested matches. Per query with non-empty declared patients P: a credited atom match through a clause atom whose recorded chains name only patients outside P pays patient_mismatch_discount (d = 0.10, a DERIVED module constant in patient.py, unsweepable by contract invariant 9 — licensing basis DISCOUNT_DERIVATION.md, the frozen golden-contrast derivation this cycle's designer adopted after the OPEN recomputation broke the pre-registered d-plateau and §1.4/Q6's re-derivation remedy fired; sha-pinned in test_patient.py); a clause whose every length->=2-chained atom is mismatched with P is uniformly mismatch-attested, and under the S3 MECHANISM AMENDMENT (designer ruling per the derivation's §4 recommendation, recorded in MECHANISM_AMENDMENT.md with old->new shas) its surviving atom mass is capped at ONE discounted credit — tainted atom channel = d * max(base credits)/atom_norm, never d * sum (the F-linearity fix: dense uniformly-mismatched clauses must not retain residual mass proportional to match count); per-atom pricing on mixed clauses (taint defeated by one consistent chain — the m0248 guard) is uncapped and pays d per mismatched match, ONCE (never d^2). Patients are read as chain[1:] from length->=2 chains ONLY (agent-first grammar, CYCLE5_REVIEW F1); length-1 chains and chain-free atoms are patient-free; patient-free clauses price bit-identically to today. Declared patients live in behaviours_query.json's per-behaviour `patients` field, licensed ONLY by the behaviour's own name+definition prose via validate_query.py's panel-blind anchor check (F4) under the per-entry definition-freeze gate (F5 + portfolio F4 ruling: PINNED entries byte-frozen modulo `patients`, appends permitted, duplicates refused). MERGE RECONCILIATION, disclosed: the pre-built worktree core (patient.py, validate_query.py, test_patient.py, test_validate_query.py, conftest/_OPTIONAL + test_no_reference_leak registrations) was hand-merged onto main BEFORE this OPEN — the worktree branch predated the S1 join, so patient.py's chain-reading seam was reconciled to read the 1.2 metadata (ContainmentIndex.chains; dechained clause-atom names in all explain records; patients per dechained atom = union over its length->=2 chains) instead of the pre-join name set, its stale constant-rationale docstring corrected to the adjudicated basis (109/109 chain-audit + 264 license-quoted S2 chains), and the pre-1.2 'subsumption path unreachable by per-atom mismatch' claim superseded by the design's operative rule (§1.6 first sentence: the patient factor reads THE CREDITED CLAUSE ATOM's own recorded chain) — both directions test-pinned. Those merged files are therefore FINAL BEFORE OPEN and sit sha-pinned in this cycle's gate/closure set, NOT in files_to_change (the driver requires every files_to_change entry to change post-OPEN); this cycle's own diff is the three `patients` declarations (behaviours_query.json: harm-avoidance-to-third-parties -> [third_party]; helpfulness -> [user, developer]; avoiding-over-and-under-caution -> [] — I6: `patients` is the ONLY permitted delta) plus the snapshot/dossier wiring: snapshot.py routes overlay-seam scoring through patient.PatientIndex with the anchor-validated declarations (validate_query.load_query_patients — the explicit named opt-in), records pricing_version 2.0 and the per-slug declared patients in the snapshot config identity; dossier.py extends reconstruction dispatch (2.0 -> PatientIndex with recorded patients; 1.2 -> ContainmentIndex; <=1.1 pre-join classes; ABSENT pricing_version -> legacy, pinned against the real cycle-4 keep snapshot — F6/I5), gains the normalizer_drift dossier annotation (F3/I2: raw-score-untouched flips whose normalized score crossed the cut are tagged threshold-class, never match_change), and [A2] gains the CYCLE-DECLARED reconstruction license: a baseline input whose drift is a cycle's own frozen-manifest files_to_change diff (state.json open_shas pinning exactly the baseline sha) licenses the sha-verified git/pre_change byte fetch, parallel to the migration-log license — required because this cycle's behaviours_query.json patients addition is a declared query-side diff no atom_refactor migration can log, and without it MEASURE's own dossier step refuses the baseline side; unrecorded drift still refuses (control-armed test).",
+ "document_side_rationale": "The atom channel cannot currently see WHO a clause protects: an unmatched atom contributes 0, never a penalty (DISAGREEMENT_REPORT.md), so a recorded chain naming the WRONG patient prices exactly like a right one. A principal chain is the annotation contract's deliberate authored claim about who the clause concerns, and since the chain audit (chain-repair-2026-08-04: 109/109 instances adjudicated against clause text) and the S2 backfill (264 chains, each with a validator-checked verbatim license_quote and golden review) it is an ADJUDICATED population of 373 instances over 253 patient-bearing clauses. This cycle makes that recorded structure PAY, document-side: mismatch as counter-evidence (the m0276 mechanism), absence of decoration never penalized (option B rejected with counts, CYCLE5_DESIGN §1.3). Provenance disclosed: the census's fp_promiscuous_atom figures (53% class) directed ATTENTION here; the keep decision will cite flip adjudications only, census consultation deferred to the S8 checkpoint, DEV-stamped. The under-18 boundary adjudication is pre-registered as the cycle's central question (§2): a regression verdict there is a real finding against the taint rule and reverting on it is the designed outcome.",
+ "files_to_change": [
+  "behaviours_query.json",
+  "snapshot.py",
+  "dossier.py",
+  "test_snapshot.py",
+  "test_dossier.py",
+  "test_validate_query.py"
+ ],
+ "gate_tests": [
+  "test_patient.py",
+  "test_validate_query.py",
+  "test_no_reference_leak.py",
+  "test_dechain.py",
+  "test_containment.py",
+  "test_threshold.py"
+ ],
+ "review_required": true,
+ "baseline_snapshot_tag": "patient-backfill-2026-08-04",
+ "compatibility": {
+  "version_key": "pricing_version",
+  "statement": "The F9 dispatch ladder (CYCLE5_DESIGN §1.5, amendment F1/F6): snapshot config records pricing_version \"2.0\" plus the per-slug declared patients and the behaviours_query sha it already records. A snapshot with NO pricing_version key reconstructs through the legacy relevance.RelevanceIndex path (absent is a DEFINED dispatch value = legacy, pinned by test against the real versioned-cut-2026-08-04 keep snapshot — never a KeyError, never silently treated as current); <= 1.1 reconstructs through the pre-join containment classes over chain-free artifacts (dechain is the identity there); \"1.2\" through ContainmentIndex without patient pricing (the S2/S1 baselines); \"2.0\" through patient.PatientIndex with the RECORDED declared patients. Old behavior reachable forever: construct without query_patients, or omit the declarations — an empty or absent patients list is bit-identical by the I1 gate. Baseline and measure snapshots must record the identical thresholds artifact sha and threshold_source == frozen_artifact for every behaviour (snapshot.assert_frozen_thresholds on BOTH — the cycle-4 gate, no soft-degrade: if the frozen-cut artifact ever reverts, do not open)."
+ },
+ "config": {
+  "annotations": "annotations_ext_v1_merged.json",
+  "atoms": "behavior_atoms_audit_v1.json",
+  "overlay": "overlay_empty.json",
+  "thresholds": "thresholds_frozen.json"
+ }
+}

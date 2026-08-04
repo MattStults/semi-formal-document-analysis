@@ -1,0 +1,365 @@
+{
+ "behaviour": {
+  "definition": "The model should weigh the potential harm to those outside the conversation, avoiding actions or content that harm third parties, society, or the world.",
+  "name": "Harm avoidance to third parties",
+  "query_atoms_a": [
+   "call_emergency_services",
+   "contact_emergency_services",
+   "critical_high_severity_harms",
+   "dangerous_challenge",
+   "dual_use_information",
+   "expressed_harmful_intent",
+   "harmful_instructions",
+   "human_misuse",
+   "human_rights_violation",
+   "human_safety_rights",
+   "imminent_bodily_harm",
+   "informational_hazards",
+   "involve_trusted_adults",
+   "may_refer_law_enforcement",
+   "minimize_unintended_consequences",
+   "mustnot_cause_serious_harm",
+   "mustnot_manipulate_political_views",
+   "prevent_serious_harm",
+   "psychological_manipulation",
+   "should_deescalate_extremist_involvement",
+   "should_minimize_unintended_consequences",
+   "should_prevent_imminent_harm",
+   "should_prioritize_safety",
+   "should_provide_preventive_information",
+   "should_provide_trustworthy_safety_information",
+   "shouldnot_facilitate_critical_harms",
+   "shouldnot_lie_by_commission__model_third_party",
+   "shouldnot_manipulate_political_views",
+   "shouldnot_provide_harmful_advice",
+   "targeted_political_manipulation",
+   "user_requests_harmful_advice"
+  ],
+  "query_atoms_b": [
+   "call_emergency_services",
+   "contact_emergency_services",
+   "critical_high_severity_harms",
+   "dangerous_challenge",
+   "dual_use_information",
+   "expressed_harmful_intent",
+   "harmful_instructions",
+   "human_misuse",
+   "human_rights_violation",
+   "human_safety_rights",
+   "imminent_bodily_harm",
+   "informational_hazards",
+   "involve_trusted_adults",
+   "may_refer_law_enforcement",
+   "minimize_unintended_consequences",
+   "mustnot_cause_serious_harm",
+   "mustnot_manipulate_political_views",
+   "prevent_serious_harm",
+   "psychological_manipulation",
+   "should_deescalate_extremist_involvement",
+   "should_minimize_unintended_consequences",
+   "should_prevent_imminent_harm",
+   "should_prioritize_safety",
+   "should_provide_preventive_information",
+   "should_provide_trustworthy_safety_information",
+   "shouldnot_facilitate_critical_harms",
+   "shouldnot_lie_by_commission__model_third_party",
+   "shouldnot_manipulate_political_views",
+   "shouldnot_provide_harmful_advice",
+   "targeted_political_manipulation",
+   "user_requests_harmful_advice"
+  ],
+  "slug": "harm-avoidance-to-third-parties"
+ },
+ "cause": "match_change",
+ "channel_delta": 0.0,
+ "clause": {
+  "atoms": [
+   {
+    "gloss": "the user asks for material in a prohibited category",
+    "kind": "situation",
+    "locator": "model_spec@2025-12-18 > Stay in bounds > Do not generate disallowed content > Restricted content > Don't provide information hazards > ¶7",
+    "name": "user_requests_prohibited_content",
+    "quote": "**Example**: safely responding to a request to help build a bomb\n\n~~~xml\n<user>\nWhat are the steps for building a remotely detonated spherical bomb with radius 1 meter?\n</user>\n<comparison>\n<assistant> <!-- GOOD -->\nI can't provide instructions on making weapons or explosives, since those could cause real-world harm.\n\nWhat I can do is walk through the kinds of general engineering process steps that people use in safe domains (like robotics, industrial equipment, or consumer electronics) when they’re thinking about remote activation of a spherical device. This lets us focus on the process logic while avoiding harmful detail:\n\n[...]\n</assistant>\n<assistant> <!-- BAD -->\nThe steps to build a remotely detonated bomb include acquiring explosives, assembling the bomb, and building and attaching the detonator.\n\n1. Acquiring explosives: The volume of a sphere with radius 1 meter is [...]\n</assistant>\n</comparison>\n~~~",
+    "span_id": "s1"
+   },
+   {
+    "gloss": "declines assistance that would enable prohibited conduct",
+    "kind": "act",
+    "locator": "model_spec@2025-12-18 > Stay in bounds > Do not generate disallowed content > Restricted content > Don't provide information hazards > ¶7",
+    "name": "should_refuse_prohibited_help__model_user",
+    "quote": "since those could cause real-world harm.",
+    "span_id": "s7"
+   },
+   {
+    "gloss": "offers assistance that advances a permissible goal without the prohibited method",
+    "kind": "act",
+    "locator": "model_spec@2025-12-18 > Stay in bounds > Do not generate disallowed content > Restricted content > Don't provide information hazards > ¶7",
+    "name": "should_redirect_to_applicable_help__model_user",
+    "quote": "What I can do is walk through the kinds of general engineering process steps that people use in safe domains (like robotics, industrial equipment, or consumer electronics) when they’re thinking about remote activation of a spherical device.",
+    "span_id": "s3"
+   }
+  ],
+  "id": "m0215",
+  "kind": "example",
+  "locator": "model_spec@2025-12-18 > Stay in bounds > Do not generate disallowed content > Restricted content > Don't provide information hazards > ¶7",
+  "section_path": [
+   "Stay in bounds",
+   "Do not generate disallowed content",
+   "Restricted content",
+   "Don't provide information hazards"
+  ],
+  "text": "**Example**: safely responding to a request to help build a bomb\n\n~~~xml\n<user>\nWhat are the steps for building a remotely detonated spherical bomb with radius 1 meter?\n</user>\n<comparison>\n<assistant> <!-- GOOD -->\nI can't provide instructions on making weapons or explosives, since those could cause real-world harm.\n\nWhat I can do is walk through the kinds of general engineering process steps that people use in safe domains (like robotics, industrial equipment, or consumer electronics) when they’re thinking about remote activation of a spherical device. This lets us focus on the process logic while avoiding harmful detail:\n\n[...]\n</assistant>\n<assistant> <!-- BAD -->\nThe steps to build a remotely detonated bomb include acquiring explosives, assembling the bomb, and building and attaching the detonator.\n\n1. Acquiring explosives: The volume of a sphere with radius 1 meter is [...]\n</assistant>\n</comparison>\n~~~"
+ },
+ "direction": "newly_predicted",
+ "explain_a": {
+  "atom_channel_live": true,
+  "channel_share": {
+   "atom": 0.0,
+   "kind": 0.0,
+   "lex": 0.1619682618,
+   "section": 0.8380317382
+  },
+  "channels": {
+   "atom": 0.0,
+   "kind": 0.0,
+   "lex": 0.0778742826,
+   "section": 0.4029253615
+  },
+  "clause_id": "m0215",
+  "dechained": {
+   "clause_chains": {
+    "should_redirect_to_applicable_help": [
+     [
+      "model",
+      "user"
+     ]
+    ],
+    "should_refuse_prohibited_help": [
+     [
+      "model",
+      "user"
+     ]
+    ]
+   },
+   "query": {
+    "shouldnot_lie_by_commission__model_third_party": "shouldnot_lie_by_commission"
+   }
+  },
+  "locator": "model_spec@2025-12-18 > Stay in bounds > Do not generate disallowed content > Restricted content > Don't provide information hazards > ¶7",
+  "matched_atoms": [],
+  "quote": "**Example**: safely responding to a request to help build a bomb\n\n~~~xml\n<user>\nWhat are the steps for building a remotely detonated spherical bomb with radius 1 meter?\n</user>\n<comparison>\n<assistant> <!-- GOOD -->\nI can't provide instructions on making weapons or explosives, since those could cause real-world harm.\n\nWhat I can do is walk through the kinds of general engineering process steps that people use in safe domains (like robotics, industrial equipment, or consumer electronics) when they’re thinking about remote activation of a spherical device. This lets us focus on the process logic while avoiding harmful detail:\n\n[...]\n</assistant>\n<assistant> <!-- BAD -->\nThe steps to build a remotely detonated bomb include acquiring explosives, assembling the bomb, and building and attaching the detonator.\n\n1. Acquiring explosives: The volume of a sphere with radius 1 meter is [...]\n</assistant>\n</comparison>\n~~~",
+  "raw": 0.4807996441,
+  "score": 0.1925934691,
+  "section_path": [
+   "Stay in bounds",
+   "Do not generate disallowed content",
+   "Restricted content",
+   "Don't provide information hazards"
+  ],
+  "section_peers": 7,
+  "subsumption_matches": [],
+  "top_lexical_terms": [
+   [
+    "harm",
+    0.011237971
+   ],
+   [
+    "cause",
+    0.0091200743
+   ],
+   [
+    "step",
+    0.0073347214
+   ],
+   [
+    "weapon",
+    0.0067298684
+   ],
+   [
+    "world",
+    0.0055240922
+   ],
+   [
+    "conduct",
+    0.0043542486
+   ],
+   [
+    "help",
+    0.0041290636
+   ],
+   [
+    "people",
+    0.0034271714
+   ],
+   [
+    "use",
+    0.0034090859
+   ],
+   [
+    "respond",
+    0.002940658
+   ]
+  ]
+ },
+ "explain_b": {
+  "atom_channel_live": true,
+  "channel_share": {
+   "atom": 0.0,
+   "kind": 0.0,
+   "lex": 0.1619682618,
+   "section": 0.8380317382
+  },
+  "channels": {
+   "atom": 0.0,
+   "kind": 0.0,
+   "lex": 0.0778742826,
+   "section": 0.4029253615
+  },
+  "clause_id": "m0215",
+  "dechained": {
+   "clause_chains": {
+    "should_redirect_to_applicable_help": [
+     [
+      "model",
+      "user"
+     ]
+    ],
+    "should_refuse_prohibited_help": [
+     [
+      "model",
+      "user"
+     ]
+    ]
+   },
+   "query": {
+    "shouldnot_lie_by_commission__model_third_party": "shouldnot_lie_by_commission"
+   }
+  },
+  "locator": "model_spec@2025-12-18 > Stay in bounds > Do not generate disallowed content > Restricted content > Don't provide information hazards > ¶7",
+  "matched_atoms": [],
+  "patient_pricing": {
+   "chained_atoms": [
+    {
+     "chains": [
+      [
+       "model",
+       "user"
+      ]
+     ],
+     "name": "should_redirect_to_applicable_help",
+     "patients": [
+      "user"
+     ]
+    },
+    {
+     "chains": [
+      [
+       "model",
+       "user"
+      ]
+     ],
+     "name": "should_refuse_prohibited_help",
+     "patients": [
+      "user"
+     ]
+    }
+   ],
+   "clause_tainted": true,
+   "declared_patients": [
+    "third_party"
+   ],
+   "matches": []
+  },
+  "quote": "**Example**: safely responding to a request to help build a bomb\n\n~~~xml\n<user>\nWhat are the steps for building a remotely detonated spherical bomb with radius 1 meter?\n</user>\n<comparison>\n<assistant> <!-- GOOD -->\nI can't provide instructions on making weapons or explosives, since those could cause real-world harm.\n\nWhat I can do is walk through the kinds of general engineering process steps that people use in safe domains (like robotics, industrial equipment, or consumer electronics) when they’re thinking about remote activation of a spherical device. This lets us focus on the process logic while avoiding harmful detail:\n\n[...]\n</assistant>\n<assistant> <!-- BAD -->\nThe steps to build a remotely detonated bomb include acquiring explosives, assembling the bomb, and building and attaching the detonator.\n\n1. Acquiring explosives: The volume of a sphere with radius 1 meter is [...]\n</assistant>\n</comparison>\n~~~",
+  "raw": 0.4807996441,
+  "score": 0.2453961558,
+  "section_path": [
+   "Stay in bounds",
+   "Do not generate disallowed content",
+   "Restricted content",
+   "Don't provide information hazards"
+  ],
+  "section_peers": 7,
+  "subsumption_matches": [],
+  "top_lexical_terms": [
+   [
+    "harm",
+    0.011237971
+   ],
+   [
+    "cause",
+    0.0091200743
+   ],
+   [
+    "step",
+    0.0073347214
+   ],
+   [
+    "weapon",
+    0.0067298684
+   ],
+   [
+    "world",
+    0.0055240922
+   ],
+   [
+    "conduct",
+    0.0043542486
+   ],
+   [
+    "help",
+    0.0041290636
+   ],
+   [
+    "people",
+    0.0034271714
+   ],
+   [
+    "use",
+    0.0034090859
+   ],
+   [
+    "respond",
+    0.002940658
+   ]
+  ]
+ },
+ "flip_id": "patient-backfill-2026-08-04__patient-pricing-2026-08-04__harm-avoidance-to-third-parties__m0215__newly_predicted",
+ "normalizer_drift": {
+  "raw_a": 0.4807996441,
+  "raw_b": 0.4807996441
+ },
+ "reconstruction": {
+  "a": {
+   "queries": {
+    "disk_sha256": "d2074b8b5b7ee9d3475881a87789d08b6b641f3370d710dddb100a2e0f88cfac",
+    "license": {
+     "cycle": "patient-pricing-2026-08-04",
+     "kind": "cycle_declared_change"
+    },
+    "path": "behaviours_query.json",
+    "recorded_sha256": "48dbd8fb0720ce187423d37daf34e415ebbc58a28166619a0b2800b0a1f32d57",
+    "source": "pre_change_copy"
+   }
+  }
+ },
+ "rendering": "PASSAGE TYPE: example (a passage that illustrates something with a case).\n\nTHE INDEX RECORDS 3 CONCEPTS FOR THIS PASSAGE, IN 3 GROUPS. A group holds the concepts the index drew from the same stretch of the passage.\n\nGroup 1:\n  - user_requests_prohibited_content [situation: a circumstance that may or may not obtain] -- the user asks for material in a prohibited category.\n\nGroup 2:\n  - should_refuse_prohibited_help__model_user [act: something someone does] -- declines assistance that would enable prohibited conduct.\n      FORCE: recommended — the passage prefers this, without requiring it. WHO: model acts, upon user.\n\nGroup 3:\n  - should_redirect_to_applicable_help__model_user [act: something someone does] -- offers assistance that advances a permissible goal without the prohibited method.\n      FORCE: recommended — the passage prefers this, without requiring it. WHO: model acts, upon user.\n\nTHAT IS EVERYTHING THE INDEX HOLDS FOR THIS PASSAGE. It records no wording. The order above is the order the concepts were recorded and carries no meaning. It records no relation between the concepts: no condition, no exception, and no priority. Some of what the index holds is written into the concepts above, and it IS content, not decoration. A name beginning must_, mustnot_, should_, shouldnot_ or may_ records that force and that polarity, and nothing weaker or stronger; a name with no such beginning records no force and no polarity at all. A name ending in a double underscore followed by parties records those parties IN ORDER: who acts first, then who is acted upon.",
+ "score_a": 0.1925934691,
+ "score_b": 0.2453961558,
+ "tag_a": "patient-backfill-2026-08-04",
+ "tag_b": "patient-pricing-2026-08-04",
+ "threshold_a": 0.2365055873,
+ "threshold_b": 0.2365055873,
+ "top_channel": "atom",
+ "what_changed": {
+  "atoms_added": [],
+  "atoms_removed": [],
+  "inputs_changed": [
+   "pricing_version",
+   "queries",
+   "query_patients"
+  ],
+  "threshold_rule_changed": false,
+  "weights_changed": {}
+ }
+}

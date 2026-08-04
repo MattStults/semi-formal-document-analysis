@@ -163,11 +163,31 @@ def build_snapshot(tag: str, *,
     """
     frozen_cuts = (load_frozen_thresholds(thresholds_path)
                    if thresholds_path else None)
+    query_patients = None
     if overlay_path:
         import containment
-        idx = containment.ContainmentIndex.from_files(
-            clauses_path=clauses_path, annotations_path=annotations_path,
-            edges=containment.load_edges(overlay_path))
+        # PATIENT PRICING v2.0 (cycle patient-pricing-2026-08-04) rides the
+        # overlay seam, since 2.0 ⊃ 1.2 (the decoration-blind join lives in
+        # ContainmentIndex). This is the EXPLICIT NAMED OPT-IN patient.py's
+        # contract requires: load_query_patients runs the panel-blind anchor
+        # check (validate_query.py) and RAISES on any unlicensed
+        # declaration, so a declaration can never be consumed silently or
+        # unlicensed. No declarations (or all-empty) -> ContainmentIndex,
+        # bit-identical to before this seam existed (patient.py's I1 gate).
+        import validate_query
+        query_patients = validate_query.load_query_patients(queries_path)
+        if query_patients:
+            import patient
+            idx = patient.PatientIndex.from_files(
+                clauses_path=clauses_path,
+                annotations_path=annotations_path,
+                edges=containment.load_edges(overlay_path),
+                query_patients=query_patients)
+        else:
+            query_patients = None
+            idx = containment.ContainmentIndex.from_files(
+                clauses_path=clauses_path, annotations_path=annotations_path,
+                edges=containment.load_edges(overlay_path))
     else:
         idx = relevance.RelevanceIndex.from_files(
             clauses_path=clauses_path, annotations_path=annotations_path)
@@ -246,8 +266,20 @@ def build_snapshot(tag: str, *,
         # scoring-rule change under identical inputs produces a diff that can
         # name its own cause. Absent when no overlay is — the base scorer's
         # rules are not containment's to version (same pattern as the
-        # overlay key itself).
-        config["pricing_version"] = containment.PRICING_VERSION
+        # overlay key itself). With non-empty validated patient declarations
+        # the scorer was patient.PatientIndex: record ITS version ("2.0")
+        # and the per-slug declared patients — the F9 dispatch ladder
+        # (absent -> legacy; <= 1.1 -> pre-join classes; "1.2" -> join
+        # without patient pricing; "2.0" -> join + patient pricing with
+        # exactly the recorded declarations).
+        if query_patients:
+            import patient
+            config["pricing_version"] = patient.PRICING_VERSION
+            config["query_patients"] = {slug: sorted(pats)
+                                        for slug, pats
+                                        in sorted(query_patients.items())}
+        else:
+            config["pricing_version"] = containment.PRICING_VERSION
     return {
         "tag": tag,
         "config": config,
@@ -407,6 +439,15 @@ def diff_snapshots(a: dict, b: dict) -> dict:
     changed = sorted(k for k in set(ins_a) | set(ins_b)
                      if (ins_a.get(k) or {}).get("sha256")
                      != (ins_b.get(k) or {}).get("sha256"))
+    # SCORING-RULE IDENTITY (cycle-3 escalation (c), made a blocking
+    # precondition by the patient-pricing cycle): a pricing_version or
+    # declared-patients change under identical inputs is THE cause of the
+    # diff and must be surfaced in config.changed, or the diff is
+    # meaningless. Absent keys compare as None (pre-overlay snapshots).
+    for key in ("pricing_version", "query_patients"):
+        if a["config"].get(key) != b["config"].get(key):
+            changed.append(key)
+    changed = sorted(changed)
     weights_changed = {
         k: [a["config"]["weights"].get(k), b["config"]["weights"].get(k)]
         for k in sorted(set(a["config"]["weights"])

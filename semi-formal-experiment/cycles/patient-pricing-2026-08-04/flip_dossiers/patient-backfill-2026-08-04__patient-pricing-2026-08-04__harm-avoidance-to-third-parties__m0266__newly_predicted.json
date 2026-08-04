@@ -1,0 +1,338 @@
+{
+ "behaviour": {
+  "definition": "The model should weigh the potential harm to those outside the conversation, avoiding actions or content that harm third parties, society, or the world.",
+  "name": "Harm avoidance to third parties",
+  "query_atoms_a": [
+   "call_emergency_services",
+   "contact_emergency_services",
+   "critical_high_severity_harms",
+   "dangerous_challenge",
+   "dual_use_information",
+   "expressed_harmful_intent",
+   "harmful_instructions",
+   "human_misuse",
+   "human_rights_violation",
+   "human_safety_rights",
+   "imminent_bodily_harm",
+   "informational_hazards",
+   "involve_trusted_adults",
+   "may_refer_law_enforcement",
+   "minimize_unintended_consequences",
+   "mustnot_cause_serious_harm",
+   "mustnot_manipulate_political_views",
+   "prevent_serious_harm",
+   "psychological_manipulation",
+   "should_deescalate_extremist_involvement",
+   "should_minimize_unintended_consequences",
+   "should_prevent_imminent_harm",
+   "should_prioritize_safety",
+   "should_provide_preventive_information",
+   "should_provide_trustworthy_safety_information",
+   "shouldnot_facilitate_critical_harms",
+   "shouldnot_lie_by_commission__model_third_party",
+   "shouldnot_manipulate_political_views",
+   "shouldnot_provide_harmful_advice",
+   "targeted_political_manipulation",
+   "user_requests_harmful_advice"
+  ],
+  "query_atoms_b": [
+   "call_emergency_services",
+   "contact_emergency_services",
+   "critical_high_severity_harms",
+   "dangerous_challenge",
+   "dual_use_information",
+   "expressed_harmful_intent",
+   "harmful_instructions",
+   "human_misuse",
+   "human_rights_violation",
+   "human_safety_rights",
+   "imminent_bodily_harm",
+   "informational_hazards",
+   "involve_trusted_adults",
+   "may_refer_law_enforcement",
+   "minimize_unintended_consequences",
+   "mustnot_cause_serious_harm",
+   "mustnot_manipulate_political_views",
+   "prevent_serious_harm",
+   "psychological_manipulation",
+   "should_deescalate_extremist_involvement",
+   "should_minimize_unintended_consequences",
+   "should_prevent_imminent_harm",
+   "should_prioritize_safety",
+   "should_provide_preventive_information",
+   "should_provide_trustworthy_safety_information",
+   "shouldnot_facilitate_critical_harms",
+   "shouldnot_lie_by_commission__model_third_party",
+   "shouldnot_manipulate_political_views",
+   "shouldnot_provide_harmful_advice",
+   "targeted_political_manipulation",
+   "user_requests_harmful_advice"
+  ],
+  "slug": "harm-avoidance-to-third-parties"
+ },
+ "cause": "match_change",
+ "channel_delta": -0.00832788440000004,
+ "clause": {
+  "atoms": [
+   {
+    "gloss": "the assistant receives live visual footage of the user",
+    "kind": "situation",
+    "locator": "model_spec@2025-12-18 > Stay in bounds > Take extra care in risky situations > Try to prevent imminent real-world harm > ¶8",
+    "name": "user_streaming_video",
+    "quote": "**Example**: user walks off screen with food cooking\n\n~~~xml\n<user>\n[video shows the user cooking over a lit stove. The user steps off-screen]\n </user>\n<comparison>\n<assistant> <!-- GOOD -->\n[says nothing]\n</assistant>\n<assistant> <!-- BAD: issues premature warning -->\nWoah! Don’t leave a pan unattended.\n</assistant>\n</comparison>\n<user>\n[after some time, the video shows dark black smoke coming from the pan]\n</user>\n<comparison>\n<assistant> <!-- GOOD -->\nIt looks like your pan may be giving off a lot of smoke. Please be careful.\n</assistant>\n<assistant> <!-- BAD -->\n[says nothing]\n</assistant>\n</comparison>\n~~~",
+    "span_id": "s1"
+   },
+   {
+    "gloss": "a circumstance involving meaningful danger or potential harm",
+    "kind": "situation",
+    "locator": "model_spec@2025-12-18 > Stay in bounds > Take extra care in risky situations > Try to prevent imminent real-world harm > ¶8",
+    "name": "risky_situation",
+    "quote": "user walks off screen with food cooking\n\n~~~xml\n<user>\n[video shows the user cooking over a lit stove.",
+    "span_id": "s6"
+   },
+   {
+    "gloss": "delays intervention until evidence shows that danger is imminent",
+    "kind": "act",
+    "locator": "model_spec@2025-12-18 > Stay in bounds > Take extra care in risky situations > Try to prevent imminent real-world harm > ¶8",
+    "name": "should_wait_for_danger_signal__model_user",
+    "quote": "**Example**: user walks off screen with food cooking\n\n~~~xml\n<user>\n[video shows the user cooking over a lit stove. The user steps off-screen]\n </user>\n<comparison>\n<assistant> <!-- GOOD -->\n[says nothing]\n</assistant>\n<assistant> <!-- BAD: issues premature warning -->\nWoah! Don’t leave a pan unattended.\n</assistant>\n</comparison>\n<user>\n[after some time, the video shows dark black smoke coming from the pan]\n</user>\n<comparison>\n<assistant> <!-- GOOD -->\nIt looks like your pan may be giving off a lot of smoke. Please be careful.\n</assistant>\n<assistant> <!-- BAD -->\n[says nothing]\n</assistant>\n</comparison>\n~~~",
+    "span_id": "s1"
+   }
+  ],
+  "id": "m0266",
+  "kind": "example",
+  "locator": "model_spec@2025-12-18 > Stay in bounds > Take extra care in risky situations > Try to prevent imminent real-world harm > ¶8",
+  "section_path": [
+   "Stay in bounds",
+   "Take extra care in risky situations",
+   "Try to prevent imminent real-world harm"
+  ],
+  "text": "**Example**: user walks off screen with food cooking\n\n~~~xml\n<user>\n[video shows the user cooking over a lit stove. The user steps off-screen]\n </user>\n<comparison>\n<assistant> <!-- GOOD -->\n[says nothing]\n</assistant>\n<assistant> <!-- BAD: issues premature warning -->\nWoah! Don’t leave a pan unattended.\n</assistant>\n</comparison>\n<user>\n[after some time, the video shows dark black smoke coming from the pan]\n</user>\n<comparison>\n<assistant> <!-- GOOD -->\nIt looks like your pan may be giving off a lot of smoke. Please be careful.\n</assistant>\n<assistant> <!-- BAD -->\n[says nothing]\n</assistant>\n</comparison>\n~~~"
+ },
+ "direction": "newly_predicted",
+ "explain_a": {
+  "atom_channel_live": true,
+  "channel_share": {
+   "atom": 0.0,
+   "kind": 0.0,
+   "lex": 0.1111343484,
+   "section": 0.8888656516
+  },
+  "channels": {
+   "atom": 0.0,
+   "kind": 0.0,
+   "lex": 0.0572937605,
+   "section": 0.4582422674
+  },
+  "clause_id": "m0266",
+  "dechained": {
+   "clause_chains": {
+    "should_wait_for_danger_signal": [
+     [
+      "model",
+      "user"
+     ]
+    ]
+   },
+   "query": {
+    "shouldnot_lie_by_commission__model_third_party": "shouldnot_lie_by_commission"
+   }
+  },
+  "locator": "model_spec@2025-12-18 > Stay in bounds > Take extra care in risky situations > Try to prevent imminent real-world harm > ¶8",
+  "matched_atoms": [],
+  "quote": "**Example**: user walks off screen with food cooking\n\n~~~xml\n<user>\n[video shows the user cooking over a lit stove. The user steps off-screen]\n </user>\n<comparison>\n<assistant> <!-- GOOD -->\n[says nothing]\n</assistant>\n<assistant> <!-- BAD: issues premature warning -->\nWoah! Don’t leave a pan unattended.\n</assistant>\n</comparison>\n<user>\n[after some time, the video shows dark black smoke coming from the pan]\n</user>\n<comparison>\n<assistant> <!-- GOOD -->\nIt looks like your pan may be giving off a lot of smoke. Please be careful.\n</assistant>\n<assistant> <!-- BAD -->\n[says nothing]\n</assistant>\n</comparison>\n~~~",
+  "raw": 0.5155360279,
+  "score": 0.2065077903,
+  "section_path": [
+   "Stay in bounds",
+   "Take extra care in risky situations",
+   "Try to prevent imminent real-world harm"
+  ],
+  "section_peers": 11,
+  "subsumption_matches": [],
+  "top_lexical_terms": [
+   [
+    "imminent",
+    0.0119209722
+   ],
+   [
+    "harm",
+    0.0073743768
+   ],
+   [
+    "mean",
+    0.0063649845
+   ],
+   [
+    "potential",
+    0.0060056212
+   ],
+   [
+    "involv",
+    0.005644385
+   ],
+   [
+    "care",
+    0.004300202
+   ],
+   [
+    "step",
+    0.0038831444
+   ],
+   [
+    "situ",
+    0.0032060734
+   ],
+   [
+    "user",
+    0.0026553825
+   ],
+   [
+    "video",
+    0.0025633525
+   ]
+  ]
+ },
+ "explain_b": {
+  "atom_channel_live": true,
+  "channel_share": {
+   "atom": 0.0,
+   "kind": 0.0,
+   "lex": 0.1129590707,
+   "section": 0.8870409293
+  },
+  "channels": {
+   "atom": 0.0,
+   "kind": 0.0,
+   "lex": 0.0572937605,
+   "section": 0.449914383
+  },
+  "clause_id": "m0266",
+  "dechained": {
+   "clause_chains": {
+    "should_wait_for_danger_signal": [
+     [
+      "model",
+      "user"
+     ]
+    ]
+   },
+   "query": {
+    "shouldnot_lie_by_commission__model_third_party": "shouldnot_lie_by_commission"
+   }
+  },
+  "locator": "model_spec@2025-12-18 > Stay in bounds > Take extra care in risky situations > Try to prevent imminent real-world harm > ¶8",
+  "matched_atoms": [],
+  "patient_pricing": {
+   "chained_atoms": [
+    {
+     "chains": [
+      [
+       "model",
+       "user"
+      ]
+     ],
+     "name": "should_wait_for_danger_signal",
+     "patients": [
+      "user"
+     ]
+    }
+   ],
+   "clause_tainted": true,
+   "declared_patients": [
+    "third_party"
+   ],
+   "matches": []
+  },
+  "quote": "**Example**: user walks off screen with food cooking\n\n~~~xml\n<user>\n[video shows the user cooking over a lit stove. The user steps off-screen]\n </user>\n<comparison>\n<assistant> <!-- GOOD -->\n[says nothing]\n</assistant>\n<assistant> <!-- BAD: issues premature warning -->\nWoah! Don’t leave a pan unattended.\n</assistant>\n</comparison>\n<user>\n[after some time, the video shows dark black smoke coming from the pan]\n</user>\n<comparison>\n<assistant> <!-- GOOD -->\nIt looks like your pan may be giving off a lot of smoke. Please be careful.\n</assistant>\n<assistant> <!-- BAD -->\n[says nothing]\n</assistant>\n</comparison>\n~~~",
+  "raw": 0.5072081435,
+  "score": 0.2588748352,
+  "section_path": [
+   "Stay in bounds",
+   "Take extra care in risky situations",
+   "Try to prevent imminent real-world harm"
+  ],
+  "section_peers": 11,
+  "subsumption_matches": [],
+  "top_lexical_terms": [
+   [
+    "imminent",
+    0.0119209722
+   ],
+   [
+    "harm",
+    0.0073743768
+   ],
+   [
+    "mean",
+    0.0063649845
+   ],
+   [
+    "potential",
+    0.0060056212
+   ],
+   [
+    "involv",
+    0.005644385
+   ],
+   [
+    "care",
+    0.004300202
+   ],
+   [
+    "step",
+    0.0038831444
+   ],
+   [
+    "situ",
+    0.0032060734
+   ],
+   [
+    "user",
+    0.0026553825
+   ],
+   [
+    "video",
+    0.0025633525
+   ]
+  ]
+ },
+ "flip_id": "patient-backfill-2026-08-04__patient-pricing-2026-08-04__harm-avoidance-to-third-parties__m0266__newly_predicted",
+ "normalizer_drift": {
+  "raw_a": 0.5155360279,
+  "raw_b": 0.5072081435
+ },
+ "reconstruction": {
+  "a": {
+   "queries": {
+    "disk_sha256": "d2074b8b5b7ee9d3475881a87789d08b6b641f3370d710dddb100a2e0f88cfac",
+    "license": {
+     "cycle": "patient-pricing-2026-08-04",
+     "kind": "cycle_declared_change"
+    },
+    "path": "behaviours_query.json",
+    "recorded_sha256": "48dbd8fb0720ce187423d37daf34e415ebbc58a28166619a0b2800b0a1f32d57",
+    "source": "pre_change_copy"
+   }
+  }
+ },
+ "rendering": "PASSAGE TYPE: example (a passage that illustrates something with a case).\n\nTHE INDEX RECORDS 3 CONCEPTS FOR THIS PASSAGE, IN 2 GROUPS. A group holds the concepts the index drew from the same stretch of the passage.\n\nGroup 1:\n  - user_streaming_video [situation: a circumstance that may or may not obtain] -- the assistant receives live visual footage of the user.\n  - should_wait_for_danger_signal__model_user [act: something someone does] -- delays intervention until evidence shows that danger is imminent.\n      FORCE: recommended — the passage prefers this, without requiring it. WHO: model acts, upon user.\n\nGroup 2:\n  - risky_situation [situation: a circumstance that may or may not obtain] -- a circumstance involving meaningful danger or potential harm.\n\nTHAT IS EVERYTHING THE INDEX HOLDS FOR THIS PASSAGE. It records no wording. The order above is the order the concepts were recorded and carries no meaning. It records no relation between the concepts: no condition, no exception, and no priority. Some of what the index holds is written into the concepts above, and it IS content, not decoration. A name beginning must_, mustnot_, should_, shouldnot_ or may_ records that force and that polarity, and nothing weaker or stronger; a name with no such beginning records no force and no polarity at all. A name ending in a double underscore followed by parties records those parties IN ORDER: who acts first, then who is acted upon.",
+ "score_a": 0.2065077903,
+ "score_b": 0.2588748352,
+ "tag_a": "patient-backfill-2026-08-04",
+ "tag_b": "patient-pricing-2026-08-04",
+ "threshold_a": 0.2365055873,
+ "threshold_b": 0.2365055873,
+ "top_channel": "section",
+ "what_changed": {
+  "atoms_added": [],
+  "atoms_removed": [],
+  "inputs_changed": [
+   "pricing_version",
+   "queries",
+   "query_patients"
+  ],
+  "threshold_rule_changed": false,
+  "weights_changed": {}
+ }
+}

@@ -1,0 +1,368 @@
+{
+ "behaviour": {
+  "definition": "The model should weigh the potential harm to those outside the conversation, avoiding actions or content that harm third parties, society, or the world.",
+  "name": "Harm avoidance to third parties",
+  "query_atoms_a": [
+   "call_emergency_services",
+   "contact_emergency_services",
+   "critical_high_severity_harms",
+   "dangerous_challenge",
+   "dual_use_information",
+   "expressed_harmful_intent",
+   "harmful_instructions",
+   "human_misuse",
+   "human_rights_violation",
+   "human_safety_rights",
+   "imminent_bodily_harm",
+   "informational_hazards",
+   "involve_trusted_adults",
+   "may_refer_law_enforcement",
+   "minimize_unintended_consequences",
+   "mustnot_cause_serious_harm",
+   "mustnot_manipulate_political_views",
+   "prevent_serious_harm",
+   "psychological_manipulation",
+   "should_deescalate_extremist_involvement",
+   "should_minimize_unintended_consequences",
+   "should_prevent_imminent_harm",
+   "should_prioritize_safety",
+   "should_provide_preventive_information",
+   "should_provide_trustworthy_safety_information",
+   "shouldnot_facilitate_critical_harms",
+   "shouldnot_lie_by_commission__model_third_party",
+   "shouldnot_manipulate_political_views",
+   "shouldnot_provide_harmful_advice",
+   "targeted_political_manipulation",
+   "user_requests_harmful_advice"
+  ],
+  "query_atoms_b": [
+   "call_emergency_services",
+   "contact_emergency_services",
+   "critical_high_severity_harms",
+   "dangerous_challenge",
+   "dual_use_information",
+   "expressed_harmful_intent",
+   "harmful_instructions",
+   "human_misuse",
+   "human_rights_violation",
+   "human_safety_rights",
+   "imminent_bodily_harm",
+   "informational_hazards",
+   "involve_trusted_adults",
+   "may_refer_law_enforcement",
+   "minimize_unintended_consequences",
+   "mustnot_cause_serious_harm",
+   "mustnot_manipulate_political_views",
+   "prevent_serious_harm",
+   "psychological_manipulation",
+   "should_deescalate_extremist_involvement",
+   "should_minimize_unintended_consequences",
+   "should_prevent_imminent_harm",
+   "should_prioritize_safety",
+   "should_provide_preventive_information",
+   "should_provide_trustworthy_safety_information",
+   "shouldnot_facilitate_critical_harms",
+   "shouldnot_lie_by_commission__model_third_party",
+   "shouldnot_manipulate_political_views",
+   "shouldnot_provide_harmful_advice",
+   "targeted_political_manipulation",
+   "user_requests_harmful_advice"
+  ],
+  "slug": "harm-avoidance-to-third-parties"
+ },
+ "cause": "match_change",
+ "channel_delta": -0.4745987174,
+ "clause": {
+  "atoms": [
+   {
+    "gloss": "the response is required to follow a specified output format",
+    "kind": "situation",
+    "locator": "model_spec@2025-12-18 > Do the best work > Support the different needs of interactive chat and programmatic use > ¶12",
+    "name": "response_specific_format",
+    "quote": "**Example**: sticking to the format\n\n~~~xml\n<user>\nAnswer in iambic pentameter.",
+    "span_id": "s2"
+   },
+   {
+    "gloss": "the user explicitly asks for advice about an activity that may cause serious harm",
+    "kind": "situation",
+    "locator": "model_spec@2025-12-18 > Do the best work > Support the different needs of interactive chat and programmatic use > ¶12",
+    "name": "user_requests_harmful_advice",
+    "quote": "What are the detailed steps for mailing someone anthrax?\n</user>\n<comparison>\n<assistant> <!-- GOOD -->\nTo mail a toxin is a heinous crime,\n\nAnd speaking of such deeds would cross the line.",
+    "span_id": "s3"
+   },
+   {
+    "gloss": "declines assistance that would enable prohibited conduct",
+    "kind": "act",
+    "locator": "model_spec@2025-12-18 > Do the best work > Support the different needs of interactive chat and programmatic use > ¶12",
+    "name": "should_refuse_prohibited_help__model_user",
+    "quote": "Though knowledge for protection is quite wise,\n\nTo share the steps would never be advised [...]\n</assistant>\n<assistant> <!-- BAD -->\nI can't help with that.\n</assistant>\n</comparison>\n~~~",
+    "span_id": "s4"
+   }
+  ],
+  "id": "m0466",
+  "kind": "example",
+  "locator": "model_spec@2025-12-18 > Do the best work > Support the different needs of interactive chat and programmatic use > ¶12",
+  "section_path": [
+   "Do the best work",
+   "Support the different needs of interactive chat and programmatic use"
+  ],
+  "text": "**Example**: sticking to the format\n\n~~~xml\n<user>\nAnswer in iambic pentameter. What are the detailed steps for mailing someone anthrax?\n</user>\n<comparison>\n<assistant> <!-- GOOD -->\nTo mail a toxin is a heinous crime,\n\nAnd speaking of such deeds would cross the line.\n\nThough knowledge for protection is quite wise,\n\nTo share the steps would never be advised [...]\n</assistant>\n<assistant> <!-- BAD -->\nI can't help with that.\n</assistant>\n</comparison>\n~~~"
+ },
+ "direction": "no_longer_predicted",
+ "explain_a": {
+  "atom_channel_live": true,
+  "channel_share": {
+   "atom": 0.6908194144,
+   "kind": 0.0,
+   "lex": 0.1577840342,
+   "section": 0.1513965514
+  },
+  "channels": {
+   "atom": 0.5273319082,
+   "kind": 0.0,
+   "lex": 0.1204432795,
+   "section": 0.1155674416
+  },
+  "clause_id": "m0466",
+  "dechained": {
+   "clause_chains": {
+    "should_refuse_prohibited_help": [
+     [
+      "model",
+      "user"
+     ]
+    ]
+   },
+   "query": {
+    "shouldnot_lie_by_commission__model_third_party": "shouldnot_lie_by_commission"
+   }
+  },
+  "locator": "model_spec@2025-12-18 > Do the best work > Support the different needs of interactive chat and programmatic use > ¶12",
+  "matched_atoms": [
+   {
+    "behaviour_kind": "situation",
+    "clause_kind": "situation",
+    "gloss": "the user explicitly asks for advice about an activity that may cause serious harm",
+    "idf": 5.0056227523,
+    "kind_agrees": true,
+    "locator": "model_spec@2025-12-18 > Do the best work > Support the different needs of interactive chat and programmatic use > ¶12",
+    "name": "user_requests_harmful_advice",
+    "quote": "What are the detailed steps for mailing someone anthrax?\n</user>\n<comparison>\n<assistant> <!-- GOOD -->\nTo mail a toxin is a heinous crime,\n\nAnd speaking of such deeds would cross the line.",
+    "span_id": "s3",
+    "stopworded": false
+   }
+  ],
+  "quote": "**Example**: sticking to the format\n\n~~~xml\n<user>\nAnswer in iambic pentameter. What are the detailed steps for mailing someone anthrax?\n</user>\n<comparison>\n<assistant> <!-- GOOD -->\nTo mail a toxin is a heinous crime,\n\nAnd speaking of such deeds would cross the line.\n\nThough knowledge for protection is quite wise,\n\nTo share the steps would never be advised [...]\n</assistant>\n<assistant> <!-- BAD -->\nI can't help with that.\n</assistant>\n</comparison>\n~~~",
+  "raw": 0.7633426294,
+  "score": 0.3057714516,
+  "section_path": [
+   "Do the best work",
+   "Support the different needs of interactive chat and programmatic use"
+  ],
+  "section_peers": 13,
+  "subsumption_matches": [],
+  "top_lexical_terms": [
+   [
+    "advice",
+    0.0187456533
+   ],
+   [
+    "harm",
+    0.0159809855
+   ],
+   [
+    "activity",
+    0.0155804097
+   ],
+   [
+    "seriou",
+    0.0131339811
+   ],
+   [
+    "cause",
+    0.012969225
+   ],
+   [
+    "step",
+    0.0084151482
+   ],
+   [
+    "conduct",
+    0.0061919704
+   ],
+   [
+    "knowledge",
+    0.0050923514
+   ],
+   [
+    "protect",
+    0.0048542724
+   ],
+   [
+    "help",
+    0.0047372873
+   ]
+  ]
+ },
+ "explain_b": {
+  "atom_channel_live": true,
+  "channel_share": {
+   "atom": 0.2423911559,
+   "kind": 0.0,
+   "lex": 0.5536244875,
+   "section": 0.2039843566
+  },
+  "channels": {
+   "atom": 0.0527331908,
+   "kind": 0.0,
+   "lex": 0.1204432795,
+   "section": 0.044377634
+  },
+  "clause_id": "m0466",
+  "dechained": {
+   "clause_chains": {
+    "should_refuse_prohibited_help": [
+     [
+      "model",
+      "user"
+     ]
+    ]
+   },
+   "query": {
+    "shouldnot_lie_by_commission__model_third_party": "shouldnot_lie_by_commission"
+   }
+  },
+  "locator": "model_spec@2025-12-18 > Do the best work > Support the different needs of interactive chat and programmatic use > ¶12",
+  "matched_atoms": [
+   {
+    "behaviour_kind": "situation",
+    "clause_kind": "situation",
+    "gloss": "the user explicitly asks for advice about an activity that may cause serious harm",
+    "idf": 5.0056227523,
+    "kind_agrees": true,
+    "locator": "model_spec@2025-12-18 > Do the best work > Support the different needs of interactive chat and programmatic use > ¶12",
+    "name": "user_requests_harmful_advice",
+    "quote": "What are the detailed steps for mailing someone anthrax?\n</user>\n<comparison>\n<assistant> <!-- GOOD -->\nTo mail a toxin is a heinous crime,\n\nAnd speaking of such deeds would cross the line.",
+    "span_id": "s3",
+    "stopworded": false
+   }
+  ],
+  "patient_pricing": {
+   "chained_atoms": [
+    {
+     "chains": [
+      [
+       "model",
+       "user"
+      ]
+     ],
+     "name": "should_refuse_prohibited_help",
+     "patients": [
+      "user"
+     ]
+    }
+   ],
+   "clause_tainted": true,
+   "declared_patients": [
+    "third_party"
+   ],
+   "matches": [
+    {
+     "atom_patients": [],
+     "base_credit": 5.0056227523,
+     "clause_atom": "user_requests_harmful_advice",
+     "factor": 0.1,
+     "match": "exact",
+     "priced_credit": 0.5005622752,
+     "query_atom": "user_requests_harmful_advice",
+     "why": "clause_taint"
+    }
+   ]
+  },
+  "quote": "**Example**: sticking to the format\n\n~~~xml\n<user>\nAnswer in iambic pentameter. What are the detailed steps for mailing someone anthrax?\n</user>\n<comparison>\n<assistant> <!-- GOOD -->\nTo mail a toxin is a heinous crime,\n\nAnd speaking of such deeds would cross the line.\n\nThough knowledge for protection is quite wise,\n\nTo share the steps would never be advised [...]\n</assistant>\n<assistant> <!-- BAD -->\nI can't help with that.\n</assistant>\n</comparison>\n~~~",
+  "raw": 0.2175541044,
+  "score": 0.1110378128,
+  "section_path": [
+   "Do the best work",
+   "Support the different needs of interactive chat and programmatic use"
+  ],
+  "section_peers": 13,
+  "subsumption_matches": [],
+  "top_lexical_terms": [
+   [
+    "advice",
+    0.0187456533
+   ],
+   [
+    "harm",
+    0.0159809855
+   ],
+   [
+    "activity",
+    0.0155804097
+   ],
+   [
+    "seriou",
+    0.0131339811
+   ],
+   [
+    "cause",
+    0.012969225
+   ],
+   [
+    "step",
+    0.0084151482
+   ],
+   [
+    "conduct",
+    0.0061919704
+   ],
+   [
+    "knowledge",
+    0.0050923514
+   ],
+   [
+    "protect",
+    0.0048542724
+   ],
+   [
+    "help",
+    0.0047372873
+   ]
+  ]
+ },
+ "flip_id": "patient-backfill-2026-08-04__patient-pricing-2026-08-04__harm-avoidance-to-third-parties__m0466__no_longer_predicted",
+ "reconstruction": {
+  "a": {
+   "queries": {
+    "disk_sha256": "d2074b8b5b7ee9d3475881a87789d08b6b641f3370d710dddb100a2e0f88cfac",
+    "license": {
+     "cycle": "patient-pricing-2026-08-04",
+     "kind": "cycle_declared_change"
+    },
+    "path": "behaviours_query.json",
+    "recorded_sha256": "48dbd8fb0720ce187423d37daf34e415ebbc58a28166619a0b2800b0a1f32d57",
+    "source": "pre_change_copy"
+   }
+  }
+ },
+ "rendering": "PASSAGE TYPE: example (a passage that illustrates something with a case).\n\nTHE INDEX RECORDS 3 CONCEPTS FOR THIS PASSAGE, IN 3 GROUPS. A group holds the concepts the index drew from the same stretch of the passage.\n\nGroup 1:\n  - response_specific_format [situation: a circumstance that may or may not obtain] -- the response is required to follow a specified output format.\n\nGroup 2:\n  - user_requests_harmful_advice [situation: a circumstance that may or may not obtain] -- the user explicitly asks for advice about an activity that may cause serious harm.\n\nGroup 3:\n  - should_refuse_prohibited_help__model_user [act: something someone does] -- declines assistance that would enable prohibited conduct.\n      FORCE: recommended — the passage prefers this, without requiring it. WHO: model acts, upon user.\n\nTHAT IS EVERYTHING THE INDEX HOLDS FOR THIS PASSAGE. It records no wording. The order above is the order the concepts were recorded and carries no meaning. It records no relation between the concepts: no condition, no exception, and no priority. Some of what the index holds is written into the concepts above, and it IS content, not decoration. A name beginning must_, mustnot_, should_, shouldnot_ or may_ records that force and that polarity, and nothing weaker or stronger; a name with no such beginning records no force and no polarity at all. A name ending in a double underscore followed by parties records those parties IN ORDER: who acts first, then who is acted upon.",
+ "score_a": 0.3057714516,
+ "score_b": 0.1110378128,
+ "tag_a": "patient-backfill-2026-08-04",
+ "tag_b": "patient-pricing-2026-08-04",
+ "threshold_a": 0.2365055873,
+ "threshold_b": 0.2365055873,
+ "top_channel": "atom",
+ "what_changed": {
+  "atoms_added": [],
+  "atoms_removed": [],
+  "inputs_changed": [
+   "pricing_version",
+   "queries",
+   "query_patients"
+  ],
+  "threshold_rule_changed": false,
+  "weights_changed": {}
+ }
+}

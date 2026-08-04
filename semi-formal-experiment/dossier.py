@@ -171,32 +171,75 @@ def _prechange_bytes_matching(inputs_dir: str, rel: str,
     return None
 
 
+def _cycle_declared_license(inputs_dir: str, rel: str,
+                            recorded_sha: str) -> str | None:
+    """The SECOND reconstruction license (patient-pricing cycle, S3): the
+    name of a cycle whose manifest declares `rel` in files_to_change and
+    whose state.json open_shas records EXACTLY `recorded_sha` as the
+    file's pre-change baseline — i.e. the drift is a cycle's own declared,
+    frozen-manifest diff. Query-side declared changes (the S3 `patients`
+    field) are not atom_refactor operations, so the migration log can
+    never license them; the cycle record is the equally-recorded
+    provenance. None when no cycle recorded this exact (file, sha) pair —
+    an UNRECORDED drift stays unreconstructable (never launder
+    corruption)."""
+    root = os.path.join(inputs_dir, "cycles")
+    if not os.path.isdir(root):
+        return None
+    for name in sorted(os.listdir(root)):
+        cdir = os.path.join(root, name)
+        mpath = os.path.join(cdir, "manifest.json")
+        spath = os.path.join(cdir, "state.json")
+        if not (os.path.isfile(mpath) and os.path.isfile(spath)):
+            continue
+        try:
+            with open(mpath) as f:
+                manifest = json.load(f)
+            with open(spath) as f:
+                state = json.load(f)
+        except (OSError, ValueError):
+            continue
+        if rel in (manifest.get("files_to_change") or []) \
+                and (state.get("open_shas") or {}).get(rel) == recorded_sha:
+            return name
+    return None
+
+
 def _reconstruct_input(tag: str, key: str, rel: str, recorded_sha: str,
                        disk_sha: str, inputs_dir: str) -> tuple[str, dict]:
     """A sha-mismatched input, rebuilt from a RECORDED pre-change copy —
     or a hard StaleConfigError (TOOLING item 3).
 
-    Licensed only when the mismatch is a LOGGED migration: the recorded sha
-    must chain to the disk sha through vocabulary_migrations.json with no
-    gaps. The bytes come from git history first, a cycle pre_change/ copy
-    second, are sha-verified against the recorded sha before use, and load
-    from a temp path (the drifted file on disk is never touched). Returns
-    (temp_path, provenance_record). REVERSE REPLAY IS REJECTED by design:
-    merge/fold migrations are lossy (the m0271 fold), so the migration log
-    licenses the fetch — it is never itself the byte source.
+    Licensed only when the mismatch is RECORDED provenance, one of two
+    kinds: a LOGGED migration (the recorded sha chains to the disk sha
+    through vocabulary_migrations.json with no gaps), or a CYCLE-DECLARED
+    change (a cycle's frozen manifest names the file in files_to_change and
+    its state.json open_shas pins exactly the recorded sha — the S3
+    extension, since query-side declared diffs are not atom_refactor ops).
+    Either way the bytes come from git history first, a cycle pre_change/
+    copy second, are sha-verified against the recorded sha before use, and
+    load from a temp path (the drifted file on disk is never touched).
+    Returns (temp_path, provenance_record). REVERSE REPLAY IS REJECTED by
+    design: merge/fold migrations are lossy (the m0271 fold), so the
+    license is never itself the byte source.
     """
     log_path = os.path.join(inputs_dir, MIGRATION_LOG_NAME)
     span = None
     if os.path.exists(log_path):
         with open(log_path) as f:
             span = _migration_span(json.load(f), rel, recorded_sha, disk_sha)
+    declaring_cycle = None
     if span is None:
+        declaring_cycle = _cycle_declared_license(inputs_dir, rel,
+                                                  recorded_sha)
+    if span is None and declaring_cycle is None:
         raise StaleConfigError(
             f"snapshot {tag!r} recorded {key} = {rel!r} with sha256 "
             f"{recorded_sha[:12]}… but the file on disk hashes to "
             f"{disk_sha[:12]}… — the input CHANGED since the snapshot was "
             f"taken, and {MIGRATION_LOG_NAME} holds no gap-free chain "
-            f"linking the two shas, so this is NOT a logged migration. "
+            f"linking the two shas, and no cycle's manifest+state declares "
+            f"this file at this baseline sha, so the drift is UNRECORDED. "
             f"Refusing to dossier against the wrong artifacts; re-snapshot "
             f"or restore the file.")
     blob, source = _git_bytes_matching(inputs_dir, rel, recorded_sha), \
@@ -205,10 +248,13 @@ def _reconstruct_input(tag: str, key: str, rel: str, recorded_sha: str,
         blob, source = _prechange_bytes_matching(
             inputs_dir, rel, recorded_sha), "pre_change_copy"
     if blob is None:
+        kind = (f"a LOGGED migration ({len(span)} "
+                f"entr{'y' if len(span) == 1 else 'ies'} chain)"
+                if span is not None else
+                f"cycle {declaring_cycle!r}'s declared diff")
         raise StaleConfigError(
-            f"snapshot {tag!r}: {key} = {rel!r} drifted via a LOGGED "
-            f"migration ({len(span)} entr{'y' if len(span) == 1 else 'ies'} "
-            f"chain {recorded_sha[:12]}… -> {disk_sha[:12]}…), but the "
+            f"snapshot {tag!r}: {key} = {rel!r} drifted via {kind} "
+            f"({recorded_sha[:12]}… -> {disk_sha[:12]}…), but the "
             f"reconstruction source is unavailable: no commit in git "
             f"history holds bytes with the recorded sha, and no pre_change "
             f"copy in any cycle directory does either. Restore one of the "
@@ -223,10 +269,14 @@ def _reconstruct_input(tag: str, key: str, rel: str, recorded_sha: str,
         "recorded_sha256": recorded_sha,
         "disk_sha256": disk_sha,
         "source": source,
-        "migrations_spanned": [{k: e.get(k, "") for k in
-                                ("op", "old", "new", "date")}
-                               for e in span],
     }
+    if span is not None:
+        record["migrations_spanned"] = [{k: e.get(k, "") for k in
+                                         ("op", "old", "new", "date")}
+                                        for e in span]
+    else:
+        record["license"] = {"kind": "cycle_declared_change",
+                             "cycle": declaring_cycle}
     return tp, record
 
 
@@ -264,6 +314,59 @@ def _resolve_inputs(snap: dict, inputs_dir: str) -> tuple[dict, dict]:
     return out, recon
 
 
+def _index_for(snap: dict, paths: dict):
+    """THE F9 DISPATCH LADDER (CYCLE5_DESIGN §1.5 as amended; F6): rebuild
+    the scorer EXACTLY as the snapshot's recorded config identifies it.
+
+      * config carries pricing_version "2.0" -> patient.PatientIndex with
+        the RECORDED per-slug declared patients (config["query_patients"] —
+        never re-read from the live query file: reconstruction reproduces
+        what scored, not what is declared today);
+      * an overlay is recorded without "2.0" -> ContainmentIndex (which IS
+        the "1.2" class; <= 1.1 snapshots were built over chain-free
+        artifacts on which dechaining is the identity, so they reproduce
+        bit-exact through it);
+      * NO overlay and NO pricing_version key -> the legacy
+        relevance.RelevanceIndex path. ABSENT IS A DEFINED DISPATCH VALUE
+        (= legacy, the entire pre-overlay keep lineage incl. the cycle-4
+        versioned-cut snapshot) — never a KeyError, never silently treated
+        as current. Pinned by test_dossier.py.
+    """
+    version = (snap.get("config") or {}).get("pricing_version")
+    if version == "2.0":
+        import patient
+        qp = {slug: frozenset(pats) for slug, pats in
+              ((snap["config"].get("query_patients") or {}).items())}
+        return patient.PatientIndex.from_files(
+            clauses_path=paths["clauses"],
+            annotations_path=paths["annotations"],
+            edges=containment.load_edges(paths["overlay"])
+            if "overlay" in paths else (),
+            query_patients=qp)
+    if "overlay" in paths:
+        return containment.ContainmentIndex.from_files(
+            clauses_path=paths["clauses"],
+            annotations_path=paths["annotations"],
+            edges=containment.load_edges(paths["overlay"]))
+    return relevance.RelevanceIndex.from_files(
+        clauses_path=paths["clauses"],
+        annotations_path=paths["annotations"])
+
+
+def _normalizer_drift(direction: str, raw_a, raw_b) -> bool:
+    """The amended-I2 drift rule (CYCLE5_DESIGN §3 I2, F3): a flip whose RAW
+    score did not move in the flip's own direction crossed the cut on the
+    NORMALIZED surface only — the corpus-max normalizer (itself a score)
+    moved under it. Such a flip is a threshold-class question, never a
+    match_change: newly_predicted with raw_b <= raw_a, or
+    no_longer_predicted with raw_b >= raw_a."""
+    if raw_a is None or raw_b is None:
+        return False
+    if direction == "newly_predicted":
+        return raw_b <= raw_a
+    return raw_b >= raw_a
+
+
 def _side(snap: dict, inputs_dir: str) -> dict:
     """One snapshot's configuration, rebuilt exactly: the scorer index, the
     behaviours with that side's query atoms, the clause rows, and the clause
@@ -276,15 +379,7 @@ def _side(snap: dict, inputs_dir: str) -> dict:
     silently contradicted the frozen scores (2026-08-03 review)."""
     paths, recon = _resolve_inputs(snap, inputs_dir)
     rows = readback.load_clauses(paths["clauses"])
-    if "overlay" in paths:
-        index = containment.ContainmentIndex.from_files(
-            clauses_path=paths["clauses"],
-            annotations_path=paths["annotations"],
-            edges=containment.load_edges(paths["overlay"]))
-    else:
-        index = relevance.RelevanceIndex.from_files(
-            clauses_path=paths["clauses"],
-            annotations_path=paths["annotations"])
+    index = _index_for(snap, paths)
     return {
         "paths": paths,
         "reconstruction": recon,
@@ -395,6 +490,16 @@ def _one_dossier(flip: dict, *, direction: str, slug: str,
         "cause": flip["cause"],
         "what_changed": what_changed,
     }
+    raw_a = ((snap_a["behaviours"].get(slug) or {}).get("raw") or {}).get(cid)
+    raw_b = ((snap_b["behaviours"].get(slug) or {}).get("raw") or {}).get(cid)
+    if _normalizer_drift(direction, raw_a, raw_b):
+        # the amended-I2 annotation (patient-pricing cycle; S1 m0207
+        # precedent): the flip's raw score did not move in the flip's own
+        # direction — the normalized crossing is the corpus-max normalizer
+        # moving under it. Adjudicated as a threshold-class question, never
+        # match_change. Key ABSENT on ordinary flips, keeping pre-existing
+        # dossier bytes stable.
+        out["normalizer_drift"] = {"raw_a": raw_a, "raw_b": raw_b}
     if reconstruction:
         # present ONLY when a side was rebuilt from a recorded pre-change
         # copy (TOOLING item 3) — absent otherwise, so dossiers built over

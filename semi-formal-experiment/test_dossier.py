@@ -700,3 +700,138 @@ def test_missing_sources_error_names_both(env):
         _build(env)
     msg = str(e.value)
     assert "git history" in msg and "pre_change" in msg, msg
+
+
+# ---------------- F9 dispatch ladder + normalizer_drift (S3 patient cycle)
+
+def _empty_overlay_file(tmp_path):
+    p = str(tmp_path / "overlay_empty_t.json")
+    with open(p, "w") as f:
+        json.dump({"artifact": "containment", "version": "v0",
+                   "budget": {"max_edges": 0, "max_families": 0},
+                   "edges": [], "provenance": {"origin": "test"}}, f)
+    return p
+
+
+def test_index_dispatch_ladder_absent_12_and_20(env, tmp_path):
+    """THE F9 LADDER (F6: absent is a DEFINED dispatch value = legacy):
+    _index_for routes a config with pricing_version '2.0' through
+    patient.PatientIndex carrying exactly the RECORDED declared patients;
+    an overlay without '2.0' through ContainmentIndex; and neither through
+    the legacy relevance.RelevanceIndex — never a KeyError."""
+    import relevance
+    containment = pytest.importorskip("containment")
+    patient = pytest.importorskip("patient")
+    paths = {"clauses": env["clauses"], "annotations": env["ann"]}
+    # absent => legacy, exactly
+    legacy = dossier._index_for({"config": {}}, paths)
+    assert type(legacy) is relevance.RelevanceIndex
+    # overlay without a version => the 1.2 containment class
+    ov = _empty_overlay_file(tmp_path)
+    p2 = dict(paths, overlay=ov)
+    mid = dossier._index_for({"config": {"pricing_version": "1.2"}}, p2)
+    assert type(mid) is containment.ContainmentIndex
+    # 2.0 => PatientIndex with the RECORDED patients (not the live file's)
+    snap = {"config": {"pricing_version": "2.0",
+                       "query_patients": {"beh-help": ["user"]}}}
+    top = dossier._index_for(snap, p2)
+    assert type(top) is patient.PatientIndex
+    assert top.query_patients == {"beh-help": frozenset({"user"})}
+
+
+def test_real_cycle4_keep_snapshot_has_no_pricing_version_key():
+    """The F6 pin against the REAL cycle-4 keep snapshot: it predates the
+    overlay versioning and carries NO pricing_version key — 'absent' must
+    stay a defined legacy dispatch value forever, so this fact is pinned
+    where the dispatch test above can be read next to it."""
+    real = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                        "snapshots", "versioned-cut-2026-08-04.json")
+    if not os.path.exists(real):
+        pytest.skip("real cycle-4 snapshot not present")
+    snap = snapshot.load_snapshot(real)
+    assert "pricing_version" not in snap["config"]
+    assert snap["config"]["inputs"]["overlay"] is None
+
+
+def test_cycle_declared_change_licenses_reconstruction(env):
+    """THE SECOND RECONSTRUCTION LICENSE (S3): a baseline input that drifted
+    because a CYCLE's declared diff changed it — the manifest names the file
+    in files_to_change and the cycle's state.json open_shas records exactly
+    the baseline's sha — is a licensed, recorded provenance, parallel to the
+    migration-log license (which only atom_refactor rename/rechain ops can
+    produce; a field addition like the S3 patients declarations never can).
+    The bytes still come only from git history / a pre_change copy, sha-
+    verified; the license never launders an UNRECORDED drift (control arm:
+    without the cycle record the build still refuses)."""
+    import hashlib
+    q = env["queries"]
+    with open(q, "rb") as f:
+        old_bytes = f.read()
+    old_sha = hashlib.sha256(old_bytes).hexdigest()
+    # the declared change lands AFTER both snapshots were built
+    doc = json.loads(old_bytes)
+    doc["behaviours"][0]["patients"] = ["user"]
+    with open(q, "w") as f:
+        json.dump(doc, f)
+    # control: an undeclared drift refuses exactly as before
+    with pytest.raises(dossier.StaleConfigError):
+        _build(env)
+    # the cycle record: manifest declares the file, open_shas pins the
+    # baseline sha, pre_change/ holds the recorded bytes (no git repo here)
+    cdir = env["tmp"] / "cycles" / "test-cycle"
+    os.makedirs(cdir / "pre_change", exist_ok=True)
+    _write(cdir / "manifest.json",
+           {"cycle_name": "test-cycle",
+            "files_to_change": ["queries.json"]})
+    with open(cdir / "pre_change" / "queries.json", "wb") as f:
+        f.write(old_bytes)
+    # second control: the DECLARATION ALONE does not license — the cycle's
+    # open_shas must pin EXACTLY the baseline sha (a sha-blind license
+    # would let any cycle that ever declared the file launder any drift)
+    _write(cdir / "state.json",
+           {"open_shas": {"queries.json": "0" * 64}})
+    with pytest.raises(dossier.StaleConfigError):
+        _build(env)
+    _write(cdir / "state.json", {"open_shas": {"queries.json": old_sha}})
+    ds = _build(env)
+    assert ds, "no dossiers built"
+    recs = [d.get("reconstruction") for d in ds if d.get("reconstruction")]
+    assert recs, "reconstruction provenance missing from the dossiers"
+    for rec in recs:
+        # both sides recorded the pre-change queries sha, so both carry it
+        for side in rec.values():
+            r = side.get("queries") or {}
+            assert r.get("source") == "pre_change_copy"
+            lic = r.get("license") or {}
+            assert lic.get("kind") == "cycle_declared_change"
+            assert lic.get("cycle") == "test-cycle"
+
+
+def test_normalizer_drift_rule_truth_table():
+    """The amended-I2 rule (CYCLE5_DESIGN §3 I2/F3): a flip whose RAW score
+    did not move in the flip's own direction crossed the cut on the
+    NORMALIZED surface only — threshold-class, never match_change."""
+    assert dossier._normalizer_drift("newly_predicted", 1.0, 1.0)
+    assert dossier._normalizer_drift("newly_predicted", 1.0, 0.9)
+    assert not dossier._normalizer_drift("newly_predicted", 1.0, 1.1)
+    assert dossier._normalizer_drift("no_longer_predicted", 1.0, 1.0)
+    assert dossier._normalizer_drift("no_longer_predicted", 1.0, 1.1)
+    assert not dossier._normalizer_drift("no_longer_predicted", 1.0, 0.9)
+    assert not dossier._normalizer_drift("newly_predicted", None, 1.0)
+
+
+def test_normalizer_drift_annotation_lands_in_the_dossier(env, monkeypatch):
+    """The dossier wiring is load-bearing: when the rule fires, the dossier
+    carries {normalizer_drift: {raw_a, raw_b}} with the SNAPSHOTS' recorded
+    raw values; when it does not fire, the key is ABSENT (pre-existing
+    dossier bytes stay stable). Both directions pinned via a forced rule."""
+    ds = _build(env)
+    assert all("normalizer_drift" not in d for d in ds), (
+        "fixture flips are genuine query-side match changes — the "
+        "annotation must not fire on them")
+    monkeypatch.setattr(dossier, "_normalizer_drift",
+                        lambda direction, ra, rb: True)
+    forced = _build(env)
+    for d in forced:
+        nd = d.get("normalizer_drift")
+        assert nd is not None and set(nd) == {"raw_a", "raw_b"}

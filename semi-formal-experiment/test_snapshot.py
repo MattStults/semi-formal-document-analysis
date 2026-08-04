@@ -824,3 +824,106 @@ def test_write_snapshot_force_overwrites_and_names_both_shas(fixture_paths,
     out = capsys.readouterr().out
     assert old_sha in out and new_sha in out, \
         "a forced overwrite must print both shas"
+
+
+# ------------------- patient pricing v2.0 wiring (patient-pricing cycle, S3)
+
+def _queries_with_patients(tmp_path, patients, name="queries_p.json"):
+    """The synthetic query file with a `patients` declaration on beh-help.
+    Its definition says 'the model helps the user accomplish tasks', so
+    ['user'] is anchor-licensed and ['third_party'] is not."""
+    return _write(tmp_path / name, {"behaviours": [
+        {"slug": "beh-help", "name": "Helpfulness",
+         "definition": "the model helps the user accomplish tasks",
+         "patients": patients},
+    ]})
+
+
+def test_patient_declarations_route_scoring_and_config_identity(
+        fixture_paths, tmp_path):
+    """The v2.0 seam (F9 ladder): overlay + non-empty validated patient
+    declarations => the scorer is patient.PatientIndex and the config
+    identity records pricing_version '2.0' plus the per-slug declared
+    patients. Without the overlay the seam is closed (2.0 requires the 1.2
+    join under it): no pricing_version key, no query_patients key."""
+    patient = pytest.importorskip("patient")
+    ov = _overlay_file(tmp_path)
+    q = _queries_with_patients(tmp_path, ["user"])
+    snap = snapshot.build_snapshot(
+        "with-patients",
+        annotations_path=fixture_paths["annotations"],
+        atoms_path=fixture_paths["atoms"],
+        clauses_path=fixture_paths["clauses"],
+        queries_path=q, overlay_path=ov)
+    assert snap["config"]["pricing_version"] == patient.PRICING_VERSION
+    assert snap["config"]["pricing_version"] == "2.0"
+    assert snap["config"]["query_patients"] == {"beh-help": ["user"]}
+
+    plain = snapshot.build_snapshot(
+        "patients-no-overlay",
+        annotations_path=fixture_paths["annotations"],
+        atoms_path=fixture_paths["atoms"],
+        clauses_path=fixture_paths["clauses"],
+        queries_path=q)
+    assert "pricing_version" not in plain["config"]
+    assert "query_patients" not in plain["config"]
+
+
+def test_unlicensed_patient_declaration_refuses_snapshot_build(
+        fixture_paths, tmp_path):
+    """The anchor check runs INSIDE the build (validate_query is the named
+    opt-in loader): an unlicensed declaration must refuse the snapshot
+    loudly, naming the behaviour — never build with it silently dropped."""
+    pytest.importorskip("patient")
+    ov = _overlay_file(tmp_path)
+    q = _queries_with_patients(tmp_path, ["third_party"])
+    with pytest.raises(ValueError, match="beh-help"):
+        snapshot.build_snapshot(
+            "unlicensed",
+            annotations_path=fixture_paths["annotations"],
+            atoms_path=fixture_paths["atoms"],
+            clauses_path=fixture_paths["clauses"],
+            queries_path=q, overlay_path=ov)
+
+
+def test_empty_patient_declarations_stay_pricing_1_2(fixture_paths, tmp_path):
+    """patients [] disables pricing (patient.py I1): the build routes
+    through ContainmentIndex, records containment.PRICING_VERSION, records
+    NO query_patients key, and every behaviour section is identical to the
+    no-declaration build under the same overlay."""
+    containment = pytest.importorskip("containment")
+    pytest.importorskip("patient")
+    ov = _overlay_file(tmp_path)
+    q = _queries_with_patients(tmp_path, [])
+    snap = snapshot.build_snapshot(
+        "empty-patients",
+        annotations_path=fixture_paths["annotations"],
+        atoms_path=fixture_paths["atoms"],
+        clauses_path=fixture_paths["clauses"],
+        queries_path=q, overlay_path=ov)
+    assert snap["config"]["pricing_version"] == containment.PRICING_VERSION
+    assert "query_patients" not in snap["config"]
+    bare = snapshot.build_snapshot(
+        "no-declarations",
+        annotations_path=fixture_paths["annotations"],
+        atoms_path=fixture_paths["atoms"],
+        clauses_path=fixture_paths["clauses"],
+        queries_path=fixture_paths["queries"], overlay_path=ov)
+    assert snap["behaviours"] == bare["behaviours"]
+
+
+def test_diff_surfaces_pricing_version_and_query_patients_change():
+    """THE BLOCKING PRECONDITION (CYCLE5_DESIGN §3 I5; standing cycle-3
+    escalation (c)): a pricing_version or declared-patients change under
+    identical inputs is THE cause of the diff and must appear in
+    config.changed — and such a diff is never a no-op."""
+    a = _hand_snapshot("a", ["c1"], {"c1": 0.5}, 0.2,
+                       {"c1": {"lex": 0.1, "atom": 0.4}})
+    b = _hand_snapshot("b", ["c1"], {"c1": 0.5}, 0.2,
+                       {"c1": {"lex": 0.1, "atom": 0.4}})
+    b["config"]["pricing_version"] = "2.0"
+    b["config"]["query_patients"] = {"beh-x": ["third_party"]}
+    d = snapshot.diff_snapshots(a, b)
+    assert "pricing_version" in d["config"]["changed"]
+    assert "query_patients" in d["config"]["changed"]
+    assert d["noop"] is False

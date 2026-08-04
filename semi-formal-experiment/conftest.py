@@ -36,6 +36,8 @@ _OPTIONAL = {
     "test_cycle.py": "cycle",
     "test_drift_dossiers.py": "drift_dossiers",
     "test_backfill_worksheet.py": "backfill_worksheet",
+    "test_patient.py": "patient",
+    "test_validate_query.py": "validate_query",
 }
 
 collect_ignore = [
