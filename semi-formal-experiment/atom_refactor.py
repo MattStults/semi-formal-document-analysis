@@ -15,6 +15,21 @@ next join. This is the "find references / rename symbol" of this codebase:
                      default; `--apply` writes and appends one entry to
                      `vocabulary_migrations.json` (op, old, new, caller-
                      supplied date, reason, per-artifact sha before/after).
+  rechain            the dual of rename: an EXACT decorated-name rewrite in
+                     which the stem and the polarity must be identical and
+                     only the principal chain moves. Whole-artifact by
+                     default (then the target name must not exist anywhere);
+                     `--clause <id>` (repeatable) scopes the rewrite to that
+                     clause's usages — the case where one clause licenses a
+                     shorter chain while another keeps the long one — and
+                     folds vocabulary usage counts into an existing target
+                     key with merge's semantics (the destination's meaning
+                     survives; the source key is dropped only when no usage
+                     remains). Clause-blind surfaces (behavior_atoms,
+                     containment, behaviours_query) are untouched by a
+                     scoped rechain: their usages carry no clause identity.
+                     Same dry-run / --apply / --date / --reason discipline,
+                     same log, same replay contract.
   split              NOT mechanical — whether a given usage of `X` means `a`
                      or `b` is a judgment about the document, so `split`
                      emits a per-usage worklist (clause text + gloss + quote,
@@ -51,10 +66,14 @@ WHAT THIS MODULE MUST NEVER DO
     b8 vocabulary.
 
 Artifacts are round-tripped through the repo's canonical serialization
-(indent=1, ensure_ascii=False, trailing newline preserved per file). A file
-this tool cannot reproduce byte-identically BEFORE editing is refused
-(NonCanonicalArtifactError) rather than reformatted wholesale — "unrelated
-names byte-untouched" is a contract, not a hope.
+(json.dumps indent=1; the trailing newline AND the ascii-escaping are each
+a per-file STYLE, detected from the file's own bytes and preserved —
+`annotations_ext_v1_merged.json` ships ensure_ascii=True while its siblings
+ship ensure_ascii=False, and rewriting either in the other's style would
+touch every non-ascii line). A file this tool cannot reproduce
+byte-identically BEFORE editing is refused (NonCanonicalArtifactError)
+rather than reformatted wholesale — "unrelated names byte-untouched" is a
+contract, not a hope.
 
 A migration touching `golden_translations.json` re-freezes its sha256 (via
 `golden.compute_sha256`, same canonicalization) and appends a review record
@@ -83,7 +102,10 @@ MIGRATIONS_NAME = "vocabulary_migrations.json"
 
 #: The usage surfaces, in scan order. behavior_atoms* is a glob: every draw
 #: is an artifact someone may replay, so every draw is rewritten.
-FIXED_SURFACES_HEAD = ("annotations.json", "annotations_b8.json")
+FIXED_SURFACES_HEAD = ("annotations.json", "annotations_b8.json",
+                       "annotations_ext_v1.json",
+                       "annotations_ext_v1_patch.json",
+                       "annotations_ext_v1_merged.json")
 BEHAVIOR_ATOMS_GLOB = "behavior_atoms*.json"
 FIXED_SURFACES_TAIL = ("golden_translations.json", "containment.json",
                        "behaviours_query.json")
@@ -114,6 +136,22 @@ class NotAStemError(RefactorError):
     argument was passed."""
 
 
+class NotAnExactNameError(RefactorError):
+    """rechain operates on exact decorated names; an argument did not parse
+    under the grammar."""
+
+
+class StemChangedError(RefactorError):
+    """rechain may move only the principal chain, but the two names' stems
+    differ — a stem move is a rename/merge, which is adjudicated
+    differently."""
+
+
+class PolarityChangedError(RefactorError):
+    """rechain may move only the principal chain, but the two names'
+    polarity prefixes differ — a force change is never a chain repair."""
+
+
 class NonCanonicalArtifactError(RefactorError):
     """The artifact's bytes are not reproduced by the canonical
     serialization, so a mechanical rewrite could not leave unrelated names
@@ -134,30 +172,39 @@ def sha256_bytes(blob: bytes) -> str:
     return hashlib.sha256(blob).hexdigest()
 
 
-def _dumps(data, trailing_nl: bool) -> bytes:
-    blob = json.dumps(data, indent=1, ensure_ascii=False)
+def _dumps(data, trailing_nl: bool, ensure_ascii: bool = False) -> bytes:
+    blob = json.dumps(data, indent=1, ensure_ascii=ensure_ascii)
     if trailing_nl:
         blob += "\n"
     return blob.encode("utf-8")
 
 
 def _load(path):
-    """(data, raw_bytes, trailing_nl). Parse only — no canonicality demand;
-    `usages` must work on any readable artifact."""
+    """(data, raw_bytes, style). Parse only — no canonicality demand;
+    `usages` must work on any readable artifact.
+
+    `style` records the file's OWN serialization style so a rewrite can
+    reproduce it: the trailing newline, and ascii-escaping (a file whose
+    bytes are pure ascii is reproduced with ensure_ascii=True, which is the
+    identity when the content is ascii anyway and the only correct choice
+    when non-ascii content was escaped on write)."""
     with open(path, "rb") as f:
         raw = f.read()
     try:
         data = json.loads(raw.decode("utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError) as e:
         raise RefactorError(f"{path} is not a JSON artifact: {e}") from e
-    return data, raw, raw.endswith(b"\n")
+    style = {"trailing_nl": raw.endswith(b"\n"),
+             "ensure_ascii": raw.isascii()}
+    return data, raw, style
 
 
-def _require_canonical(path, data, raw, trailing_nl):
-    if _dumps(data, trailing_nl) != raw:
+def _require_canonical(path, data, raw, style):
+    if _dumps(data, style["trailing_nl"], style["ensure_ascii"]) != raw:
         raise NonCanonicalArtifactError(
             f"{path} is not in the repo's canonical serialization "
-            "(json.dumps indent=1, ensure_ascii=False). Rewriting it would "
+            "(json.dumps indent=1; ascii-escaping and trailing newline are "
+            "per-file styles, detected and preserved). Rewriting it would "
             "reformat every line, so unrelated names could not stay "
             "byte-untouched. Re-serialize it canonically first, on its own, "
             "in a diff that changes nothing else.")
@@ -293,6 +340,48 @@ def _require_stem(arg, what):
     return arg
 
 
+def _require_rechain_pair(old, new):
+    """rechain's precondition: two EXACT names, identical stem, identical
+    polarity — only the principal chain may differ."""
+    po = grammar.parse_name(old)
+    if po["error"]:
+        raise NotAnExactNameError(
+            f"rechain source {old!r} does not parse: {po['error']}. rechain "
+            "operates on exact decorated names.")
+    pn = grammar.parse_name(new)
+    if pn["error"]:
+        raise NotAnExactNameError(
+            f"rechain target {new!r} does not parse: {pn['error']}. rechain "
+            "operates on exact decorated names.")
+    if po["stem"] != pn["stem"]:
+        raise StemChangedError(
+            f"rechain may move only the principal chain, but the stems "
+            f"differ ({po['stem']!r} vs {pn['stem']!r}) — a stem move is a "
+            "rename or a merge; say which.")
+    if po["polarity"] != pn["polarity"]:
+        raise PolarityChangedError(
+            f"rechain may move only the principal chain, but the polarity "
+            f"differs ({po['polarity']!r} vs {pn['polarity']!r}) — a force "
+            "change is not a chain repair.")
+    if old == new:
+        raise RefactorError(f"rechain of {old!r} onto itself is a no-op")
+
+
+def _all_names(root):
+    """Every EXACT atom name in use on any surface (rechain's key space,
+    the way `_all_stems` is rename/merge's)."""
+    names = set()
+    for rel in surface_paths(root):
+        data, _, _ = _load(os.path.join(root, rel))
+        shape = detect_shape(data)
+        if shape is None:
+            continue
+        for _, name, _ in _iter_usages(data, shape):
+            if name is not None:
+                names.add(name)
+    return names
+
+
 def _guard_edges(edges):
     seen = set()
     for i, e in enumerate(edges):
@@ -339,6 +428,42 @@ def _rewrite_vocabulary(vocab, name_fn):
             base["n_clauses"] = len(clauses)
             merged[nk] = base
     return merged
+
+
+def _rechain_vocabulary(vocab, old, new, moved):
+    """Rebuild the two vocabulary keys a CLAUSE-SCOPED rechain touches.
+
+    `moved` is the set of clause ids whose usages were rewritten. Mirrors
+    merge's semantics key-for-key: when the target key already exists, its
+    kind/gloss survive and the moved clauses join its clause list; the
+    source key keeps its remaining clauses and is dropped only when no
+    usage remains. Every other key passes through untouched, in order.
+    """
+    out = {}
+    for key, val in vocab.items():
+        if key == old:
+            remaining = [c for c in (val.get("clauses") or [])
+                         if c not in moved]
+            if remaining:
+                entry = copy.deepcopy(val)
+                entry["clauses"] = remaining
+                entry["n_clauses"] = len(remaining)
+                out[old] = entry
+            if moved and new not in vocab:
+                entry = copy.deepcopy(val)
+                clauses = sorted(moved)
+                entry["clauses"] = clauses
+                entry["n_clauses"] = len(clauses)
+                out[new] = entry
+        elif key == new and moved:
+            entry = copy.deepcopy(val)
+            clauses = sorted(set(entry.get("clauses") or []) | moved)
+            entry["clauses"] = clauses
+            entry["n_clauses"] = len(clauses)
+            out[new] = entry
+        else:
+            out[key] = val
+    return out
 
 
 def _split_vocabulary(vocab, by_clause, old, into):
@@ -394,9 +519,15 @@ def transform_document(data, shape, entry, rel=None):
     `split`, `rel` selects the entry's per-artifact assignment map.
     """
     op, old, new = entry["op"], entry["old"], entry["new"]
+    scope = None
     if op in ("rename", "merge"):
         def name_fn(location, name):
             return rewrite_name(name, old, new)
+    elif op == "rechain":
+        scope = set(entry["clauses"]) if entry.get("clauses") else None
+
+        def name_fn(location, name):
+            return new if name == old else name
     elif op == "split":
         assign = (entry.get("assignments") or {}).get(rel or "", {})
 
@@ -407,6 +538,12 @@ def transform_document(data, shape, entry, rel=None):
             return rewrite_name(name, old, target)
     else:
         raise RefactorError(f"unknown migration op {op!r}")
+
+    if scope is not None and shape in ("behavior_atoms", "containment",
+                                       "behaviours_query"):
+        # A clause-scoped rechain rewrites the usages OF A CLAUSE; these
+        # surfaces carry no clause identity, so the scope leaves them alone.
+        return data, 0, []
 
     data = copy.deepcopy(data)
     n = 0
@@ -422,14 +559,28 @@ def transform_document(data, shape, entry, rel=None):
             touched.append(location)
 
     if shape == "annotations":
+        moved = set()
         for i, a in enumerate(data.get("atoms") or []):
+            if scope is not None and a.get("clause_id") not in scope:
+                continue
+            before = n
             visit(a, "name", f"atoms[{i}]")
+            if op == "rechain" and n > before:
+                moved.add(a.get("clause_id"))
         for cid, atoms in (data.get("by_clause") or {}).items():
+            if scope is not None and cid not in scope:
+                continue
             for j, a in enumerate(atoms or []):
+                before = n
                 visit(a, "name", f"by_clause.{cid}[{j}]")
+                if op == "rechain" and n > before:
+                    moved.add(cid)
         vocab = data.get("vocabulary") or {}
         if op == "split":
             nv = _split_vocabulary(vocab, data.get("by_clause"), old, new)
+        elif op == "rechain" and scope is not None:
+            moved.discard(None)
+            nv = _rechain_vocabulary(vocab, old, new, moved)
         else:
             nv = _rewrite_vocabulary(vocab, name_fn)
         if nv != vocab:
@@ -447,6 +598,8 @@ def transform_document(data, shape, entry, rel=None):
     elif shape == "golden":
         touched_entries = {}
         for i, e in enumerate(data.get("entries") or []):
+            if scope is not None and e.get("clause_id") not in scope:
+                continue
             for j, a in enumerate(e.get("atoms") or []):
                 before = n
                 visit(a, "name", f"entries[{i}].atoms[{j}]")
@@ -505,7 +658,7 @@ def _check_reason(reason):
 
 
 def plan_migration(root, op, old, new, date=None, reason=None,
-                   assignments=None):
+                   assignments=None, clauses=None):
     """Compute a migration without writing anything.
 
     Returns (entry, changes): the log entry to append, and
@@ -534,6 +687,22 @@ def plan_migration(root, op, old, new, date=None, reason=None,
                 f"merge destination {new!r} has zero usages — a merge folds "
                 "into an EXISTING atom. If the destination is new, that is "
                 "a RENAME.")
+    elif op == "rechain":
+        _require_rechain_pair(old, new)
+        if not clauses:
+            clauses = None
+        names = _all_names(root)
+        if old not in names:
+            raise UnknownAtomError(
+                f"{old!r} has zero usages on any surface under {root} — "
+                "nothing to migrate.")
+        if clauses is None and new in names:
+            raise NameExistsError(
+                f"rechain target {new!r} already names something, so a "
+                "whole-artifact rechain would fold every usage of "
+                f"{old!r} into it unreviewed. Scope the fold with "
+                "--clause <id> (repeatable) so exactly the adjudicated "
+                "clauses move.")
     elif op == "split":
         if assignments is None:
             raise RefactorError("a split plan requires assignments — build "
@@ -546,20 +715,22 @@ def plan_migration(root, op, old, new, date=None, reason=None,
              "reason": reason}
     if op == "split":
         entry["assignments"] = assignments
+    if op == "rechain" and clauses:
+        entry["clauses"] = sorted(clauses)
 
     changes = {}
     artifacts = {}
     for rel in surface_paths(root):
         path = os.path.join(root, rel)
-        data, raw, nl = _load(path)
+        data, raw, style = _load(path)
         shape = detect_shape(data)
         if shape is None:
             continue
         new_data, n, touched = transform_document(data, shape, entry, rel)
         if n == 0:
             continue
-        _require_canonical(path, data, raw, nl)
-        after = _dumps(new_data, nl)
+        _require_canonical(path, data, raw, style)
+        after = _dumps(new_data, style["trailing_nl"], style["ensure_ascii"])
         changes[rel] = {"before": raw, "after": after, "n": n,
                         "locations": touched}
         artifacts[rel] = {"sha_before": sha256_bytes(raw),
@@ -745,7 +916,7 @@ def replay_artifact(path, log_path, as_rel=None):
     required only for split migrations of multi-file shapes (annotations /
     behavior_atoms), whose assignments are per-file.
     """
-    data, _, nl = _load(path)
+    data, _, style = _load(path)
     shape = detect_shape(data)
     if shape is None:
         raise RefactorError(f"{path} matches no known artifact shape")
@@ -763,13 +934,15 @@ def replay_artifact(path, log_path, as_rel=None):
                 "per-file and the copy's filename does not say which file "
                 "it was.")
         data, _, _ = transform_document(data, shape, entry, as_rel)
-    return _dumps(data, nl)
+    return _dumps(data, style["trailing_nl"], style["ensure_ascii"])
 
 
 # -------------------------------------------------------------------- CLI
 
 def _print_plan(entry, changes, applied):
-    print(f"--- {entry['op']}: {entry['old']} -> {entry['new']} "
+    scope = (f" [clauses: {', '.join(entry['clauses'])}]"
+             if entry.get("clauses") else "")
+    print(f"--- {entry['op']}: {entry['old']} -> {entry['new']}{scope} "
           f"({entry['date']}; {entry['reason']})")
     for rel in sorted(changes):
         ch = changes[rel]
@@ -829,6 +1002,17 @@ def main(argv=None):
     pm.add_argument("dst")
     add_migration_args(pm)
 
+    pc = sub.add_parser("rechain", help="exact-name rewrite moving ONLY the "
+                                        "principal chain — stem and polarity "
+                                        "must be identical")
+    pc.add_argument("old")
+    pc.add_argument("new")
+    pc.add_argument("--clause", action="append", dest="clauses",
+                    metavar="ID", default=None,
+                    help="rewrite only this clause's usages (repeatable); "
+                         "required when the target name already exists")
+    add_migration_args(pc)
+
     ps = sub.add_parser("split", help="emit the per-usage worklist for a "
                                       "split (judgment, not mechanics)")
     ps.add_argument("atom")
@@ -878,6 +1062,16 @@ def main(argv=None):
             entry, changes = plan_migration(args.root, args.cmd, old, new,
                                             date=args.date,
                                             reason=args.reason)
+            if args.apply:
+                apply_changes(args.root, entry, changes)
+            _print_plan(entry, changes, args.apply)
+            return 0
+
+        if args.cmd == "rechain":
+            entry, changes = plan_migration(args.root, "rechain", args.old,
+                                            args.new, date=args.date,
+                                            reason=args.reason,
+                                            clauses=args.clauses)
             if args.apply:
                 apply_changes(args.root, entry, changes)
             _print_plan(entry, changes, args.apply)

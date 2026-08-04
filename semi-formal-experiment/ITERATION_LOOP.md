@@ -59,6 +59,25 @@ review's finding 1 (candidate provenance) by design rather than by fence:
    consulted during iteration, evaluated only at pre-registered checkpoints.
    The constitution cells are clean today because they have never been used
    for anything; keeping them clean is the point.
+
+   **Amendment (Matt, 2026-08-04): behaviour generalization outranks
+   document transfer.** New behaviours are the common case (the user's input
+   surface — users specify the behaviour they study); new specs are the rare
+   case (producer-side, iterated before others depend on them), and every
+   hard failure so far has been behaviour-shaped. So after the current fix
+   ladder closes on the 3 DEV behaviours, the next evaluation phase is the
+   6 never-consulted small-panel Model-Spec behaviours, run as a FROZEN-
+   PIPELINE generalization test: pipeline config frozen first; each new
+   behaviour processed fully label-free (definition into behaviours_query →
+   SELECT → sweep/readback audit → mechanical re-selection → snapshot);
+   their small-panel cells consulted EXACTLY ONCE at a declared evaluation,
+   labelled by roster (gpt-mini/haiku/qwen-small — a weaker panel, never
+   "the bar") on the panel_universe-reconstructed universe with the
+   score-1-irrecoverable caveat stated. The census seats then measure
+   whether error-class distributions transfer. These 6 cells are neither
+   DEV nor sealed TEST: they are the GENERALIZATION SET, burned once.
+   The constitution stays parked as sealed TEST (plus the two expert
+   salience anchors), unlocked only at a final pre-registered battery.
 6. **Fallback, explicit.** If exhaustive delta adjudication proves too
    expensive in practice, the fallback is Matt's to invoke — demote further
    toward dev-set iteration knowingly, never by drift.

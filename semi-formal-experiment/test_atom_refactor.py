@@ -640,6 +640,259 @@ def test_split_apply_is_dry_run_by_default(root):
     assert _snapshot_all(root) == before
 
 
+# ----------------------------------------------- ext_v1 surfaces + rechain
+
+LONG = "shouldnot_judge__model_user_developer"
+SHORT = "shouldnot_judge__model_user"
+HELP_OLD = "must_advise_immediate_help__user"
+HELP_NEW = "must_advise_immediate_help__model_user"
+
+
+def _wjson_style(path, obj, ensure_ascii=False):
+    blob = json.dumps(obj, indent=1, ensure_ascii=ensure_ascii)
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(blob)
+    return str(path)
+
+
+def _ext_ann():
+    a0 = _atom(LONG, "s1", "q one — with a dash", "m0170")
+    a1 = _atom(LONG, "s2", "q two", "m0271")
+    a2 = _atom(SHORT, "s3", "q three", "m0289")
+    a3 = _atom(HELP_OLD, "s4", "q four", "m0276")
+    a4 = _atom("helping_user", "s5", "q five", "m0170")
+    return {
+        "warnings": [],
+        "provenance": {"model": "hand", "created": "fixed"},
+        "atoms": [a0, a1, a2, a3, a4],
+        "by_clause": {"m0170": [copy.deepcopy(a0), copy.deepcopy(a4)],
+                      "m0271": [copy.deepcopy(a1)],
+                      "m0289": [copy.deepcopy(a2)],
+                      "m0276": [copy.deepcopy(a3)]},
+        "vocabulary": {
+            LONG: _vocab("act", ["m0170", "m0271"]),
+            SHORT: _vocab("act", ["m0289"]),
+            HELP_OLD: _vocab("act", ["m0276"]),
+            "helping_user": _vocab("act", ["m0170"]),
+        },
+    }
+
+
+@pytest.fixture
+def ext_root(tmp_path):
+    """The ext_v1 trio in its REAL shapes and styles: base (utf-8), patch
+    (annotations-shaped, near-empty, by_clause keys with empty lists —
+    exactly what the shipped patch holds for untouched clauses), merged
+    (ascii-escaped, the shipped merged file's actual serialization), plus a
+    behavior_atoms surface carrying the exact decorated names."""
+    _wjson_style(tmp_path / "annotations_ext_v1.json", _ext_ann())
+    _wjson_style(tmp_path / "annotations_ext_v1_merged.json", _ext_ann(),
+                 ensure_ascii=True)
+    _wjson_style(tmp_path / "annotations_ext_v1_patch.json",
+                 {"warnings": [], "provenance": {"model": "hand"},
+                  "atoms": [], "by_clause": {"m0271": []}, "vocabulary": {}})
+    _wjson_style(tmp_path / "behavior_atoms_ext_v1.json",
+                 {"beh1": {"atoms": [
+                     {"name": HELP_OLD, "kind": "act", "gloss": "g",
+                      "weight": 2, "source": "definition", "new": False},
+                     {"name": LONG, "kind": "act", "gloss": "g",
+                      "weight": 1, "source": "definition", "new": False}]},
+                  "provenance": {"model": "hand"}})
+    return str(tmp_path)
+
+
+def test_surface_scan_includes_the_ext_v1_trio(ext_root):
+    got = ar.surface_paths(ext_root)
+    for n in ("annotations_ext_v1.json", "annotations_ext_v1_patch.json",
+              "annotations_ext_v1_merged.json"):
+        assert n in got, f"{n} is not a scanned surface"
+
+
+def test_usages_sees_all_three_shapes_on_the_ext_surfaces(ext_root):
+    got = ar.find_usages(LONG, root=ext_root)
+    locs = {(u["file"], u["location"]) for u in got}
+    for f in ("annotations_ext_v1.json", "annotations_ext_v1_merged.json"):
+        assert (f, "atoms[0]") in locs
+        assert (f, "by_clause.m0170[0]") in locs
+        assert (f, "by_clause.m0271[0]") in locs
+        assert (f, f"vocabulary.{LONG}") in locs
+        assert (f, f"vocabulary.{SHORT}") in locs  # same stem family
+    assert ("behavior_atoms_ext_v1.json", "beh1.atoms[1]") in locs
+
+
+def test_ascii_escaped_artifact_is_accepted_and_style_preserved(ext_root):
+    """The shipped merged file is serialized ensure_ascii=True. That is a
+    per-file STYLE (like the trailing newline), not a canonicality defect:
+    the tool must plan over it and write it back in its own style, while the
+    utf-8 base keeps its bytes raw."""
+    rc = ar.main(["rename", "helping_user", "assisting_user",
+                  "--date", "2026-08-03", "--reason", "clearer stem",
+                  "--root", ext_root, "--apply"])
+    assert rc == 0
+    raw = _read_bytes(ext_root, "annotations_ext_v1_merged.json")
+    assert b"assisting_user" in raw
+    assert raw.isascii(), "merged file lost its ascii-escaped style"
+    raw2 = _read_bytes(ext_root, "annotations_ext_v1.json")
+    assert b"assisting_user" in raw2
+    assert "—".encode("utf-8") in raw2, "base file lost its utf-8 style"
+
+
+def test_rename_still_refuses_the_chain_correction(ext_root):
+    """THE MOTIVATING REFUSAL (green today, and stays green): the chain
+    corrections are exact-name, stem-identical rewrites — rename cannot
+    express them, by design. rechain exists to fill exactly this gap."""
+    with pytest.raises(ar.NotAStemError):
+        ar.plan_migration(ext_root, "rename", LONG, SHORT,
+                          date="2026-08-03", reason="r")
+
+
+def test_rechain_refuses_stem_or_polarity_change(ext_root):
+    with pytest.raises(ar.StemChangedError):
+        ar.plan_migration(ext_root, "rechain", LONG,
+                          "shouldnot_mock__model_user",
+                          date="2026-08-03", reason="r")
+    with pytest.raises(ar.PolarityChangedError):
+        ar.plan_migration(ext_root, "rechain", LONG,
+                          "should_judge__model_user",
+                          date="2026-08-03", reason="r")
+    with pytest.raises(ar.NotAnExactNameError):
+        ar.plan_migration(ext_root, "rechain", "must_", SHORT,
+                          date="2026-08-03", reason="r")
+    with pytest.raises(ar.NotAnExactNameError):
+        ar.plan_migration(ext_root, "rechain", LONG,
+                          "shouldnot_judge__wizard",
+                          date="2026-08-03", reason="r")
+    with pytest.raises(ar.RefactorError):  # self-rechain is a no-op
+        ar.plan_migration(ext_root, "rechain", LONG, LONG,
+                          date="2026-08-03", reason="r")
+
+
+def test_rechain_refuses_unknown_source(ext_root):
+    with pytest.raises(ar.UnknownAtomError):
+        ar.plan_migration(ext_root, "rechain", "must_never_written__user",
+                          "must_never_written__model_user",
+                          date="2026-08-03", reason="r")
+
+
+def test_rechain_refuses_existing_target_at_whole_artifact_scope(ext_root):
+    with pytest.raises(ar.NameExistsError) as ei:
+        ar.plan_migration(ext_root, "rechain", LONG, SHORT,
+                          date="2026-08-03", reason="r")
+    assert "--clause" in str(ei.value), (
+        "the refusal must point at the clause-scoped escape hatch")
+
+
+def test_rechain_is_dry_run_by_default(ext_root):
+    before = _snapshot_all(ext_root)
+    rc = ar.main(["rechain", HELP_OLD, HELP_NEW,
+                  "--date", "2026-08-03", "--reason", "agent missing",
+                  "--root", ext_root])
+    assert rc == 0
+    assert _snapshot_all(ext_root) == before
+    assert not os.path.exists(os.path.join(ext_root,
+                                           "vocabulary_migrations.json"))
+
+
+def test_rechain_apply_rewrites_exact_usages_everywhere(ext_root):
+    rc = ar.main(["rechain", HELP_OLD, HELP_NEW,
+                  "--date", "2026-08-03", "--reason", "agent missing",
+                  "--root", ext_root, "--apply"])
+    assert rc == 0
+    for f in ("annotations_ext_v1.json", "annotations_ext_v1_merged.json"):
+        ann = _read_json(ext_root, f)
+        assert ann["atoms"][3]["name"] == HELP_NEW
+        assert [a["name"] for a in ann["by_clause"]["m0276"]] == [HELP_NEW]
+        assert HELP_OLD not in ann["vocabulary"]
+        assert ann["vocabulary"][HELP_NEW]["clauses"] == ["m0276"]
+        # EXACTNESS: other decorated names, even of active stems, untouched
+        assert ann["atoms"][0]["name"] == LONG
+        assert ann["atoms"][2]["name"] == SHORT
+    ba = _read_json(ext_root, "behavior_atoms_ext_v1.json")
+    assert ba["beh1"]["atoms"][0]["name"] == HELP_NEW
+    assert ba["beh1"]["atoms"][1]["name"] == LONG
+
+
+def test_rechain_clause_scoped_folds_into_the_existing_key(ext_root):
+    """The m0271 case in miniature: the long chain is unlicensed at ONE
+    clause; the other keeps it. Vocabulary counts fold into the existing
+    target key merge-style; the source key survives with its remaining
+    clause."""
+    rc = ar.main(["rechain", LONG, SHORT, "--clause", "m0271",
+                  "--date", "2026-08-03", "--reason", "patient unlicensed",
+                  "--root", ext_root, "--apply"])
+    assert rc == 0
+    for f in ("annotations_ext_v1.json", "annotations_ext_v1_merged.json"):
+        ann = _read_json(ext_root, f)
+        assert [a["name"] for a in ann["by_clause"]["m0271"]] == [SHORT]
+        assert ann["by_clause"]["m0170"][0]["name"] == LONG
+        assert ann["atoms"][1]["name"] == SHORT
+        assert ann["atoms"][0]["name"] == LONG
+        v = ann["vocabulary"]
+        assert v[LONG]["clauses"] == ["m0170"]
+        assert v[LONG]["n_clauses"] == 1
+        assert v[SHORT]["clauses"] == ["m0271", "m0289"]
+        assert v[SHORT]["n_clauses"] == 2
+    # clause-blind surfaces carry no clause identity: scope leaves them alone
+    ba = _read_json(ext_root, "behavior_atoms_ext_v1.json")
+    assert ba["beh1"]["atoms"][1]["name"] == LONG
+    log = _read_json(ext_root, "vocabulary_migrations.json")
+    e = log["migrations"][0]
+    assert e["op"] == "rechain"
+    assert e["old"] == LONG and e["new"] == SHORT
+    assert e["clauses"] == ["m0271"]
+
+
+def test_rechain_scoped_drops_source_key_only_when_empty(ext_root):
+    rc = ar.main(["rechain", LONG, SHORT,
+                  "--clause", "m0271", "--clause", "m0170",
+                  "--date", "2026-08-03", "--reason", "patient unlicensed",
+                  "--root", ext_root, "--apply"])
+    assert rc == 0
+    ann = _read_json(ext_root, "annotations_ext_v1.json")
+    assert LONG not in ann["vocabulary"]
+    assert ann["vocabulary"][SHORT]["clauses"] == ["m0170", "m0271", "m0289"]
+    assert ann["vocabulary"][SHORT]["n_clauses"] == 3
+
+
+def test_rechain_leaves_unrelated_lines_byte_untouched(ext_root):
+    before = _snapshot_all(ext_root)
+    ar.main(["rechain", LONG, SHORT, "--clause", "m0271",
+             "--date", "2026-08-03", "--reason", "patient unlicensed",
+             "--root", ext_root, "--apply"])
+    after = _snapshot_all(ext_root)
+    allowed = (LONG, SHORT, '"n_clauses"', '"m0170"', '"m0271"', '"m0289"')
+    for name in before:
+        if name == "vocabulary_migrations.json":
+            continue
+        old = before[name].decode("utf-8").splitlines()
+        new = after[name].decode("utf-8").splitlines()
+        changed = [l for l in difflib.unified_diff(old, new, lineterm="", n=0)
+                   if l[:1] in "+-" and l[:3] not in ("+++", "---")]
+        for line in changed:
+            assert any(tok in line for tok in allowed), (
+                f"{name}: unrelated line changed: {line!r}")
+
+
+def test_rechain_replays(ext_root):
+    keep = os.path.join(ext_root, "old_copies")
+    os.makedirs(keep)
+    for rel in ("annotations_ext_v1.json", "annotations_ext_v1_merged.json"):
+        with open(os.path.join(keep, rel), "wb") as f:
+            f.write(_read_bytes(ext_root, rel))
+    ar.main(["rechain", LONG, SHORT, "--clause", "m0271",
+             "--date", "2026-08-03", "--reason", "patient unlicensed",
+             "--root", ext_root, "--apply"])
+    ar.main(["rechain", HELP_OLD, HELP_NEW,
+             "--date", "2026-08-04", "--reason", "agent missing",
+             "--root", ext_root, "--apply"])
+    log = os.path.join(ext_root, "vocabulary_migrations.json")
+    for rel in ("annotations_ext_v1.json", "annotations_ext_v1_merged.json"):
+        migrated = ar.replay_artifact(os.path.join(keep, rel), log)
+        assert migrated == _read_bytes(ext_root, rel), (
+            f"replaying {rel} through the log does not reproduce the "
+            "current bytes")
+
+
 # ------------------------------------------------------------ panel fence
 
 def test_atom_refactor_source_is_panel_blind():
