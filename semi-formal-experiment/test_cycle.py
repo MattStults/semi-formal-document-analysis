@@ -963,6 +963,142 @@ def test_determinism_same_inputs_byte_identical_artifacts(tmp_path,
         "same inputs must yield byte-identical artifacts"
 
 
+# ----------------- first-customer fixes (versioned-cut-2026-08-04 findings)
+
+ZERO_FLIP_PREDICTION = {
+    "expected_flip_count": {"min": 0, "max": 0},
+    "expected_directions": [],
+    "expected_clauses": [],
+    "max_regressions": 0,
+    "notes": "honest zero-flip prediction: no direction can occur",
+}
+
+
+def test_predict_accepts_empty_directions_iff_zero_flip_max(env):
+    """Recorded refusal (versioned-cut-2026-08-04 prediction.json FIELD
+    NOTE): a deliberate no-op predicts zero flips, so NO direction can occur
+    — the honest direction target is the empty list. The driver refused it
+    ('expected_directions must be a non-empty list'), forcing a vacuous
+    full-direction fill. Empty must be legal iff expected_flip_count.max ==
+    0."""
+    c = advance_to(env, "PREDICT")
+    write_json(os.path.join(c.dir, "prediction.json"), ZERO_FLIP_PREDICTION)
+    c.next()   # must FREEZE, not refuse
+    assert "frozen_prediction_sha" in state_of(c)
+
+
+def test_predict_still_requires_directions_when_flips_possible(env):
+    """The guard the fix must NOT loosen: with max > 0 flips predicted, an
+    empty direction list is still an unfalsifiable hole — refused."""
+    c = advance_to(env, "PREDICT")
+    write_json(os.path.join(c.dir, "prediction.json"),
+               dict(PREDICTION, expected_directions=[]))
+    with pytest.raises(cycle.CycleError, match="expected_directions"):
+        c.next()
+
+
+def test_noop_records_vacuous_prediction_targets(env):
+    """First-customer finding (the max_regressions gap): the no-op
+    short-circuit skips ADJUDICATE, so the frozen max_regressions target
+    silently vanished from prediction_check.json. Every frozen target absent
+    from the check must be recorded as PASS_VACUOUS with a reason — never
+    dropped."""
+    c = advance_to(env, "MEASURE")
+    env.fake.diff = NOOP_DIFF
+    c.next()
+    check = read_json(os.path.join(c.dir, "prediction_check.json"))
+    by_kind = {r["kind"]: r for r in check["checks"]}
+    assert "max_regressions" in by_kind, \
+        "the frozen max_regressions target was silently dropped on no-op"
+    rec = by_kind["max_regressions"]
+    assert rec["result"] == "PASS_VACUOUS"
+    assert str(rec.get("reason", "")).strip(), \
+        "a vacuous pass must say WHY it is vacuous"
+    # PREDICTION targets 1-5 flips and clause m1: both genuinely FAIL on a
+    # no-op; directions PASSes; max_regressions passes vacuously.
+    assert check["pass_rate"] == [2, 4], \
+        "PASS_VACUOUS must count as a pass, and real FAILs must remain FAILs"
+
+
+def test_noop_checkpoint_records_vacuous_census_targets(env):
+    """Same gap, checkpoint shape: the no-op path skips CENSUS too, so
+    frozen census-class targets must surface as PASS_VACUOUS."""
+    c = advance_to(env, "MEASURE", shape="checkpoint",
+                   baseline_counts={"fp_lexical_only": 2, "fn_threshold": 1})
+    env.fake.diff = NOOP_DIFF
+    c.next()
+    check = read_json(os.path.join(c.dir, "prediction_check.json"))
+    by_class = {r.get("class"): r for r in check["checks"] if "class" in r}
+    assert by_class["fp_lexical_only"]["result"] == "PASS_VACUOUS"
+    assert by_class["fn_threshold"]["result"] == "PASS_VACUOUS"
+
+
+def test_open_validates_thresholds_path_exists(env):
+    """Manifest config gains optional 'thresholds' (the frozen-thresholds
+    artifact); a dangling path must be refused at OPEN like every other
+    config path."""
+    c = cycle.Cycle("c1")
+    bad = dict(MANIFEST, config=dict(MANIFEST["config"],
+                                     thresholds="no_such_thresholds.json"))
+    write_json(os.path.join(c.dir, "manifest.json"), bad)
+    with pytest.raises(cycle.CycleError, match="no_such_thresholds.json"):
+        c.next()
+    assert c.phase() == "OPEN"
+
+
+def test_measure_threads_thresholds_like_overlay(env):
+    """config.thresholds must thread to the snapshot build exactly like
+    overlay: --thresholds on the snapshot command (the sha joins the
+    identity via the snapshot's own recording) and the artifact joins the
+    sha-pinned undeclared-input closure at OPEN."""
+    with open(env.path("thresholds_test.json"), "w") as f:
+        f.write('{"thresholds": {}}\n')
+    c = cycle.Cycle("c1")
+    manifest = dict(MANIFEST, config=dict(MANIFEST["config"],
+                                          thresholds="thresholds_test.json"))
+    write_json(os.path.join(c.dir, "manifest.json"), manifest)
+    c.next()                      # OPEN
+    assert "thresholds_test.json" in state_of(c)["closure_shas"], \
+        "the thresholds artifact is an undeclared input: it must join the " \
+        "pinned closure like overlay"
+    write_json(os.path.join(c.dir, "prediction.json"), PREDICTION)
+    c.next()                      # PREDICT (freeze)
+    with open(env.path("fix_target.py"), "w") as f:
+        f.write("x = 2\n")
+    c.next()                      # IMPLEMENT
+    env.fake.diff = FLIP_DIFF
+    env.fake.flips = FLIP_INDEX
+    c.next()                      # MEASURE
+    snap_calls = [" ".join(x) for x in env.fake.calls
+                  if "snapshot.py" in " ".join(x) and x[2] == "snapshot"]
+    assert snap_calls, "no snapshot build ran"
+    assert "--thresholds" in snap_calls[0]
+    assert "thresholds_test.json" in snap_calls[0]
+
+
+def test_implement_review_halt_writes_assignment(env):
+    """First-customer finding: ADJUDICATE writes its seat assignment but the
+    IMPLEMENT review wait-state wrote nothing — the reviewer had no typed
+    assignment. The halt must write assignments/review.md with the change
+    summary from the manifest (files, rationale, gate tests), the verdict
+    schema, and the pointer to briefs/change_reviewer.md."""
+    c = advance_to(env, "IMPLEMENT", review_required=True)
+    with open(env.path("fix_target.py"), "w") as f:
+        f.write("x = 2\n")
+    msg = c.next()                # halts waiting for review_verdict.json
+    assert "review_verdict.json" in msg
+    apath = os.path.join(c.dir, "assignments", "review.md")
+    assert os.path.exists(apath), \
+        "the review wait-state must write its seat assignment"
+    text = open(apath).read()
+    assert "briefs/change_reviewer.md" in text
+    assert "fix_target.py" in text          # files under review
+    assert "test_gate.py" in text           # gate tests
+    assert "the document says so" in text   # rationale from the manifest
+    assert "review_verdict.json" in text
+    assert '"proceed"' in text and '"blocked"' in text  # verdict schema
+
+
 # ------------------------------------------------------ status output
 
 def test_status_names_phase_and_whats_needed(env, capsys):

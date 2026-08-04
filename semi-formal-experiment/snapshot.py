@@ -284,6 +284,35 @@ def load_snapshot(path: str) -> dict:
         return json.load(f)
 
 
+def assert_frozen_thresholds(snapshot_path: str) -> None:
+    """Gate-style guard (CYCLE5_REVIEW.md MUST item 6): every behaviour in
+    the snapshot at `snapshot_path` must record
+    `threshold_source == "frozen_artifact"` — its cut came FROM the frozen-
+    thresholds artifact, not from the per-snapshot derivation rule. A
+    behaviour on `rule_fallback` (the artifact did not name it) or with no
+    `threshold_source` key at all (built without --thresholds) silently
+    re-derives its cut — exactly the m0422 threshold_drift class the
+    versioned-cut fix froze out. Raises AssertionError naming the offending
+    behaviours and what each recorded; returns None when fully frozen.
+
+    Housed here (not in cycle.py) because this module owns the
+    `threshold_source` key and is panel-blind, so gate tests anywhere —
+    including query-side ones — can import it without touching the fenced
+    driver."""
+    snap = load_snapshot(snapshot_path)
+    offending = {
+        slug: beh.get("threshold_source", "absent (rule-derived, old shape)")
+        for slug, beh in sorted((snap.get("behaviours") or {}).items())
+        if beh.get("threshold_source") != "frozen_artifact"}
+    if offending:
+        raise AssertionError(
+            f"snapshot {snap.get('tag')!r} ({snapshot_path}) is NOT fully "
+            f"frozen — threshold_source != 'frozen_artifact' for: "
+            + "; ".join(f"{slug}: {src}" for slug, src in offending.items())
+            + ". These behaviours re-derived their cut from the rule "
+            "(m0422 threshold_drift; CYCLE5_REVIEW.md item 6).")
+
+
 # ----------------------------------------------------------------- diffing
 
 def _flip_record(cid, ba, bb):
@@ -414,9 +443,15 @@ def format_diff(d: dict) -> str:
     """The human-readable report the inner loop reads before adjudicating."""
     lines = [f"# diff {d['tag_a']} -> {d['tag_b']}"]
     if d["noop"]:
+        # "allowing absent==null keys": a config key newer snapshots record
+        # as an explicit null (overlay, thresholds) may be entirely absent
+        # from an older snapshot — null-equal, not byte-identical, and still
+        # the same configuration (versioned-cut-2026-08-04 first-customer
+        # finding).
         lines.append(
-            "no-op change: identical configuration shas and identical scores "
-            "— the two snapshots differ only in tag.")
+            "no-op change: identical configuration (allowing absent==null "
+            "keys) and identical scores — the two snapshots differ only in "
+            "tag.")
         return "\n".join(lines) + "\n"
 
     cfg = d["config"]

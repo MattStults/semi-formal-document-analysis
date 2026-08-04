@@ -646,6 +646,73 @@ def test_cli_thresholds_flag(fixture_paths, tmp_path):
     assert snap["behaviours"]["beh-help"]["threshold"] == pytest.approx(0.9)
 
 
+def test_noop_prose_acknowledges_null_equal_new_keys(fixture_paths):
+    """First-customer finding (versioned-cut-2026-08-04, cosmetic): a no-op
+    diff can pair an OLD-shape snapshot (no `thresholds` input key at all)
+    with a NEW-shape one (`thresholds`: null) — the config identities are
+    null-equal, not byte-identical, yet the prose claimed 'identical
+    configuration shas'. It must acknowledge absent==null keys."""
+    a = _build(fixture_paths, tag="a")
+    b = _build(fixture_paths, tag="b")
+    del a["config"]["inputs"]["thresholds"]      # the old shape
+    d = snapshot.diff_snapshots(a, b)
+    assert d["noop"] is True, \
+        "an absent key vs an explicit null is the SAME configuration"
+    text = snapshot.format_diff(d)
+    assert ("identical configuration (allowing absent==null keys) "
+            "and identical scores") in text
+
+
+# ------------------------------------ frozen-thresholds gate (CYCLE5 item 6)
+
+def test_assert_frozen_thresholds_passes_when_fully_frozen(fixture_paths,
+                                                           tmp_path):
+    """The gate helper the chain-audit / cycle-5 gate tests call: a snapshot
+    whose every behaviour records threshold_source == 'frozen_artifact'
+    passes silently."""
+    thr = _thresholds_file(tmp_path, {"beh-help": 0.9})
+    snap = snapshot.build_snapshot(
+        "frozen-ok",
+        annotations_path=fixture_paths["annotations"],
+        atoms_path=fixture_paths["atoms"],
+        clauses_path=fixture_paths["clauses"],
+        queries_path=fixture_paths["queries"],
+        thresholds_path=thr)
+    path = snapshot.write_snapshot(snap, out_dir=str(tmp_path / "snaps"))
+    snapshot.assert_frozen_thresholds(path)      # must not raise
+
+
+def test_assert_frozen_thresholds_raises_on_old_shape(fixture_paths,
+                                                      tmp_path):
+    """A snapshot built WITHOUT the flag (no threshold_source key) silently
+    re-derives every cut — the gate must raise naming the behaviours
+    (CYCLE5_REVIEW.md item 6: 'fallback silently re-derives')."""
+    snap = _build(fixture_paths, tag="old-shape")
+    path = snapshot.write_snapshot(snap, out_dir=str(tmp_path / "snaps"))
+    with pytest.raises(AssertionError, match="beh-help"):
+        snapshot.assert_frozen_thresholds(path)
+
+
+def test_assert_frozen_thresholds_raises_on_rule_fallback(fixture_paths,
+                                                          tmp_path):
+    """A partially-covering artifact leaves some behaviours on
+    'rule_fallback' — exactly the drift the freeze exists to stop; the gate
+    must raise naming them."""
+    thr = _thresholds_file(tmp_path, {"some-other-behaviour": 0.5})
+    snap = snapshot.build_snapshot(
+        "partial",
+        annotations_path=fixture_paths["annotations"],
+        atoms_path=fixture_paths["atoms"],
+        clauses_path=fixture_paths["clauses"],
+        queries_path=fixture_paths["queries"],
+        thresholds_path=thr)
+    path = snapshot.write_snapshot(snap, out_dir=str(tmp_path / "snaps"))
+    with pytest.raises(AssertionError) as e:
+        snapshot.assert_frozen_thresholds(path)
+    assert "beh-help" in str(e.value)
+    assert "rule_fallback" in str(e.value)
+
+
 # -------------------------------------------------------------------- CLI
 
 def test_cli_snapshot_then_diff(fixture_paths, tmp_path, capsys):

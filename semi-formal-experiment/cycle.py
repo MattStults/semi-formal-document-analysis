@@ -239,7 +239,8 @@ def manifest_template(name: str) -> dict:
         "compatibility": {"version_key": "", "statement": ""},
         # checkpoint shape additionally requires "baseline_census": the
         # NAMED prior census artifact deltas are computed against (F2).
-        "config": {"annotations": "", "atoms": "", "overlay": None},
+        "config": {"annotations": "", "atoms": "", "overlay": None,
+                   "thresholds": None},
     }
 
 
@@ -277,6 +278,34 @@ Reusing a previous adjudication is legal ONLY when the dossier bytes are
 identical (same set sha) and declared via a "reused_from" key naming the
 source file — never presented as fresh adjudication. The file is checked by
 `dossier.py validate` before the cycle advances.
+"""
+
+REVIEW_ASSIGNMENT = """\
+# Change review assignment — cycle {name}
+
+Seat brief: briefs/change_reviewer.md — read it first; it is the seat's
+entire instruction. This is a frontier/careful seat: it exists to catch the
+implementer's mistakes, so the small-model standard does not apply.
+
+Change under review (from the manifest):
+
+- fix_description: {fix}
+- document_side_rationale: {rationale}
+- files_to_change: {files}
+- gate_tests: {gates}
+
+Required output: review_verdict.json in this cycle's directory:
+
+    {{"verdict": "proceed" | "blocked",
+      "by": "<who reviewed — never the implementer>",
+      "notes": "<what was verified, or why blocked>"}}
+
+All three keys are REQUIRED; verdict is a CLOSED set. The driver re-checks
+the frozen manifest/prediction shas, the two-sided one-variable check and
+the gate tests mechanically; your seat verifies what the machine cannot
+(see the brief: freeze shas, declared-diff-only, tests bind — at least one
+mutant — and the fence scan). A "blocked" verdict halts the cycle until
+resolved and re-reviewed.
 """
 
 CENSUS_ASSIGNMENT = """\
@@ -615,10 +644,11 @@ class Cycle:
             elif not os.path.exists(os.path.join(REPO, cfg[key])):
                 problems.append(f"config.{key} path does not exist: "
                                 f"{cfg[key]}")
-        if cfg.get("overlay") and not os.path.exists(
-                os.path.join(REPO, cfg["overlay"])):
-            problems.append(f"config.overlay path does not exist: "
-                            f"{cfg['overlay']}")
+        for opt in ("overlay", "thresholds"):
+            if cfg.get(opt) and not os.path.exists(
+                    os.path.join(REPO, cfg[opt])):
+                problems.append(f"config.{opt} path does not exist: "
+                                f"{cfg[opt]}")
         if not str(m["baseline_snapshot_tag"]).strip():
             problems.append("baseline_snapshot_tag is empty")
         if problems:
@@ -629,8 +659,9 @@ class Cycle:
             for rel in sorted(m["files_to_change"])}
         # ...and the two-sided closure: undeclared inputs pinned (F5)
         closure = set(m["gate_tests"]) | {cfg["annotations"], cfg["atoms"]}
-        if cfg.get("overlay"):
-            closure.add(cfg["overlay"])
+        for opt in ("overlay", "thresholds"):
+            if cfg.get(opt):
+                closure.add(cfg[opt])
         for rel in CLOSURE_DEFAULTS:
             if os.path.exists(os.path.join(REPO, rel)):
                 closure.add(rel)
@@ -695,8 +726,17 @@ class Cycle:
             problems.append("expected_flip_count must be {min: int, max: "
                             "int} with 0 <= min <= max")
         dirs = pred.get("expected_directions")
-        if not (isinstance(dirs, list) and dirs):
-            problems.append("expected_directions must be a non-empty list")
+        # An empty direction list is legal iff the prediction is the honest
+        # zero-flip one (expected_flip_count.max == 0): zero flips means no
+        # direction CAN occur, so [] is the true target — forcing a non-empty
+        # fill there weakens nothing and lies (first-customer finding,
+        # versioned-cut-2026-08-04 prediction.json FIELD NOTE).
+        zero_flips = isinstance(fc, dict) and fc.get("max") == 0
+        if not isinstance(dirs, list) or (not dirs and not zero_flips):
+            problems.append(
+                "expected_directions must be a non-empty list (empty is "
+                "legal ONLY when expected_flip_count.max == 0 — the honest "
+                "zero-flip prediction, where no direction can occur)")
         else:
             for d in dirs:
                 if d not in DIRECTIONS:
@@ -763,13 +803,26 @@ class Cycle:
         # (c) review, when the manifest requires one
         review = None
         if m["review_required"]:
+            # the review wait-state writes its seat assignment, exactly as
+            # ADJUDICATE does — a reviewer without a typed assignment is a
+            # transcript-only seat (first-customer finding)
+            apath = self._p("assignments", "review.md")
+            if not os.path.exists(apath):
+                _write_text(apath, REVIEW_ASSIGNMENT.format(
+                    name=self.name,
+                    fix=m["fix_description"],
+                    rationale=m["document_side_rationale"],
+                    files=", ".join(m["files_to_change"]),
+                    gates=", ".join(m["gate_tests"])))
             rpath = self._p("review_verdict.json")
             if not os.path.exists(rpath):
                 return False, (
                     "HALT (IMPLEMENT): review_required — write "
                     "review_verdict.json ({\"verdict\": \"proceed\"|"
                     "\"blocked\", \"by\": ..., \"notes\": ...}) after an "
-                    "independent review of the change.")
+                    "independent review of the change.\nAssignment "
+                    "written: assignments/review.md (brief: "
+                    "briefs/change_reviewer.md).")
             review = _read_json(rpath)
             if review.get("verdict") not in ("proceed", "blocked"):
                 raise CycleError(
@@ -833,6 +886,12 @@ class Cycle:
             if cfg.get("overlay"):
                 snap_cmd += ["--overlay",
                              os.path.join(REPO, cfg["overlay"])]
+            if cfg.get("thresholds"):
+                # the frozen-thresholds artifact threads exactly like the
+                # overlay: the flag carries the path; the snapshot itself
+                # records the sha in its config identity under "thresholds"
+                snap_cmd += ["--thresholds",
+                             os.path.join(REPO, cfg["thresholds"])]
             _run(snap_cmd)
         published = os.path.join(SNAPSHOT_DIR, self.name + ".json")
         if os.path.exists(published):
@@ -862,6 +921,7 @@ class Cycle:
             state["completed"].append("ADJUDICATE")
             self._save(state)
             self._check_predictions_measure(state)
+            self._append_vacuous_checks(state)
             self._write_draft(state)
             return True, (
                 "MEASURE complete: the diff is a NO-OP (identical config "
@@ -950,14 +1010,57 @@ class Cycle:
         self._save(state)
         self._write_prediction_check(state)
 
+    def _append_vacuous_checks(self, state) -> None:
+        """The no-op short-circuit skips ADJUDICATE (and CENSUS): every
+        frozen prediction target whose checking phase never ran must still
+        appear in prediction_check.json — as PASS_VACUOUS with a reason,
+        never silently dropped (first-customer finding: the frozen
+        max_regressions target vanished from versioned-cut-2026-08-04's
+        check). A vacuous pass counts as a pass: with zero flips the target
+        cannot be violated."""
+        pred = self._prediction()
+        if pred is None:      # exploratory cycle: nothing frozen to check
+            return
+        groups = state.setdefault("prediction_checks", {})
+        recorded_kinds = {c.get("kind")
+                          for g in groups.values() for c in g}
+        recorded_classes = {c.get("class")
+                            for g in groups.values() for c in g if "class" in c}
+        vacuous = []
+        if "max_regressions" not in recorded_kinds:
+            vacuous.append({
+                "kind": "max_regressions",
+                "expected": pred.get("max_regressions"),
+                "result": "PASS_VACUOUS",
+                "reason": "no-op short-circuit: ADJUDICATE skipped — zero "
+                          "flips, so zero regressions are observable and "
+                          "the target holds vacuously"})
+        cc = pred.get("census_classes") or {}
+        for key, kind in (("expected_shrink", "census_shrink"),
+                          ("must_not_grow", "census_must_not_grow")):
+            for cause in cc.get(key) or []:
+                if cause not in recorded_classes:
+                    vacuous.append({
+                        "kind": kind, "class": cause,
+                        "result": "PASS_VACUOUS",
+                        "reason": "no-op short-circuit: CENSUS skipped on "
+                                  "the no-op path — this frozen census-"
+                                  "class target was never checked"})
+        if vacuous:
+            groups["vacuous"] = vacuous
+            self._save(state)
+        self._write_prediction_check(state)
+
     def _write_prediction_check(self, state) -> None:
         groups = state.get("prediction_checks") or {}
         checks = (list(groups.get("measure") or [])
                   + list(groups.get("adjudicate") or [])
-                  + list(groups.get("census") or []))
+                  + list(groups.get("census") or [])
+                  + list(groups.get("vacuous") or []))
         if not checks:
             return
-        passes = sum(1 for c in checks if c["result"] == "PASS")
+        passes = sum(1 for c in checks
+                     if c["result"] in ("PASS", "PASS_VACUOUS"))
         out = {"checks": checks, "pass_rate": [passes, len(checks)]}
         if groups.get("census"):
             # census-class checks are panel-derived: DEV numbers, stamped.

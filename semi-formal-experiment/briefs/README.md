@@ -38,6 +38,18 @@ Current briefs:
   entries + re-freeze). ⚠️ The one seat that is explicitly for a HUMAN or
   frontier model — it exists to catch the author's mistakes, so the
   small-model standard below does not apply to it.
+- `change_reviewer.md` — the cycle driver's IMPLEMENT-gate review seat
+  (assignment: `assignments/review.md`, written by `cycle.py`; output:
+  `review_verdict.json`): freeze shas, declared-diff-only, tests bind
+  (incl. at least one mutant), fence scan. ⚠️ Frontier/careful seat, like
+  `golden_review.md` — it exists to catch the implementer's mistakes, so
+  the small-model standard does not apply.
+- `decision_signer.md` — the cycle driver's DECIDE seat (input:
+  `decision.draft.json` with computed fields; output: signed
+  `decision.json`): the keep/revert standard (document-side adjudications
+  decide; census numbers inform, never decide) and when justification is
+  mandatory. ⚠️ Careful seat — a human, or a frontier model under recorded
+  authorization; it holds the loop's keep/revert authority.
 
 None of the audit's owed briefs remain outstanding (REPRODUCIBILITY.md,
 status audit items 1–3: all resolved).
