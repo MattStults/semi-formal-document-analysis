@@ -65,7 +65,13 @@ loudly. Contract:
 * Floor: normalized quote (after `inventory._norm`) shorter than 25 characters,
   OR the post-restriction candidate set still exceeds 1 while the quote is a
   proper substring of every candidate (i.e., the quote cannot discriminate
-  among them).
+  among them). [Note per PORTFOLIO_REVIEW F12 ruling: **the structural arm —
+  "cannot discriminate among the candidates" — is the LOAD-BEARING predicate;
+  the 25-character floor is a backstop**, catching pathological quotes before
+  candidate enumeration ever runs. Both arms are KEPT: neither subsumes the
+  other (a long quote can still be a common substring of several candidates;
+  a short quote can be refused without enumerating). Any future recalibration
+  moves the backstop floor, never the structural arm's semantics.]
 * On refusal the join returns no clauses and a machine-readable flag
   (`degenerate_quote_refused`) that `benchmark.map_reference` records as a NEW
   stratum alongside the existing four (`STRATA`), so the accounting identity
@@ -81,9 +87,17 @@ loudly. Contract:
   floor moves down, not the refusal semantics.
 
 Versioning: the join gains a recorded `join_version` (v1 = today's behavior,
-v2 = restricted + refusal) surfaced in snapshot/census config identity, the
+v2 = restricted + refusal), the
 PRICING_VERSION pattern, so the old behavior stays reachable and CYCLE_DESIGN
-amendment F9 (reconstruction compatibility) is satisfied.
+amendment F9 (reconstruction compatibility) is satisfied. **Where it lives
+[note per PORTFOLIO_REVIEW F12 ruling]: `join_version` belongs in CENSUS
+config identity, NOT snapshot identity.** The join is downstream of the
+scorer (§3 prediction 3: clause-level snapshots cannot flip on it); stamping
+it into snapshot identity would spuriously fork every snapshot tag over a
+component that cannot affect snapshot content. The census index header (and
+every passage-level report) carries `join_version`; snapshots do not. The
+checkpoint manifest additionally carries a census-index sha, per the same
+ruling.
 
 ## 3. Falsifiable predictions (pre-registered for the fix cycle, checkable with zero panel contact)
 
@@ -102,7 +116,14 @@ matches, which is a different and worse defect than the one being fixed.
 ## 4. CRITICAL — the re-measurement protocol
 
 This join gates every historical passage-level metric. The fix therefore
-obliges re-measurement, and re-measurement obliges disclosure. Protocol:
+obliges re-measurement, and re-measurement obliges disclosure. **Timing
+[note per PORTFOLIO_REVIEW, consolidated order]: the re-measurement does
+NOT run with the fix cycle (P1) — it RIDES THE S8 CHECKPOINT CENSUS**, the
+single pre-registered DEV read where all deferred checks and disclosures
+land together. The fix cycle itself closes on §3's mechanism-level
+predictions with zero panel contact; the delta table, README/HANDOFF
+disclosure sentences, and the addendum below are produced once, at S8.
+Protocol (executed at S8):
 
 1. **Scope of affected published numbers.** (a) The README results table —
    tool +0.309 (audited selection, dev), +0.28 (first shipped config), bag

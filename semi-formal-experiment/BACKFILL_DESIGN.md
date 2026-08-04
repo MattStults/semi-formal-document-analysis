@@ -90,6 +90,14 @@ own them; the brief may add procedure but never loosen these:
 6. **Decoration only.** The seat may not touch stems, polarity, kinds,
    glosses, spans, or atom membership. Anything it believes wrong outside the
    chain is recorded as a `flag` for a future cycle, never edited here.
+7. **Brief silence on pricing [amended per PORTFOLIO_REVIEW F10i].** The
+   seat's brief is SILENT on pricing and discounts: it must not mention
+   cycle 5, patient pricing, the mismatch discount, or the fact that chains
+   will later carry any score consequence at all. The seat's question is
+   purely "what does the clause text license?" — a seat that knows chains
+   discount matches has a direction to lean; this fence is one of the three
+   F10 conditions under which the labels-direct-attention line holds
+   portfolio-wide.
 
 Verdict schema (closed, chain-audit style): per candidate instance
 `{clause_id, name, verdict: chain_licensed|no_chain_licensed|unclear,
@@ -148,11 +156,17 @@ worksheet.
 
 **Golden review seat (briefs/golden_review.md, frontier or human) —
 two-tier:**
-- a pre-registered seeded sample of all `chain_licensed` verdicts (proposed
-  20%, seed recorded in the manifest), audited against clause text under the
+- a pre-registered seeded sample of all `chain_licensed` **and all
+  `no_chain_licensed`** verdicts (proposed 20% of each, seed recorded in the
+  manifest), audited against clause text under the
   correction rule ("factual, never taste"); a sampled error rate above a
   pre-registered bar (proposed: any 2 errors in the sample) fails the batch
-  back to the seat rather than patching individual entries;
+  back to the seat rather than patching individual entries. [Amended per
+  PORTFOLIO_REVIEW F10i: the original sample covered only `chain_licensed`
+  verdicts — but a seat that under-chains is invisible to a
+  landed-chains-only audit, and "chain omitted where the text licenses one"
+  is exactly the error a pricing-aware lean would produce. Both verdict
+  directions are sampled;]
 - **100% review, REQUIRED (adopted from CYCLE5_REVIEW and CYCLE5_DESIGN
   Q2), of every backfilled chain landing on: (i) any clause in any current
   predicted set of any DEV behaviour, (ii) any ever-adjudicated-correct
@@ -203,7 +217,16 @@ pricing exists. **Computed against relevance.py, it is not:**
 - The atom channel matches on EXACT `(name, kind)` (`_atom_score`:
   `nk.get(name)`), and `atom_idf`/`atom_df` are keyed by exact name. **51 of
   the 98 query atom names (behavior_atoms_audit_v1, 3 DEV behaviours) also
-  occur as chain-free candidate names in the clause annotation.** Backfilling
+  occur as chain-free candidate names in the clause annotation.** [Amended
+  per PORTFOLIO_REVIEW: name-universe stated. The "51/98" is the
+  intersection of the 98 distinct exact query atom names (union over the 3
+  DEV behaviours) with the §3 PRIMARY STRATUM's name universe — the
+  polarity-marked chain-free `act`-kind instance names in
+  annotations_ext_v1_merged (206 distinct names). Against the full §3
+  candidate universe (all chain-free acts, 316 names) the coincidence is
+  73/98; against ALL chain-free clause-side names it is 91/98. The join
+  contract must hold over the widest of these, not just the stratum the
+  backfill decorates first.] Backfilling
   `should_prioritize_safety` → `should_prioritize_safety__model_user` on a
   clause BREAKS that clause's exact match against the chain-free query atom
   (score drops), and splits the name's df (idf of the surviving chain-free
@@ -225,12 +248,26 @@ belief true. Recorded in snapshot config (fold into the pricing-version
 lineage, e.g. `PRICING_VERSION "1.2"`), legacy reachable per the F9
 contract, absent-key ⇒ legacy per CYCLE5_DESIGN I5.
 
-The decoration-blind join is its own micro-cycle with its own computed pin:
-on the CURRENT artifact it merges df where both variants of a name exist
-(computed today: the only chained-clause-atom/chain-free-query coincidence is
-`should_ask_clarifying_questions` on m0384/m0385, already exactly matched via
-the chained query variant) and removes chain tokens from lex docs — expected
-flips ~0, pinned exactly at its OPEN, adjudicated if nonzero.
+The decoration-blind join is **its own FULL standard cycle** — not a
+micro-cycle. [Amended per PORTFOLIO_REVIEW F1: this section's original
+"micro-cycle, expected flips ~0" framing rested on a ONE-SIDED coincidence
+computation and would have broken silently.] The promoted contract:
+
+- **PRICING_VERSION "1.2"**, recorded in snapshot config, legacy reachable,
+  absent-key ⇒ legacy — the full F9 ladder, not an informal note.
+- **Two-sided coincidence pin.** The original computation checked only the
+  chained-clause-atom / chain-free-query direction
+  (`should_ask_clarifying_questions` on m0384/m0385, already exactly matched
+  via the chained query variant). The review's re-derivation found the
+  missed direction — chained QUERY atoms vs chain-free clause instances:
+  helpfulness's `should_ask_clarifying_questions__model_user`, dechained,
+  would **newly match 13 chain-free clause instances**, plus the df-merge
+  repricing that follows. The join is a REAL retrieval change, not a
+  bookkeeping one. The OPEN pin must compute BOTH directions and freeze the
+  full coincidence table.
+- **Flips adjudicated, review required.** The computed flip set (including
+  the 13-clause helpfulness direction) is dossiered and adjudicated like any
+  other cycle's; `review_required: true`; keep cites the adjudications.
 
 **With the join in place, this cycle's invariance is a GATE TEST, not a
 hope:** a planted add-chain mutant must leave every channel score
@@ -252,7 +289,8 @@ same mutant must move scores).
   no directions, no regressions — the chain-repair cycle's exact prediction
   shape, measured there as 0/0/0 PASS. **Any flip falsifies the join
   contract and is a BUG in the join, not a judgment call about the
-  backfill** — the cycle halts and the join micro-cycle reopens. Nothing
+  backfill** — the cycle halts and the join cycle (§6, a full cycle per
+  PORTFOLIO_REVIEW F1) reopens. Nothing
   here is adjudicated by flips because nothing may move; the judgment
   content of this cycle lives in the verdict file and its golden review
   (§4), which is where review effort goes.
@@ -276,9 +314,11 @@ same mutant must move scores).
 The ladder, superseding CYCLE5_REVIEW's ordering (which predated the §6
 finding and the zero-flip construction):
 
-1. **Decoration-blind join micro-cycle** (§6). Tiny, computed pin, expected
-   ~0 flips. Without it, neither the backfill's zero-flip prediction nor
-   cycle 5's "chains never enter matching" premise is true.
+1. **Decoration-blind join — a FULL standard cycle** (§6; amended per
+   PORTFOLIO_REVIEW F1). PRICING_VERSION 1.2, two-sided coincidence pin
+   (including the 13-clause helpfulness direction), flips adjudicated,
+   review required. Without it, neither the backfill's zero-flip prediction
+   nor cycle 5's "chains never enter matching" premise is true.
 2. **This backfill cycle.** Zero flips by construction; all judgment in the
    verdict + golden-review artifacts.
 3. **Amended cycle 5** (CYCLE5_DESIGN rev 2, §7): prices the full backfilled

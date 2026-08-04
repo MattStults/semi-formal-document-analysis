@@ -156,8 +156,17 @@ below the frozen cut}.
 - **`no_longer_predicted` flips only on clauses with atom channel exactly
   0.0** whose section share carried them over the cut. Anything flipping
   with atom > 0 falsifies the design.
-- **helpfulness is the control cell**: 0 census FPs of this class; its
-  frozen cut (0.3131) is the highest; expect ~0 flips there.
+- **helpfulness is NOT a control cell** [amended per PORTFOLIO_REVIEW F5:
+  the original control-cell claim here was FALSE]. Zero census FPs of this
+  class does not mean zero computed flips: the review's mechanical
+  enumeration of the A1 flip set finds **4 helpfulness flips — m0379, m0381,
+  m0382, m0389** — despite its highest frozen cut (0.3131). The complete
+  computed flip set is **30 = 13 avoiding-over-and-under-caution + 13
+  harm-avoidance-to-third-parties + 4 helpfulness**, exactly AT the F4b
+  30-flip line. **The per-behaviour split (13/13/4) is pre-registered here
+  against that line**: the OPEN enumeration must reproduce it (or re-pin
+  with a written delta), and since the total sits at the budget boundary,
+  any growth triggers the F4b template rather than a judgment call.
 - Dossier-class forecast (checked only at the pre-registered checkpoint,
   DEV-stamped): `fp_section_prior` should shrink substantially — its 24
   atom-zero members are the exact mechanism signature; the 6 with atom > 0
@@ -173,7 +182,10 @@ below the frozen cut}.
   without it the predictions above are not defined. Same hard gate as
   CYCLE5_DESIGN.md §4.
 - **Flip budget (F4b).** The exact flip count must be computed label-free
-  and pinned in the OPEN manifest. If > 30, the F4b template fires: split
+  and pinned in the OPEN manifest. [Amended per PORTFOLIO_REVIEW F5:] the
+  review's computed count is **exactly 30 (13/13/4 per behaviour, above)** —
+  at the line, not under it. If the OPEN recomputation lands > 30, the F4b
+  template fires: split
   (e.g. per-behaviour sub-cycles) or pre-registered stratified sampling —
   never label-selected sampling.
 - Adjudication expectations: most flip-outs expected `correct` under the
@@ -181,7 +193,10 @@ below the frozen cut}.
   of `regression` verdicts concentrated on atom-gap clauses (the m0587
   pattern) is the designed failure signal and grounds revert or a
   vocabulary-cycle referral — that outcome is a finding, not a process
-  failure.
+  failure. [Amended per PORTFOLIO_REVIEW F13: the referral target is NAMED,
+  not generic — an m0587 regression refers to **the F13 vocab follow-up
+  batch** (the named m0587 vocabulary follow-up that F13 assigns an owner),
+  so the referral cannot dissolve into "some future vocabulary work".]
 
 ## 4. The value-selection problem — the fitting trap, and the label-free exit
 
@@ -218,8 +233,18 @@ it (d > 0, and taint applies to matches that exist). Therefore A1's gate
 clauses is identical before and after patient pricing. Magnitudes are not:
 cycle 5 lowers local totals, hence `sec[path]`, hence surviving clauses'
 section credit — so the *flip set* of this cycle differs depending on which
-baseline it is measured against. Consequence: the OPEN-pinned flip
-enumeration is valid only against a named baseline config.
+baseline it is measured against. **Scope of that invariance claim [amended
+per PORTFOLIO_REVIEW F6]: the gated set is invariant to PRICING changes
+only (cycle 5's discounts never zero an atom channel). It is NOT invariant
+to the decoration-blind join (S1 changes which exact-name matches exist,
+hence which atom channels are zero) and NOT invariant to vocabulary
+additions (S6 atoms can give a gated clause its first nonzero atom credit).
+The 30-flip enumeration in §3 is therefore valid ONLY against the named
+post-S3 baseline (cycle 5's keep config, sitting on S1+S2); it does not
+survive any later join or vocab change and must be re-enumerated if the
+cycle runs after one.** Consequence: the OPEN-pinned flip
+enumeration is valid only against a named baseline config — specifically
+the post-S3 baseline named in the manifest.
 
 **With containment credits.** Containment prices subsumption matches INTO
 the atom channel (`ContainmentIndex`, min-idf × kind_factor). A1 must read
@@ -239,9 +264,10 @@ combined with cycle 5 in a single cycle. Recommended order:
 2. This cycle second, baseline = cycle 5's keep config (or the cycle-4
    config if cycle 5 reverts — the flip enumeration recomputed and
    re-pinned against whichever, named in the manifest). Its predictions are
-   robust to the ordering in *class* terms (the gated set is invariant, per
-   above) but not in *count* terms, which is exactly what the manifest pin
-   is for.
+   robust to the ordering in *class* terms (the gated set is invariant to
+   pricing — and ONLY to pricing, per the F6 scoping above; a join or vocab
+   change voids the enumeration outright) but not in *count* terms, which is
+   exactly what the manifest pin is for.
 3. The checkpoint census runs after both, measuring the combined
    census-class deltas once, DEV-stamped — not per-cycle (F1).
 

@@ -6,7 +6,12 @@ verdicts in `audit_dossiers/ext_v1_merged__audit_v1/verdicts_merged.json`
 (32 helpfulness, 27 avoiding-over-and-under-caution; side: 45 `panel`,
 14 `both_defensible`, 0 `tool`) — now that cycle `versioned-cut-2026-08-04`
 has CLOSED (keep) and `thresholds_frozen.json` v1 pins the cuts
-(caution 0.2162, harm 0.2365, helpfulness 0.3131).
+(caution 0.2162, harm 0.2365, helpfulness 0.3131). [Amended per
+PORTFOLIO_REVIEW F13: the census's lone `fn_threshold` verdict folds into
+this pass as a **60th dossier** — same cut-drift question from the other
+side of the cut. The pass runs 59 + 1 = **60 dossiers**; the error-mass
+accounting line reports the FN case separately so the 59-FP framing stays
+exact.]
 
 ## 0. Fitting risk, stated first
 
@@ -70,7 +75,8 @@ that cannot be engineered away label-free.
 
 ### Option (a) — adjudicate-and-accept. RECOMMENDED DEFAULT.
 
-Run one seat pass over the 59 (design in §3): a document-side, label-blind
+Run one seat pass over the 60 (the 59 + the F13 `fn_threshold` dossier;
+design in §3): a document-side, label-blind
 adjudication of each standing admission under the flip adjudicator's
 threshold question. **No tool change of any kind.** The output is a disclosed
 error-mass accounting: "of the 59 standing near-cut admissions, N are
@@ -149,7 +155,14 @@ only: behaviour name/definition/query atoms; clause id, full text,
 section_path, locator; clause atoms with glosses; explain() under the frozen
 config (channels, shares, matched atoms, top lexical terms); the frozen cut
 and the clause's normalized score and distance. Schema-checked to contain no
-FORBIDDEN field. The id list (which 59) is label-derived attention —
+FORBIDDEN field. **The stripped-dossier generation config is PINNED
+[amended per PORTFOLIO_REVIEW]: the assignment artifact records the exact
+configuration the dossiers were generated under — input artifact shas,
+pricing_version, join_version, threshold artifact sha — so the dossiers are
+reproducible bytes, not "the frozen config" by reputation, and a later
+re-generation under a drifted config cannot silently masquerade as the
+adjudicated set.** The id list (which 60 — the 59 `fp_threshold_drift` ids
+plus the F13 `fn_threshold` case) is label-derived attention —
 recorded in the assignment artifact's provenance block, invisible in any
 single dossier.
 
@@ -188,7 +201,13 @@ disclosed.
 2. **Future re-cut evidence.** The verdicts enter the casebank as
    document-side case law. IF a §2(b) cycle ever opens, its post-hoc check
    (never its rule selection — §2(b).1) may compare the new rule's admissions
-   against these adjudications, the way golden cases are used.
+   against these adjudications, the way golden cases are used. **Consultation
+   rule [amended per PORTFOLIO_REVIEW F10]: ONE casebank consultation per
+   candidate rule FAMILY, consumed and recorded** — the consultation is
+   logged (which family, which cycle, date) in the casebank's own ledger,
+   and a rule family that has spent its consultation cannot iterate against
+   the casebank; a second look for the same family is the coordinate-descent
+   move the F10 fence exists to block.
 
 **What may never flow from it.** No per-clause cut nudging: no exclusion
 list, no per-id override, no post-filter dropping `admit_not_needed` clauses

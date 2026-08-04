@@ -102,9 +102,20 @@ one worksheet row per affected clause (clause text, existing atoms with
 glosses, the CURRENT full vocabulary index for reuse); a blinded seat
 proposes zero or more ADDITIONAL atoms per clause; a mechanical validator
 accepts or rejects the verdict file whole. Additions are surgical: existing
-atoms are untouched, the artifact diff is pure insertion, and the flip set is
-exactly the clauses whose channels change — small enough to adjudicate
-exhaustively.
+atoms are untouched and the artifact diff is pure insertion. **The flip
+surface, stated honestly [amended per PORTFOLIO_REVIEW F8]: it is NOT
+"exactly the clauses that received atoms".** Insertions move global
+statistics that every clause's score reads: (i) atom df/idf shift globally
+(a new instance of an existing name lowers that name's idf on every clause
+carrying it); (ii) the section channel's top-k means recompute wherever an
+edited clause's local total enters or leaves a section's top 3, moving
+section credit for every section-mate; (iii) the corpus-max normalizer
+moves whenever the argmax clause's score does, rescaling every normalized
+score in the behaviour. **Flips can land on clauses the batch never
+touched.** The complete flip set is still enumerable mechanically and is
+adjudicated in full (or under the F4b template if > 30) — but the
+prediction must be framed over the whole corpus, never over the 26-clause
+edit list.
 
 Fallback trigger, falsifiable: if the seat pass finds ≥3 clauses whose
 EXISTING atoms it flags as wrong (not merely incomplete), those clauses
@@ -142,8 +153,16 @@ A verdict file is accepted only if ALL hold, else rejected whole:
 * `quote` is a verbatim substring of the clause text (the span license — this
   is the "content licensed by clause text only" guarantee, enforced, not
   promised);
-* `name` round-trips clean through `grammar.parse_name` (polarity, principal
-  chain, stem all legal); `kind` is one of the four;
+* `name` round-trips clean through `grammar.parse_name` (polarity and stem
+  legal); `kind` is one of the four;
+* **no principal chains on coined names [amended per PORTFOLIO_REVIEW F8]:
+  a proposed atom whose name carries a principal chain is a validation
+  failure.** Deciding who acts on whom is chain-completion — the patient
+  BACKFILL's licensed job, run under its own seat, brief, and golden
+  review (BACKFILL_DESIGN.md). Letting this cycle's seat coin chained
+  names would smuggle a second, unreviewed chain-authoring channel past
+  the backfill's fences; a gap-filling atom that seems to need a chain is
+  coined chain-free here and referred to the backfill by clause id;
 * reuse-first — if `stem_of(name)` equals an existing vocabulary stem, the
   proposal MUST set `reuse: true` and use the existing name exactly (the
   kind-scoped alias guard annotate.py already enforces at draw time applies
@@ -206,15 +225,26 @@ explicitly.
    Prediction, falsifiable: additions can only raise span recall on m0242;
    any span-level regression on an existing atom means the batch edited what
    it must not, and reverts.
-3. **Sweeps as label-free uptake check**: rebuild rosters
+3. **Sweeps + re-selection — A SEPARATE CYCLE (S6b), not a step of this one
+   [amended per PORTFOLIO_REVIEW F8].** The original design folded two
+   variables into one cycle: clause-side additions AND query-side
+   re-selection. They are different changes with different flip mechanics,
+   and a single adjudication could not attribute a flip to either. Split:
+   the additions cycles (S6, one per family batch) land and CLOSE first,
+   with their own flip adjudications; then **S6b** rebuilds rosters
    (`select_audit.py rosters` — rosters carry the FULL vocabulary, so new
-   atoms appear automatically), re-run the sweep seats blind, mechanical
-   re-selection. Prediction, falsifiable: for harm-avoidance, at least the
+   atoms appear automatically), re-runs the sweep seats blind, and applies
+   mechanical re-selection as its own cycle, **measured against the
+   additions' keep snapshot** — its baseline is S6's keep, so its flips are
+   attributable to query-roster change alone. Prediction, falsifiable
+   (checked in S6b): for harm-avoidance, at least the
    Shape-A families (hateful content, extremist content) yield score-3
    verdicts and enter the query; if a family's new atoms sweep at ≤2
    everywhere, the family did not close its gap and says so at the checkpoint.
 4. **Snapshot → diff → dossier → adjudicate** the complete flip set against
-   the document (both directions; >30 flips ⇒ split the batch by family).
+   the document (both directions; >30 flips ⇒ split the batch by family) —
+   run per cycle: once for each S6 additions batch against its own baseline,
+   and once for S6b against the additions' keep.
    Keep/revert cites document-side reasons only.
 5. **Outcome measurement at checkpoints only**: whether the 26 census FNs
    actually flip is a LABELLED question — it is read once, at the next
@@ -230,8 +260,11 @@ explicitly.
 1. Freeze the clause list + provenance paragraph. 2. Build worksheet. 3. Seat
 pass. 4. Validate; gloss-review coined atoms. 5. Extend atom_refactor with
 `add` (TDD, verify-RED). 6. Apply as one migration entry per family batch.
-7. Golden span check (dev only). 8. Sweeps + re-selection. 9. Snapshot, diff,
-dossier, adjudicate, decide. 10. Census checkpoint reads the FN class once.
+7. Golden span check (dev only). 8. Snapshot, diff, dossier, adjudicate,
+decide — the S6 additions cycles CLOSE here. 9. Sweeps + re-selection as its
+own cycle **S6b**, baselined on the additions' keep (amended per
+PORTFOLIO_REVIEW F8), with its own snapshot/diff/adjudicate/decide.
+10. Census checkpoint reads the FN class once.
 
 $0 until step 3; steps 3+8 are small-model seat runs; nothing touches the
 panel at any step.

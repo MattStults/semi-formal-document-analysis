@@ -23,6 +23,28 @@ opportunity; they never justify an edge.
 Current state: budget `{max_edges: 4, max_families: 2}`, 2 edges, 1 family
 (manipulation), PRICING_VERSION 1.1, three KEEP cycles logged.
 
+## 0.5 Hard dependency: the overlay-reactivation cycle S5 (F2)
+
+[Amended per PORTFOLIO_REVIEW F2 — the finding this design silently sat
+on.] The overlay lineage has a seam: the entire keep lineage and the frozen
+cuts were measured **overlay-OFF** — containment v1.1's two edges are
+DORMANT in the spine's baseline configuration, and no design owned turning
+them back on. Widening dormant edges would grow a machine nobody is
+running. Therefore this design's manifest carries
+`depends_on: overlay-reactivation cycle S5 (closed, keep)`, verified
+against CYCLE_LOG.jsonl, and **no admission cycle opens until S5 closes**.
+
+**S5's shape, defined here** (a short, standard cycle — its own cycle, not
+a rider): turn the existing v1.1 edges ON under the audit_v1 configuration
+with the frozen cuts (`thresholds_frozen.json` asserted on both snapshots);
+snapshot → diff against the overlay-OFF baseline; the complete flip set
+dossiered and **adjudicated** like any other cycle's; keep/revert cites the
+flip adjudications only; census deferred to checkpoint. Its
+expected-effect statement is exactly §4's machinery run over the two
+existing manipulation edges. Only after S5 closes KEEP does the overlay-ON
+configuration become the baseline this design's admission cycles measure
+against.
+
 ## 1. The candidate universe and its pre-registered order
 
 ### 1.1 Enumeration (label-free, mechanical)
@@ -35,15 +57,23 @@ passes `containment._license_edge` (right-headed, no polarity, no principal,
 no negation, parses clean), restricted to families with **≥ 2 licensed
 children present in the clause vocabulary** (`_check_family_support`).
 
-⚠️ Count discrepancy, to resolve before freezing: the briefing figure for
-this enumeration is **53 fireable families**; a fresh re-run of the licensing
-enumeration above (annotations_ext_v1_merged + behavior_atoms_audit_v1)
-yields **27** (99 raw multi-member head families; 45 under a relaxed
-"≥2 clause members and touches a query name" rule). The number is a pure
-function of (vocabulary artifacts, licensing rule, query roster), so the
-freeze artifact (§1.3) pins all three and the count follows; but the 53 must
-be reproduced or corrected before the order is frozen, because an
-enumerator ambiguity discovered mid-sequence would force a re-freeze.
+Count discrepancy — RESOLVED [amended per PORTFOLIO_REVIEW F3]: the
+briefing figure of **53 fireable families is DEAD** — the review could not
+reproduce it from any (artifact, license, roster) triple; it is dropped,
+not "to be reconciled". The reproducible numbers: the license **as coded**
+over literal last-token heads gives **38 families**; the head-induction
+probe's **singularized** head convention gives **27** — and the gap between
+them is not free: **singular parents cannot license plural children under
+the license as coded** (a `restriction → restrictions`-shaped edge fails
+`_license_edge`), so the singularized convention over-promises what the
+overlay can actually connect. That plural/singular limitation is recorded
+here as a limitation of the license, not papered over by picking the
+flattering count. Resolution: **the enumerator ships as a COMMITTED script**
+(named in files_to_change, sha-pinned in the freeze artifact) and **its
+output is frozen** as the §1.3 order file; the count is whatever the
+committed script yields on the pinned inputs (38 under the literal-head
+convention, which is the license's own). **Nothing admits until the script
+is committed and its output frozen.**
 
 ### 1.2 The order, and why it is what it is
 
@@ -79,7 +109,13 @@ gate rejects is recorded and skipped, not reordered around.
 
 `containment_admission_order.json` (new artifact): the enumerator inputs by
 sha (annotations artifact, each behaviour-atom artifact, grammar.py,
-containment.py LICENSE), the full ordered candidate list with per-family
+containment.py LICENSE, **and the committed enumerator script itself**),
+**plus the `pricing_version` and `join_version` the order was computed
+under [amended per PORTFOLIO_REVIEW F7]** — fireability counts read
+(query_atom, clause) connectivity, which both the pricing lineage
+(1.2/2.0) and the join version (v1/v2) change, so an order file that does
+not name them is not reproducible — the full ordered candidate list with
+per-family
 fireability and child rosters, and the census-provenance disclosure. Frozen
 (own sha) before the first widening cycle. Re-enumeration is permitted ONLY
 at declared checkpoints (vocabulary changed — e.g. after VOCAB_GAPS additions
@@ -158,8 +194,14 @@ machinery `explain()` already exposes).
 
 Falsifiable use: the adjudicated flip set of the cycle must be EXPLAINED by
 this statement — every newly-predicted clause must carry at least one
-predicted record (or be a tagged threshold-drift flip, adjudicated as a cut
-question per policy §3, the m0422 pattern). An unexplained flip is a bug
+predicted record, or be a tagged threshold-drift flip (adjudicated as a cut
+question per policy §3, the m0422 pattern), **or carry the tag
+`section_gate_reactivation` [amended per PORTFOLIO_REVIEW F7]: once the
+section evidence gate (SECTION_PRIOR_DESIGN A1, landed at S4) is in force,
+an admission that gives a previously atom-zero clause its FIRST atom credit
+also un-gates that clause's section credit — a legitimate second-order
+effect of the admission, adjudicated as such, never booked as an
+unexplained flip.** An unexplained flip is a bug
 investigation that blocks the KEEP decision. The statement also feeds §1.2's
 fireability number, so the order and the prediction can never disagree.
 
@@ -213,7 +255,11 @@ vocabulary change starts from a legible history, not a fresh argument.
 
 ## 7. Order of operations, per cycle
 
-1. Resolve the §1.1 count discrepancy; freeze `containment_admission_order`.
+0. Verify `depends_on: overlay-reactivation cycle S5 (closed, keep)`
+   against CYCLE_LOG.jsonl (§0.5; amended per PORTFOLIO_REVIEW F2).
+1. Commit the enumerator script and freeze its output as
+   `containment_admission_order` (§1.1/§1.3 as amended per F3 — the 53 is
+   dead; the committed script's count on the pinned inputs governs).
 2. Take the head-of-order family → §2 gate (gloss review, kind statement,
    floor check, reachability statement). 3. Freeze expected_effect.json.
 4. Edit containment.json (edges + exact-fit budget). 5. Snapshot, diff,

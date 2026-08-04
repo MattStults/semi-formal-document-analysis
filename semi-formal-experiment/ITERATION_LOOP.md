@@ -76,8 +76,14 @@ review's finding 1 (candidate provenance) by design rather than by fence:
    score-1-irrecoverable caveat stated. The census seats then measure
    whether error-class distributions transfer. These 6 cells are neither
    DEV nor sealed TEST: they are the GENERALIZATION SET, burned once.
-   The constitution stays parked as sealed TEST (plus the two expert
-   salience anchors), unlocked only at a final pre-registered battery.
+   The constitution stays parked as sealed TEST (plus the THREE
+   anthropic-side expert salience anchors — two pinned, one
+   qualitative/unpinned), unlocked only at a final pre-registered battery;
+   the one openai-side anchor (anchor 4) is consumed exactly once, at the
+   generalization evaluation. [Amended per PORTFOLIO_REVIEW addendum
+   ruling 1: "the two expert salience anchors" was a miscount —
+   expert_salience.json holds three anthropic-side anchors plus one
+   openai-side.]
 6. **Fallback, explicit.** If exhaustive delta adjudication proves too
    expensive in practice, the fallback is Matt's to invoke — demote further
    toward dev-set iteration knowingly, never by drift.

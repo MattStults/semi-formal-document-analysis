@@ -86,10 +86,22 @@ m0535 (`Favoring longer responses:`), m0539 (`Favoring shorter responses:`) —
 structural headings written as body paragraphs, kind `meta`, which "consume a
 ¶ but carry no content and never anchor anything" (segmentation summary).
 They are the clause-side mirror of the degenerate-quote problem: a short
-heading-like string that containment could bind to spuriously. Design: mark
-them with a `content_empty: true` field at segmentation time and have the v2
-join skip them as candidates (a passage whose quote is exactly such a heading
-is refused under the degenerate floor anyway). They are NOT deleted and NOT
+heading-like string that containment could bind to spuriously. Design
+[amended per PORTFOLIO_REVIEW F9]: **`content_empty` is a CODE-SIDE
+predicate computed inside the v2 join, not a field written into the clause
+artifact.** The original design ("mark them with a `content_empty: true`
+field at segmentation time") would edit `modelspec_clauses.json` — a
+re-freeze of the clause artifact's sha mid-spine, tripping every snapshot
+input pin for a bookkeeping flag. Instead the v2 join computes the
+predicate mechanically per candidate clause: kind `meta` AND heading-shaped
+text (a short bold-heading / trailing-colon pseudo-heading form, matching
+exactly the four ids above on the current artifact — the predicate's
+membership {m0393, m0398, m0535, m0539} is pinned as a test), and skips
+such clauses as candidates (a passage whose quote is exactly such a heading
+is refused under the degenerate floor anyway). The clause artifact is not
+touched; any future segmentation-time field migration is deferred to a
+declared artifact-shape cycle (§5, option-2 register). The clauses are NOT
+deleted and NOT
 renumbered — ¶ arithmetic against the panel must stay stable. Acceptance:
 join results over the current universe are unchanged by the skip (predicted
 delta: zero — nothing currently maps to them; that prediction is itself the

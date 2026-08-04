@@ -64,10 +64,15 @@ A new optional field on each entry of `behaviours_query.json`:
   behaviour's own `name + definition` text. Revision 1 assigned this check to
   `validate_behaviours.py`; that module opens `data/behaviours.json` — a
   FORBIDDEN, panel-side file — and may not host a check that licenses a
-  query-side scoring input. The check now lives in **`patient.py` itself**
-  (`patient.validate_query_patients(behaviours_query_path)`, plus a CLI
-  entry), which reads ONLY `behaviours_query.json` and `grammar.PRINCIPALS`,
-  and joins the query-adjacent set scanned by `test_no_reference_leak.py`.
+  query-side scoring input. The check is housed in **`validate_query.py`**
+  (a dedicated query-side module: `validate_query.validate_query_patients(
+  behaviours_query_path)`, plus a CLI entry), which reads ONLY
+  `behaviours_query.json` and `grammar.PRINCIPALS`, and joins the
+  query-adjacent set scanned by `test_no_reference_leak.py`. [Amended per
+  PORTFOLIO_REVIEW, worktree-core reconciliation: revision 2 housed this
+  check in `patient.py`; the worktree implementation housed it in
+  `validate_query.py`, and the review adopts the worktree's choice as the
+  design's — `validate_query.py` is declared in files_to_change (§6).]
   `validate_behaviours.py` is not touched by this cycle. The declaration is
   authored by us, licensed by the query file's own prose — never by a panel
   number. The panel file is never opened; the field lives in the query-side
@@ -197,7 +202,19 @@ behavior_atoms_audit_v1, Otsu):
 
 ### 1.4 The constant
 
-`patient_mismatch_discount = 0.25`, a new `Weights` field. HAND-SET, with the
+`patient_mismatch_discount = 0.25`, a **module constant in `patient.py`** —
+NOT a `Weights` field. [Amended per PORTFOLIO_REVIEW, worktree-core
+reconciliation: revision 2 specified a Weights field; the worktree
+implemented a module constant, and the review judged that the BETTER choice
+— the constant is unsweepable by contract (invariant 9), and a Weights field
+would advertise it as a tunable weight, which is exactly what it must never
+be. Adopted as the design's choice; `relevance.py` leaves the diff (§6).
+One further reconciliation item recorded here because this is where the
+rationale lives: the worktree constant's docstring still carries the
+pre-audit rationale (chains as a merely-attested, unaudited population);
+it is STALE and must be corrected at merge to the adjudicated basis —
+all 109/109 chain instances reviewed against clause text in the
+chain-repair cycle.] HAND-SET, with the
 reasoning stated so it can be attacked: a recorded wrong patient is stronger
 counter-evidence than an unstable kind (kind_mismatch_discount 0.4) — kind
 drift is an annotation-batch artifact, a principal chain is a deliberate
@@ -222,10 +239,19 @@ patient-contrast cases before build.
   ContainmentIndex** (which with edges=() is bit-identical to RelevanceIndex).
   Nothing constructs it with patients unless a caller opted in by name;
   nothing silently reads behaviours_query.json's field.
-- `patient.py` also hosts the §1.1 anchor check (the panel-blind housing,
-  F4) and joins the set scanned by `test_no_reference_leak.py`.
-- `PRICING_VERSION = "2.0"` in patient.py; snapshot config records
-  `pricing_version` and the per-slug declared patients (with the
+- The §1.1 anchor check is hosted in `validate_query.py` (the panel-blind
+  housing, F4, per the worktree reconciliation above); both `patient.py` and
+  `validate_query.py` join the set scanned by `test_no_reference_leak.py`.
+- `PRICING_VERSION = "2.0"` in patient.py. **Version lineage: 2.0 ⊃ 1.2**
+  [amended per PORTFOLIO_REVIEW F1] — v2.0 is defined ON TOP of the S1
+  decoration-blind join (PRICING_VERSION "1.2", BACKFILL_DESIGN §6, now a
+  full standard cycle), not directly on 1.1: patient pricing presumes chains
+  are already invisible to the v1-era match/idf/lex channels, which is
+  exactly what 1.2 makes true. Cycle 5's baseline snapshot must record
+  pricing_version "1.2"; the dispatch ladder is absent ⇒ legacy, ≤ 1.1 ⇒
+  pre-join classes, "1.2" ⇒ decoration-blind join without patient pricing,
+  "2.0" ⇒ join + patient pricing. Snapshot config records `pricing_version`
+  and the per-slug declared patients (with the
   behaviours_query sha it already records). Old behavior reachable forever:
   construct without `query_patients`, or any snapshot recording
   pricing_version ≤ 1.1 reconstructs through the old classes — the F9
@@ -296,10 +322,15 @@ d=0.25, frozen cuts):**
   disabled; bit-identity is a gate test, not a prediction).
 - **d-plateau:** flip set identical for d ∈ {0.1, 0.25, 0.4} (§1.4).
 
-**Staleness flag — what must be RECOMPUTED at OPEN.** The pin above was
+**Staleness flag — what must be RECOMPUTED at OPEN.** [Amended per
+PORTFOLIO_REVIEW: baseline named.] The pin above was
 computed before the chain-repair cycle landed, and this cycle now baselines
-on a post-repair (and, per §7, post-backfill) snapshot. At OPEN, rerun the
-simulation on the actual baseline and re-pin, before PREDICT freezes:
+on a post-repair, post-join, post-backfill snapshot: **the recomputation
+baseline is the S2 patient-backfill cycle's keep snapshot** (which sits on
+the S1 decoration-blind-join keep at pricing_version 1.2, which sits on the
+chain-repair keep) — named here so "the actual baseline" is not a floating
+referent. At OPEN, rerun the
+simulation on that baseline and re-pin, before PREDICT freezes:
 
 - MUST re-pin: the flip count and identity, the class composition, the
   d-plateau, the normalizer deltas. The repair rewrote 5 names artifact-wide
@@ -351,9 +382,12 @@ reviewer (§5, Q1).
   luck of the current vocabulary; the test pins the fact, not a law.)
 - **I2 — monotone-downward ON RAW SCORES (F3).** All factors lie in [d, 1.0]
   with d ≥ 0; channel scores stay ≥ 0; for every (behaviour, clause):
-  **raw** score_v2.0 ≤ **raw** score_v1.1, with equality wherever no mismatch
+  **raw** score_v2.0 ≤ **raw** score_v1.2, with equality wherever no mismatch
   evidence exists; corollary tested directly on raw scores at a fixed cut:
-  predicted_v2.0 ⊆ predicted_v1.1. **This claim is NOT made for normalized
+  predicted_v2.0 ⊆ predicted_v1.2. [Amended per PORTFOLIO_REVIEW F1: the
+  comparison baseline is v1.2 (the S1 decoration-blind join), per the
+  2.0 ⊃ 1.2 lineage — monotonicity vs v1.1 is NOT claimed, because the join
+  itself moves scores in both directions.] **This claim is NOT made for normalized
   scores**: the corpus-max normalizer is itself a score, and when the argmax
   clause is tainted the normalizer falls and every bystander's normalized
   score RISES. Reported/normalized movement is therefore two-sided by
@@ -476,9 +510,11 @@ and review must verify it against the log line, not this file.
   Model-Spec cells; constitution cells untouched); baseline snapshot tag =
   the latest closed KEEP configuration per §7;
   `pricing_version: "2.0"`.
-- **files_to_change:** `patient.py` (new: PatientIndex, PRICING_VERSION,
-  anchor check per F4), `relevance.py` (Weights field
-  `patient_mismatch_discount` only), `behaviours_query.json` (the three
+- **files_to_change** [amended per PORTFOLIO_REVIEW, worktree-core
+  reconciliation]: `patient.py` (new: PatientIndex, PRICING_VERSION, and the
+  `patient_mismatch_discount` module constant per §1.4), `validate_query.py`
+  (new: the §1.1 anchor check — declared here so the housing choice is in
+  the diff, not a surprise), `behaviours_query.json` (the three
   `patients` declarations ONLY — I6), `snapshot.py` + `dossier.py` (config
   identity, version dispatch incl. absent⇒legacy, normalizer_drift tagging,
   explain passthrough), `test_patient.py` (new; registered in
@@ -548,9 +584,13 @@ The question revision 1 left implicit, answered explicitly. Two orderings:
   comfortable; the real question is not.
 
 Binding consequence: cycle 5's baseline snapshot tag = the backfill cycle's
-keep snapshot (which itself sits on the chain-repair keep); its manifest adds
+keep snapshot (which itself sits on the S1 decoration-blind-join keep at
+pricing_version 1.2, which sits on the chain-repair keep); its manifest adds
 `depends_on: patient-backfill (closed, keep)` alongside the cycle-4
-dependency, verified against CYCLE_LOG.jsonl. If the backfill cycle reverts
-or stalls, cycle 5 MAY open against the chain-repair baseline instead — but
-then §0's 1/155 scope statement is the design's own argument that it
+dependency, verified against CYCLE_LOG.jsonl. [Amended per PORTFOLIO_REVIEW
+F1: fallback re-based.] If the backfill cycle reverts
+or stalls, cycle 5 MAY open against **the S1 decoration-blind-join keep
+baseline** instead — never against the bare chain-repair baseline, because
+the 2.0 ⊃ 1.2 lineage (§1.5) requires the join underneath patient pricing —
+but then §0's 1/155 scope statement is the design's own argument that it
 probably should not.

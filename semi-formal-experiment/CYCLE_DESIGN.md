@@ -100,8 +100,12 @@ anything above that conflicts)
    and the DECIDE signature are NON-OVERRIDABLE; overriding PREDICT demotes
    the cycle to `exploratory`, whose CLOSE cannot record KEEP. The
    one-variable check is TWO-SIDED: declared files changed AND a sha-pinned
-   closure of undeclared inputs (captured at OPEN) unchanged — this workspace
-   has concurrent agents and no git.
+   closure of undeclared inputs (captured at OPEN) unchanged. [Corrected per
+   PORTFOLIO_REVIEW F12: the original "this workspace has concurrent agents
+   and no git" rationale is STALE — the repo IS git-tracked (which is what
+   validates the git-primary A-side reconstruction, tooling item 0b). The
+   two-sided closure check stands on its own merits: concurrent agents, and
+   sha-pinned closure being the check the ceremony can verify mechanically.]
 6. **Census scope pin (F7).** Manifest declares `census_scope: dev`; the
    driver hard-pins the behaviour list to the recorded DEV cells; touching a
    held-out cell outside a pre-registered checkpoint is a non-overridable
