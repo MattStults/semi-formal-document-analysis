@@ -1,0 +1,72 @@
+{
+ "census": "deferred_to_checkpoint",
+ "census_delta": null,
+ "cycle": "chain-repair-2026-08-04",
+ "date": "2026-08-04",
+ "decision": "keep",
+ "exploratory": false,
+ "fix_description": "Apply the 12 chain-audit corrections (chain_audit/verdicts.json) as five atom_refactor rechain migrations: four whole-artifact principal-chain repairs __user -> __model_user (must_disclose_response_changes, must_preserve_user_agency, must_advise_immediate_help, should_support_world_connection; 11 agent_missing verdicts) plus one clause-scoped fold shouldnot_judge__model_user_developer -> shouldnot_judge__model_user --clause m0271 (unlicensed developer patient; m0170's verdict-correct instance of the same name is untouched). All applied with --apply --date 2026-08-04, reasons citing chain_audit/verdicts.json, logged and replayable in vocabulary_migrations.json.",
+ "flip_tallies": {},
+ "flip_verdicts_reused_from": null,
+ "gate": {
+  "closure_checked": [
+   "behaviours_query.json",
+   "constitution_clauses.json",
+   "modelspec_clauses.json",
+   "test_atom_refactor.py",
+   "test_grammar.py",
+   "test_no_reference_leak.py",
+   "thresholds_frozen.json"
+  ],
+  "files_changed": [
+   "annotations_ext_v1.json",
+   "annotations_ext_v1_merged.json",
+   "behavior_atoms_audit_v1.json",
+   "vocabulary_migrations.json"
+  ],
+  "review": {
+   "by": "change-review seat, Claude (Fable 5), independent session 2026-08-03 \u2014 not the implementer",
+   "notes": "FREEZE: manifest.json/prediction.json sha256 match state.json frozen shas exactly (5abae982\u2026, 07ad0f43\u2026); no manifest_amendments.json present; all 7 closure_shas re-hashed and match. DECLARED DIFF: HEAD (4cf47d6) copies of the 3 tracked files hash to open_shas; vocabulary_migrations.json absent at HEAD and its OPEN sha f4a7f858\u2026 independently reproduced as the tool-canonical empty log (atom_refactor._dumps trailing_nl=False); the log's per-migration sha chain links from every OPEN sha to every current on-disk sha with no gaps. ONE UNDECLARED CHANGE, judged non-blocking: chain_audit/worksheet.json moved \u2014 it is a DERIVED audit view (chain_audit_worksheet.py builds it deterministically from annotations_ext_v1_merged.json, a declared file); I rebuilt it independently in scratch and it byte-equals the working copy, the untracked pre_repair backup byte-equals the HEAD version, and no query/measurement module reads it \u2014 nothing can ride in on it, but the manifest should have declared it, and verdicts.json (old names) no longer validates against the regenerated worksheet (historical-record wrinkle, not pipeline). CONTENT: exactly the 5 rechains from chain_audit/verdicts.json (11 agent_missing across 4 names: disclose 1 + preserve 3 + advise 2 + world_connection 5; 1 unlicensed fold at m0271); n_rewritten counts (3/7/5/11/3) arithmetically consistent with atoms+by_clause mirrors+vocabulary key. Spot-verified 4 corrections against modelspec_clauses.json quotes: m0197 ('the assistant must preserve user agency', 'must be transparently indicated to the user'), m0276 ('always advising that immediate help should be sought'), m0313 ('The assistant should support the user's connection') \u2014 assistant is the actor, user the patient, so __model_user is the agent-first chain; m0271's quote names only 'shaming the user' (no developer) while m0170's says 'shouldn't judge the user or developer' \u2014 fold correct, retention correct. Verified m0170 retains shouldnot_judge__model_user_developer (confined to m0170; vocabulary key kept) while m0271 carries shouldnot_judge__model_user; ZERO occurrences of any of the 4 old names in all changed artifacts and in annotations_ext_v1_patch.json (manifest note 2 confirmed). REPLAY: copied all 3 tracked artifacts from git HEAD and replayed through vocabulary_migrations.json via atom_refactor.replay_artifact \u2014 byte-identical to working tree for all 3. TESTS: gate set (test_atom_refactor.py, test_grammar.py, test_no_reference_leak.py) run twice, 133 passed. MUTANTS: (1) scratch copy of the log with the fold entry's clauses scope corrupted to m0170 \u2014 replay byte-compare detects the mismatch; (2) atom_refactor.py rechain scope sabotaged in place (scope=None) \u2014 killed by test_rechain_clause_scoped_folds_into_the_existing_key and test_rechain_leaves_unrelated_lines_byte_untouched (2 failed), then restored byte-exact (sha cf2fe287\u2026 re-verified, suite re-green). FENCE: all 31 FORBIDDEN tokens scanned against the 4 changed artifacts; sole hit is the substring 'verdicts' inside the reason strings citing chain_audit/verdicts.json \u2014 the chain audit's own grammar-verdict file (document-side, contains no panel/judge/label data), a filename collision, not a panel reference; no panel file, loader, or laundering path is named anywhere in the changed artifacts. No panel score, judge rating, or gold value appeared in any material reviewed.",
+   "verdict": "proceed"
+  },
+  "tests_passed": [
+   "test_atom_refactor.py",
+   "test_grammar.py",
+   "test_no_reference_leak.py"
+  ]
+ },
+ "justification": "Document-side basis: the chain-audit verdicts (12 grammar-convention corrections, adjudicated against clause text, independently spot-verified by the review seat). The change was designed measurement-invariant \u2014 renames landing on both clause and query sides \u2014 and measured exactly so: 0 flips, 3/3 mechanism predictions PASS, cuts byte-stable under the frozen artifact. Two mid-cycle instrument fixes (rechain op; dossier zero-flip guard order) disclosed and tested. The annotation now parses agent-first everywhere; cycle 5 and the backfill inherit clean chain semantics.",
+ "noop": false,
+ "overrides": [],
+ "prediction_check": {
+  "checks": [
+   {
+    "expected": {
+     "max": 0,
+     "min": 0
+    },
+    "kind": "flip_count",
+    "observed": 0,
+    "result": "PASS"
+   },
+   {
+    "expected": [],
+    "kind": "directions",
+    "observed": [],
+    "result": "PASS"
+   },
+   {
+    "expected": 0,
+    "kind": "max_regressions",
+    "observed": 0,
+    "result": "PASS"
+   }
+  ],
+  "pass_rate": [
+   3,
+   3
+  ]
+ },
+ "shape": "code",
+ "signed_by": "session coordinator (Claude), on Matt's standing authorization for the cycle ladder"
+}

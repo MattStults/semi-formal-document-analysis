@@ -231,6 +231,34 @@ def test_stale_input_fails_loudly_not_wrong_dossiers(env):
     assert "ann.json" in msg and "sha" in msg.lower()
 
 
+def test_zero_flips_needs_no_reconstruction_so_staleness_is_moot(env, tmp_path):
+    """⚠️ Found by the chain-repair cycle (2026-08-04): an ARTIFACT-fix cycle
+    changes its annotations file BY DEFINITION, so the baseline snapshot's
+    recorded sha can never match disk at MEASURE time — and the staleness
+    guard fired before the flip count was consulted, blocking even the
+    zero-flip case where there is nothing to reconstruct and staleness is
+    moot. Order: count flips first; only a non-empty flip set requires
+    reconstruction (and may therefore refuse on staleness)."""
+    import copy
+    a = snapshot.load_snapshot(os.path.join(env["snap_dir"], "a.json"))
+    b = copy.deepcopy(a)
+    b["tag"] = "b2"
+    # a config-identity change with IDENTICAL scores/cuts -> zero flips
+    b["config"]["inputs"]["annotations"] = dict(
+        b["config"]["inputs"]["annotations"],
+        sha256="0" * 64)
+    sd = tmp_path / "snaps2"; sd.mkdir()
+    for s in (a, b):
+        snapshot.write_snapshot(s, out_dir=str(sd))
+    # drift the A-side artifact on disk so _side would refuse if reached
+    edited = json.load(open(env["ann"]))
+    edited["clauses"].append({"clause_id": "c9", "atoms": []})
+    _write(env["tmp"] / "ann.json", edited)
+    ds = dossier.build_dossiers("a", "b2", snap_dir=str(sd),
+                                inputs_dir=str(env["tmp"]))
+    assert ds == []   # empty flip set returned, no StaleConfigError
+
+
 # ------------------------------------------------------------- empty diff
 
 def test_empty_diff_says_so_explicitly(env, tmp_path, capsys):

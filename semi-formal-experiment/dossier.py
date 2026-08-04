@@ -268,6 +268,18 @@ def build_dossiers(tag_a: str, tag_b: str, *, snap_dir: str | None = None,
     snap_b = snapshot.load_snapshot(os.path.join(snap_dir, f"{tag_b}.json"))
     d = snapshot.diff_snapshots(snap_a, snap_b)
 
+    # COUNT FLIPS BEFORE RECONSTRUCTING. An artifact-fix cycle changes its
+    # annotations file by definition, so the BASELINE snapshot's recorded
+    # input shas can never match disk at measure time — and with zero flips
+    # there is nothing to reconstruct, making staleness moot. Found by the
+    # chain-repair cycle (2026-08-04), where the guard blocked a clean
+    # zero-flip measurement. A NON-empty flip set still reconstructs both
+    # sides sha-verified and still refuses on staleness, unchanged.
+    n_flips = sum(len(d["behaviours"][s][direc])
+                  for s in d["behaviours"] for direc in DIRECTIONS)
+    if n_flips == 0:
+        return []
+
     side_a = _side(snap_a, inputs_dir)
     side_b = _side(snap_b, inputs_dir)
 
