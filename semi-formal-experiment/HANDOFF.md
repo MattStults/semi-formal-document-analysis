@@ -1,6 +1,114 @@
-# HANDOFF — spec ontology spike (2026-08-01; state section refreshed 2026-08-04)
+# HANDOFF — spec ontology spike (2026-08-01; state refreshed 2026-08-04 LATE)
 
-## ⭐ STATE AS OF 2026-08-04 — the iteration-loop arc. Read this section first.
+## ⭐⭐ STATE AS OF 2026-08-04 LATE — the fix ladder in execution. READ THIS FIRST.
+
+This section supersedes the one below it (which described the portfolio when it was
+**designs only**). Everything below remains accurate as provenance and for the
+mechanics it documents; where the two disagree about *what has been executed*, this
+section wins.
+
+### One paragraph
+
+The reviewed design portfolio is now **being executed** under the consolidated order
+in `PORTFOLIO_REVIEW.md`. Four more cycles closed (S1 join, P3 drift disclosure, S2
+patient backfill — all KEEP; **S3 patient pricing — REVERT**, the program's first),
+P1 is built and parked in a worktree, and the S3 revert produced the most important
+finding of the ladder so far: **patient pricing as designed prices on the
+grammatical recipient of an act, not on the party the harm falls upon**, which
+deletes clauses an auditor needs. The pre-registered zero-regression bound caught
+it; a frontier-panel comparison would have called the same change a net win.
+
+### What closed since the portfolio review
+
+| cycle | decision | predictions | what it did |
+|---|---|---|---|
+| `decoration-blind-join-2026-08-04` (S1) | KEEP | 4/4 | Join matches on dechained names; chains survive as `ContainmentIndex.chains` metadata. **This is what makes chains free to carry.** |
+| P3 drift-standing pass | disclosure only | n/a | 60 standing threshold-class admissions audited: 39 defensible / 20 not-needed / 1 unclear. `drift_standing/DISCLOSURE.md`. No mechanism change by design. |
+| `patient-backfill-2026-08-04` (S2) | KEEP | 3/3 | 264 principal chains added (373 total, was 109), each with a validator-checked verbatim license quote. Zero score effect, proven bit-identical. |
+| `patient-pricing-2026-08-04` (S3) | **REVERT** | 19/19 measured, **bound breached** | Patient discount d=0.10 + taint cap. 18 flips: 12 correct, 4 confirmed regressions vs `max_regressions: 0`. See findings below. |
+
+### ⛔ THE S3 FINDING — read before attempting S3b
+
+The mechanism is wrong in two specific, document-grounded ways (both confirmed by a
+split-blind frontier verification leg; verdicts in
+`cycles/patient-pricing-2026-08-04/flip_verdicts.json` and
+`flip_verdicts_verification_leg.json`):
+
+1. **Taint inheritance across siblings.** A patient-free atom gets discounted through
+   a *sibling* act atom in the same clause that happens to be `__model_user` — and in
+   example passages the model's remedial act is almost always addressed to the user.
+   So any example whose harm falls on a third party but whose modelled response
+   speaks to the user is tainted regardless of who is harmed (m0275 "I want to shoot
+   someone", m0466 anthrax-in-iambic-pentameter, contested m0108).
+2. **Recipient ≠ harm-bearer.** De-escalating *the user's* radicalization protects
+   *third parties* (m0239); a clause's generic noun "People" annotates `third_party`
+   while the behaviour declares user/developer (m0018). The chain records the
+   grammatical recipient — correctly, per the annotation convention — and the pricing
+   reads it as the harm's bearer.
+
+**What worked and must be preserved in any redesign:** patient-saturated wrong-patient
+clauses were correctly removed (m0276 self-harm, m0290 eating-disorder — the canonical
+census false positives); the golden-derived `d=0.10` and the taint *cap* behaved exactly
+as `cycles/patient-pricing-2026-08-04/DISCOUNT_DERIVATION.md` predicted. **The defect is
+patient PROVENANCE, not the discount arithmetic.** S3b must be beneficiary-aware and must
+not inherit taint across act/situation siblings in example passages. It needs a written,
+reviewed design first — do not re-attempt by tuning constants.
+
+Also on the S3 record: `DISCOUNT_DERIVATION.md` is a reusable pattern — the constant was
+derived **blind to flip sets** from golden patient-contrast cases, and that derivation is
+what discovered the F-linearity defect (a dense all-wrong-patient clause retained the most
+residual mass). When a constant's plateau breaks, re-derive blind; never re-tie-break after
+seeing which clause crosses (ruled explicitly at the m0355 knife-edge).
+
+### Where everything sits right now
+
+- **In the tree, inert:** `patient.py` / `validate_query.py` (cycle-5 code, merged from
+  its worktree, repaired for the 1.2 join — the original read chains from `self._names`,
+  which the join had emptied, making pricing silently dead). Invariant I1 pins
+  bit-identity when no patients are declared. S3's revert withdraws the three
+  `behaviours_query.json` declarations; the code stays.
+- **Parked, built, zero-flip proven:** P1 join-integrity v2 + segmentation option-1 in
+  worktree `agent-a8b74ed98d7f85110` (branch `worktree-agent-a8b74ed98d7f85110`). 27 tests,
+  v1 join kept as default deliberately. Merges at the next gate window; re-measurement
+  rides Checkpoint 1. Its own report flags three of its design's predictions as **refuted
+  by measurement** — read them before merging.
+- **Not yet started:** S4 (section-prior evidence gate), S5 (overlay reactivation),
+  Checkpoint 1 census, S6 vocab, generalization G1–G3, final battery.
+
+### Tooling debt, disclosed and carried (all in cycle records, none silently dropped)
+
+- `_git_bytes_matching` **double-prefix defect**: git-log pathspec is CWD-relative but the
+  code prepends the repo prefix to an already-resolved path → the primary git byte source
+  never fires from `semi-formal-experiment/`. Latent, fails *inert* (finds nothing, falls
+  through to sha-verified `pre_change/`). `cycles/patient-pricing-2026-08-04` A3.
+- F1: grandfather clause in `test_dechain` is multiplicity-blind. F2: "legacy surfaces
+  frozen chain-free" is docstring+gate, not tool-enforced. R1–R3: conftest registration
+  outside any manifest; sign-offs as attestation-in-text rather than signed artifacts;
+  scope check should harden to `live == frozen − licensed`. All in
+  `cycles/patient-backfill-2026-08-04/backfill/REVIEW_HARDENING_NOTES.md`.
+- Five pre-existing length-1 chains (m0021, m0178, m0179, m0502 ×2) grandfathered in
+  `dechain_chain_census_s1.json`; repair is an open question for a future annotation cycle.
+
+### How the work is dispatched (process, not history)
+
+Operators and seats are subagents; the session coordinator dispatches at halts, makes
+designer rulings, signs decisions, and commits at CLOSE (the driver never runs git).
+**Set the model explicitly on every dispatch** — Fable for orchestration/design/adversarial
+review, Opus for executing a written+reviewed plan, Haiku for validated seats (the
+adjudication seat is proven at Haiku/frontier parity; one divergence so far, m0108,
+recorded as contested rather than resolved).
+
+**Work that needs a frontier session and should NOT be started otherwise:** the S3b
+redesign, and the **G-freeze artifact** (it defines the conditions of a measurement we
+only get to run once).
+
+Every cycle gets a clean-context adversarial review before its close; **a positive review
+stops everything until fixed** (this has fired twice: the A2 dossier-license block, and
+S1's own disclosed restart).
+
+---
+
+## STATE AS OF 2026-08-04 (earlier) — the iteration-loop arc, when the portfolio was designs-only.
 
 Everything below this section is history: correct when written, load-bearing as
 provenance, and in several named places **superseded** (each such place now carries
