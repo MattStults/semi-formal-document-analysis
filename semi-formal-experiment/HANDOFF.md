@@ -62,6 +62,14 @@ seeing which clause crosses (ruled explicitly at the m0355 knife-edge).
 
 ### Where everything sits right now
 
+**S3 is closed and committed** (`091619c`, revert, predictions 19/20 — the one FAIL is the
+`max_regressions` bound itself). Revert proof on the record: rebuilding the baseline
+snapshot from the reverted tree gives `8159ba49…`, byte-identical to the frozen
+`snapshots/patient-backfill-2026-08-04.json`. Suite 2129 green. Two-leg adjudication
+accounting is in `cycles/patient-pricing-2026-08-04/ADJUDICATION_LEGS.md`; the contested
+m0108 carries both document reasons verbatim and a named scope question for seat-defect
+review (is harm to the user's own organisation's accounts "outside the conversation"?).
+
 - **In the tree, inert:** `patient.py` / `validate_query.py` (cycle-5 code, merged from
   its worktree, repaired for the 1.2 join — the original read chains from `self._names`,
   which the join had emptied, making pricing silently dead). Invariant I1 pins
