@@ -87,6 +87,45 @@ review (is harm to the user's own organisation's accounts "outside the conversat
 - **Not yet started:** S4 (section-prior evidence gate), S5 (overlay reactivation),
   Checkpoint 1 census, S6 vocab, generalization G1–G3, final battery.
 
+### RULINGS a new agent needs before touching S4 (coordinator, 2026-08-04)
+
+1. **S4 IS UNBLOCKED and opens on the post-S2 baseline.** The spine order S3 → S4 was a
+   sequence, not a dependency: A1's gated set is computed from the atom channel, which
+   patient pricing never touched. S3b, being pricing-only, preserves it. Do not wait.
+2. **S4's baseline is `snapshots/patient-backfill-2026-08-04.json`** — the latest
+   closed-KEEP spine snapshot in `cycles/CYCLE_LOG.jsonl`. ⛔ `SECTION_PRIOR_DESIGN.md`
+   §5 says "cycle-4 config if cycle 5 reverts"; that parenthetical is **STALE and wrong** —
+   cycle-4 predates S1 (join 1.2) and S2 (backfill), so its recorded config shas no longer
+   match the tree. General rule: **baseline = latest closed-KEEP spine snapshot**, always
+   read from the cycle log, never named statically in a design doc.
+3. **The A1 enumeration stands, verified.** Independently recomputed against the
+   post-S2 baseline: **30 flips = 13 caution + 13 harm + 4 helpfulness, 0 newly_predicted**,
+   helpfulness = m0379/m0381/m0382/m0389 — exactly as PORTFOLIO F5 pre-registers, and
+   identical against the join, chain-repair and versioned-cut baselines too. **F6's worry
+   that S1's join would void this pre-registration did NOT materialize.** 30 is *at* the
+   flip budget, not over it (the halt is strict `>`), so the stratified-sampling path does
+   not trigger. Do not discard the pre-registration as stale.
+4. **A1 needs an F9 version key.** `_open` refuses any `shape: code` manifest without
+   non-empty `compatibility.version_key` + `statement`. A1 is not a pricing change, so it
+   needs its own — `section_gate_version` — carried in snapshot config identity and in
+   `dossier.py`'s reconstruction dispatch, mirroring the `pricing_version` ladder. Without
+   it every pre-gate snapshot becomes un-reconstructable and MEASURE dies mid-cycle.
+5. **Seat fence — GENERAL RULE, not just S4: a cycle's own design document is never seat
+   material.** `SECTION_PRIOR_DESIGN.md` §3 pre-registers the expected verdict distribution
+   and names the designed regression (m0587); handing it to the adjudication seat "for
+   context" destroys the adjudication. The same defect was raised as blocking finding B1
+   against `S3B_REDESIGN.md` (see `S3B_REVIEW_COORDINATOR.md`). Forbidden seat material, always:
+   the cycle's design doc, `PORTFOLIO_REVIEW.md`, prior cycles' `flip_verdicts*.json`, the census.
+6. **Always pass `--cycle NAME` to the driver.** A directory containing only drafts counts
+   as OPEN to `_default_cycle`, so the bare command is refused while any draft cycle dir
+   exists. Two do right now (join-integrity-v2, segmentation-variants — both P1/P2 drafts,
+   pre-OPEN, not live work).
+7. **Untracked cycle dirs and worktrees, disambiguated:** `cycles/join-integrity-v2-*` and
+   `cycles/segmentation-variants-*` are P1/P2 **drafts awaiting their gate window** (see
+   PRE-BUILT CYCLES); worktree `agent-a8b74ed98d7f85110` is P1's build; worktree
+   `agent-a4debc733d7d3d318` is the **spent** cycle-5 build, already merged and reverted —
+   it holds nothing live and can be pruned.
+
 ### Tooling debt, disclosed and carried (all in cycle records, none silently dropped)
 
 - `_git_bytes_matching` **double-prefix defect**: git-log pathspec is CWD-relative but the
