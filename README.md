@@ -1,9 +1,10 @@
 # Semi-formal document analysis
 
-> **Agents and new contributors: start with [`CLAUDE.md`](CLAUDE.md).** It is the read
+> **Agents and new contributors: start with [`AGENTS.md`](AGENTS.md).** It is the read
 > order plus the short list of rules whose violation silently corrupts a result — the
 > landmines are not obvious from the code, and several are contracts that *look* like
-> bugs.
+> bugs. (`CLAUDE.md` is a symlink to it, so Claude Code auto-loads the same content.
+> Point any other tool's convention at the same file with a symlink, never a copy.)
 
 Can a **semi-formal ontology** extracted from a model spec answer *"which passages of this
 document bear on behaviour X?"* as well as a panel of frontier models — but instantly,
