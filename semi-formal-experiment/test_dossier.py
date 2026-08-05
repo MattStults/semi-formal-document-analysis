@@ -615,6 +615,15 @@ def _git(env, *args):
         capture_output=True, text=True, check=True)
 
 
+def _git_at(root, *args):
+    """Like _git, but the git repo lives at an explicit root (which may be
+    a PARENT of the inputs dir) rather than at env['tmp']."""
+    return _subprocess.run(
+        ["git", "-C", str(root), "-c", "user.email=t@t",
+         "-c", "user.name=t"] + list(args),
+        capture_output=True, text=True, check=True)
+
+
 def _apply_logged_rename(env, sha_after_override=None):
     """Rewrite helping_user -> assisting_user in ann.json IN PLACE and log
     it in vocabulary_migrations.json exactly as atom_refactor logs one
@@ -665,6 +674,82 @@ def test_logged_migration_reconstructs_from_git_history(env):
     again = _build(env)
     assert [snapshot.snapshot_bytes(d) for d in ds] == \
         [snapshot.snapshot_bytes(d) for d in again]
+
+
+def _make_subdir_env(tmp_path):
+    """The same two-snapshot corpus as `env`, but the input files live in a
+    SUBDIRECTORY of the git repo (repo/sub/...), reproducing the real layout
+    where the repo root is a PARENT of the experiment dir. Here `git
+    rev-parse --show-prefix` returns a non-empty prefix, which is exactly the
+    case the double-prefix defect breaks."""
+    repo = tmp_path / "repo"
+    sub = repo / "sub"
+    os.makedirs(sub)
+    clauses = _write(sub / "clauses.json", {"clauses": [
+        {"id": "c1", "quote": "models must always help the user accomplish tasks",
+         "section_path": ["help"], "locator": "L1", "kind": "norm"},
+        {"id": "c2", "quote": "avoid causing harm to third parties in the world",
+         "section_path": ["harm"], "locator": "L2", "kind": "norm"},
+        {"id": "c3", "quote": "the weather in paris is mild during spring season",
+         "section_path": ["misc"], "locator": "L3", "kind": "meta"},
+        {"id": "c4", "quote": "helpful assistance benefits the user greatly indeed",
+         "section_path": ["help"], "locator": "L4", "kind": "norm"},
+        {"id": "c5", "quote": "pastry recipes require butter flour and sugar",
+         "section_path": ["misc"], "locator": "L5", "kind": "meta"},
+        {"id": "c6", "quote": "assist users helpfully with their many requests",
+         "section_path": ["help"], "locator": "L6", "kind": "norm"},
+    ]})
+    ann = _write(sub / "ann.json", {"clauses": [
+        {"clause_id": "c1", "atoms": [HU, UT]},
+        {"clause_id": "c4", "atoms": [HU, AR]},
+        {"clause_id": "c6", "atoms": [HU, UT, AR]},
+        {"clause_id": "c2", "atoms": [TP]},
+    ]})
+    atoms_a = _write(sub / "atoms_a.json",
+                     {"beh-help": {"atoms": [HU, UT, AR]}})
+    atoms_b = _write(sub / "atoms_b.json",
+                     {"beh-help": {"atoms": [TP]}})
+    queries = _write(sub / "queries.json", {"behaviours": [
+        {"slug": "beh-help", "name": "Helpfulness",
+         "definition": "the model helps the user accomplish tasks"},
+    ]})
+    snap_dir = str(repo / "snaps")
+    for tag, atoms in (("a", atoms_a), ("b", atoms_b)):
+        snap = snapshot.build_snapshot(
+            tag, annotations_path=ann, atoms_path=atoms,
+            clauses_path=clauses, queries_path=queries)
+        snapshot.write_snapshot(snap, out_dir=snap_dir)
+    return {"repo": repo, "tmp": sub, "snap_dir": snap_dir,
+            "inputs_dir": str(sub), "clauses": clauses, "ann": ann,
+            "atoms_a": atoms_a, "atoms_b": atoms_b, "queries": queries}
+
+
+def test_git_byte_source_fires_from_a_repo_subdir(tmp_path):
+    """REGRESSION (patient-pricing A3 / OUTSTANDING_WORK F1): the git byte
+    source is the PRIMARY reconstruction source and must fire when the inputs
+    dir is a SUBDIRECTORY of the git repo — the real layout (repo root is the
+    parent of semi-formal-experiment/). The old code reused the repo-root-
+    relative path as the `git log` pathspec even though that pathspec is
+    CWD-relative, doubling the prefix (querying sub/sub/ann.json) so the log
+    matched no commit and this source fell inert to the pre_change fallback.
+    With no pre_change copy present, the build must succeed on git_history
+    here — it raises StaleConfigError instead while the defect is live."""
+    e = _make_subdir_env(tmp_path)
+    # commit the PRE-change inputs at the repo root so the old bytes are in
+    # git history, reachable only via a correct subdir pathspec
+    _git_at(e["repo"], "init", "-q")
+    _git_at(e["repo"], "add", "sub")
+    _git_at(e["repo"], "commit", "-qm", "pre-change inputs")
+    old_sha, _ = _apply_logged_rename(e)   # rewrites sub/ann.json in place
+
+    ds = _build(e)
+    assert len(ds) == 3, "the fixture's flip set must survive reconstruction"
+    for d in ds:
+        for side in ("a", "b"):     # BOTH snapshots recorded the old sha
+            r = d["reconstruction"][side]["annotations"]
+            assert r["source"] == "git_history", \
+                "the git byte source must fire from a repo subdir"
+            assert r["recorded_sha256"] == old_sha
 
 
 def test_prechange_copy_is_the_nongit_fallback(env):

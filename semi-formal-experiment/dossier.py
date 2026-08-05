@@ -136,9 +136,20 @@ def _git_bytes_matching(inputs_dir: str, rel: str, sha: str) -> bytes | None:
             capture_output=True, text=True)
         if prefix.returncode != 0:
             return None
+        # Two DIFFERENT path conventions, run with -C inputs_dir (so the
+        # CWD is inputs_dir):
+        #   * `git log -- <pathspec>` is CWD-relative -> the bare `rel`
+        #     (the snapshot's recorded path already resolves against
+        #     inputs_dir). Prefixing the repo prefix here DOUBLES it
+        #     (sub/sub/ann.json), matches no commit, and this primary
+        #     source falls inert unless the repo root happens to BE
+        #     inputs_dir — the patient-pricing A3 defect.
+        #   * `git show <rev>:<path>` is repo-root-relative -> the prefix
+        #     plus rel.
+        logspec = rel.replace(os.sep, "/")
         gitrel = (prefix.stdout.strip() + rel).replace(os.sep, "/")
         commits = subprocess.run(
-            ["git", "-C", inputs_dir, "log", "--format=%H", "--", gitrel],
+            ["git", "-C", inputs_dir, "log", "--format=%H", "--", logspec],
             capture_output=True, text=True)
         if commits.returncode != 0:
             return None

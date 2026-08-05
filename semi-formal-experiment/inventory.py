@@ -234,7 +234,7 @@ def content_empty(row: dict) -> bool:
 
 
 def match_passage_v2(passage_quote: str, rows, locator: str = "",
-                     mixed_variants: bool = True) -> dict:
+                     mixed_variants: bool = False) -> dict:
     """Join v2: `match_passage`'s containment rule behind two independent
     guards (JOIN_INTEGRITY_DESIGN §2) plus the F9 empty-meta skip and
     segmentation option 1's mixed variant set.
@@ -251,6 +251,11 @@ def match_passage_v2(passage_quote: str, rows, locator: str = "",
     `mixed_variants=False` isolates the restriction+refusal lever over the
     uniform variant set — the two cycles (P1 join-integrity, P2 segmentation
     option 1) check their §3 predictions independently on it.
+
+    The DEFAULT is False: the measured, pinned state (pinned by
+    test_join_v2.py). True selects segmentation option 1's per-link mixed
+    variant set, which has never been opened, measured, or adjudicated —
+    it is OPT-IN and must be passed explicitly, never inherited silently.
     """
     var = _variants_mixed if mixed_variants else _variants
     result = {"clauses": [], "restricted": False, "refused": False,

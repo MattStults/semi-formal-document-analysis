@@ -276,7 +276,8 @@ def test_empty_meta_clauses_never_candidates():
 def test_mixed_link_renderings_join():
     """A clause whose two links the panel rendered INCONSISTENTLY (one as
     text, one as target) defeats both uniform variants (v1 misses) and joins
-    under the per-link mixed variant set (v2)."""
+    under the per-link mixed variant set (v2) — passed EXPLICITLY, since the
+    mixed set is opt-in and not the default."""
     clause_md = ("the assistant should follow [the guidelines](guide_lines) "
                  "and respect [user intent](user_intent) at every step")
     panel_rendering = ("the assistant should follow the guidelines "
@@ -284,7 +285,8 @@ def test_mixed_link_renderings_join():
     rows = [row("c1", clause_md, section_id="s")]
     assert inventory.match_passage(panel_rendering, rows) == []
     res = inventory.match_passage_v2(panel_rendering, rows,
-                                     locator=f"{MS} > #s > ¶1")
+                                     locator=f"{MS} > #s > ¶1",
+                                     mixed_variants=True)
     assert [r["id"] for r in res["clauses"]] == ["c1"]
 
 
@@ -317,6 +319,31 @@ def test_join_v2_can_isolate_the_variant_lever():
                                         locator=f"{MS} > #s > ¶1",
                                         mixed_variants=True)
     assert [r["id"] for r in res_on["clauses"]] == ["c1"]
+
+
+def test_match_passage_v2_default_is_mixed_variants_false():
+    """The DEFAULT variant set is the measured/pinned uniform one: omitting
+    the argument must behave exactly as mixed_variants=False (the lever
+    fixture joins to NOTHING under the uniform set — it would join to c1
+    under the unmeasured mixed set, so the equality below is discriminating).
+    The mixed set is OPT-IN: an entry point opting into join_version=2 must
+    never inherit it silently."""
+    clause_md = ("the assistant should follow [the guidelines](guide_lines) "
+                 "and respect [user intent](user_intent) at every step")
+    panel_rendering = ("the assistant should follow the guidelines "
+                       "and respect user_intent at every step")
+    rows = [row("c1", clause_md, section_id="s")]
+    res_default = inventory.match_passage_v2(panel_rendering, rows,
+                                             locator=f"{MS} > #s > ¶1")
+    res_off = inventory.match_passage_v2(panel_rendering, rows,
+                                         locator=f"{MS} > #s > ¶1",
+                                         mixed_variants=False)
+    assert res_default == res_off
+    assert res_default["clauses"] == []       # uniform set: the gap stands
+    # and the signature itself pins the default
+    import inspect
+    sig = inspect.signature(inventory.match_passage_v2)
+    assert sig.parameters["mixed_variants"].default is False
 
 
 # ----------------------------------------- benchmark wiring (stratum etc.)
