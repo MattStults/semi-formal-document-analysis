@@ -190,12 +190,52 @@ both RESOLVED 2026-08-03 in the review-fix round:
 
 ## The case bank
 
-Every adjudicated dossier is retained under `casebank/`. Regression pins
+The "case bank" is a corpus, not a directory — there is no `casebank/` on
+disk (an earlier revision of this file claimed one). Every adjudicated
+dossier is retained *in situ*, beside the verdicts that decided it, in one
+of three places (corrected 2026-08-04):
+
+- `cycles/<name>/flip_dossiers/` (+ `index.jsonl`) with the run's
+  `flip_verdicts.json` — the driver-era location; every cycle from
+  `versioned-cut-2026-08-04` onward.
+- `dossiers/<tag_a>__<tag_b>/` — the pre-driver containment cycles 1–3,
+  each beside its blinded verdicts and `decision.json`. This is also
+  `dossier.py`'s default output root when it is run outside a cycle.
+- `drift_standing/dossiers/` with the leg/tiebreak verdict files and
+  `DISCLOSURE.md` — the drift-standing seat pass.
+
+Regression pins
 derived from it must be MECHANISM pins (document-side facts: "the containment
 closure connects psychological_manipulation to targeted_political_manipulation
 via the manipulation family"), NEVER outcome pins ("m0216 must be predicted
 relevant") — an outcome pin is a relevance label, and fitting to it is fitting
 to labels no matter who authored them.
+
+## The anti-cheat perimeter (standing rules; two have already failed silently once)
+
+**Quality floors are TWO-SIDED** (`test_quality_floor.py`, a `conftest.REQUIRED` guard).
+A run *below* a behaviour's floor is a regression: **never lower a floor to make a run
+pass** — a genuine gain RAISES the floor in the same commit, with the measurement that
+justifies it. A run far *above* its floor trips `CEILING_BAND` and is treated as a **leak
+signature, not a result**. Scoring too well is evidence that panel information reached a
+panel-blind path.
+
+**Suite-integrity guards** (`conftest.py:81-100`): `REQUIRED` names four guard files that
+must be present in any full-suite run (`test_no_reference_leak`, `test_quality_floor`,
+`test_readback`, `test_spend_logging`) — removing one must happen in the same diff that
+removes it from `REQUIRED`, with a stated reason. `MIN` is a coarse mass-deletion backstop;
+raise it deliberately as the suite grows, **never lower it to make a partial run pass**. It
+exists because it once sat 27% below the suite and let 61 tests — every anti-cheat guard —
+be deleted while the run stayed green.
+
+**Registration, not documentation, is what fences a module.** New query-side module →
+`test_no_reference_leak.QUERY_MODULES` (with a drivable surface; a skipped scan is not a
+guard). New panel-reading module → `FORBIDDEN`, same diff. New test module →
+`conftest._OPTIONAL`. See `MODULE_MAP.md` §11.
+
+**Degenerate inputs yield refusals or floor values, never flattering ones.** Vacuous
+self-agreement is 0.0, not 1.0; a cut that predicts everything or nothing is
+`DEGENERATE_CUT` and is never selected.
 
 ## Order of first live iteration (after Units 1+2 exist)
 
@@ -211,6 +251,14 @@ in `conftest._OPTIONAL`, adversarial review before anything paid, and this
 whole apparatus is $0 until a re-annotation is proposed.
 
 ## Cycle log
+
+⚠️ **This hand-written log covers only the three PRE-DRIVER containment cycles
+(2026-08-03).** Every cycle since runs under `cycle.py`, and the machine-written
+log is `cycles/CYCLE_LOG.jsonl` — one line per CLOSED cycle, which as of
+2026-08-04 holds five: `versioned-cut-2026-08-04` (keep, no-op),
+`chain-repair-2026-08-04` (keep), `decoration-blind-join-2026-08-04` (keep — the
+1.2 join), `patient-backfill-2026-08-04` (keep), `patient-pricing-2026-08-04`
+(**revert**). Read that file, not this section, for current state.
 
 - **Cycle 1 (2026-08-03): `baseline-2026-08-03` → `containment-v0`** — the
   two manipulation-family edges. 7 flips, all `newly_predicted` on
@@ -243,7 +291,13 @@ whole apparatus is $0 until a re-annotation is proposed.
   baseline: 7 flips, a FRESH Haiku blinded to all prior verdict files —
   **identical to cycle 1's verdicts** (6 correct, m0422 regression), so the
   seat has now replicated across three independent blinded runs. **KEEP —
-  the shippable configuration.** Decision:
+  the shippable configuration *at that date*.** ⚠️ Superseded 2026-08-04:
+  containment now ships `PRICING_VERSION = "1.2"` — the decoration-blind
+  join, spine cycle S1 `decoration-blind-join-2026-08-04`, KEEP. A 2.0
+  patient-pricing layer (`patient.py`) was built on top of 1.2 in spine
+  cycle S3 `patient-pricing-2026-08-04` and **REVERTED** when the
+  pre-registered `max_regressions = 0` bound fired (5 regressions over 18
+  flips; 4 confirmed by a split-blind frontier leg). Decision:
   `dossiers/baseline-2026-08-03__containment-v1.1-kindinherit/decision.json`.
   Standing escalations recorded there: (a) m0422 drift-admitted in ALL THREE
   cycles → the Otsu cut rule is formally under suspicion; a cut-stability

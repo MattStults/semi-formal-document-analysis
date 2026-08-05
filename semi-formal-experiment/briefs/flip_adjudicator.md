@@ -9,7 +9,13 @@ external evidence, no outcome data of any kind.
 
 ## Input and output
 
-**Input:** exactly one dossier (one JSON file from `dossiers/<a>__<b>/`). It
+**Input:** exactly one dossier (one JSON file). Under the cycle driver — the
+normal case since `versioned-cut-2026-08-04` — the set lives in
+`cycles/<name>/flip_dossiers/`, and `cycles/<name>/flip_dossiers/index.jsonl`
+enumerates the work, one line per dossier. (LEGACY: `dossier.py dossiers`
+run outside a cycle still writes to its default root
+`dossiers/<tag_a>__<tag_b>/`, which is where the pre-driver containment
+cycles 1–3 sets sit; same file shape, same index.) A dossier is
 is self-contained by contract: the behaviour's name, definition and query
 atoms on both sides; the full clause text with section path and locator; the
 clause's atoms with glosses; the deterministic read-back rendering; explain()
@@ -42,7 +48,29 @@ the run:
 
 The file is checked mechanically by `dossier.py validate` — every flip
 adjudicated exactly once, no unknown ids, closed verdict set, non-empty
-reasons. A run that does not validate clean is not adjudicated.
+reasons. A run that does not validate clean is not adjudicated. The exact
+invocation (what `cycle.py`'s ADJUDICATE phase runs, cycle.py:1151):
+
+```
+.venv/bin/python dossier.py validate \
+    --dir cycles/<name>/flip_dossiers \
+    --verdict-file cycles/<name>/flip_verdicts.json
+```
+
+⚠️ **The flag is `--verdict-file`, singular, and only on this seat.** The
+plural `--verdicts` is a FORBIDDEN token on the panel-blind side (it names
+per-judge panel labels), so the panel-*seeing* census seat spells it the
+other way round and takes the directory as a separate flag:
+
+```
+.venv/bin/python audit_disagreements.py validate \
+    --verdicts <verdicts.json> --dossier-dir <audit_dossiers/...>
+```
+
+(`drift_dossiers.py validate` follows the `audit_disagreements` spelling.)
+The two spellings are deliberately NOT harmonized — CYCLE_DESIGN.md F9;
+`cycle.py` hardcodes both, and TOOLING_BATCH_DESIGN §5 pins them by test.
+Do not "fix" one to match the other.
 
 ## The question (tight and symmetric — ITERATION_LOOP.md policy §3)
 

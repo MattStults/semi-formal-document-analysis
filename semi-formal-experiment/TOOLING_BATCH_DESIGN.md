@@ -1,6 +1,20 @@
 # Tooling batch — six queued instrument fixes (design, 2026-08-04)
 
-Status: DESIGN — brief specs for the queued items from the CYCLE_DESIGN
+**Status (corrected 2026-08-04): ALL SIX ITEMS ARE IMPLEMENTED.** This file
+was written as a design and still reads in the future tense ("Spec: …");
+the specs below are now the record of what was built, not a queue. Verified
+on disk: item 1 `audit_disagreements.py --overlay/--thresholds` + the
+`index.jsonl` config-identity header; item 2 `snapshot.write_snapshot(...,
+force=…)` + `--force` (refuses a differing rewrite, no-ops on identical
+bytes); item 3 `dossier.py`'s licensed A-side reconstruction (git history
+primary, `cycles/<name>/pre_change/` fallback, sha-verified); item 4 the
+`<name>.dryrun.json` path + non-stub overwrite refusal in `annotate.py` and
+`behavior_atoms.py`; item 5 `test_dossier.py::
+test_the_two_validators_keep_their_distinct_flag_spellings`; item 6
+commit-at-CLOSE (see §6). Read each section for the CONTRACT; do not read
+"Spec:" as "not yet done".
+
+Original framing — brief specs for the queued items from the CYCLE_DESIGN
 amendments, the two cycle decision records, and the session reports. Each item:
 one paragraph, acceptance criteria, test shape. All are instrument-side; none
 touches a query, weight, threshold value, or vocabulary. Companions:
@@ -114,9 +128,37 @@ both CLIs' parsers and asserting the two spellings exist and are distinct.
 Test shape: pure-unit table test over fixture dicts; one argparse
 introspection test; no fixtures on disk beyond tmpdir JSON.
 
-## 6. `cycle.py` commit-at-CLOSE
+## 6. `cycle.py` commit-at-CLOSE — ✅ IMPLEMENTED (2026-08-04)
 
-CLOSE appends the one-line record to `cycles/CYCLE_LOG.jsonl` and stops; the
+**Status: SHIPPED and in use.** `cycle.py` drafts at CLOSE (`_close`, the
+COMMIT-AT-CLOSE block ~cycle.py:1429–1460); pinned by
+`test_cycle.py::test_close_drafts_commit_message_and_staging_list`. Three
+closed cycles carry the drafted pair on disk —
+`decoration-blind-join-2026-08-04`, `patient-backfill-2026-08-04`,
+`patient-pricing-2026-08-04`. (`versioned-cut-2026-08-04` and
+`chain-repair-2026-08-04` closed before the feature landed and have none.)
+
+**The two artifacts CLOSE writes**, both in `cycles/<name>/`:
+
+- `commit_message.txt` — the drafted message. First line
+  `<cycle>: <decision> (<shape>, predictions <passed>/<total>)` (or
+  `no predictions`), then the manifest's `fix_description`, then the
+  decision's `justification`, then the `Co-Authored-By: Claude Fable 5`
+  trailer.
+- `staging_list.txt` — one path per line, **never documented before this
+  entry**: the manifest's `files_to_change` sorted, plus the cycle
+  directory itself (repo-relative). That is the whole rule — *declared
+  files ∪ the cycle dir*, nothing wider.
+
+**The rule this encodes: the driver NEVER commits, and never mutates git.**
+It drafts; the coordinator confirms the message, stages exactly
+`staging_list.txt`, and commits. (One read-only exception exists by design:
+OPEN runs a single `git status --porcelain` per prior draft to WARN — never
+refuse — when a previously closed cycle's declared files are still
+uncommitted, per the F12 ruling. Missing git binary, non-repo tree, or any
+git error yields silence; git is never an OPEN dependency.)
+
+Original spec, for the record: CLOSE appends the one-line record to `cycles/CYCLE_LOG.jsonl` and stops; the
 repo's commits (e.g. 3464ef7, the chain-repair KEEP) are hand-authored after
 the fact, so a closed cycle can sit uncommitted while concurrent agents work —
 the exact drift the sha-closure guard exists to catch. Spec: `_close`

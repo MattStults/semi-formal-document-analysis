@@ -51,7 +51,7 @@ data/                      panel judgements and behaviour definitions (the instr
 specs/                     the documents under analysis
 engine/                    vendored panel harness
 semi-formal-experiment/    everything else:
-  *.py + test_*.py           tools and their suites (~1,960 tests)
+  *.py + test_*.py           tools and their suites (2,156 tests, 2026-08-04)
   briefs/                    written contracts for every LLM judgment seat
   golden_*.json              hand-authored translation gold (Model Spec + constitution)
   snapshots/, dossiers/      the iteration loop's frozen states and adjudications
@@ -61,17 +61,37 @@ semi-formal-experiment/    everything else:
 ```
 
 ⚠️ **Three different files are named `behaviours.json` and they are NOT
-interchangeable** — see the warning in earlier revisions; loading the wrong one produces
-a silently de-behaviourised score. Also: `*_dry-run` invocations of the annotation tools
-write 0-atom stub artifacts to their default output paths — one such stub once silently
-clobbered the shipped `behavior_atoms.json` (restored; guard pending).
+interchangeable** — `data/behaviours.json` (the panel roster), `engine/panel/behaviours.json`
+(the vendored harness's own copy) and `site/spec-reader-test/data/behaviours.json` (the
+reader prototype's). The experiment's query-side definitions are a FOURTH, differently
+named file: `semi-formal-experiment/behaviours_query.json`. Loading the wrong one produces
+a silently de-behaviourised score. (The earlier text here pointed at "the warning in
+earlier revisions", which pointed nowhere.) Also, historically: `*_dry-run` invocations of the annotation tools
+wrote 0-atom stub artifacts to their default output paths, and one such stub silently
+clobbered the shipped `behavior_atoms.json` (restored). **The guard is no longer pending**
+— as of 2026-08-04 (TOOLING_BATCH_DESIGN §4) a dry run writes to `<name>.dryrun.json`, and
+no write, dry or live, may overwrite a non-stub artifact without `--force`.
 
 ## Running it
 
+**There is no `requirements.txt`** (an earlier revision of this file told you to install
+one). The dependency list is short enough to write out, and the venv the suite actually
+runs under lives inside `semi-formal-experiment/`, not at the repo root:
+
 ```bash
-python -m venv .venv && .venv/bin/pip install -r semi-formal-experiment/requirements.txt
-.venv/bin/python -m pytest semi-formal-experiment -q      # ~1,960 tests
+python -m venv semi-formal-experiment/.venv
+semi-formal-experiment/.venv/bin/pip install pytest clingo
+semi-formal-experiment/.venv/bin/python -m pytest semi-formal-experiment -q
+# 2,156 passed, 3 skipped (measured 2026-08-04 — counts drift; the command is the
+# source of truth, not this number)
 ```
+
+`clingo` is only needed for the parked ASP path (`emit_asp.py` and its tests). One
+diagnostic module, `weight_diag.py`, additionally wants `numpy` + `scikit-learn` and
+imports them lazily, so the suite passes without them. Provider calls go through stdlib
+`urllib` — there is no vendor SDK to install. Most tools import each other by bare module
+name, so **run them from inside `semi-formal-experiment/`** (pytest is the exception —
+it can be pointed at the directory from the repo root, as above).
 
 API keys are read from environment variables named in config; no key is stored here.
 Every live run is billed against a hard budget (`spend.py`), preflighted, and logged.

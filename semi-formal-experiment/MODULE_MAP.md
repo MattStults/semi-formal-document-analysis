@@ -7,6 +7,35 @@ described the query modules as they no longer are. Rows corrected below carry a 
 data + directories), an updated §8 preferred-artifact table, and briefs/ in §10.
 Read `HANDOFF.md` first for state and results; this file answers "what is all this code
 and which of it matters to me?"
+**Accuracy pass 2026-08-04**: stale counts, the containment pricing ladder, the anchor
+count and the snapshot/cycle enumerations corrected; §0 added.
+
+---
+
+## 0. Running things (read this first)
+
+Every command in this file assumes you are **in `semi-formal-experiment/`**, invoking the
+repo venv by path — no `source`, no `cd` mid-command. Module imports and default artifact
+paths are script-anchored, so a module invoked by absolute path from elsewhere does still
+run; what breaks outside this directory is (a) the bare `.venv/bin/python` prefix, which
+only resolves here, (b) the bare `pytest -q` form, which from the repo root would try to
+collect `engine/`'s vendored suites, and (c) every relative argument in these docs
+(`cycles/<name>/…`, `snapshots/<tag>.json`, `--dir`/`--out-dir` values). Just run from here.
+
+```
+.venv/bin/python -m pytest -q                        # the suite (see §9 for the count)
+.venv/bin/python cycle.py status --cycle NAME        # where a cycle stands
+.venv/bin/python cycle.py next   --cycle NAME        # advance one phase
+```
+
+- **`--cycle NAME` is effectively required.** It is technically optional and falls back to
+  "the single open cycle", but that fallback refuses whenever 0 or ≥2 cycles are open — and
+  ≥2 is the normal state here (the parallel-safe P-track cycles run alongside the spine).
+  Omitting it today gets you `REFUSED: 2 open cycles (…) — pass --cycle NAME.` Always pass it.
+- Dependencies are `pytest` and `clingo` (the ASP path in §4); `weight_diag.py` alone wants
+  `numpy` + `scikit-learn` and imports them lazily, so the suite runs without them. Provider
+  calls use stdlib `urllib` — there is no SDK to install and **no `requirements.txt`**.
+- The venv at `semi-formal-experiment/.venv` is the one the suite is run under.
 
 **Nothing here is dead code to be deleted on sight.** The repo carries three capabilities
 plus the one-off scripts that built the data. Before removing anything, check the
@@ -60,8 +89,20 @@ without the fence firing.
 | `snapshot.py` | Unit 1: freeze a tool run (per-clause scores, channels, predicted sets, config shas incl. overlay + `--thresholds` artifact) → `snapshots/<tag>.json`; `diff` → flip lists. Deterministic, byte-identical on same inputs | **panel-blind, scanned** (query-adjacent) |
 | `dossier.py` | Unit 2: one flip → one self-contained case file (Haiku-operability: dossier in → verdict out, no repo access); `validate` checks verdict files with check_taxonomy discipline; build-time reconstruction self-check fails loudly on drifted inputs | **panel-blind, scanned**; holds NO panel fields |
 | `atom_refactor.py` | Unit 3: `usages` / `rename` / `merge` / `rechain` / `split` over every vocabulary surface, dry-run by default, every apply appended + replayable via `vocabulary_migrations.json` | panel-blind |
-| `containment.py` | Unit 4: licensed `child ⊑ parent` overlay (`containment.json`) over the atom matcher; PRICING_VERSION 1.1 (one credit per atom, kind factor + min-idf cap, never-outprice invariant, required budget, one-child rejection, unanimous-child kind inheritance). The shippable config after containment cycles 1–3 | **query module OUTRIGHT** — scanned |
-| `cycle.py` | the cycle DRIVER: state machine OPEN → PREDICT → IMPLEMENT → MEASURE → ADJUDICATE → DECIDE → CLOSE over typed artifacts in `cycles/<name>/`; census only in the CHECKPOINT shape, `census: deferred_to_checkpoint` otherwise. Ran the versioned-cut and chain-repair cycles end-to-end | **FORBIDDEN token** (`import cycle`, `cycles/`) — it orchestrates panel-reading census tooling; the fence is disclosure to the driver, never to query time |
+| `containment.py` | Unit 4: licensed `child ⊑ parent` overlay (`containment.json`) over the atom matcher. **PRICING_VERSION is `"1.2"`** — see the ladder below | **query module OUTRIGHT** — scanned |
+| `patient.py` | patient-aware match pricing, `PRICING_VERSION = "2.0"`, defined ON TOP of 1.2. **Built and REVERTED** (cycle `patient-pricing-2026-08-04`) — in the tree, tested, not in the shipped path | **query module** — scanned |
+
+**The pricing ladder, corrected 2026-08-04** (an earlier revision of this file stopped at
+"1.1, the shippable config after cycles 1–3" — that has been false since S1 shipped):
+
+| version | what it added | status |
+|---|---|---|
+| (none) | no `pricing_version` key in a snapshot → reconstructs through the untouched legacy `relevance.RelevanceIndex` (overlay-less path) | dispatch target only |
+| 1.0 | one credit per atom (a matching, not a product), kind factor + min-idf cap, never-outprice invariant, required budget, one-child-family rejection | superseded |
+| 1.1 | + unanimous-child kind inheritance. Shippable after containment cycles 1–3 | superseded |
+| **1.2** | the **decoration-blind join** (spine cycle S1, `decoration-blind-join-2026-08-04`, KEEP): match key, atom df/idf and lexical atom-text all read the DECHAINED name (polarity kept, principal chain stripped); chains survive as pricing metadata on `self.chains`. Identity on chain-free names, so pre-1.2 snapshots stay reconstructible | **CURRENT — this is what `containment.py` sets** |
+| 2.0 | patient-aware pricing (`patient.py`, spine cycle S3, `patient-pricing-2026-08-04`) | **BUILT AND REVERTED** — the frozen prediction pre-registered `max_regressions = 0`; the blinded seat returned 5 regressions over 18 flips, 4 confirmed bidirectionally by a split-blind frontier leg (m0239, m0275, m0466, m0018). The bound fired; the module stays in the tree, out of the shipped path |
+| `cycle.py` | the cycle DRIVER: state machine OPEN → PREDICT → IMPLEMENT → MEASURE → ADJUDICATE → DECIDE → CLOSE over typed artifacts in `cycles/<name>/`; census only in the CHECKPOINT shape, `census: deferred_to_checkpoint` otherwise. Has now run **five** cycles end-to-end (`cycles/CYCLE_LOG.jsonl`: 4 KEEP + 1 REVERT — the bound fired on patient-pricing). CLOSE also drafts `commit_message.txt` + `staging_list.txt`; it never commits | **FORBIDDEN token** (`import cycle`, `cycles/`) — it orchestrates panel-reading census tooling; the fence is disclosure to the driver, never to query time |
 | `audit_disagreements.py` | the disagreement-census instrument: one dossier per tool-vs-panel disagreement + closed cause taxonomy + validator. Produced the 294-case census in `audit_dossiers/ext_v1_merged__audit_v1/` | **FORBIDDEN token — PANEL-READING BY DESIGN**, like `diagnose_disagreement`; seat brief `briefs/disagreement_autopsy.md` |
 | `select_audit.py` | the SELECT-step instrument: vocabulary sweep (sufficient direction) + query read-back (faithful direction). **v2 contract**: seats score 0–3, only score 3 actionable, budget overflow = measured miscalibration (binary v1 sweeps returned 32–47% in-scope — unusable). Its v2 findings produced `behavior_atoms_audit_v1.json` mechanically | diagnostic-only, **panel-free** |
 | `cut_stability.py` | the cut-stability diagnostic that the containment cycles' m0422 escalation demanded: perturbs recorded score distributions label-free and reports cut movement bands + the near-cut bystander census → `cut_stability_results.json`. Its verdict (class is structural) motivated the frozen cut | label-free, reads snapshots only |
@@ -73,9 +114,10 @@ without the fence firing.
 
 | path | what it is |
 |---|---|
-| `snapshots/` | frozen tool runs: `baseline-2026-08-03`, `containment-v0/v1/v1.1`, `ext-v1`, `baseline-2026-08-04-auditv1`, `versioned-cut-2026-08-04`, `chain-repair-2026-08-04` |
-| `cycles/` | ⚠️ FORBIDDEN-fenced dir: per-cycle state (`manifest`, sha-frozen `prediction`, `review_verdict`, `decision`, `state.json`) for the versioned-cut and chain-repair cycles + `CYCLE_LOG.jsonl` (one line per closed cycle) |
-| `dossiers/` | containment cycles 1–3: flip dossiers, blinded adjudication verdicts, and the three KEEP `decision.json` records (cycle 3 = the shippable overlay config; the m0422 standing escalation lives there) |
+| `snapshots/` | frozen tool runs, **one `<tag>.json` per snapshot tag**; tags are either a config name (`baseline-2026-08-03`, `containment-v0` / `-v1-pricing` / `-v1.1-kindinherit`, `ext-v1`, `baseline-2026-08-04-auditv1`) or a cycle name (`<cycle>.json`, written by that cycle's snapshot_build). **Enumerate with `ls snapshots/`** — the previous hand-list here undercounted (11 files on disk at 2026-08-04). `snapshot.write_snapshot` refuses a differing rewrite of an existing tag without `--force` |
+| `cycles/` | ⚠️ FORBIDDEN-fenced dir: **one directory per cycle**, named `<slug>-<date>`, holding that cycle's typed artifacts (`manifest.json`, sha-frozen `prediction.json`, `review_verdict.json`, `decision.json`, `state.json`, `flip_dossiers/` + `flip_verdicts.json`, and from S1 on `commit_message.txt` + `staging_list.txt`) — plus `CYCLE_LOG.jsonl`, **one line per CLOSED cycle**. `ls cycles/` and `cycles/CYCLE_LOG.jsonl` are the source of truth; do not maintain a list here. At 2026-08-04: 7 cycle dirs, 5 of them closed (versioned-cut, chain-repair, decoration-blind-join, patient-backfill, patient-pricing), 2 open (join-integrity-v2, segmentation-variants) |
+| `dossiers/` | `dossier.py`'s default output root, `<tag_a>__<tag_b>/` per set — in practice the **pre-driver** containment cycles 1–3: flip dossiers, blinded adjudication verdicts, and the three KEEP `decision.json` records (cycle 3 = the last pre-driver shippable overlay config; the m0422 standing escalation lives there). Driver-era cycles write to `cycles/<name>/flip_dossiers/` instead |
+| `drift_standing/` | the drift-standing seat pass: 61 stripped near-cut dossiers under `dossiers/`, two blinded leg verdict files (+ reruns) and a tiebreak, `assignments/`, and `DISCLOSURE.md` (the once-per-rule-family casebank consultation rule). Reporting only — changes no number, no predicted set, no threshold |
 | `audit_dossiers/ext_v1_merged__audit_v1/` | ⚠️ panel-derived: the 294-case census + `verdicts_merged.json` (155 `fp_promiscuous_atom` / 59 `fp_threshold_drift` / 30 `fp_section_prior` / 26 `fn_family_absent_from_vocabulary` / 19 `fn_names_cannot_meet` / 2+2+1 join/unexplained/fn_threshold). Query modules may not read this dir |
 | `chain_audit/` | worksheet + verdicts of the principal-chain audit (plus the pre-repair worksheet backup) |
 | `select_audit/` | rosters, sweep verdicts and findings, v1 and **v2** (`findings_v2_*.json` — the source of `behavior_atoms_audit_v1.json`) |
@@ -85,7 +127,7 @@ without the fence firing.
 | `vocabulary_migrations.json` | the replayable migration log every `atom_refactor --apply` appends to |
 | `golden_second_author.json` | 6 clauses translated cold by a second panel-blind author — source of the human ceiling 0.29 name / 0.79 span / 0.91 decoration that made `golden.py`'s scoring span-anchored |
 | `golden_expansion_a.json`, `golden_constitution.json` | hand-authored, panel-blind golden expansions (structure-rich Model-Spec picks; constitution side) |
-| `expert_salience.json` | the first HUMAN-expert relevance signal (salience-flattening finding + 2 core-passage anchors, reserved with the sealed TEST) |
+| `expert_salience.json` | the first HUMAN-expert relevance signal: the salience-flattening finding + **4 core-passage anchors — THREE anthropic-side (two pinned by `expert_core_passage_starts`, one qualitative/unpinned) plus ONE openai-side**. "Two anchors" was a miscount (PORTFOLIO_REVIEW addendum ruling 1); corrected here 2026-08-04. The three anthropic anchors are sealed with the constitution TEST; the openai anchor is consumed EXACTLY ONCE, at the generalization evaluation. Nothing may be fitted to any of them |
 
 ## 2. Priority 2 — BEHAVIOUR-VS-DOCUMENT CONFLICT (built, blocked on Matt)
 
@@ -189,12 +231,19 @@ agreement, never one reading.
 ⚠️ 2026-08-04: the commands below still run but quote the b8 config; the preferred
 config is `annotations_ext_v1_merged.json` + `behavior_atoms_audit_v1.json` (+ frozen
 thresholds via `snapshot.py --thresholds thresholds_frozen.json`). The suite is now
-~1,960 tests. Loop equivalents: `python3 snapshot.py <tag>` / `python3 snapshot.py diff
-a b`, `python3 cycle.py status|next`, `python3 audit_disagreements.py dossiers`
+**2,156 passed / 3 skipped (measured 2026-08-04)**. Loop equivalents:
+`python3 snapshot.py <tag>` / `python3 snapshot.py diff a b`,
+`python3 cycle.py status|next --cycle NAME`, `python3 audit_disagreements.py dossiers`
 (panel-reading — audit seat only).
 
+⚠️ **Test counts drift, and every count written into a doc goes stale within days** — this
+one has already been wrong twice (a "808 passing" line frozen at 2026-08-01 and a "~1,960"
+line frozen at 2026-08-02 both survived into 2026-08-04). **The command is the source of
+truth, not any number in this file.** If you need the count, run it; if you write it down,
+date it.
+
 ```
-.venv/bin/python -m pytest . -q                      # 808 passing (2026-08-01 count)
+.venv/bin/python -m pytest . -q                      # 2,156 passed / 3 skipped (2026-08-04)
 .venv/bin/python measure_join.py                     # join ceiling (re-derive; do not quote a remembered number)
 .venv/bin/python measure_kinds.py                    # relevance signal by clause kind
 .venv/bin/python spend.py                            # budget + unlogged-spend audit
@@ -226,3 +275,49 @@ diagnosed as a seat defect first); three ⚠️ seats are explicitly frontier/hu
 | `golden_review.md` | ⚠️ frontier/human: golden-set audit (catches the author) | — |
 | `change_reviewer.md` | ⚠️ frontier/careful: the cycle IMPLEMENT-gate review (freeze shas, declared-diff-only, tests bind incl. a mutant, fence scan) | `cycle.py` writes the assignment → `review_verdict.json` |
 | `decision_signer.md` | ⚠️ careful/authorized: the cycle DECIDE seat — document-side adjudications decide, census numbers inform | `cycle.py` drafts → signed `decision.json` |
+| `backfill_author.md` | ⚠️ frontier/careful: does the CLAUSE TEXT license a principal chain this atom instance left off, and which? | `backfill_worksheet.py build --dir` → `validate --dir` |
+| `drift_standing.md` | the STANDING contents of the frozen cut — near-cut clauses where nothing flipped; two independent blinded legs, reporting only | `drift_dossiers.py dossiers` → `validate` |
+
+**Validator invocations, explicitly** (never written down before; the flag spellings differ
+ON PURPOSE — CYCLE_DESIGN.md F9, pinned by `test_dossier.py::
+test_the_two_validators_keep_their_distinct_flag_spellings`, and hardcoded in `cycle.py`):
+
+```
+.venv/bin/python dossier.py validate --dir cycles/<name>/flip_dossiers \
+                                     --verdict-file cycles/<name>/flip_verdicts.json
+.venv/bin/python audit_disagreements.py validate --verdicts <file> --dossier-dir <dir>
+.venv/bin/python drift_dossiers.py     validate --verdicts <file> --dossier-dir <dir>
+.venv/bin/python backfill_worksheet.py validate --dir <dir>
+```
+
+The panel-blind flip seat is singular (`--verdict-file`) because the plural `--verdicts` is
+a FORBIDDEN token — it names per-judge panel labels. Do not "harmonize" them.
+
+## 11. ⚠️ Anti-rules — things that look like bugs and are not (added 2026-08-04)
+
+Every entry below is a change a competent agent would make in good faith, and every
+one breaks a contract. They are enforced by tests; this section is the only prose
+statement of *why*. Check here before "cleaning up" anything in this list.
+
+| Looks wrong | Actually required | Enforced | What the "fix" would break |
+|---|---|---|---|
+| `containment.load_edges` skips the one-child-family check when no vocabulary is passed | The skip is deliberate | `test_containment.py:732-733` | Running it unconditionally makes already-frozen overlay snapshots unreconstructable |
+| Empty-overlay equivalence asserted at recorded PRECISION, not bit-identity | Precision is the contract | `test_containment.py:145-147` | Tightening to `==` fails on float summation order (hash-seed dependent) |
+| The verdict loader accepts a bare list, `{"records": …}`, *and* any single list-valued key | The tolerance is a contract; genuine ambiguity must refuse | `test_dossier.py:540-548`, `:565-569` | "Standardizing on one shape" orphans every historical verdict file |
+| `dossier.py --verdict-file` vs `audit_disagreements.py --verdicts` | Must stay divergent | `test_dossier.py:583-598`, `CYCLE_DESIGN` F9 | Plural `--verdicts` is a FORBIDDEN token (it names per-judge panel labels) |
+| Patient pricing's monotone-downward invariant (I2) is asserted on RAW scores only | Normalized scores MAY rise — the corpus-max normalizer moves | `test_patient.py:290`, `:314`, `:326` | Asserting it on `rank()` writes a false-by-design test; "fixing" the normalizer silently changes every ranking number. Raw-untouched flips that crossed a cut are `normalizer_drift`, a threshold class, never `match_change` |
+| Degenerate inputs return refusals or floor values, never flattering ones | `jaccard(∅,∅) == 0.0`; a cut predicting everything or nothing is `DEGENERATE_CUT` and is never selected; an empty sweep must not report perfect F1 | `test_threshold.py:140-142`, `:157-205`; `test_benchmark.py:642` | "Vacuous agreement is total agreement" reasoning produces flattering numbers from empty sets |
+
+### Registration is what fences a module — not this table
+
+Adding a module to §1b documents it; it does not fence it. In the SAME diff:
+
+* a new **query-side** module must be appended to `test_no_reference_leak.QUERY_MODULES`,
+  and it needs a drivable surface — a scan that skips is not a guard
+  (`test_no_reference_leak.py:43-81`, `:591-594`);
+* a new **panel-reading** module must be added to `FORBIDDEN`, or it becomes a
+  laundering path for every module permitted to import it
+  (`test_unsupported_ablation.py:60-65` and siblings);
+* a new **test** module goes in `conftest._OPTIONAL`.
+
+All three registrations belong in the cycle's declared diff.

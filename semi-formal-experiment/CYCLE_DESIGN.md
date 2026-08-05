@@ -184,3 +184,77 @@ that line, restore-then-reapply is the one structure that could quietly *oversta
 our discipline — a passing prediction reads as a blind prediction to any later reader.
 P1's draft prediction already carries the right form of words ("all numbers below are
 measured, not hoped"); keep them through to the decision.
+
+---
+
+## ⚠️ CYCLE CEREMONY MECHANICS (added 2026-08-04 — previously precedent-only)
+
+These were learned by doing and lived only inside cycle directories. The gate-pin rule
+alone cost two halts and two re-closures in a single cycle.
+
+### The amendment channel
+
+`cycles/<name>/manifest_amendments.json` is the LOUD record for anything that changes a
+frozen or pinned artifact mid-cycle. Each entry chains: `old_sha` must equal the previous
+entry's `new_sha` (the first equals `state.json`'s `frozen_manifest_sha`), so the chain is
+verifiable end-to-end and `cycle.py status` echoes every amendment forever. An amendment
+that changes no manifest bytes still gets an entry with `old_sha == new_sha` — use this to
+record a test-delta or a disposition. **Never edit a frozen artifact silently; never
+"fix up" a sha in place.**
+
+### Gate pins vs declared changes — the trap
+
+A file is either **closure-pinned** (captured at OPEN, must NOT change: the gate refuses
+if it does) or a **declared change** (`files_to_change`: the gate refuses if it does NOT
+change). Putting a file in the wrong class produces a gate failure that looks like a code
+bug and is not. Two real cases:
+
+* A gate test whose assertions pin the *pre-change* state is closure-pinned by default,
+  but the cycle's own change necessarily turns it red. The fix is a **re-closure**: move
+  it to `files_to_change`, rewriting its pins to the declared state (a *stronger* pin),
+  recorded as an amendment.
+* A test that pins a **live-artifact census count** (`n == 109`, `692 candidates`) will go
+  stale the moment a cycle legitimately changes that artifact. Pin the frozen *input*
+  (a sha-pinned fixture or the frozen worksheet) plus a subset/coherence check — never an
+  exact count of a growing artifact. This failed twice in one cycle, in both S1's test and
+  the operator's own.
+
+**A re-closure made without prior designer sign-off must be FLAGGED FOR THE REVIEW SEAT to
+countersign or block.** Do not let the operator's convenience silently become policy.
+
+### Seat conventions
+
+* Every judgment seat gets a written `briefs/` file, a closed output schema, and a
+  mechanical validator. The brief states what the seat may never see.
+* **A cycle's own design document is never seat material** — nor is `PORTFOLIO_REVIEW.md`,
+  prior cycles' `flip_verdicts*.json`, or the census. Design docs pre-register expected
+  outcomes, so handing one to a seat "for context" destroys the judgment it was dispatched
+  to make.
+* The coordinator MAY append an **operator addendum** to a driver-written assignment,
+  containing FROZEN FACTS ONLY (mechanism maps, pre-registered expectations already on
+  record). It never overrides the brief and never adds new judgment instructions.
+* **Contested verdicts are recorded as contested.** When two legs of a seat diverge, both
+  document reasons are preserved verbatim, the verdict is `unclear`, and the divergence is
+  flagged for seat-defect review — never resolved by fiat, never averaged, and never
+  re-run at a bigger model to break the tie.
+* A bound-breaching or otherwise decision-critical verdict from a small-model seat gets an
+  independent split-blind verification leg before any decision cites it (the leg learns
+  WHICH items are contested, never which way the first leg ruled).
+
+### Designer rulings
+
+A ruling is a coordinator decision that resolves something a design left open or that a
+halt surfaced. It must be **written into the cycle record** (a named `*.md` in the cycle
+dir, or the decision justification), stating the grounds and — where a tempting
+alternative was rejected — **rejecting it by name with the reason**. A ruling that exists
+only in a dispatch message is transcript-only procedure, which `REPRODUCIBILITY.md`
+classes as a review finding.
+
+### Commit at CLOSE
+
+The driver NEVER runs git. CLOSE drafts `commit_message.txt` and `staging_list.txt`
+(= `files_to_change` ∪ the cycle dir); the coordinator stages, verifies, and commits.
+Staging often needs MORE than the list: newly created modules/tests, `conftest.py`
+registrations, new fixtures, the published snapshot, and `cycles/CYCLE_LOG.jsonl` — whose
+line may lag the previous cycle's commit and ride the next one. Check `git status` against
+the list rather than trusting either alone.

@@ -1,11 +1,19 @@
-# S3b REDESIGN — beneficiary-aware patient pricing (DRAFT for adversarial review)
+# S3b REDESIGN — beneficiary-aware patient pricing (REVISION 2, for adversarial review)
 
-Status: **DRAFT — design only, nothing implemented.** This document is the written,
+Status: **REVISION 2 — design only, nothing implemented.** This document is the written,
 reviewed design the S3 revert obliges before any re-attempt (HANDOFF 2026-08-04 LATE:
 "It needs a written, reviewed design first — do not re-attempt by tuning constants").
 It supersedes the S3 mechanism (`patient.py` as shipped at `091619c`, REVERTED).
 Author: session coordinator (Qwen Code), 2026-08-04. Review seat: **not yet run** —
 this draft must pass a clean-context adversarial review before OPEN.
+
+**REVISION 2 incorporates the coordinator review** (`S3B_REVIEW_COORDINATOR.md`,
+2026-08-04): blocking findings **B1** (attribution fence too narrow — this design doc and
+the S3 cycle record are an answer key; fix in §5.1) and **B2** (the pre-attribution
+structural guard cannot separate m0275 from m0276 and would resurface the latter; fix in
+§5.4), plus non-blocking **N1** (pre-registered expected recovery; §7.5), **N2**
+(enumerate the attribution population before D1; §8/D5) and **N3** (stratified controls,
+not two clauses; §4A). Each fix is tagged in place.
 
 Governing constraint: work that needs a frontier session and must NOT be started
 otherwise (model-dispatch memory; HANDOFF). This design is written to be *attacked*,
@@ -135,12 +143,17 @@ correctly names the harm and its bearer; it is discounted because of who the mod
 response is addressed to.
 
 **Candidate fixes.**
-* **A-structural (no re-annotation, partial).** Do not let clause taint discount a
-  MATCHED patient-free atom whose kind is `situation` when every patient-bearing atom
-  on the clause is an `act` whose agent is the model (a remedial/responsive act). I.e.
-  a remedial act addressed to the user cannot taint the harm-situation it responds to.
-  Cheap and mechanical. Risk: under-suppresses m0276-like cases where the user-directed
-  atom genuinely bears the harm; needs the m0276/m0290 controls pinned to catch this.
+* **A-structural (no re-annotation) — WITHDRAWN as an independent fix (B2).** As first
+  drafted this read: do not let clause taint discount a MATCHED patient-free `situation`
+  atom when every patient-bearing atom on the clause is a model-agent `act`. Verified
+  against the dossiers, that rule CANNOT work alone: m0275 (must surface) and m0276 (must
+  stay suppressed) are structurally identical under it — each is a matched patient-free
+  situation (`expressed_harmful_intent` / `imminent_bodily_harm`) plus a sibling
+  user-directed model-act. The rule would protect BOTH, resurfacing m0276 — the automatic
+  REVERT of §7.2. The separator is the harm-bearer in the gloss (§3's wall), which only
+  attribution reads. A-structural is retained ONLY as an attribution-gated component of
+  §5.3/§5.4; if any version is ever floated standalone it needs STRATIFIED controls (the
+  S2 golden-review pattern over affected clauses), not just m0276/m0290 (N3).
 * **A-attribution (principled).** Price the situation atom on its ATTRIBUTED harm-bearer
   (§5). If the attributed harm-bearer ∈ P, factor 1.0 regardless of sibling acts. This
   fixes A, B, and C with one mechanism, but requires the attribution step.
@@ -197,6 +210,16 @@ HARM-BEARER / BENEFICIARY, not the chain's grammatical recipient.** Concretely:
    `license_quote`, exactly in the spirit of S2's validator-checked backfill. The
    attribution reads clause text + gloss + the golden chain convention only; it never
    opens a panel artifact, a judge rating, or a gold value (same fence as S3).
+   **BLINDNESS FENCE (B1 fix, coordinator review).** The fence ALSO excludes the answer
+   key this document and the S3 cycle record constitute: the attribution seat must not
+   read `S3B_REDESIGN.md`, the S3 cycle directory (`flip_verdicts*.json`,
+   `flip_dossiers/`, `decision.json`, `ADJUDICATION_LEGS.md`), or the census — any of
+   which name the outcomes the attributor is supposed to derive independently, colliding
+   with §6's "attribution MUST NOT be fit to flip outcomes." Concretely: the attribution
+   BRIEF is written standalone (S2's `briefs/backfill_author.md` precedent — it never
+   mentioned pricing), is FORBIDDEN-token scanned like every query module, and the §7.1
+   restore-check is run by a party the attributor never reports to, AFTER attribution is
+   frozen. An attributor that can see the expected flips is transcribing, not attributing.
 2. **Two delivery options (DECISION POINT D1 — needs a designer ruling):**
    * **(a) Annotation-side backfill.** Extend the chain convention so harm-bearer is a
      first-class annotated field, shipped as a targeted backfill cycle (validator-checked,
@@ -219,16 +242,24 @@ HARM-BEARER / BENEFICIARY, not the chain's grammatical recipient.** Concretely:
      attributed beneficiary ∈ P, or whose attributed harm-bearer is the situation's
      victim, does NOT taint a sibling harm-situation atom. **This is the single rule
      change that fixes 4A and 4B together.**
-4. **No cross-sibling taint in example passages (belt-and-braces).** Even before
-   attribution lands, the structural guard of §4A-A-structural should be added so a
-   matched patient-free situation atom is never discounted solely because a sibling
-   model-act atom is user-directed. This is independently justified by m0275/m0466/m0108
-   and does not depend on D1.
+4. **The cross-sibling guard is ATTRIBUTION-GATED, not an independent step (B2 fix,
+   coordinator review).** The first draft offered §4A-A-structural as belt-and-braces
+   shippable "before attribution lands," independently justified by m0275/m0466/m0108.
+   That is WRONG and is withdrawn. m0276 is suppressed for a third-party query through
+   exactly that path — verified against the m0276 dossier: the match runs through the
+   patient-free situation `imminent_bodily_harm`, the three patient-bearing siblings are
+   user-directed, `clause_tainted` is true, and the matched atom is discounted to 0.1.
+   m0275 and m0276 are STRUCTURALLY IDENTICAL under the structural guard (matched
+   patient-free situation + sibling user-directed model-act), so no attribution-free rule
+   can surface m0275 without also resurfacing m0276 — the automatic REVERT of §7.2. The
+   cross-sibling guard therefore ships ONLY inside the attribution mechanism (§5.3), where
+   the attributed harm-bearer distinguishes m0275 (third party) from m0276 (user).
 
-**What this preserves:** m0276 and m0290 stay suppressed (their harm-bearing atoms
-attribute the USER as harm-bearer, disjoint from a third-party P); d = 0.10 and the cap
-are untouched; the opt-in/bit-identity invariants hold (no attribution ⇒ no declared
-harm-bearers ⇒ bit-identical).
+**What this preserves (attribution-dependent — this claim provides no cover for any
+pre-attribution structural step):** m0276 and m0290 stay suppressed because, once
+attribution exists, their harm-bearing atoms attribute the USER as harm-bearer, disjoint
+from a third-party P; d = 0.10 and the cap are untouched; the opt-in/bit-identity
+invariants hold (no attribution ⇒ no declared harm-bearers ⇒ bit-identical).
 
 ---
 
@@ -262,6 +293,15 @@ The redesign's cycle must pre-register, at OPEN, a prediction whose falsifiable 
    never silently resolved; P3/`ADJUDICATION_LEGS.md` precedent).
 4. **No census/panel/judge/gold consultation** informs the decision; flip adjudications
    only (S3 policy, restated).
+5. **Pre-registered expected recovery (N1, coordinator review).** BEFORE OPEN, estimate —
+   mechanically and blind to flip outcomes — how much of the nominal 155-case
+   `fp_promiscuous_atom` class beneficiary attribution actually reaches. CYCLE5_DESIGN's
+   honest scope note already conceded the S3 mechanism moved ~1/155 of its nominal class
+   on the current annotation (the canonical m0276/m0290); S3b's present evidence is the
+   4–5 regressions, not the class. If the estimated reach of beneficiary attribution is
+   likewise small, that is grounds to RE-SCOPE before spending an attribution cycle, not
+   a fact to discover at MEASURE. The expected-recovery figure is pre-registered here and
+   the MEASURE result is checked against it.
 
 ---
 
@@ -278,9 +318,14 @@ The redesign's cycle must pre-register, at OPEN, a prediction whose falsifiable 
   attribution handle them uniformly? The m0275/m0466/m0108 evidence is all example-kind.
 * **D4 — generic-noun convention.** Attribute `generic` and keep the patient (§4C), or
   rule generic-noun clauses patient-free? Needs an annotation-convention ruling.
-* **D5 — attribution population size.** S2 adjudicated 109 chain instances + backfilled
-  264. S3b attribution targets harm-bearing atoms; its population must be enumerated and
-  licensed the same way (verbatim quote, golden review) before pricing reads it.
+* **D5 — attribution population size (N2, coordinator review).** Enumerate the population
+  BEFORE D1 is ruled, not after: its size is an input to the annotation-side-backfill (a)
+  vs index-side-seat (b) choice (a large population can change which delivery is
+  affordable). For scale, S2's backfill was a full-cycle, four-seat effort (692 candidates
+  per the coordinator review; 264 chains landed); harm-bearer attribution over
+  patient-bearing AND patient-free harm-describing atoms could be larger. Whatever it is,
+  the population must be licensed the same way (verbatim quote, golden review) before
+  pricing reads it.
 
 ---
 

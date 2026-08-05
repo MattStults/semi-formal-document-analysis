@@ -46,8 +46,16 @@ change re-reviewed.
 2. **Declared-diff-only.** Exactly the manifest's `files_to_change`
    differ from their OPEN shas, and NOTHING else the change could ride in
    on has moved — spot-check beyond the pinned closure where the change's
-   blast radius suggests (this workspace has concurrent agents and no git
-   on some trees; the closure is necessary, not sufficient).
+   blast radius suggests; the closure is necessary, not sufficient.
+   [Rationale corrected 2026-08-04 per PORTFOLIO_REVIEW F12, which ruled
+   the old "this workspace has concurrent agents and no git on some trees"
+   justification STALE — the repo IS git-tracked, and that is precisely
+   what validates the git-primary A-side reconstruction. The CHECK is
+   unchanged and stands on its own merits: concurrent agents still edit
+   this tree, and a sha-pinned closure captured at OPEN is the one form of
+   "nothing else moved" the ceremony can verify mechanically, at the exact
+   instant the cycle froze, without depending on what any working tree's
+   git state happens to say. Same correction as CYCLE_DESIGN.md F5.]
 3. **Tests bind — including at least one mutant.** The gate tests must
    FAIL when the fix is broken, not merely pass when it is present: apply
    at least one mutant (revert or sabotage the core of the change in a

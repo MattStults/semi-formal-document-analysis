@@ -15,7 +15,8 @@ answered against, and what the judge may never see. The deterministic
 producer before the seat and the mechanical validator after it live in code;
 the brief is the middle of the sandwich.
 
-Current briefs:
+Current briefs — **10** as of 2026-08-04 (`ls briefs/*.md` is the source of
+truth; this list has gone stale before):
 
 - `flip_adjudicator.md` — the dossier→verdict seat of the iteration loop
   (ITERATION_LOOP.md Unit 2; validator: `dossier.py validate`).
@@ -50,9 +51,34 @@ Current briefs:
   decide; census numbers inform, never decide) and when justification is
   mandatory. ⚠️ Careful seat — a human, or a frontier model under recorded
   authorization; it holds the loop's keep/revert authority.
+- `backfill_author.md` — the patient-chain worksheet seat: for each
+  worksheet row of a chain-free atom instance, does the CLAUSE TEXT license
+  a principal chain, and which (`chain_licensed` / `no_chain_licensed` /
+  `unclear`)? Producer/validator: `backfill_worksheet.py build|validate
+  --dir <dir>`. ⚠️ Frontier/careful seat — it exists to catch the
+  annotation author's omissions, so the small-model standard does not
+  apply. Ran the `patient-backfill-2026-08-04` cycle.
+- `drift_standing.md` — the drift-standing adjudication seat over the
+  STANDING contents of the frozen label-free cut (`thresholds_frozen.json`
+  v1): near-cut clauses where nothing flipped. Producer:
+  `drift_dossiers.py dossiers`; validator: `drift_dossiers.py validate
+  --verdicts <file> --dossier-dir <dir>`. Small-model seat, run as TWO
+  independent blinded legs (>10% divergence = a defect in the brief, and
+  the pass reruns — it does not average). Reporting only: it changes no
+  number, no predicted set, no threshold. Artifacts in `drift_standing/`.
+
+⚠️ **The validator flag spellings differ on purpose and must not be
+"harmonized"** (CYCLE_DESIGN.md F9; pinned by test per TOOLING_BATCH_DESIGN
+§5): `dossier.py validate --dir <dir> --verdict-file <file>`, but
+`audit_disagreements.py validate --verdicts <file> --dossier-dir <dir>` and
+`drift_dossiers.py validate --verdicts <file> --dossier-dir <dir>`. The
+plural `--verdicts` is a FORBIDDEN token on the panel-blind side, which is
+why the flip seat's flag is singular; `cycle.py` hardcodes both spellings.
 
 None of the audit's owed briefs remain outstanding (REPRODUCIBILITY.md,
-status audit items 1–3: all resolved).
+status audit items 1–3: all resolved). That statement is about those three
+audit items only — it is not a claim that every future seat already has a
+brief.
 
 ## The small-model standard (Matt, 2026-08-03)
 
