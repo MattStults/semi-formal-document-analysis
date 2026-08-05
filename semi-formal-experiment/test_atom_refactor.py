@@ -981,6 +981,90 @@ def test_surface_scope_refuses_empty_and_unknown_lists(ext_root):
     assert "unknown surface" in str(ei.value)
 
 
+def test_legacy_surface_denylist_is_the_frozen_chainfree_pair():
+    """The deny-list is a CLOSED vocabulary, pinned in both directions:
+    it may neither shrink (a legacy surface escaping the fence) nor grow
+    (a live surface locked out of legitimate future scopes)."""
+    assert set(ar.LEGACY_SURFACE_DENYLIST) == {
+        "annotations.json", "annotations_b8.json"}
+
+
+def test_new_scoped_entries_naming_legacy_surfaces_are_refused(ext_root):
+    """F2 hardening: 'b8 frozen forever' becomes tool-enforced. A NEW
+    surface-scoped entry naming a legacy frozen surface is refused at
+    plan time — each legacy surface alone, and a mixed list that pairs
+    one with the ext_v1 lineage (one legacy name taints the whole
+    entry). Unscoped rechains are untouched by the deny-list, and the
+    ext_v1 lineage remains a legal scope."""
+    _wjson_style(os.path.join(ext_root, "annotations_b8.json"), _ext_ann())
+    _wjson_style(os.path.join(ext_root, "annotations.json"), _ext_ann())
+    for denied in ("annotations_b8.json", "annotations.json"):
+        with pytest.raises(ar.LegacySurfaceError) as ei:
+            ar.plan_migration(ext_root, "rechain", HELP_OLD, HELP_NEW,
+                              date="2026-08-04", reason="r",
+                              clauses=["m0276"], surfaces=[denied])
+        assert denied in str(ei.value)
+    with pytest.raises(ar.LegacySurfaceError):
+        ar.plan_migration(ext_root, "rechain", HELP_OLD, HELP_NEW,
+                          date="2026-08-04", reason="r", clauses=["m0276"],
+                          surfaces=list(EXT_LINEAGE) + ["annotations_b8.json"])
+    # nothing written by any refusal (planning refuses before any byte)
+    assert not os.path.exists(
+        os.path.join(ext_root, "vocabulary_migrations.json"))
+    # the ext_v1 lineage remains a legal NEW scope
+    entry, _ = ar.plan_migration(ext_root, "rechain", HELP_OLD, HELP_NEW,
+                                 date="2026-08-04", reason="r",
+                                 clauses=["m0276"],
+                                 surfaces=list(EXT_LINEAGE))
+    assert entry["surfaces"] == sorted(EXT_LINEAGE)
+    # an UNSCOPED rechain still plans over every surface, legacy included:
+    # the legacy all-surfaces semantics are untouched by the deny-list
+    entry, changes = ar.plan_migration(ext_root, "rechain", HELP_OLD,
+                                       HELP_NEW, date="2026-08-04",
+                                       reason="r", clauses=["m0276"])
+    assert "surfaces" not in entry
+    assert "annotations_b8.json" in changes
+
+
+def test_deny_list_gates_planning_only_replay_keeps_legacy_semantics(
+        ext_root):
+    """Legacy replay stays intact: the deny-list fences NEW entries at
+    PLAN time; replay is surface-honoring and never re-checks it, so an
+    entry ALREADY in a log (the pre-deny-list shape, scoped to a legacy
+    surface) replays byte-identically — applied to the legacy surface it
+    names, skipped on a surface it does not name. Grandfathering by the
+    byte-identity replay contract, pinned against a live refusal of the
+    identical NEW scope."""
+    _wjson_style(os.path.join(ext_root, "annotations_b8.json"), _ext_ann())
+    b8_before = _read_bytes(ext_root, "annotations_b8.json")
+    ext_before = _read_bytes(ext_root, "annotations_ext_v1.json")
+    entry = {"op": "rechain", "old": HELP_OLD, "new": HELP_NEW,
+             "date": "2026-08-04", "reason": "r", "clauses": ["m0276"],
+             "surfaces": ["annotations_b8.json"],
+             "artifacts": {}}
+    log_path = _wjson(os.path.join(ext_root, "vocabulary_migrations.json"),
+                      {"artifact": "vocabulary_migrations", "version": 1,
+                       "migrations": [entry]})
+    # applied to the legacy surface the grandfathered entry names
+    migrated = ar.replay_artifact(
+        os.path.join(ext_root, "annotations_b8.json"), log_path,
+        as_rel="annotations_b8.json")
+    assert migrated != b8_before
+    got = json.loads(migrated.decode("utf-8"))
+    assert [a["name"] for a in got["by_clause"]["m0276"]] == [HELP_NEW]
+    # skipped on a surface the entry does not name
+    migrated_ext = ar.replay_artifact(
+        os.path.join(ext_root, "annotations_ext_v1.json"), log_path,
+        as_rel="annotations_ext_v1.json")
+    assert migrated_ext == ext_before
+    # while the identical NEW scope is refused at plan time
+    with pytest.raises(ar.LegacySurfaceError):
+        ar.plan_migration(ext_root, "rechain", HELP_OLD, HELP_NEW,
+                          date="2026-08-04", reason="r",
+                          clauses=["m0276"],
+                          surfaces=["annotations_b8.json"])
+
+
 def test_absent_surfaces_field_keeps_the_legacy_all_surfaces_semantics(
         ext_root):
     """An entry WITHOUT the field applies everywhere, exactly as before the

@@ -284,6 +284,51 @@ CENSUS_SHA = ("5376cde396ed2e4190c979be7b422c7a4db81683"
               "f056a71023179be8528ddfab")
 
 
+def _assert_census_preserved(frozen, live):
+    """The S1-census preservation contract, multiplicity-aware.
+
+    (i) no frozen chain may be lost: frozen ⊆ live AS A MULTISET;
+    (ii) every live chain is well-formed: non-empty, members from the
+        principal vocabulary, decorated-name round-trip through the grammar;
+    (iii) every live chain NOT in the frozen census has length >= 2 (the
+        backfill validator's rule);
+    (iv) the F1 hardening — the grandfather clause is multiplicity-BOUND:
+        the census's length-1 triples are licensed at exactly their frozen
+        multiplicity. Membership alone is blind to live-side duplicates (a
+        frozen ⊆ live check tests loss, not live-side counts), and a NEW
+        second instance of a grandfathered triple is a new length-1 chain,
+        which the length >= 2 rule refuses like any other.
+    """
+    frozen_counts = collections.Counter(frozen)
+    live_counts = collections.Counter(live)
+    missing = frozen_counts - live_counts
+    assert not missing, (
+        f"S1-era chains lost from the live artifact: {sorted(missing)[:5]}")
+    grandfathered = collections.Counter(
+        t for t in frozen_counts if len(t[2]) == 1)
+    over_grandfather = {t: live_counts[t] - n
+                        for t, n in grandfathered.items()
+                        if live_counts[t] > n}
+    assert not over_grandfather, (
+        "grandfathered length-1 chains duplicated beyond their frozen "
+        f"multiplicity: {over_grandfather}. The grandfather clause "
+        "licenses exactly the census-frozen instances; a duplicate beyond "
+        "the frozen count is a NEW length-1 chain, refused like any other.")
+    frozen_set = set(frozen)
+    for cid, name, ch in live:
+        assert ch, f"empty chain on {cid}/{name}"
+        decorated = name + "".join(f"__{m}" if i == 0 else f"_{m}"
+                                   for i, m in enumerate(ch))
+        p = grammar.parse_name(decorated)
+        assert not p["error"] and p["principals"] == list(ch), (
+            f"live chain {ch} on {cid}/{name} is outside the principal "
+            "vocabulary / grammar")
+        if (cid, name, ch) not in frozen_set:
+            assert len(ch) >= 2, (
+                f"post-S1 chain {ch} on {cid}/{name} is length-1: a lone "
+                "member cannot state who acts on whom")
+
+
 def test_real_artifact_chains_are_preserved_as_metadata():
     """Chains become pricing METADATA, not nothing: the index preserves every
     clause's stripped chains (for the 2.0 patient-pricing layer and for
@@ -295,7 +340,10 @@ def test_real_artifact_chains_are_preserved_as_metadata():
     principal vocabulary, decorated-name round-trip through the grammar
     (whose chains read agent-first), and length >= 2 for every chain NOT in
     the frozen census (the backfill validator's rule; five S1-era length-1
-    chains are grandfathered inside the census itself)."""
+    chains are grandfathered inside the census itself); (iii) the F1
+    hardening: the five grandfathered length-1 triples are bounded at their
+    frozen multiplicity, so a new duplicate of one cannot escape the
+    length >= 2 rule through the grandfather clause's membership test."""
     if not os.path.exists(REAL_ANN):
         pytest.skip("real artifact not present")
     with open(CENSUS, "rb") as f:
@@ -312,20 +360,39 @@ def test_real_artifact_chains_are_preserved_as_metadata():
             for cid, by_name in over.chains.items()
             for name, chains in by_name.items()
             for ch in chains]
-    missing = collections.Counter(frozen) - collections.Counter(live)
-    assert not missing, (
-        f"S1-era chains lost from the live artifact: {sorted(missing)[:5]}")
-    frozen_set = set(frozen)
-    for cid, name, ch in live:
-        assert ch, f"empty chain on {cid}/{name}"
-        decorated = name + "".join(f"__{m}" if i == 0 else f"_{m}"
-                                   for i, m in enumerate(ch))
-        p = grammar.parse_name(decorated)
-        assert not p["error"] and p["principals"] == list(ch), (
-            f"live chain {ch} on {cid}/{name} is outside the principal "
-            "vocabulary / grammar")
-        if (cid, name, ch) not in frozen_set:
-            assert len(ch) >= 2, (
-                f"post-S1 chain {ch} on {cid}/{name} is length-1: a lone "
-                "member cannot state who acts on whom")
+    _assert_census_preserved(frozen, live)
     assert not any("__" in name for name in over.atom_df)
+
+
+def test_grandfather_clause_is_multiplicity_bounded():
+    """F1 hardening demonstration: a NEW second instance exactly duplicating
+    one of the five grandfathered length-1 triples must FAIL — the
+    grandfather clause licenses exactly the frozen multiplicity. Built on
+    the real sha-pinned census (all its chains are grammar-well-formed), so
+    the only thing that can fire is the bound itself. Duplication of a
+    frozen length >= 2 triple stays legal: the backfill adds chains by
+    design, and the bound exists only because a length-1 duplicate would
+    otherwise escape the length >= 2 rule through membership."""
+    with open(CENSUS, "rb") as f:
+        raw = f.read()
+    assert hashlib.sha256(raw).hexdigest() == CENSUS_SHA
+    frozen = [(cid, name, tuple(ch))
+              for cid, name, ch in json.loads(raw)["chains"]]
+    grandfathered = [t for t in frozen if len(t[2]) == 1]
+    assert len(grandfathered) == 5, (
+        "the census's grandfathered length-1 triple count moved — the "
+        "fixture is sha-pinned, so this is unreachable unless the pin moved")
+    # exactly the frozen census is clean
+    _assert_census_preserved(frozen, list(frozen))
+    # one duplicated grandfathered triple: RED, named as an over-frozen
+    # multiplicity (the membership check alone would have passed it)
+    victim = grandfathered[0]
+    with pytest.raises(AssertionError, match="frozen multiplicity"):
+        _assert_census_preserved(frozen, list(frozen) + [victim])
+    # every one of the five is bounded, not just the first
+    for t in grandfathered[1:]:
+        with pytest.raises(AssertionError, match="frozen multiplicity"):
+            _assert_census_preserved(frozen, list(frozen) + [t])
+    # a duplicated frozen length >= 2 chain stays legal (subset pin)
+    long_enough = next(t for t in frozen if len(t[2]) >= 2)
+    _assert_census_preserved(frozen, list(frozen) + [long_enough])

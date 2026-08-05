@@ -172,6 +172,47 @@ def test_build_refuses_an_invented_kind(tmp_path):
         bw.build(str(ann), str(cls), str(tmp_path / "o"))
 
 
+BACKFILL_DIR = os.path.join(HERE, "cycles", "patient-backfill-2026-08-04",
+                            "backfill")
+
+
+def _scope_coherence_errors(frozen_keys, licensed, live):
+    """The R3 scope-coherence contract as the EXACT identity
+    live == frozen − licensed, with directional errors. `licensed` is the
+    set of (clause_id, name) keys carrying a chain_licensed verdict — the
+    ONLY verdict that removes a candidate from the live artifact (the
+    rechain decorates it, so it is no longer chain-free). The old subset
+    check (live ⊆ frozen) tested only that nothing OUTSIDE the frozen
+    scope appeared; it was blind to over-removal — a NON-licensed
+    candidate vanishing. The identity catches both directions."""
+    errors = []
+    for key in sorted(live - (frozen_keys - licensed)):
+        errors.append(f"candidate {key} lies outside frozen − licensed")
+    for key in sorted((frozen_keys - licensed) - live):
+        errors.append(
+            f"non-licensed candidate {key} vanished from the live "
+            "artifact (over-removal: only chain_licensed verdicts may "
+            "remove a candidate)")
+    return errors
+
+
+def _licensed_keys(vpath, ws_path):
+    """Derive the licensed set from the cycle's verdict file, on the
+    strength of its own binding: the file must validate CLEAN against the
+    frozen worksheet (worksheet_sha256 binding, exactly-once coverage of
+    every instance, closed verdict vocabulary — all bw.validate's job),
+    so `chain_licensed` keys are a well-defined subset of the frozen
+    scope."""
+    assert bw.validate(ws_path, vpath) == [], (
+        "the backfill verdict file no longer validates CLEAN against the "
+        "frozen worksheet — the licensed-set derivation is unsound")
+    with open(vpath) as f:
+        records = json.load(f)["records"]
+    licensed = {(r["clause_id"], r["name"]) for r in records
+                if r["verdict"] == "chain_licensed"}
+    return licensed
+
+
 def test_real_artifact_counts_match_the_registered_scope():
     """The registered scope is pinned by the FROZEN worksheet enumeration
     (the cycle artifact), not by the live annotation artifact: the live
@@ -179,10 +220,13 @@ def test_real_artifact_counts_match_the_registered_scope():
     (the backfill's whole point), so a live-count pin would break on the
     cycle's own change — the stale-census-pin failure mode this repo has
     now hit twice (test_dechain's n==109; this test's original 692). The
-    live artifact is instead checked for COHERENCE: every chain-free act
-    candidate it still carries must lie inside the frozen scope."""
-    ws_path = os.path.join(HERE, "cycles", "patient-backfill-2026-08-04",
-                           "backfill", "worksheet.json")
+    live artifact is instead checked for COHERENCE, hardened (R3) from
+    the subset check live ⊆ frozen to the EXACT identity
+    live == frozen − licensed, with `licensed` derived from the cycle's
+    verdict file: an over-removal — a non-licensed candidate vanishing
+    from the live artifact — now goes RED too, where the subset check was
+    blind (a vanished candidate is still a subset)."""
+    ws_path = os.path.join(BACKFILL_DIR, "worksheet.json")
     if not os.path.exists(ws_path):
         pytest.skip("frozen backfill worksheet not present")
     ws = json.load(open(ws_path))
@@ -195,10 +239,51 @@ def test_real_artifact_counts_match_the_registered_scope():
                                            "distinct_clauses": 148}
     frozen_keys = {(r["clause_id"], r["name"]) for r in ws["instances"]}
     assert len(frozen_keys) == 692
+    vpath = os.path.join(BACKFILL_DIR, "verdict_file.json")
+    if not os.path.exists(vpath):
+        pytest.skip("backfill verdict file not present")
+    licensed = _licensed_keys(vpath, ws_path)
+    assert licensed <= frozen_keys
     ann = os.path.join(HERE, "annotations_ext_v1_merged.json")
     live = {(a["clause_id"], a["name"])
             for a in bw.candidates(json.load(open(ann)))}
-    assert live <= frozen_keys
+    errors = _scope_coherence_errors(frozen_keys, licensed, live)
+    assert errors == [], errors[:5]
+
+
+def test_scope_identity_catches_over_removal():
+    """R3 hardening demonstration, built on the shipped frozen record: the
+    exact identity live == frozen − licensed goes RED on an over-removal,
+    which the old subset check could not see. The expected live set is
+    derived from the frozen worksheet and verdict file alone; a planted
+    removal of ONE non-licensed key must be reported, naming the key, and
+    the legacy subset check is shown blind to the identical mutant."""
+    ws_path = os.path.join(BACKFILL_DIR, "worksheet.json")
+    vpath = os.path.join(BACKFILL_DIR, "verdict_file.json")
+    if not (os.path.exists(ws_path) and os.path.exists(vpath)):
+        pytest.skip("frozen backfill record not present")
+    ws = json.load(open(ws_path))
+    frozen_keys = {(r["clause_id"], r["name"]) for r in ws["instances"]}
+    licensed = _licensed_keys(vpath, ws_path)
+    expected_live = frozen_keys - licensed
+    assert licensed and expected_live
+    # the derived-clean live set: the identity holds
+    assert _scope_coherence_errors(frozen_keys, licensed,
+                                   expected_live) == []
+    # planted over-removal: one NON-licensed candidate vanishes
+    victim = min(expected_live)
+    over_removed = expected_live - {victim}
+    errors = _scope_coherence_errors(frozen_keys, licensed, over_removed)
+    assert any("over-removal" in e and str(victim) in e for e in errors), \
+        errors[:5]
+    # the OLD subset check is blind to the identical mutant — the exact
+    # hole the hardening closes
+    assert over_removed <= frozen_keys
+    # the other direction: a candidate outside the reduced scope is also
+    # reported (a licensed candidate lingering, or an invented one)
+    errors = _scope_coherence_errors(frozen_keys, licensed,
+                                     expected_live | {next(iter(licensed))})
+    assert any("outside frozen" in e for e in errors), errors[:5]
 
 
 # --------------------------------------------------------------- validator

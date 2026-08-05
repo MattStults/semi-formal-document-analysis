@@ -76,7 +76,13 @@ byte-identically. POLICY: the b8/legacy annotation surfaces
 (annotations.json, annotations_b8.json) are frozen chain-free historical
 artifacts and may never be decorated; backfill-class rechains scope to the
 ext_v1 lineage (annotations_ext_v1.json, annotations_ext_v1_patch.json,
-annotations_ext_v1_merged.json).
+annotations_ext_v1_merged.json). ENFORCEMENT (the F2 hardening): a NEW
+surface-scoped entry naming a legacy surface is refused at plan time
+(LEGACY_SURFACE_DENYLIST), so "b8 frozen forever" is tool-enforced, not
+just docstring+gate. The deny-list gates planning ONLY: unscoped entries
+keep the all-surfaces legacy semantics, and replay honors a recorded scope
+without re-checking the deny-list, so an entry already in a log replays
+byte-identically (legacy replay semantics intact).
 
 Artifacts are round-tripped through the repo's canonical serialization
 (json.dumps indent=1; the trailing newline AND the ascii-escaping are each
@@ -122,6 +128,17 @@ FIXED_SURFACES_HEAD = ("annotations.json", "annotations_b8.json",
 BEHAVIOR_ATOMS_GLOB = "behavior_atoms*.json"
 FIXED_SURFACES_TAIL = ("golden_translations.json", "containment.json",
                        "behaviours_query.json")
+
+#: The b8/legacy annotation surfaces are frozen chain-free historical
+#: artifacts (POLICY in the module docstring; test_grammar's b8 pins are
+#: the post-hoc enforcement that demonstrably halted the S2 apply). A NEW
+#: surface-scoped entry naming one of these is refused (the F2 hardening):
+#: scoped entries are how backfill-class rechains declare their reach, and
+#: that reach stops at the ext_v1 lineage. The deny-list gates PLANNING
+#: only — UNSCOPED entries keep the legacy all-surfaces semantics and
+#: replay honors a recorded scope without re-checking it, so every pre-
+#: deny-list log entry replays byte-identically.
+LEGACY_SURFACE_DENYLIST = ("annotations.json", "annotations_b8.json")
 
 #: Clause corpora consulted (read-only) to put full clause text on split
 #: worklists. Never rewritten — they hold no atom names.
@@ -177,6 +194,14 @@ class EdgeConflictError(RefactorError):
 
 class WorklistError(RefactorError):
     """A split worklist failed validation."""
+
+
+class LegacySurfaceError(RefactorError):
+    """A NEW surface-scoped entry named a frozen legacy surface
+    (LEGACY_SURFACE_DENYLIST): those artifacts are chain-free historical
+    records and may never be decorated by a scoped migration. The
+    deny-list gates PLANNING only — replay never re-checks it, so an
+    entry already in a log keeps the byte-identity replay contract."""
 
 
 # ------------------------------------------------------------ file plumbing
@@ -684,8 +709,9 @@ def _check_reason(reason):
 
 def _check_surfaces(surfaces, root):
     """Validate an explicit surface scope: non-empty, basenames only, every
-    name a scanned surface — a typo must never silently narrow or widen a
-    migration."""
+    name a scanned surface, and no name on the LEGACY_SURFACE_DENYLIST —
+    a typo must never silently narrow or widen a migration, and a NEW
+    scoped entry may never reach the frozen chain-free legacy surfaces."""
     if not (isinstance(surfaces, (list, tuple)) and surfaces
             and all(isinstance(s, str) and s for s in surfaces)):
         raise RefactorError(
@@ -698,6 +724,17 @@ def _check_surfaces(surfaces, root):
             f"unknown surface(s) {unknown}: a surface scope names artifact "
             "basenames from the fixed scan list, so a misspelling cannot "
             "silently drop a surface from the migration.")
+    denied = sorted(set(surfaces) & set(LEGACY_SURFACE_DENYLIST))
+    if denied:
+        raise LegacySurfaceError(
+            f"legacy frozen surface(s) {denied} named in a NEW surface "
+            "scope: the b8/legacy annotation surfaces are frozen "
+            "chain-free historical artifacts and may never be decorated "
+            "by a scoped migration (enforced here, not only post-hoc by "
+            "the b8 pins). Scope backfill-class rechains to the ext_v1 "
+            "lineage. Unscoped entries keep the legacy all-surfaces "
+            "semantics, and replay never re-checks this deny-list, so "
+            "entries already in a log are grandfathered.")
     return sorted(set(surfaces))
 
 
@@ -1061,7 +1098,9 @@ def main(argv=None):
                     metavar="BASENAME", default=None,
                     help="record the entry as applying ONLY to this "
                          "artifact basename (repeatable); absent = all "
-                         "surfaces, the legacy semantics")
+                         "surfaces, the legacy semantics. The frozen "
+                         "legacy surfaces (annotations.json, "
+                         "annotations_b8.json) are denied in a NEW scope")
     add_migration_args(pc)
 
     ps = sub.add_parser("split", help="emit the per-usage worklist for a "
