@@ -1,4 +1,25 @@
-# HANDOFF — spec ontology spike (2026-08-01; state refreshed 2026-08-04 LATE)
+# HANDOFF — spec ontology spike (2026-08-01; state refreshed 2026-08-05)
+
+## ⭐⭐⭐ STATE AS OF 2026-08-05 — S3b and S4 build-ready. READ THIS FIRST.
+
+This section supersedes the 2026-08-04-LATE section below for WHAT IS CURRENT.
+
+The S3b redesign (beneficiary-aware patient pricing) reached REVISION 9 and passed a
+Tier-2 verification; it is READY TO BUILD (checklist B4: attribution backfill + parity
+validation + pricing cycle). The S4 section-prior evidence gate also passed a Tier-2
+verification and is ready. A two-tier review policy was adopted (REVIEW_POLICY.md: full
+adversarial review at decision points, focused Tier-2 verification for intermediate
+revisions — proven ~5-12x cheaper for Tier-2). BUILD_OVERVIEW.md gives the build overview
+(models, what each does, why capable, data-flow diagram). NEXT STEP: run the S3b build
+(attribution backfill first), then S4 — SEQUENCED (dispatch-ladder composition), not
+parallel. BUDGET: spend.py hard budget $8.50; the subagent review chain used substantial
+tokens, so CHECK BUDGET (`.venv/bin/python spend.py --check`) BEFORE the backfill.
+
+For a fresh agent picking this up: read AGENTS.md, then this section, then
+BUILD_OVERVIEW.md, S3B_REDESIGN.md (REVISION 9) / SECTION_PRIOR_DESIGN.md,
+S3B_ATTRIBUTION_TASK_DESIGN.md, REVIEW_POLICY.md, and briefs/ (incl. backfill_author.md
+for the attribution seat). The seat briefs are in place; the build is ready; the main
+risk is the budget.
 
 ## ⭐⭐ STATE AS OF 2026-08-04 LATE — the fix ladder in execution. READ THIS FIRST.
 
