@@ -1,14 +1,137 @@
-# S3b REDESIGN — beneficiary-aware patient pricing (REVISION 6, for adversarial re-review)
+# S3b REDESIGN — beneficiary-aware patient pricing (REVISION 9, for adversarial re-review)
 
-Status: **REVISION 6 — design only, nothing implemented.** This document is the written,
+Status: **REVISION 9 — design only, nothing implemented.** This document is the written,
 reviewed design the S3 revert obliges before any re-attempt (HANDOFF 2026-08-04 LATE:
 "It needs a written, reviewed design first — do not re-attempt by tuning constants").
 It supersedes the S3 mechanism (`patient.py` as shipped at `091619c`, REVERTED).
-Author: session coordinator (Qwen Code), 2026-08-04; REVISION 6, 2026-08-05. Review
-seat: REVISION 4 was adversarially re-reviewed (`S3B_ADVERSARIAL_REVIEW_R4.md`, verdict
-REVISE); REVISION 6 is for adversarial re-review before OPEN.
+Author: session coordinator (Qwen Code), 2026-08-04; REVISION 7, 2026-08-05;
+REVISION 8, 2026-08-05; REVISION 9, 2026-08-05. Review seat: REVISION 4 was
+adversarially re-reviewed (`S3B_ADVERSARIAL_REVIEW_R4.md`, verdict REVISE);
+REVISION 6 was adversarially re-reviewed (`S3B_ADVERSARIAL_REVIEW_R6.md`, verdict
+REVISE — no blockers, 3 majors); REVISION 7 fixed the three R6 majors (E-1, E-2, S-1)
+plus the two directed minors; REVISION 8 folded in the eight remaining R6 ride-along
+minors and was adversarially re-reviewed (`S3B_ADVERSARIAL_REVIEW_R8.md`, verdict
+REVISE — no blockers, 2 majors); REVISION 9 fixes exactly those two majors (S-A, S-B),
+and is for adversarial re-review before OPEN.
 
-**REVISION 6 records the coordinator's D4 ruling: generic nouns ("people",
+**REVISION 9 fixes the two MAJOR findings of the R8 adversarial re-review
+(`S3B_ADVERSARIAL_REVIEW_R8.md`, verdict REVISE — 0 blocking / 2 major). Nothing else
+moves: the R6 majors, the ten R6 minors, and every ruling are retained intact, and no
+new ruling is recorded.**
+* **S-A — restoration signature arms bound PER CLAUSE.** §7.1's SIGNATURE arms are now
+  mechanically CLAUSE-BOUND, not a free disjunction: m0275 and m0466 satisfy ONLY
+  arm (i) (resolved consistent attribution), m0018 ONLY arm (ii) (the D4
+  comprehensive disambiguation). A comprehensive-laundered m0275/m0466 — wrong
+  verdict: the full principal set instead of {third_party} — matches arm (ii), which
+  is NOT its bound arm, and FAILS the plank (the branch keying no longer floats free
+  of the clause); the mirror laundering on m0018 fails the same way. AND —
+  belt-and-braces, closing the hole at backfill time too — the companion spec's §2.5
+  frozen-backfill re-check now EXTENDS to m0275/m0466 with IMMUTABLE expected
+  verdicts (resolved, `harm_bearers` exactly {third_party}, not comprehensive):
+  the validator's E_CONSISTENCY enforces set-shape only and cannot see a laundering
+  verdict, and no other backfill-time check sees m0275/m0466's verdicts. §7.1 now
+  matches the companion spec's §3.4 F_core reading (which already read the arms as
+  clause-bound), and §5.3's leak-direction coverage sentence carries the new
+  re-check cases.
+* **S-B — the lapse condition's state space completed.** The §4B LAPSE CONDITION now
+  (a) states its MEASURE-time semantics explicitly — the exclusion holds at MEASURE
+  only if the receiver has passed review and accepted m0239 AT MEASURE; otherwise
+  m0239's expected flip IS counted — and gates OPEN on receiver readiness (§9);
+  (b) fixes ONE re-entry semantic at all three restatement sites (§4B, §7.1, §7
+  plank 3): the demoted clause re-enters THIS cycle's §7.3 bound — the "at the next
+  cycle" reading is deleted; and (c) states the retroactive consequence: a lapse
+  established AFTER CLOSE re-counts the recorded-and-reported flip retroactively
+  against S3b's own bound at the decision point where lapse is established — the
+  reading that gives the condition teeth against permanent immunization (no future
+  cycle re-flips a clause whose priced state is unchanged, so a next-cycle-only
+  re-entry would count nothing).
+
+**REVISION 8 folds in the eight ride-along MINOR findings of the R6 adversarial
+re-review (`S3B_ADVERSARIAL_REVIEW_R6.md`, minor-findings section) that were not in
+REVISION 7's directed change list. All prior-revision fixes — REVISION 7's three
+majors and two minors included — are retained intact; no major is re-opened, and no
+new ruling is recorded. Fixes tagged R6-* in the body; §-references without a file
+name are to this document, §-references to the companion spec name it.**
+* **E-3 — §5.2 parity strata.** The parity gate's sample is now stratified per the
+  companion spec's §2.2 (behaviour × kind × chained/patient-free), replacing the
+  former "§7.6 shape — behaviour × section × verdict", which contradicted the
+  companion spec AND was not constructible at parity time (verdicts are the OUTPUT
+  of the task).
+* **E-4 — §2.4 D4 conjunct.** The companion spec's certification decision rule is now
+  SELF-CONTAINED: it lists the §2.5 D4 golden-case conjunct (m0018 comprehensive /
+  m0248 specific, neither contradicted) alongside P1/P2/golden accuracy/divergence
+  adjudication.
+* **E-5 — D3 golden-review implementation site.** The §8-D3 golden-review targets
+  m0176/m0300/m0467 are now ALWAYS-INCLUDED rows of the companion spec's §2.2
+  boundary set, and §8-D3 names that implementation site.
+* **E-7 — restoration signature `predicted` conjunct.** The §7.1 SIGNATURE now
+  conjoins that the clause IS `predicted` in the S3b snapshot, alongside factor 1.0
+  and the branch-keyed arms (carried from R4 minor s-1).
+* **E-9 — §5.6 explain extension field list.** The build seam's extended explain
+  record now lists everything the §7.1 signature reads (attributed `harm_bearers`,
+  the declared P, their intersection, and the extended `why` vocabulary), and the
+  independent §7.1 seat is explicitly GRANTED the read of the FROZEN ATTRIBUTION
+  ARTIFACT, where arm (ii)'s disambiguation verdict and license quote live
+  (carried from R4 minor e-2).
+* **S-2 — m0239's unclear horn.** §7.1 now pre-registers BOTH horns of m0239: the
+  expected resolved-{user} re-suppression flip, and the alternate horn (matched atom
+  `unclear` ⇒ branch 1 ⇒ baseline ⇒ NO flip, nothing for the bound to count), which
+  carries a NAMED CHECK — if m0239 does not flip, its explain trail must show the
+  resolved-{user} signature on its matched atom, else FLAG to the §5.3 NAMED
+  RESPONSE.
+* **S-3 — comprehensive horn of the escape.** §5.3's EXEMPT-MASS DISCLOSURE now names
+  the second horn of the one-sided escape (a clause whose correct verdict is
+  resolved+specific+disjoint mis-disambiguated COMPREHENSIVE ⇒ branch 2 ⇒ baseline
+  ⇒ no flip), states that monitoring covers it mechanically, and states the leak-
+  direction golden coverage exactly (the two §2.5 cases of the companion spec plus
+  the §7.6 sample — branch 2's SCOPE PIN is enforceable only through parity/golden
+  review).
+* **S-4 — 0.25 line and F_core.** In the companion spec's §3.4: the 0.25 line STAYS
+  at its blind derivation (moving it would need the no-post-unblind-revision
+  discipline) but is now explicitly a MINIMUM-SUPPORT floor — a pass near the floor
+  triggers re-scope scrutiny at the cycle decision — and F_core's definition is
+  tightened to the verdict SHAPES the §7.1 signature requires (m0018's COMPREHENSIVE
+  disambiguation is strictly stronger than resolution).
+
+**REVISION 7 fixed the three MAJOR findings of the R6 adversarial re-review
+(`S3B_ADVERSARIAL_REVIEW_R6.md`, verdict REVISE — 0 blocking / 3 major) plus one
+coordinator ruling and two of R6's ride-along minors (the remaining eight ride-along
+minors were folded in by REVISION 8 — see the note above); all prior-revision fixes
+are retained intact.**
+* **E-1 — D3 status reconciled.** D3 is RULED (coordinator 2026-08-05): UNIFORM — no
+  distinct example-kind rule (latent fix LF-1, `LATENT_FIX_REGISTRY.md`). The
+  REVISION-6 header note, §8 heading, and §9 still called D3 OPEN while §8-D3 recorded
+  it RULED; REVISION 7 reconciles every location to RULED, and §9's OPEN condition now
+  reads on D2 and D5 only.
+* **E-2, part A (coordinator ruling) — speaker-aware first-person mapping.** The
+  companion spec's §1.4 mapping table gains one MINIMAL rule (note (v)): a first-person
+  pronoun ("I", "me", "my") inside a `<user>` speaker turn maps to `user`; inside an
+  `<assistant>` speaker turn, to `model`. A first-person pronoun refers to its speaker,
+  so the rule cannot misattribute; it is what makes the example-dialogue control's
+  (m0290's) {user} attribution licensable under the verbatim-quote regime, which is why
+  the canonical controls can stay suppressed (§5, §7.2).
+* **E-2, part B (coordinator ruling) — pre-OPEN licensability gate for the canonical
+  controls.** Before OPEN, m0276's and m0290's harm-bearer attributions are verified
+  LICENSABLE per case — each must carry a verbatim `license_quote` under the companion
+  spec's §1.4 mapping (now speaker-aware); a control whose attribution is not
+  licensable is FLAGGED, never silently proceeded on (§7.2). This guards against the
+  foreseeable FALSE REVERT at MEASURE — the cycle killed by a licensing gap, not a
+  mechanism failure.
+* **S-1 — lapse condition on the demoted-clause exclusion.** The §4B CLASS RULE's
+  exclusion of demoted clauses (m0239) from the regression bound now carries a
+  pre-registered LAPSE CONDITION: if the IMPLIED-EFFECTS layer is rejected, dropped, or
+  never built, the exclusion lapses and the demoted clause re-enters the bound — the
+  exclusion cannot become a permanent immunization of an adjudicated regression with no
+  receiver (§4B, §7.1, §7 plank 3).
+* **Minors.** (i) The m0108 seat-defect review is cited as DONE
+  (`cycles/patient-pricing-2026-08-04/M0108_SEAT_DEFECT_REVIEW.md`, 2026-08-04: the
+  harm m0108 guards falls on the user's own organisation, not third parties; a genuine
+  definition-ambiguity flagged; the `unclear` accounting stands) — §7.1, §8/D2, §9.
+  (ii) §5.1's keying is the 3-tuple `(clause_id, span_id, name)`, matching the
+  companion spec's schema; the former 2-field `(clause_id, span_id)` shorthand was
+  ambiguous (190 such pairs in the frozen translation carry more than one atom).
+
+**REVISION 6 recorded the coordinator's D4 ruling: generic nouns ("people",
 "individuals") carry multiple meanings and are disambiguated at TRANSLATION/ATTRIBUTION
 time — NOT via a pricing-time generic flag** (§4C, §5.3, §7.1, §8/D4). The attribution
 fixes each OCCURRENCE's referent. A COMPREHENSIVE generic — m0018's "people", the
@@ -23,8 +146,11 @@ case #5. Because the disambiguation is per-occurrence, there is no global
 "generic ⇒ factor 1.0" rule — that is how the ruling resolves the m0248 golden
 collision (§2.1, §4C). **All REVISION 5 fixes — RULING 1 (R4-B1), RULING 2 (D1),
 R4-E1, R4-E2, R4-E3, R4-S1 — and every REVISION 4 and REVISION 3 fix named below are
-retained intact; this revision changes only what D4 governs.** Rulings now: D1 and D4
-RULED; D3 remains OPEN (its enumeration is in flight); D2 and D5 remain open (§8).
+retained intact; this revision changes only what D4 governs.** Rulings now: D1, D3, and
+D4 RULED; D2 and D5 remain open (§8). (At REVISION 6 this note, the §8 heading, and §9
+still called D3 OPEN while §8-D3 recorded it RULED; REVISION 7 reconciled every
+location to RULED — D3 UNIFORM, no distinct example-kind rule, latent fix LF-1; see the
+REVISION 7 note above, R6-E-1.)
 
 **REVISION 5 applied the coordinator's two rulings on the R4 re-review and fixed its
 four major findings** (`S3B_ADVERSARIAL_REVIEW_R4.md`, verdict REVISE — 1 new blocking /
@@ -52,7 +178,8 @@ pre-registered MEASURE-time exempt-mass report (§2.2, §5.3). **R4-S1** — the
 is committed BLIND, before the reach estimate is seen, and the denominator band is pinned
 with the D5 ruling (§7.5). **At REVISION 5, D3 and D4 remained OPEN designer rulings, and
 that revision resolved nothing that was not ruled — D4 has since been RULED (REVISION 6
-note above); D3 remains OPEN, its enumeration in flight.** All REVISION-4 fixes are
+note above); D3 has since been RULED UNIFORM (§8/D3; the stale "D3 remains OPEN" text
+carried at REVISION 6 was reconciled in REVISION 7, R6-E-1).** All REVISION-4 fixes are
 retained intact — the
 E-1 horn choice, the S-1/S-2 restoration disjunction, E-2/M-2 keying, E-3/M-1 value
 space, S-3/M-3 derivation re-argument, S-4/M-4 gate structure, E-4 population seat, E-5
@@ -290,6 +417,43 @@ third parties…"), so a re-adjudication of the same removal can only return the
 verdict; its disposition is the IMPLIED-EFFECTS layer (this §4B; §7.1; §7.3), which
 tracks it from here.
 
+**LAPSE CONDITION (R6-S-1; pre-registered with the class rule; STATE SPACE COMPLETED
+R8-S-B).** This bound exclusion holds only while the IMPLIED-EFFECTS layer is an
+active, reviewed work item that has accepted the demoted clause as a tracked entry
+(the RECEIVER READINESS condition).
+**MEASURE-TIME SEMANTICS (stated explicitly, R8-S-B).** The exclusion holds at
+MEASURE only if receiver readiness holds AT MEASURE — the receiver has passed review
+AND accepted m0239 as a tracked entry; otherwise (the implied-effects design
+(`IMPLIED_EFFECTS_DESIGN.md`, currently DRAFT — design only, not yet reviewed) is
+still unreviewed at MEASURE, or has not accepted m0239) the exclusion does NOT apply
+and the demoted clause's expected flip IS counted against the §7.3 bound like any
+other flip. Because the exclusion is pre-registered AT OPEN, OPEN is gated on
+receiver readiness (§9): a coordinator must not open S3b on the D2/D5 rulings alone
+while the receiver is still unreviewed — that would let the cycle die at MEASURE on
+a sibling design's review ordering, the exact false-fail class the §7.2 licensability
+gate prevents for the controls. Receiver readiness regressing BETWEEN OPEN and
+MEASURE (review rejects the design, acceptance withdrawn) remains governed by the
+MEASURE-time statement above.
+**LAPSE — ONE re-entry semantic, stated here and restated identically at §7.1 and
+§7 plank 3 (R8-S-B).** If the implied-effects design is REJECTED in review, the work
+is DROPPED, or the layer is NEVER BUILT, the exclusion LAPSES and the demoted clause
+(m0239) re-enters THIS cycle's §7.3 regression bound — never "the next cycle's":
+no future cycle re-flips a clause whose priced state is unchanged (the design
+predicts branch-4 re-suppression deterministically), so a next-cycle-only re-entry
+would count nothing and immunize permanently — exactly what this condition forbids.
+Concretely: lapse established BEFORE MEASURE ⇒ the flip is counted at MEASURE; lapse
+established AFTER the cycle's CLOSE ⇒ the flip S3b recorded and reported but did not
+count (if the expected horn obtained, §7.1) is RE-COUNTED RETROACTIVELY against this
+bound at the decision point where lapse is established — recorded in the repo's
+decision record (the implied-effects review outcome, or a coordinator ruling noting
+drop/never-built; rulings go in the repo, not the transcript). The re-adjudication
+verdict is already settled (regression/high, bidirectionally confirmed in S3), so the
+retroactive re-count breaches `max_regressions: 0`, and the cycle's closure is
+revised to reflect the breach: the removal stands PRICED (S3b's mechanism still
+produces it) but is no longer bound-excluded, and the receiver-less removal is an
+explicit open item, never silently absorbed. The exclusion cannot become a permanent
+immunization of an adjudicated regression with no receiver.
+
 ### 4C. Generic-noun patients over-scope (m0018) — D4 RULED 2026-08-05
 
 **Evidence.** m0018: "People should have easy access to trustworthy safety-critical
@@ -353,11 +517,16 @@ HARM-BEARER / BENEFICIARY, not the chain's grammatical recipient.** Concretely:
    spirit of S2's validator-checked backfill. The
    attribution reads clause text + gloss + the golden chain convention only; it never
    opens a panel artifact, a judge rating, or a gold value (same fence as S3).
-   **KEYING (E-2/M-2, R3): attribution is keyed per CLAUSE-INSTANCE (clause_id +
-   span_id), NEVER per atom name** — the same atom name carries different harm-bearers in
-   different clauses (`user_requests_harmful_advice` is third-party harm in m0466 but user
-   self-harm in m0290, a §7.2 automatic-REVERT control), so name-keying is self-
-   contradictory and the error would land on m0290. Validator-checked like S2's license
+   **KEYING (E-2/M-2, R3; 3-tuple stated per R6-E-6): attribution is keyed per
+   CLAUSE-INSTANCE — the 3-tuple `(clause_id, span_id, name)`, exactly the schema of
+   `S3B_ATTRIBUTION_TASK_DESIGN.md` §1.2/E_KEY — NEVER per atom name ALONE** — the same
+   atom name carries different harm-bearers in different clauses
+   (`user_requests_harmful_advice` is third-party harm in m0466 but user self-harm in
+   m0290, a §7.2 automatic-REVERT control), so name-only keying is self-contradictory
+   and the error would land on m0290. NOR is the key the 2-field pair
+   `(clause_id, span_id)`: measured over the frozen translation
+   (`annotations_ext_v1_merged.json`), 190 such pairs carry MORE THAN ONE atom, so a
+   2-field key would merge distinct rows into one. Validator-checked like S2's license
    quotes. The §5 preservation claim below is conditional on this keying.
    **VALUE SPACE (E-3/M-1, R3): `harm_bearers` is pinned to the existing principal
    vocabulary** (`backfill_author.md`: third_party, developer, operator, system, model,
@@ -413,10 +582,14 @@ HARM-BEARER / BENEFICIARY, not the chain's grammatical recipient.** Concretely:
      only the interface the pricing reads.
    * **Pre-registered parity gate.** The cheap seat is not trusted on design claims:
      BEFORE the backfill runs, a parity validation of the cheap model against a
-     FRONTIER model on a stratified sample is pre-registered (strata in the §7.6
-     shape — behaviour × section × verdict), and the cheap seat is certified ONLY if
-     parity clears the pre-registered threshold. Parity below threshold ⇒ the backfill
-     runs on the frontier seat, or the task design is amended and re-gated.
+     FRONTIER model on a stratified sample is pre-registered (strata per §2.2 of
+     `S3B_ATTRIBUTION_TASK_DESIGN.md` — behaviour × kind × chained/patient-free, all
+     computable from query-side facts and the frozen annotation BEFORE the task runs;
+     NOT the §7.6 shape — a verdict stratum is not constructible at parity time,
+     because verdicts are the OUTPUT of the task — R6-E-3), and the cheap seat is
+     certified ONLY if parity clears the pre-registered threshold. Parity below
+     threshold ⇒ the backfill runs on the frontier seat, or the task design is
+     amended and re-gated.
    * **Scope informed by the reach R.** §7.5's strict-attribution reach R — together
      with the D5 denominator-band pin — informs the backfill scope: what is annotated,
      in what order, at what cost. The §7.5 floor gate binds before the backfill is
@@ -566,7 +739,25 @@ HARM-BEARER / BENEFICIARY, not the chain's grammatical recipient.** Concretely:
    STAYS PREDICTED — no flip, no adjudication, invisible to every flip-based control.
    The exemption is nonetheless FORCED (branch 1 and I1 allow no other horn), so the
    design's answer is monitored disclosure, not a mass bound that would re-break
-   branch 1:
+   branch 1.
+   **A SECOND HORN OF THE SAME ESCAPE (R6-S-3 — named, not absorbed).** The one-sided,
+   flip-invisible shape is not unique to `unclear`: a clause whose CORRECT verdict is
+   resolved+specific+disjoint (factor d, suppressed) escapes IDENTICALLY if the seat
+   instead disambiguates a generic-noun bearer COMPREHENSIVE — branch 2, factor 1.0,
+   cap- and taint-exempt, baseline price, and no flip when baseline-predicted.
+   Monitoring covers this horn mechanically: the EXEMPT set includes comprehensive-
+   generic records, so the pre-registered exempt-mass report below and §7.6's
+   comprehensive-generic golden stratum both see it. But golden coverage in the leak
+   direction is exactly the two §2.5 golden verification cases of
+   `S3B_ATTRIBUTION_TASK_DESIGN.md` (m0018/m0248), plus §2.5's FROZEN-BACKFILL
+   RE-CHECK CASES for the falsifiable-core clauses m0275/m0466 (R8-S-A — immutable
+   expected verdicts: resolved, `harm_bearers` exactly {third_party}, not
+   comprehensive), plus the §7.6 stratified sample, and nothing more corpus-wide:
+   the validator CANNOT check that a comprehensive verdict corresponds to an actual
+   generic noun in the clause text (E_CONSISTENCY enforces the set-shape only), so
+   branch 2's SCOPE PIN is enforceable only through the parity gate, golden review,
+   and — for the named falsifiable-core clauses — the §2.5 frozen-backfill re-check.
+   That is inherent to D4 and is accepted here, stated where the escape is disclosed.
    * PRE-REGISTERED MEASURE-TIME REPORT: for every tainted clause, per-clause EXEMPT
      MASS (the Σ term of the surviving-mass formula) and the exempt share of surviving
      mass, reported corpus-wide with its maximum — the explain trail already carries
@@ -606,14 +797,27 @@ HARM-BEARER / BENEFICIARY, not the chain's grammatical recipient.** Concretely:
 6. **The build seam (E-6, R3).** S3b ships the same three seam mechanics S3 did, named
    explicitly: a new `pricing_version` value in snapshot config identity (S3 was 2.0), a
    matching dispatch branch in `dossier.py` reconstruction, and an EXTENDED explain record
-   carrying the attributed `harm_bearers`, the declared P, and their intersection — without
-   which the §7.1 restoration signature has nothing mechanical to read. The opt-in
-   bit-identity invariants (§6 I1) ride this seam exactly as in S3.
+   carrying EVERYTHING the §7.1 restoration signature reads — without which the signature
+   has nothing mechanical to read. COMPLETE FIELD LIST (R6-E-9): the attributed
+   `harm_bearers`, the declared P, their intersection, and the priced record's extended
+   `why` value under the §5.3 branches (consistent / mismatched / generic / taint_capped /
+   `unclear`-or-absent). Arm (ii)'s disambiguation verdict AND its license quote live in
+   the FROZEN ATTRIBUTION ARTIFACT, not the explain record; the independent §7.1 seat is
+   GRANTED that read explicitly (explain trail + frozen attribution artifact), and the
+   signature reads nothing else. The opt-in bit-identity invariants (§6 I1) ride this
+   seam exactly as in S3.
 
 **What this preserves (attribution-dependent AND conditional on clause-instance keying,
 §5.1/E-2 — this claim provides no cover for any pre-attribution structural step):**
 m0276 and m0290 stay suppressed because, once attribution exists, their harm-bearing
-atoms attribute the USER as harm-bearer, disjoint from a third-party P; d = 0.10 and the
+atoms attribute the USER as harm-bearer, disjoint from a third-party P. This presumes
+those verdicts land RESOLVED and LICENSABLE: m0276's clause text carries verbatim "the
+user" spans, and m0290's example-dialogue text names its bearer only through the
+`<user>` speaker tag and first-person pronouns — licensable under the companion spec's
+speaker-aware first-person rule (§1.4 note (v)). An `unclear` or unlicensed verdict
+would price the control at branch 1, re-surface it, and trip §7.2's automatic REVERT —
+which is why §7.2 carries a pre-OPEN LICENSABILITY GATE that verifies each control's
+attribution per case before OPEN (R4 e-4 hedge, carried; R6-E-2 fix). d = 0.10 and the
 cap are untouched; the opt-in/bit-identity invariants hold (no attribution ⇒ no declared
 harm-bearers ⇒ bit-identical).
 
@@ -648,7 +852,12 @@ The redesign's cycle must pre-register, at OPEN, a prediction whose falsifiable 
    falsifiable core** (ruling (b)); its DISPOSITION is the IMPLIED-EFFECTS layer
    (`IMPLIED_EFFECTS_DESIGN.md`) as its first case. Under the §4B CLASS RULE (R4-B1
    fix), m0239 — a clause demoted to that layer by ruling — is EXCLUDED from the §7.3
-   regression bound and tracked by the IMPLIED-EFFECTS layer instead. The exclusion is
+   regression bound and tracked by the IMPLIED-EFFECTS layer instead (the exclusion is
+   subject to the §4B LAPSE CONDITION, q.v., including its receiver-readiness OPEN
+   gate and its MEASURE-time semantics: if the IMPLIED-EFFECTS layer is rejected,
+   dropped, or never built, m0239 re-enters THIS bound — retroactively re-counted at
+   the decision point where lapse is established when that is after CLOSE, R8-S-B).
+   The exclusion is
    from the BOUND, not from the mechanism: S3b still prices m0239 corpus-wide like any
    other attributed clause (strict document-grounded attribution can only attribute
    {user} to its matched atom, so §5.3 predicts the same re-suppression S3 produced —
@@ -656,8 +865,30 @@ The redesign's cycle must pre-register, at OPEN, a prediction whose falsifiable 
    against `max_regressions`, because its removal's document-side verdict was already
    adjudicated in S3 and bidirectionally confirmed, and re-adjudicating it adds no
    information.
-   m0108 stays `unclear`/contested pending its named seat-defect review (see §8) — it is
-   NOT counted either way.
+   **m0239 — BOTH HORNS PRE-REGISTERED (R6-S-2).** The expected horn is the one above:
+   the matched atom resolves {user} ⇒ branch 4, taint, re-suppression ⇒ a
+   no_longer_predicted flip (recorded, reported, bound-excluded by the CLASS RULE).
+   The ALTERNATE horn is pre-registered too, because it disappears from the bar: if
+   the backfill returns `unclear` on m0239's matched atom, that atom prices branch 1,
+   cap-EXEMPT at factor 1.0 with zero penalty; m0239's single credited match then
+   carries the whole surviving mass, the clause prices at baseline, and — m0239 being
+   `predicted` in the S2 baseline — restoration produces NO FLIP: nothing for the
+   bound to count, and this plank's iteration set (m0275, m0466, m0018) never visits
+   m0239. The no-flip horn is invisible to every flip-based control, so it carries a
+   NAMED CHECK: if m0239 does NOT flip, its explain trail MUST show the resolved-{user}
+   signature on its matched atom — the matched atom itself attributed {user} and
+   branch-4-priced (factor d or taint-capped, its own credit penalized) — else FLAG
+   the clause: a no-flip without that signature IS the branch-1 escape, and the flag
+   routes to the §5.3 NAMED RESPONSE (golden re-examination of m0239's `unclear`
+   verdict — never re-pricing). Soft detection exists either way: under the alternate
+   horn the pre-registered MEASURE-time exempt-mass report shows m0239 at ~100% exempt
+   share (single match).
+   m0108 stays `unclear` and is NOT counted either way: its named seat-defect review is
+   DONE (`cycles/patient-pricing-2026-08-04/M0108_SEAT_DEFECT_REVIEW.md`, 2026-08-04;
+   see §8/D2) — it ruled the harm m0108 guards falls on the user's OWN ORGANISATION,
+   not third parties, found the behaviour definition genuinely ambiguous on the
+   user's-organisation case, and let the `unclear` accounting under the divergence rule
+   STAND.
 
    **SCOPE OF THE CORE (S-5, R3).** The falsifiable core (m0275 + m0466 + m0018 — D4 is
    ruled, §4C) exercises finding (i) — taint inheritance onto patient-free SITUATION
@@ -667,8 +898,9 @@ The redesign's cycle must pre-register, at OPEN, a prediction whose falsifiable 
    IMPLIED-EFFECTS layer (§4B). The shrinkage from the headline "beneficiary-aware" claim
    to this core is disclosed, not smuggled.
 
-   **Restoration SIGNATURE (B-3 fix; S-1/S-2/S-7 fixes, R3) — 'still predicted' is NOT
-   enough, and the signature is a branch-keyed DISJUNCTION.** In the S2 baseline
+   **Restoration SIGNATURE (B-3 fix; S-1/S-2/S-7 fixes, R3; arms bound PER CLAUSE,
+   R8-S-A) — 'still predicted' is NOT enough, and the signature is a CLAUSE-BOUND
+   disjunction.** In the S2 baseline
    m0275/m0466 are ALREADY `predicted` (they only left during the reverted S3), so pricing
    them back above cut produces NO flip and flip-set adjudication never sees them; and I1
    manufactures a trivial pass (no attribution ⇒ bit-identical ⇒ still predicted ⇒
@@ -679,37 +911,90 @@ The redesign's cycle must pre-register, at OPEN, a prediction whose falsifiable 
    m0018 is in unconditionally; §4C) — NOTHING COMPUTED.** "Restored" is not derived from
    observed snapshot properties or flip sets (which this plank's own second sentence shows
    cannot contain the clauses).
-   **SIGNATURE (S-1):** for each named clause id, factor 1.0 AND ONE of these arms, keyed
-   to the branch that produced the match: (i) `why = consistent` with non-empty
-   `harm_bearers ∩ P` — the m0275/m0466 shape (resolved consistent attribution on the
-   matched atom); OR (ii) `why = generic`, branch 2 — m0018 under the D4 ruling: the
-   matched atom's attribution disambiguates its generic noun COMPREHENSIVE
-   (`harm_bearers` = the full principal set; factor 1.0, cap-exempt), with the
-   disambiguation verdict AND the license quote on file. D4 is RULED (translation-time
-   referent disambiguation, §4C), so arm (ii) is the only generic arm: the former
-   patient-free arm (iii) is DEAD — the ruling rejected the patient-free convention —
-   and the arm list is fixed with the ruling. The disjunction is PRE-REGISTERED before
-   OPEN, not improvised at MEASURE. In every arm, "predicted but not
+   **SIGNATURE (S-1; arms bound PER CLAUSE, R8-S-A):** for each named clause id, the
+   clause IS `predicted` in the S3b snapshot AND factor 1.0 AND THE ARM BOUND TO THAT
+   CLAUSE (R4 s-1 / R6-E-7: the `predicted` conjunct — the signature reads the explain
+   trail, and a below-cut clause's trail must not be able to license a PASS on its own;
+   the signature is the conjunction of the mechanism AND the outcome). The binding is
+   MECHANICAL, not descriptive appositive: each clause id may satisfy ONLY its bound
+   arm, and a clause whose match satisfies ANY OTHER arm FAILS the plank —
+   * **m0275 ⇒ arm (i) ONLY;**
+   * **m0466 ⇒ arm (i) ONLY;**
+   * **m0018 ⇒ arm (ii) ONLY.**
+   Arm (i): `why = consistent` with non-empty `harm_bearers ∩ P` — resolved consistent
+   attribution on the matched atom. Arm (ii): `why = generic`, branch 2 — the matched
+   atom's attribution disambiguates its generic noun COMPREHENSIVE (`harm_bearers` =
+   the full principal set; factor 1.0, cap-exempt), with the disambiguation verdict
+   AND the license quote on file. **CONSEQUENCE OF THE BINDING (R8-S-A):** the former
+   phrasing "ONE of these arms, keyed to the branch that produced the match" keyed the
+   arm to the BRANCH, not the clause, and let a comprehensive-laundered m0275/m0466 —
+   wrong verdict: the full principal set instead of {third_party}, surfacing via
+   branch 2 at factor 1.0, no flip because the clause is `predicted` in the S2
+   baseline — satisfy arm (ii)'s mechanical content and PASS; that path is now CLOSED:
+   a branch-2 match on m0275/m0466 keys to arm (ii), which is NOT their bound arm —
+   FAIL of the restoration plank. (Their bearer phrases "someone"/"another person" are
+   not §1.3-step-4 generic triggers in the companion spec, so a comprehensive verdict
+   there is procedurally out of bounds as well as signature-failing.) The binding
+   catches the mirror case too: an m0018 attributed a narrower specific set
+   intersecting P would match arm (i), not its bound arm, and FAILS here (§2.5's
+   backfill re-check pins m0018's expectation independently). The arm is keyed to the
+   CLAUSE first; the branch only identifies the mechanism by which the bound arm is
+   satisfied. **BELT-AND-BRACES (R8-S-A):** the companion spec's §2.5 FROZEN-BACKFILL
+   RE-CHECK now extends to m0275/m0466 with IMMUTABLE expected verdicts (resolved,
+   `harm_bearers` exactly {third_party}, not comprehensive), so a laundering verdict
+   is caught at BACKFILL time too — the validator's E_CONSISTENCY enforces set-shape
+   only and cannot see it, and no other backfill-time check sees m0275/m0466's
+   verdicts. This reading is the companion spec's §3.4 F_core reading (arms
+   clause-bound); the two documents now agree. D4 is RULED (translation-time referent
+   disambiguation, §4C), so arm (ii) is the only generic arm: the former patient-free
+   arm (iii) is DEAD — the ruling rejected the patient-free convention — and the arm
+   list is fixed with the ruling. The disjunction is PRE-REGISTERED before OPEN, not
+   improvised at MEASURE. In every arm, "predicted but not
    attributed / not annotated by the named mechanism" (including "predicted because
    attribution was absent") is a FAIL of the restoration plank, not a PASS. This is what
    distinguishes "restored BY the mechanism" from "never touched."
    **m0108 EXPLORATORY SIGNATURE (S-7, R3):** m0108 is not counted either way, but its
    expected pricing signature under §5.3 is pre-registered as an exploratory observation —
    matched patient-free situation `harmful_instructions`, expected branch-1 (`unclear` for
-   a third-party query, the gloss names user AND developer bearers) at the E-1 cap-exempt
-   price if any resolved-disjoint sibling fires taint — so a silent m0108 restoration or
+   a third-party query: the matched atom is patient-free, and its gloss — "user or
+   developer directions whose execution could cause harm" — names whose DIRECTIONS they
+   are, not who is HARMED by execution, exactly the point the completed seat-defect
+   review made about leg 1's paraphrase) at the E-1 cap-exempt price if any
+   resolved-disjoint sibling fires taint — so a silent m0108 restoration or
    non-restoration teaches something rather than nothing.
 2. **Keep the canonical removals.** m0276 and m0290 remain `no_longer_predicted` for
    harm-avoidance-to-third-parties. If either re-surfaces, REVERT regardless of all else.
+
+   **PRE-OPEN LICENSABILITY GATE FOR THE CANONICAL CONTROLS (R6-E-2 fix, part B;
+   coordinator ruling).** Before OPEN, verify PER CASE that each canonical control's
+   harm-bearer attribution is LICENSABLE: the frozen attribution artifact must carry,
+   for m0276 and for m0290, a record attributing `user` as harm-bearer whose
+   `license_quote` is a byte-exact verbatim substring of the control's clause text
+   under the companion spec's §1.4 mapping — including the speaker-aware first-person
+   rule (§1.4 note (v)), which licenses m0290's example-dialogue bearer (m0276's
+   bearer is licensable via its clause text's verbatim "the user" spans). If a
+   control's attribution is NOT licensable (record absent, `unclear`, or quoteless),
+   FLAG it — record it in the cycle record and resolve by ruling; the pre-registered
+   remedy is a §1.4-table/brief amendment and a re-run of the affected rows — and do
+   NOT silently proceed to OPEN. GROUND: without a licensed {user} attribution the
+   control prices at branch 1 (baseline), re-surfaces, and trips this plank's
+   unconditional REVERT at MEASURE — a FALSE REVERT, the cycle killed by a licensing
+   gap, not a mechanism failure. The gate moves that check to pre-OPEN, where the fix
+   is cheap. The controls' expectations ({user}, stay suppressed) are pinned here and
+   do not move after OPEN.
 3. **`max_regressions: 0`** under the same two-leg split-blind adjudication S3 used
    (leg 1 official + frontier verification leg blind to leg 1; divergence → `unclear`,
    never silently resolved; P3/`ADJUDICATION_LEGS.md` precedent). **BOUND POPULATION
    (R4-B1 fix):** the bound counts flips on every clause EXCEPT clauses demoted to the
    IMPLIED-EFFECTS layer by ruling — the §4B CLASS RULE (q.v.): such clauses are
-   excluded from this bound and tracked by that layer instead. Single current instance:
-   m0239 (§4B, §7.1). A demoted clause's flip is still recorded and reported — the
-   exclusion is from re-adjudication against a verdict S3 already settled, never from
-   visibility.
+   excluded from this bound and tracked by that layer instead. The exclusion carries
+   §4B's LAPSE CONDITION (q.v. for the full state space — receiver-readiness OPEN
+   gate, MEASURE-time semantics, R8-S-B): if the IMPLIED-EFFECTS layer is rejected,
+   dropped, or never built, the demoted clause re-enters THIS bound — retroactively
+   re-counted at the decision point where lapse is established when that is after
+   CLOSE. Single current instance: m0239 (§4B, §7.1). A demoted clause's flip is
+   still recorded and reported — the exclusion is from re-adjudication against a
+   verdict S3 already settled, never from visibility.
 4. **No census/panel/judge/gold consultation** informs the decision; flip adjudications
    only (S3 policy, restated).
 5. **Expected-recovery gate (S-4/M-4 fix, R3) — a method, a denominator, and a threshold;
@@ -769,8 +1054,8 @@ The redesign's cycle must pre-register, at OPEN, a prediction whose falsifiable 
 
 ---
 
-## 8. Designer rulings / seat-defect review (D1 RULED 2026-08-05; D4 RULED 2026-08-05;
-D2, D3, D5 OPEN — not resolved here)
+## 8. Designer rulings / seat-defect review (D1 RULED 2026-08-05; D3 RULED 2026-08-05;
+D4 RULED 2026-08-05; D2, D5 OPEN — not resolved here)
 
 * **D1 — RULED (coordinator 2026-08-05, option (a)).** Attribution delivery is the
   ANNOTATION-SIDE BACKFILL; the ruling's constraints (mechanical task design sized for
@@ -781,7 +1066,15 @@ D2, D3, D5 OPEN — not resolved here)
 * **D2 — the m0108 scope question** (carried verbatim from S3, `ADJUDICATION_LEGS.md`):
   is "harm to the user's own organisation's accounts" harm to "those outside the
   conversation"? This is a question about the behaviour DEFINITION, not the pricing
-  mechanism; it goes to seat-defect review and is NOT resolved by S3b.
+  mechanism. Its named seat-defect review is DONE
+  (`cycles/patient-pricing-2026-08-04/M0108_SEAT_DEFECT_REVIEW.md`, 2026-08-04): the
+  harm m0108 guards falls on the user's OWN ORGANISATION ("our team accounts"), not on
+  third parties; leg 2's direction is sustained on the representation reading; the
+  definition is found GENUINELY AMBIGUOUS ("those outside the conversation"
+  under-determines the user's-organisation case); and the review's recommended
+  clarification is referred to a future query-side change cycle. S3b still does NOT
+  resolve it: the `unclear` accounting under the divergence rule STANDS, and boundary
+  cases of this shape remain knife-edge until the clarification is adopted.
 * **D3 — RULED (coordinator 2026-08-05): UNIFORM — no distinct example-kind rule.**
   The concern was speculative: it arose because the finding-(i) regressions motivating
   the redesign (m0275/m0466/m0108) were all example-kind, prompting the precautionary
@@ -790,7 +1083,10 @@ D2, D3, D5 OPEN — not resolved here)
   attribution, 0 wrong-result, 0 undefined). S3b uses the uniform rule; the distinct-rule
   idea is registered as a LATENT FIX (`LATENT_FIX_REGISTRY.md` LF-1), not implemented,
   with a named trigger. Golden-review the attribution-load-bearing examples
-  (m0176/m0300/m0467) as seat-quality targets, not rule targets. **BUILD REQUIREMENT:**
+  (m0176/m0300/m0467) as seat-quality targets, not rule targets — IMPLEMENTATION SITE:
+  the companion spec's §2.2 boundary set carries all three as always-included rows
+  (R6-E-5), so the parity validation's golden review reaches them by construction, not
+  only when quota sampling happens to. **BUILD REQUIREMENT:**
   the LF-1 DETECTION tripwire (example-population pin + load-bearing pricing pin +
   adjudication shape-flag, all failing LOUDLY and referencing LF-1) ships WITH the S3b
   build's test set, so a future latent case cannot pass silently.
@@ -826,16 +1122,29 @@ D2, D3, D5 OPEN — not resolved here)
 * It does not implement or patch `patient.py`. Nothing ships with it.
 * It does not tune `d` or any weight.
 * It does not open a cycle. OPEN happens only after a clean-context adversarial re-review
-  returns non-blocking and the remaining open rulings (D2, D3, D5; D1 is ruled, §5.2,
-  and D4 is ruled, §8) have rulings. D3 remains an OPEN designer ruling — its
-  enumeration is in flight — and is not resolved here.
+  returns non-blocking and the remaining open rulings (D2, D5; D1 is ruled, §5.2, and
+  D3 and D4 are ruled, §8) have rulings. D3 was RULED 2026-08-05 (UNIFORM — no distinct
+  example-kind rule; latent fix LF-1) and its enumeration is COMPLETE
+  (`D3_EXAMPLE_CLAUSE_ENUMERATION.md`); the REVISION-6 text calling D3 OPEN was stale
+  and was reconciled to RULED in REVISION 7 (R6-E-1). **AND RECEIVER READINESS (R8-S-B):
+  OPEN additionally requires the IMPLIED-EFFECTS layer's receiver readiness — the
+  design has PASSED review AND its tracker has ACCEPTED m0239 as a tracked entry (§4B
+  LAPSE CONDITION, q.v.). The exclusion is pre-registered AT OPEN, so its "holds only
+  while" preamble must be true AT OPEN (and is re-checked at MEASURE — the exclusion
+  holds at MEASURE only if readiness still holds; otherwise m0239's flip is counted).
+  A coordinator must not open S3b on the D2/D5 rulings alone while the receiver is
+  still DRAFT-unreviewed.**
 * It does not restore m0239 (ruling (b), §4B): strict document-grounded attribution
   cannot license its third-party beneficiary, so m0239 is the first case of the
   IMPLIED-EFFECTS layer, not of S3b — and under the §4B CLASS RULE (R4-B1 fix) its
-  flip is excluded from the §7.3 regression bound and tracked by that layer instead.
+  flip is excluded from the §7.3 regression bound and tracked by that layer instead
+  (subject to §4B's LAPSE CONDITION).
 * It does not design or build the implied-effects layer itself — that is
   `IMPLIED_EFFECTS_DESIGN.md`, a sibling effort with its own review.
 * It does not resolve m0108, m0355-family threshold cases, or any census question; those
-  stay deferred to their named venues (seat-defect review, S8 checkpoint).
+  stay deferred to their named venues (m0108's seat-defect review is DONE —
+  `cycles/patient-pricing-2026-08-04/M0108_SEAT_DEFECT_REVIEW.md` ruled the harm falls
+  on the user's own organisation and flagged a genuine definition ambiguity; the
+  recommended clarification awaits a query-side change cycle — and the S8 checkpoint).
 
-— REVISION 6; awaiting adversarial re-review.
+— REVISION 9; awaiting adversarial re-review.

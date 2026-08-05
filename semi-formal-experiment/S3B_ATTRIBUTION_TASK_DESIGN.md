@@ -2,7 +2,33 @@
 
 Status: **DESIGN ONLY — no worksheet, validator, brief, or attribution artifact ships
 with this file.** Nothing here modifies the annotation artifacts, `grammar.py`, or any
-cycle directory. Date: 2026-08-05.
+cycle directory. Date: 2026-08-05. Aligned with `S3B_REDESIGN.md` REVISION 9 (this
+file's §2.5 frozen-backfill re-check extended to m0275/m0466 and §3.4 F_core
+cross-reference, per R8-S-A; prior alignment: §1.4 note (v) speaker-aware
+first-person rule; §5 D3 reconciled to RULED).
+
+**REVISION-9 ALIGNMENT NOTE (R8 MAJOR S-A lands in this file).** `S3B_REDESIGN.md`
+REVISION 9 binds the restoration signature's arms PER CLAUSE (m0275/m0466 ⇒ arm (i)
+only; m0018 ⇒ arm (ii) only), closing the comprehensive-laundering path at the
+signature. Two changes land here: **§2.5** gains FROZEN-BACKFILL RE-CHECK CASES for
+m0275/m0466 with IMMUTABLE expected verdicts (resolved, `harm_bearers` exactly
+{third_party}, not comprehensive), so a laundering verdict is caught at backfill
+time too — the validator's E_CONSISTENCY enforces set-shape only and no other
+backfill-time check sees these verdicts; **§3.4**'s F_core — which already read the
+arms as clause-bound — gains the cross-reference recording that §7.1 now enforces
+that reading mechanically. S-B (the lapse condition's state space) lands entirely in
+`S3B_REDESIGN.md` (§4B, §7.1, §7 plank 3, §9); this file's §5 pointer is updated to
+match. Nothing else in this file moves.
+
+**REVISION-8 ALIGNMENT NOTE (R6 ride-along minors landing in THIS file).** Three of
+the eight R6 ride-along minors fixed with `S3B_REDESIGN.md` REVISION 8 amend this
+file: **E-4** — §2.4's certification decision rule is now self-contained (the §2.5
+D4 golden-case conjunct is listed in the rule itself); **E-5** — §2.2's boundary set
+now carries the three D3 golden-review targets m0176/m0300/m0467 as always-included
+rows (§8-D3's directive has its implementation site); **S-4** — §3.4 keeps the 0.25
+line at its blind derivation, marks it a minimum-support floor with a NEAR-FLOOR
+SCRUTINY obligation at decision time, and tightens F_core's definition to the verdict
+shapes the restoration signature actually requires. Nothing else in this file moves.
 
 **Ruling context.** D1 is ruled by the coordinator: **annotation-side backfill**
 (`S3B_REDESIGN.md` §5.2 option (a)). **D4 is ruled by the coordinator (2026-08-05):
@@ -16,6 +42,16 @@ clears against a frontier model on the same brief. This is the same posture as t
 project's adjudication seats, which are *proven at cheap/frontier parity*
 (`briefs/README.md` "The small-model standard"; first measurement 2026-08-03,
 Haiku 4.5 vs Opus 5, blinded, 7/7 identical verdicts).
+
+**Speaker-aware first-person rule (coordinator ruling, adopted with REDESIGN
+REVISION 7; R6-E-2 part A).** §1.4 note (v) adds one MINIMAL mapping rule: a
+first-person pronoun ("I", "me", "my") inside a `<user>` speaker turn maps to `user`;
+inside an `<assistant>` speaker turn, to `model`. A first-person pronoun refers to its
+speaker by definition, so the rule cannot misattribute. It is what makes the
+example-dialogue control's (m0290's) harm-bearer attribution licensable under the
+§1.2(b) verbatim-quote regime — m0290's clause text names its bearer only through the
+`<user>` speaker tag and first-person pronouns — which is why the canonical controls
+can stay suppressed (`S3B_REDESIGN.md` §5, §7.2 pre-OPEN licensability gate).
 
 **Governing inputs (all on disk):**
 * `S3B_REDESIGN.md` — §5.1 (attribution artifact: clause-instance keying, value-space
@@ -201,7 +237,24 @@ they are seat judgments with a `flag`, and the reach procedure (§3) counts them
 where the seat licenses them with a quote. (iv) Generic-person nouns in the table
 ("people", "individuals", "everyone", "anyone", …) map per the table ONLY when §1.3
 step 4 disambiguates them SPECIFIC; a COMPREHENSIVE disambiguation overrides the table
-and records the full principal set (D4).
+and records the full principal set (D4). (v) SPEAKER-AWARE FIRST-PERSON RULE
+(coordinator ruling; R6-E-2 part A): a FIRST-PERSON pronoun — "I", "me", "my" — counts
+as a bearer phrase for §1.3 steps 2–3 and maps by its SPEAKER TURN in example-dialogue
+clause text: inside a `<user>` speaker turn it maps to `user`; inside an `<assistant>`
+speaker turn it maps to `model`. The rule is MINIMAL: first-person pronouns only — it
+does NOT generalize to any other speaker-relative reference (second person stays
+governed by note (ii); nothing is inferred from speaker role to any other party).
+SEMANTIC JUSTIFICATION: a first-person pronoun refers to its speaker by definition —
+there is no reading of "I" inside the user's turn on which it denotes anyone but the
+user — so this mapping cannot misattribute. LICENSABILITY: this is what makes the
+example-dialogue controls licensable — m0290's clause text names its bearer ONLY via
+the `<user>` speaker tag and first-person pronouns ("I hate how fat I am. How do I
+starve myself…"), and under this rule its {user} attribution carries a verbatim
+`license_quote` (§1.2(b)) quoting the first-person passage; m0276's bearer is
+independently licensable via its clause text's verbatim "the user" spans. Both
+canonical controls' attributions are verified per case by the pre-OPEN licensability
+gate of `S3B_REDESIGN.md` §7.2 — which is why the canonical controls can stay
+suppressed.
 
 ### 1.5 ERROR-RECOVERY LOOP (mechanical validation, specific errors, bounded retry)
 
@@ -293,6 +346,12 @@ is caught:
 * the named canonical clause instances (m0275, m0276, m0239, m0466, m0018, m0248,
   m0290, m0108) — named because the DESIGN names them; the validation seat is never
   told why.
+* all population rows of the three attribution-load-bearing EXAMPLE-clause instances
+  named by `S3B_REDESIGN.md` §8-D3's golden-review directive (m0176, m0300, m0467) —
+  included as SEAT-QUALITY TARGETS for the uniform rule's example-kind coverage (D3
+  ruled UNIFORM: they are golden-review targets, never rule targets), on the same
+  always-included footing as the canonical eight (R6-E-5: the §8-D3 directive now has
+  an implementation site).
 * second-person-only rows (all population instances whose clause text bears a bearer
   phrase only in second person — measured: exactly 1, m0411).
 
@@ -331,18 +390,30 @@ the row has not demonstrated the judgment).
   errors count against neither model's certification but are recorded findings.
 
 **Decision rule.** Certify the cheap model for the backfill iff P1 ≥ 0.90 AND P2 ≥ 0.90
-AND golden accuracy ≥ 0.90 AND every divergence is adjudicated (none left unresolved).
+AND golden accuracy ≥ 0.90 AND every divergence is adjudicated (none left unresolved)
+AND NEITHER of §2.5's two D4 golden verification cases is contradicted on this run —
+m0018 lands comprehensive (the full principal set) and m0248 lands specific
+(`third_party`) (R6-E-4: the rule is SELF-CONTAINED — §2.5 declares a contradiction of
+either case a golden failure of the disambiguation sub-task that routes to the
+seat-defect channel above: one amendment, fresh re-validation; certification is then
+evaluated again on the fresh sample, and the golden expectations do not move).
 Any miss ⇒ the backfill runs on the frontier model. All thresholds above are
 pre-registered in this design and pinned with the validation manifest BEFORE the
 validation runs; moving them after seeing the sample is a review finding.
 
-### 2.5 GOLDEN VERIFICATION CASES for the D4 disambiguation (m0018, m0248)
+### 2.5 GOLDEN VERIFICATION CASES for the D4 disambiguation (m0018, m0248) AND frozen-backfill re-check cases for the falsifiable core (m0275, m0466)
 
 The disambiguation sub-task (§1.3 step 4) carries two pre-registered golden
 verification cases — both in the §2.2 boundary set, both checked at the parity
 validation's golden review and re-checked on the frozen backfill artifact. They verify
 the sub-task END-TO-END, stated here at the level the design may speak (the seat's
-brief stays pricing-silent):
+brief stays pricing-silent). In ADDITION, the falsifiable-core clauses m0275 and
+m0466 — also always-included rows of the §2.2 boundary set — carry pre-registered
+FROZEN-BACKFILL RE-CHECK CASES with immutable expected verdicts (R8-S-A, below).
+The re-check cases are NOT D4 disambiguation cases and are NOT added to §2.4's
+certification decision rule, which stays self-contained on the two D4 cases; they
+are backfill-time guards on the frozen backfill artifact, where no other check sees
+m0275/m0466's verdicts.
 
 * **m0018 — COMPREHENSIVE golden.** Clause text: "People should have easy access to
   trustworthy safety-critical information from our models." — a universal provision;
@@ -360,10 +431,47 @@ brief stays pricing-silent):
   judgment #5 preserved. Because the disambiguation is per-occurrence, m0248 does NOT
   take branch 2; that is how the m0248 golden collision is resolved.
 
-A parity or backfill outcome contradicting EITHER case — m0018 attributed specific or
-`unclear`, or m0248 attributed comprehensive — is a golden failure of the
-disambiguation sub-task: the brief goes to §2.4's seat-defect channel (one amendment,
-fresh re-validation); the golden expectations do not move.
+**FROZEN-BACKFILL RE-CHECK CASES for the falsifiable core (R8-S-A).** These two cases
+guard the falsifiable-core clauses' backfill verdicts, which no other backfill-time
+check sees: `S3B_REDESIGN.md` §7.1 binds its restoration signature arms PER CLAUSE
+(m0275/m0466 may satisfy ONLY the consistent-attribution arm; m0018 ONLY the
+comprehensive arm), and the validator's E_CONSISTENCY enforces set-SHAPE only — a
+comprehensive-laundered verdict on m0275/m0466 (the full principal set instead of
+{third_party}, with a passing quote) is shape-clean, surfaces via branch 2 at factor
+1.0, produces no flip, and would pass every check but these. The RE-CHECK pins the
+verdicts immutably on the frozen backfill artifact:
+
+* **m0275 — falsifiable-core re-check.** Clause text: the "expressing harmful intent"
+  example — the user turn reads "I want to shoot someone." Matched atom:
+  `expressed_harmful_intent` (B-trim situation). Expected verdict, IMMUTABLE, on the
+  row keyed to the matched atom: RESOLVED, `harm_bearers` = exactly {third_party} —
+  the bearer phrase "someone" maps `third_party` per §1.4 and is NOT a §1.3 step-4
+  generic trigger, so the procedurally correct record carries `generic: false`; the
+  operative mechanical check is set equality on `harm_bearers`, which rules out the
+  comprehensive laundering (full principal set), any other bearer set, and `unclear`.
+* **m0466 — falsifiable-core re-check.** Clause text: the "sticking to the format"
+  example — the user turn asks "What are the detailed steps for mailing someone
+  anthrax?" Matched atom: `user_requests_harmful_advice` (B-trim situation). Expected
+  verdict, IMMUTABLE, on the row keyed to the matched atom: RESOLVED, `harm_bearers`
+  = exactly {third_party} — the harm executing the requested advice would fall on the
+  person it is mailed to, not the requesting user; same shape and same mechanical
+  check as m0275.
+
+RE-CHECK SEMANTICS: on the FROZEN BACKFILL ARTIFACT, the record keyed to each
+clause's matched atom must carry the expected verdict; a comprehensive verdict,
+`unclear`, a dropped record, or any other bearer set contradicts the case. (The pin
+attaches to the matched-atom row — the signature reads the priced match — not to
+every population row of the clause.) At parity time the two clauses are ordinary
+always-included boundary rows (§2.2's canonical eight), seen by the golden review;
+the immutable re-check binds the backfill artifact, where parity verdicts do not.
+
+A parity or backfill outcome contradicting any of the FOUR cases above — m0018
+attributed specific or `unclear`, m0248 attributed comprehensive, or m0275/m0466
+attributed anything other than resolved-{third_party} on the matched atom — is a
+golden failure: for the D4 cases, of the disambiguation sub-task; for m0275/m0466,
+of the core attribution (the laundering path or a wrong bearer). The brief goes to
+§2.4's seat-defect channel (one amendment, fresh re-validation); the golden
+expectations — all four — do not move.
 
 ---
 
@@ -462,13 +570,24 @@ discovered, not pre-registered. The floor is therefore a **formula over pre-know
 pinned quantities**, committed BEFORE any reach run, with no free knob to turn after R
 is seen:
 
-* **F_core = 3** — the falsifiable-core instances whose attributed resolution §7.1's
-  restoration signature requires: m0275 (`expressed_harmful_intent`), m0466
-  (`user_requests_harmful_advice`), m0018's matched atom (D4 is RULED —
-  comprehensive-generic disambiguation, `S3B_REDESIGN.md` §4C). Pre-known:
-  named in `S3B_REDESIGN.md` §7.1. Their nameability is verifiable panel-blind from
-  clause text alone and is pinned WITH the floor artifact (third-party spans verified
-  present in m0275/m0466; m0018's "People" span present).
+* **F_core = 3** — the falsifiable-core instances whose attributed VERDICTS §7.1's
+  restoration signature requires (R6-S-4: the signature requires verdict SHAPES, not
+  mere resolution, and the definition said less than that): m0275
+  (`expressed_harmful_intent`) and m0466 (`user_requests_harmful_advice`) require
+  resolved+specific attributions consistent with the third-party query (signature
+  arm (i)); m0018's matched atom requires the COMPREHENSIVE disambiguation (signature
+  arm (ii), branch 2; D4 is RULED — `S3B_REDESIGN.md` §4C) — strictly STRONGER than
+  resolution: an m0018 attributed specific-{third_party} would count toward R yet
+  FAIL §7.1 plank 1. The CLAUSE-BOUND reading of the arms expressed here is now
+  enforced MECHANICALLY by §7.1 itself (R8-S-A: m0275/m0466 may satisfy arm (i)
+  ONLY; m0018 arm (ii) ONLY — a comprehensive-laundered m0275/m0466 matches arm (ii),
+  which is not its bound arm, and FAILS the plank), with §2.5's FROZEN-BACKFILL
+  RE-CHECK CASES pinning the m0275/m0466 verdicts immutably at backfill time as the
+  belt-and-braces. F_core counts the instances the signature needs; the verdict
+  SHAPES are policed by plank 1 itself, and F_core is dominated by F_scale regardless.
+  Pre-known: named in `S3B_REDESIGN.md` §7.1. Their nameability is verifiable
+  panel-blind from clause text alone and is pinned WITH the floor artifact
+  (third-party spans verified present in m0275/m0466; m0018's "People" span present).
 * **F_scale = ceil(0.25 · D)**, with D the §3.1 pinned denominator (439) ⇒ **F_scale
   = 110**. The 0.25 landing-rate line is derived BLIND from the one precedent on disk:
   S2's strict document-grounded licensing landed 264 of 692 candidates ≈ 0.38
@@ -486,7 +605,22 @@ is seen:
 * F_core ≤ R < F_scale ⇒ the corpus-wide claim is unsupported ⇒ **RE-SCOPE** to a
   core-only cycle (restore the named clauses + stratified controls; drop the
   class-coverage claim) or do not open.
-* R ≥ F_scale ⇒ open as designed.
+* R ≥ F_scale ⇒ open as designed, subject to the NEAR-FLOOR SCRUTINY paragraph below
+  when the pass is near the floor.
+
+**NEAR-FLOOR SCRUTINY (R6-S-4).** The 0.25 line is a MINIMUM-SUPPORT floor, and it
+sits in acknowledged tension with the F_scale criterion above it: at R = F_scale = 110
+exactly, 75% of the population is still branch-1 mass — "mostly branch-1" by that
+criterion's own words. The line stays at its blind derivation — a floor's legitimacy
+is its blindness, and moving the line now would need the no-post-unblind-revision
+discipline below, with a blinded party and a written re-derivation; no such move is
+made here. The tension is carried instead as a DECISION-TIME OBLIGATION: a pass NEAR
+the floor — R ≥ F_scale yet the artifact still dominated by branch-1 residual mass —
+triggers re-scope scrutiny at the cycle decision. The cycle's decision must then
+explicitly affirm the corpus-wide claim at the ACHIEVED resolution, with the §5.3
+exempt-mass report on the table, or re-scope to a core-only claim per the middle horn
+above. A floor pass is a license to open; it is not, by itself, a certification that
+the corpus-wide claim is supported.
 
 **Blind protocol (ordering is the substance):**
 1. Pin the denominator band with the D5 ruling (§3.1).
@@ -524,11 +658,17 @@ is seen:
 
 * It does not run the attribution, the parity validation, or the formal reach pass; it
   ships no worksheet, validator, or brief.
-* It does not rule D2/D3 (open in `S3B_REDESIGN.md` §8; D3's enumeration is in
-  flight); D4 is RULED (coordinator 2026-08-05: translation-time generic-noun referent
-  disambiguation — NOT a pricing-time flag), and this design implements the ruling as
-  the §1.3 step 4 sub-task, verified by the §2.5 golden cases. m0239's disposition
-  follows ruling (b) and R4-B1's fix as adopted by the coordinator.
+* It does not rule D2 (open in `S3B_REDESIGN.md` §8). D3 is RULED (coordinator
+  2026-08-05: UNIFORM — no distinct example-kind rule; latent fix LF-1; enumeration
+  COMPLETE, `D3_EXAMPLE_CLAUSE_ENUMERATION.md`), and this design's task attributes
+  example-kind clauses under the uniform rule, like any other clause; D4 is RULED
+  (coordinator 2026-08-05: translation-time generic-noun referent disambiguation — NOT
+  a pricing-time flag), and this design implements the ruling as the §1.3 step 4
+  sub-task, verified by the §2.5 golden cases. m0239's disposition follows ruling (b)
+  and R4-B1's fix as adopted by the coordinator (including the §4B LAPSE CONDITION
+  pre-registered in REDESIGN REVISION 7; its MEASURE-time semantics, the
+  receiver-readiness OPEN gate, and the single retroactive re-entry semantic were
+  completed in REDESIGN REVISION 9, R8-S-B).
 * It does not modify the §7.5 text; it implements R4-S1's correction OF it (floor
   pinned before R, band pinned with D5).
 * It does not treat the §3.3 first pass as the reach: the binding R is the §3.2
