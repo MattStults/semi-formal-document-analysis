@@ -275,14 +275,17 @@ def _round(x: float) -> float:
 
 def config_identity(annotations_path: str, atoms_path: str,
                     overlay_path: str | None = None,
-                    thresholds_path: str | None = None) -> dict:
+                    thresholds_path: str | None = None,
+                    join_version: int | None = None) -> dict:
     """The census's FULL config identity (amendment F2 / TOOLING item 1),
     in snapshot.py's exact key shape: every input as {path, sha256},
     explicit nulls for absent overlay/thresholds, the threshold rule, and
     pricing_version only when an overlay is active (containment's rules
-    scored the census). `join_version` is the F12 placeholder — join
-    identity belongs to the CENSUS, not the snapshot; null until the v2
-    join lands and versions itself here.
+    scored the census). `join_version` records which join scored THIS census
+    run (F12: join identity belongs to the CENSUS, not the snapshot). The
+    v2 join now exists (inventory.match_passage_v2, JOIN_INTEGRITY_DESIGN);
+    the default stays None because the shipped census predates the versioned
+    join — the S8 checkpoint census passes its version explicitly.
     """
     import snapshot
     import threshold as T
@@ -301,7 +304,7 @@ def config_identity(annotations_path: str, atoms_path: str,
             "thresholds": rec(thresholds_path),
         },
         "threshold_rule": T.PREFERRED,
-        "join_version": None,
+        "join_version": join_version,
     }
     if overlay_path:
         import containment

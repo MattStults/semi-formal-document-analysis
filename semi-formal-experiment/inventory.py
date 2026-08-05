@@ -134,6 +134,163 @@ def match_passage(passage_quote: str, rows) -> list:
     return out
 
 
+# ---- join v2 (JOIN_INTEGRITY_DESIGN.md §2 + SEGMENTATION_GAPS_DESIGN.md §3/§4)
+
+#: v1 = `match_passage`, today's behavior, kept reachable forever (the
+#: PRICING_VERSION pattern; reconstruction compatibility per CYCLE_DESIGN F9).
+#: v2 = locator-restricted candidates + degenerate-quote refusal + the F9
+#: empty-meta skip + per-link mixed rendering variants. Per PORTFOLIO_REVIEW
+#: F12: join_version belongs in CENSUS config identity, NOT snapshot identity
+#: — the join is downstream of the scorer and cannot flip a clause snapshot.
+JOIN_VERSION_V1 = 1
+JOIN_VERSION_V2 = 2
+
+#: 2b backstop arm: normalized quotes under this many characters are refused
+#: before candidate enumeration ever runs. THE STRUCTURAL ARM ("cannot
+#: discriminate among the candidates") IS THE LOAD-BEARING PREDICATE; any
+#: recalibration moves this floor, never the structural arm's semantics
+#: (PORTFOLIO_REVIEW F12 ruling).
+#:
+#: RECALIBRATED 25 -> 14 during implementation, per the design's own rule
+#: ("if implementation finds a second sub-floor quote that IS
+#: discriminating, the floor moves down, not the refusal semantics").
+#: The design's 25 was calibrated on the PUBLISHED 863-passage set; the
+#: TRUE 589-locator universe holds EIGHT sub-25 normalized quotes, of which
+#: seven discriminate perfectly (one in-section clause each; 14-24 chars,
+#: one of them reference-grade) and only the header-only offender
+#: (`!!! meta "Commentary"`, 21 chars) does not — and no floor separates 21
+#: from 21, so the offender is caught by the structural arm post-restriction
+#: instead. 14 is the largest floor sparing every measured discriminating
+#: quote ('Sending emails', 14 chars, is the shortest). Pinned in
+#: test_join_v2.py; evidence in cycles/join-integrity-v2-2026-08-04/measure/.
+DEGENERATE_QUOTE_FLOOR = 14
+
+#: The machine-readable refusal flag `benchmark.map_reference` records as a
+#: stratum, so the accounting identity "strata sum equals unmatched" holds.
+DEGENERATE_QUOTE_FLAG = "degenerate_quote_refused"
+
+#: Segmentation option 1: per-link independent renderings, bounded so the
+#: join stays linear in practice — beyond this many variants (2^3 links) the
+#: set falls back to the uniform pair (current behavior).
+MIXED_VARIANT_CAP = 8
+
+#: Panel locator grammar: `model-spec@2025-12-18 > #<anchor> > ¶<n>`. No
+#: fuzzy matching anywhere downstream: the anchor either equals a clause
+#: `section_id` string or restriction does not apply.
+_PANEL_ANCHOR = re.compile(r">\s*#([A-Za-z0-9_-]+)\s*>")
+
+
+def locator_anchor(locator) -> str | None:
+    """Section anchor from a panel passage locator, or None."""
+    m = _PANEL_ANCHOR.search(locator or "")
+    return m.group(1) if m else None
+
+
+def _variants_mixed(s: str, cap: int = MIXED_VARIANT_CAP) -> set:
+    """Every per-link choice of rendering (text vs target), bounded.
+
+    The panel's renderer chose PER LINK, not per passage — a passage mixing
+    renderings across two links defeats both uniform `_variants` (the seven
+    zero-match locators of SEGMENTATION_GAPS_DESIGN §1, all in link-dense
+    paragraphs). Beyond `cap` variants the explosion is refused and the
+    uniform pair is returned — the pre-option-1 behavior, disclosed by the
+    bound being a named constant rather than silently truncated.
+    """
+    s = FOOTNOTE_MARKER.sub("", s or "")
+    n = len(_LINK.findall(s))
+    if n == 0 or 2 ** n > cap:
+        return {" ".join(_EMPH.sub("", _LINK.sub(lambda m: m.group(k), s))
+                         .split()) for k in (1, 2)}
+    out = set()
+    for mask in range(2 ** n):
+        i = [0]
+
+        def pick(m, mask=mask, i=i):
+            k = 2 if (mask >> i[0]) & 1 else 1
+            i[0] += 1
+            return m.group(k)
+
+        out.add(" ".join(_EMPH.sub("", _LINK.sub(pick, s)).split()))
+    return out
+
+
+def content_empty(row: dict) -> bool:
+    """The F9 CODE-SIDE predicate (SEGMENTATION_GAPS_DESIGN §4, as amended
+    per PORTFOLIO_REVIEW F9): a content-free pseudo-heading clause — kind
+    `meta` AND heading-shaped text (a bold-wrapped heading, or a short
+    trailing-colon noun phrase with no sentence punctuation). Computed here
+    so `modelspec_clauses.json` is never edited (no artifact re-freeze
+    mid-spine). Membership on the current artifact is pinned by test to
+    exactly {m0393, m0398, m0535, m0539}.
+    """
+    if (row.get("kind") or "") != "meta":
+        return False
+    t = (row.get("quote") or "").strip()
+    if re.fullmatch(r"\*\*[^*\n]+\*\*", t):
+        return True
+    return (t.endswith(":") and "," not in t
+            and not any(c in t for c in ".!?")
+            and len(t.split()) <= 4)
+
+
+def match_passage_v2(passage_quote: str, rows, locator: str = "",
+                     mixed_variants: bool = True) -> dict:
+    """Join v2: `match_passage`'s containment rule behind two independent
+    guards (JOIN_INTEGRITY_DESIGN §2) plus the F9 empty-meta skip and
+    segmentation option 1's mixed variant set.
+
+    Returns a dict, never a bare list — the refusal and the restriction
+    fallback are facts the caller must see:
+      clauses       matched rows, in row order (empty on refusal);
+      restricted    True iff the candidate set was locator-restricted;
+                    False is the DISCLOSED full-corpus fallback, never silent;
+      refused       True iff the quote failed a degeneracy arm;
+      flag          `degenerate_quote_refused` on refusal, else None;
+      join_version  2.
+
+    `mixed_variants=False` isolates the restriction+refusal lever over the
+    uniform variant set — the two cycles (P1 join-integrity, P2 segmentation
+    option 1) check their §3 predictions independently on it.
+    """
+    var = _variants_mixed if mixed_variants else _variants
+    result = {"clauses": [], "restricted": False, "refused": False,
+              "flag": None, "join_version": JOIN_VERSION_V2}
+    # 2b backstop arm — refuse pathological quotes before enumeration.
+    if len(_norm(passage_quote)) < DEGENERATE_QUOTE_FLOOR:
+        result["refused"] = True
+        result["flag"] = DEGENERATE_QUOTE_FLAG
+        return result
+    ps = {v for v in var(passage_quote) if v}
+    if not ps:
+        return result
+    # F9: content-empty pseudo-headings are never candidates.
+    candidates = [r for r in rows if not content_empty(r)]
+    # 2a: locator-restricted candidate set, exact anchor equality only.
+    anchor = locator_anchor(locator)
+    if anchor is not None and any(r.get("section_id") == anchor
+                                  for r in candidates):
+        candidates = [r for r in candidates if r.get("section_id") == anchor]
+        result["restricted"] = True
+    matched, proper_only = [], []
+    for r in candidates:
+        qs = {v for v in var(r["quote"]) if v}
+        spans = {v for v in var(r.get("marked_span")) if v}
+        clause_in_passage = any(q in p for q in qs for p in ps) \
+            or any(s in p for s in spans for p in ps)
+        passage_in_clause = any(p in q for q in qs for p in ps)
+        if clause_in_passage or passage_in_clause:
+            matched.append(r)
+            proper_only.append(passage_in_clause and not clause_in_passage)
+    # 2b structural arm (LOAD-BEARING): a quote that is a proper substring of
+    # every one of several candidates cannot discriminate among them.
+    if len(matched) > 1 and all(proper_only):
+        result["refused"] = True
+        result["flag"] = DEGENERATE_QUOTE_FLAG
+        return result
+    result["clauses"] = matched
+    return result
+
+
 def _row(raw: dict) -> dict:
     return {
         "id": asp_id(raw["focus_id"]),

@@ -88,8 +88,12 @@ ATOM_DRAWS = ("behavior_atoms_b8.json", "behavior_atoms_draw1.json",
 DEFAULT_MIN_SCORE = 5
 THRESHOLDS = (1, 2)  # per-judge: >=1 "any relevance", ==2 handled as >=2 (max)
 
+#: `degenerate_quote_refused` is join v2's refusal stratum
+#: (JOIN_INTEGRITY_DESIGN §2b): a refused reference passage is unmatched, the
+#: flag is visible in every downstream report, and the accounting identity
+#: "strata sum equals unmatched" is preserved. Always 0 under join v1.
 STRATA = ("example_block", "not_verbatim_in_source", "verbatim_but_unsegmented",
-          "unknown")
+          "unknown", "degenerate_quote_refused")
 
 
 # ---------------------------------------------------------------- panel data
@@ -350,27 +354,60 @@ def spec_text(path: str = inventory.SPEC_MD) -> str:
 
 # -------------------------------------------- the join + zero-match ledger
 
+def _check_join_version(join_version: int) -> None:
+    if join_version not in (inventory.JOIN_VERSION_V1,
+                            inventory.JOIN_VERSION_V2):
+        raise ValueError(
+            f"unknown join_version {join_version!r} — expected "
+            f"{inventory.JOIN_VERSION_V1} (legacy) or "
+            f"{inventory.JOIN_VERSION_V2} (locator-restricted + refusal; "
+            f"JOIN_INTEGRITY_DESIGN.md)")
+
+
 def map_reference(behaviour, clauses, min_score: int = DEFAULT_MIN_SCORE,
-                  spec: str | None = None) -> dict:
+                  spec: str | None = None,
+                  join_version: int = inventory.JOIN_VERSION_V1) -> dict:
     """Map reference passages onto clause ids, and account for every failure.
 
-    Uses `inventory.match_passage` unchanged — its normalization (footnote
-    markers stripped, whitespace collapsed) and its containment-in-either-
-    direction rule are precisely what this join needs; the only adaptation is
-    upstream, in `_clause_rows`, coercing foreign clause files into the row
-    shape it expects.
+    `join_version` selects the join (JOIN_INTEGRITY_DESIGN §2): v1 is
+    `inventory.match_passage` unchanged — its normalization (footnote markers
+    stripped, whitespace collapsed) and its containment-in-either-direction
+    rule, over the whole corpus; v2 is `inventory.match_passage_v2` —
+    locator-restricted candidates, degenerate-quote refusal (recorded in the
+    `degenerate_quote_refused` stratum), the F9 empty-meta skip, and mixed
+    link-rendering variants. The version used is recorded in the result, and
+    v2's per-passage restriction/refusal facts are returned under
+    `join_facts` — the full-corpus fallback is disclosed, never silent.
+    The default stays v1 so every historical caller reproduces its recorded
+    numbers byte-identically; re-measurement under v2 rides the S8 checkpoint
+    census (JOIN_INTEGRITY_DESIGN §4), which passes join_version explicitly.
 
     Returns per-passage clause lists, the union clause set, and the zero-match
     strata. `strata` always sums to len(unmatched).
     """
+    _check_join_version(join_version)
     if spec is None:
         spec = spec_text()
     norm_spec = inventory._norm(spec) if spec else ""
     refs = reference(behaviour, min_score)
     per_passage, clause_ids, unmatched = {}, set(), []
     strata = {k: [] for k in STRATA}
+    join_facts = {}
     for p in refs:
-        hits = [r["id"] for r in inventory.match_passage(p.get("quote", ""), clauses)]
+        if join_version == inventory.JOIN_VERSION_V2:
+            res = inventory.match_passage_v2(
+                p.get("quote", ""), clauses, p.get("locator", ""))
+            join_facts[p["id"]] = {"restricted": res["restricted"],
+                                   "refused": res["refused"]}
+            if res["refused"]:
+                per_passage[p["id"]] = []
+                unmatched.append(p["id"])
+                strata["degenerate_quote_refused"].append(p["id"])
+                continue
+            hits = [r["id"] for r in res["clauses"]]
+        else:
+            hits = [r["id"] for r in
+                    inventory.match_passage(p.get("quote", ""), clauses)]
         per_passage[p["id"]] = hits
         if hits:
             clause_ids.update(hits)
@@ -387,6 +424,8 @@ def map_reference(behaviour, clauses, min_score: int = DEFAULT_MIN_SCORE,
     assert sum(len(v) for v in strata.values()) == len(unmatched)
     return {
         "min_score": min_score,
+        "join_version": join_version,
+        "join_facts": join_facts,
         "n_reference": len(refs),
         "n_matched": len(refs) - len(unmatched),
         "per_passage": per_passage,
@@ -401,7 +440,8 @@ def map_reference(behaviour, clauses, min_score: int = DEFAULT_MIN_SCORE,
 
 def score_tool(predicted_passages, behaviour, clauses=None,
                min_score: int = DEFAULT_MIN_SCORE, spec: str | None = None,
-               mapping: dict | None = None) -> dict:
+               mapping: dict | None = None,
+               join_version: int = inventory.JOIN_VERSION_V1) -> dict:
     """Score a set of predicted clause ids against a chosen reference set.
 
     `matched`  clause-level P/R/F1 over the reference passages we could map.
@@ -416,7 +456,8 @@ def score_tool(predicted_passages, behaviour, clauses=None,
     if mapping is None:
         if clauses is None:
             clauses, _ = load_clauses()
-        mapping = map_reference(behaviour, clauses, min_score, spec)
+        mapping = map_reference(behaviour, clauses, min_score, spec,
+                                join_version)
     predicted = set(predicted_passages)
     ref = mapping["clause_ids"]
     n_unmatched = len(mapping["unmatched"])
@@ -438,6 +479,7 @@ def score_tool(predicted_passages, behaviour, clauses=None,
     return {
         "behaviour": behaviour.get("slug"),
         "min_score": min_score,
+        "join_version": mapping.get("join_version"),
         "n_predicted": len(predicted),
         "n_reference_passages": n_ref_p,
         "n_reference_clauses": len(ref),
@@ -1175,30 +1217,72 @@ def check_operating_point_pairing(md: str) -> bool:
 _JOIN_CACHE: dict = {}
 
 
-def clause_joins(behaviour, clauses, spec_key: str = DEFAULT_SPEC_KEY) -> dict:
-    """`{passage id: [clause id, ...]}` over the behaviour's FULL passage list.
+#: Per-passage v2 join facts ({pid: {restricted, refused}}), same key as
+#: _JOIN_CACHE. v1 entries hold {} — the legacy join discloses nothing.
+_JOIN_FACTS_CACHE: dict = {}
 
-    Not just the reference passages: the denominator is the panel's own, so
-    every passage it judged has to be joined, including the ones it judged
-    irrelevant.
-    """
+
+def _join_key(behaviour, clauses, spec_key, join_version):
     ps = passages(behaviour, spec_key)
     # marked_span IS part of the join: inventory.match_passage matches on it
     # as well as on quote. Omitting it from the key meant a second call with a
     # different marked_span returned the FIRST call's answer. Latent while both
     # loaders force marked_span=None, live the moment focus-area rows are used
-    # — and _JOIN_CACHE is module-global and never cleared.
-    key = (hash(tuple((str(r.get("id")), r.get("quote", ""), r.get("marked_span"))
-                      for r in clauses)),
-           hash(tuple((p["id"], p.get("quote", "")) for p in ps)))
+    # — and _JOIN_CACHE is module-global and never cleared. `join_version` and
+    # (under v2) each passage's locator and the clause section_id are part of
+    # the join's inputs, so they are part of the key.
+    return (join_version,
+            hash(tuple((str(r.get("id")), r.get("quote", ""),
+                        r.get("marked_span"), r.get("section_id"),
+                        r.get("kind")) for r in clauses)),
+            hash(tuple((p["id"], p.get("quote", ""), p.get("locator", ""))
+                       for p in ps)))
+
+
+def clause_joins(behaviour, clauses, spec_key: str = DEFAULT_SPEC_KEY,
+                 join_version: int = inventory.JOIN_VERSION_V1) -> dict:
+    """`{passage id: [clause id, ...]}` over the behaviour's FULL passage list.
+
+    Not just the reference passages: the denominator is the panel's own, so
+    every passage it judged has to be joined, including the ones it judged
+    irrelevant. `join_version` selects v1 (legacy, the default — see
+    `map_reference`) or v2; a v2-refused passage joins to no clause and its
+    refusal is visible via `clause_join_facts`.
+    """
+    _check_join_version(join_version)
+    ps = passages(behaviour, spec_key)
+    key = _join_key(behaviour, clauses, spec_key, join_version)
     hit = _JOIN_CACHE.get(key)
     if hit is not None:
         return dict(hit)
-    out = {p["id"]: [r["id"] for r in
-                     inventory.match_passage(p.get("quote", ""), clauses)]
-           for p in ps}
+    if join_version == inventory.JOIN_VERSION_V2:
+        out, facts = {}, {}
+        for p in ps:
+            res = inventory.match_passage_v2(
+                p.get("quote", ""), clauses, p.get("locator", ""))
+            out[p["id"]] = [r["id"] for r in res["clauses"]]
+            facts[p["id"]] = {"restricted": res["restricted"],
+                              "refused": res["refused"]}
+    else:
+        out = {p["id"]: [r["id"] for r in
+                         inventory.match_passage(p.get("quote", ""), clauses)]
+               for p in ps}
+        facts = {}
     _JOIN_CACHE[key] = out
+    _JOIN_FACTS_CACHE[key] = facts
     return dict(out)
+
+
+def clause_join_facts(behaviour, clauses, spec_key: str = DEFAULT_SPEC_KEY,
+                      join_version: int = inventory.JOIN_VERSION_V1) -> dict:
+    """Per-passage `{restricted, refused}` facts for the versioned join.
+
+    Empty under v1 — the legacy join has no restriction or refusal to
+    disclose. Computes the join if it is not already cached.
+    """
+    clause_joins(behaviour, clauses, spec_key, join_version)
+    key = _join_key(behaviour, clauses, spec_key, join_version)
+    return dict(_JOIN_FACTS_CACHE.get(key) or {})
 
 
 def joinable(joins: dict) -> set:
@@ -1215,11 +1299,15 @@ def lift(predicted_clause_ids, joins: dict) -> set:
     return {pid for pid, cids in joins.items() if pred.intersection(cids)}
 
 
-def _join_strata(behaviour, joins, spec, spec_key=DEFAULT_SPEC_KEY) -> dict:
+def _join_strata(behaviour, joins, spec, spec_key=DEFAULT_SPEC_KEY,
+                 facts=None) -> dict:
     strata = {k: 0 for k in STRATA}
     norm_spec = inventory._norm(spec) if spec else ""
     for p in passages(behaviour, spec_key):
         if joins.get(p["id"]):
+            continue
+        if facts and (facts.get(p["id"]) or {}).get("refused"):
+            strata["degenerate_quote_refused"] += 1
             continue
         if p.get("exampleBlock"):
             strata["example_block"] += 1
@@ -1236,7 +1324,8 @@ def _join_strata(behaviour, joins, spec, spec_key=DEFAULT_SPEC_KEY) -> dict:
 
 def evaluate(behaviour, predicted_clause_ids, clauses, spec: str | None = None,
              joins: dict | None = None, threshold: int = 1,
-             spec_key: str = DEFAULT_SPEC_KEY, scores: dict | None = None) -> dict:
+             spec_key: str = DEFAULT_SPEC_KEY, scores: dict | None = None,
+             join_version: int = inventory.JOIN_VERSION_V1) -> dict:
     """Score a clause prediction against all three pair-golds.
 
     Returns per-target rows carrying, side by side and never separately:
@@ -1248,8 +1337,12 @@ def evaluate(behaviour, predicted_clause_ids, clauses, spec: str | None = None,
     """
     if spec is None:
         spec = spec_text()
+    join_facts = None
     if joins is None:
-        joins = clause_joins(behaviour, clauses, spec_key)
+        joins = clause_joins(behaviour, clauses, spec_key, join_version)
+        if join_version == inventory.JOIN_VERSION_V2:
+            join_facts = clause_join_facts(behaviour, clauses, spec_key,
+                                           join_version)
     universe = set(joins)
     matched = joinable(joins)
     tool = lift(predicted_clause_ids, joins)
@@ -1350,7 +1443,9 @@ def evaluate(behaviour, predicted_clause_ids, clauses, spec: str | None = None,
             "n_passages": len(universe),
             "n_joinable": len(matched),
             "n_unjoinable": len(universe) - len(matched),
-            "strata": _join_strata(behaviour, joins, spec, spec_key),
+            "strata": _join_strata(behaviour, joins, spec, spec_key,
+                                   facts=join_facts),
+            "join_version": join_version,
         },
     }
 

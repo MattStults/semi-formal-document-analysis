@@ -1,0 +1,78 @@
+{
+ "census": "deferred_to_checkpoint",
+ "census_delta": null,
+ "cycle": "join-integrity-v2-2026-08-04",
+ "date": "2026-08-04",
+ "decision": "keep",
+ "exploratory": false,
+ "fix_description": "JOIN v2 (parallel-track P1; JOIN_INTEGRITY_DESIGN.md build-as-is per PORTFOLIO_REVIEW, F12 rulings applied): inventory.match_passage_v2 = the quote-containment join behind two independent guards plus the F9 empty-meta skip. (2a) Locator-restricted candidates: the passage locator's section anchor, on exact equality with a clause section_id, restricts candidates to that section BEFORE containment; anywhere the key is absent the join falls back to the full corpus with a disclosed restricted:false fact. (2b) Degenerate-quote refusal: the LOAD-BEARING structural arm refuses a quote that is a proper substring of every one of >1 post-restriction candidates; the backstop floor refuses normalized quotes under DEGENERATE_QUOTE_FLOOR before enumeration. Refusal returns no clauses plus the machine-readable degenerate_quote_refused flag, which benchmark.map_reference records as the NEW fifth stratum (accounting identity strata-sum==unmatched preserved; score_tool books a refused reference passage as an unmatched FN in full scoring). (F9) content_empty is a CODE-SIDE predicate (kind meta AND bold-heading or short trailing-colon pseudo-heading; membership pinned to {m0393,m0398,m0535,m0539}); such clauses are never candidates; modelspec_clauses.json is NOT touched. Versioning: JOIN_VERSION_V1/V2 constants; v1 (match_passage) is untouched and stays the DEFAULT at every existing entry point (map_reference, score_tool, clause_joins, evaluate all gain an explicit join_version parameter and record it in their outputs; per-passage restriction/refusal facts exposed via join_facts / clause_join_facts); audit_disagreements.config_identity gains the join_version seam for CENSUS identity (F12: census identity, NOT snapshot identity — snapshots carry no join key). IMPLEMENTATION DEVIATION, licensed by the design's own calibration rule and requiring reviewer sign-off at OPEN: DEGENERATE_QUOTE_FLOOR recalibrated 25 -> 14 (see design_vs_reality in prediction.draft.json).",
+ "flip_tallies": {},
+ "flip_verdicts_reused_from": null,
+ "gate": {
+  "closure_checked": [
+   "annotations_ext_v1_merged.json",
+   "behavior_atoms_audit_v1.json",
+   "behaviours_query.json",
+   "constitution_clauses.json",
+   "modelspec_clauses.json",
+   "overlay_empty.json",
+   "test_audit_disagreements.py",
+   "test_benchmark.py",
+   "test_inventory.py",
+   "test_join_v2.py",
+   "test_no_reference_leak.py",
+   "thresholds_frozen.json"
+  ],
+  "files_changed": [
+   "audit_disagreements.py",
+   "benchmark.py",
+   "inventory.py"
+  ],
+  "review": {
+   "by": "independent reviewer — clean-context subagent, not the implementer",
+   "notes": "All duties checked against the CURRENT tree; the Option-A disclosure (built+measured pre-OPEN; pre-P1 bytes restored at OPEN, reviewed bytes re-applied after) was read and noted — this verdict reviews the present state, which is what the ceremony can verify. (1) FREEZE SHAS: manifest.json sha256 f25770c4... == state.json frozen_manifest_sha; prediction.json sha256 e5c587d8... == frozen_prediction_sha. Exact matches. (2) DECLARED-DIFF-ONLY: git HEAD blobs of inventory.py/benchmark.py/audit_disagreements.py hash EXACTLY to state.json open_shas (e08473bc/d888b234/994f6fd9), so the OPEN restore is verified; the working tree differs from open_shas in exactly those three files (4323c0cc/c98dae00/c3af4683). All 12 closure_shas entries (5 config artifacts, 5 test files, modelspec_clauses.json, thresholds_frozen.json) match disk byte-for-byte. git status --porcelain spot-check beyond the closure: other modified tracked files are ITERATION_LOOP.md, S3B_REDESIGN.md, TOOLING_BATCH_DESIGN.md, briefs/README.md, briefs/change_reviewer.md, briefs/flip_adjudicator.md — all governance/documentation prose (brief inventory updates, PORTFOLIO_REVIEW F12 rationale corrections), mtime 17:28-17:30 i.e. AFTER OPEN (state.json 17:24:18, re-apply 17:24:42), none is code or a measurement input, so nothing the join change could ride in on moved; untracked items are this cycle's own dir, test_join_v2.py (pinned by closure sha 832489bf, present at OPEN), .qwen/ tooling config, and the sibling segmentation-variants P2 cycle dir. measure/ contents match the disclosure: REGENERATION_NOTE.md, superseded_floor25/ (the floor-25 originals), drafts manifest.draft.json/prediction.draft.json. (3) TESTS BIND — live baseline: all five gate files green, 276 passed (.venv python, PYTHONDONTWRITEBYTECODE=1, -p no:cacheprovider). Mutants run ONLY in a scratch copy (/tmp/joinv2_review, repo-root layout with data/engine/specs symlinked read-only; scratch files sha-verified identical to live before mutating; __pycache__ cleared and each mutant grep-asserted present in source before running, per the project handoff): MUTANT A (DEGENERATE_QUOTE_FLOOR 14->25) KILLED — 6 red including test_floor_boundary_is_14_normalized, test_recalibrated_floor_spares_discriminating_short_quotes, test_degenerate_floor_refuses_short_quotes, and test_prediction2_no_reference_grade_passage_changes (floor 25 refuses a reference-grade quote — the design-vs-reality item 1 refutation re-demonstrated live); MUTANT B (structural arm 'if False') KILLED — test_the_real_offender_is_refused_by_the_structural_arm, test_structural_arm_refuses_nondiscriminating_quote, test_prediction1_the_exact_locator_delta_under_restriction red; MUTANT C (anchor=None, locator restriction disabled) KILLED — test_join_v2_restricts_candidates_to_the_locator_section and test_the_real_offender_is_refused_by_the_structural_arm (restricted flag) red; note C does NOT change the real-universe delta because the structural arm still refuses the 28-fan-out offender corpus-wide — independent confirmation the structural arm, not restriction, is load-bearing. Scratch restored to pristine bytes (sha re-verified) and 27/27 green re-confirmed; scratch deleted; live tree re-hashed after all work and byte-identical to the start of review. (4) FENCE SCAN: FORBIDDEN-token scan of inventory.py, benchmark.py, audit_disagreements.py, test_join_v2.py, raw AND comment/docstring-stripped with test_no_reference_leak.py's own regexes. Every hit attributed: inventory.py 'load_raw' is its own pre-existing focus-areas loader (substring collision, untouched by this change), 'cycles/' comment-only; benchmark.py and audit_disagreements.py hits are pre-existing legitimate panel ownership (scorer/audit modules, not query modules) and the diff adds NO new file reads (zero new open()/paths in all three diffs); test_join_v2.py 'verdicts' is synthetic-fixture construction, 'load_true_panel' is the gate test's legitimate universe pin reading passage identity only per its header — no judge verdict consulted. No contamination. TRANSPARENCY NOTE: the cycle-supplied measure/delta_v1_v2nomix.json carries a raw per-locator 'scores' field; this review used only the redacted reference_grade booleans and structural fields (v1/v2 sets, causes, norm lengths) and used no score magnitude as evidence of the change's effect. (5) THE CLAIM: match_passage_v2 implements (2a) exact-anchor section restriction with disclosed restricted:false fallback, (2b) floor backstop (strict <14) + load-bearing structural arm (refuse iff >1 matched candidates and the passage quote is a proper substring of every one — equality and the containing-passage direction spared), (F9) code-side content_empty skip with membership pinned by test to {m0393,m0398,m0535,m0539} and modelspec_clauses.json untouched (closure sha match); refusal returns no clauses + degenerate_quote_refused flag; benchmark records it as the fifth STRATA member with the accounting identity preserved (refused -> unmatched AND stratum, assert in map_reference; score_tool books refused reference passages as full-scoring FN — test_score_tool_counts_refused_reference_as_full_fn green); join_version recorded in map_reference/score_tool/evaluate outputs and clause_join_facts exposes per-passage restriction/refusal facts. document_side_rationale is document-side: v2's inputs are quote text, locator string, and clause rows (quote/marked_span/section_id/kind from segmentation) — no panel verdict, judge rating, or gold value participates in the join. v1 match_passage is byte-untouched (the inventory.py diff is a single purely-additive hunk) and stays the default at every entry point: repo-wide grep confirms map_reference/score_tool/clause_joins/evaluate/config_identity all default join_version to V1/None and NO pre-existing caller passes it explicitly (only test_join_v2.py does); audit_disagreements.config_identity default output is byte-identical to the old hardcoded None. (6) DESIGN_VS_REALITY ADJUDICATION — all five items ACCEPTED: item 1 (floor calibration was a published-universe artifact): superseded_floor25/delta_v1_v2nomix.json holds 12 entries — EIGHT floor_backstop refusals at normalized lengths 14-24, one of them reference_grade:True — so floor 25 refused a reference-grade mapping, violating design §3.2 exactly as claimed; the regenerated floor-14 delta drops all eight, keeping exactly the 6 changed locators (2 structural refusals + 4 empty-meta skips), the 21-char offender now caught by the structural arm post-restriction (restriction_removed 26 of its 28 candidates); 14 is justified as the largest floor sparing every discriminating quote and is pinned by green tests; the deviation is ratified in manifest.deviation_ratification. Item 2 (#definitions>¶5 collapse refuted): regenerated join maps show m0056-m0061 under both v1 and v2_nomix — 6 -> 6, identical sets, v2 restricted:True yet no collapse and no refusal; the locator is absent from the delta file. Item 3 (empty-meta no-op refuted): delta shows all four pseudo-heading passages self-mapped 1:1 under v1 and dropping to [] via empty_meta_skip under v2, all reference_grade:False, with two quotes at normalized lengths 26/27 — above even the original floor 25, so the design's 'refused under the degenerate floor anyway' aside is refuted as claimed. Item 4 (missed refusal): #protect_privileged_information>¶14 present in the delta as refused+restricted, v1 = m0305,m0306 both in-section, 70 normalized chars — caught by the structural arm, not the floor; the corrected six-locator pin is what test_prediction1 pins and it passes. Item 5 (default version): verified in code (v1 default everywhere), and snapshot_build/diff_pre_post.json records noop:true with identical thresholds and predicted sets 95/73/146 — the mechanical basis for 'the join is downstream of the scorer'. NON-BLOCKING OBSERVATIONS for the record: (a) evaluate() given caller-supplied joins together with join_version=2 does not populate join_facts (facts are computed only when evaluate builds the joins itself), so a refused passage on that future path would land in a legacy zero-match stratum rather than the refusal stratum; the accounting identity still holds and no current caller exercises the path — flag for the S8 census implementation; (b) v2 also carries the mixed-variant (segmentation option 1) lever shared with the parallel P2 cycle; this cycle's predictions are pinned on mixed_variants=False so the levers stay separated, consistent with the manifest. No label value was used as evidence anywhere in this review. No files modified by this review other than this verdict.",
+   "verdict": "proceed"
+  },
+  "tests_passed": [
+   "test_audit_disagreements.py",
+   "test_benchmark.py",
+   "test_inventory.py",
+   "test_join_v2.py",
+   "test_no_reference_leak.py"
+  ]
+ },
+ "justification": "KEEP. PRE-BUILT DISCLOSURE (mandatory, repeated per CYCLE_DESIGN PRE-BUILT CYCLES): this change was BUILT and MEASURED in the isolated P1 worktree BEFORE this cycle's OPEN. The passing predictions below are CONFIRMATIONS of measurements already taken, not blind pre-registrations; the freeze's temporal guarantee was already absent at OPEN and no procedure restores it. Option A (restore-then-reapply) was used: the three files_to_change were restored to their pre-P1 bytes (git HEAD) at OPEN, and the reviewed P1 bytes re-applied as the IMPLEMENT step with byte-identity verified against the sha256 recorded at save (4323c0cc/c98dae00/c3af4683); that check is what makes the re-application legitimate rather than a re-implementation. No future reader should mistake this cycle's passing predictions for blind ones. BASIS FOR KEEP (document-side and mechanical; no panel-derived count moved, so this is not a keep-because-a-number-moved): (1) the independent clean-context change-review returned PROCEED — freeze shas exact, declared-diff-only verified against the OPEN restore, three mutants killed (DEGENERATE_QUOTE_FLOOR 14->25, structural arm disabled, locator restriction disabled), fence scan clean, and the claim verified that match_passage_v2 implements locator restriction + the load-bearing structural refusal + the floor backstop + the F9 empty-meta skip with v1 byte-untouched and default at every entry point; (2) all five design_vs_reality items ACCEPTED against the superseded floor-25 originals and the regenerated maps; (3) the DEGENERATE_QUOTE_FLOOR 25->14 deviation is ratified (manifest.deviation_ratification); (4) MEASURE shows 0 flips and predicted sets 95/73/146 identical to the baseline, so the join is downstream of the scorer and cannot regress a clause-level number — prediction_check 3/3 PASS. noop is recorded false only because the annotations input sha differs from the S1 baseline (S2's proven-bit-identical chain backfill landed after the decoration-blind-join snapshot); scores and thresholds are unchanged. Re-measurement of historical passage-level numbers rides the S8 checkpoint census (design §4); until then v1 remains the default at every entry point and no published number moves. No census, panel, judge, or gold number informed this decision.",
+ "noop": false,
+ "overrides": [],
+ "prediction_check": {
+  "checks": [
+   {
+    "expected": {
+     "max": 0,
+     "min": 0
+    },
+    "kind": "flip_count",
+    "observed": 0,
+    "result": "PASS"
+   },
+   {
+    "expected": [],
+    "kind": "directions",
+    "observed": [],
+    "result": "PASS"
+   },
+   {
+    "expected": 0,
+    "kind": "max_regressions",
+    "observed": 0,
+    "result": "PASS"
+   }
+  ],
+  "pass_rate": [
+   3,
+   3
+  ]
+ },
+ "shape": "code",
+ "signed_by": "session coordinator (Qwen Code), on Matt Stults's standing authorization — Option-A (restore-then-reapply) ruling 2026-08-04"
+}
