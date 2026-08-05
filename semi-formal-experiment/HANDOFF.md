@@ -75,6 +75,10 @@ review (is harm to the user's own organisation's accounts "outside the conversat
   which the join had emptied, making pricing silently dead). Invariant I1 pins
   bit-identity when no patients are declared. S3's revert withdraws the three
   `behaviours_query.json` declarations; the code stays.
+- **Opening a parked/pre-built cycle:** the driver assumes OPEN precedes implementation;
+  parked work does not. The handling (restore-then-reapply, with a mandatory
+  built-before-OPEN disclosure) is **`CYCLE_DESIGN.md` § PRE-BUILT CYCLES** — read it
+  before opening P1 or any future worktree-parked cycle.
 - **Parked, built, zero-flip proven:** P1 join-integrity v2 + segmentation option-1 in
   worktree `agent-a8b74ed98d7f85110` (branch `worktree-agent-a8b74ed98d7f85110`). 27 tests,
   v1 join kept as default deliberately. Merges at the next gate window; re-measurement

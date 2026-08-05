@@ -124,3 +124,63 @@ axis ONLY in this amended form — rule chosen label-free via the cut_stability
 route and pre-registered BEFORE any census consultation; predictions at
 mechanism level ("m0422 stops drifting; flips are threshold_drift only");
 its 34 flips handled under the §4 budget path.
+
+---
+
+## ⚠️ PRE-BUILT CYCLES (added 2026-08-04 after P1 hit this undocumented)
+
+The driver assumes OPEN precedes implementation: `_open` captures each
+`files_to_change` sha, and the IMPLEMENT gate refuses when those files are
+byte-identical to their OPEN shas ("the fix has not been implemented"). Every
+cycle through S3 happened to follow that order, so this was never written down.
+
+**It does not always hold.** Work built in an isolated worktree and parked for a
+later gate window (P1 join-integrity is the first case) arrives *finished and
+already measured* before its cycle can open. The coordinator creates these
+deliberately — parallel work needs isolation — so the pattern is expected, not an
+accident, and it needs a documented handling.
+
+### What the freeze can and cannot give you here
+
+Separate two things the ceremony provides:
+
+* **The temporal guarantee** (predictions made before results are known). For a
+  pre-built cycle this is **already gone and no procedure restores it**. Do not
+  construct a ritual that appears to restore it.
+* **The mechanical gate coverage** (declared files changed; gate tests green;
+  closure of undeclared inputs unchanged; review verdict present). These remain
+  fully meaningful regardless of when the code was written, and are worth keeping.
+
+### The ruling (coordinator, 2026-08-04) — restore-then-reapply
+
+1. Record the hashes of the finished files, then restore them to their **pre-change
+   bytes in the CURRENT tree** — not to the worktree's fork point. A parked branch
+   may have zero unique commits (P1's did); checking out the fork point silently
+   reverts unrelated later work. Verify the restored files differ from the finished
+   ones **only** in this cycle's hunks before proceeding.
+2. Move any test file that exists solely to gate this change into `gate_tests`
+   (closure-pinned), not `files_to_change`.
+3. OPEN (captures the pre-change shas), then PREDICT from the drafts.
+4. Re-apply the saved files as the IMPLEMENT step and **verify byte-identity to the
+   reviewed bytes**. That check is what makes the shuffle legitimate rather than a
+   re-implementation: the gate then genuinely exercises declared-files-changed,
+   tests, and closure.
+5. Regenerate any measurement artifacts produced in the worktree — they were built
+   against a different tree and are misleading as-is (P1's `measure/` files date from
+   a superseded constant).
+
+**Rejected alternatives, with reasons:** `--override IMPLEMENT` records the truth but
+discards all three mechanical checks to avoid a file-shuffle — a bad trade, and it
+leaves a permanent override banner on a cycle that doesn't need one. Ratifying by
+review + no-op proof alone (no cycle) loses the record for a change that does alter the
+measurement plumbing the census runs on; "score-inert" is a claim that deserves a cycle,
+and the no-op proof is evidence *for* it, not a substitute.
+
+### The disclosure is MANDATORY
+
+The cycle record must state plainly, in the prediction notes **and** repeated in the
+decision justification, that the change was built and measured before OPEN. Without
+that line, restore-then-reapply is the one structure that could quietly *overstate*
+our discipline — a passing prediction reads as a blind prediction to any later reader.
+P1's draft prediction already carries the right form of words ("all numbers below are
+measured, not hoped"); keep them through to the decision.
