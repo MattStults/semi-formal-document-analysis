@@ -19,14 +19,14 @@ flag); **D2/m0108** = resolved by the seat-defect review (user's-own-org, not th
 
 ## A. Design revisions (in the review loop) — DO FIRST
 
-- [ ] **A1. S3b REVISION 6** (`S3B_REDESIGN.md`). REVISION 5 applied the R4-B1 class rule,
-      the D1 ruling, and the four R3 majors. REVISION 6 folds the **D4 ruling**
-      (translation-time generic-noun disambiguation: comprehensive "people" →
-      harm_bearers = full principal set; specific "individuals" → specific party; branch 2
-      re-grounded as the comprehensive-generic case; m0018/m0248 golden cases). Then
-      **clean-context adversarial re-review** of REVISION 6.
+- [ ] **A1. S3b redesign** (`S3B_REDESIGN.md`) — now **REVISION 8**. REVISION 6 folded the
+      D4 ruling (translation-time generic-noun disambiguation); REVISION 7 fixed the three
+      R6 majors (E-1 D3 reconcile, E-2 m0290 licensability via speaker-aware first-person
+      mapping + pre-OPEN gate, S-1 m0239 lapse condition); REVISION 8 fixed the eight R6
+      ride-along minors. **Clean-context adversarial re-review of REVISION 8 IN FLIGHT.**
+      When non-blocking, S3b proceeds to the build (B4).
 - [ ] **A2. Implied-effects REVISION 2** (`IMPLIED_EFFECTS_DESIGN.md`). Per
-      `IMPLIED_EFFECTS_ADVERSARIAL_REVIEW.md` (REVISE). **Sequence AFTER S3b REVISION 6
+      `IMPLIED_EFFECTS_ADVERSARIAL_REVIEW.md` (REVISE). **Sequence AFTER the S3b REVISION 8
       re-review is non-blocking** (ENG-B1 must spec against the settled S3b §5.3).
   - [ ] Fix **ENG-B1**: one named ruling on where implied patients enter (per-atom factor /
         taint quantifier / both), stated against BOTH `patient.py` and S3b §5.3; work the
@@ -110,8 +110,10 @@ flag); **D2/m0108** = resolved by the seat-defect review (user's-own-org, not th
 
 - [x] **F1.** ~~`_git_bytes_matching` double-prefix~~ — FIXED (dossier.py + regression test;
       targeted tests green).
-- [ ] **F2.** Backfill hardening F1/F2/R1–R3
-      (`patient-backfill-2026-08-04/backfill/REVIEW_HARDENING_NOTES.md`).
+- [x] **F2.** ~~Backfill hardening F1/F2/R1–R3~~ — DONE (commit `f98ff94`): grandfather
+      multiplicity bound (test_dechain), legacy-surface denylist (atom_refactor), scope
+      identity live==frozen−licensed (test_backfill_worksheet). 5 new tests; full suite
+      green (2163). From `patient-backfill-2026-08-04/backfill/REVIEW_HARDENING_NOTES.md`.
 - [ ] **F3.** Five grandfathered length-1 chains (m0021, m0178, m0179, m0502 ×2) — repair is
       an open annotation-cycle question.
 - [x] **F4.** ~~Stale-doc residue~~ — RESOLVED: the `casebank/` directory-misconception was
