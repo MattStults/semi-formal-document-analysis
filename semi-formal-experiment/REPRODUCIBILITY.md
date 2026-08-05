@@ -105,3 +105,34 @@ Violations / debt (each is a session-transcript-only procedure today):
 A fix or feature is in-principle done only when its step conforms to the
 sandwich rule. Reviews (including the standing adversarial reviews) should
 flag transcript-only procedure as a finding, same severity as a missing test.
+
+**A new numeric constant is a fitting surface.** Contract invariant 9 makes any
+sweepable literal in a scoring path a place where results can be fit. Three
+shapes are permitted and the modules differ — pick one deliberately:
+
+* `combined.py` permits **no new numeric constant at all**: every value declares
+  `inherited_from` (`test_combined.py:526-535`).
+* `structural.py` requires a `CONSTANTS` table entry carrying justification and
+  provenance (`test_structural.py:142+`).
+* A **derived** constant — `patient.PATIENT_MISMATCH_DISCOUNT` is the worked
+  example — is sha-pinned to the document that derives it and kept deliberately
+  OUT of `Weights` so it cannot be swept (`test_patient.py:148-149`, `:486-488`).
+  Derivation is outcome-blind (see `cycles/patient-pricing-2026-08-04/DISCOUNT_DERIVATION.md`);
+  if a mechanism change breaks the constant's plateau, **re-derive blind — never
+  re-tie-break after seeing which clause crosses.**
+
+A bare literal in a scoring path is a review finding.
+
+**Determinism is a cross-PROCESS property, not a within-process one.** The
+"no hash-seed dependence" rule above is verified by rebuilding under a different
+`PYTHONHASHSEED` in a second process (`test_snapshot.py:125-127`, `:170-172`), not
+by calling the builder twice in one. Any new deterministic artifact gets the same
+two-process test; a same-process repeat does not test the class that actually bit us.
+
+**Prompt-hygiene guards bind on the COMPOSED prompt.** Invariant 8 is checked
+against the fully spliced prompt for both docfacts files, an unspliced
+`{{DOCFACTS` marker is a refusal, and closed enumerations (e.g. the principals)
+must occupy **exactly one line** (`test_annotate.py:784-795`, `:1250-1270`). That
+last rule exists because a review once deleted the enumeration line and 1,701 tests
+stayed green — the old check was a substring scan. Do not reformat a closed
+enumeration across lines.
