@@ -589,3 +589,27 @@ def test_empty_meta_skip_measured_delta(real_maps):
         hit = {loc for loc, cids in real_maps["maps"][mode].items()
                if cids & EMPTY_META_IDS}
         assert hit == set(), (mode, sorted(hit))
+
+
+def test_map_reference_threads_the_variant_set_choice():
+    """The census pins its variant set on the entry point, so the choice
+    must reach `match_passage_v2` through the join seam — and the mixed set
+    stays OPT-IN there (default False, refused under v1 rather than
+    silently ignored)."""
+    rows = [row("c1", "the assistant should follow [the guidelines]"
+                      "(guide_lines) and respect [user intent](user_intent) "
+                      "at every step", section_id="s")]
+    beh = {"slug": "synthetic", "coverage": {"openai": {"passages": [
+        mk_passage("p1", {"a": 2, "b": 2, "c": 2},
+                   "the assistant should follow the guidelines and respect "
+                   "user_intent at every step",
+                   locator=f"{MS} > #s > ¶1")]}}}
+    off = B.map_reference(beh, rows, 5, "", join_version=2)
+    assert off["per_passage"]["p1"] == []
+    assert B.map_reference(beh, rows, 5, "", join_version=2,
+                           mixed_variants=False) == off
+    on = B.map_reference(beh, rows, 5, "", join_version=2,
+                         mixed_variants=True)
+    assert on["per_passage"]["p1"] == ["c1"]
+    with pytest.raises(ValueError):
+        B.map_reference(beh, rows, 5, "", join_version=1, mixed_variants=True)

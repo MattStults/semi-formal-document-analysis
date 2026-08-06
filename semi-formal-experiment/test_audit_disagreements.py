@@ -585,3 +585,84 @@ def test_cli_dossiers_accepts_overlay_and_thresholds_flags(capsys):
         _sys.argv = old
     out = capsys.readouterr().out
     assert "--overlay" in out and "--thresholds" in out
+
+
+# ------------- 6. pinning the join variant in census identity (0c / F12)
+
+def test_config_identity_records_the_variant_set_choice(tmp_path):
+    """F12 puts join identity in CENSUS identity; the variant set is the
+    other half of that identity. `mixed_variants` is recorded as an
+    EXPLICIT value — None when unstated (the legacy shape), the bool
+    actually in force otherwise — never a missing key, exactly the way
+    snapshot.py records an absent overlay."""
+    import inventory
+    ann = _tmp_input(tmp_path, "annotations_x.json", {"clauses": []})
+    atoms = _tmp_input(tmp_path, "behavior_atoms_y.json", {})
+
+    base = AD.config_identity(ann, atoms)
+    assert "mixed_variants" in base, "the key must exist even when unstated"
+    assert base["mixed_variants"] is None
+    assert base["join_version"] is None
+
+    pinned = AD.config_identity(ann, atoms,
+                               join_version=inventory.JOIN_VERSION_V2,
+                               mixed_variants=False)
+    assert pinned["join_version"] == inventory.JOIN_VERSION_V2
+    assert pinned["mixed_variants"] is False
+
+    opted_in = AD.config_identity(ann, atoms,
+                                  join_version=inventory.JOIN_VERSION_V2,
+                                  mixed_variants=True)
+    assert opted_in["mixed_variants"] is True
+
+
+def test_generate_dossiers_scores_under_the_join_it_names(tmp_path):
+    """A recorded join_version that did not drive the join would be a lie in
+    the header. The mini world's fan-out FP passage ('commentary marker', a
+    proper substring of seven clauses and of nothing else) is exactly what
+    v2's structural arm refuses: under v1 it is a dossier, under v2 the
+    passage joins to nothing, the disagreement disappears, and every other
+    dossier survives. Constructed frozen input; subset checks only."""
+    idx, behs, panel, clauses, ann = _mini_world()
+    fanout = "harm__" + AD._sanitize("#meta ¶1")
+    r1 = AD.generate_dossiers(idx, behs, panel, clauses, ann,
+                              str(tmp_path / "v1"), config_tag="mini",
+                              join_version=1)
+    r2 = AD.generate_dossiers(idx, behs, panel, clauses, ann,
+                              str(tmp_path / "v2"), config_tag="mini",
+                              join_version=2)
+    ids1 = {r["dossier_id"] for r in r1}
+    ids2 = {r["dossier_id"] for r in r2}
+    assert fanout in ids1, "v1 keeps the degenerate fan-out disagreement"
+    assert fanout not in ids2, "v2's structural arm refuses that quote"
+    assert ids2 < ids1
+
+
+def test_mixed_variants_is_opt_in_and_v2_only(tmp_path):
+    """The mixed variant set is a v2-only lever (inventory.match_passage_v2,
+    default flipped to False in 68b036d). Asking for it under v1 would be a
+    silent no-op that the header would then MISreport — refuse instead."""
+    idx, behs, panel, clauses, ann = _mini_world()
+    with pytest.raises(ValueError) as e:
+        AD.generate_dossiers(idx, behs, panel, clauses, ann,
+                             str(tmp_path / "bad"), config_tag="mini",
+                             join_version=1, mixed_variants=True)
+    assert "mixed_variants" in str(e.value)
+    assert not os.path.exists(tmp_path / "bad" / "index.jsonl")
+
+
+def test_cli_pins_the_join_explicitly_and_defaults_to_the_measured_state():
+    """S8 must be able to pin its join variant on the entry point rather
+    than inherit one. The flags exist, the default is the measured state
+    (v1, uniform variants), and both are always explicit values that reach
+    the header."""
+    import inventory
+    ap = AD._parser()
+    d = ap.parse_args(["dossiers"])
+    assert d.join_version == inventory.JOIN_VERSION_V1
+    assert d.mixed_variants is False
+    p = ap.parse_args(["dossiers", "--join-version", "2", "--mixed-variants"])
+    assert p.join_version == inventory.JOIN_VERSION_V2
+    assert p.mixed_variants is True
+    with pytest.raises(SystemExit):
+        ap.parse_args(["dossiers", "--join-version", "3"])

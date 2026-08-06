@@ -27,12 +27,25 @@ import argparse
 import json
 
 import benchmark as B
+import inventory
 import relevance as R
 
 
-def passage_map(behaviour, clauses):
-    """pid -> {score, quote, verdicts, clause_ids} over the FULL universe."""
-    m = B.map_reference(behaviour, clauses, min_score=0)
+def passage_map(behaviour, clauses,
+                join_version: int = inventory.JOIN_VERSION_V1,
+                mixed_variants: bool = False):
+    """pid -> {score, quote, verdicts, clause_ids} over the FULL universe.
+
+    `join_version`/`mixed_variants` select the join, straight through to
+    `benchmark.map_reference`: the defaults are the measured state (v1,
+    uniform variants) so every historical caller reproduces its numbers,
+    and the census passes both explicitly so the join it RECORDS in its
+    config-identity header is the join it actually ran (PORTFOLIO_REVIEW
+    F12: join identity belongs to CENSUS identity).
+    """
+    m = B.map_reference(behaviour, clauses, min_score=0,
+                        join_version=join_version,
+                        mixed_variants=mixed_variants)
     per = m["per_passage"]
     out = {}
     for p in B.passages(behaviour):
@@ -45,13 +58,20 @@ def passage_map(behaviour, clauses):
     return out
 
 
-def survey(index, behaviours, panel, clauses, min_score=5):
-    """All disagreements, both directions, every frontier behaviour."""
+def survey(index, behaviours, panel, clauses, min_score=5,
+           join_version: int = inventory.JOIN_VERSION_V1,
+           mixed_variants: bool = False):
+    """All disagreements, both directions, every frontier behaviour.
+
+    `join_version`/`mixed_variants` are passed through to `passage_map`;
+    a caller must give the SAME pair to both or its dossiers would describe
+    a different join from the one that found the disagreements."""
     rows = []
     for slug, beh in behaviours.items():
         scores = index.raw_scores(beh)
         predicted = index.predict(beh)          # label-free Otsu cut
-        pmap = passage_map(panel[slug], clauses)
+        pmap = passage_map(panel[slug], clauses, join_version=join_version,
+                           mixed_variants=mixed_variants)
         for pid, rec in pmap.items():
             cids = rec["clause_ids"]
             pred = bool(set(cids) & predicted)

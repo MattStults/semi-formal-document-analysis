@@ -276,7 +276,8 @@ def _round(x: float) -> float:
 def config_identity(annotations_path: str, atoms_path: str,
                     overlay_path: str | None = None,
                     thresholds_path: str | None = None,
-                    join_version: int | None = None) -> dict:
+                    join_version: int | None = None,
+                    mixed_variants: bool | None = None) -> dict:
     """The census's FULL config identity (amendment F2 / TOOLING item 1),
     in snapshot.py's exact key shape: every input as {path, sha256},
     explicit nulls for absent overlay/thresholds, the threshold rule, and
@@ -286,6 +287,14 @@ def config_identity(annotations_path: str, atoms_path: str,
     v2 join now exists (inventory.match_passage_v2, JOIN_INTEGRITY_DESIGN);
     the default stays None because the shipped census predates the versioned
     join — the S8 checkpoint census passes its version explicitly.
+
+    `mixed_variants` is the OTHER half of that join identity: v2's per-link
+    rendering variant set (segmentation option 1), whose default was
+    deliberately flipped to False (68b036d) so an unmeasured variant set is
+    opt-in. It is recorded as an EXPLICIT value — the bool in force, or
+    None when the run stated no join at all (the pre-versioned shape) —
+    following the overlay's absent-is-a-recorded-value pattern rather than
+    dropping the key.
     """
     import snapshot
     import threshold as T
@@ -305,6 +314,7 @@ def config_identity(annotations_path: str, atoms_path: str,
         },
         "threshold_rule": T.PREFERRED,
         "join_version": join_version,
+        "mixed_variants": mixed_variants,
     }
     if overlay_path:
         import containment
@@ -322,7 +332,9 @@ def _cut_for(index, behaviour) -> float:
 
 def generate_dossiers(index, behaviours, panel, clauses, clause_atoms,
                       out_dir, config_tag: str, header: dict | None = None,
-                      frozen_cuts: dict | None = None) -> list:
+                      frozen_cuts: dict | None = None,
+                      join_version: int | None = None,
+                      mixed_variants: bool = False) -> list:
     """One AUDIT DOSSIER per survey disagreement, plus index.jsonl.
 
     `clause_atoms` is the raw per-clause atom map (name/kind/gloss/role —
@@ -337,13 +349,28 @@ def generate_dossiers(index, behaviours, panel, clauses, clause_atoms,
     the artifact (dossier records cut_source "frozen_artifact"), one absent
     falls back to `_cut_for` ("rule_fallback"); when None the old shape is
     preserved exactly (no cut_source key).
+
+    `join_version`/`mixed_variants` PIN the join this census runs (F12: join
+    identity is CENSUS identity). None keeps the historical default (v1,
+    uniform variants) so old callers reproduce byte-identically; the CLI
+    always passes an explicit pair, and the same pair belongs in `header`.
+    The combination is checked BEFORE anything is written, so a refused one
+    never leaves a half-written dossier directory behind.
     """
+    import benchmark as B
     import diagnose_disagreement as DD
+    import inventory
+
+    jv = (inventory.JOIN_VERSION_V1 if join_version is None
+          else int(join_version))
+    mixed = bool(mixed_variants)
+    B._check_join_options(jv, mixed)
 
     os.makedirs(out_dir, exist_ok=True)
     clause_text = {str(c.get("id")): c.get("quote") or c.get("text", "")
                    for c in clauses}
-    rows = DD.survey(index, behaviours, panel, clauses)
+    rows = DD.survey(index, behaviours, panel, clauses,
+                     join_version=jv, mixed_variants=mixed)
 
     # Per-behaviour caches: the passage map, the score vectors and the cut
     # are functions of the behaviour alone, and recomputing the join per
@@ -355,7 +382,9 @@ def generate_dossiers(index, behaviours, panel, clauses, clause_atoms,
     def _for(slug):
         if slug not in _pmaps:
             beh = behaviours[slug]
-            _pmaps[slug] = DD.passage_map(panel[slug], clauses)
+            _pmaps[slug] = DD.passage_map(panel[slug], clauses,
+                                          join_version=jv,
+                                          mixed_variants=mixed)
             _raws[slug] = index.raw_scores(beh)
             _norms[slug] = dict(index.rank(beh))
             if frozen_cuts is not None and slug in frozen_cuts:
@@ -623,7 +652,8 @@ def validate(verdicts, dossier_dir: str, sweep_findings: str | None = None):
 
 # ---------------------------------------------------------------------- CLI
 
-def main():
+def _parser() -> argparse.ArgumentParser:
+    import inventory
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
     g = sub.add_parser("dossiers")
@@ -642,15 +672,43 @@ def main():
                         "the artifact (cut_source frozen_artifact), others "
                         "fall back to the label-free rule (rule_fallback); "
                         "the artifact sha joins the header.")
+    g.add_argument("--join-version", type=int,
+                   choices=(inventory.JOIN_VERSION_V1,
+                            inventory.JOIN_VERSION_V2),
+                   default=inventory.JOIN_VERSION_V1,
+                   help="which join maps panel passages onto clauses "
+                        "(JOIN_INTEGRITY_DESIGN): 1 = legacy containment, "
+                        "2 = locator-restricted + degenerate-quote refusal "
+                        "+ the F9 empty-meta skip. The default is the "
+                        "measured state; the S8 checkpoint census pins its "
+                        "variant EXPLICITLY. Either way the value used is "
+                        "recorded in the config-identity header (F12: join "
+                        "identity is CENSUS identity, not snapshot "
+                        "identity).")
+    g.add_argument("--mixed-variants", action="store_true",
+                   help="opt in to join v2's per-link mixed rendering "
+                        "variant set (segmentation option 1). OFF by "
+                        "default — the measured state, and the deliberate "
+                        "default of inventory.match_passage_v2 — and "
+                        "refused under --join-version 1, where it would be "
+                        "a silent no-op. The choice is recorded in the "
+                        "header either way.")
     v = sub.add_parser("validate")
     v.add_argument("--verdicts", required=True)
     v.add_argument("--dossier-dir", required=True)
     v.add_argument("--sweep-findings", default=None)
-    args = ap.parse_args()
+    return ap
+
+
+def main():
+    args = _parser().parse_args()
 
     if args.cmd == "dossiers":
         import benchmark as B
         import relevance as R
+        # refuse an impossible join pairing BEFORE minutes of loading and
+        # scoring; `generate_dossiers` re-checks for non-CLI callers.
+        B._check_join_options(args.join_version, args.mixed_variants)
         clauses, _ = B.load_clauses()
         if args.overlay:
             # the shipped configuration is overlay-ON with frozen cuts: a
@@ -676,10 +734,14 @@ def main():
         out_dir = os.path.join(args.out_root, tag)
         header = config_identity(args.annotations, args.atoms,
                                  overlay_path=args.overlay,
-                                 thresholds_path=args.thresholds)
+                                 thresholds_path=args.thresholds,
+                                 join_version=args.join_version,
+                                 mixed_variants=args.mixed_variants)
         recs = generate_dossiers(index, behaviours, panel, clauses,
                                  clause_atoms, out_dir, tag, header=header,
-                                 frozen_cuts=frozen_cuts)
+                                 frozen_cuts=frozen_cuts,
+                                 join_version=args.join_version,
+                                 mixed_variants=args.mixed_variants)
         from collections import Counter
         kinds = Counter(r["kind"] for r in recs)
         print(f"wrote {len(recs)} dossiers -> {out_dir} "

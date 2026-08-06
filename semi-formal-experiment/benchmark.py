@@ -364,9 +364,25 @@ def _check_join_version(join_version: int) -> None:
             f"JOIN_INTEGRITY_DESIGN.md)")
 
 
+def _check_join_options(join_version: int, mixed_variants: bool) -> None:
+    """Version + variant set together. `mixed_variants` is a v2-ONLY lever
+    (`inventory.match_passage_v2`, default False since 68b036d): under v1
+    it would be a silent no-op, and a caller that RECORDS its choice — the
+    census header — would then misreport the join it ran. Refuse instead."""
+    _check_join_version(join_version)
+    if mixed_variants and join_version != inventory.JOIN_VERSION_V2:
+        raise ValueError(
+            f"mixed_variants=True requires join_version "
+            f"{inventory.JOIN_VERSION_V2}; got {join_version!r}. The mixed "
+            "per-link variant set exists only in match_passage_v2 "
+            "(SEGMENTATION_GAPS_DESIGN option 1) — under v1 it would be "
+            "silently ignored.")
+
+
 def map_reference(behaviour, clauses, min_score: int = DEFAULT_MIN_SCORE,
                   spec: str | None = None,
-                  join_version: int = inventory.JOIN_VERSION_V1) -> dict:
+                  join_version: int = inventory.JOIN_VERSION_V1,
+                  mixed_variants: bool = False) -> dict:
     """Map reference passages onto clause ids, and account for every failure.
 
     `join_version` selects the join (JOIN_INTEGRITY_DESIGN §2): v1 is
@@ -382,10 +398,15 @@ def map_reference(behaviour, clauses, min_score: int = DEFAULT_MIN_SCORE,
     numbers byte-identically; re-measurement under v2 rides the S8 checkpoint
     census (JOIN_INTEGRITY_DESIGN §4), which passes join_version explicitly.
 
+    `mixed_variants` is v2's per-link rendering variant set (segmentation
+    option 1). It stays OPT-IN and defaults to False — the measured state —
+    and is refused under v1, where it would be a silent no-op. The value in
+    force is recorded in the result alongside `join_version`.
+
     Returns per-passage clause lists, the union clause set, and the zero-match
     strata. `strata` always sums to len(unmatched).
     """
-    _check_join_version(join_version)
+    _check_join_options(join_version, mixed_variants)
     if spec is None:
         spec = spec_text()
     norm_spec = inventory._norm(spec) if spec else ""
@@ -396,7 +417,8 @@ def map_reference(behaviour, clauses, min_score: int = DEFAULT_MIN_SCORE,
     for p in refs:
         if join_version == inventory.JOIN_VERSION_V2:
             res = inventory.match_passage_v2(
-                p.get("quote", ""), clauses, p.get("locator", ""))
+                p.get("quote", ""), clauses, p.get("locator", ""),
+                mixed_variants=mixed_variants)
             join_facts[p["id"]] = {"restricted": res["restricted"],
                                    "refused": res["refused"]}
             if res["refused"]:
@@ -425,6 +447,7 @@ def map_reference(behaviour, clauses, min_score: int = DEFAULT_MIN_SCORE,
     return {
         "min_score": min_score,
         "join_version": join_version,
+        "mixed_variants": mixed_variants,
         "join_facts": join_facts,
         "n_reference": len(refs),
         "n_matched": len(refs) - len(unmatched),
