@@ -301,9 +301,20 @@ Grounds, in order of weight:
   That is a real result. Judge replacement is not, and the arithmetic says it will not become
   one.
 
-**Where this might be wrong:** if the 41+27 `side` verdicts survive recalibration, the true bar
-is nearer +0.44–+0.53 and scenario D's +0.41 becomes a near-miss rather than a rout. That
-single check is worth running before anyone accepts this recommendation.
+**Where this might be wrong — CHECKED 2026-08-06, and it did NOT hold.** The caveat was that
+if the 41+27 `side` verdicts survived recalibration, the true bar would be nearer +0.44–+0.53
+and scenario D's +0.41 would become a near-miss rather than a rout. A first check has now run
+(`HUMAN_VS_MODEL_JUDGES.md`): on four tool-vs-panel disagreements, a human adjudicator and
+three independent model tiers sided with the **panel every time** — 0 of 4 panel errors,
+including the two strongest panel signals in the sample (6/6 and 5/6). Worse for the
+hypothesis, the single item the census had marked `side: tool` is **demonstrably
+misattributed**: all four judges agreed with the panel on it.
+
+n = 4, so this settles nothing on its own. But the direction is uniform and the one checkable
+`side` verdict was wrong, so the correction table above should be read as **refuted pending a
+larger check**, not as a live possibility. The bar looks real, and so does the tool's distance
+from it. The cheap follow-up that would settle it needs no human: separate agents per item,
+20–30 items.
 
 ---
 

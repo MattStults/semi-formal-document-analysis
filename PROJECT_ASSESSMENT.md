@@ -291,11 +291,15 @@ than +0.309 suggests, because ranking rewards precision at the top rather than t
 
 **Before committing to either, two experiments that cost almost nothing:**
 
-1. **Re-run the "who was wrong" classification.** Our census records, per disagreement, whether
-   the tool or the panel was at fault. Taken at face value it says **more than half the gap is
-   panel error** — but the field turns out to be confounded with which batch produced it, so it
-   cannot be trusted as it stands. One recalibrated pass either legitimises a large correction
-   to the bar or kills the hypothesis. This is the single highest-value cheap check available.
+1. ~~**Re-run the "who was wrong" classification.**~~ **DONE 2026-08-06 — it killed the
+   hypothesis.** Our census records, per disagreement, whether the tool or the panel was at
+   fault; taken at face value it said more than half the gap was panel error, but the field is
+   confounded with which batch produced it. A first check ran a human adjudicator and three
+   independent model tiers over the same items blind: on all four tool-vs-panel disagreements
+   **every judge sided with the panel** (`semi-formal-experiment/HUMAN_VS_MODEL_JUDGES.md`),
+   and the one item the census marked as panel-error is demonstrably misattributed. At n=4 this
+   is indicative, not conclusive — but it points away from a soft bar, not towards one. The
+   larger version needs no human and is still worth running.
 2. **Run the transfer test.** The tool has never been evaluated on the six behaviours held back
    from all development, or on a second document. That is the question "does this approach
    generalize" — and it is answerable now, on a frozen pipeline, without any further fixes.
