@@ -10,6 +10,33 @@ which is where the schedule is actually won.
 
 ---
 
+## ⚠️ STATUS 2026-08-05 LATE — read this before working the list below
+
+**The ladder's value has been measured and it is small.** `RELEVANCE_QUALITY_READ.md`: the six
+closed cycles moved the metric **+0.0003** against a noise floor of 0.032–0.037; the whole
+remaining ladder's oracle ceiling is 42% of the gap and its honest estimate is 15–28%, resting
+on assumptions already refuted (S5 measures zero effect; S6's own review disqualifies 14 of 26
+targets). `PROJECT_ASSESSMENT.md` (repo root) is the funding memo, and it recommends **stopping
+accuracy work on the rule engine** in favour of the auditability machinery and the ranked-audit
+axis. **That decision is open (Decision 6).** Until it is made, do not start new ladder design
+work — finish what is in flight, keep the debt clean, and do not spend.
+
+**Closed since the last revision:** 0c census identity · latent-fix tripwires · S4/S5/S6 Tier-1
+reviews · S4's R2 fixes · S5's mechanical fixes · the index-builder refactor + its rebase + its
+adversarial review · `affected_parties` rename · the attribution seat brief · the S6 shape
+partition (computed mechanically: 14 shape_b / 12 shape_a, **17 of 26 clauses lacked a usable
+hand-assignment**) · the `join_facts` fix · the README control-number correction (+0.19 → +0.108)
+· the clean-clone suite defect · **H3 backfill hardening** (F1/F2/R3 landed in `f98ff94`; only
+R1/R2 remain, both process notes, neither actionable as code).
+
+**Both "cheap decisive experiments" the assessment recommends are blocked on Matt:** the
+recalibrated census `side` pass needs seat calls (spend), and the transfer test is a one-way
+door. Neither can be run autonomously.
+
+Suite: **2194 passed / 4 skipped**, green from a clean clone as of `2c96735`.
+
+---
+
 ## A. BLOCKED ON MATT — nothing else moves these
 
 - [ ] **A1. D2 — the m0108 organisation boundary.** Substance already settled by
