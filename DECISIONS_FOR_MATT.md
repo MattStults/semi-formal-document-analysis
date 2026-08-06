@@ -169,27 +169,85 @@ what the record says it means.
 
 ---
 
-## Decision 6 — The strategic question you raised
+## Decision 6 — The strategic question: the measurement is in, and it is decisive
 
-You asked whether we're close enough that transfer matters, or whether the project has
-already told us the remaining work is too expensive. **A measurement is running now**: current
-quality against the panel, the trajectory across every past cycle, and an honest upper bound
-on what the remaining ladder can deliver.
+**THIS IS THE MOST IMPORTANT ITEM ON THE LIST.** Full report:
+`semi-formal-experiment/RELEVANCE_QUALITY_READ.md`.
 
-I'll add the numbers here when it lands. What's already visible is not encouraging about the
-ladder specifically:
+### Where the tool stands
 
-* the largest planned fix (S3b) reaches about **27%** of the disagreements, not the 53% its
-  target class suggests;
-* the linkage cycle (S5) moves **nothing**;
-* the vocabulary cycle (S6) has a safety gate that doesn't work, and about **30** of the
-  remaining cases aren't a vocabulary problem at all — they're cases where the clause has no
-  party being harmed or protected, so none of the planned mechanisms touch them.
+**+0.309** against a frontier-panel bar of **+0.556**. (The scale runs −1 to +1; 0 is
+chance. So the tool is real, and it is not close to the panel.)
 
-That's three of the four remaining fixes delivering less than planned. It's a real
-possibility that the honest finding here is about the *method and the instruments*, not about
-getting the score up — which several people would consider the more valuable result anyway.
-I'd rather put that in front of you than quietly keep grinding.
+### The finding that decides it
+
+**The last six completed cycles moved that number by +0.0003 in total.** The project's own
+measured noise floor is 0.032–0.037 — about **100× larger than everything six cycles
+achieved**. Statistically, the executed fix ladder has produced *nothing*.
+
+The one genuine gain in the whole record, **+0.072**, came from re-selecting which
+question-side concepts the tool searches with — an *instrument* change, made before the
+ladder started. Not a mechanism fix.
+
+### What the remaining ladder can deliver, being generous
+
+Assuming every remaining cycle lands **perfectly** with zero side effects — which never
+happens — the whole remaining ladder closes **42%** of the gap, reaching about +0.41. The
+honest estimate is **15–28%**, reaching +0.35 to +0.38.
+
+And the generous number rests on assumptions we have already refuted:
+
+* **S5 measures literally zero effect** (Decision 1).
+* **S6 supplies 65% of that optimistic gain**, and its own review disqualifies 14–15 of its
+  26 targets. Priced with even modest side effects — three new false positives per case
+  recovered — S6 delivers *less than nothing*.
+* **S3b** reaches 79 of its 155 cases; oracle best case **+0.010**, a third of the noise
+  floor.
+* **The threshold class — 20% of all disagreements — has no owner by design**, correctly:
+  consuming those would be fitting to the answer key, which the whole method forbids.
+
+### Two structural findings that outrank the arithmetic
+
+1. **43% of the errors being measured were never catalogued.** The disagreement census covers
+   256 of 447 actual disagreement cases. Every planned fix aims at the 57% that is catalogued.
+   Even a perfect ladder leaves the largest uncatalogued block untouched.
+2. **We cannot currently say how much of the gap is the panel's fault.** The census has a
+   field marking "the tool is wrong" vs "the panel is arguably wrong" — and it turns out to be
+   perfectly segregated by *which run produced it* (one behaviour: 129 cases all "tool wrong";
+   another: 41 all "panel wrong"). Zero mixing across 294 judgments is a per-run stance, not
+   per-case judgment. Taken at face value it would say **more than half the gap is panel
+   error** — but it cannot be taken at face value.
+
+### The recommendation
+
+**Stop treating +0.556 as the objective.** Concretely:
+
+* **Don't spend the S3b budget.** Best case is a third of the noise floor. Costed honestly it
+  cannot be falsified.
+* **Run one cheap thing first:** a recalibrated, cross-behaviour pass over that segregated
+  field. It is the only thing that could legitimately move the bar, and it costs a seat run.
+  ⚠️ The related "salience" check is **not** free: its only usable anchor sits on one of the
+  six held-out behaviours, so running it spends part of a resource that can be used once.
+  That's your call, not a free follow-up.
+* **Go to the checkpoint and the generalization test sooner.** "Does the error pattern
+  transfer to six never-consulted behaviours" is answerable now on a frozen pipeline, is the
+  question you were actually asking, and is not improved by first spending three cycles to
+  move the score by 0.04.
+* **Rewrite the headline claim.** "+0.31 against +0.556" invites the wrong comparison. The
+  defensible claim: an offline, auditable, label-free tool at **2.9× the bag-of-words
+  baseline**, with a citable source span for every answer, on a use case a human expert
+  endorsed — first-pass auditing — *whose own quality axis has never been measured*.
+
+**Correction in the tool's favour:** the published baseline comparison (+0.19) is wrong. It's
+a 9-behaviour number sitting in a 3-behaviour table. The real baseline is +0.108, so the lift
+is **2.9×, not 1.6×**.
+
+### What I need from you
+
+Not a full pivot decision — just direction: **keep grinding the ladder, or stop and write up
+what we have while running the two cheap high-information checks?** My recommendation is the
+latter. The honest finding here looks like it's about the method and the instruments, not the
+score — and that is a more interesting result than a scorer that got to +0.38.
 
 ---
 
