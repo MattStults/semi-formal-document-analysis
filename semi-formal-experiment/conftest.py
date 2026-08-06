@@ -38,6 +38,13 @@ _OPTIONAL = {
     "test_backfill_worksheet.py": "backfill_worksheet",
     "test_patient.py": "patient",
     "test_validate_query.py": "validate_query",
+    # The latent-fix tripwires (LATENT_FIX_REGISTRY.md LF-1/LF-2) import nothing
+    # from the project — they read `modelspec_clauses.json`, the closed cycle
+    # records, and the reader prototype directly. Registered here because
+    # AGENTS.md requires every new test module to be, and keyed to `cycle`: the
+    # driver that WRITES the records the LF-2 scan reads. If cycle.py is gone the
+    # scan has nothing left to guard.
+    "test_latent_fix_tripwires.py": "cycle",
 }
 
 collect_ignore = [
