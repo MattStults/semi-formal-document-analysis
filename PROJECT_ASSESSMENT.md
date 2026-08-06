@@ -16,11 +16,18 @@ But **the last six engineering cycles improved its accuracy by an amount 100× s
 measurement noise**, and a careful accounting says the entire remaining plan is worth at most a
 further 15–28% of the gap under assumptions we've already disproved.
 
-**Recommendation: stop funding accuracy work on the rule engine. Fund two things instead —
-the auditability machinery, and one decisive experiment that costs almost nothing.** If the
-goal is purely "high-quality results without much human work," use frontier models today. The
-rule engine will not overtake them, and we now understand *why* in a way that is itself the
-most valuable thing the project produced.
+**Recommendation: stop funding accuracy work on the rule engine — but do not conclude from that
+that the approach is dead.** The strongest version of this project is one we have not tried:
+pay frontier prices **once per document** to produce a rich, explained, human-correctable map,
+then answer unlimited behaviour questions against it cheaply. Our evidence favours that reading
+— every wall we hit was the *representation* being too thin, never the matching being too dumb,
+and the only real gain in the project's history came from improving an instrument rather than
+the engine. See **Option D** in §6; it is the one worth funding, and it is testable for tens of
+dollars.
+
+If the goal is purely "high-quality results without much human work" **and** you are willing to
+pay per behaviour, per iteration, forever: use frontier models today. The rule engine as built
+will not overtake them.
 
 ---
 
@@ -190,7 +197,82 @@ equally relevant and failing to identify *the* core one. Their verdict on our to
 **"missing nuance and specificity, but very useful and efficient to find relevant parts and
 compare"** — and they endorsed a use case we have never measured: **ranked first-pass auditing**.
 
-### C. Pivot — and this is what I would fund
+### D. The option this memo originally missed: pay frontier prices ONCE, per document
+
+*Added 2026-08-05 after the framing above was challenged, correctly.*
+
+The comparison in A–C is between "our cheap tool" and "a frontier model per query." That
+skipped the option that actually matches the economics: **the expensive pass is a one-time cost
+per document; the cheap thing is per behaviour, per iteration.**
+
+Reframed: *is there a frontier "mapping layer" — run once over the document, producing explicit
+decisions with written explanations, auditable and human-correctable after the fact — such that
+arbitrary behaviour questions can then be answered cheaply against it?*
+
+**Our evidence bears on this more favourably than on the rule ladder, for four reasons:**
+
+1. **The only real gain in the project's history came from improving the representation, not
+   the engine.** +0.072 from re-selecting which concepts the questions search with; +0.0003 from
+   six cycles of matching improvements. That is direct evidence that representation quality is
+   the lever.
+2. **Every wall we hit was representation loss, not matching failure.** The two structurally
+   identical passages are identical *because the annotation dropped who the harm falls on*. The
+   fix we designed for it — a per-passage record of the affected party, with a verbatim
+   supporting quote — is a small instance of exactly what you're describing.
+3. **The cost is genuinely small and we can price it.** 589 passages, one frontier call each,
+   a few thousand tokens in and out: **order $20–60, once**, versus 589 × behaviours ×
+   iterations for the per-query approach. Our existing design already has the cheaper variant —
+   a cheap model does the pass, a frontier model validates a stratified sample — measured at
+   well under $1.
+4. **The correction machinery is already designed** (`INTERPRETATION_LAYER_DESIGN.md`): entries
+   carry who approved them, when, and why; they are individually revocable; and the tool reads
+   them as fact rather than re-deriving them. That is precisely "human-correctable after the
+   fact", and it is *better* than a frontier model per query, which gives a different answer
+   each run and leaves no record to correct.
+
+**The long tail may be much shorter in dimension-space than in rule-space.** This is the key
+reframing, and it is the thing the earlier §5 got half right. We hit four walls, and each maps
+to a *missing annotation dimension*, not to a missing rule:
+
+| wall we hit | the dimension it implies |
+|---|---|
+| Two identical-looking passages, different answers | **who the harm or benefit falls on** |
+| A passage protects people it never names | **what it implies but does not say** |
+| The document doesn't settle a boundary | **the scope decision, with its reasoning** |
+| ~30 cases about answer quality, not parties | **what kind of obligation this passage is** |
+
+Four dimensions, discovered empirically by failing four times. That is a very different
+prospect from an unbounded tail of rules. If the true dimension count is ~5–15, a single
+well-designed frontier pass can carry all of them, and the tail closes.
+
+**What is genuinely unproven — and it is one thing, and it is cheap to test:** *does an
+annotation made without knowing the behaviours generalize to behaviours nobody had in mind?*
+Every dimension above was discovered by looking at failures on three known behaviours. An
+annotation schema fitted to those is not evidence about arbitrary future ones. This is exactly
+what the six held-out behaviours exist to answer, and it is answerable in one experiment.
+
+**The risk to name honestly:** schema completeness is decided in advance. Miss a dimension and
+a whole class of questions becomes unanswerable — and you find out only by failing at it, which
+is how we found all four. The bet is that the number is small and discoverable. Our data is
+consistent with that, and does not prove it.
+
+**How I would test it, in order:**
+
+1. **Blind annotation pass** on a subset — frontier, rich schema covering the four known
+   dimensions plus an open "what else is salient here" slot, with a written explanation and a
+   verbatim quote per decision. **The schema must be written without looking at the held-out
+   behaviours.**
+2. **Score it on the six held-out behaviours.** If a behaviour-blind annotation answers
+   behaviours it never saw, the architecture is validated and the tail is bounded. If it only
+   works on the three it was designed against, the tail is not bounded and Option B is correct.
+3. **Only then** build the cheap-model-plus-parity-validation version, which is where the
+   economics actually live.
+
+That sequence spends tens of dollars and one one-shot resource to answer the question the whole
+project has been circling. It is a far better use of a held-out test than confirming that the
+rule ladder plateaued.
+
+### C. Pivot — the auditability machinery
 
 Two things, both cheap, both building on what already works.
 
@@ -224,19 +306,26 @@ than +0.309 suggests, because ranking rewards precision at the top rather than t
 
 > The rule-based approach reached 45% of the way from keyword matching to frontier-model
 > quality, then stopped improving — six full engineering cycles moved it by 1% of the
-> measurement noise. We now understand why: the remaining errors are not missing rules, they
-> are judgement calls — cases where the document is ambiguous, where the deciding fact is not
-> in the structure, or where being more inclusive costs as many errors as it fixes. Rules can
-> relocate that judgement into reviewable artifacts, which is valuable, but they cannot remove
-> it.
+> measurement noise. We understand why: the remaining errors are not missing rules. Every wall
+> was the same shape — the once-per-document representation was too thin to carry the deciding
+> fact, so the judgement had to happen at query time, where it is expensive and unauditable.
 >
-> The durable output is not the scorer. It is the machinery for making model judgements
-> explicit, auditable, and regression-tested — which works just as well wrapped around a
-> frontier model, and addresses the need frontier models genuinely do not meet.
+> That diagnosis points somewhere specific. The economics that matter are **high one-time cost
+> per document, low cost per behaviour and per iteration** — and we never tested the version
+> built for those economics: a frontier pass over the document that makes each decision
+> explicitly, in writing, with a citation, once, and is human-correctable afterwards. Our four
+> failures map to four missing annotation *dimensions*, not to an unbounded tail of rules; if
+> the true count is small, that architecture closes the gap and the per-query cost stays near
+> zero.
 >
-> Two cheap experiments should be run before any larger commitment: one that determines how much
-> of the measured gap is our error versus the benchmark's, and one that tests whether any of
-> this transfers to unseen behaviours and a second document.
+> One experiment decides it, for tens of dollars: annotate blind, then score on behaviours the
+> annotation never saw. If a behaviour-blind map answers behaviours nobody had in mind, fund it.
+> If it only works on the behaviours it was designed against, the tail is unbounded and the
+> right answer is to use frontier models per query and keep only our audit machinery.
+>
+> Either way the durable asset is the same: the machinery for making model judgements explicit,
+> revocable, and regression-tested. That works wrapped around any engine, and it addresses the
+> need frontier models genuinely do not meet.
 
 **A closing note on epistemic hygiene, which is itself a result.** Every negative finding in this
 memo was produced by the project's own instruments, pre-registered and adversarially reviewed
