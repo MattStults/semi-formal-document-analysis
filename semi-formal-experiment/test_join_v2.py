@@ -630,3 +630,94 @@ def test_map_reference_threads_the_variant_set_choice():
     assert on["per_passage"]["p1"] == ["c1"]
     with pytest.raises(ValueError):
         B.map_reference(beh, rows, 5, "", join_version=1, mixed_variants=True)
+
+
+# ------------------ the cell seam: a cell must be able to SELECT the join
+
+def test_cell_evaluate_selects_the_join_version(behaviour_v2, clauses_v2):
+    """A checkpoint cell routed through `cell_evaluate` must be able to ask
+    for v2 and GET v2. Without the parameter the cell silently measures v1
+    while its caller believes it pinned v2 — a measurement that misdescribes
+    its own configuration. The default stays v1, unchanged."""
+    ev1 = B.cell_evaluate(behaviour_v2, {"c1"}, "openai", clauses=clauses_v2,
+                          spec=SPEC_V2)
+    assert ev1["join"]["join_version"] == inventory.JOIN_VERSION_V1
+    assert ev1["join"]["strata"]["degenerate_quote_refused"] == 0
+
+    ev2 = B.cell_evaluate(behaviour_v2, {"c1"}, "openai", clauses=clauses_v2,
+                          spec=SPEC_V2,
+                          join_version=inventory.JOIN_VERSION_V2)
+    assert ev2["join"]["join_version"] == inventory.JOIN_VERSION_V2
+    assert ev2["join"]["strata"]["degenerate_quote_refused"] == 1
+    assert ev2["join"]["strata"]["verbatim_but_unsegmented"] == 0
+    # the accounting identity still balances under the cell seam
+    assert sum(ev2["join"]["strata"].values()) == ev2["join"]["n_unjoinable"]
+    with pytest.raises(ValueError):
+        B.cell_evaluate(behaviour_v2, {"c1"}, "openai", clauses=clauses_v2,
+                        spec=SPEC_V2, join_version=3)
+
+
+def test_cell_evaluate_threads_the_variant_set_choice():
+    """Same contract as `map_reference`: the variant set must REACH the join
+    through the cell seam (a recorded-but-ignored flag would make the cell's
+    own record false), stays opt-in, and is refused under v1."""
+    rows = [row("c1", "the assistant should follow [the guidelines]"
+                      "(guide_lines) and respect [user intent](user_intent) "
+                      "at every step", section_id="s")]
+    beh = {"slug": "synthetic", "coverage": {"openai": {"passages": [
+        mk_passage("p1", {"a": 2, "b": 2, "c": 2},
+                   "the assistant should follow the guidelines and respect "
+                   "user_intent at every step",
+                   locator=f"{MS} > #s > ¶1")]}}}
+    off = B.cell_evaluate(beh, {"c1"}, "openai", clauses=rows, spec="",
+                          join_version=inventory.JOIN_VERSION_V2)
+    assert off["join"]["n_joinable"] == 0
+    assert off["join"]["mixed_variants"] is False
+    on = B.cell_evaluate(beh, {"c1"}, "openai", clauses=rows, spec="",
+                         join_version=inventory.JOIN_VERSION_V2,
+                         mixed_variants=True)
+    assert on["join"]["n_joinable"] == 1
+    assert on["join"]["mixed_variants"] is True
+    with pytest.raises(ValueError):
+        B.cell_evaluate(beh, {"c1"}, "openai", clauses=rows, spec="",
+                        join_version=inventory.JOIN_VERSION_V1,
+                        mixed_variants=True)
+
+
+# ----------------- the restriction fact has to reach the caller (§2a)
+
+def test_evaluate_surfaces_the_per_passage_join_facts(behaviour_v2,
+                                                      clauses_v2):
+    """§2a: `restricted: False` is the DISCLOSED full-corpus fallback — a
+    fact the caller must see. A refusal reaches the caller today only as a
+    stratum COUNT, and the restriction flag not at all, so a caller wanting
+    per-passage restriction has to recompute the join itself."""
+    r = B.evaluate(behaviour_v2, {"c1"}, clauses_v2, spec=SPEC_V2,
+                   join_version=inventory.JOIN_VERSION_V2)
+    facts = r["join"]["facts"]
+    assert set(facts) == {"p1", "p2", "p3"}          # every panel passage
+    assert facts["p2"] == {"restricted": False, "refused": True}
+    assert facts["p1"]["refused"] is False
+    # the fallback is disclosed: p1/p3 carry no resolvable anchor
+    assert facts["p1"]["restricted"] is False
+    # and it agrees with the join seam's own facts, by construction
+    assert facts == B.clause_join_facts(
+        behaviour_v2, clauses_v2, join_version=inventory.JOIN_VERSION_V2)
+
+
+def test_evaluate_join_facts_disclose_restriction_and_stay_inert_under_v1():
+    """The restricted arm of the same fact, and v1's inertness: the legacy
+    join has nothing to disclose, so it discloses an empty map rather than a
+    fabricated one."""
+    rows = [row("c1", LONG_A, section_id="sec_a"),
+            row("c2", LONG_A, section_id="sec_b")]
+    beh = {"slug": "synthetic", "coverage": {"openai": {"passages": [
+        mk_passage("p1", {"a": 2, "b": 2, "c": 2},
+                   f"prefix text {LONG_A} suffix text",
+                   locator=f"{MS} > #sec_a > ¶1")]}}}
+    r2 = B.evaluate(beh, {"c1"}, rows, spec="",
+                    join_version=inventory.JOIN_VERSION_V2)
+    assert r2["join"]["facts"]["p1"] == {"restricted": True, "refused": False}
+    r1 = B.evaluate(beh, {"c1"}, rows, spec="")
+    assert r1["join"]["join_version"] == inventory.JOIN_VERSION_V1
+    assert r1["join"]["facts"] == {}

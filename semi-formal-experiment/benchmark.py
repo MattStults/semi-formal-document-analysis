@@ -1245,16 +1245,18 @@ _JOIN_CACHE: dict = {}
 _JOIN_FACTS_CACHE: dict = {}
 
 
-def _join_key(behaviour, clauses, spec_key, join_version):
+def _join_key(behaviour, clauses, spec_key, join_version, mixed_variants=False):
     ps = passages(behaviour, spec_key)
     # marked_span IS part of the join: inventory.match_passage matches on it
     # as well as on quote. Omitting it from the key meant a second call with a
     # different marked_span returned the FIRST call's answer. Latent while both
     # loaders force marked_span=None, live the moment focus-area rows are used
-    # — and _JOIN_CACHE is module-global and never cleared. `join_version` and
-    # (under v2) each passage's locator and the clause section_id are part of
-    # the join's inputs, so they are part of the key.
-    return (join_version,
+    # — and _JOIN_CACHE is module-global and never cleared. `join_version`,
+    # `mixed_variants` and (under v2) each passage's locator and the clause
+    # section_id are part of the join's inputs, so they are part of the key:
+    # the variant set CHANGES which clauses a passage joins to, so sharing a
+    # key across it would serve one variant set's answer for the other's run.
+    return (join_version, bool(mixed_variants),
             hash(tuple((str(r.get("id")), r.get("quote", ""),
                         r.get("marked_span"), r.get("section_id"),
                         r.get("kind")) for r in clauses)),
@@ -1263,7 +1265,8 @@ def _join_key(behaviour, clauses, spec_key, join_version):
 
 
 def clause_joins(behaviour, clauses, spec_key: str = DEFAULT_SPEC_KEY,
-                 join_version: int = inventory.JOIN_VERSION_V1) -> dict:
+                 join_version: int = inventory.JOIN_VERSION_V1,
+                 mixed_variants: bool = False) -> dict:
     """`{passage id: [clause id, ...]}` over the behaviour's FULL passage list.
 
     Not just the reference passages: the denominator is the panel's own, so
@@ -1271,10 +1274,14 @@ def clause_joins(behaviour, clauses, spec_key: str = DEFAULT_SPEC_KEY,
     irrelevant. `join_version` selects v1 (legacy, the default — see
     `map_reference`) or v2; a v2-refused passage joins to no clause and its
     refusal is visible via `clause_join_facts`.
+
+    `mixed_variants` is v2's opt-in per-link rendering variant set, refused
+    under v1 for the same reason `map_reference` refuses it: a silently
+    ignored flag makes the recorded join identity false.
     """
-    _check_join_version(join_version)
+    _check_join_options(join_version, mixed_variants)
     ps = passages(behaviour, spec_key)
-    key = _join_key(behaviour, clauses, spec_key, join_version)
+    key = _join_key(behaviour, clauses, spec_key, join_version, mixed_variants)
     hit = _JOIN_CACHE.get(key)
     if hit is not None:
         return dict(hit)
@@ -1282,7 +1289,8 @@ def clause_joins(behaviour, clauses, spec_key: str = DEFAULT_SPEC_KEY,
         out, facts = {}, {}
         for p in ps:
             res = inventory.match_passage_v2(
-                p.get("quote", ""), clauses, p.get("locator", ""))
+                p.get("quote", ""), clauses, p.get("locator", ""),
+                mixed_variants=mixed_variants)
             out[p["id"]] = [r["id"] for r in res["clauses"]]
             facts[p["id"]] = {"restricted": res["restricted"],
                               "refused": res["refused"]}
@@ -1297,14 +1305,15 @@ def clause_joins(behaviour, clauses, spec_key: str = DEFAULT_SPEC_KEY,
 
 
 def clause_join_facts(behaviour, clauses, spec_key: str = DEFAULT_SPEC_KEY,
-                      join_version: int = inventory.JOIN_VERSION_V1) -> dict:
+                      join_version: int = inventory.JOIN_VERSION_V1,
+                      mixed_variants: bool = False) -> dict:
     """Per-passage `{restricted, refused}` facts for the versioned join.
 
     Empty under v1 — the legacy join has no restriction or refusal to
     disclose. Computes the join if it is not already cached.
     """
-    clause_joins(behaviour, clauses, spec_key, join_version)
-    key = _join_key(behaviour, clauses, spec_key, join_version)
+    clause_joins(behaviour, clauses, spec_key, join_version, mixed_variants)
+    key = _join_key(behaviour, clauses, spec_key, join_version, mixed_variants)
     return dict(_JOIN_FACTS_CACHE.get(key) or {})
 
 
@@ -1348,7 +1357,8 @@ def _join_strata(behaviour, joins, spec, spec_key=DEFAULT_SPEC_KEY,
 def evaluate(behaviour, predicted_clause_ids, clauses, spec: str | None = None,
              joins: dict | None = None, threshold: int = 1,
              spec_key: str = DEFAULT_SPEC_KEY, scores: dict | None = None,
-             join_version: int = inventory.JOIN_VERSION_V1) -> dict:
+             join_version: int = inventory.JOIN_VERSION_V1,
+             mixed_variants: bool = False) -> dict:
     """Score a clause prediction against all three pair-golds.
 
     Returns per-target rows carrying, side by side and never separately:
@@ -1358,17 +1368,20 @@ def evaluate(behaviour, predicted_clause_ids, clauses, spec: str | None = None,
                           THE BAR;
       floor_matched/full  the degenerate all-relevant F1 — THE TRUE ZERO.
     """
+    _check_join_options(join_version, mixed_variants)
     if spec is None:
         spec = spec_text()
     if joins is None:
-        joins = clause_joins(behaviour, clauses, spec_key, join_version)
+        joins = clause_joins(behaviour, clauses, spec_key, join_version,
+                             mixed_variants)
     # The restriction/refusal facts belong to the DECLARED join version, not
     # to whoever computed the joins: a caller that precomputes the v2 join and
     # passes it in (the S8 checkpoint census) must still see the refusals, or
     # a refused passage is silently rebooked as an ordinary zero-match stratum.
     # `clause_join_facts` reuses the join cache, so this recomputes nothing on
     # the path above. Empty under v1 — the legacy join discloses nothing.
-    join_facts = (clause_join_facts(behaviour, clauses, spec_key, join_version)
+    join_facts = (clause_join_facts(behaviour, clauses, spec_key, join_version,
+                                    mixed_variants)
                   if join_version == inventory.JOIN_VERSION_V2 else None)
     universe = set(joins)
     matched = joinable(joins)
@@ -1473,6 +1486,14 @@ def evaluate(behaviour, predicted_clause_ids, clauses, spec: str | None = None,
             "strata": _join_strata(behaviour, joins, spec, spec_key,
                                    facts=join_facts),
             "join_version": join_version,
+            "mixed_variants": mixed_variants,
+            # PER-PASSAGE facts, not just the stratum count: `restricted:
+            # False` is the DISCLOSED full-corpus fallback (JOIN_INTEGRITY
+            # §2a — "never silent"), and it reached no caller before, so a
+            # caller wanting it had to recompute the join itself. Empty under
+            # v1: the legacy join has nothing to disclose, and an empty map is
+            # the honest report of that, not a fabricated one.
+            "facts": dict(join_facts or {}),
         },
     }
 
@@ -2382,21 +2403,34 @@ def floor_b_mcc(gold, universe, matched) -> float:
 
 def cell_evaluate(behaviour, predicted_clause_ids, spec_key: str,
                   clauses=None, spec: str | None = None, joins: dict | None = None,
-                  threshold: int = 1, scores: dict | None = None) -> dict:
+                  threshold: int = 1, scores: dict | None = None,
+                  join_version: int = inventory.JOIN_VERSION_V1,
+                  mixed_variants: bool = False) -> dict:
     """`evaluate` for one (behaviour, spec) cell, with the floors it needs.
 
     The clause inventory and the spec markdown default PER SPEC KEY: the
     constitution is scored against `constitution_clauses.json` and diagnosed
     against the constitution markdown, never against the model spec's.
+
+    `join_version`/`mixed_variants` select the join exactly as in `evaluate`
+    and `map_reference`, and reach BOTH the join computed here and the one
+    `evaluate` records. Without them a cell could not select v2 at all: a
+    checkpoint pinning v2 would measure v1 and report it as v2, which is the
+    census's config-identity failure class, not a missing convenience. The
+    defaults are v1 / uniform variants, so every existing caller reproduces
+    its recorded numbers byte-identically.
     """
+    _check_join_options(join_version, mixed_variants)
     if clauses is None:
         clauses, _ = clauses_for_spec(spec_key)
     if spec is None:
         spec = spec_text_for(spec_key)
     if joins is None:
-        joins = clause_joins(behaviour, clauses, spec_key)
+        joins = clause_joins(behaviour, clauses, spec_key, join_version,
+                             mixed_variants)
     ev = evaluate(behaviour, predicted_clause_ids, clauses, spec, joins=joins,
-                  threshold=threshold, spec_key=spec_key, scores=scores)
+                  threshold=threshold, spec_key=spec_key, scores=scores,
+                  join_version=join_version, mixed_variants=mixed_variants)
     universe, matched = set(joins), joinable(joins)
     rows = ev["per_target"]
     for j, t in pair_targets(behaviour, threshold, spec_key).items():
