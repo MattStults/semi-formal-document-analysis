@@ -38,6 +38,7 @@ _OPTIONAL = {
     "test_backfill_worksheet.py": "backfill_worksheet",
     "test_patient.py": "patient",
     "test_validate_query.py": "validate_query",
+    "test_shape_partition.py": "shape_partition",
     # The latent-fix tripwires (LATENT_FIX_REGISTRY.md LF-1/LF-2) import nothing
     # from the project — they read `modelspec_clauses.json`, the closed cycle
     # records, and the reader prototype directly. Registered here because

@@ -732,7 +732,7 @@ def test_the_model_only_reaches_the_provider_config():
 # --------------------------------------------------------------------------
 # 13. NO SPEND
 
-def test_nothing_here_constructs_a_live_client(monkeypatch):
+def test_nothing_here_constructs_a_live_client(monkeypatch, tmp_path):
     import providers
 
     def boom(*a, **k):
@@ -740,8 +740,15 @@ def test_nothing_here_constructs_a_live_client(monkeypatch):
 
     monkeypatch.setattr(providers, "LiveClient", boom)
     rows = rb.load_clauses()
+    # Writes to tmp_path, NOT to HERE/smoke_annotate/. That directory is
+    # gitignored, so on a fresh clone it does not exist and this test failed
+    # with FileNotFoundError — the suite could not pass from a clean checkout
+    # (found by the 2026-08-05 quality read, RELEVANCE_QUALITY_READ.md §6).
+    # The output path is incidental to what this test asserts: that a dry run
+    # constructs no live client. Owning its own directory also stops the test
+    # depending on repo state it does not create.
     L.main(["--dry-run", "--rungs", "0", "--out",
-            os.path.join(HERE, "smoke_annotate", "ladder_dryrun.json")])
+            str(tmp_path / "ladder_dryrun.json")])
 
 
 def test_the_cli_requires_live_to_be_asked_for_explicitly():

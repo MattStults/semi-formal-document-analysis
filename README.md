@@ -34,7 +34,18 @@ Relevance (9 behaviours judged; 3 frontier dev cells quoted, true 589-passage un
 | frontier judges — the bar | +0.555 |
 | the tool, audited selection (dev) | **+0.309** |
 | the tool, first shipped config | +0.28 |
-| bag-of-words control | +0.19 |
+| bag-of-words control | **+0.108** |
+
+⚠️ **Corrected 2026-08-05.** This row previously read **+0.19**, which was `HANDOFF.md`'s
+"lexical control +0.185" — a **9-behaviour, 5-atom-draw** figure sitting in a table of
+3-DEV-cell numbers. Re-measured twice (`benchmark.py --control`, true 589-passage universe):
+**+0.096 / +0.200 / +0.027, mean +0.108**. The correction is in the tool's favour: the real
+lift over bag-of-words is **~2.9×**, not ~1.6×. See `semi-formal-experiment/RELEVANCE_QUALITY_READ.md`.
+
+⚠️ **And read that report before quoting the +0.309 as a trajectory.** The six cycles closed
+since 2026-08-04 moved it by **+0.0003 in total**, against a measured noise floor of
+0.032–0.037. The only real gain in the record (+0.072) came from re-selecting an instrument,
+not from a mechanism fix.
 
 Translation quality, against hand-authored golden sets with a **measured two-author
 human ceiling** (names 0.29 / spans 0.79 / structure 0.91):

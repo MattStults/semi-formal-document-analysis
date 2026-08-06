@@ -152,6 +152,17 @@ FORBIDDEN = (
                             # our-authored labels (the design's ban list);
                             # nothing mechanical may read them at query
                             # time.
+    "shape_partition",      # the Shape-A/Shape-B enumerator (S6 review B1):
+                            # reads the census verdict file to extract the 26
+                            # `fn_family_absent_from_vocabulary` clause ids —
+                            # label-directed ATTENTION, disclosed in its own
+                            # artifact. Its CLASSIFICATION is panel-blind by
+                            # construction, but a query module importing it
+                            # would reach a panel-derived clause list without
+                            # naming any token above; fenced like
+                            # drift_dossiers. Its output artifact is a
+                            # design-time record and may not be read at query
+                            # time either.
     "import cycle",         # the cycle DRIVER orchestrates the panel-reading
     "from cycle import",    # census tooling (checkpoint cycles drive
                             # audit_disagreements and hold census deltas +
