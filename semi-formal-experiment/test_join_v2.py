@@ -454,6 +454,23 @@ def test_evaluate_carries_join_version_and_refused_stratum(behaviour_v2,
     assert r2["join"]["strata"]["degenerate_quote_refused"] == 1
 
 
+def test_evaluate_reports_refusal_with_caller_supplied_joins(behaviour_v2,
+                                                             clauses_v2):
+    """H1: a caller that precomputes the v2 join and hands it to `evaluate`
+    (the S8 checkpoint census does exactly this) must still see the refusal.
+    The facts belong to the declared join, not to who computed it — dropping
+    them silently relabels a refused passage as an ordinary zero-match."""
+    joins = B.clause_joins(behaviour_v2, clauses_v2, join_version=2)
+    assert joins["p2"] == []
+    r = B.evaluate(behaviour_v2, {"c1"}, clauses_v2, spec=SPEC_V2,
+                   joins=joins, join_version=inventory.JOIN_VERSION_V2)
+    assert r["join"]["join_version"] == inventory.JOIN_VERSION_V2
+    assert r["join"]["strata"]["degenerate_quote_refused"] == 1
+    assert r["join"]["strata"]["verbatim_but_unsegmented"] == 0
+    # and the identity still holds: strata sum to the unjoinable count
+    assert sum(r["join"]["strata"].values()) == r["join"]["n_unjoinable"]
+
+
 def test_census_identity_join_version_seam():
     """F12: join_version belongs to CENSUS config identity. The seam accepts
     an explicit version; the no-argument default stays None (the census has

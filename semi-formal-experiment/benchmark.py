@@ -1360,12 +1360,16 @@ def evaluate(behaviour, predicted_clause_ids, clauses, spec: str | None = None,
     """
     if spec is None:
         spec = spec_text()
-    join_facts = None
     if joins is None:
         joins = clause_joins(behaviour, clauses, spec_key, join_version)
-        if join_version == inventory.JOIN_VERSION_V2:
-            join_facts = clause_join_facts(behaviour, clauses, spec_key,
-                                           join_version)
+    # The restriction/refusal facts belong to the DECLARED join version, not
+    # to whoever computed the joins: a caller that precomputes the v2 join and
+    # passes it in (the S8 checkpoint census) must still see the refusals, or
+    # a refused passage is silently rebooked as an ordinary zero-match stratum.
+    # `clause_join_facts` reuses the join cache, so this recomputes nothing on
+    # the path above. Empty under v1 — the legacy join discloses nothing.
+    join_facts = (clause_join_facts(behaviour, clauses, spec_key, join_version)
+                  if join_version == inventory.JOIN_VERSION_V2 else None)
     universe = set(joins)
     matched = joinable(joins)
     tool = lift(predicted_clause_ids, joins)

@@ -169,10 +169,24 @@ what the record says it means.
 
 ---
 
-## Decision 6 — The strategic question: the measurement is in, and it is decisive
+## Decision 6 — Fund, pivot, or hand it to frontier models
 
-**THIS IS THE MOST IMPORTANT ITEM ON THE LIST.** Full report:
-`semi-formal-experiment/RELEVANCE_QUALITY_READ.md`.
+**Still open — but it is now a decision with a memo attached rather than a question needing
+research.** Read **`PROJECT_ASSESSMENT.md`** (repo root): written for a reader with no
+background, it lays out the problem, the approach, where quality actually is, how much more is
+available, *why* rules run out, and a recommendation across all three options.
+
+**The one-line version:** stop funding accuracy work on the rule engine; fund the auditability
+machinery (model-agnostic — it works wrapped around a frontier model) and the ranked-audit axis
+a human expert endorsed; run two cheap decisive experiments first. If the only goal is quality
+with little human effort, frontier models are better today and nothing in our plan closes that.
+
+**The two cheap experiments, neither of which needs your decision to be worth running:** the
+recalibrated "who was wrong" pass (the only thing that could legitimately move the bar), and
+the transfer test on held-out behaviours. ⚠️ The related salience check is *not* free — its
+only usable anchor sits on a held-out behaviour, so running it spends a one-shot resource.
+
+The supporting measurement is below and in `semi-formal-experiment/RELEVANCE_QUALITY_READ.md`.
 
 ### Where the tool stands
 
@@ -251,24 +265,38 @@ score — and that is a more interesting result than a scorer that got to +0.38.
 
 ---
 
-## Decision 7 — How much rope do I have while you're away?
+## Decision 8 — Two version-threading gaps that affect the checkpoint census
 
-Specifically:
+Found while fixing a reported bug (which is fixed: the join's refusal/restriction facts were
+conditioned on *who computed the joins* rather than on which join version was declared, so a
+caller that precomputes them — exactly the checkpoint census's shape — silently lost them).
 
-* **May I open and run cycles up to the measurement step?** Everything up to and including
-  measurement is deterministic and reversible; nothing ships. I'd hold the keep/revert
-  signature for you.
-* **May I merge reviewed code into the main branch?** Currently I commit and push
-  documentation and test-only work freely, and hold scoring-path changes.
-* **Anything you want me to stay away from?**
+Two adjacent items need a ruling rather than a unilateral widening of that fix:
 
-My default while you're away, unless you say otherwise: commit and push everything that is
-documentation, tests, or tooling; prepare cycles up to measurement; spend nothing; sign
-nothing that decides whether a change ships.
+1. **`cell_evaluate` cannot select the new join at all** — it has no version parameter and
+   hard-defaults to the old one. Any checkpoint caller routing through it would silently
+   measure and *report* the old join. Same class of defect, different function.
+2. **The restriction fact never reaches the caller.** The design calls it "a fact the caller
+   must see"; today it is available only by calling a second function directly.
+
+**Impact if unfixed:** the checkpoint census could record a configuration it did not actually
+run. **Cost to fix:** small, but (1) widens a diff and (2) changes an output shape, so both
+want a decision rather than an agent's judgement.
+
+**Recommendation:** fix (1) before any checkpoint run — it is a correctness issue in the
+measurement's own self-description. Defer (2) unless the checkpoint needs per-passage
+restriction, in which case do both together.
 
 ---
 
 ## Already decided — recorded, not waiting
+
+* **How much autonomy I have (was Decision 7), answered 2026-08-05.** Free to open and run
+  cycles **up to the measurement step**, subject to three standing constraints: don't go
+  through one-way doors; don't make decisions that are expensive to recover from, especially
+  ones that could subtly contaminate data; don't make decisions that can't easily be validated
+  after the fact. I still spend nothing, sign no keep/revert decision, and merge no
+  scoring-path code until its review passes.
 
 * **Which atoms get an affected-party label** — the 439-item list. Two alternatives rejected
   by name with grounds.
