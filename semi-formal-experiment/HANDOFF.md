@@ -17,9 +17,20 @@ tokens, so CHECK BUDGET (`.venv/bin/python spend.py --check`) BEFORE the backfil
 
 For a fresh agent picking this up: read AGENTS.md, then this section, then
 BUILD_OVERVIEW.md, S3B_REDESIGN.md (REVISION 9) / SECTION_PRIOR_DESIGN.md,
-S3B_ATTRIBUTION_TASK_DESIGN.md, REVIEW_POLICY.md, and briefs/ (incl. backfill_author.md
-for the attribution seat). The seat briefs are in place; the build is ready; the main
-risk is the budget.
+S3B_ATTRIBUTION_TASK_DESIGN.md, REVIEW_POLICY.md, and briefs/ — the attribution seat's
+brief is **`briefs/attribution_author.md`** (written 2026-08-05).
+
+⚠️ **CORRECTED 2026-08-05.** This paragraph previously named `backfill_author.md` "for
+the attribution seat", and said "the seat briefs are in place; the build is ready".
+Both were wrong. `backfill_author.md` is the S2 patient-**chain** brief; it contains
+zero occurrences of the attribution field and routing the seat to it would have run
+the wrong task entirely. And S3b is **not** build-ready — `S3B_REDESIGN.md` §9's own
+OPEN conditions include a clean-context adversarial re-review of REVISION 9 (only a
+Tier-2 has run, and §9 still reads "awaiting adversarial re-review") plus the
+implied-effects layer's receiver readiness, which is at REVISE with four blocking
+findings. The order was also ruled the other way: **S4 first, then S3b**
+(`BUILD_OVERVIEW.md` §0). Current state and open decisions live in
+`OUTSTANDING_WORK.md` and `DECISIONS_FOR_MATT.md` (repo root).
 
 ## ⭐⭐ STATE AS OF 2026-08-04 LATE — the fix ladder in execution. READ THIS FIRST.
 
