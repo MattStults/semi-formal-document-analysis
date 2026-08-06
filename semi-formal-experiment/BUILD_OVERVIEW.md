@@ -15,7 +15,13 @@ other, not in parallel. The one piece that is model-bound and somewhat independe
 S3b attribution backfill, but the cycles themselves (OPEN → MEASURE → ADJUDICATE → CLOSE)
 must be sequential.
 
-Recommended order: **S3b build first** (it's the largest census error cause, 53%), then S4.
+**Order RULED 2026-08-05 (Matt): S4 FIRST, then S3b.** The earlier recommendation here was
+"S3b first, it's the largest error cause (53%)" — superseded on two grounds. (i) The 53% is
+the size of the class, not of the fix; expected coverage is ~27% (see the ⚠️ below). (ii) S4
+needs one design fix plus one review; S3b needs a review, two designer rulings, the
+implied-effects layer to pass review, a seat brief that did not exist, a provider entry, and
+real money. Closing S4 first banks a spine cycle while S3b's gates clear. The composition
+burden is symmetric — whichever lands second extends the other's rungs either way.
 
 ## 1. What each build entails
 
@@ -35,7 +41,12 @@ attribution cannot address at any band. Evidence: `D5_WORKED_EXAMPLES.md`.
 
 Three steps:
 1. **Attribution backfill** (model-bound): a cheap model attributes, per clause-instance,
-   who the harm/protection falls on (`harm_bearers`), panel-blind.
+   who the harm/protection falls on (`affected_parties`), panel-blind.
+   *Naming note (ruled 2026-08-05):* `affected_parties` is a RENAME of the field earlier
+   called `harm_bearers` — one field, not two; same closed principal vocabulary, same
+   `unclear` sentinel. The mechanism was never harm-only (the attribution asks about
+   "harm, risk, protection, or benefit", and m0018 — a pure provision clause — is one of
+   the three named restorations). Dated review records keep the old spelling.
 2. **Parity validation** (model-bound): certify the cheap model against a frontier model
    on a stratified sample before trusting it.
 3. **S3b pricing cycle** (deterministic): apply beneficiary-aware pricing, measure flips,
@@ -49,7 +60,7 @@ atom-level evidence. Deterministic gate (no model); measure flips, adjudicate fl
 
 | step | model | what we ask it | why we trust it |
 |---|---|---|---|
-| Attribution backfill | **cheap, capable model** (candidate DeepSeek V4 Flash) | per clause-instance: name the harm-bearer(s) from a CLOSED vocabulary (`third_party / developer / operator / system / model / root / user / unclear`), cite a verbatim `license_quote`; panel-blind | task is constrained classification, not open-ended reasoning; closed vocabulary + verbatim quote + fixed procedure; parity-validated next |
+| Attribution backfill | **cheap, capable model** (candidate DeepSeek V4 Flash) | per clause-instance: name the affected part(y/ies) from a CLOSED vocabulary (`third_party / developer / operator / system / model / root / user / unclear`), cite a verbatim `license_quote`; panel-blind | task is constrained classification, not open-ended reasoning; closed vocabulary + verbatim quote + fixed procedure; parity-validated next |
 | Parity validation | cheap model **and** a **frontier model** | both attribute the same stratified sample; require agreement ≥ threshold (verdict + unclear-call + golden accuracy ≥ 0.90) | the frontier model is the yardstick; the cheap model is only trusted if it matches |
 | Flip adjudication (S3b + S4) | **validated seat** (Haiku-class, proven at frontier parity) | per flip: is the flip correct or a regression, judged against the document | adjudication seat is proven at Haiku/frontier parity (one divergence ever, m0108, recorded contested) |
 | S3b pricing / S4 gate | none (deterministic code) | — | no model in the pricing/gate logic |
@@ -64,7 +75,7 @@ seat. So the build's correctness does not rest on an unvalidated model.
 ```mermaid
 flowchart TD
     subgraph S3B["S3b build (B4)"]
-        CL["modelspec clauses + glosses"] --> AB["Attribution backfill<br/>(cheap model, panel-blind)<br/>harm_bearers per clause-instance"]
+        CL["modelspec clauses + glosses"] --> AB["Attribution backfill<br/>(cheap model, panel-blind)<br/>affected_parties per clause-instance"]
         AB --> PV["Parity validation<br/>cheap vs frontier on stratified sample"]
         PV -->|parity >= threshold| CERT["certified attribution artifact<br/>(frozen, immutable verdicts)"]
         PV -->|parity < threshold| FALLBACK["fall back to frontier model"]

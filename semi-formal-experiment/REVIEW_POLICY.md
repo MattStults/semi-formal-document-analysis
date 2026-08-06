@@ -38,6 +38,38 @@ on, but the mandate is verifying the fixes).
 
 Both Tier-2 passes gave real confidence at ~5–12x lower cost than a full review.
 
+## ⚠️ AMENDMENT (2026-08-05, after the first real failure of this policy)
+
+**A Tier-2 pass that verifies a claim ABOUT CODE must read the code. No exceptions.**
+
+What happened: the S4 Tier-2 pass scoped itself to *"design-doc verification only — no code,
+no git, no test runs"* and credited two findings as FIXED-CORRECT. A subsequent Tier-1
+(`S4_ADVERSARIAL_REVIEW_R2.md`) found that one of them did not hold at all. The design had
+claimed the cycle driver **enforces** revert when a regression bound is breached; it does
+not — `cycle.py` records a PASS/FAIL check and refuses an *unjustified* decision, and the
+revert is the DECIDE signer's obligation. That claim is **entirely** a statement about what
+`cycle.py` does, and the pass that "verified" it never opened `cycle.py`.
+
+The failure is structural, not careless: a design-doc-only reader can confirm that a document
+now *says* the right-looking thing, which is exactly what a fix looks like from the outside.
+
+Binding rules, from here:
+
+1. **Scope follows the finding, not the tier.** If a finding's content is a claim about code,
+   a version, a count, or an artifact on disk, verifying its fix requires reading that thing.
+   A Tier-2 brief that forbids it is malformed and must be rejected rather than executed.
+2. **A Tier-2 pass must state, per finding, what it actually checked** — file and line, or
+   the recomputation — not merely its verdict. "FIXED-CORRECT" with no evidence is not a
+   verification.
+3. **A Tier-2 pass may not be the last word before a decision point.** Tier 1 still governs
+   OPEN, BUILD, and convergence, and a design that changed substantially after its last
+   Tier 1 needs another one, however clean its Tier-2 passes were.
+4. **A fix that is purely editorial** — wording, cross-references, a deferred minor — remains
+   Tier-2 territory. That is what the tier is for, and it is genuinely cheaper.
+
+The cost ratio in the trial table below is real. So is the failure. Keep the tier; keep it
+honest about what it can see.
+
 ## Known caveats
 
 * The adversarial framing biases toward over-finding — not every finding is equal value.
@@ -47,6 +79,9 @@ Both Tier-2 passes gave real confidence at ~5–12x lower cost than a full revie
 * A Tier-2 pass only verifies the fixes it was told to check. Findings left out of scope
   (e.g. minors deferred during a focused revision) stay on the record for the next Tier 1.
 * If a Tier-2 pass returns anything other than clean, escalate to a Tier 1 full review.
+* **A clean Tier-2 is weak evidence when the findings were about code.** See the amendment
+  above — the first two clean Tier-2 passes in this repo were on exactly that kind of
+  finding, and one was wrong.
 
 ## When in doubt
 
