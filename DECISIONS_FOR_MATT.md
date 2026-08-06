@@ -1,0 +1,222 @@
+# Decisions waiting on Matt
+
+Written 2026-08-05, kept current as things land. Each item is self-contained: what the
+decision is, a concrete example, the options, what each costs, and what I'd recommend.
+Answer any of them in any order — a sentence each is plenty, and I'll record the ruling with
+its grounds in the repo.
+
+**Nothing here blocks me from working.** The autonomous queue is deep and running. These are
+the items where guessing wrong would waste real work or spend real money.
+
+---
+
+## A five-line glossary, so the rest reads plainly
+
+* **Clause** — one numbered passage of the spec (e.g. m0276 is the self-harm paragraph).
+* **Atom** — a short named fact tagged onto a clause, like `imminent_bodily_harm`. The tool
+  matches a question against atoms to decide which clauses are relevant.
+* **Flip** — a clause that changes status (relevant ↔ not relevant) when we change something.
+  Flips are the unit of evidence: every one gets judged against the document.
+* **Cycle** — the ceremony around a change: freeze a prediction, make the change, measure the
+  flips, judge each one, then keep or revert. Six have run; five kept, one reverted.
+* **The panel** — frontier models scoring the same question. It's the bar we're measured
+  against, and it is itself imperfect.
+
+---
+
+## Decision 1 — The "overlay" cycle (S5) changes nothing measurable. Run it, fix it, or skip it?
+
+**What it was supposed to do.** The tool knows a few concepts are special cases of others —
+"psychological manipulation" and "targeted political manipulation" are both kinds of
+"manipulation". That linkage was built, reviewed, and then switched **off** pending a cycle
+to turn it on. S5 is that cycle, and every future linkage cycle waits behind it.
+
+**What we found.** An independent reviewer built it and measured it: **turning it on changes
+no clause's status at all.** Eight clauses get extra credit, but all eight were already
+counted as relevant. The nearest clause that isn't relevant misses its threshold by 0.043 —
+and even multiplying the credit by 2.5× doesn't move it.
+
+**Why that matters more than "it does nothing".** The cycle's own rule is that we keep or
+revert *based on the judged flips*. With zero flips there is nothing to judge, so the cycle
+would pass its checks, close as a success, and have proven nothing — while unlocking every
+later linkage cycle on the strength of that non-result.
+
+**Options**
+
+| | what happens | cost |
+|---|---|---|
+| **A. Skip S5 for now** | Leave the linkage off; revisit if a later cycle needs it | Free. Later linkage work stays blocked |
+| **B. Run it as a deliberate no-op** | Close it honestly with "0 flips" pre-registered, disclosing that we measured before predicting | ~half a day of ceremony for no measured knowledge |
+| **C. Fix the design first (recommended)** | Add a "can this even move anything?" screen before a linkage consumes a cycle, and have S5 pre-register the *mechanism* facts it can actually be wrong about | ~a day of design revision, then it's a cycle worth running |
+
+**My recommendation: C, but at low priority.** The valuable part isn't S5 — it's the screen,
+which stops future linkage cycles burning time on changes that cannot move anything. Note
+one thing already spent: by measuring S5 before opening it, we used up its ability to be a
+blind prediction. That can't be restored, and any S5 record must say so.
+
+---
+
+## Decision 2 — The vocabulary cycle (S6) has a safety gate that doesn't work. How far do we go?
+
+**What it does.** For 26 clauses, the tool misses relevance because no atom describes the
+concept. S6 adds atoms.
+
+**The risk it was designed against.** Adding vocabulary is the most direct way to cheat: we
+know which cases the panel says we're missing, so we could invent atoms until those cases
+pass — which measures nothing except our ability to fit the answer key. The design's defence
+is a split: only add atoms where the concept exists **nowhere**; where it exists but the
+question can't reach it, fix the *question*, not the vocabulary.
+
+**What the review found.** Two problems.
+
+1. **Nothing enforces the split.** The seat proposing atoms is deliberately blind to which
+   concepts the questions already use — so it *cannot* apply the rule, and no check computes
+   it either. The only thing applying it is a paragraph of prose.
+2. **Recomputing it flips the answer for 15 of the 26 clauses.** Example: clause m0528 is a
+   *harm* case, and the atoms it would need — `neutral_refusal`, `judgmental_refusal` — are
+   already in the caution question's vocabulary. Adding them again is precisely the duplicate
+   the design forbids. Meanwhile six clauses the design books as "already covered" carry no
+   relevant atom anywhere, and are the real cases for new vocabulary.
+
+There's a third finding worth knowing: the design accounts for how new atoms ripple through
+the scoring, but **misses the largest channel** — atom names and their descriptions are part
+of the text the tool searches, and that channel is the heaviest in the scorer. A seat writing
+a free-text description is writing directly into it, unreviewed.
+
+**Options**
+
+| | what happens | cost |
+|---|---|---|
+| **A. Do the cheap half only** | Fix the *questions* for the ~14 clauses whose concepts already exist. No new vocabulary, no fitting risk | Small. Already in progress: I'm having the split computed mechanically now |
+| **B. A then a reduced S6** | After A, add vocabulary only for whatever genuinely remains | Moderate; needs the design's four blocking findings fixed first |
+| **C. Full S6 as designed** | — | Not advisable: its central safety gate provably doesn't work |
+| **D. Drop vocabulary work entirely** | Accept these 26 as permanent misses | Free, and honest, if the strategic read says the ladder isn't worth finishing |
+
+**My recommendation: A now, decide B later** — after you've seen the quality read (Decision
+6). A is nearly free and is the negative control: if fixing the questions alone resolves most
+of the 26, the vocabulary work was never needed.
+
+---
+
+## Decision 3 — The "implied effects" layer: four rulings, and it blocks the biggest cycle
+
+**What it is.** Sometimes a clause protects someone it never names. The spec says the model
+should de-escalate a user's radicalization — the people protected are *third parties*, but
+the text never says so. Our rule is that the machine may never infer a party; a human
+approves such a judgement once, it's logged with who approved it and when, and the tool then
+reads it as a fact. This layer is that mechanism.
+
+**Why it's urgent.** The largest pending cycle (S3b) cannot start until this layer passes
+review, because S3b depends on it to hold that one case.
+
+**The four decisions**, in plain terms — full options and recommendations in
+`semi-formal-experiment/IMPLIED_EFFECTS_DECISIONS.md`:
+
+1. **Where an approved judgement takes effect.** Two plausible wirings. They differ on one
+   case that matters: under one of them, approving a judgement about the *radicalization*
+   clause would also resurface the *self-harm* clause we deliberately suppress. Recommended
+   option avoids that.
+2. **How entries are keyed to the text**, so a later edit can't silently orphan them.
+3. **Who is allowed to propose an entry.** Approval is already fenced against seeing the
+   answer key; *proposal* is not, and that's where fitting actually happens. Complication we
+   should be honest about: the flagship entry (the radicalization case) was itself found by
+   looking at a result.
+4. **What must never change.** Every approved entry has the power to bring back a suppressed
+   clause. Recommended: pin the two must-stay-suppressed cases as tests, and switch off the
+   "approve a whole class at once" shortcut, which analysis shows cannot distinguish the case
+   we want from the case we must not touch.
+
+**Scale, which the design never established:** roughly **5–15 entries**, from a candidate
+pool of 41 clauses. That means one-at-a-time human approval is affordable and the risky
+bulk-approval path isn't needed.
+
+---
+
+## Decision 4 — Money
+
+**Where we are.** Hard ceiling $8.50, about $2.06 logged, plus a known gap where six runs
+were billed but never recorded.
+
+**What wants spending.** The S3b build needs a cheap model to read ~439 items, a frontier
+model to check it on a sample, and a human-or-frontier review of that sample. Token cost is
+small — my estimate is well under $1. **The real cost is your time**: roughly 80–100 rows to
+review personally, plus every disagreement between the two models.
+
+**The decision.** Two parts:
+
+* **Am I authorized to spend at all, and up to what?** I've spent nothing and will spend
+  nothing without this.
+* **When?** My recommendation: **not until the design is final.** If the backfill runs and
+  then the design changes, we pay twice — and the expensive half is your review time, not
+  tokens. Concretely, that means after Decision 3 and after S3b's own review.
+
+---
+
+## Decision 5 — A defect that lets S3b pass its test without working
+
+Found while preparing Decision 3, and it needs a ruling from whoever owns S3b.
+
+S3b's proof that it works is: three specific clauses must come back, *for the right reason*.
+But an approved implied-effects entry on those same clauses would produce **exactly the same
+signature** — so the test could pass with the actual mechanism doing nothing.
+
+**Fix, recommended:** make the two cases mechanically distinguishable — a separate marker for
+"restored because a human approved an implied effect" versus "restored because the mechanism
+worked" — and require the mechanism's own artifact to be present for the test to count.
+
+Cheap to fix now, expensive later: if it's not fixed, a green result on S3b will not mean
+what the record says it means.
+
+---
+
+## Decision 6 — The strategic question you raised
+
+You asked whether we're close enough that transfer matters, or whether the project has
+already told us the remaining work is too expensive. **A measurement is running now**: current
+quality against the panel, the trajectory across every past cycle, and an honest upper bound
+on what the remaining ladder can deliver.
+
+I'll add the numbers here when it lands. What's already visible is not encouraging about the
+ladder specifically:
+
+* the largest planned fix (S3b) reaches about **27%** of the disagreements, not the 53% its
+  target class suggests;
+* the linkage cycle (S5) moves **nothing**;
+* the vocabulary cycle (S6) has a safety gate that doesn't work, and about **30** of the
+  remaining cases aren't a vocabulary problem at all — they're cases where the clause has no
+  party being harmed or protected, so none of the planned mechanisms touch them.
+
+That's three of the four remaining fixes delivering less than planned. It's a real
+possibility that the honest finding here is about the *method and the instruments*, not about
+getting the score up — which several people would consider the more valuable result anyway.
+I'd rather put that in front of you than quietly keep grinding.
+
+---
+
+## Decision 7 — How much rope do I have while you're away?
+
+Specifically:
+
+* **May I open and run cycles up to the measurement step?** Everything up to and including
+  measurement is deterministic and reversible; nothing ships. I'd hold the keep/revert
+  signature for you.
+* **May I merge reviewed code into the main branch?** Currently I commit and push
+  documentation and test-only work freely, and hold scoring-path changes.
+* **Anything you want me to stay away from?**
+
+My default while you're away, unless you say otherwise: commit and push everything that is
+documentation, tests, or tooling; prepare cycles up to measurement; spend nothing; sign
+nothing that decides whether a change ships.
+
+---
+
+## Already decided — recorded, not waiting
+
+* **Which atoms get an affected-party label** — the 439-item list. Two alternatives rejected
+  by name with grounds.
+* **Not extending it to a further class of atoms** — measured yield was ~2 cases.
+* **Run S4 before S3b.**
+* **Retire the one un-replayable historical snapshot** rather than pretend it reproduces.
+* **Rename the field** to `affected_parties`, because the mechanism was never harm-only.
+* **Build the shared version-dispatch machinery first**, so future changes are a registry
+  entry rather than another hand-written branch.
