@@ -1,4 +1,4 @@
-# S3B ATTRIBUTION TASK DESIGN — harm-bearer attribution for a capable-but-cheap seat (design only)
+# S3B ATTRIBUTION TASK DESIGN — affected-party attribution for a capable-but-cheap seat (design only)
 
 Status: **DESIGN ONLY — no worksheet, validator, brief, or attribution artifact ships
 with this file.** Nothing here modifies the annotation artifacts, `grammar.py`, or any
@@ -7,11 +7,27 @@ file's §2.5 frozen-backfill re-check extended to m0275/m0466 and §3.4 F_core
 cross-reference, per R8-S-A; prior alignment: §1.4 note (v) speaker-aware
 first-person rule; §5 D3 reconciled to RULED).
 
+> **NAMING NOTE (ruled 2026-08-05) — one field, renamed.** The attribution field this
+> document calls `affected_parties` was called **`harm_bearers`** until this rename, and
+> the dated review/verification records (`S3B_ADVERSARIAL_REVIEW_R3/R4/R6/R8.md`,
+> `S3B_TIER2_VERIFICATION.md`, `D3_EXAMPLE_CLAUSE_ENUMERATION.md`) keep the old spelling.
+> **There were never two fields**: same field, same closed principal vocabulary, same
+> `unclear` sentinel, same full-principal-set meaning for a COMPREHENSIVE generic, same
+> intersection semantics. GROUND: the mechanism was never harm-only — §1.3 step 1 asks
+> whether the atom describes "a harm, risk, **protection, or benefit**"; the D5 population
+> predicate includes benefit keywords (`benefit`, `wellbeing`, `welfare`, `flourish`); and
+> the named restoration m0018 ("People should have easy access to trustworthy
+> safety-critical information from our models") is a pure-provision clause with no harm in
+> it at all and zero harm-keyword matches. The old name pulled against the definition in
+> documents the seat's brief is built from, whose predictable failure is `unclear` on a
+> provision clause — i.e. failing a control the mechanism handles correctly. The seat brief
+> `briefs/attribution_author.md` uses `affected_parties` only.
+
 **REVISION-9 ALIGNMENT NOTE (R8 MAJOR S-A lands in this file).** `S3B_REDESIGN.md`
 REVISION 9 binds the restoration signature's arms PER CLAUSE (m0275/m0466 ⇒ arm (i)
 only; m0018 ⇒ arm (ii) only), closing the comprehensive-laundering path at the
 signature. Two changes land here: **§2.5** gains FROZEN-BACKFILL RE-CHECK CASES for
-m0275/m0466 with IMMUTABLE expected verdicts (resolved, `harm_bearers` exactly
+m0275/m0466 with IMMUTABLE expected verdicts (resolved, `affected_parties` exactly
 {third_party}, not comprehensive), so a laundering verdict is caught at backfill
 time too — the validator's E_CONSISTENCY enforces set-shape only and no other
 backfill-time check sees these verdicts; **§3.4**'s F_core — which already read the
@@ -48,7 +64,7 @@ REVISION 7; R6-E-2 part A).** §1.4 note (v) adds one MINIMAL mapping rule: a
 first-person pronoun ("I", "me", "my") inside a `<user>` speaker turn maps to `user`;
 inside an `<assistant>` speaker turn, to `model`. A first-person pronoun refers to its
 speaker by definition, so the rule cannot misattribute. It is what makes the
-example-dialogue control's (m0290's) harm-bearer attribution licensable under the
+example-dialogue control's (m0290's) affected-party attribution licensable under the
 §1.2(b) verbatim-quote regime — m0290's clause text names its bearer only through the
 `<user>` speaker tag and first-person pronouns — which is why the canonical controls
 can stay suppressed (`S3B_REDESIGN.md` §5, §7.2 pre-OPEN licensability gate).
@@ -118,20 +134,20 @@ One JSON file, shape per record:
     {"worksheet_sha256": "<echoed verbatim>",
      "records": [
        {"clause_id": "...", "span_id": "...", "name": "...",      # the key
-        "harm_bearers": [<principal>...] | ["unclear"],
+        "affected_parties": [<principal>...] | ["unclear"],
         "generic": "comprehensive"|"specific"|false,   # the D4 referent-disambiguation verdict
         "license_quote": "<EXACT clause-text substring naming the bearer(s)>" | null,
         "reason": "<at most 25 words>",
         "flag": "<optional note>"},
        ...]}
 
-* **(a) CLOSED OUTPUT VOCABULARY.** `harm_bearers` members are drawn from the principal
+* **(a) CLOSED OUTPUT VOCABULARY.** `affected_parties` members are drawn from the principal
   vocabulary — `third_party, developer, operator, system, model, root, user`
   (`grammar.py` `PRINCIPALS`, verbatim the vocabulary of `backfill_author.md`) — plus
   the single sentinel verdict `["unclear"]`. Nothing else is expressible. This is the
   §5.1 VALUE-SPACE pin (E-3/M-1): §5.3/§7.1 intersections are computed on this
   vocabulary, so a correct attribution cannot silently fail an intersection by recording
-  free text. `harm_bearers` is a SET (order not significant) — unlike a chain, a bearer
+  free text. `affected_parties` is a SET (order not significant) — unlike a chain, a bearer
   set records no agent/patient order. The FULL principal set (all seven values) is
   expressible and has exactly one meaning: it is the record of a COMPREHENSIVE
   generic-noun referent disambiguation (§1.3 step 4, D4) — §5.3 branch 2 of
@@ -186,7 +202,7 @@ steps may not be reordered or skipped.
    * **COMPREHENSIVE**: the noun is the BENEFICIARY CLASS of a universal provision —
      the clause's benefit/protection runs to people at large, whichever principals a
      query may declare (m0018 shape: "People should have easy access to …"). Record
-     `generic: "comprehensive"` and set `harm_bearers` to the FULL principal set — all
+     `generic: "comprehensive"` and set `affected_parties` to the FULL principal set — all
      seven values of the vocabulary. Step 3's table mapping is OVERRIDDEN for this
      occurrence: the referent is the whole principal set, not a single principal.
    * **SPECIFIC**: the noun names the TARGETS of the harm, or the named object of a
@@ -197,7 +213,7 @@ steps may not be reordered or skipped.
    If the clause text + gloss do not decide comprehensive-vs-specific, answer
    `unclear` (never guess a referent). Non-generic bearers carry `generic: false`.
    **Design-level consequence (NOT brief material — the seat stays pricing-silent per
-   §1.1):** the seat records the REFERENT and pricing reads only `harm_bearers` — a
+   §1.1):** the seat records the REFERENT and pricing reads only `affected_parties` — a
    comprehensive disambiguation prices at `S3B_REDESIGN.md` §5.3 branch 2 (factor 1.0,
    cap-exempt, surfaces for any matching query); a specific disambiguation prices via
    branches 3/4 by its specific bearers. The same noun may disambiguate differently in
@@ -266,10 +282,10 @@ field, and the specific defect, so the model can correct THAT record and retry.
 |---|---|---|
 | `E_COVERAGE` | every worksheet row exactly once, in emitted order | the missing / duplicated / out-of-order key |
 | `E_KEY` | `(clause_id, span_id, name)` resolves against the frozen translation | which field does not resolve; the nearest existing clause_id when clause_id is wrong |
-| `E_VOCAB` | `harm_bearers` ⊆ principal vocabulary, or exactly `["unclear"]`; non-empty | the offending token(s) and the closed vocabulary |
+| `E_VOCAB` | `affected_parties` ⊆ principal vocabulary, or exactly `["unclear"]`; non-empty | the offending token(s) and the closed vocabulary |
 | `E_QUOTE` | resolved verdict ⇒ `license_quote` present and a byte-exact substring of the keyed clause's text; `unclear` ⇒ quote null | "not a substring of clause text of <clause_id>" with the clause text's sha, or "quote required / quote forbidden for this verdict" |
 | `E_SCHEMA` | closed shapes: `generic` ∈ {false, "comprehensive", "specific"}; `reason` ≤ 25 words; echoed `worksheet_sha256` matches; no extra fields | the field and the violation |
-| `E_CONSISTENCY` | verdict/field coherence: `unclear` ⇔ sentinel bearers ⇔ null quote; `generic: "comprehensive"` ⇔ `harm_bearers` = the full principal set (all seven values); `generic: "specific"` ⇒ resolved verdict with a PROPER subset; any generic disambiguation only with a resolved verdict | which coherence rule broke |
+| `E_CONSISTENCY` | verdict/field coherence: `unclear` ⇔ sentinel bearers ⇔ null quote; `generic: "comprehensive"` ⇔ `affected_parties` = the full principal set (all seven values); `generic: "specific"` ⇒ resolved verdict with a PROPER subset; any generic disambiguation only with a resolved verdict | which coherence rule broke |
 
 **Retry loop.** The orchestrator returns the error list to the SAME seat (same brief,
 worksheet, and its own rejected records, annotated with the specific errors) for
@@ -308,7 +324,7 @@ resolved in either direction).
 
 The cheap model (candidate DeepSeek V4 Flash) is certified for the backfill ONLY if, on
 the SAME brief and the SAME worksheet rows as a frontier model, it agrees on (i) the
-`harm_bearers` verdict — exact set equality over the closed vocabulary, `unclear`
+`affected_parties` verdict — exact set equality over the closed vocabulary, `unclear`
 included as a verdict — and (ii) the resolved-vs-`unclear` call; AND its absolute
 accuracy against a golden review clears the floor of §2.4. Otherwise the backfill runs
 on the frontier model (the pre-registered fallback — not a cycle failure). Exact set
@@ -368,7 +384,7 @@ the row has not demonstrated the judgment).
 ### 2.4 Metrics, golden review, and pre-registered thresholds
 
 * **Parity metrics (cheap vs frontier, both blinded):**
-  * **P1 — verdict agreement:** exact `harm_bearers` set equality (with `unclear` a
+  * **P1 — verdict agreement:** exact `affected_parties` set equality (with `unclear` a
     verdict). Pre-registered threshold: **≥ 0.90** (the drift-standing 10%-divergence
     line, transplanted).
   * **P2 — unclear-call agreement:** resolved-vs-`unclear` agreement (coarser than P1;
@@ -418,14 +434,14 @@ m0275/m0466's verdicts.
 * **m0018 — COMPREHENSIVE golden.** Clause text: "People should have easy access to
   trustworthy safety-critical information from our models." — a universal provision;
   "people" is the beneficiary class. Expected verdict: `generic: "comprehensive"`,
-  `harm_bearers` = the FULL principal set. Pricing consequence (design-level,
+  `affected_parties` = the FULL principal set. Pricing consequence (design-level,
   `S3B_REDESIGN.md` §5.3 branch 2): for a helpfulness query (P = {user, developer})
   the atom MUST SURFACE at factor 1.0, cap-exempt — restoring the adjudicated
   regression.
 * **m0248 — SPECIFIC golden.** Clause text: "The assistant should not engage in
   gratuitous abuse, harassment, or negativity toward individuals…" — golden derivation
   case #5 (`S3B_REDESIGN.md` §2.1); "individuals" is the TARGET of the harm. Expected
-  verdict: `generic: "specific"`, `harm_bearers` = `third_party` (a proper subset).
+  verdict: `generic: "specific"`, `affected_parties` = `third_party` (a proper subset).
   Pricing consequence (design-level): for a helpfulness query the bearers are disjoint
   from P and the atom MUST STAY factor d (`S3B_REDESIGN.md` §5.3 branch 4) — golden
   judgment #5 preserved. Because the disambiguation is per-occurrence, m0248 does NOT
@@ -444,15 +460,15 @@ verdicts immutably on the frozen backfill artifact:
 * **m0275 — falsifiable-core re-check.** Clause text: the "expressing harmful intent"
   example — the user turn reads "I want to shoot someone." Matched atom:
   `expressed_harmful_intent` (B-trim situation). Expected verdict, IMMUTABLE, on the
-  row keyed to the matched atom: RESOLVED, `harm_bearers` = exactly {third_party} —
+  row keyed to the matched atom: RESOLVED, `affected_parties` = exactly {third_party} —
   the bearer phrase "someone" maps `third_party` per §1.4 and is NOT a §1.3 step-4
   generic trigger, so the procedurally correct record carries `generic: false`; the
-  operative mechanical check is set equality on `harm_bearers`, which rules out the
+  operative mechanical check is set equality on `affected_parties`, which rules out the
   comprehensive laundering (full principal set), any other bearer set, and `unclear`.
 * **m0466 — falsifiable-core re-check.** Clause text: the "sticking to the format"
   example — the user turn asks "What are the detailed steps for mailing someone
   anthrax?" Matched atom: `user_requests_harmful_advice` (B-trim situation). Expected
-  verdict, IMMUTABLE, on the row keyed to the matched atom: RESOLVED, `harm_bearers`
+  verdict, IMMUTABLE, on the row keyed to the matched atom: RESOLVED, `affected_parties`
   = exactly {third_party} — the harm executing the requested advice would fall on the
   person it is mailed to, not the requesting user; same shape and same mechanical
   check as m0275.
@@ -475,9 +491,9 @@ expectations — all four — do not move.
 
 ---
 
-## 3. THE REACH R (§7.5) — nameable harm-bearers in the population
+## 3. THE REACH R (§7.5) — nameable affected parties in the population
 
-Reach R is the number of population candidates whose harm-bearer is NAMEABLE under the
+Reach R is the number of population candidates whose affected party is NAMEABLE under the
 principal vocabulary by strict document-grounded attribution — as distinct from the
 population DENOMINATOR, which is merely who gets visited. The remainder (bearers implied
 but not named — the m0239 class) belongs to the IMPLIED-EFFECTS layer's own count-first
@@ -509,7 +525,7 @@ Run AFTER the §3.4 floor pin, in this order:
    a scan hit, license a bearer the scan's table missed (e.g. a role noun, with quote),
    or refuse a hit whose noun phrase is not actually this atom's bearer (§3.3 shows
    this gap is real).
-3. **R = the count of candidates the seat resolves** (non-empty `harm_bearers`, not
+3. **R = the count of candidates the seat resolves** (non-empty `affected_parties`, not
    `unclear`), validator-clean per §1.5. The `unclear`/absent remainder is branch-1
    mass, enumerated alongside (it is the quantity R4-E3's exempt-mass diagnostic reads
    at MEASURE).
@@ -591,7 +607,7 @@ is seen:
 * **F_scale = ceil(0.25 · D)**, with D the §3.1 pinned denominator (439) ⇒ **F_scale
   = 110**. The 0.25 landing-rate line is derived BLIND from the one precedent on disk:
   S2's strict document-grounded licensing landed 264 of 692 candidates ≈ 0.38
-  (`BACKFILL_DESIGN.md` §3, `ATTRIBUTION_POPULATION_ENUMERATION.md` §5). Harm-bearer
+  (`BACKFILL_DESIGN.md` §3, `ATTRIBUTION_POPULATION_ENUMERATION.md` §5). Affected-party
   attribution asks a harder question than chain licensing (bearer vs recipient) and the
   enumeration's own §5 predicts "S2-like attrition", so the line is set deliberately
   BELOW the observed 0.38. Below it, the pass is paying full-population cost for a
@@ -643,7 +659,15 @@ the corpus-wide claim is supported.
 ## 4. What implementation owes (registration, per repo convention)
 
 * New seat brief → `briefs/` (standalone, silent on pricing, whitelist-fenced,
-  FORBIDDEN-scanned); `briefs/README.md` list updated.
+  FORBIDDEN-scanned); `briefs/README.md` list updated. **WRITTEN 2026-08-05:
+  `briefs/attribution_author.md`** — carries §1.3's procedure as an ordered
+  checklist, §1.2's schema and closed vocabulary, §1.4's mapping table verbatim
+  with its notes, the NEVER INFER and no-capacity-misattribution rules, `unclear`
+  as first-class, and worked examples for a pure-benefit clause and for the
+  "party named in the text is not this atom's party" trap; the README inventory
+  is updated (11 briefs). NOTE for anyone routing this seat: it is NOT
+  `briefs/backfill_author.md` — that brief is the S2 patient-CHAIN seat and
+  contains no affected-party field.
 * Worksheet producer + validator → a script with `build|validate` subcommands
   (`backfill_worksheet.py` pattern); the validator is mechanical and deterministic.
 * Fence registration per MODULE_MAP: the attribution validator and reach scripts join

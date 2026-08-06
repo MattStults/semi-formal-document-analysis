@@ -15,7 +15,7 @@ answered against, and what the judge may never see. The deterministic
 producer before the seat and the mechanical validator after it live in code;
 the brief is the middle of the sandwich.
 
-Current briefs — **10** as of 2026-08-04 (`ls briefs/*.md` is the source of
+Current briefs — **11** as of 2026-08-05 (`ls briefs/*.md` is the source of
 truth; this list has gone stale before):
 
 - `flip_adjudicator.md` — the dossier→verdict seat of the iteration loop
@@ -58,6 +58,22 @@ truth; this list has gone stale before):
   --dir <dir>`. ⚠️ Frontier/careful seat — it exists to catch the
   annotation author's omissions, so the small-model standard does not
   apply. Ran the `patient-backfill-2026-08-04` cycle.
+- `attribution_author.md` — the affected-party attribution seat: for each
+  worksheet row of an atom instance, which party does the clause text name as
+  the one its harm, risk, protection, or benefit falls on (`affected_parties`,
+  drawn from the principal vocabulary, plus the `unclear` sentinel), with the
+  generic-noun referent verdict and a verbatim `license_quote`? Task spec:
+  `S3B_ATTRIBUTION_TASK_DESIGN.md` (§1.2 schema, §1.3 procedure, §1.4 mapping
+  table, §1.5 validator). Producer/validator NOT YET BUILT — a `build|validate`
+  sibling of `backfill_worksheet.py` per that spec's §4. Designed as a
+  capable-but-cheap seat, usable only after the pre-registered validation
+  against a frontier model on the same brief clears (§2). ⚠️ The brief is
+  deliberately SILENT on how attributions are used downstream — a seat that
+  knows which answer moves anything has a direction to lean — and is
+  whitelist-fenced: brief + worksheet + `grammar.py`/`annotate_prompt.md`
+  only, exempt from the AGENTS.md/HANDOFF reading order. NOTE: the field was
+  renamed `harm_bearers` → `affected_parties` (ruled 2026-08-05); one field,
+  not two.
 - `drift_standing.md` — the drift-standing adjudication seat over the
   STANDING contents of the frozen label-free cut (`thresholds_frozen.json`
   v1): near-cut clauses where nothing flipped. Producer:

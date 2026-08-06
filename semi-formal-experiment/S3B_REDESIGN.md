@@ -14,6 +14,26 @@ minors and was adversarially re-reviewed (`S3B_ADVERSARIAL_REVIEW_R8.md`, verdic
 REVISE — no blockers, 2 majors); REVISION 9 fixes exactly those two majors (S-A, S-B),
 and is for adversarial re-review before OPEN.
 
+> **NAMING NOTE (ruled 2026-08-05) — one field, renamed.** The attribution field this
+> document calls `affected_parties` was called **`harm_bearers`** in every revision up to
+> and including REVISION 9's drafting, and in the adversarial-review records
+> (`S3B_ADVERSARIAL_REVIEW_R3/R4/R6/R8.md`), `S3B_TIER2_VERIFICATION.md`, and
+> `D3_EXAMPLE_CLAUSE_ENUMERATION.md`, which are dated records and keep the old spelling.
+> **There were never two fields**: `harm_bearers` and `affected_parties` are the same
+> field, the same closed principal vocabulary, the same `unclear` sentinel, and the same
+> intersection semantics. GROUND for the rename: the mechanism was never harm-only — the
+> attribution's own step 1 asks whether an atom describes "a harm, risk, **protection, or
+> benefit**"; the D5 population predicate includes benefit keywords (`benefit`,
+> `wellbeing`, `welfare`, `flourish`); and one of the three named restorations, m0018
+> ("People should have easy access to trustworthy safety-critical information from our
+> models"), is a pure-provision clause with no harm in it at all and zero harm-keyword
+> matches. The old name pulled against the definition in documents a judgement seat reads,
+> and the predictable failure was a seat answering `unclear` on a provision clause and
+> failing a control the mechanism handles correctly. (`D5_WORKED_EXAMPLES.md` carries the
+> same note; `OUTSTANDING_WORK.md` records the ruling.) The S3 cycle record's finding name
+> "RECIPIENT-VS-HARM-BEARER" (§1, finding (ii)) is left verbatim — it cites an immutable
+> cycle artifact, not this field.
+
 **REVISION 9 fixes the two MAJOR findings of the R8 adversarial re-review
 (`S3B_ADVERSARIAL_REVIEW_R8.md`, verdict REVISE — 0 blocking / 2 major). Nothing else
 moves: the R6 majors, the ten R6 minors, and every ruling are retained intact, and no
@@ -27,7 +47,7 @@ new ruling is recorded.**
   of the clause); the mirror laundering on m0018 fails the same way. AND —
   belt-and-braces, closing the hole at backfill time too — the companion spec's §2.5
   frozen-backfill re-check now EXTENDS to m0275/m0466 with IMMUTABLE expected
-  verdicts (resolved, `harm_bearers` exactly {third_party}, not comprehensive):
+  verdicts (resolved, `affected_parties` exactly {third_party}, not comprehensive):
   the validator's E_CONSISTENCY enforces set-shape only and cannot see a laundering
   verdict, and no other backfill-time check sees m0275/m0466's verdicts. §7.1 now
   matches the companion spec's §3.4 F_core reading (which already read the arms as
@@ -68,7 +88,7 @@ name are to this document, §-references to the companion spec name it.**
   conjoins that the clause IS `predicted` in the S3b snapshot, alongside factor 1.0
   and the branch-keyed arms (carried from R4 minor s-1).
 * **E-9 — §5.6 explain extension field list.** The build seam's extended explain
-  record now lists everything the §7.1 signature reads (attributed `harm_bearers`,
+  record now lists everything the §7.1 signature reads (attributed `affected_parties`,
   the declared P, their intersection, and the extended `why` vocabulary), and the
   independent §7.1 seat is explicitly GRANTED the read of the FROZEN ATTRIBUTION
   ARTIFACT, where arm (ii)'s disambiguation verdict and license quote live
@@ -111,7 +131,7 @@ are retained intact.**
   (m0290's) {user} attribution licensable under the verbatim-quote regime, which is why
   the canonical controls can stay suppressed (§5, §7.2).
 * **E-2, part B (coordinator ruling) — pre-OPEN licensability gate for the canonical
-  controls.** Before OPEN, m0276's and m0290's harm-bearer attributions are verified
+  controls.** Before OPEN, m0276's and m0290's affected-party attributions are verified
   LICENSABLE per case — each must carry a verbatim `license_quote` under the companion
   spec's §1.4 mapping (now speaker-aware); a control whose attribution is not
   licensable is FLAGGED, never silently proceeded on (§7.2). This guards against the
@@ -135,7 +155,7 @@ are retained intact.**
 "individuals") carry multiple meanings and are disambiguated at TRANSLATION/ATTRIBUTION
 time — NOT via a pricing-time generic flag** (§4C, §5.3, §7.1, §8/D4). The attribution
 fixes each OCCURRENCE's referent. A COMPREHENSIVE generic — m0018's "people", the
-beneficiaries of a universal provision — is attributed `harm_bearers` = the FULL
+beneficiaries of a universal provision — is attributed `affected_parties` = the FULL
 principal set, which intersects every non-empty declared P, so the clause surfaces for
 ANY matching query; §5.3 branch 2 is REDEFINED as this comprehensive-generic case
 (factor 1.0, cap-exempt — the branch is KEPT and its cap-exemption logic preserved, now
@@ -230,7 +250,7 @@ the strict two-leg count; `max_regressions: 0` bound breached):
 
 **The defect is patient PROVENANCE, not the discount arithmetic** (decision.json).
 The pricing layer reads chains that record who an act is *addressed to* and treats
-that as who the clause *protects*. S3b must price on the harm-bearer/beneficiary.
+that as who the clause *protects*. S3b must price on the affected party/beneficiary.
 
 ---
 
@@ -319,7 +339,7 @@ separate them.** This is the same wall the derivation hit on its (a)/(b) separat
 (`DISCOUNT_DERIVATION.md` §3: "that information lives in the clause TEXT … not in the
 chain metadata the pricing reads").
 
-**Consequence:** S3b needs the pricing to read the **harm-bearer / beneficiary**, which
+**Consequence:** S3b needs the pricing to read the **affected party / beneficiary**, which
 must be *attributed* — either by annotation or by a panel-blind seat at index time. It
 cannot be recovered from the existing chain field alone.
 
@@ -357,15 +377,15 @@ response is addressed to.
   stay suppressed) are structurally identical under it — each is a matched patient-free
   situation (`expressed_harmful_intent` / `imminent_bodily_harm`) plus a sibling
   user-directed model-act. The rule would protect BOTH, resurfacing m0276 — the automatic
-  REVERT of §7.2. The separator is the harm-bearer in the gloss (§3's wall), which only
+  REVERT of §7.2. The separator is the affected party in the gloss (§3's wall), which only
   attribution reads. A-structural is retained ONLY as an attribution-gated component of
   §5.3/§5.4; if any version is ever floated standalone it needs STRATIFIED controls (the
   S2 golden-review pattern over affected clauses), not just m0276/m0290 (N3).
-* **A-attribution (principled).** Price the situation atom on its ATTRIBUTED harm-bearer
-  (§5). If the attributed harm-bearer ∈ P, factor 1.0 regardless of sibling acts. This
+* **A-attribution (principled).** Price the situation atom on its ATTRIBUTED affected party
+  (§5). If the attributed affected party ∈ P, factor 1.0 regardless of sibling acts. This
   fixes A, B, and C with one mechanism, but requires the attribution step.
 
-### 4B. Recipient ≠ harm-bearer on a protective/remeial act (m0239)
+### 4B. Recipient ≠ affected party on a protective/remeial act (m0239)
 
 **Evidence.** m0239: "If a user shows signs of vulnerability to radicalization, the
 assistant should aim to de-escalate…". The act `should_deescalate_extremist_involvement`
@@ -467,17 +487,17 @@ carry MULTIPLE meanings, and the pre-ruling candidate fixes located the decision
 wrong time: the meaning is fixed at TRANSLATION/ATTRIBUTION, not by a pricing-time
 generic flag. The same word differentiates into distinct referents (think `people_broad`
 vs `people_narrow`); the attribution determines each OCCURRENCE's referent, and the
-pricing reads only the attributed `harm_bearers`:
+pricing reads only the attributed `affected_parties`:
 * **m0018 — COMPREHENSIVE generic.** "People should have easy access…" states a
   universal provision; "people" here is the BENEFICIARY CLASS of that provision and
-  comprehends every principal. Disambiguation: `harm_bearers` = the FULL principal set
+  comprehends every principal. Disambiguation: `affected_parties` = the FULL principal set
   (all seven values of `grammar.py`'s `PRINCIPALS`). That set intersects every non-empty
   declared P, so the clause surfaces for ANY matching query — helpfulness's
   `[user, developer]` included — at factor 1.0 (§5.3 branch 2, redefined as the
   comprehensive-generic case; cap-exempt).
 * **m0248 — SPECIFIC generic.** "…gratuitous abuse, harassment, or negativity toward
   individuals" names the TARGETS of a harm; "individuals" here is a specific party named
-  by a generic noun. Disambiguation: `harm_bearers` = the specific party
+  by a generic noun. Disambiguation: `affected_parties` = the specific party
   (`third_party`). For a helpfulness query (P = {user, developer}) the bearers are
   disjoint from P ⇒ factor d (§5.3 branch 4) — golden derivation case #5 preserved
   exactly (§2.1).
@@ -485,7 +505,7 @@ pricing reads only the attributed `harm_bearers`:
 different clauses — so there is no global "generic ⇒ factor 1.0" rule, and that is what
 resolves the m0248 golden collision without re-deriving d. m0248-style SPECIFIC
 generics never take branch 2; they price via branches 3/4 by their specific
-`harm_bearers`. The attribution's disambiguation sub-task, and m0018/m0248 as GOLDEN
+`affected_parties`. The attribution's disambiguation sub-task, and m0018/m0248 as GOLDEN
 VERIFICATION CASES, are specified in `S3B_ATTRIBUTION_TASK_DESIGN.md` (§1.3 step 4,
 §2.5).
 
@@ -494,7 +514,7 @@ VERIFICATION CASES, are specified in `S3B_ATTRIBUTION_TASK_DESIGN.md` (§1.3 ste
   atom, whether its patient was GENERIC (comprehends all principals) or SPECIFIC, with
   the flag read at PRICING time. The ruling replaces the pricing-time flag with the
   referent disambiguation above: the comprehensive/specific decision is made ONCE, at
-  translation/attribution, and lands in `harm_bearers` itself; pricing reads bearers,
+  translation/attribution, and lands in `affected_parties` itself; pricing reads bearers,
   never a flag.
 * **CONVENTION ruling (generic-noun clauses patient-FREE, absence-is-absent) — REJECTED
   by D4.** Would have been cheaper but lost the "People" signal, needed an annotation
@@ -506,11 +526,11 @@ VERIFICATION CASES, are specified in `S3B_ATTRIBUTION_TASK_DESIGN.md` (§1.3 ste
 ## 5. The recommended mechanism: beneficiary-aware attribution
 
 **Recommendation (to be confirmed or overturned by review): price on the attributed
-HARM-BEARER / BENEFICIARY, not the chain's grammatical recipient.** Concretely:
+AFFECTED PARTY / BENEFICIARY, not the chain's grammatical recipient.** Concretely:
 
 1. **Attribution artifact.** For each patient-bearing atom (and each patient-free
    harm-describing atom, e.g. situation atoms), a **panel-blind, document-grounded**
-   attribution records `harm_bearers` — the party/parties the harm or the protection
+   attribution records `affected_parties` — the party/parties the harm or the protection
    ultimately falls on — plus, where the bearer is named by a generic noun, the referent
    DISAMBIGUATION that fixed that set (COMPREHENSIVE ⇒ the full principal set; SPECIFIC
    ⇒ the specific party — §4C/D4) and a short verbatim `license_quote`, exactly in the
@@ -520,7 +540,7 @@ HARM-BEARER / BENEFICIARY, not the chain's grammatical recipient.** Concretely:
    **KEYING (E-2/M-2, R3; 3-tuple stated per R6-E-6): attribution is keyed per
    CLAUSE-INSTANCE — the 3-tuple `(clause_id, span_id, name)`, exactly the schema of
    `S3B_ATTRIBUTION_TASK_DESIGN.md` §1.2/E_KEY — NEVER per atom name ALONE** — the same
-   atom name carries different harm-bearers in different clauses
+   atom name carries different affected parties in different clauses
    (`user_requests_harmful_advice` is third-party harm in m0466 but user self-harm in
    m0290, a §7.2 automatic-REVERT control), so name-only keying is self-contradictory
    and the error would land on m0290. NOR is the key the 2-field pair
@@ -528,7 +548,7 @@ HARM-BEARER / BENEFICIARY, not the chain's grammatical recipient.** Concretely:
    (`annotations_ext_v1_merged.json`), 190 such pairs carry MORE THAN ONE atom, so a
    2-field key would merge distinct rows into one. Validator-checked like S2's license
    quotes. The §5 preservation claim below is conditional on this keying.
-   **VALUE SPACE (E-3/M-1, R3): `harm_bearers` is pinned to the existing principal
+   **VALUE SPACE (E-3/M-1, R3): `affected_parties` is pinned to the existing principal
    vocabulary** (`backfill_author.md`: third_party, developer, operator, system, model,
    root, user); the noun-phrase→principal mapping ("another person"→third_party,
    "someone"→third_party, "the user"→user) is stated in the attribution brief and
@@ -562,15 +582,15 @@ HARM-BEARER / BENEFICIARY, not the chain's grammatical recipient.** Concretely:
    repo's standard context-loading (the AGENTS.md/HANDOFF reading order) for the duration
    of the pass; the denylist above is the backstop, not the fence.
 2. **Delivery — RULED (D1, coordinator 2026-08-05, option (a)): the ANNOTATION-SIDE
-   BACKFILL.** Extend the chain convention so harm-bearer is a first-class annotated
+   BACKFILL.** Extend the chain convention so the affected party is a first-class annotated
    field, shipped as a targeted backfill cycle (validator-checked, license-quoted,
    golden-reviewed) — the proven S2 machinery. Pricing stays fully mechanical (reads
-   attributed harm-bearers). The index-side seat (former option (b)) is CLOSED by this
+   attributed affected parties). The index-side seat (former option (b)) is CLOSED by this
    ruling. The ruling carries three constraints:
    * **Mechanical task design.** The attribution task is designed to be mechanical
      enough for a capable-but-cheap model seat (candidate: DeepSeek V4 Flash).
      "Mechanical" here is a CLOSED list, and a task is mechanical iff it satisfies all
-     four: (i) a CLOSED OUTPUT VOCABULARY — `harm_bearers` values drawn from the
+     four: (i) a CLOSED OUTPUT VOCABULARY — `affected_parties` values drawn from the
      principal vocabulary only, plus the `unclear` sentinel (§5.1 VALUE SPACE);
      (ii) a VERBATIM `license_quote` for every non-`unclear` verdict; (iii) a FIXED
      DECISION PROCEDURE named in the attribution brief (no per-row improvisation); and
@@ -598,14 +618,14 @@ HARM-BEARER / BENEFICIARY, not the chain's grammatical recipient.** Concretely:
    First, the MECHANICAL DEFINITIONS the rule quantifies over (both were missing, and the
    rule is unbuildable without them):
    * An atom is **harm-bearing** iff it carries an attribution record whose
-     `harm_bearers` set is NON-EMPTY. An `unclear` or empty record is NOT harm-bearing.
-     The attribution artifact is the SOLE source of harm-bearers, so this predicate is a
+     `affected_parties` set is NON-EMPTY. An `unclear` or empty record is NOT harm-bearing.
+     The attribution artifact is the SOLE source of affected parties, so this predicate is a
      pure read of it — no chains, no kinds, no glosses.
-   * An attribution record is **resolved** iff `harm_bearers` is non-empty and not the
+   * An attribution record is **resolved** iff `affected_parties` is non-empty and not the
      sentinel `unclear`.
    For a query with declared patients P, the factor for a credited match through atom `a`
    is the FIRST matching branch, in this order (precedence is part of the rule):
-   1. **Attribution absent or UNRESOLVED** (no record, empty `harm_bearers`, or
+   1. **Attribution absent or UNRESOLVED** (no record, empty `affected_parties`, or
       `unclear`): factor 1.0 from this layer, and `a` is EXCLUDED from the clause-taint
       quantifier below. This is the only reading consistent with I1 — an atom the
       attribution does not resolve prices exactly as it does today, never as a discount.
@@ -614,7 +634,7 @@ HARM-BEARER / BENEFICIARY, not the chain's grammatical recipient.** Concretely:
       input, not an edge case.
    2. **Comprehensive generic (D4 RULED 2026-08-05 — branch REDEFINED, not removed)**:
       `a` is resolved and its attribution disambiguated a generic-noun bearer
-      COMPREHENSIVE — mechanically: `harm_bearers(a)` = the FULL principal set (all
+      COMPREHENSIVE — mechanically: `affected_parties(a)` = the FULL principal set (all
       seven values; §4C): factor 1.0; excluded from the taint quantifier; cap-EXEMPT
       (EXEMPT set below). GROUNDING: a comprehensive generic is the beneficiary class of
       a universal provision (m0018's "people"), so its bearer set intersects every
@@ -625,23 +645,23 @@ HARM-BEARER / BENEFICIARY, not the chain's grammatical recipient.** Concretely:
       what carries the cap-exemption logic for comprehensive-generic credits on mixed
       clauses (E-1 horn below). **SCOPE PIN: only COMPREHENSIVE generics take this
       branch.** An m0248-style SPECIFIC generic — a generic noun disambiguated to the
-      targets of a harm — carries the SPECIFIC party as `harm_bearers` and falls through
+      targets of a harm — carries the SPECIFIC party as `affected_parties` and falls through
       to branches 3/4, pricing like any resolved+specific atom (factor d for a
       helpfulness query; golden derivation case #5 preserved). The dependence on D4 is
       resolved, not left implicit: D4's REVISION-5 FLAG horn is superseded by the
       disambiguation, and its patient-free horn was rejected (§4C), so branch 2 is live.
-   3. **Consistent**: `a` is resolved+specific and `harm_bearers(a) ∩ P ≠ ∅`: factor 1.0.
-   4. **Mismatched**: `a` is resolved+specific and `harm_bearers(a) ∩ P = ∅`: factor d.
+   3. **Consistent**: `a` is resolved+specific and `affected_parties(a) ∩ P ≠ ∅`: factor 1.0.
+   4. **Mismatched**: `a` is resolved+specific and `affected_parties(a) ∩ P = ∅`: factor d.
       (In branches 3–4, "specific" = resolved and not comprehensive-generic: branch 2's
       precedence has already caught every comprehensive disambiguation.)
    **Clause taint (EXISTENTIAL IMPORT — restores S3's precondition in attributed terms).**
    The clause is tainted iff it has AT LEAST ONE resolved+specific harm-bearing atom with
-   `harm_bearers ∩ P = ∅`, AND every resolved+specific harm-bearing atom on it is disjoint
-   from P. A clause with ZERO resolved harm-bearers is NOT tainted — this is what I1
+   `affected_parties ∩ P = ∅`, AND every resolved+specific harm-bearing atom on it is disjoint
+   from P. A clause with ZERO resolved affected parties is NOT tainted — this is what I1
    requires and what REVISION 2's vacuous reading violated (it made "every harm-bearing
    atom disjoint" true when none existed). This re-expresses DISCOUNT_DERIVATION §0's
    taint precondition ("≥1 patient-bearing chain, none consistent") over attributed
-   harm-bearers.
+   affected parties.
    **Cap composition on MIXED clauses (E-1, R3 — the horn chosen; formula re-stated
    R4-E1).** When a tainted clause also carries unresolved (branch-1) or
    comprehensive-generic (branch-2) atom credits, those credits are EXEMPT from the cap;
@@ -660,8 +680,8 @@ HARM-BEARER / BENEFICIARY, not the chain's grammatical recipient.** Concretely:
      query_atom, match); patient.py's tie-break re-stated — keeps factor d; every other
      capped record is zeroed (factor 0.0, `why: taint_capped`).
    * EXEMPT = every credited record whose clause atom is UNRESOLVED (branch 1: no
-     record, empty `harm_bearers`, or `unclear`) or COMPREHENSIVE-GENERIC (branch 2:
-     `harm_bearers` = the full principal set): factor 1.0, untouched by the cap.
+     record, empty `affected_parties`, or `unclear`) or COMPREHENSIVE-GENERIC (branch 2:
+     `affected_parties` = the full principal set): factor 1.0, untouched by the cap.
    (Taint itself quantifies over resolved+specific harm-bearing ATOMS, credited or not;
    the cap quantifies over credited RECORDS through resolved+specific atoms.)
    **SURVIVING MASS — one scale (R4-E1 re-statement; supersedes the REVISION-4 formula,
@@ -686,14 +706,14 @@ HARM-BEARER / BENEFICIARY, not the chain's grammatical recipient.** Concretely:
    just the factors).** Constructed mixed clauses with a declared-disjoint P; each
    variant asserts the priced atom-channel MASS, not only per-record factors:
    * VARIANT A (`unclear`): one `unclear` situation atom as the match (base credit b_u)
-     + one resolved+specific act atom whose `harm_bearers` are disjoint from P (base
+     + one resolved+specific act atom whose `affected_parties` are disjoint from P (base
      credit b_r), both credited, clause atom_norm N. Assert: clause tainted; the match
      factor 1.0 and cap-exempt; the resolved record the cap survivor at factor d; atom
      channel == (d · b_r + b_u)/N — both terms, raw scale, normalized once — and ≤ the
      baseline channel (b_r + b_u)/N; equivalently priced == base_channel − (1 − d) ·
      b_r/N.
    * VARIANT B (comprehensive generic): the same shape with the match atom resolved and
-     disambiguated COMPREHENSIVE (`harm_bearers` = the full principal set; base credit
+     disambiguated COMPREHENSIVE (`affected_parties` = the full principal set; base credit
      b_g). Assert: the comprehensive-generic record prices at factor 1.0, cap-EXEMPT —
      not d-priced, not zeroed — and atom channel == (d · b_r + b_g)/N. This variant pins
      the max-scope: a max ranging over comprehensive generics (the REVISION-4 formula's
@@ -703,7 +723,7 @@ HARM-BEARER / BENEFICIARY, not the chain's grammatical recipient.** Concretely:
    comprehensive-generic match, mixes scales, or widens the max fails the test — the
    reading is code, not commentary.
    Under taint the (restated) cap applies. A remedial ACT atom whose
-   attributed beneficiary ∈ P, or whose attributed harm-bearer is the situation's victim,
+   attributed beneficiary ∈ P, or whose attributed affected party is the situation's victim,
    does NOT taint a sibling harm-situation atom. **This is the single rule change that
    fixes 4A** (the 4B shape is covered by the same mechanism but exercised by no
    in-scope clause — §7.1 SCOPE OF THE CORE; m0239 itself is disposed of by ruling (b)
@@ -751,7 +771,7 @@ HARM-BEARER / BENEFICIARY, not the chain's grammatical recipient.** Concretely:
    direction is exactly the two §2.5 golden verification cases of
    `S3B_ATTRIBUTION_TASK_DESIGN.md` (m0018/m0248), plus §2.5's FROZEN-BACKFILL
    RE-CHECK CASES for the falsifiable-core clauses m0275/m0466 (R8-S-A — immutable
-   expected verdicts: resolved, `harm_bearers` exactly {third_party}, not
+   expected verdicts: resolved, `affected_parties` exactly {third_party}, not
    comprehensive), plus the §7.6 stratified sample, and nothing more corpus-wide:
    the validator CANNOT check that a comprehensive verdict corresponds to an actual
    generic noun in the clause text (E_CONSISTENCY enforces the set-shape only), so
@@ -781,7 +801,7 @@ HARM-BEARER / BENEFICIARY, not the chain's grammatical recipient.** Concretely:
    patient-free situation + sibling user-directed model-act), so no attribution-free rule
    can surface m0275 without also resurfacing m0276 — the automatic REVERT of §7.2. The
    cross-sibling guard therefore ships ONLY inside the attribution mechanism (§5.3), where
-   the attributed harm-bearer distinguishes m0275 (third party) from m0276 (user).
+   the attributed affected party distinguishes m0275 (third party) from m0276 (user).
 5. **The attribution population predicate (E-4, R3).** §8/D5's population — "patient-
    bearing atoms AND patient-free harm-describing atoms" — splits into a MECHANICAL half
    and a JUDGEMENT half, and the split must be explicit because record-presence is price-
@@ -799,7 +819,7 @@ HARM-BEARER / BENEFICIARY, not the chain's grammatical recipient.** Concretely:
    matching dispatch branch in `dossier.py` reconstruction, and an EXTENDED explain record
    carrying EVERYTHING the §7.1 restoration signature reads — without which the signature
    has nothing mechanical to read. COMPLETE FIELD LIST (R6-E-9): the attributed
-   `harm_bearers`, the declared P, their intersection, and the priced record's extended
+   `affected_parties`, the declared P, their intersection, and the priced record's extended
    `why` value under the §5.3 branches (consistent / mismatched / generic / taint_capped /
    `unclear`-or-absent). Arm (ii)'s disambiguation verdict AND its license quote live in
    the FROZEN ATTRIBUTION ARTIFACT, not the explain record; the independent §7.1 seat is
@@ -810,7 +830,7 @@ HARM-BEARER / BENEFICIARY, not the chain's grammatical recipient.** Concretely:
 **What this preserves (attribution-dependent AND conditional on clause-instance keying,
 §5.1/E-2 — this claim provides no cover for any pre-attribution structural step):**
 m0276 and m0290 stay suppressed because, once attribution exists, their harm-bearing
-atoms attribute the USER as harm-bearer, disjoint from a third-party P. This presumes
+atoms attribute the USER as affected party, disjoint from a third-party P. This presumes
 those verdicts land RESOLVED and LICENSABLE: m0276's clause text carries verbatim "the
 user" spans, and m0290's example-dialogue text names its bearer only through the
 `<user>` speaker tag and first-person pronouns — licensable under the companion spec's
@@ -819,13 +839,13 @@ would price the control at branch 1, re-surface it, and trip §7.2's automatic R
 which is why §7.2 carries a pre-OPEN LICENSABILITY GATE that verifies each control's
 attribution per case before OPEN (R4 e-4 hedge, carried; R6-E-2 fix). d = 0.10 and the
 cap are untouched; the opt-in/bit-identity invariants hold (no attribution ⇒ no declared
-harm-bearers ⇒ bit-identical).
+affected parties ⇒ bit-identical).
 
 ---
 
 ## 6. Invariants pre-registered for S3b
 
-* **I1 bit-identity.** No declared patients, or no attributed harm-bearers, ⇒ bit-for-bit
+* **I1 bit-identity.** No declared patients, or no attributed affected parties, ⇒ bit-for-bit
   ContainmentIndex. Pinned by test, as in S3.
 * **I2 monotone-downward on RAW scores.** All factors ≤ 1. Normalized-score bystander
   movement is `normalizer_drift` in the dossier, never `match_change` (S3/F3 convention).
@@ -847,7 +867,7 @@ The redesign's cycle must pre-register, at OPEN, a prediction whose falsifiable 
 1. **Restore the confirmed regressions IN SCOPE (ruling (b), §4B).** m0275 and m0466
    return to `predicted` for harm-avoidance-to-third-parties; m0018 returns for
    helpfulness UNDER the D4 ruling — its generic noun ("people") disambiguates
-   COMPREHENSIVE at attribution, so the matched atom carries `harm_bearers` = the full
+   COMPREHENSIVE at attribution, so the matched atom carries `affected_parties` = the full
    principal set and prices branch 2 at factor 1.0 (§4C). **m0239 is NOT in the
    falsifiable core** (ruling (b)); its DISPOSITION is the IMPLIED-EFFECTS layer
    (`IMPLIED_EFFECTS_DESIGN.md`) as its first case. Under the §4B CLASS RULE (R4-B1
@@ -893,8 +913,8 @@ The redesign's cycle must pre-register, at OPEN, a prediction whose falsifiable 
    **SCOPE OF THE CORE (S-5, R3).** The falsifiable core (m0275 + m0466 + m0018 — D4 is
    ruled, §4C) exercises finding (i) — taint inheritance onto patient-free SITUATION
    atoms — and the
-   harm-bearer mechanism only in the situation-atom shape. No in-scope case tests finding
-   (ii)'s protective-act recipient≠harm-bearer shape; that mechanism awaits the
+   affected-party mechanism only in the situation-atom shape. No in-scope case tests finding
+   (ii)'s protective-act recipient≠affected-party shape; that mechanism awaits the
    IMPLIED-EFFECTS layer (§4B). The shrinkage from the headline "beneficiary-aware" claim
    to this core is disclosed, not smuggled.
 
@@ -921,9 +941,9 @@ The redesign's cycle must pre-register, at OPEN, a prediction whose falsifiable 
    * **m0275 ⇒ arm (i) ONLY;**
    * **m0466 ⇒ arm (i) ONLY;**
    * **m0018 ⇒ arm (ii) ONLY.**
-   Arm (i): `why = consistent` with non-empty `harm_bearers ∩ P` — resolved consistent
+   Arm (i): `why = consistent` with non-empty `affected_parties ∩ P` — resolved consistent
    attribution on the matched atom. Arm (ii): `why = generic`, branch 2 — the matched
-   atom's attribution disambiguates its generic noun COMPREHENSIVE (`harm_bearers` =
+   atom's attribution disambiguates its generic noun COMPREHENSIVE (`affected_parties` =
    the full principal set; factor 1.0, cap-exempt), with the disambiguation verdict
    AND the license quote on file. **CONSEQUENCE OF THE BINDING (R8-S-A):** the former
    phrasing "ONE of these arms, keyed to the branch that produced the match" keyed the
@@ -941,7 +961,7 @@ The redesign's cycle must pre-register, at OPEN, a prediction whose falsifiable 
    CLAUSE first; the branch only identifies the mechanism by which the bound arm is
    satisfied. **BELT-AND-BRACES (R8-S-A):** the companion spec's §2.5 FROZEN-BACKFILL
    RE-CHECK now extends to m0275/m0466 with IMMUTABLE expected verdicts (resolved,
-   `harm_bearers` exactly {third_party}, not comprehensive), so a laundering verdict
+   `affected_parties` exactly {third_party}, not comprehensive), so a laundering verdict
    is caught at BACKFILL time too — the validator's E_CONSISTENCY enforces set-shape
    only and cannot see it, and no other backfill-time check sees m0275/m0466's
    verdicts. This reading is the companion spec's §3.4 F_core reading (arms
@@ -967,8 +987,8 @@ The redesign's cycle must pre-register, at OPEN, a prediction whose falsifiable 
 
    **PRE-OPEN LICENSABILITY GATE FOR THE CANONICAL CONTROLS (R6-E-2 fix, part B;
    coordinator ruling).** Before OPEN, verify PER CASE that each canonical control's
-   harm-bearer attribution is LICENSABLE: the frozen attribution artifact must carry,
-   for m0276 and for m0290, a record attributing `user` as harm-bearer whose
+   affected-party attribution is LICENSABLE: the frozen attribution artifact must carry,
+   for m0276 and for m0290, a record attributing `user` as affected party whose
    `license_quote` is a byte-exact verbatim substring of the control's clause text
    under the companion spec's §1.4 mapping — including the speaker-aware first-person
    rule (§1.4 note (v)), which licenses m0290's example-dialogue bearer (m0276's
@@ -1008,7 +1028,7 @@ The redesign's cycle must pre-register, at OPEN, a prediction whose falsifiable 
    * PROCEDURE (blind): over the D5-derived candidate set, a mechanical text/gloss scan for
      bearer-naming spans, then a panel-blind seat decision per candidate WITHOUT knowledge
      of any flip outcome, expected restoration, or panel label (whitelist fence, §5.1).
-     Output: the count of candidates with a NAMEABLE harm-bearer in the principal
+     Output: the count of candidates with a NAMEABLE affected party in the principal
      vocabulary — the strict-attribution reach R.
    * THRESHOLD (R4-S1 fix — the floor is committed BLIND, before R is seen; the
      REVISION-4 ordering let the gate's binding quantity be chosen after seeing the
@@ -1037,7 +1057,7 @@ The redesign's cycle must pre-register, at OPEN, a prediction whose falsifiable 
      A floor set or adjusted with knowledge of R is a review finding, not a ruling.
    * MEASURE check: the actual strict restorations are compared to R; a large shortfall is
      a finding (reach over-estimated), not silently absorbed.
-   The REMAINDER of the class — cases like m0239 whose harm-bearer is implied, not named —
+   The REMAINDER of the class — cases like m0239 whose affected party is implied, not named —
    is enumerated separately by the IMPLIED-EFFECTS layer's own count-first step
    (`IMPLIED_EFFECTS_DESIGN.md`), not here.
 6. **Stratified controls on the LIVE mechanism (S-6 / prior m-4 / coordinator N3, R3).**
@@ -1095,7 +1115,7 @@ D4 RULED 2026-08-05; D5 RULED 2026-08-05; D2 OPEN — not resolved here)
   are disambiguated at TRANSLATION/ATTRIBUTION time — NOT via a pricing-time generic
   flag. The attribution fixes each occurrence's referent: a COMPREHENSIVE generic
   (m0018's "people" = the beneficiaries of a universal provision) is attributed
-  `harm_bearers` = the FULL principal set — §5.3 branch 2, redefined as the
+  `affected_parties` = the FULL principal set — §5.3 branch 2, redefined as the
   comprehensive-generic case: factor 1.0, cap-exempt, surfaces for any matching query;
   a SPECIFIC generic (m0248's "individuals" = the targets of a harm) is attributed the
   specific party and prices by branches 3/4 — factor d for a helpfulness query, golden
