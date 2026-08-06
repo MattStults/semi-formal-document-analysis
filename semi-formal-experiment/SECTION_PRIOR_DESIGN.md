@@ -7,7 +7,15 @@ REVISE): the blocking finding and all four majors are resolved inline, each
 marked at the change site; minors fixed or explicitly deferred with a named
 owner. The items the review verified correct (baseline log-read, A1 flip
 enumeration, `section_gate_version` key spec in its verified respects) are
-NOT re-opened.] Target class: `fp_section_prior` — 30/294 verdicts in
+NOT re-opened.] [REVISION 2 2026-08-05 per S4_ADVERSARIAL_REVIEW_R2
+(verdict REVISE: 0 blocking, 3 majors, 9 minors): majors E1 and S1 and all
+nine minors are resolved inline, each marked at the change site with
+`[per S4_ADVERSARIAL_REVIEW_R2 <id>]`. Rule A1, the pinned
+`max_regressions: 0`, and the 13/13/4 flip enumeration are UNCHANGED — the
+review was explicit that A1 itself needs no change. Major **E2** (the
+gate-OFF construction parameter's reachability) is ACCEPTED but DEFERRED
+pending the in-flight config-driven index-builder refactor; §6 carries a
+marked placeholder and it must be resolved before OPEN.] Target class: `fp_section_prior` — 30/294 verdicts in
 `audit_dossiers/ext_v1_merged__audit_v1/verdicts_merged.json` (18
 avoiding-over-and-under-caution, 12 harm-avoidance-to-third-parties, 0
 helpfulness; side: 26 `panel`, 4 `tool`).
@@ -34,7 +42,18 @@ scar tissue in HANDOFF.md:
 
 And the class was named by the census, a panel-reading instrument. Policy
 (ITERATION_LOOP.md §1): that directs attention, never truth — recorded here
-as this cycle's provenance. The discipline this file follows: **every
+as this cycle's provenance. **Fuller provenance, stated out loud [added per
+S4_ADVERSARIAL_REVIEW_R2 S4]: the gate PREDICATE is also the census's own
+discriminator** — `atom_channel_zero` is computed at
+`audit_disagreements.py:248`, in a module whose docstring reads
+"PANEL-READING, DIAGNOSTIC-ONLY — in the anti-cheat FORBIDDEN set". This is
+a disclosure, not a violation, and the direction of the choice matters: the
+census's `fp_section_prior` SIGNATURE is "section is the dominant channel
+share" (`audit_disagreements.py:131–137`), and A1 deliberately does NOT use
+that predicate — using it would have required a share threshold, i.e.
+exactly the swept constant §4 refuses. Choosing atom-zero over the class's
+own signature is the more principled selection; saying so is a stronger
+disclosure than silence. The discipline this file follows: **every
 candidate rule is stated in §2 below, with mechanism-level predictions in
 §3, before any further census or panel consultation**; the keep decision
 cites flip adjudications only; census contact waits for the pre-registered
@@ -154,7 +173,16 @@ pattern of them is the designed outcome.
   same unselectable-constant problem as B, PLUS it re-litigates a weight
   whose ablation CI spans zero (§0) — there is no label-free evidence the
   channel is net-harmful overall, only that its *substitution mode* is
-  indefensible. Touch the mode, not the weight.
+  indefensible. Touch the mode, not the weight. **Scale disclosure [added
+  per S4_ADVERSARIAL_REVIEW_R2 S3]: "the mode" is most of the channel.**
+  Measured on the log-resolved baseline, A1 removes 71.9% (caution) /
+  75.3% (harm) / 64.8% (helpfulness) of ALL section-channel mass in the
+  corpus — 22.8% / 27.2% / 4.4% of the section mass on the predicted set —
+  gating 510 / 533 / 451 of 593 clauses per behaviour. The Rule-C
+  rejection stands (A1 is content-conditioned where a weight change is
+  not, and it leaves the amplify case bit-identical), but a reader is owed
+  the magnitude, especially given §0's admission that the channel's
+  aggregate value is UNKNOWN.
 - **Rule D — require lex > 0 as the gate instead of atom > 0.** REJECTED:
   lex is near-universally nonzero (smoothed idf, line 563-565 keeps every
   term positive) — the gate would fire almost never; and lexical overlap
@@ -192,10 +220,15 @@ S4_ADVERSARIAL_REVIEW SCI-M1].
   The subset and zero-new-flip predictions below are therefore CONDITIONAL
   on the corpus-max clause of every behaviour having atom > 0. That is an
   empirical envelope fact, not a mechanism necessity: verified on all
-  extant baselines (corpus-max clauses m0527 / m0592 / m0438, all with
-  atom > 0; recomputed here against the log-resolved baseline), and the
-  OPEN enumeration must assert it explicitly per behaviour before the flip
-  list is pinned. A future baseline that violates the condition
+  extant baselines — the CONDITION (atom > 0) holds in every case, and the
+  OPEN enumeration must assert it **per behaviour, against whichever
+  clause is corpus-max on the baseline actually resolved, never against
+  pinned clause ids** [corrected per S4_ADVERSARIAL_REVIEW_R2 E8: the
+  prior text pinned "m0527 / m0592 / m0438", but helpfulness's corpus-max
+  is `m0384` on `chain-repair-2026-08-04` and `versioned-cut-2026-08-04`
+  and `m0438` only on the 1.2 lineage; the ids are not stable across
+  baselines even where the condition is]. The assertion must pass before
+  the flip list is pinned. A future baseline that violates the condition
   (post-vocab, per the §5 F6 scoping) voids this section's predictions the
   same way a join or vocab change does — re-enumerate on the normalized
   surface and re-pin with a written delta; that event is a scoping
@@ -208,6 +241,21 @@ S4_ADVERSARIAL_REVIEW SCI-M1].
 - **`no_longer_predicted` flips only on clauses with atom channel exactly
   0.0** whose section share carried them over the cut. Anything flipping
   with atom > 0 falsifies the design.
+- **Sharper, label-free characterization of the flip set — additionally
+  pre-registered [added per S4_ADVERSARIAL_REVIEW_R2 S2].** On the
+  log-resolved baseline the number of PREDICTED clauses with `atom == 0.0`
+  is **13 / 13 / 4** (caution / harm / helpfulness) — identical to the
+  flip counts, per behaviour. Every predicted atom-zero clause flips out;
+  none survives. So at the frozen cut A1 is exactly equivalent to *"do not
+  predict any clause with zero atom evidence"*, which is strictly stronger
+  than the bullet above (that one permits atom-zero survivors) and is
+  mechanically checkable label-free. Pre-registered as such: the OPEN
+  enumeration must reproduce `predicted ∧ atom == 0` = the flip set
+  exactly, or re-pin with a written delta. It also sharpens the disclosed
+  cost honestly — the `fn_names_cannot_meet` exposure named in §2 is
+  co-extensive with the flip set, not a subset of it, and A1 is therefore
+  a large scorer change ("require atom evidence to predict"), not a narrow
+  one.
 - **helpfulness is NOT a control cell** [amended per PORTFOLIO_REVIEW F5:
   the original control-cell claim here was FALSE]. Zero census FPs of this
   class does not mean zero computed flips: the review's mechanical
@@ -235,6 +283,15 @@ S4_ADVERSARIAL_REVIEW SCI-M1].
   doesn't fire — a disclosed limit of A1, not a surprise). `fn_*` classes
   may GROW by the §2 "against" mechanism (atom-gap clauses losing their
   proxy) — forecast disclosed now so it cannot be quietly re-narrated later.
+  [Extended per S4_ADVERSARIAL_REVIEW_R2 S4: the flip set reaches beyond
+  `fp_section_prior` (see the S1 note above), so the forecast must also
+  name **`fp_threshold_drift` shrinking by up to 4** (helpfulness m0379 /
+  m0381 / m0382 / m0389 flip out and are classified there) and **2
+  tool-panel AGREEMENTS converting to FNs** (caution m0176, harm m0586 —
+  cells the census recorded no disagreement on at all). Without these, S8
+  would show class movement this design did not predict, and the
+  re-narration risk this bullet exists to prevent reappears at the
+  checkpoint.]
 - **Hard precondition — the frozen cut.** This is a score-reducing change:
   under a re-derived Otsu the cut would chase the removed mass and
   manufacture drift flips in both directions (the exact m0422 class). The
@@ -251,41 +308,68 @@ S4_ADVERSARIAL_REVIEW SCI-M1].
   never label-selected sampling.
 - **Adjudication bound — pre-registered and decision-critical [replaces the
   qualitative expectation per S4_ADVERSARIAL_REVIEW SCI-B1]. prediction.json
-  carries `max_regressions: 0`.** The driver REQUIRES this field as a
-  non-negative integer and gates keep-vs-revert on it (cycle.py:794–796
-  validates the field; `_check_predictions_adjudicate` checks the tally of
-  `regression` verdicts ≤ `max_regressions`, cycle.py:1051–1054) — so the
-  integer that decides the cycle is pinned HERE, on document-side grounds,
-  not chosen by the operator at PREDICT time. Named decision rule, leaving
-  no judgment call at DECIDE:
+  carries `max_regressions: 0`.** [Mechanism claim corrected per
+  S4_ADVERSARIAL_REVIEW_R2 E1 — the bound and the decision rule below are
+  UNCHANGED; what was wrong is only the claim about what enforces them.]
+  What the driver actually does: it REQUIRES this field as a non-negative
+  integer (cycle.py:794–796), computes the tally of `regression` verdicts
+  against it and RECORDS a `{"kind": "max_regressions", …, "result":
+  "PASS"|"FAIL"}` check into `prediction_check.json`
+  (`_check_predictions_adjudicate`, cycle.py:1046–1056 — it records and
+  returns; it raises nothing), and at DECIDE it REFUSES a decision that
+  carries a FAILing check without a written justification (cycle.py:1383–
+  1392). It does NOT gate keep-vs-revert: CYCLE_DESIGN.md, "The decision
+  rule (policy-critical)", is explicit that "a FAILED prediction or an
+  override obliges a written justification; it never auto-decides", and
+  that is deliberate policy, not an omission. So the integer that decides
+  the cycle is pinned HERE, on document-side grounds, not chosen by the
+  operator at PREDICT time — and **the revert on any `regression` verdict
+  is the DECIDE signer's PRE-REGISTERED OBLIGATION under this design**,
+  exactly as it was for S3. The bound binds by pre-registration, with the
+  driver's tally as its tripwire; the signer must know the pull is theirs.
+  Named decision rule:
   * any flip adjudicated `regression` — the seat judged, document-side,
     that a careful auditor NEEDS the clause — fails the frozen check; the
     cycle REVERTS. The original "revert OR vocabulary-cycle referral"
     disjunction is DELETED as an unpinned judgment call: revert is the
-    driver-enforced outcome, and the referral is its sequel, not an
+    signer's pre-registered obligation under this design [per
+    S4_ADVERSARIAL_REVIEW_R2 E1], and the referral is its sequel, not an
     alternative.
   * flip-outs adjudicated `unclear` whose dossier shows the m0587 atom-gap
     pattern (auditor-need plausible, atom coverage absent) are referred in
     the cycle record to **the F13 vocab follow-up batch** (the named m0587
     vocabulary follow-up that F13 assigns an owner, PORTFOLIO_REVIEW F13)
     — a named target, not "some future vocabulary work".
-  Grounds, from §2's own arithmetic, stated before any verdicts exist: the
-  principle says substitution-banned flips are correct removals, so the
-  ONLY clauses on which a regression could even be licensed are atom-GAP
-  clauses — auditor-need present, atom evidence absent — and their number
-  is bounded by the census's own tool-sided count: **4 of 30**. That
-  arithmetic is stated, NOT spent: even granting the census's autopsy its
-  full 4 (which the design does not — labels direct attention, never
-  truth; the adjudication seat judges each clause against the document),
-  the licensed count tops out at 4, so any bound ≥ 5 is ungrounded under
-  every reading; and a bound of 1–4 would pre-license substitution on
-  exactly the clause class the principle bans, converting the F13 remedy
-  (vocabulary work) into shipped score. The design licenses none: §2
+  Grounds — from §2's principle alone, stated before any verdicts exist
+  [census-arithmetic step RESTATED per S4_ADVERSARIAL_REVIEW_R2 S1: the
+  prior text derived the bound from the census's tool-sided count, "4 of
+  30", as if the census set and the flip set were the same 30 cells. They
+  are not — verified on the log-resolved baseline: 30 A1 flips, 30 census
+  `fp_section_prior` cells, intersection **24**; the 6 flips outside the
+  class are `helpfulness/m0379, m0381, m0382, m0389` (census FPs but
+  classified `fp_threshold_drift`, panel-sided) and `caution/m0176`,
+  `harm/m0586` (not census disagreements at all — tool and panel agreed
+  and A1 removes the clause anyway). A tool-sided count within one census
+  class does not bound the atom-gap population inside the flip set, so
+  "any bound ≥ 5 is ungrounded" did NOT follow from that arithmetic. The
+  bound is unchanged; only its stated derivation is]: **0 follows from
+  the principle.** The principle says substitution-banned flips are
+  correct removals, so the ONLY clauses on which a regression could even
+  be licensed are atom-GAP clauses — auditor-need present, atom evidence
+  absent — and the design licenses no substitution-mode regression at all.
+  Any bound ≥ 1 would pre-license substitution on exactly the clause class
+  the principle bans, converting the F13 remedy (vocabulary work) into
+  shipped score. The census's 4 tool-sided autopsies are named as the
+  CLASS where a regression is most likely to surface — not as a bound on
+  the flip set, which contains 6 cells the census never classified as
+  `fp_section_prior`. That refusal is not rhetorical: §2
   accepts the atom-gap cost as DISCLOSED, names the regression verdict as
   its designed detector, and names revert + the F13 referral as the
   designed outcome — that outcome, when it occurs, is a finding, not a
   process failure. So the tripwire is 0: pre-registered from the principle
-  + the census arithmetic, not fitted to the mechanism. The older
+  [per S4_ADVERSARIAL_REVIEW_R2 S1 — "+ the census arithmetic" is struck;
+  0 is also the driver template's default], not fitted to the mechanism.
+  The older
   qualitative form survives only as orientation — most flip-outs are
   expected `correct` under the auditor-need question (the clause's own
   text carries no match), and a concentration of regressions on atom-gap
@@ -360,7 +444,18 @@ baseline = latest closed-KEEP spine snapshot, always read from the cycle
 log, never named statically in a design doc. Mechanism, specified so OPEN
 can execute it mechanically: read `cycles/CYCLE_LOG.jsonl` (one JSON
 record per closed cycle, appended at CLOSE) and take the LAST line whose
-`decision` is `"keep"`; the baseline snapshot is `snapshots/<cycle>.json`
+`decision` is `"keep"`; **the mechanization drops the "spine" qualifier,
+knowingly [noted per S4_ADVERSARIAL_REVIEW_R2 E9]** — the log's fields are
+`{census_consulted, census_deltas, cycle, date, decision, exploratory,
+noop, overrides, prediction_pass_rate, shape}` and NONE distinguishes a
+spine keep from any other keep, so a future off-spine keep (different
+annotations/atoms/overlay) would be selected silently. Today it resolves
+correctly, and the mitigation is already in place: OPEN re-enumerates
+against whatever the rule yields and must reproduce §3's split or re-pin
+with a written delta, and the config pins in §6 make a differing lineage
+surface in `config.changed` rather than pass unnoticed. A spine marker in
+the log is the durable fix and belongs to the driver, not to this cycle.
+Continuing the mechanism: the baseline snapshot is `snapshots/<cycle>.json`
 for that line's `cycle` value — closed cycles publish their snapshot under
 their own cycle name as tag, and the driver resolves
 `baseline_snapshot_tag` to `snapshots/<tag>.json` at MEASURE. Whatever tag
@@ -389,6 +484,18 @@ correct — the subsumption credit is the clause's own evidence, and gating on
 exact names only would silently punish the overlay's adjudicated wins
 (cycles 1–3). Gate test: a clause scored solely via a containment edge must
 be un-gated (verify-RED against a mutant reading exact matches only).
+**Written against a SYNTHETIC edge fixture, and the interaction is
+currently VACUOUS [added per S4_ADVERSARIAL_REVIEW_R2 E7].** The shipped
+overlay is `overlay_empty.json` — `edges: []`, `max_edges: 0`, whose own
+provenance statement says it exists only as the vehicle that routes scoring
+through `ContainmentIndex` so `pricing_version` is recorded, with
+"containment.json's licensed edges … dormant (overlay reactivation is cycle
+S5's job)". No clause in any current baseline carries subsumption credit, so
+a builder hunting the live corpus for such a clause will find none: the gate
+test constructs its own edge fixture. The requirement is forward-looking —
+the interaction goes LIVE at S5 — and the sentence above about punishing
+"the overlay's adjudicated wins" therefore states the stakes for the
+reactivated overlay, not for today's scored corpus.
 
 **With the standing quality floors (test_quality_floor.py) [pre-registered
 per S4_ADVERSARIAL_REVIEW ENG-M3].** The floors are a `conftest.REQUIRED`
@@ -412,7 +519,22 @@ harm/helpfulness drift far below the measured value (a slack guard is the
 floor file's own founding pathology). Pre-registered treatment, the floor
 file's own rule for a changed measured quantity (its label-free re-
 derivation precedent): **re-derive all three floors AND the mean floor in
-the SAME COMMIT as the gate**, ~0.05 below the gated measurements —
+the SAME COMMIT as the gate, and correct the floor file's PROSE
+measurements in the same diff [added per S4_ADVERSARIAL_REVIEW_R2 E6 — a
+floor file's honesty about its own numbers is load-bearing here, and these
+become false under the gate]**: the module-level `FLOORS` comment
+("Measured label-free: helpfulness +0.2007, harm-avoidance +0.3502,
+over/under +0.2826") becomes **+0.2626 / +0.3782 / +0.2474**; and
+`test_mispaired_artifacts_do_not_clear_the_floors`'s docstring
+("helpfulness +0.0019, over/under +0.2516, harm-avoidance +0.3421", mean
++0.1985) becomes **helpfulness +0.0053, over/under +0.1484, harm-avoidance
++0.3369, mean +0.1636** — all four recomputed on the exact test path under
+the gate. Note the guard CHANGES CHARACTER and the docstring's "honest
+limit" note must say so rather than stay wrong in the tool's favour: under
+the gate over/under (+0.1484) trips the proposed 0.20 floor too, where the
+current text says it clears, so the mis-pairing is caught by two
+per-behaviour floors plus the mean, not by the mean alone. New floors,
+~0.05 below the gated measurements —
 caution ≈ 0.20, harm ≈ 0.33, helpfulness ≈ 0.21, mean ≈ 0.25 — with the
 gated measurements and the exact new floors pinned in the cycle record,
 and the mandatory ⚠️ rationale comment in the file: the quantity changed
@@ -472,9 +594,16 @@ frozen cut (`thresholds_frozen.json`), not a baseline snapshot; baseline:
 `baseline_snapshot_tag` is set AT OPEN by the §5 log-read rule (last
 `"decision": "keep"` line of `cycles/CYCLE_LOG.jsonl` →
 `snapshots/<cycle>.json`) and deliberately NOT named in this design
-(HANDOFF.md S4 ruling 2); `census: deferred_to_checkpoint`; `census_scope:
-dev`. Config pins — the measure snapshot must score on the same inputs and
-overlay as the keep lineage or the diff confounds: **`config.overlay =
+(HANDOFF.md S4 ruling 2); `census_scope: dev`. `census:
+deferred_to_checkpoint` is likewise DESCRIPTIVE PROSE, not a manifest key
+[corrected per S4_ADVERSARIAL_REVIEW_R2 E4 — the identical
+not-a-schema-key error one clause later: `census` is in neither
+`manifest_template` (cycle.py:227–244) nor `REQUIRED_MANIFEST_KEYS`
+(cycle.py:247–250), no manifest on disk carries it, and the DRIVER sets it
+itself for a code-shape cycle (cycle.py:672–673, `if shape == "code":
+state["census"] = "deferred_to_checkpoint"`)] — this cycle runs no census
+of its own, and the driver records that state. Config pins — the measure
+snapshot must score on the same inputs and overlay as the keep lineage or the diff confounds: **`config.overlay =
 overlay_empty.json` pinned explicitly** [added per S4_ADVERSARIAL_REVIEW
 ENG-m1: the entire keep lineage is overlay-ON, pricing_version 1.2, and
 S1's manifest carries both `overlay` and `thresholds` in config; omitting
@@ -487,12 +616,24 @@ step only: the gate and the one construction parameter for the dispatch
 rung below — or a versioned subclass beside the legacy class if the
 builder prefers the containment house pattern; the dispatch rung (c) is
 the F9 contract, the encoding is the builder's choice), `snapshot.py` +
-`dossier.py` (the version-key plumbing below), `conftest.py` (the
-registration fence requires it in the SAME diff as any new test file —
-ITERATION_LOOP.md anti-cheat perimeter, AGENTS.md "same diff, every
-time"; every NEW test file registered in `conftest._OPTIONAL`),
+`dossier.py` (the version-key plumbing below),
 `test_quality_floor.py` (the same-commit floor re-derivation pre-
-registered in §5), tests. **F9 version key — `section_gate_version` [per HANDOFF.md S4 ruling 4;
+registered in §5), tests. **Where the gate tests land, and why
+`conftest.py` is NOT declared [resolved per S4_ADVERSARIAL_REVIEW_R2 E5]:
+the gate tests go in `test_relevance.py`, which is EXISTING and is not in
+`conftest._OPTIONAL` (it is collected unconditionally), so no
+`conftest.py` change is required and declaring it would HALT the cycle —
+IMPLEMENT refuses when any declared file is byte-identical to its OPEN sha
+(cycle.py:830–836). The prior revision's `conftest.py` entry is therefore
+WITHDRAWN. The registration fence still binds if the builder instead adds
+a NEW test module: then the file must be created (at least as a stub)
+BEFORE OPEN — `_open` refuses any `files_to_change`/`gate_tests` path that
+does not exist (cycle.py:638–640) — and `conftest.py` declared in the same
+diff that registers it in `conftest._OPTIONAL` (ITERATION_LOOP.md
+anti-cheat perimeter, AGENTS.md "same diff, every time"). One route or the
+other, chosen at OPEN, never both.**
+
+**F9 version key — `section_gate_version` [per HANDOFF.md S4 ruling 4;
 vehicle specified and pattern claim corrected per S4_ADVERSARIAL_REVIEW
 ENG-M1]: A1 is not a pricing change, so it gets its OWN key, on the
 `pricing_version` pattern in the respects named below — and with one
@@ -512,10 +653,30 @@ NO-OP: the measure snapshot would score ungated) and no opt-out to drift
 on. Pre-gate scoring is reachable ONLY through the reconstruction
 dispatch in (c).
 
+> ⚠️ **PLACEHOLDER — E2 IS PENDING, DELIBERATELY NOT APPLIED HERE.**
+> `S4_ADVERSARIAL_REVIEW_R2` E2 (MAJOR) finds that the gate-OFF
+> **construction parameter** specified in (a)/(c) below cannot reach the
+> shipped scorer: the dispatch ladder builds `ContainmentIndex` /
+> `PatientIndex` on the paths that matter, and neither `from_files`
+> forwards unknown kwargs to `relevance.RelevanceIndex.__init__`
+> (`containment.py:452–458`/`:350`, `patient.py:189,229`) — so the
+> absent-key branch would silently fall through to the merged default,
+> the exact failure (c) names, and `containment.py` is in neither
+> `files_to_change` nor the driver's undeclared-input closure, so the
+> edit would not halt. **The finding is ACCEPTED and its resolution is
+> DEFERRED**: a config-driven index-builder refactor is being written in
+> parallel and will change which of E2's options (declare
+> `containment.py`+`patient.py`; post-construction assignment in
+> `dossier.py`; or a `relevance.Weights` field) is right. The gate-off
+> vehicle text below stands AS-IS pending that refactor and **must be
+> re-decided and rewritten before OPEN** — `files_to_change` freezes at
+> OPEN, so this cannot be carried past it.
+
 (a) module constant `SECTION_GATE_VERSION = "1.0"` beside the gate in
 `relevance.py`; the index carries one explicit construction parameter
 (gate on/off) whose DEFAULT is on — the parameter exists for the dispatch
-rung in (c), not as a user-facing seam;
+rung in (c), not as a user-facing seam; [E2 PENDING — see the placeholder
+above]
 (b) snapshot.py records `section_gate_version` in the snapshot's config
 identity UNCONDITIONALLY (every index it builds post-merge is gated) —
 pre-gate snapshots carry NO such key, exactly as pre-overlay snapshots
@@ -526,20 +687,26 @@ carry no `pricing_version` (absent is a defined identity value), and
 precondition);
 (c) dossier.py's reconstruction dispatch ladder gains the rung: ABSENT
 `section_gate_version` ⇒ the ungated (pre-A1) section assignment,
-rebuilt by passing the gate-OFF parameter EXPLICITLY (the in-tree scorer
-gates by default, so the absent-key branch must not fall through to the
-merged default), present ⇒ the gated scorer — absent is a DEFINED
+rebuilt by passing the gate-OFF parameter EXPLICITLY [E2 PENDING — the
+vehicle for "explicitly" is unresolved; see the placeholder above] (the
+in-tree scorer gates by default, so the absent-key branch must not fall
+through to the merged default), present ⇒ the gated scorer — absent is a DEFINED
 dispatch value, never a KeyError, never silently treated as current,
 mirroring `_index_for`'s pricing_version handling. The pre-gate baseline
 snapshot built under the sandwich rule therefore reconstructs ungated by
 dispatch — that is the F9 guarantee that the baseline side reproduces.
-**Two-axis composition [added per S4_ADVERSARIAL_REVIEW ENG-m3]: this
-ladder (`_index_for`) is keyed on `pricing_version` first, and S3b will
-land its own pricing rung (a new `pricing_version` value in snapshot
-config identity); whichever of S3b and S4 lands SECOND must extend EVERY
-rung of the first axis with the other (each pricing rung gains the gate
-branch, absent `section_gate_version` ⇒ the ungated variant of that
-rung's scorer), or a snapshot carrying both keys is dispatch-ambiguous.**
+**Two-axis composition [added per S4_ADVERSARIAL_REVIEW ENG-m3; made
+concrete per S4_ADVERSARIAL_REVIEW_R2 E3]: this ladder (`_index_for`) is
+keyed on `pricing_version` first, and it already has THREE live rungs
+today — `"2.0"` ⇒ `PatientIndex`, overlay present ⇒ `ContainmentIndex`,
+absent ⇒ legacy `RelevanceIndex` (dossier.py:346–364), with snapshots
+existing on all three. **S4 extends all three existing pricing rungs with
+the gate branch** (each rung gains: absent `section_gate_version` ⇒ the
+ungated variant of THAT rung's scorer), unconditionally — not only if it
+lands second. And per HANDOFF.md ⭐⭐⭐ ("run the S3b build …, then S4 —
+SEQUENCED (dispatch-ladder composition), not parallel") S4 DOES land after
+S3b, so it also extends S3b's new rung. Without that, a snapshot carrying
+both keys is dispatch-ambiguous.**
 (d) manifest `compatibility`: `{"version_key": "section_gate_version",
 "statement": ...}` — both fields non-empty, as `_open` requires of every
 shape:code manifest; the statement names the reachability mode:
@@ -583,7 +750,8 @@ cut, WITH the §3 corpus-max precondition (each behaviour's corpus-max
 clause has atom > 0) asserted as part of the OPEN enumeration [added per
 S4_ADVERSARIAL_REVIEW SCI-M1]; F9 reconstruction of pre-gate snapshots
 (absent `section_gate_version` ⇒ ungated path via the explicit gate-off
-parameter, bit-exact); and the §3 hard precondition on the
+vehicle [E2 PENDING — vehicle unresolved, see §6's placeholder],
+bit-exact); and the §3 hard precondition on the
 CYCLE5_DESIGN.md §4 instrument:
 `snapshot.assert_frozen_thresholds` passes on BOTH the log-resolved
 baseline and this cycle's measure snapshot. PREDICT: §3 verbatim, with

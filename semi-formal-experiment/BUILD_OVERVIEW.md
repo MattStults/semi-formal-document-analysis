@@ -20,8 +20,20 @@ Recommended order: **S3b build first** (it's the largest census error cause, 53%
 ## 1. What each build entails
 
 ### S3b build (B4) — beneficiary-aware patient pricing
-Attacks the census's largest error cause, `fp_promiscuous_atom` (53%): clauses firing on
-atoms whose harm does not actually fall on the query's declared patient. Three steps:
+Attacks the census's largest error cause, `fp_promiscuous_atom` (155 of 294 = 53%): clauses
+firing on atoms whose harm does not actually fall on the query's declared patient.
+
+⚠️ **Expected coverage is NOT 53% — cost this build against ~27%.** 53% is the size of the
+CLASS, not of the fix. At the ruled attribution population (D5: b-trim/439) the mechanism
+reaches 79 of the 155 cases (51%), because the remaining 76 are credited through atoms no
+band includes — 66 of the 80 resolved matched atoms there are patient-free ACTS, excluded
+by the situations-only scope pin. 79/294 ≈ **27% of all disagreements**. The residue is not
+one problem: part is the implied-effects layer's (bearer implied, not named), part is a
+possible act-population extension (`D5B_ACT_ATOMS.md`, ceiling ≤17 cases), and roughly 30
+cases are helpfulness-domain matches with no harm or protection in them at all, which
+attribution cannot address at any band. Evidence: `D5_WORKED_EXAMPLES.md`.
+
+Three steps:
 1. **Attribution backfill** (model-bound): a cheap model attributes, per clause-instance,
    who the harm/protection falls on (`harm_bearers`), panel-blind.
 2. **Parity validation** (model-bound): certify the cheap model against a frontier model

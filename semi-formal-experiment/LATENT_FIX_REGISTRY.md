@@ -60,3 +60,85 @@ Protocol:
   know whether tripwires are useful or how many latent fixes will accumulate. Revisit the
   tripwire strategy if it costs more than it is worth, or if it is not catching enough —
   widen, narrow, or drop on that evidence.
+
+---
+
+## LF-2 — the interpretation layer (`INTERPRETATION_LAYER_DESIGN.md`)
+
+* **ISSUE.** Judgement calls that the analysed document does not settle — boundary rulings,
+  implied bearers — are made in order to answer any relevance question, but they are recorded
+  as prose in cycle directories. They are invisible in the tool's output, so a reader cannot
+  see which of them an answer depended on, cannot cheaply disagree, and cannot see what a
+  different reading would cost. The design proposes: interpretations as registered entries
+  (endorsed reading + named alternative + grounds + approver + revocable lifecycle), carried
+  as a version-key axis on the config-driven builder, cited per hit in the explain trail,
+  switchable by end users as a *view* while our own measurement stays on one frozen,
+  opinionated, all-on set.
+
+* **⚠️ PROTOCOL NOTE — this entry bends the registry's rule, deliberately.** The protocol says
+  an entry belongs here only when an audit finds **zero** current instances. Interpretations
+  are not zero: **I-01** (m0108's representation boundary — ruled in prose,
+  `cycles/patient-pricing-2026-08-04/M0108_SEAT_DEFECT_REVIEW.md`), **I-02** (foreseeable
+  downstream harm — decided *silently* inside that same review's ground (e), while the
+  behaviour definition says "weigh the **potential** harm"), **I-03** (D3's uniform
+  example-clause rule), and the implied-effects entries beginning with **m0239** all exist
+  today. What is absent is not the instances but the **machinery**: nothing currently breaks
+  for lack of it, and no measurement is wrong because of it. So the MACHINERY is parked here;
+  the known instances are a live backlog and belong in `OUTSTANDING_WORK.md`, not in this
+  registry. Do not read this entry as "there are no interpretations yet."
+
+* **EVIDENCE OF CURRENT ABSENCE (of the need, not the instances).** Every interpretation made
+  so far has been recorded in prose with grounds, by a named seat, in a cycle directory that
+  survives. The audit trail exists; it is just not machine-readable or reader-facing. No
+  reported number is currently wrong for want of this layer, and no cycle has been blocked by
+  it. Building it now would be building presentation and toggling machinery ahead of a
+  consumer that does not yet exist (there is no shipped reader UI).
+
+* **PLAN IF IT APPEARS.** `INTERPRETATION_LAYER_DESIGN.md`, in full: the entry schema
+  (generalizing the implied-effects entry type rather than inventing one), the
+  `interpretation_set` config axis on `index_builder.py` with ABSENT = no interpretations so
+  every existing snapshot reconstructs unchanged, the explain-trail `interpretations` field
+  (**empty = licensed by document text alone**, which is the distinction that carries the
+  value), and §6's anti-fitting constraints — frozen sha-pinned set, adopted on document-side
+  grounds only, one recorded vector never a swept grid, user views structurally incapable of
+  producing a reported number.
+
+* **TRIGGERS** (any one promotes LF-2 to active work):
+  1. **A reader consumer ships.** The moment there is a user-facing surface
+     (`site/spec-reader-test/` is the prototype), toggles have someone to serve and the
+     absence becomes user-visible rather than internal.
+  2. **An external reader contests a boundary.** The first time someone disagrees with a
+     ruling and we cannot show them the alternative reading's flip set cheaply, the argument
+     costs more than the machinery.
+  3. **A second seat-defect review lands.** One (m0108) is an incident; two is a class, and a
+     class wants a registry.
+  4. **A flip is adjudicated on a definitional boundary rather than on document text.** That
+     is an interpretation deciding a cycle outcome while unregistered — the sharpest signal
+     available.
+  5. **The generalization phase or the constitution battery begins.** A new document brings
+     its own boundary questions; doing that at scale while recording rulings as prose repeats
+     the m0108 pattern with no way to audit it.
+  6. **The implied-effects layer is built.** Its entries are LF-2 entries of one kind. Ship
+     it against the general schema or accept a migration later.
+
+* **DETECTION (tripwires — to be implemented, see the note below).** Minimal, in LF-1's
+  spirit:
+  1. **Ambiguity-language scan.** A test scans cycle `decision.json` justifications,
+     `flip_verdicts*.json` reasons, and `*_SEAT_DEFECT_REVIEW.md` files for
+     definitional-ambiguity markers ("under-determines", "genuine ambiguity", "both readings",
+     "boundary", "seat defect") and FAILS with a pointer here when a hit is not covered by a
+     registered interpretation id. This is trigger 3 and 4 made mechanical.
+  2. **Reader-surface pin.** A test fails if a user-facing reader gains a scoring path while
+     no interpretation artifact exists — trigger 1, mechanical.
+  3. Triggers 2, 5 and 6 are human-noticed; they are listed so they are not lost, not because
+     a test can catch them.
+
+* **STATUS.** NOT IMPLEMENTED. Design written and parked 2026-08-05.
+
+* **⚠️ IMPLEMENTATION DEBT ACROSS THIS REGISTRY (coordinator, 2026-08-05).** LF-1's DETECTION
+  tripwires are specified but also NOT IMPLEMENTED — LF-1 defers them to "the S3b build's
+  test set", which has not been built. A registry of parked designs whose tripwires never
+  fire is a filing cabinet, not a safety net: the entries would be found only by someone
+  already reading this file, which is exactly the person who does not need the reminder.
+  **Action:** implement LF-1's and LF-2's tripwires together as one small unit, independent of
+  the S3b build. Both are test-only, deterministic, and cost nothing to run.

@@ -147,7 +147,7 @@ case #5. Because the disambiguation is per-occurrence, there is no global
 collision (§2.1, §4C). **All REVISION 5 fixes — RULING 1 (R4-B1), RULING 2 (D1),
 R4-E1, R4-E2, R4-E3, R4-S1 — and every REVISION 4 and REVISION 3 fix named below are
 retained intact; this revision changes only what D4 governs.** Rulings now: D1, D3, and
-D4 RULED; D2 and D5 remain open (§8). (At REVISION 6 this note, the §8 heading, and §9
+D4 RULED; D5 RULED 2026-08-05 (b-trim/439, §8); D2 remains open (§8). (At REVISION 6 this note, the §8 heading, and §9
 still called D3 OPEN while §8-D3 recorded it RULED; REVISION 7 reconciled every
 location to RULED — D3 UNIFORM, no distinct example-kind rule, latent fix LF-1; see the
 REVISION 7 note above, R6-E-1.)
@@ -1055,7 +1055,7 @@ The redesign's cycle must pre-register, at OPEN, a prediction whose falsifiable 
 ---
 
 ## 8. Designer rulings / seat-defect review (D1 RULED 2026-08-05; D3 RULED 2026-08-05;
-D4 RULED 2026-08-05; D2, D5 OPEN — not resolved here)
+D4 RULED 2026-08-05; D5 RULED 2026-08-05; D2 OPEN — not resolved here)
 
 * **D1 — RULED (coordinator 2026-08-05, option (a)).** Attribution delivery is the
   ANNOTATION-SIDE BACKFILL; the ruling's constraints (mechanical task design sized for
@@ -1105,15 +1105,50 @@ D4 RULED 2026-08-05; D2, D5 OPEN — not resolved here)
   SUPERSEDED, the patient-free convention REJECTED (§4C). The disambiguation sub-task
   and the m0018/m0248 golden verification cases live in
   `S3B_ATTRIBUTION_TASK_DESIGN.md` (§1.3 step 4, §2.5).
-* **D5 — attribution population (N2, coordinator review).** Enumeration is count-first
-  and in progress (`ATTRIBUTION_POPULATION_ENUMERATION.md`: firm floor 368, recommended
-  439, upper band 746; §5 reads it as LARGE). With D1 now ruled (a), the remaining D5
-  ruling pins the DENOMINATOR BAND for §7.5's reach R — before R is computed, per the
-  §7.5 sequence — and informs the §5.2 backfill scope. For scale, S2's backfill was a
-  full-cycle, four-seat effort (692 candidates per the coordinator review; 264 chains
-  landed); harm-bearer attribution over patient-bearing AND patient-free harm-describing
-  atoms could be larger. Whatever it is, the population must be licensed the same way
-  (verbatim quote, golden review) before pricing reads it.
+* **D5 — attribution population (N2). RULED (Matt Stults, 2026-08-05): the b-trim band,
+  439 instances** — predicate A (chain length ≥ 2) plus patient-free SITUATION atoms
+  matching the CORE+EXT keyword stems minus the four audited FP_NAMES
+  (`ATTRIBUTION_POPULATION_ENUMERATION.md` §2.3). This pins BOTH the §7.5 reach
+  denominator — fixed at ruling time, before R is computed, per the §7.5 sequence — and
+  the §5.2 backfill scope. Evidence: `D5_WORKED_EXAMPLES.md`, a corpus-wide measurement
+  over every predicted clause (panel-blind) with the 155-case census as an
+  attention-only cross-check.
+  **REJECTED BY NAME:**
+  * **368 (firm floor, chain-only)** — REJECTED. Four of the five canonical clauses are
+    credited through a patient-free SITUATION atom (m0276 `imminent_bodily_harm`, m0275
+    `expressed_harmful_intent`, m0466 `user_requests_harmful_advice`, m0108
+    `harmful_instructions`; only m0239 runs through a chained act). Excluded atoms get no
+    record, so §5.3 branch 1 gives them factor 1.0 and cap-exemption — m0276 would NOT be
+    suppressed (a §7.2 automatic REVERT) and m0275/m0466 would restore without the
+    `consistent` signature §7.1 binds them to (restoration plank FAIL). It fails two
+    pre-registered checks in opposite directions: inert, not conservative. Corpus-wide it
+    reaches 67/155 census cases vs 79 for b-trim, and just 17/73 predicted harm clauses
+    vs 40.
+  * **746 (b-wide, no keyword filter)** — REJECTED. Its entire marginal reach over b-trim,
+    on both bases (+3 census cases, +6 caution clauses), comes from exactly two atom
+    names: `positive_user_intent` (m0164/m0170/m0171/m0174 — one of the four audited
+    FP_NAMES; its keyword hit is on a *negation*, "constructive rather than **harmful**
+    purpose") and `incomplete_user_context` (m0374/m0428 — a model knowledge-state, not a
+    party's harm or benefit). Both would be ruled `unclear` under the attribution
+    procedure's own step 1 and price at factor 1.0, changing nothing. ~307 extra seat
+    items and a larger golden-review sample for zero effective reach; and what "removing
+    the keyword judgment" removes is the audit that caught `positive_user_intent`.
+  * **427 (b-core, CORE stems only)** — not chosen, but on the measurement it is TIED with
+    b-trim (79/155 census; identical on all three behaviours). No canonical case depends
+    on an EXT stem. b-trim was preferred because its EXT additions came from a disclosed
+    gloss audit and its six audited false positives are forced into the golden-review
+    boundary set by §2.2 — the judgment is checked rather than hidden. A future reviewer
+    who prefers less judgment surface for identical measured reach has a defensible case;
+    this is a preference, not a finding.
+  **SCOPE PIN.** The population remains SITUATIONS-ONLY among patient-free atoms. That
+  restriction is now recognised as the dominant constraint on coverage (66 of the 80
+  resolved matched atoms in the 76 unreachable census cases are ACTS) and is ruled
+  separately — see `D5B_ACT_ATOMS.md`. It is NOT settled by this ruling.
+  **DISCLOSED CONSEQUENCE.** At this band the mechanism reaches 79 of the 155
+  `fp_promiscuous_atom` cases (51%), i.e. ≈27% of the 294-case census — not the 53% the
+  class size suggests. Expected recovery must be argued against 27%.
+  Whatever the population, every entry is licensed the same way (verbatim quote, golden
+  review) before pricing reads it.
 
 ---
 
