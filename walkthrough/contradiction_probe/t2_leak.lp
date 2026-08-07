@@ -15,6 +15,4 @@
 % the plain-predicate form has no way to say so.
 % =====================================================================
 
-asserts(harm3p, forbid, A) :- b_asserts(harm3p, forbid, A).
-passage(harm3p).
 beats(m0252, harm3p).

@@ -25,10 +25,43 @@ This was misread for most of the session. Consequences:
 - behaviour-vs-document contradiction is **norm versus norm**, which is where deontic logic is
   strongest and where we have no evidence
 
-**2. The deontic question narrowed.** Not "deontic or not" but: **do we need deontic *operators*
-(`O`/`P`/`F` with axioms), or only normative *predicates* plus a superiority relation?**
-`m0255.lp` already carries `forbids/2` as an ordinary predicate alongside ontological facts, in one
-file — so this is probably **one encoding, not two**. Under test; see below.
+**2. ⭐ ANSWERED 2026-08-07 — the deontic question is closed.** `contradiction_probe/FINDINGS.md`.
+
+**One encoding of the document, one of the behaviour, two queries off them.** Relevance is a
+*projection* of the behaviour file, not extra input. The behaviour representation exists and
+**names no clause** — the first time anything here has.
+
+⛔ **The namespace separation is MANDATORY and was not obvious.** The behaviour is norm-shaped, so
+putting it in `asserts/3` with the clauses is the simplification a translator reaches for. Adding
+one line — `beats(clause, behaviour)` — makes a real conflict **disappear**, satisfiably, with the
+acyclicity guard silent. That is compliance aggregation, which the ruling forbids. Needs a type
+constraint, 2 lines.
+
+**Deontic operators are NOT needed. Exactly one deontic AXIOM is:** `O(¬a) ≡ F(a)` over act
+complements. The corpus states the same prohibition both ways — `m0208` *"must not generate"* /
+`m0270` *"should refuse"* — and plain predicates see two unrelated ground terms. The hand-written
+substitute is O(n²) and was **wrong on the first attempt**, producing a false positive between a
+clause and a behaviour that agree.
+
+**Other required fixes:** act-index both sides (the hypothesis as written derives **zero** conflicts
+— a silent type error); `beats/2` → **`beats(Sayer, Winner, Loser)`**, because `m0255` *states* the
+override, scores 5/6, and is unreachable without it.
+
+⭐ **CEPA/CNPA is real, clause-local, and flips the verdict.** `m0263` covers harm *"to the user"*
+where it could have said "or anyone on camera" — structured silence. The plain form answers "no
+contradiction" by absence of a rule, and `closure=open` is **bit-identical** to `closure=cepa`.
+Needs a **forced, per-act** closure declaration, enforced in `link.py`.
+
+⭐ **Invariant 2 has no licence class for the behaviour text.** `textual`/`assumed`/`world` are all
+defined relative to *the document*. A fourth class is needed or the invariant does not reach the
+behaviour side at all.
+
+**Contrary-to-duty is a non-issue:** zero clauses in 593 have a CTD antecedent. The blocker there is
+that the norms one would hang off are **comparatives** (*"minimize side effects"*), which have no
+violation condition.
+
+⚠️ 17 clauses of 593, one behaviour, hand-encoded. `averts/2` is an inference the behaviour text
+does not license and the CEPA/CNPA result rests on it entirely.
 
 **3. The ontology-fit test measures the wrong consistency.** It measures run-to-run agreement on a
 single token. Our failure modes are cross-document: do **synonyms converge** (#8), do **homonyms
@@ -87,10 +120,10 @@ returns the empty set from all six encodings when the ontological block is remov
 
 ## Open, in the order I would take them
 
-1. ⭐ **One behaviour, represented so a solver can use it and no clause is named.** Everything is
-   blocked on this. `behaviour_harm3p.lp` hardcodes clause ids. Under test now
-   (`contradiction_probe/`), testing whether plain predicates + superiority suffice, and whether
-   **CEPA/CNPA** — is document silence permission or prohibition? — is the real gap.
+1. ✅ **DONE — one behaviour represented, naming no clause.** `contradiction_probe/behaviour.lp`.
+   The six required fixes are listed in NEW-2; none has been implemented. **Implementing them is
+   now the top item**, in this order: act-indexing (free) → type constraint (2 lines) →
+   `beats/3` → forced closure declaration → the `O(¬a) ≡ F(a)` axiom.
 2. **Stage 1, both arms of open question 2** — supply the dictionary at generation, or normalise
    afterwards. Contrary published evidence exists against the first.
 3. **Rebuild the ontology-fit test** against internal consistency (NEW-3).

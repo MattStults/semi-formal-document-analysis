@@ -18,9 +18,9 @@ SHOW = ("conflict", "conflict_h", "relevant", "silent", "because",
 
 def solve(files, consts, want=SHOW, models=1):
     args = [f"-c{k}={v}" for k, v in consts.items()]
-    ctl = clingo.Control(args + [str(models)])
     msgs = []
-    ctl.register_observer  # noqa - keep clingo import honest
+    ctl = clingo.Control(args + [str(models)],
+                         logger=lambda code, msg: msgs.append(msg))
     for f in files:
         ctl.load(f)
     ctl.ground([("base", [])])
@@ -81,6 +81,12 @@ show("T1e  ... same, with the hand-written complement/2 duality layer on",
      F(*BASE, "t1_basic.lp"), dict(form="defeat", bform="refuse_only", dual="on"),
      want=("conflict",))
 
+show("T1f  ... the duality table as I FIRST wrote it (dual=naive)",
+     F(*BASE, "t1_basic.lp"), dict(form="defeat", bform="refuse_only", dual="naive"),
+     want=("conflict",),
+     note="  m0198 forbids producing it and the behaviour requires refusing it.\n"
+          "  They agree. The extra row is a false positive an axiom cannot make.")
+
 # --------------------------------------------------------------------- T2
 show("T2a  exception case, NO defeat refinement",
      F(*BASE, "t2_exception.lp"), dict(form="act"), want=("conflict",),
@@ -89,14 +95,18 @@ show("T2a  exception case, NO defeat refinement",
 show("T2b  exception case, defeat refinement on",
      F(*BASE, "t2_exception.lp"), dict(form="defeat"), want=("conflict", "because"))
 
-show("T2c  TYPE LEAK: behaviour unified into asserts/3, one beats/2 fact added",
-     F(*BASE, "t1_basic.lp", "t2_leak.lp"), dict(form="defeat"),
-     want=("conflict", "because"),
-     note="  same situation as T1c, which found a real conflict")
+show("T2c-0  the unified (one-namespace) reading, no leak file",
+     F(*BASE, "t1_basic.lp", "t2_mirror.lp"), dict(form="unified"),
+     want=("conflict",), note="  control: the conflict is found")
+
+show("T2c  TYPE LEAK: unified namespace + one beats/2 fact",
+     F(*BASE, "t1_basic.lp", "t2_mirror.lp", "t2_leak.lp"), dict(form="unified"),
+     want=("conflict",),
+     note="  same situation as T2c-0, which found a real conflict")
 
 show("T2d  ... with the type guard on",
-     F(*BASE, "t1_basic.lp", "t2_leak.lp"), dict(form="defeat", typed="on"),
-     want=("conflict",))
+     F(*BASE, "t1_basic.lp", "t2_mirror.lp", "t2_leak.lp"),
+     dict(form="unified", typed="on"), want=("conflict",))
 
 show("T2e  Problem #17 control: a deliberately cyclic beats/2",
      F(*BASE, "t1_basic.lp", "t2_cycle.lp"), dict(form="defeat"), want=("conflict",),
@@ -110,7 +120,7 @@ show("T3a  CTD, primary norm encoded faithfully as a COMPARATIVE (prefer)",
 
 show("T3b  ... same, primary norm collapsed to `forbid` (Problem #5)",
      F(*BASE, "t3_ctd.lp"), dict(form="defeat", primary="forbid"),
-     want=("conflict", "violation"))
+     want=("conflict", "violation", "because"))
 
 show("T3c  CTD coverage: the same clauses with the misstep NOT yet made",
      F(*BASE, "t3_nodone.lp"), dict(form="defeat", primary="forbid"),

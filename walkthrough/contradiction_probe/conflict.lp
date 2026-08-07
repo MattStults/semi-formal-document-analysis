@@ -12,8 +12,8 @@
 % ../deontic_probe/kernel.lp, including its acyclicity guard on beats/2.
 % =====================================================================
 
-#const form    = h.        % h | act | defeat
-#const dual    = off.      % off | on     -- O/F duality across act complements
+#const form    = h.        % h | act | defeat | unified
+#const dual    = off.      % off | on | naive   -- O/F duality across complements
 #const typed   = off.      % off | on     -- behaviour may not enter beats/2
 #const closure = open.     % open | cepa | cnpa   -- what silence means
 
@@ -44,11 +44,31 @@ conflict(P, B, A) :- because(P, oblige, A), b_asserts(B, forbid, A), form = defe
 % consequence: it needs complement/2, hand-written per act pair (behaviour.lp §4).
 % ---------------------------------------------------------------------
 conflict(P, B, A) :- because(P, permit, A), b_asserts(B, oblige, C),
-                     complement(C, A), dual = on.
+                     complement(C, A), dual != off.
 conflict(P, B, A) :- because(P, oblige, A), b_asserts(B, oblige, C),
-                     complement(C, A), dual = on.
+                     complement(C, A), dual != off.
+
+% ⛔ WRONG, AND KEPT AS EVIDENCE. This is the third rule I wrote, by symmetry
+% with the two above. It is a false positive: F(produce(m)) and O(refuse(m))
+% AGREE. Deontic logic gets O(¬a) ≡ F(a) from an axiom and cannot make this
+% mistake; a hand-written duality table can, and did, on the first attempt.
+% `dual=naive` reproduces it.
 conflict(P, B, A) :- because(P, forbid, A), b_asserts(B, oblige, C),
-                     complement(C, A), dual = on.
+                     complement(C, A), dual = naive.
+
+% ---------------------------------------------------------------------
+% LAYER 2b -- THE UNIFIED FORM. The hypothesis says the behaviour is carried
+% by "an ordinary predicate" and that contradiction is "refined by defeat".
+% Read straight, that means one namespace: the behaviour goes into asserts/3
+% like every clause, and defeat prunes BOTH sides. This is the reading a
+% translator will reach for, because it is simpler. T2c shows what it costs.
+% ---------------------------------------------------------------------
+conflict(P, B, A) :- because(P, permit, A), because(B, forbid, A),
+                     behaviour(B), form = unified.
+conflict(P, B, A) :- because(P, forbid, A), because(B, oblige, A),
+                     behaviour(B), form = unified.
+conflict(P, B, A) :- because(P, oblige, A), because(B, forbid, A),
+                     behaviour(B), form = unified.
 
 % ---------------------------------------------------------------------
 % LAYER 4 -- TYPE GUARD.  The behaviour is not a passage and must never be

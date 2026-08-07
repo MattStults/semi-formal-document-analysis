@@ -130,6 +130,11 @@ for an assumed fact, which manufactures problems #1 and #6 **behind a passed che
 licence reviewer then grades the citation rather than the licence class. Grading reaches the actual
 goal — no unlicensed inference is invisible — without that exit.
 
+⛔ **The three classes do not reach the behaviour side.** All are defined relative to *the
+document*; a fact read out of a **behaviour statement** fits none of them. A fourth class is
+required — found 2026-08-07 when a behaviour was represented for the first time
+(`contradiction_probe/FINDINGS.md`, Finding 0).
+
 ⭐ **A conclusion inherits the weakest licence in its derivation.** That is what makes "change one
 asserted fact and the match disappears" visible in the output rather than discovered later.
 
@@ -715,6 +720,41 @@ It remains usable as a **stable, well-cited class vocabulary**. It is not a main
 
 ⚠️ **Not design details. Each is load-bearing, and each currently has no evidence or contrary
 evidence.** Recorded rather than resolved, deliberately — this design has outrun its evidence once.
+
+### 1. Representation — CLOSED 2026-08-07 by measurement
+
+⭐ **Plain clingo, plus a superiority relation, plus exactly ONE deontic axiom.** Not deontic
+operators, not a deontic library. Evidence: `contradiction_probe/FINDINGS.md` (behaviour-vs-document
+contradiction) and `deontic_probe/FINDINGS.md` (relevance).
+
+**Structure:** one encoding of the document (`asserts/3`), one of the behaviour (`b_asserts/3`),
+two queries off them. Relevance is a **projection** of the behaviour file, not extra input.
+
+⛔ **The namespace separation is mandatory.** The behaviour is norm-shaped, so unifying it with the
+clauses is the simplification a translator reaches for. One `beats(clause, behaviour)` fact then
+makes a real conflict **disappear** — satisfiably, with the acyclicity guard silent, because the
+relation is acyclic and merely about the wrong kind of thing. That is compliance aggregation, which
+this design forbids. Enforce with a type constraint.
+
+**The one deontic axiom: `O(¬a) ≡ F(a)` over act complements.** The corpus states the same
+prohibition both ways (`m0208` *"must not generate"* / `m0270` *"should refuse"*), and plain
+predicates see two unrelated ground terms. ⚠️ The hand-written substitute is O(n²) **and was wrong
+on its first attempt**, producing a false positive between a clause and a behaviour that agree.
+
+**Also required, none yet implemented:**
+- act-index both sides — without it the natural encoding derives **zero** conflicts, silently
+- `beats/2` → **`beats(Sayer, Winner, Loser)`** — `m0255` *states* an override, scores 5/6, and is
+  unreachable because nothing records who said it
+- ⭐ a **forced, per-act default-closure declaration**, enforced in `link.py`
+
+**Contrary-to-duty needs nothing:** zero clauses in 593 have a CTD antecedent. What blocks it is
+that the norms it would hang off are **comparatives** — *"minimize side effects"* — which have no
+violation condition.
+
+⚠️ Evidence is 17 clauses of 593, one behaviour, hand-encoded, and the closure result rests on an
+inference the behaviour text does not license.
+
+#### Superseded: the earlier ruling and its reasoning
 
 ### 1. Representation — RULED 2026-08-07: plain ASP now, deontic possibly later
 
