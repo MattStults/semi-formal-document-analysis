@@ -52,7 +52,9 @@ the first stage has never been executed.
 
 | | |
 |---|---|
+| ⭐ `STATE.md` | **read this second.** Current state, rulings in force, what is built, what has never run, and the open questions in order |
 | `resources/03_pipeline.md` | ⭐ the design. Source of truth for this directory |
+| `DEFERRED.md` | features deliberately not built yet, each with the check that deferring it blocks nothing |
 | `resources/00_established_practice.md` | published practice for validating a text→logic translation, with provenance |
 | `resources/01_which_checks_are_scripts.md` | which checks are deterministic, which need a model, and what context each seat may and may not see |
 | `resources/02_problem_taxonomy.md` | how to enumerate the problem space so coverage is arguable rather than asserted |
@@ -60,7 +62,12 @@ the first stage has never been executed.
 | `WALKTHROUGH_REPORT.md` | the hand-executed worked example that produced most of Part 1's problem list |
 | `m0255.lp`, `clauses/`, `m0255_case_*.lp`, `witness.lp`, `behaviour_harm3p.lp` | that worked example — one clause, its three linked dependencies, four probe cases |
 | `link.py` | the built deterministic checks: cross-reference closure, unresolved names, rule-shape |
-| `paper_pipeline/` | pipeline components as they are built, hand-executed first |
+| `paper_pipeline/` | pipeline components, hand-executed first — stage 0 competency questions, and the ontology-fit test (⚠️ measures the wrong consistency, see `STATE.md` NEW-3) |
+| `model/` | a formal model **of the design** — integrity constraints, staleness guard, waivers requiring date/who/why, 15 integration tests. `model/REVIEW_BRIEF.md` is the review process, and permits "I cannot confidently review this" as an answer |
+| `deontic_probe/` | six encodings of relevance in deontic logic, ablated and scored. Finding: the operators **propagate** relevance, they do not supply it |
+| `contradiction_probe/` | behaviour-vs-document contradiction with plain predicates + superiority, and the first behaviour representation naming no clause |
+| `SCRATCH_concept_phase.md` | ⚠️ throwaway. The ontology phase, mid-revision |
+| `resources/00`–`05` | established practice · script-vs-model split · problem taxonomy · deolingo assessment · what nine legal-ontology repos actually did |
 
 ## Working method
 

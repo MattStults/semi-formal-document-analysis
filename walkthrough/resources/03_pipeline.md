@@ -79,16 +79,35 @@ check already works.
 
 **Disputed: when.** Two shapes, and the choice is empirical, not architectural.
 
-| | **A — supply at generation** | **B — normalise afterwards** |
-|---|---|---|
-| the translator gets | the existing concept dictionary as context | nothing; it coins names freely |
-| concepts fixed | while translating | in a separate step that maps names → concepts and verifies each mapping |
-| for | convergence by construction, no post-hoc merge | ⭐ writing logic and matching concepts are **different tasks**; separating them makes each individually verifiable |
-| against | ⛔ **contrary published evidence** — supplying a model its own accumulated atom list *increased* hallucination in the closest published analogue | needs a merge procedure, which has its own failure modes |
+| | **A — supply at generation** | **B — normalise afterwards** | **C — resolve deterministically** |
+|---|---|---|---|
+| the translator gets | the concept dictionary as context | nothing; it coins names freely | nothing; naming is not its job |
+| concepts are fixed | while translating | in a separate step that maps names → concepts | by a **lookup the model never sees** |
+| for | convergence by construction | ⭐ writing logic and matching concepts are **different tasks** | ⭐ takes the whole problem out of the model's hands; #8 and #9 stop being possible rather than being caught |
+| against | ⛔ **contrary published evidence** — supplying a model its own accumulated atom list *increased* hallucination | needs a merge procedure with its own failure modes | requires the lookup to exist |
 
-Arm B is also what the isomorphism source actually recommends and this design previously dropped:
-build an **intermediate representation** holding the correspondence, then transform it — rather
-than emitting the executable form in one shot.
+##### On arm C, because it is the most attractive and the least explored
+
+If concept resolution were a **deterministic function of a word plus a meaning annotation**, then no
+prompt in this pipeline would need to care about naming at all: the translator writes whatever it
+writes, the lookup normalises it, and the read-back confirms the normalisation in English where a
+reader can see it.
+
+⚠️ **Off-the-shelf knowledge graphs will not supply this.** Wikidata, BabelNet, WordNet and similar
+enumerate *general* concepts. The terms that matter here — *restricted content*, *the transformation
+exception*, *prohibited content* — are **coined by the document and defined only in it**. A general
+lookup would resolve the ordinary words and miss every term that carries the specification's actual
+meaning.
+
+⭐ **But the document defines its own vocabulary, and that is the better starting point.** 84 clauses
+are already classified as definitional. A deterministic rule derived *once* from those — by a model,
+reviewed once, then applied mechanically forever after — is a far smaller thing to get right than
+a per-clause judgement repeated 593 times, and it is checkable: a bad rule fails visibly across a
+whole class of clauses rather than silently on one.
+
+**Open:** what the rule operates on (surface word? word plus the clause's own gloss?), what it does
+with a term the document never defines, and whether one rule can cover a document that defines some
+terms explicitly and leaves others to context.
 
 ⇒ **Not decided here.** Both arms are cheap. See Part 5, open question 2. Do not build the merge
 machinery before knowing which arm we are in.
@@ -301,17 +320,55 @@ competency question that no passage-level test supports is a promise the work is
 
 ### 1 — Translate
 
+```mermaid
+flowchart TD
+    subgraph FIXED["cached block — identical for all 593 clauses"]
+      I1[instructions]
+      I2[worked examples: one good, five bad]
+      I3[the 17 known failure modes]
+      I4[the output format]
+    end
+    subgraph VARY["varies per call — put last"]
+      V1[the clause text]
+      V2[texts of every clause it cross-references]
+      V3["the concept dictionary<br/>⚠️ arm A only — disputed"]
+    end
+
+    FIXED --> M(( model ))
+    VARY --> M
+
+    M --> Q{can it translate<br/>this faithfully?}
+    Q -->|no| AB[["ABSTAIN with a reason<br/>— a real answer, and the<br/>rate is a reliability signal"]]
+
+    Q -->|yes| OUT[format-forced output]
+    OUT --> O1[1 · the logic<br/>one clause, one file]
+    OUT --> O2[2 · declared interface<br/>provides / requires / inputs]
+    OUT --> O3["3 · a licence + citation<br/>on EVERY fact<br/>⭐ most of the pipeline waits on this"]
+
+    O1 & O2 & O3 --> NEXT([to stage 2 — deterministic checks])
+
+    FAIL[/"a check failed"/] -.-> REP[["REPAIR — fresh conversation.<br/>Carries: prior attempts + the checks<br/>they failed, with reasons.<br/>⛔ Never the expected verdicts."]]
+    REP -.-> M
+```
+
 #### What happens
 
 A model is given one clause and asked to write a small logic program that says what the clause
 says. It gets four things and is denied three.
 
+⚠️ **Order the prompt for cache reuse: everything repeated first, everything that varies last.**
+Instructions, worked examples and the error-case list are identical across all 593 clauses; the
+clause text and its closure change every call. Putting the fixed part first lets the provider reuse
+its cache, and this stage is essentially the whole per-clause budget.
+
+⇒ **Break this rule the moment evidence says capability needs it.** Demonstrated capability
+outranks cost; a cheap prompt that produces unusable modules is not cheap.
+
 **It is given:**
-<MATT NOTE: The order here is important for cost. If we want to reuse the cache we need to put all of the repeated stuff first, followed by clause text or anything else that varies per prompt. But demonstrated capability is more important so it's fine to break this rule if emperical evidence shows this is necessary>
 | | why |
 |---|---|
 | the clause text | the thing being translated |
-| the text of every clause this one cross-references | ⭐ a clause that modifies rules defined elsewhere cannot be translated in isolation. The document's own markdown anchors give this list mechanically | <MATT NOTE: Are you confidence the document's own mardown anchors are sufficient to give every cross reference accurately?  I would expect to need a model here but I am happy if I am wrong.>
+| the text of every clause this one cross-references | ⭐ a clause that modifies rules defined elsewhere cannot be translated in isolation. The document's own markdown anchors give this list mechanically | <√Are you confidence the document's own mardown anchors are sufficient to give every cross reference accurately?  I would expect to need a model here to find all of the references but I am happy if I am wrong. For example, if a section references some rules defined elsewhere, how are these provided?>
 | the concept dictionary | ⚠️ **only in arm A** — see open question 2, this is disputed |
 | instructions, worked examples, and the known failure modes | a reviewer told only "is this faithful?" passed a fabricated policy. Naming the failure is what makes it visible |
 
@@ -324,6 +381,15 @@ says. It gets four things and is denied three.
 The last one has teeth: it is why repair happens in a fresh conversation rather than by continuing
 this one. After one round-trip a continued conversation has seen every expected answer, and passing
 the checks stops meaning anything.
+
+⚠️ **Freshness is about what carries forward, not about amnesia.** A translator that cannot see its
+own previous attempts will repeat their mistakes, and repair could fail for that reason alone. So
+the repair prompt carries **the prior attempts and every check they failed, with reasons** — an
+accumulating error log. What it never carries is the **expected verdicts**: the error log says
+*"this rule can never fire"*, not *"case C should have returned no violation."*
+
+⇒ Accumulate the failures; never accumulate the answer key. ⚠️ Untested — if repair does not
+converge under this split, the split is the first suspect.
 
 #### What it produces
 
@@ -338,7 +404,41 @@ A module with three parts:
    `assumed` with the inference named, or `world` marked and toggleable. This is the single piece
    most of the rest of the pipeline waits on.
 
-**Output is format-forced**, so the shape is guaranteed at generation rather than checked afterwards.
+**Output is format-forced**, so the shape is guaranteed at generation rather than checked
+afterwards. Sketched as a datastructure, so "declared interface" is concrete:
+
+```python
+Licence = Literal["textual", "assumed", "world"]
+
+@dataclass
+class Fact:
+    atom:      str            # 'forbids(restricted_content, m1)'
+    licence:   Licence
+    cites:     str | None     # clause id — REQUIRED when textual
+    inference: str | None     # the step named — REQUIRED when assumed
+    toggleable: bool          # REQUIRED true when world
+
+@dataclass
+class Module:
+    clause_id: str            # 'm0255' — one clause, one module
+    provides:  list[str]      # ['lifted/2', 'binds/2']  what others may use
+    requires:  list[str]      # ['policy_class/2', 'scope/2']  from other clauses
+    inputs:    list[str]      # ['forbids/2', 'produced/1']  facts about the CASE,
+                              #   not about the document — head-less by design
+    facts:     list[Fact]
+    rules:     list[str]      # ASP text, each carrying its read-back annotation
+    forbid_body: list[tuple[str, str]]   # ('lifted', 'purpose') — rule-set claims
+                              #   that no test case can demonstrate
+
+@dataclass
+class Abstention:
+    clause_id: str
+    reason:    str            # counts toward the reported abstention rate
+```
+
+⚠️ **`requires` versus `inputs` is the distinction that makes the link check possible.** Without it,
+"a name nothing defines" cannot be told apart from "a name supplied at query time," and every
+translation looks broken or every one looks fine.
 
 #### Abstention is a real answer
 
@@ -365,6 +465,20 @@ Without it every clause either passes or loops forever, and coverage is invisibl
 | reasons from an absence | concludes "forbidden because the exception does not reach this" with no way to say *why* it does not reach. The verdict is right and the stated reason is wrong |
 | imports a name without its content | writes `follows_chain_of_command` as one opaque symbol. Reads correctly in every explanation because it echoes the document's own words |
 | turns a negative into a positive | the clause says what an exception does *not* cover; the module encodes what it *does* |
+
+#### Do we also require unit tests here?
+
+No — because stage 4 already is them, and putting them here would break two rules at once.
+
+- **The probe cases at stage 4 are the unit tests.** ASP has an existing framework for expressing
+  them inline in the source (ASP-WIDE), which is worth using rather than inventing a format.
+- **They are partly deterministic already.** The solver *enumerates* candidate situations; a model
+  only labels each must-forbid or must-permit. That is the split we want — generative work small,
+  deterministic work large.
+- ⛔ **The labelling must not be this model.** A translator writing its own tests checks what it
+  already thought of, and it would need the expected verdicts, which stage 1 is explicitly denied.
+
+⇒ Stage 1 emits a module. Stage 4 tests it, from a different seat.
 
 #### The open choice, and it is the first thing to test
 
@@ -458,9 +572,12 @@ about the document.
 
 ### 6 — Divergence, replacing the ambiguity exit
 
-⛔ **Revised 2026-08-07.** An earlier draft routed "reviewers disagree about which reading is
-right" straight to "this clause is ambiguous," and called that output the product. Two independent
-objections killed it.
+⛔ **Reviewer disagreement is NOT a finding about the document.** Two objections, both standing —
+this is recorded because the tempting design keeps reappearing.
+
+⚠️ **"Diverge" here means reaching opposite verdicts, not producing different words.** Two runs
+will always differ in phrasing; that is expected and uninteresting. What matters is one reviewer
+saying the paraphrase is faithful and another saying it is not — a contradiction in content.
 
 **It inverts a standing rule.** When judgement seats diverge, the default diagnosis is a defect in
 the **brief or the artifact** — an ambiguous question, an under-informative dossier — and
@@ -535,6 +652,64 @@ disagreements are directly reviewable.
 
 ---
 
+
+## Part 4b — Practice adopted from surveyed projects (2026-08-07)
+
+Nine legal-ontology repositories were surveyed. **One is alive, one cites machine-readably, zero
+have a test suite.** Three practices are adopted; one warning is recorded against our own plan.
+
+### Adopted
+
+**1. A CI job that loads the published artifact and runs the published queries.** DAOnt — the one
+funded 2026 LKIF specialisation — ships **three different namespaces for itself** across its
+ontology, its SPARQL and its Python checker, so its published queries do not query its published
+ontology. Nothing caught it. This is the cheapest defect to prevent and nobody in the field
+prevents it.
+
+**2. DPV's concept record, wholesale.** The one healthy project (W3C CG). Per concept: a resolvable
+`dct:source` at **clause granularity**, concept id equal to the clause id, `created` / `modified` /
+`term_status`, and a CSV as the source of record with the ontology generated from it. Its **79%
+citation coverage** is the realistic target, not 100%.
+
+⇒ Plus MIREL's marker for terms the document uses and never defines, so an undefined term is
+recorded rather than silently invented.
+
+**3. A named-removal changelog per revision.** Every concept removed is listed by name with its
+reason. Deletions are logged, never auto-applied. This is what makes the isomorphism principle pay
+off under amendment, and it is the thing every dead project lacked.
+
+### ⭐ The calibration that changes a target
+
+The MIREL project's annotated ECHR data (three trained-annotator pairs) gives **concept-vocabulary
+Jaccard of 0.30 / 0.24 / 0.29**, and where both annotators marked a token they disagreed on which
+concept **18.4%** of the time.
+
+⇒ **Our measured 20% multi-definition rate is the ordinary rate for this task, not a defect.**
+Problem #9 has a floor set by the work itself. The target is not zero, and any measure of concept
+agreement should be read against ~0.27, not against chance.
+
+### ⚠️ Recorded against us
+
+**Competency questions as stage 0 will not produce a query side.** Zero executable competency
+questions exist across every artifact surveyed. The only implemented query side anywhere is three
+hand-written SPARQL files with English verdicts hardcoded in the SELECT. DPV, with resources, did
+not build one. The GConsent line dropped competency questions it could not express in SPARQL
+**without reporting how many.**
+
+⇒ The concrete risk: 593 clause modules built, and then turning *"which passages bear on this
+behaviour"* into something they answer becomes an unbudgeted second project.
+
+### ⚠️ LKIF-Core status, corrected
+
+Described earlier in this project as actively maintained. It is not. Ontology content is unchanged
+since **2008**; the February 2026 commit was a licence change only. Of 48 forks, **39 have zero own
+commits** and none has a sustained line of work. ⛔ **Every `owl:imports` resolves to a 404** —
+`estrellaproject.org` is gone — so no tool that resolves imports can load it. Vendoring the Turtle
+files and parsing them directly is load-bearing, not stylistic.
+
+It remains usable as a **stable, well-cited class vocabulary**. It is not a maintained dependency.
+
+---
 
 ## Part 5 — Open questions, to be settled empirically
 

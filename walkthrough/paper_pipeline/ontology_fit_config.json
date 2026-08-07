@@ -1,0 +1,136 @@
+{
+  "_": "ontology_fit.py — every knob, at its default. Nothing in ontology_fit.py is hardcoded to this file's values; --config points elsewhere and CLI flags override individual keys. Paths are relative to paper_pipeline/.",
+
+  "ontology": {
+    "name": "LKIF-Core (ESTRELLA), CC BY 4.0",
+    "_source": "Local cache ONLY in practice. Every owl:imports in LKIF-Core is dead — estrellaproject.org 301s then 404s — so any loader that resolves imports cannot load this ontology at all. The vendored copy under ontology_cache/ is what makes the tool work, and it also means a dry run needs no network.",
+    "_provenance": "Content unchanged since 2008. The February 2026 commit was a licence change only, and 39 of 48 forks have no commits of their own. Do not describe it as actively maintained.",
+    "source": {
+      "kind": "modules-in-directory",
+      "path": "ontology_cache/lkif-core",
+      "suffix": ".ttl",
+      "format": "turtle",
+      "url_template": "https://raw.githubusercontent.com/RinkeHoekstra/lkif-core/master/{module}.ttl",
+      "allow_download": true
+    },
+    "_modules": "Tier names are ours; module names are the repository's file names. NOTE: SCRATCH_concept_phase.md lists a 'spacetime' module in the abstract tier. No such file exists — the abstract tier is lkif-top, relative-places, mereology, time.",
+    "modules": {
+      "abstract": ["lkif-top", "relative-places", "mereology", "time"],
+      "basic": ["process", "role", "action", "expression"],
+      "legal": ["legal-action", "legal-role", "norm"],
+      "framework": ["time-modification", "lkif-rules"]
+    },
+    "tiers": ["abstract", "basic"],
+    "_vocabulary_only": "Modules whose CLASS NAMES are offered as answers but whose AXIOMS are not imported and are not asserted by using the name. norm commits to deontic semantics we ruled against (it makes Prohibition a subclass of Permission and equivalent to Obligation). Saying a concept is a Prohibition does not commit us to inferring what follows from one.",
+    "vocabulary_only_modules": ["norm"],
+    "_closed_set": "TWO MODES. If include_classes is non-empty the closed set is EXACTLY that list, and a name absent from the loaded modules raises (a typo must not silently shrink the vocabulary the null is computed over). If it is empty, the set is the structural cut at max_depth.",
+    "_why_explicit": "LKIF's own tiers and depths do NOT yield the ~15 upper classes SCRATCH_concept_phase.md assumes. Measured on the loaded modules: Agent d0, Person d1, Process d1, Action d2, Role d2, Norm d3, Permission d4, Prohibition d5 — while a depth<=1 cut hands you mereology's Atom/Part/Whole and drops Action entirely. The list below is the SCRATCH flowchart's own branches expanded to real LKIF class names. It is a judgement call, written here so it can be argued with.",
+    "max_depth": 1,
+    "include_classes": [
+      "Action",
+      "Process",
+      "Change",
+      "Plan",
+      "Agent",
+      "Person",
+      "Organisation",
+      "Role",
+      "Artifact",
+      "Physical_Object",
+      "Document",
+      "Expression",
+      "Speech_Act",
+      "Proposition",
+      "Qualification",
+      "Norm",
+      "Permission",
+      "Prohibition",
+      "Obligation",
+      "Mental_Object",
+      "Abstract_Entity"
+    ],
+    "exclude_classes": []
+  },
+
+  "corpus": {
+    "_": "The concepts to place. Any JSON file that is or contains a list of records with an id field and a text field. The default is the naive-extraction atom set: 1,423 atoms carrying name, gloss, the source sentence they came from, and the hand-rolled kind. That last field is what the worksheet shows for comparison — and what the prompt withholds.",
+    "path": "../../semi-formal-experiment/annotations.json",
+    "records_key": "atoms",
+    "id_key": "name",
+    "text_key": "gloss",
+    "_dedupe": "330 of the 1,423 atoms are distinct names; the rest are the same concept re-extracted from other clauses. Sampling without deduping would put the same concept in the sample several times and inflate nothing in particular, but would waste the worksheet's space.",
+    "dedupe_by": "name",
+    "_prompt_context_keys": "What the MODEL sees alongside the gloss. Deliberately excludes `kind`: feeding the hand-rolled four-category label in would anchor the placement on the very scheme the ontology is meant to replace.",
+    "prompt_context_keys": ["quote"],
+    "_worksheet_fields": "What the HUMAN sees on the worksheet. Includes `kind`.",
+    "worksheet_fields": {
+      "concept": "name",
+      "source_sentence": "quote",
+      "prior_label": "kind",
+      "source_ref": "clause_id"
+    },
+    "include_where": {},
+    "exclude_where": {},
+    "min_text_chars": 10
+  },
+
+  "model": {
+    "_": "Reuses the repo's providers.json + providers.py LiveClient when both are present. If providers.json is absent or providers.py cannot be imported, set model/base_url/api_key_env/price_per_mtok here and a stdlib client is used instead.",
+    "providers_json": "../../semi-formal-experiment/providers.json",
+    "provider_name": "luna",
+    "model": null,
+    "base_url": null,
+    "api_key_env": null,
+    "kind": "openai-compatible",
+    "price_per_mtok": null,
+    "temperature": 1.0,
+    "max_tokens": 256,
+    "usage_log": "DEFAULT"
+  },
+
+  "sampling": {
+    "_seed": "Seeds concept sampling, the bootstrap and the null simulation. Same seed + same corpus + same n = the same concepts, always — which is what lets a worksheet filled today be scored against a run made tomorrow.",
+    "n_items": 20,
+    "runs_per_item": 3,
+    "seed": 0
+  },
+
+  "prompt": {
+    "_": "The task is SET-VALUED PLACEMENT into a closed vocabulary. Not naming (unbounded, unmeasurable) and not single-label classification (which manufactures disagreement, because `developer` is an Agent AND a Role and LKIF is multiple-inheritance).",
+    "preamble": "You place concepts into an upper ontology. You will be shown one concept from a specification document: its short definition and the sentence it was extracted from. Name the MOST SPECIFIC classes in the closed set below that subsume that concept. Return ONE OR MORE — a concept may genuinely fall under several classes at once, and the ontology is designed for that. Do not invent a class and do not propose a new name; every class you name must appear in the list below.",
+    "answer_instruction": "Answer with class names from the list above, comma-separated, on a single line, with no explanation and no other text. Give as many as genuinely apply and no more.",
+    "vocabulary_only_note": "Classes marked [vocabulary-only] are offered as labels only. Naming one asserts that the concept is that kind of thing; it asserts nothing about what follows from it.",
+    "allow_none": true,
+    "gloss_max_chars": 220,
+    "item_template": "CONCEPT: {id}\ndefinition: {text}\n{context}\n\nWhich classes from the closed set most specifically subsume this concept?"
+  },
+
+  "statistics": {
+    "_statistic": "Mean pairwise Jaccard between the sets returned by repeated runs on the same concept, averaged over concepts. Jaccard because the answers are SETS: a chance-corrected single-label statistic (Fleiss, Cohen) cannot represent a placement under several classes at once, and scoring `Agent` against `Role` as a disagreement when both are correct is exactly the artifact this design exists to avoid.",
+    "_ci": "Percentile bootstrap over CONCEPTS, which is the unit that was sampled.",
+    "_null": "H0: each run returns a set of the SAME SIZE the model actually returned, drawn uniformly at random without replacement from the closed vocabulary. Sizes are held fixed on purpose — a null that also randomised size would be beaten by consistent verbosity alone, and 'the model reliably answers with two classes' is not evidence that it places concepts consistently.",
+    "bootstrap_resamples": 2000,
+    "ci_alpha": 0.05,
+    "null_simulations": 20000
+  },
+
+  "reference": {
+    "_": "The reference line is NOT chance. The question is whether the model is within reach of two trained people, not whether it beats random subsets.",
+    "human_pair_jaccard": [0.30, 0.24, 0.29],
+    "source": "MIREL project, annotated ECHR data — concept-vocabulary Jaccard between pairs of trained human annotators, measured (not published)",
+    "caveat": "Different corpus and different ontology, so this is a rough reference and not a strict baseline. It also measures agreement between two DIFFERENT annotators, whereas this test measures one model against itself on an identical prompt — an easier task. Treat the band as a low floor, not a pass mark."
+  },
+
+  "verdict": {
+    "_": "Read on the CI LOWER BOUND, not the point estimate, so a small n cannot buy a good verdict. The usable/marginal boundaries are the top and bottom of the reference band in `reference`, so changing the band changes the verdict — there is no second copy of those numbers. A p above max_p forces 'unusable' whatever the Jaccard.",
+    "max_p": 0.01
+  },
+
+  "cost": {
+    "_": "Estimate printed BEFORE any call; over max_cost_usd nothing is sent. An unpriced provider counts as over budget, never as free. Project ledger: $8.50 hard cap, ~$2.06 used.",
+    "_assumed_output_tokens": "Deliberately the full max_tokens, i.e. the WORST case, not the ~6 tokens a short list costs. On a reasoning model the hidden reasoning is billed as output and dominates; overstating an estimate is survivable, understating is how a hard cap gets passed. If max_tokens is too small for such a model the completion comes back truncated or empty, which RAISES rather than scoring as a placement.",
+    "chars_per_token": 4.0,
+    "assumed_output_tokens": 256,
+    "max_cost_usd": 0.5
+  }
+}

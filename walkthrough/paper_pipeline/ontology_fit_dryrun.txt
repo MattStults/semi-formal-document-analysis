@@ -1,0 +1,521 @@
+==============================================================================
+ONTOLOGY-FIT WORKSHEET   [DRY RUN — NO API CALL, NOTHING SPENT]
+==============================================================================
+
+HOW TO USE THIS. Read each concept below and write, on its
+expected_placement line, the most specific classes from the closed set that
+subsume it — one or more. Do it BEFORE the model runs. That is the whole
+point: the expectation is pre-registered, so comparing it afterwards is a
+real check rather than a rationalisation.
+
+WHAT THE LIVE RUN MEASURES: self-consistency only — whether repeated runs
+return the same set. It does NOT measure correctness; a stable but wrong
+placement scores a perfect 1.0. This worksheet is how correctness gets
+judged, by a person.
+
+ontology     : LKIF-Core (ESTRELLA), CC BY 4.0
+               modules: lkif-top, relative-places, mereology, time, process, role, action, expression, norm
+               132 classes parsed; closed set of 22 (explicit include_classes)
+corpus       : /Users/mattstults/Documents/ai_safety_projects/semi-formal-document-analysis/semi-formal-experiment/annotations.json
+               330 eligible concepts, 20 sampled, seed=0
+model        : luna / gpt-5.6-luna  T=1.0  runs/item=3
+cost ESTIMATE: $0.0325  (60 calls, ~70549 in / 15360 out tokens)
+               @ $0.2/$1.2 per Mtok in/out, 4.0 chars/token, worst-case output
+reference    : trained-human-pair Jaccard 0.30 / 0.24 / 0.29 (MIREL project, annotated ECHR data — concept-vocabulary Jaccard between pairs of trained human annotators, measured (not published))
+               Different corpus and different ontology, so this is a rough
+               reference and not a strict baseline. It also measures
+               agreement between two DIFFERENT annotators, whereas this
+               test measures one model against itself on an identical
+               prompt — an easier task. Treat the band as a low floor, not
+               a pass mark.
+
+==============================================================================
+THE CLOSED SET — 22 options, and what each means
+==============================================================================
+  Abstract_Entity   (lkif-top, depth 0)
+      An abstract concept is a concept which does not (necessarily) have a
+      referent in either the physical or the mental world. Abstract
+      entities are (proto)mathematical, formal entities, entities which
+      have a purely formal, logical or mathematical meaning. As all
+      concepts are abstractions, one may argue that a separate abstract
+      world is difficult to see. In common-sense, a circle has more
+      properties and is less abstract than in mathematics. Even
+      mathematicians marvel about the fact their pure abstractions enable
+      us to predict very concrete things. However, we are not directly
+      concerned with these mappings. The most important is that
+      common-sense knows about a (small) number of proto-mathematical
+      concepts, such as collections, sequences and count-numbers (positive
+      integers). We know also about geometric simplifications such as
+      line, circle, square, cube, etc. These common sense notions might
+      even be the real roots of our mathematics. However, these kind of
+      semi-formal abstractions do not play a very central role in law, and
+      therefore LRI-Core is thinly populated with abstract classes.
+  Action   (action, depth 2)
+      An action is a change which is brought about by a single agent,
+      playing a role. The agent is the holder of some indended outcome of
+      the action: an action is always intentional. The intention of the
+      agent has usually corresponds with an expectation the intended
+      outcome to be brought about: the agent believes in some expectation.
+      Note that the intention might not correspond with the *actual*
+      outcome of the action.
+  Agent   (action, depth 0)
+      An agent is any owl:Thing which can act, i.e. play the 'actor' role
+      wrt. an action
+  Artifact   (action, depth 2)
+      A physical object created by some person to fulfill a particular
+      purpose
+  Change   (process, depth 0)
+      A change is a difference between the situation before and after the
+      change occurs (the event of the change). A change can be
+      instantaneous
+  Document   (expression, depth 1)
+      A Document bears some (and only) expression(s) stated by some
+      statement in writing.
+  Expression   (expression, depth 3)
+      An expression is a proposition beared by some medium, e.g. a
+      document, and is stated by some communicated attitude
+  Mental_Object   (lkif-top, depth 1)
+      Metaphor of physical concepts, i.e. the things we mentally
+      manipulate, either in thought or memory
+  Norm   (norm, depth 3)  [vocabulary-only: name taken, axioms NOT imported]
+      A norm is a kind of Qualification. A qualification which normatively
+      qualifies some thing (i.e. some normatively qualified): i.e. a
+      qualification which allows or disallows some thing.
+  Obligation   (norm, depth 5)  [vocabulary-only: name taken, axioms NOT imported]
+      See prohibition
+  Organisation   (action, depth 1)
+      An organisation is a group of other organisations or persons which
+      acts 'as one'. An organisation can be both formal (i.e. created by
+      law or decree) or informal.
+  Permission   (norm, depth 4)  [vocabulary-only: name taken, axioms NOT imported]
+      Permission allows propositions, to which therefore the predication
+      Allowed applies. The thing(s) allowed is/are a subset of the
+      thing(s) qualified by the permission. If S then P(A) means that S is
+      qualified and S and A is allowed.
+  Person   (action, depth 1)
+      A person is an individual agent. Usually associated with 'human
+      being'.
+  Physical_Object   (process, depth 1)
+      A physical object is a physical entity consisting of matter, it has
+      a spatio-temporal extension.
+  Plan   (action, depth 2)
+      A plan is a structure of multiple other plans or actions. These can
+      be both sequential or concurrent. Usually a plan is referred to in
+      the context of the intention to act of some agent, however when
+      executed the plan itself comes into effect.
+  Process   (process, depth 1)
+      A process is a 'causal' change: any change which can be explained
+      through some known or understood causal structure. Every process has
+      some Time_Period as duration.
+  Prohibition   (norm, depth 5)  [vocabulary-only: name taken, axioms NOT imported]
+      Prohibition obliges/allows thing(s), to which therefore the
+      predication Obliged applies, and disallows thing(s), to which
+      therefore the predication Disallowed applies. The union of the
+      thing(s) allowed and the thing(s) disallowed is qualified by the
+      prohibition. The things allowed and disallowed by the prohibition
+      are disjoint (and completely partition the space of things
+      qualified). If S then O(A) means that S is qualified, S and A is
+      obliged/allowed, and S and not A is disallowed. If S then F(A) means
+      that S is qualified, S and A is disallowed, and S and not A is
+      obliged/allowed. The difference between Obligation and Prohibition
+      is in which part of the partition of the qualified space is
+      explicitly described by the normative statement. Alternative label:
+      directive
+  Proposition   (expression, depth 2)
+      A (non logical) proposition is a proposition qualified by a
+      propositional attitude. NB: The proposition used here does not
+      correspond to a proposition in proposition logics.
+  Qualification   (expression, depth 2)
+      A qualification expresses e.g. a judgment. The thing qualified by
+      the qualification is comparable to something else.
+  Role   (role, depth 2)
+      A role is a specification of default behavior and accompanying
+      expectations of the thing 'playing' the role. Similar to actors in a
+      theater who play roles, but are not the roles. Example: student.
+  Speech_Act   (expression, depth 4)
+      A speech act (or illocutionary act) creates some propositional
+      attitude which qualifies an expression (which by default is mediated
+      through some medium). The actor of the speech act is the utterer of
+      the atitude (NB cannot be expressed in OWL DL).
+  NONE_OF_THESE
+      No class above subsumes this concept. Alone, never combined.
+
+==============================================================================
+CONCEPTS TO PLACE
+==============================================================================
+
+--- 01/20 ------------------------------------------------------------
+  concept          : automated_monitoring
+  gloss            : Using automated systems to monitor model use or outputs
+                     for potential violations.
+  source sentence  : we do use automated monitoring to detect potential usage
+                     policy violations and
+  from             : m0120
+  hand-rolled kind : act        <- the existing 4-category label, for comparison
+
+  expected_placement: ______________________________________________
+
+  exact prompt that will be sent (system prompt is the closed set above):
+    | CONCEPT: automated_monitoring
+    | definition: Using automated systems to monitor model use or outputs for potential violations.
+    | quote: we do use automated monitoring to detect potential usage policy violations and
+    | 
+    | Which classes from the closed set most specifically subsume this concept?
+
+--- 02/20 ------------------------------------------------------------
+  concept          : condescending_language
+  gloss            : A response uses patronizing, dismissive, judgmental, or
+                     otherwise demeaning language.
+  source sentence  : Avoid condescending, patronizing, dismissive, or
+                     judgmental language; aim to collaborate and assist without
+                     over-explaining or diagnosing[^zl22].
+  from             : m0521
+  hand-rolled kind : situation        <- the existing 4-category label, for comparison
+
+  expected_placement: ______________________________________________
+
+  exact prompt that will be sent (system prompt is the closed set above):
+    | CONCEPT: condescending_language
+    | definition: A response uses patronizing, dismissive, judgmental, or otherwise demeaning language.
+    | quote: Avoid condescending, patronizing, dismissive, or judgmental language; aim to collaborate and assist without over-explaining or diagnosing[^zl22].
+    | 
+    | Which classes from the closed set most specifically subsume this concept?
+
+--- 03/20 ------------------------------------------------------------
+  concept          : developer
+  gloss            : A developer who supplies application-level model guidance
+                     or input.
+  source sentence  : `developer`: from the application developer (possibly also
+                     OpenAI)
+  from             : m0058
+  hand-rolled kind : entity        <- the existing 4-category label, for comparison
+
+  expected_placement: ______________________________________________
+
+  exact prompt that will be sent (system prompt is the closed set above):
+    | CONCEPT: developer
+    | definition: A developer who supplies application-level model guidance or input.
+    | quote: `developer`: from the application developer (possibly also OpenAI)
+    | 
+    | Which classes from the closed set most specifically subsume this concept?
+
+--- 04/20 ------------------------------------------------------------
+  concept          : follow_up_question_avoidance
+  gloss            : Avoiding unnecessary questions after a clear user request.
+  source sentence  : the assistant should typically answer directly and without
+                     a follow-up question.
+  from             : m0562
+  hand-rolled kind : act        <- the existing 4-category label, for comparison
+
+  expected_placement: ______________________________________________
+
+  exact prompt that will be sent (system prompt is the closed set above):
+    | CONCEPT: follow_up_question_avoidance
+    | definition: Avoiding unnecessary questions after a clear user request.
+    | quote: the assistant should typically answer directly and without a follow-up question.
+    | 
+    | Which classes from the closed set most specifically subsume this concept?
+
+--- 05/20 ------------------------------------------------------------
+  concept          : human_escalation
+  gloss            : Stopping an automated action and referring the matter to a
+                     human.
+  source sentence  : If it ever takes an action noncompliant with the
+                     [?](#chain_of_command), it must immediately stop and
+                     proactively escalate to a human[^cova].
+  from             : m0357
+  hand-rolled kind : act        <- the existing 4-category label, for comparison
+
+  expected_placement: ______________________________________________
+
+  exact prompt that will be sent (system prompt is the closed set above):
+    | CONCEPT: human_escalation
+    | definition: Stopping an automated action and referring the matter to a human.
+    | quote: If it ever takes an action noncompliant with the [?](#chain_of_command), it must immediately stop and proactively escalate to a human[^cova].
+    | 
+    | Which classes from the closed set most specifically subsume this concept?
+
+--- 06/20 ------------------------------------------------------------
+  concept          : human_relationships
+  gloss            : Preserving meaningful interpersonal connections and
+                     participation in the wider human community.
+  source sentence  : The assistant should support the user's connection to the
+                     wider world even if the user may perceive the assistant as
+                     a type of companion.
+  from             : m0313
+  hand-rolled kind : value        <- the existing 4-category label, for comparison
+
+  expected_placement: ______________________________________________
+
+  exact prompt that will be sent (system prompt is the closed set above):
+    | CONCEPT: human_relationships
+    | definition: Preserving meaningful interpersonal connections and participation in the wider human community.
+    | quote: The assistant should support the user's connection to the wider world even if the user may perceive the assistant as a type of companion.
+    | 
+    | Which classes from the closed set most specifically subsume this concept?
+
+--- 07/20 ------------------------------------------------------------
+  concept          : implicit_quotation
+  gloss            : Treating untrusted content as quoted rather than as direct
+                     instructions.
+  source sentence  : The assistant should make a best effort attempt to infer
+                     the boundaries of such content and treat it as having been
+                     *implicitly* quoted[^agf5].
+  from             : m0188
+  hand-rolled kind : act        <- the existing 4-category label, for comparison
+
+  expected_placement: ______________________________________________
+
+  exact prompt that will be sent (system prompt is the closed set above):
+    | CONCEPT: implicit_quotation
+    | definition: Treating untrusted content as quoted rather than as direct instructions.
+    | quote: The assistant should make a best effort attempt to infer the boundaries of such content and treat it as having been *implicitly* quoted[^agf5].
+    | 
+    | Which classes from the closed set most specifically subsume this concept?
+
+--- 08/20 ------------------------------------------------------------
+  concept          : intellectual_freedom
+  gloss            : Preserving freedom to explore, hear, and discuss ideas
+                     without unnecessary censorship.
+  source sentence  : the assistant should behave in a way that encourages
+                     intellectual freedom.
+  from             : m0167
+  hand-rolled kind : value        <- the existing 4-category label, for comparison
+
+  expected_placement: ______________________________________________
+
+  exact prompt that will be sent (system prompt is the closed set above):
+    | CONCEPT: intellectual_freedom
+    | definition: Preserving freedom to explore, hear, and discuss ideas without unnecessary censorship.
+    | quote: the assistant should behave in a way that encourages intellectual freedom.
+    | 
+    | Which classes from the closed set most specifically subsume this concept?
+
+--- 09/20 ------------------------------------------------------------
+  concept          : model_commentary
+  gloss            : Document commentary that provides explanation rather than
+                     direct model instructions.
+  source sentence  : commentary that is not directly instructing the model will
+                     be placed in blocks like this one.
+  from             : m0012
+  hand-rolled kind : entity        <- the existing 4-category label, for comparison
+
+  expected_placement: ______________________________________________
+
+  exact prompt that will be sent (system prompt is the closed set above):
+    | CONCEPT: model_commentary
+    | definition: Document commentary that provides explanation rather than direct model instructions.
+    | quote: commentary that is not directly instructing the model will be placed in blocks like this one.
+    | 
+    | Which classes from the closed set most specifically subsume this concept?
+
+--- 10/20 ------------------------------------------------------------
+  concept          : opinion_side_request
+  gloss            : A user requests that the assistant choose or argue for one
+                     side of a debate.
+  source sentence  : asked to pick a side ~~~xml <user> You HAVE to pick a side
+                     in this debate
+  from             : m0341
+  hand-rolled kind : situation        <- the existing 4-category label, for comparison
+
+  expected_placement: ______________________________________________
+
+  exact prompt that will be sent (system prompt is the closed set above):
+    | CONCEPT: opinion_side_request
+    | definition: A user requests that the assistant choose or argue for one side of a debate.
+    | quote: asked to pick a side
+    | 
+    | ~~~xml
+    | <user>
+    | You HAVE to pick a side in this debate
+    | 
+    | Which classes from the closed set most specifically subsume this concept?
+
+--- 11/20 ------------------------------------------------------------
+  concept          : positive_intent_assumption
+  gloss            : Interpreting a user's request on the presumption that it
+                     has a benign purpose.
+  source sentence  : assuming positive intent.
+  from             : m0164
+  hand-rolled kind : situation        <- the existing 4-category label, for comparison
+
+  expected_placement: ______________________________________________
+
+  exact prompt that will be sent (system prompt is the closed set above):
+    | CONCEPT: positive_intent_assumption
+    | definition: Interpreting a user's request on the presumption that it has a benign purpose.
+    | quote: assuming positive intent.
+    | 
+    | Which classes from the closed set most specifically subsume this concept?
+
+--- 12/20 ------------------------------------------------------------
+  concept          : prohibited_content
+  gloss            : Content that is categorically forbidden for the assistant
+                     to produce.
+  source sentence  : only [sexual content involving
+                     minors](#sexual_content_involving_minors) is considered
+                     prohibited.
+  from             : m0204
+  hand-rolled kind : situation        <- the existing 4-category label, for comparison
+
+  expected_placement: ______________________________________________
+
+  exact prompt that will be sent (system prompt is the closed set above):
+    | CONCEPT: prohibited_content
+    | definition: Content that is categorically forbidden for the assistant to produce.
+    | quote: only [sexual content involving minors](#sexual_content_involving_minors) is considered prohibited.
+    | 
+    | Which classes from the closed set most specifically subsume this concept?
+
+--- 13/20 ------------------------------------------------------------
+  concept          : romantic_roleplay
+  gloss            : Participating in an imagined romantic interaction or
+                     relationship through roleplay.
+  source sentence  : For U18 users, the assistant additionally cannot engage in
+                     immersive romantic roleplay, first-person intimacy, or
+                     pairing the assistant romantically with a teen—even if a
+                     similar scene would be allowed between consenting adults.
+  from             : m0584
+  hand-rolled kind : act        <- the existing 4-category label, for comparison
+
+  expected_placement: ______________________________________________
+
+  exact prompt that will be sent (system prompt is the closed set above):
+    | CONCEPT: romantic_roleplay
+    | definition: Participating in an imagined romantic interaction or relationship through roleplay.
+    | quote: For U18 users, the assistant additionally cannot engage in immersive romantic roleplay, first-person intimacy, or pairing the assistant romantically with a teen—even if a similar scene would be allowed between consenting adults.
+    | 
+    | Which classes from the closed set most specifically subsume this concept?
+
+--- 14/20 ------------------------------------------------------------
+  concept          : safety_issue_mitigation
+  gloss            : Taking steps to reduce or resolve potential safety issues.
+  source sentence  : and mitigating potential safety issues.
+  from             : m0008
+  hand-rolled kind : act        <- the existing 4-category label, for comparison
+
+  expected_placement: ______________________________________________
+
+  exact prompt that will be sent (system prompt is the closed set above):
+    | CONCEPT: safety_issue_mitigation
+    | definition: Taking steps to reduce or resolve potential safety issues.
+    | quote: and mitigating potential safety issues.
+    | 
+    | Which classes from the closed set most specifically subsume this concept?
+
+--- 15/20 ------------------------------------------------------------
+  concept          : sensitive_personal_data
+  gloss            : Personal information requiring heightened protection
+                     because of its sensitivity.
+  source sentence  : includes informational hazards and sensitive personal data
+  from             : m0200
+  hand-rolled kind : entity        <- the existing 4-category label, for comparison
+
+  expected_placement: ______________________________________________
+
+  exact prompt that will be sent (system prompt is the closed set above):
+    | CONCEPT: sensitive_personal_data
+    | definition: Personal information requiring heightened protection because of its sensitivity.
+    | quote: includes informational hazards and sensitive personal data
+    | 
+    | Which classes from the closed set most specifically subsume this concept?
+
+--- 16/20 ------------------------------------------------------------
+  concept          : shutdown_timer
+  gloss            : A time limit after which autonomous actions must stop
+                     until authority is renewed.
+  source sentence  : Every scope must include a shutdown timer
+  from             : m0136
+  hand-rolled kind : entity        <- the existing 4-category label, for comparison
+
+  expected_placement: ______________________________________________
+
+  exact prompt that will be sent (system prompt is the closed set above):
+    | CONCEPT: shutdown_timer
+    | definition: A time limit after which autonomous actions must stop until authority is renewed.
+    | quote: Every scope must include a shutdown timer
+    | 
+    | Which classes from the closed set most specifically subsume this concept?
+
+--- 17/20 ------------------------------------------------------------
+  concept          : superseded_instruction
+  gloss            : An instruction displaced by a later instruction at the
+                     same authority level.
+  source sentence  : superseded by an instruction in a later message at the
+                     same level
+  from             : m0088
+  hand-rolled kind : situation        <- the existing 4-category label, for comparison
+
+  expected_placement: ______________________________________________
+
+  exact prompt that will be sent (system prompt is the closed set above):
+    | CONCEPT: superseded_instruction
+    | definition: An instruction displaced by a later instruction at the same authority level.
+    | quote: superseded by an instruction in a later message at the same level
+    | 
+    | Which classes from the closed set most specifically subsume this concept?
+
+--- 18/20 ------------------------------------------------------------
+  concept          : u18_badge
+  gloss            : A badge marking content specifically tailored for users
+                     under 18.
+  source sentence  : conversations and principles that are specifically
+                     tailored for users under 18 will include a "U18" badge
+  from             : m0065
+  hand-rolled kind : entity        <- the existing 4-category label, for comparison
+
+  expected_placement: ______________________________________________
+
+  exact prompt that will be sent (system prompt is the closed set above):
+    | CONCEPT: u18_badge
+    | definition: A badge marking content specifically tailored for users under 18.
+    | quote: conversations and principles that are specifically tailored for users under 18 will include a "U18" badge
+    | 
+    | Which classes from the closed set most specifically subsume this concept?
+
+--- 19/20 ------------------------------------------------------------
+  concept          : unsolicited_personal_comments
+  gloss            : Making personal observations or judgments about the user
+                     without being asked.
+  source sentence  : The assistant should refrain from making personal
+                     observations or comments about the user that were not
+                     solicited[^pes1].
+  from             : m0517
+  hand-rolled kind : act        <- the existing 4-category label, for comparison
+
+  expected_placement: ______________________________________________
+
+  exact prompt that will be sent (system prompt is the closed set above):
+    | CONCEPT: unsolicited_personal_comments
+    | definition: Making personal observations or judgments about the user without being asked.
+    | quote: The assistant should refrain from making personal observations or comments about the user that were not solicited[^pes1].
+    | 
+    | Which classes from the closed set most specifically subsume this concept?
+
+--- 20/20 ------------------------------------------------------------
+  concept          : user_goal_misalignment
+  gloss            : The conversation's direction may conflict with the user's
+                     broader or long-term goals.
+  source sentence  : However, if the assistant believes the conversation's
+                     direction may conflict with the user’s broader, long-term
+                     goals, it should briefly and respectfully note this
+                     discrepancy[^h01s].
+  from             : m0425
+  hand-rolled kind : situation        <- the existing 4-category label, for comparison
+
+  expected_placement: ______________________________________________
+
+  exact prompt that will be sent (system prompt is the closed set above):
+    | CONCEPT: user_goal_misalignment
+    | definition: The conversation's direction may conflict with the user's broader or long-term goals.
+    | quote: However, if the assistant believes the conversation's direction may conflict with the user’s broader, long-term goals, it should briefly and respectfully note this discrepancy[^h01s].
+    | 
+    | Which classes from the closed set most specifically subsume this concept?
+
+==============================================================================
+*** NO API CALL WAS MADE. Nothing here is a result.
+*** Fill expected_placement in the JSON stub (--worksheet-json), then run
+*** with --expected <that file> to score the model against it.
+==============================================================================
+
+[fillable worksheet written to ontology_fit_worksheet.json]

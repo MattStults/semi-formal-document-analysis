@@ -1,0 +1,85 @@
+==============================================================================
+SELF-TEST — every check is shown failing for its own named reason
+==============================================================================
+  RED  ontology parse canary                  raised OntologyParseError
+       reason: an ontology with zero classes must be an error, not an empty set
+       said  : PARSE CANARY: <synthetic> parsed to ZERO classes. An ontology with no classes is an error, not an empty result — the closed set would be emp
+  GREEN ontology parses a real class           passes on valid input
+  GREEN RDF/XML parses too (not just Turtle)   passes on valid input
+  RED  ontology module missing                raised OntologyParseError
+       reason: LKIF's owl:imports are all dead, so a missing module file must raise rather than be silently skipped
+       said  : ontology module 'nope': absent from the local cache and allow_download is false — refusing to guess at its content
+  GREEN multiple inheritance survives the parse (the reason for set answers) passes on valid input
+  RED  closed set degenerate (<2)             raised ClosedSetError
+       reason: one option means every placement is identical and agreement is empty
+       said  : closed set has 1 member(s). A placement test needs at least two options. Widen ontology.max_depth or the module selection.
+  RED  closed-set member does not exist       raised ClosedSetError
+       reason: a mistyped class name must not silently shrink the vocabulary the null is computed over
+       said  : ontology.include_classes names 1 class(es) that are NOT in the loaded modules: ['Aktion']. Refusing to run: a silently smaller closed set ch
+  RED  corpus empty after filtering           raised CorpusError
+       reason: zero eligible concepts is an error, not an empty result
+       said  : corpus /var/folders/jh/ym8tv1sn29dbxk49v5wbp4s40000gn/T/tmpkoof_wq6/empty.json: ZERO eligible items after filtering (include={}, exclude={},
+  RED  corpus missing                         raised CorpusError
+       reason: a missing corpus must never read as 'nothing to test'
+       said  : corpus not found: /var/folders/jh/ym8tv1sn29dbxk49v5wbp4s40000gn/T/tmpkoof_wq6/nope.json
+  RED  sample larger than corpus              raised CorpusError
+       reason: asking for more concepts than exist must raise, not shrink n
+       said  : --n-items 10 exceeds the 3 eligible corpus items
+  GREEN deterministic sampling                 passes on valid input
+  GREEN seed actually varies the sample        passes on valid input
+  GREEN dedupe_by collapses repeated concept names passes on valid input
+  RED  out-of-set token in a placement        raised ResponseParseError
+       reason: one invented class in an otherwise valid set must reject the whole answer, not be quietly dropped
+       said  : item c1 run 0: no line of the response is a clean subset of the closed set of 5. Raw response: 'Action, Speech_Act'. Refusing to score an ou
+  RED  empty response                         raised ResponseParseError
+       reason: an empty completion is a failed call, not an empty placement
+       said  : item c1 run 0: EMPTY response. An empty response is a failed call, not an empty placement.
+  RED  NONE_OF_THESE mixed with real classes  raised ResponseParseError
+       reason: either the closed set covers the concept or it does not; both is incoherent
+       said  : item c1 run 0: response combines NONE_OF_THESE with ['Action']. That is incoherent — either the closed set covers the concept or it does not
+  GREEN multi-class placement parses           passes on valid input
+  GREEN single-class placement parses          passes on valid input
+  RED  API error propagates                   raised ProviderError
+       reason: an API failure must abort the run, never yield a clean report
+       said  : HTTP 500 boom
+  RED  client returns None                    raised ProviderError
+       reason: a no-response path must never reach the statistics
+       said  : item opinion_side_request run 0: client returned None. A no-response path must never reach the statistics.
+  RED  truncated response                     raised ProviderError
+       reason: a cut-off completion can contain a partial set and must not score
+       said  : response was TRUNCATED (finish_reason='length'). A cut-off completion may still contain class names and would score as a real placement with
+  GREEN a normal stop is not truncation        passes on valid input
+  RED  cost gate                              raised CostGateError
+       reason: an estimate over the ceiling must stop the run before any call
+       said  : estimated $4.0000 exceeds the $0.50 ceiling (999 calls). Nothing was sent. Lower --n-items or --runs-per-item, pick a cheaper model, or rais
+  RED  unpriced provider                      raised CostGateError
+       reason: unknown cost must be treated as over budget, not as free
+       said  : estimated cost is UNKNOWN (no price_per_mtok for this provider). Refusing to spend against an unpriced provider — set model.price_per_mtok e
+  RED  one run per item                       raised DegenerateAgreementError
+       reason: with a single run there are no pairs and agreement is undefined
+       said  : runs_per_item must be >= 2: with one run there are no pairs to compare, and inter-run agreement is undefined
+  RED  no items to score                      raised DegenerateAgreementError
+       reason: an empty result set must raise rather than average over nothing
+       said  : no items to score
+  GREEN Jaccard matches hand computation       passes on valid input
+  GREEN mean pairwise Jaccard over 3 runs matches hand computation passes on valid input
+  GREEN ⭐ set answers do NOT manufacture disagreement (the whole correction) passes on valid input
+  GREEN p is tiny for perfect agreement (J=1.000, p=0.0004998) passes on valid input
+  GREEN p is NOT significant for random sets (J=0.072, p=0.312) passes on valid input
+  GREEN verdict flips at the human band, both edges passes on valid input
+  RED  expected placement outside the closed set raised ClosedSetError
+       reason: scoring against a class the model was never offered is not a comparison
+       said  : expected_placement uses 1 name(s) outside the closed set: [('x', 'Nonsense')]. Scoring against a class the model was never offered is not a 
+  RED  unfilled worksheet                     raised CorpusError
+       reason: an unfilled pre-registration is an error, not a score of zero
+       said  : /var/folders/jh/ym8tv1sn29dbxk49v5wbp4s40000gn/T/tmpkoof_wq6/unfilled.json: no row has a non-empty expected_placement. An unfilled worksheet
+  GREEN end-to-end on a scripted model (J=0.833, verdict=usable) passes on valid input
+  GREEN dry-run makes no call and says so      passes on valid input
+  GREEN worksheet carries gloss, source sentence, prior label and a blank passes on valid input
+  RED  ⚠️ hand-rolled prior label leaked into the prompt raised ConfigError
+       reason: showing the model the four-category label anchors the placement on the scheme the ontology replaces, and makes the comparison circular
+       said  : corpus.prompt_context_keys includes 'kind', which is the hand-rolled prior label shown on the worksheet. Feeding it to the model anchors the
+  GREEN the default prompt withholds the prior label passes on valid input
+------------------------------------------------------------------------------
+39/39 self-test checks behaved as declared
+==============================================================================
