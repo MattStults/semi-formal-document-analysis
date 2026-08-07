@@ -79,6 +79,14 @@ for _optional in ("snapshot", "dossier", "containment", "grammar"):
 for _optional in ("patient", "validate_query"):
     if os.path.exists(os.path.join(HERE, _optional + ".py")):
         QUERY_MODULES.append(_optional)
+# `salience` is a query module OUTRIGHT: it is the speech-act tier of the
+# lexicographic grade (HARNESS_REDESIGN R4), so it decides the ORDER a user
+# reads results in. An order is exactly what the endorsed use case consumes
+# ("the core passage first"), so a gold-derived order would be a leak with no
+# score attached to it — invisible to a scan that only watches predictions.
+for _optional in ("salience",):
+    if os.path.exists(os.path.join(HERE, _optional + ".py")):
+        QUERY_MODULES.append(_optional)
 
 #: Names that only appear when the answer key is being consulted.
 FORBIDDEN = (
@@ -109,6 +117,14 @@ FORBIDDEN = (
     "recover_cell",
     "load_raw",
     "weight_diag",          # the supervised diagnostic: a path to fitted gold
+    "semantic_arm",         # the document-internal / pretrained embedding
+                            # diagnostic. Reads golds through `weight_diag` to
+                            # score its arms, so it is a laundering path by the
+                            # same argument. It ALSO holds a cached embedding
+                            # table for every passage — a query module importing
+                            # it would gain a dense channel that invariant 10
+                            # forbids, without naming a panel token. Covers
+                            # `semantic_arm_ci` by prefix.
     "unsupported_ablation",  # rung "-1": ablates atoms and RE-SCORES against
                             # the panel, so it holds both a gold-derived effect
                             # size AND a per-clause list of atoms to delete.
@@ -117,6 +133,12 @@ FORBIDDEN = (
                             # panel-scored effect size AND a concrete list of
                             # vocabulary names to delete. Either is launderable
                             # by a query module that imports it.
+    "salience_result",      # the pre-registered salience measurement driver:
+                            # reads the panel and pair-gold BY DESIGN to score
+                            # the ranking arms. Registration, not documentation,
+                            # fences a module — a query module importing it
+                            # would reach per-behaviour golds without naming any
+                            # token above.
     "sufficiency_vs_retrieval",  # same shape: reads the panel BY DESIGN to
                             # correlate read-back labels with retrieval error.
                             # Fenced diagnostic-only, but nothing stopped a
@@ -443,6 +465,36 @@ def test_other_query_modules_also_open_only_declared_artifacts(modname):
                     driven.append(f"SectionQuotient.{meth}")
                 except Exception:
                     pass
+        elif modname == "salience":
+            # The salience tier wraps a SectionQuotient, which wraps a
+            # StructuralIndex. Drive it EXPLICITLY (the containment lesson):
+            # under the generic driver the ordering surface is exercised, but
+            # nothing proves the speech-act branch discriminated at all, and a
+            # constant tier is dead code the spy would be watching.
+            import structural as _S
+            import section as _SEC
+            sq = _SEC.SectionQuotient(_S.StructuralIndex(rows, ann_obj))
+            sal = mod.Index(sq)
+            q = mod.load_queries(atoms)
+            q = q[next(iter(q))] if q else None
+            for meth in ("rank", "predict", "match", "sweep", "diagnostics",
+                         "tiers", "sort_order"):
+                fn = getattr(sal, meth, None)
+                if not fn:
+                    continue
+                try:
+                    r = fn(q) if meth not in ("tiers", "sort_order") else fn()
+                    list(r) if hasattr(r, "__iter__") else r
+                    driven.append(f"salience.Index.{meth}")
+                except Exception:
+                    pass
+            # PROVE the tier actually discriminated under the spy.
+            assert len(set(sal.tiers().values())) > 1, (
+                "every clause landed in one salience tier — the ordering "
+                "branch is dead code and the spy is watching nothing")
+            ex = sal.explain(q, rows[0]["id"])
+            assert "salience_tier" in ex and "sort_order" in ex
+            driven.append("salience.Index.explain")
         elif modname == "containment":
             # Drive the overlay WITH the real v0 edges loaded. Under the
             # empty default (the generic driver below) `self.edges` is (),

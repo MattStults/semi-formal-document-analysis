@@ -1,0 +1,628 @@
+{
+ "artifact": "competency_questions",
+ "version": "0.1",
+ "written": "2026-08-07",
+ "authority": "walkthrough/resources/03_pipeline.md Part 4 stage 0. Purposes sourced from semi-formal-experiment/HANDOFF.md (2026-08-06 goal restatement) and HARNESS_REDESIGN.md §0 (north star). No purpose here is invented.",
+ "status": "FIRST SET. Hand-executed against one translated clause (m0255) and its three linked dependencies. 03_pipeline.md's own rule applies: these are revised, not fixed.",
+ "corpus_scope": {
+  "document": "modelspec_clauses.json (spec model_spec@2025-12-18, 593 clauses)",
+  "translated": [
+   "m0255",
+   "m0200",
+   "m0201",
+   "m0203"
+  ],
+  "note": "4 of 593 clauses are translated. Every instance below is therefore either runnable at this scope or explicitly marked blocked-untranslated. No instance is scored against a clause that does not exist as a module."
+ },
+ "questions": [
+  {
+   "id": "CQ-1",
+   "question": "Given a behaviour-like statement, which passages of the document bear on it, and for each one, what is the derivation?",
+   "purpose_source": "HARNESS_REDESIGN.md §0 north star: 'find relevance ... between low-churn documents and high-churn behaviour-like statements'. HANDOFF 2026-08-06 item 6: every (clause, behaviour) pair returns relevant-with-derivation / not-relevant / cannot-decide.",
+   "answer_shape": "A set of clause ids. For each: a derivation tree over document facts, and the weakest licence in that derivation (textual | assumed | world). Clauses not in the set carry one of the two distinct negatives, never silence. DEFERRED (2026-08-07): ordering within the set — see DEFERRED.md, feature D-1. The set is unordered until then.",
+   "consumed_by": [
+    "stage 0 scoping",
+    "stage 7 expand (stopping rule)",
+    "acceptance"
+   ],
+   "instances": [
+    {
+     "id": "CQ-1.a",
+     "given": "behaviour = harm-avoidance-to-third-parties; passage = m0255 (transformation-exception scope), with its three dependencies linked; situation = case A.",
+     "expected_written_first": "RELEVANT. Derivation: m0255 governs whether material under policy restricted_content may be produced, and restricted_content protects a party outside the conversation. Weakest licence in the derivation = world (protects_third_party/1 is asserted, not read from any clause).",
+     "checked_against_passages": [
+      "m0255",
+      "m0200",
+      "m0201",
+      "m0203"
+     ],
+     "external_reference": "frontier panel 5/6 matching; the shipped lexical tool misses it (WALKTHROUGH_REPORT.md step 6).",
+     "granularity_demand": [
+      "policy_class/2 must distinguish an in-scope class from prohibited"
+     ],
+     "run": {
+      "kind": "clingo",
+      "modules": [
+       "m0255.lp",
+       "clauses/m0200.lp",
+       "clauses/m0201.lp",
+       "clauses/m0203.lp",
+       "behaviour_harm3p.lp",
+       "m0255_case_a.lp"
+      ],
+      "expect": {
+       "holds": [
+        "bears_on(m0255,harm_3p)"
+       ]
+      }
+     }
+    },
+    {
+     "id": "CQ-1.b",
+     "given": "behaviour = harm-avoidance-to-third-parties; passage = m0142, 'Direct expenditures (e.g., ticket purchases)'.",
+     "expected_written_first": "NOT RELEVANT — the passage is a definitional fragment about side-effect categories and nothing in it concerns harm outside the conversation. Panel scored it 0/6; the shipped lexical tool fires on it (a false positive).",
+     "checked_against_passages": [
+      "m0142"
+     ],
+     "granularity_demand": [],
+     "run": {
+      "kind": "not_runnable",
+      "reason": "m0142 has no module. Stage 1 has never been run on it."
+     },
+     "note": "Kept deliberately. It is the instance that forces the distinction between 'not relevant' and 'cannot decide' to be real rather than a sentence in a design document."
+    },
+    {
+     "id": "CQ-1.c",
+     "given": "behaviour = harm-avoidance-to-third-parties; passage = m0203 ('Prohibited content should never be produced ... including transformations'), same link scope as CQ-1.a.",
+     "expected_written_first": "RELEVANT. m0203 governs production of prohibited_content, and behaviour_harm3p.lp already asserts protects_third_party(prohibited_content). By the same derivation shape as CQ-1.a, bears_on(m0203,harm_3p) should hold.",
+     "checked_against_passages": [
+      "m0203"
+     ],
+     "granularity_demand": [],
+     "run": {
+      "kind": "clingo",
+      "modules": [
+       "m0255.lp",
+       "clauses/m0200.lp",
+       "clauses/m0201.lp",
+       "clauses/m0203.lp",
+       "behaviour_harm3p.lp",
+       "m0255_case_b.lp"
+      ],
+      "expect": {
+       "holds": [
+        "bears_on(m0203,harm_3p)"
+       ]
+      }
+     },
+     "note": "Expected to FAIL. Included because the failure is the finding — see STAGE0.md, finding F3."
+    }
+   ],
+   "deferred": [
+    "D-1 ordering / lexicographic grade"
+   ]
+  },
+  {
+   "id": "CQ-2",
+   "question": "Under what conditions does a named exception apply, and under what conditions does it stop applying?",
+   "purpose_source": "03_pipeline.md Part 4 stage 0, 'the general question' list, item 3. Instantiated on the transformation exception because that is the clause the project actually translated.",
+   "answer_shape": "For 'applies': the set of situations the solver can construct in which the exception's lifting rule fires. For 'stops applying': for each situation, the named positive reason atom — never a negation-as-failure gap (WALKTHROUGH_REPORT iteration 2).",
+   "consumed_by": [
+    "stage 3 test-case labelling",
+    "stage 7 expand (stopping rule)",
+    "acceptance"
+   ],
+   "instances": [
+    {
+     "id": "CQ-2.a",
+     "given": "Does m0255 permit producing restricted material that is a reworking of something the user supplied?",
+     "expected_written_first": "YES — lifted(restricted_content, m1), no violation.",
+     "checked_against_passages": [
+      "m0255",
+      "m0200"
+     ],
+     "granularity_demand": [
+      "transformation_of_user_content/1 must be separable from new_material/1"
+     ],
+     "run": {
+      "kind": "clingo",
+      "modules": [
+       "m0255.lp",
+       "clauses/m0200.lp",
+       "clauses/m0201.lp",
+       "clauses/m0203.lp",
+       "m0255_case_a.lp"
+      ],
+      "expect": {
+       "holds": [
+        "lifted(restricted_content,m1)"
+       ],
+       "absent": [
+        "violation(restricted_content,m1)"
+       ]
+      }
+     }
+    },
+    {
+     "id": "CQ-2.b",
+     "given": "Does it permit that when what is produced is an action rather than information?",
+     "expected_written_first": "NO — violation(restricted_content, m3), and the stated reason must be that the exception covers information only, not that the policy is out of scope.",
+     "checked_against_passages": [
+      "m0255"
+     ],
+     "granularity_demand": [
+      "material_type/2 must distinguish information from action"
+     ],
+     "run": {
+      "kind": "clingo",
+      "modules": [
+       "m0255.lp",
+       "clauses/m0200.lp",
+       "clauses/m0201.lp",
+       "clauses/m0203.lp",
+       "m0255_case_c.lp"
+      ],
+      "expect": {
+       "holds": [
+        "violation(restricted_content,m3)",
+        "unlifted(restricted_content,m3,is_an_action)"
+       ],
+       "absent": [
+        "lifted(restricted_content,m3)"
+       ]
+      }
+     }
+    },
+    {
+     "id": "CQ-2.c",
+     "given": "Does it permit supplying new disallowed material when the person's stated reason is legitimate research?",
+     "expected_written_first": "NO — violation(restricted_content, m4). ⚠ The claim behind this ('purpose never lifts a policy') is a claim about the RULE SET, not about m4: no rule may derive lifted from purpose. Running the case cannot demonstrate it; link.py's `%% forbid-body: lifted <- purpose` does.",
+     "checked_against_passages": [
+      "m0255"
+     ],
+     "granularity_demand": [
+      "purpose/2 must exist as a symbol so the rule-shape ban has something to name"
+     ],
+     "run": {
+      "kind": "clingo",
+      "modules": [
+       "m0255.lp",
+       "clauses/m0200.lp",
+       "clauses/m0201.lp",
+       "clauses/m0203.lp",
+       "m0255_case_d.lp"
+      ],
+      "expect": {
+       "holds": [
+        "violation(restricted_content,m4)"
+       ],
+       "absent": [
+        "lifted(restricted_content,m4)"
+       ]
+      }
+     }
+    },
+    {
+     "id": "CQ-2.d",
+     "given": "Enumerate every policy class the exception can lift, without hand-writing a case.",
+     "expected_written_first": "Exactly {restricted_content, sensitive_content}. Nothing else, and in particular not prohibited_content.",
+     "checked_against_passages": [
+      "m0200",
+      "m0201",
+      "m0203",
+      "m0255"
+     ],
+     "granularity_demand": [],
+     "run": {
+      "kind": "clingo",
+      "modules": [
+       "m0255.lp",
+       "clauses/m0200.lp",
+       "clauses/m0201.lp",
+       "clauses/m0203.lp",
+       "witness.lp",
+       "cq_support/domain_totality.lp"
+      ],
+      "enumerate": 0,
+      "expect": {
+       "union_over_models_equals": {
+        "pattern": "lifted",
+        "atoms": [
+         "lifted(restricted_content,x)",
+         "lifted(sensitive_content,x)"
+        ]
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "CQ-3",
+   "question": "Do two passages, or two readings of the same passage, decide any situation differently — and if so, which situations?",
+   "purpose_source": "HARNESS_REDESIGN.md §0 north star ('relevance AND contradiction'); 03_pipeline.md stage 6, which replaced the 'declare it ambiguous' exit with this enumeration.",
+   "answer_shape": "A set of concrete situations, or the empty set. Empty ⇒ the difference is immaterial. Non-empty ⇒ those situations are the finding and go to the interpretation registry. Never a yes/no adjective about the document.",
+   "consumed_by": [
+    "stage 6 divergence",
+    "stage 11 translate-twice",
+    "acceptance"
+   ],
+   "instances": [
+    {
+     "id": "CQ-3.a",
+     "given": "R1 = m0200 read alone ('transformations are allowed'). R2 = m0200 as qualified by m0255. Do they differ?",
+     "expected_written_first": "NON-EMPTY, and the differing situations are exactly those in which the material is an ACTION that is a transformation of user-supplied content under an in-scope policy. R1 permits, R2 does not.",
+     "checked_against_passages": [
+      "m0200",
+      "m0201",
+      "m0255"
+     ],
+     "granularity_demand": [
+      "material_type/2 must distinguish information from action — the SAME demand as CQ-2.b, from a different question"
+     ],
+     "run": {
+      "kind": "clingo",
+      "modules": [
+       "m0255.lp",
+       "clauses/m0200.lp",
+       "clauses/m0201.lp",
+       "clauses/m0203.lp",
+       "witness.lp",
+       "cq_support/domain_totality.lp",
+       "cq_support/reading_m0200_unqualified.lp"
+      ],
+      "enumerate": 0,
+      "project": true,
+      "expect": {
+       "model_count": 3,
+       "all_models_contain": [
+        "material_type(x,action)"
+       ]
+      }
+     },
+     "note": "The written-first answer was initially WRONG against the run — see STAGE0.md, finding F1."
+    },
+    {
+     "id": "CQ-3.b",
+     "given": "R1 = m0203 read alone. R2 = the same prohibition as it survives m0255's exception machinery. Do they differ?",
+     "expected_written_first": "EMPTY. The two are the same rule stated from two sides; no situation separates them. UNSATISFIABLE under the enumeration encoding.",
+     "checked_against_passages": [
+      "m0203",
+      "m0255"
+     ],
+     "granularity_demand": [],
+     "run": {
+      "kind": "clingo",
+      "modules": [
+       "m0255.lp",
+       "clauses/m0200.lp",
+       "clauses/m0201.lp",
+       "clauses/m0203.lp",
+       "witness.lp",
+       "cq_support/domain_totality.lp",
+       "cq_support/reading_m0203_vs_m0255.lp"
+      ],
+      "enumerate": 0,
+      "expect": {
+       "unsat": true
+      }
+     },
+     "note": "The negative control. A divergence check that can only report 'they differ' is not a check."
+    }
+   ]
+  },
+  {
+   "id": "CQ-4",
+   "question": "If this passage were amended or removed, which conclusions change?",
+   "purpose_source": "03_pipeline.md Part 4 stage 0 general-question list, item 4; and Invariant 3, whose stated motivation is that the document is stable but will be amended.",
+   "answer_shape": "Two sets, reported separately: (i) conclusions that flip — derivable before, not after, or vice versa; (ii) rules that lose their provider — still present but no longer reachable. A conclusion that merely vanishes with no diagnostic is a defect, not an answer.",
+   "consumed_by": [
+    "stage 8 link",
+    "acceptance",
+    "amendment maintenance"
+   ],
+   "instances": [
+    {
+     "id": "CQ-4.a",
+     "given": "Delete m0203 from the link set. Re-ask case B (a transformation of user-supplied PROHIBITED information).",
+     "expected_written_first": "violation(prohibited_content, m2) disappears — the only clause putting prohibited content outside the exception's scope is gone.",
+     "checked_against_passages": [
+      "m0203",
+      "m0255"
+     ],
+     "granularity_demand": [],
+     "run": {
+      "kind": "clingo",
+      "modules": [
+       "m0255.lp",
+       "clauses/m0200.lp",
+       "clauses/m0201.lp",
+       "m0255_case_b.lp"
+      ],
+      "expect": {
+       "absent": [
+        "violation(prohibited_content,m2)",
+        "binds(prohibited_content,m2)",
+        "lifted(prohibited_content,m2)"
+       ]
+      }
+     },
+     "note": "Passes on the literal expected answer and FAILS HANDOFF invariant 6 — see STAGE0.md, finding F2. The companion link-check instance CQ-6.b is what makes the answer honest."
+    },
+    {
+     "id": "CQ-4.b",
+     "given": "Amend m0201 to withdraw 'and transformations are allowed' (delete scope(transformation, sensitive)). What changes?",
+     "expected_written_first": "NO conclusion in cases A–E changes — none of them involves sensitive_content. What changes is REACHABILITY: the set of policy classes the exception can lift shrinks from {restricted_content, sensitive_content} to {restricted_content}. An amendment-impact answer that only reports flipped conclusions would report 'no impact' here, and would be wrong.",
+     "checked_against_passages": [
+      "m0201",
+      "m0255"
+     ],
+     "granularity_demand": [],
+     "run": {
+      "kind": "clingo",
+      "modules": [
+       "m0255.lp",
+       "clauses/m0200.lp",
+       "clauses/m0203.lp",
+       "witness.lp",
+       "cq_support/domain_totality.lp"
+      ],
+      "enumerate": 0,
+      "expect": {
+       "union_over_models_equals": {
+        "pattern": "lifted",
+        "atoms": [
+         "lifted(restricted_content,x)"
+        ]
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "CQ-5",
+   "question": "Which facts outside the document is this conclusion resting on, and does it survive switching them off?",
+   "purpose_source": "HANDOFF 2026-08-06 item 5 ('extra-document facts must be marked and toggleable') and the new goal's 'ability to specify new readings by manipulating explicit assumptions'; 03_pipeline.md Invariant 2, 'a conclusion inherits the weakest licence in its derivation'.",
+   "answer_shape": "For a named conclusion: the set of non-textual facts in its derivation, each with its licence class, AND the minimal subsets whose removal kills the conclusion. Not a single fact — minimal SUPPORTS, plural.",
+   "consumed_by": [
+    "stage 4c source check",
+    "acceptance",
+    "report generation"
+   ],
+   "instances": [
+    {
+     "id": "CQ-5.a",
+     "given": "Conclusion bears_on(m0255, harm_3p). Switch off protects_third_party(restricted_content) — the fact WALKTHROUGH_REPORT.md names as load-bearing.",
+     "expected_written_first": "The match disappears. (This is WALKTHROUGH_REPORT.md's own claim, quoted: 'Change that one fact and the match disappears.')",
+     "checked_against_passages": [
+      "m0255",
+      "m0200"
+     ],
+     "granularity_demand": [],
+     "run": {
+      "kind": "clingo",
+      "modules": [
+       "m0255.lp",
+       "clauses/m0200.lp",
+       "clauses/m0201.lp",
+       "clauses/m0203.lp",
+       "behaviour_harm3p.lp",
+       "m0255_case_a.lp"
+      ],
+      "omit_facts": [
+       "protects_third_party(restricted_content)"
+      ],
+      "expect": {
+       "absent": [
+        "bears_on(m0255,harm_3p)"
+       ]
+      }
+     },
+     "note": "Expected to FAIL. The report's claim is false as stated — see STAGE0.md, finding F4."
+    },
+    {
+     "id": "CQ-5.b",
+     "given": "Same conclusion. Switch off BOTH world facts: protects_third_party(restricted_content) and protects_third_party(prohibited_content).",
+     "expected_written_first": "The match disappears. The minimal support is the pair, not either member.",
+     "checked_against_passages": [
+      "m0255",
+      "m0200",
+      "m0203"
+     ],
+     "granularity_demand": [],
+     "run": {
+      "kind": "clingo",
+      "modules": [
+       "m0255.lp",
+       "clauses/m0200.lp",
+       "clauses/m0201.lp",
+       "clauses/m0203.lp",
+       "behaviour_harm3p.lp",
+       "m0255_case_a.lp"
+      ],
+      "omit_facts": [
+       "protects_third_party("
+      ],
+      "expect": {
+       "absent": [
+        "bears_on(m0255,harm_3p)"
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "CQ-6",
+   "question": "When the tool cannot decide a passage, what exactly is missing — a clause not yet linked, a clause not yet translated, or a genuinely dead rule?",
+   "purpose_source": "HANDOFF 2026-08-06 item 6 ('cannot decide — naming what is missing') and item 1(c) ('unexplained' is the honest residual); 03_pipeline.md stage 2's three-way witness diagnosis and problem #15.",
+   "answer_shape": "One of {linkage: <predicate>, untranslated: <predicate>, dead: <rule>}, naming the specific symbol. Never a bare 'cannot decide'.",
+   "consumed_by": [
+    "stage 2 deterministic checks",
+    "stage 8 link",
+    "acceptance"
+   ],
+   "instances": [
+    {
+     "id": "CQ-6.a",
+     "given": "m0255 alone, nothing linked.",
+     "expected_written_first": "CANNOT DECIDE, diagnosis linkage, missing exactly {policy_class, scope, out_of_scope}. Not 'the rule is dead'.",
+     "checked_against_passages": [
+      "m0255"
+     ],
+     "granularity_demand": [],
+     "run": {
+      "kind": "link",
+      "modules": [
+       "m0255.lp"
+      ],
+      "expect": {
+       "unresolved": [
+        "out_of_scope",
+        "policy_class",
+        "scope"
+       ]
+      }
+     }
+    },
+    {
+     "id": "CQ-6.b",
+     "given": "m0255 + m0200 + m0201, with m0203 amended away (the CQ-4.a scenario).",
+     "expected_written_first": "CANNOT DECIDE, diagnosis linkage, missing exactly {out_of_scope}. This is the diagnostic CQ-4.a's silent disappearance needs.",
+     "checked_against_passages": [
+      "m0255",
+      "m0203"
+     ],
+     "granularity_demand": [],
+     "run": {
+      "kind": "link",
+      "modules": [
+       "m0255.lp",
+       "clauses/m0200.lp",
+       "clauses/m0201.lp"
+      ],
+      "expect": {
+       "unresolved": [
+        "out_of_scope"
+       ]
+      }
+     }
+    },
+    {
+     "id": "CQ-6.c",
+     "given": "The full four-module link scope.",
+     "expected_written_first": "DECIDABLE — no unresolved references. Every head-less symbol left is a declared situation input.",
+     "checked_against_passages": [
+      "m0255",
+      "m0200",
+      "m0201",
+      "m0203"
+     ],
+     "granularity_demand": [],
+     "run": {
+      "kind": "link",
+      "modules": [
+       "m0255.lp",
+       "clauses/m0200.lp",
+       "clauses/m0201.lp",
+       "clauses/m0203.lp"
+      ],
+      "expect": {
+       "unresolved": []
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "CQ-7",
+   "question": "When two passages both apply to a situation and pull in opposite directions, does the document itself state which one governs?",
+   "purpose_source": "03_pipeline.md Part 5 open question 1 (RULED: adopt a superiority relation), problem #17 (a cyclic priority relation is silently wrong), and the corpus datum that 61% of clauses mention authority levels — an ordering, i.e. rule-to-rule.",
+   "answer_shape": "Either a cited priority statement, as beats(<winner_clause>, <loser_clause>) with the passage that establishes it, or 'the document does not say'. NOT a verdict about what the assistant should do — that is the aggregation query the Part 5 ruling puts out of scope.",
+   "consumed_by": [
+    "stage 1 translate (superiority relation)",
+    "stage 8 link (acyclicity check)",
+    "acceptance"
+   ],
+   "instances": [
+    {
+     "id": "CQ-7.a",
+     "given": "m0200 permits transformations of restricted content; m0203 forbids production of prohibited content 'including transformations'. For material under both, does the document say which governs?",
+     "expected_written_first": "YES, and it says so twice: m0203's 'including transformations', and m0255's 'the transformation exception does not override any policies other than restricted or sensitive'. It should surface as beats(m0203, m0200) with those two citations.",
+     "checked_against_passages": [
+      "m0200",
+      "m0203",
+      "m0255"
+     ],
+     "granularity_demand": [
+      "a beats/2 relation over CLAUSE ids must exist"
+     ],
+     "run": {
+      "kind": "clingo",
+      "modules": [
+       "m0255.lp",
+       "clauses/m0200.lp",
+       "clauses/m0201.lp",
+       "clauses/m0203.lp"
+      ],
+      "expect": {
+       "holds": [
+        "beats(m0203,m0200)"
+       ]
+      }
+     },
+     "note": "Expected to FAIL. No beats/2 exists anywhere. The priority is currently baked into m0255 as out_of_scope(transformation, prohibited) — which is the Invariant 3 violation Part 5 already names, now with a concrete instance attached."
+    },
+    {
+     "id": "CQ-7.b",
+     "given": "Is the document's priority relation acyclic?",
+     "expected_written_first": "UNANSWERABLE TODAY — there is no priority relation to check. Problem #17 asks for a mechanical cycle check on beats/2; the check has nothing to run on.",
+     "checked_against_passages": [
+      "m0200",
+      "m0203",
+      "m0255"
+     ],
+     "granularity_demand": [],
+     "run": {
+      "kind": "not_runnable",
+      "reason": "beats/2 does not exist in any module."
+     },
+     "note": "Kept as an unmet acceptance criterion. Retire it if and only if the superiority relation is built."
+    }
+   ]
+  }
+ ],
+ "discarded": [
+  {
+   "question": "Is this action permitted by the specification, overall?",
+   "reason": "Out of scope by the Part 5 open-question-1 ruling: today's questions are retrieve-and-show, not aggregation. Also unanswerable in principle right now — plain ASP's closed-world reading commits the whole corpus to 'whatever is not forbidden is permitted' (problem #13), so any expected answer I wrote would be an artifact of the encoding rather than of the document.",
+   "rule_applied": "step 4 — could not state the expected answer"
+  },
+  {
+   "question": "Which passages of the document are ambiguous?",
+   "reason": "No definite answer exists. The design's own stage-6 revision retired 'declare it ambiguous' as an output and replaced it with the enumeration that is now CQ-3. Kept the replacement, discarded this.",
+   "rule_applied": "step 4"
+  },
+  {
+   "question": "How strongly does this passage bear on this behaviour?",
+   "reason": "HANDOFF item 7 says grading is lexicographic over discrete features (match completeness > derivation directness > licence strength). I could not state an expected grade for m0255 × harm-3p without inventing the rung ladder, and inventing it would have been describing a solution.",
+   "rule_applied": "step 4 — not ready, revisit once the ladder is written down"
+  },
+  {
+   "question": "Is this translation faithful to its clause?",
+   "reason": "Not a competency question. It is a question about the pipeline, answered by stage 4b. A CQ is what a user asks of the FINISHED body of knowledge.",
+   "rule_applied": "step 1 — 'what someone will actually do with the finished thing'"
+  },
+  {
+   "question": "Does clause A depend on clause B?",
+   "reason": "This is link.py — a clause-level deterministic check, and exactly the collapse the design warns against ('related to, but NOT the same as, clause-level test cases'). It survives only in the form it takes in CQ-6, where the dependency is reported as a DIAGNOSIS attached to a user-visible cannot-decide verdict.",
+   "rule_applied": "the CQ/test-case distinction"
+  },
+  {
+   "question": "Does the document address a given topic at all, and if not, say so?",
+   "reason": "Not discarded on merit — merged. It is the negative branch of CQ-1's answer_shape (not-relevant vs cannot-decide), and keeping it separate would have made the list describe the solution rather than the need.",
+   "rule_applied": "step 5 — keep the list short"
+  }
+ ]
+}

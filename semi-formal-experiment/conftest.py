@@ -46,6 +46,8 @@ _OPTIONAL = {
     # driver that WRITES the records the LF-2 scan reads. If cycle.py is gone the
     # scan has nothing left to guard.
     "test_latent_fix_tripwires.py": "cycle",
+    "test_semantic_arm.py": "semantic_arm",
+    "test_salience.py": "salience",
 }
 
 collect_ignore = [

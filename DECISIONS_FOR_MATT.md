@@ -169,6 +169,26 @@ what the record says it means.
 
 ---
 
+## ✅ Decision 6 — ANSWERED 2026-08-06: option 3, restate the goal
+
+**Taken by Matt, 2026-08-06.** Neither "fund as-is to chase the frontier bar" nor "hand it to
+frontier models." The goal is restated: **the tool provides logically consistent readings of the
+document for a given behaviour**, with alternative readings called out and explicit assumptions
+that can be toggled. Reproducing human judgment is explicitly *not* the target — that requires
+holding incompatible commitments at once, which is an LLM's job and a formal system's failure mode.
+
+Consequences: MCC is no longer the goal (the metric is the accounted-for fraction of disagreements,
+with **unexplained** as the residual); disagreement becomes output rather than error; oracle
+feedback may never be a verdict, only facts and relationships. Full statement in
+`semi-formal-experiment/HANDOFF.md` ⭐⭐⭐⭐ (2026-08-06) and `HARNESS_DESIGN.md` §0.0.
+
+⚠️ **Decisions 1, 2, 3 and 5 below (S5, S6, implied-effects, S3b) need re-scoping, not automatic
+closure.** They were ladder cycles aimed at closing an MCC gap that is no longer the objective;
+each should be re-evaluated against the new goal before being run or dropped. The analysis below is
+retained as the input to the decision, not as a live recommendation.
+
+### (original text follows)
+
 ## Decision 6 — Fund, pivot, or hand it to frontier models
 
 **Still open — but it is now a decision with a memo attached rather than a question needing

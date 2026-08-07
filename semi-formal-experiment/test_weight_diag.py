@@ -46,17 +46,56 @@ def test_module_declares_itself_a_diagnostic_that_may_not_ship():
 def test_no_repo_module_imports_weight_diag():
     """A consumer is how a ceiling instrument becomes the product. The moment
     `relevance.py` or `benchmark.py` imports this, a panel-fitted weight vector
-    is one line from shipping."""
+    is one line from shipping.
+
+    RULING 2026-08-06 — the exemption is DERIVED, never a name.
+    `semantic_arm.py` is itself a fenced diagnostic and legitimately reuses this
+    module's `Data` loader and its hand-rolled MCC/AUC. Two ways to let it:
+
+      * REJECTED — hardcode `"semantic_arm.py"` into the skip tuple above. That
+        is an allowlist, and an allowlist grows by one name per convenience
+        until the fence means nothing. This project has already lost a headline
+        twice to laundering that every green test missed.
+      * ADOPTED — exempt a module only if it is ITSELF in
+        `test_no_reference_leak.FORBIDDEN`, i.e. already unreachable from any
+        query module. The exemption is then a derived property, not a
+        judgement: to gain it a diagnostic must accept the same fence it is
+        borrowing across, and no query module can reach `weight_diag` through
+        it. Delete a module's FORBIDDEN entry and this test starts failing
+        again in the same commit.
+
+    The transitive claim this rests on — query module -> semantic_arm ->
+    weight_diag is closed off at the FIRST hop — is asserted directly by
+    `test_no_reference_leak`'s scan over QUERY_MODULES, not assumed here."""
+    import test_no_reference_leak as NRL
+
+    fenced = {tok for tok in NRL.FORBIDDEN if re.fullmatch(r"[a-z_][a-z0-9_]*", tok)}
     offenders = []
     for path in glob.glob(os.path.join(REPO, "*.py")):
         name = os.path.basename(path)
+        stem = name[:-3]
         if name in ("weight_diag.py", "test_weight_diag.py"):
             continue
+        if any(stem == f or stem.startswith(f + "_") for f in fenced):
+            continue                      # itself fenced — see the ruling above
         with open(path) as fh:
             src = fh.read()
         if re.search(r"^\s*(import|from)\s+weight_diag\b", src, re.M):
             offenders.append(name)
     assert offenders == [], f"weight_diag has consumers: {offenders}"
+
+
+def test_the_weight_diag_exemption_cannot_be_claimed_by_an_unfenced_module():
+    """The ruling above is only safe if the exemption is genuinely derived. If
+    someone drops a module's FORBIDDEN entry, the exemption must evaporate —
+    otherwise the fence has a permanent hole with no test guarding it."""
+    import test_no_reference_leak as NRL
+
+    assert "semantic_arm" in NRL.FORBIDDEN, (
+        "semantic_arm imports weight_diag and is exempted from the consumer "
+        "fence ONLY because it is itself forbidden to query modules. Removing "
+        "it from FORBIDDEN without removing the import opens a laundering path "
+        "from any query module straight to panel-fitted weights.")
 
 
 def test_expectations_are_pre_registered_in_the_docstring():

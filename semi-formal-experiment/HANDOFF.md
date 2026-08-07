@@ -1,5 +1,68 @@
 # HANDOFF — spec ontology spike (2026-08-01; state refreshed 2026-08-05)
 
+## ⭐⭐⭐⭐ STATE AS OF 2026-08-06 — THE GOAL IS RESTATED. READ THIS BEFORE ANYTHING ELSE.
+
+**Matt took the scope decision that the 2026-08-05 section (“THE DECISION FOR MATT”) said an agent
+must not resolve.** The answer is option 3: **restate the goal.**
+
+### The old goal is retired
+“Quality equivalent to or higher than just asking the frontier models” is **not the target any
+more**, and on the recorded evidence it was not reachable under the contract: label-free sits at
++0.278, best compliant config +0.316, judge mean +0.555, and the cross-judge arm (+0.404) bounds
+what any judge-generic method can reach. Those numbers stand; they are simply no longer the bar.
+
+### The new goal
+> **The tool provides logically consistent readings of the document for a given behaviour**, with
+> known alternative readings called out, and the ability to specify new ones by manipulating
+> explicit assumptions.
+
+Reproducing human judgment is **not** the goal and cannot be — that is a job for an LLM, because it
+requires holding mutually incompatible commitments at once, which is what humans do and what a
+consistent formal system must not do.
+
+### What this changes, concretely
+1. **Disagreement is OUTPUT, not error.** Every tool-vs-human disagreement resolves to one of:
+   (a) a missing or wrong fact — fixable, and the fix generalises;
+   (b) a demonstrated inconsistency in the human judgment — **this is the product**;
+   (c) **unexplained** — the honest residual.
+2. **The metric is the accounted-for fraction, with (c) as the residual — NOT MCC.** It cannot be
+   fitted: the only way to move it is a fact that survives replay.
+3. **A cause counts only when DEMONSTRATED, not attributed.** “Missing fact X” is established by
+   adding X, re-running, and showing the disagreement resolves while nothing else breaks. This is
+   the correction to the census `side` field, which was assigned by judgment, was block-segregated
+   by run (129/0/0, 58/0/27, 39/41/0), and was demonstrably wrong on H006.
+4. **Oracle feedback may NEVER be a verdict.** Not “no, this is actually relevant.” Only new or
+   updated facts/relationships: change a representation, split a fact, add a statement whose facts
+   are implied by human experience but absent from the document. **This makes invariant 9 hold by
+   construction** — no labelled example can enter, because the channel does not accept one. If a
+   correction cannot be expressed as a fact or relation, *that is itself the finding*.
+5. **Extra-document facts must be marked and toggleable.** `textual` / `assumed` / `world`. A
+   coverage claim resting on world knowledge is a different claim from one grounded in text, and
+   the report must say which.
+6. **No silent verdicts.** Every (clause, behaviour) pair returns: **relevant (graded)** — with an
+   inspectable derivation; **not relevant** — vocabulary covered the territory, nothing fired; or
+   **cannot decide** — naming what is missing. Until (2) and (3) are distinguishable, non-coverage
+   cannot be published, and non-coverage is the headline claim.
+7. **Grading is lexicographic over discrete features, never a fitted score:** match completeness
+   (rung ladder) > derivation directness (own facts > subsumption hops > section closure) >
+   license strength (textual-only > requires assumed > requires world).
+
+### Status of everything else
+* **Invariant 10 (structural query) is KEPT** — its measured cost is ±0.03 and negative on the best
+  configuration. Logic-first is the contract, not a new idea.
+* **`relevance.py` (bag scorer) becomes a disabled-but-retained reference module.** Disabling means
+  a *registration* change in the same diff, per AGENTS.md — not merely ceasing to call it.
+* **Clingo is adopted** (Matt, explicit, 2026-08-06) — satisfying `MODULE_MAP.md` §4’s requirement.
+  Note §5: the live path already imports `dsl`/`checker` via `extract_section`, so this promotes an
+  existing dependency rather than reactivating dead code.
+* **Ladder cycles aimed at closing the MCC gap (S5, S6, S3b, implied-effects) are re-scoped**, not
+  automatically dead — re-evaluate each against the new goal before running it.
+* **The "unmined document meaning" objection was tested 2026-08-06 and did NOT overturn the
+  gap analysis** — but it was a fair objection and the prior argument did not cover it. Embedding
+  soft-match, document-internal vs pretrained: `SEMANTIC_ARM_RESULTS.md`, entry "Lead 3" below.
+  **UNREVIEWED**; do not cite as settled, and do not iterate it (fitting hazard, named there).
+* Design: `HARNESS_REDESIGN.md`. Supersedes `RELATIONAL_PAPER_ENCODING.md`.
+
 ## ⭐⭐⭐ STATE AS OF 2026-08-05 — S3b and S4 build-ready. READ THIS FIRST.
 
 This section supersedes the 2026-08-04-LATE section below for WHAT IS CURRENT.
@@ -676,11 +739,57 @@ Never the mean of 9. The supervised ceiling LOSES to the strong judges on helpfu
 judge, per cell** (0.706 / 0.705 / 0.552, mean +0.654).
 
 
-## ⛔ BOTH LABEL-FREE LEADS ARE NOW CLOSED. Read before proposing more scorer work.
+## ⛔ THE LABEL-FREE LEADS ARE CLOSED (two by proof, a third measured). Read before proposing more scorer work.
 
 The supervised ceiling (+0.591) sits above the mean judge (+0.555); the label-free tool sits
 at **+0.278**. That gap was attributed to two recoverable items. **Both have now been
 measured and both are dead ends** — by proof, not by failure to try.
+
+### Lead 3 — "there is unmined MEANING in the document". Tested 2026-08-06. ⚠️ UNREVIEWED.
+Raised by Matt against the argument above, and the objection was **correct as stated**: the
+near-injectivity of the atom index (534/589) and the supervised ceiling prove the atoms
+*distinguish* the passages and that a rule over them exists — **neither shows the document
+cannot supply that rule**. The whole enumeration behind "both leads closed" changed only the
+WEIGHT on an exact atom-name match. It contained no distributional semantics, because
+`relevance.py:4` excluded that space BY CONTRACT, not by measurement.
+
+Pre-registered (`SEMANTIC_ARM_PREREGISTRATION.md`), then measured
+(`SEMANTIC_ARM_RESULTS.md`, `semantic_arm.py`). Both arms use **soft matching** — a passage
+atom merely NEAR a query atom contributes — which is a different functional form, not a
+re-parameterisation. Anchor = exact IDF, +0.293 MCC / 0.723 AUC.
+
+| arm | mean MCC | ΔAUC vs anchor, paired bootstrap | |
+|---|---:|---|---|
+| A — LSA over the spec's own text only | +0.226 | +0.020 [−0.012, +0.053] | **spans zero** |
+| B — `text-embedding-3-small` (outside corpus) | +0.254 | +0.035 [+0.006, +0.064] | excludes zero |
+| B vs A directly | | +0.015 [−0.006, +0.038] | **spans zero** |
+
+Document-internal semantics does not merely fail to gain — it **loses 0.067–0.101 MCC** to
+plain exact matching, stable in sign across k ∈ {25,50,100,200}. The pre-registered
+falsification bar (+0.40 MCC, or beating the anchor by the 0.045 floor) was not approached.
+
+**Read this narrowly.** (a) The confirming A-null/B-positive pattern is present in the point
+estimates but **B vs A spans zero** — the arms are not separated from each other, only from
+the anchor. (b) 589 passages is thin for LSA, so arm A's null is confounded with power: the
+honest claim is *"document-internal semantics AT THIS CORPUS SIZE did not close the gap"*,
+never *"the document does not contain it"*. (c) Two of six frozen predictions did not hold
+(P4 failed for arm B; P6 unestablished). (d) **No adversarial review has run.**
+
+*Unplanned finding, and the most reusable part:* both arms **beat the anchor on RANKING and
+lost on DECIDING**. Soft matching flattens the score distribution and Otsu — a
+distribution-shape rule — cuts a flattened distribution worse. Real signal, eaten by
+calibration. Same theme as `threshold.py`'s opening.
+
+*Why the negative weights matter here:* the learned readout gives 3–11 of every 19–28 query
+atoms a NEGATIVE weight. Similarity is monotone at any resolution, so no embedding channel
+can express "this atom is semantically near the behaviour and counts AGAINST relevance". The
+missing function is discriminative, not a similarity — which is why a better semantic space
+was never going to be the answer, and is direct support for the restated goal's
+`textual`/`assumed`/`world` split.
+
+**Do not iterate this.** Sweeping embedding families/k/scorer forms until MCC rises is the
+withdrawn `rho` lead one level out. The sweep was fixed in advance and is reported entire,
+losers included.
 
 ### Lead 1 — threshold calibration (+0.19). Recovered 40%, then hits a structural wall.
 11 label-free rules, pre-registered preference (Otsu, zero free parameters). Otsu recovers
@@ -844,7 +953,12 @@ from an artifact.
 ### But the label-free derivation does not exist in anything the corpus supplies
 - The learned weighting is **ANTI-correlated with our IDF in 8/9 cells** (rho −0.00 to −0.50).
   Positively-weighted atoms have HIGHER df (5.9–9.7) than negatively-weighted (3.3–4.0).
-- **It is not a function of anything we compute.** Coefficient regressed on log clause-df, log
+- **It is not a function of anything we compute** — read this as written: a claim about
+  SURFACE STATISTICS, which is all that had been tried when it was written. The
+  distributional-semantics hole in that enumeration was measured on 2026-08-06 and came out
+  the same way; see
+  the semantic-arm entry below. **That arm is UNREVIEWED and does not upgrade this bullet to a
+  proof.** Coefficient regressed on log clause-df, log
   passage-df, gloss length, clause count and kind: **R² = 0.039 [0.029, 0.054]**. It encodes
   atom **identity**.
 - 3–11 of every 19–28 query atoms earn a **negative** weight — which our query cannot express.

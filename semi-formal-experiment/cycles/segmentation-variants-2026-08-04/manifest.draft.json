@@ -1,0 +1,30 @@
+{
+ "DRAFT_STATUS": "DRAFT — built in the P1 worktree 2026-08-04 alongside join-integrity-v2 (the two cycles share one code landing in inventory.py; the P2 lever is independently checkable via match_passage_v2(mixed_variants=...)). NOT OPENed: shas must be pinned against the post-S2/S3 merged tree at the gate window. Copy to manifest.json and run the driver there.",
+ "cycle_name": "segmentation-variants-2026-08-04",
+ "date": "2026-08-04",
+ "shape": "code",
+ "census_scope": "dev",
+ "fix_description": "SEGMENTATION option 1 (SEGMENTATION_GAPS_DESIGN.md §3.1, build-with-amendments per PORTFOLIO_REVIEW; F9 handled in the companion join-integrity-v2 cycle): inventory._variants_mixed extends the link-rendering variant set to choose EACH link's rendering (text vs target) independently, bounded at MIXED_VARIANT_CAP=8 variants per string (2^3 links); beyond the cap it falls back to the uniform pair — current behavior, disclosed by the named constant. Wired ONLY into match_passage_v2 (mixed_variants=True default on the v2 join); v1 match_passage is untouched, so the repair composes with join v2 exactly as the design specifies (locator restriction narrows candidates first, making the variant expansion harmless). No clause is added, split, or edited: option 2 (segment additions) was NOT needed — option 1 repairs all seven gap locators, so the verbatim-licensing gate and the artifact re-freeze ceremony are never engaged.",
+ "document_side_rationale": "modelspec_segmentation_summary.md records 97.35% character coverage with 0 unaccounted characters — the document is fully segmented; the citation text drifted. The seven zero-match locators (enumerated mechanically BEFORE repair, per the design's count-first rule; re-verified in this cycle's baseline: measure/../join_map_v1.json) are all not_verbatim_in_source, all in link-dense paragraphs, and all defeat both UNIFORM renderings because the panel's renderer chose per link. The repair reads only document text and the panel's passage identity; no verdict participates.",
+ "files_to_change": [
+  "inventory.py",
+  "test_join_v2.py"
+ ],
+ "gate_tests": [
+  "test_join_v2.py",
+  "test_inventory.py",
+  "test_no_reference_leak.py"
+ ],
+ "review_required": true,
+ "baseline_snapshot_tag": "decoration-blind-join-2026-08-04",
+ "compatibility": {
+  "version_key": "join_version",
+  "statement": "The mixed variant set exists only behind match_passage_v2 (join_version 2); v1 behavior is byte-identical everywhere, so every recorded number reproduces. The lever is independently togglable (mixed_variants parameter) so this cycle's predictions are checked in isolation from the restriction/refusal cycle sharing the code landing."
+ },
+ "config": {
+  "annotations": "annotations_ext_v1_merged.json",
+  "atoms": "behavior_atoms_audit_v1.json",
+  "overlay": "overlay_empty.json",
+  "thresholds": "thresholds_frozen.json"
+ }
+}
