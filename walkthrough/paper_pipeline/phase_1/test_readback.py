@@ -454,7 +454,6 @@ def test_rb3_is_not_fooled_by_the_word_not_inside_a_gloss():
 
 
 def test_rb3_fires_when_polarity_is_dropped(monkeypatch):
-    monkeypatch.setattr(readback, "NEG_MARK_FOR_TEST_MUTATION", None, raising=False)
     real = readback.render_body
 
     def unsigned(body, gloss, **kw):
