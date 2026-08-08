@@ -627,3 +627,66 @@ def test_the_rate_is_over_concepts_and_the_per_clause_count_over_clauses():
     assert m["empty_gloss_rate"] == 2 / 3
     assert m["empty_glosses_per_clause"] == 1.0
     assert m["gloss_concepts_scored"] == 1.5
+
+
+# ==========================================================================
+#  ⭐ The RAW gloss metric — the censoring that invalidated RESULT_bad_example_6
+# ==========================================================================
+
+_RAW_EMPTY = json.dumps({
+    "outcome": "translated", "clause_id": "m0001",
+    "concepts": [{"name": "terrorism_act", "gloss": "an act of terrorism"},
+                 {"name": "critical_harm", "gloss": "conduct the document "
+                  "groups with genocide and torture"}],
+})
+
+
+def test_raw_gloss_metric_counts_a_module_that_failed_the_schema():
+    """⛔ THE WHOLE POINT. `glosses` sees `module=None` and reports 0.000; the
+    empty gloss is sitting in the raw response on disk. A control arm read
+    0.000 that way and the run was written up as "no incidence"."""
+    o = E.ClauseOutcome("m0001", "invalid", None, [], raw=_RAW_EMPTY)
+    censored = E.gloss_metric([o], None)
+    raw = E.gloss_raw_metric([o], None)
+    assert censored["gloss_concepts_scored"] == 0.0
+    assert censored["empty_gloss_rate"] == 0.0, "the censored reading"
+    assert raw["raw_gloss_concepts_scored"] == 2.0
+    assert raw["raw_empty_gloss_rate"] == 0.5, "the uncensored reading"
+    assert raw["raw_empty_glosses_per_clause"] == 1.0
+
+
+def test_raw_gloss_metric_reports_how_many_responses_it_could_parse():
+    """A rate over nothing must not read as a rate of zero — tip 2."""
+    outs = [E.ClauseOutcome("m0001", "invalid", None, [], raw="not json at all"),
+            E.ClauseOutcome("m0002", "translated", None, [], raw=_RAW_EMPTY)]
+    m = E.gloss_raw_metric(outs, None)
+    assert m["raw_responses_parsed"] == 1.0
+    m0 = E.gloss_raw_metric(
+        [E.ClauseOutcome("m0001", "error", None, [], raw="")], None)
+    assert m0["raw_responses_parsed"] == 0.0
+    assert m0["raw_empty_gloss_rate"] == 0.0    # only readable next to the 0.0 above
+
+
+def test_raw_gloss_metric_reads_a_fenced_response():
+    o = E.ClauseOutcome("m0001", "invalid", None, [],
+                        raw="```json\n" + _RAW_EMPTY + "\n```")
+    assert E.gloss_raw_metric([o], None)["raw_gloss_concepts_scored"] == 2.0
+
+
+def test_both_gloss_metrics_share_one_emptiness_definition():
+    """Two copies of this predicate drift by a stopword and then report two
+    different rates for the same run."""
+    assert E.gloss_is_empty("terrorism_act", "an act of terrorism")
+    assert not E.gloss_is_empty("terrorism_act", "an act intended to coerce")
+    o_mod = E.ClauseOutcome("m0001", "translated",
+                            _M([_C("terrorism_act", "an act of terrorism")]), [],
+                            raw=json.dumps({"concepts": [
+                                {"name": "terrorism_act",
+                                 "gloss": "an act of terrorism"}]}))
+    assert (E.gloss_metric([o_mod], None)["empty_gloss_rate"]
+            == E.gloss_raw_metric([o_mod], None)["raw_empty_gloss_rate"] == 1.0)
+
+
+def test_raw_gloss_metric_is_registered_and_selectable():
+    assert "glosses_raw" in E.METRICS
+    assert E.load_metrics(["glosses_raw"]) == ["findings", "glosses_raw"]

@@ -65,25 +65,16 @@ undeclared name cannot be told apart from a typo.
 
 ## Fields
 
-| field | |
-|---|---|
-| `outcome` | `"translated"` or `"abstained"` |
-| `clause_id` | the id you were given, exactly |
-| `abstain_reason` | one sentence when abstaining; `null` otherwise |
-| `claims` | the clause's distinct claims, one string each |
-| `acts` | every act term this clause governs, declared once: `["produce(M)"]` |
-| `concepts` | predicates this clause INTRODUCES: name, arity, and what each MEANS |
-| `ontology` | non-deontic classification facts |
-| `asserts` | the deontic assertions. Each has a `body`: the conditions under which it holds, or **`null` when it holds unconditionally**. ⚠️ Not `""` — an empty string is rejected |
-| `beats` | superiority claims **this clause states** |
-| `defines` | extensions this clause fixes |
-| `closure` | one per act class — see below, it is required |
-| `requires` | predicates another clause must define, `name/arity` |
-| `inputs` | facts about the case, supplied at query time, `name/arity` |
-| `forbid_body` | claims about the rule set: `[{"head": "permit", "banned": "purpose"}]` |
+⭐ **Each field is described in the schema itself, on that field.** The schema is part of this
+request; read the `description` on a field rather than looking for a second copy here. There is no
+second copy on purpose — two descriptions of one field drift, and the drift is invisible.
 
-`requires` and `inputs` must be **disjoint**. A predicate cannot both need another clause to define
-it and be a fact about the case being judged. That distinction is what makes linking possible.
+What follows is only what **no single field can carry**: rules that hold *between* fields.
+
+### `requires` and `inputs` must be disjoint
+
+A predicate cannot both need another clause to define it and be a fact about the case being judged.
+That distinction is what makes linking possible.
 
 ### Acts are indexed
 
@@ -93,16 +84,16 @@ joins nothing — silently, with no error and no conflict ever derived.
 
 Declare each act once in `acts`, then refer to it.
 
-### Every fact declares its licence
+### Every fact declares its licence, and the licence decides what else is required
 
-On `asserts`, `beats`, `defines` and every `ontology` entry:
+`asserts`, `beats`, `defines`, `concepts` and every `ontology` entry carry `licence` together with
+`cites`, `inference` and `toggleable`. **These four fields are one obligation, not four
+independent ones:** the value you put in `licence` decides which of the other three you must fill
+and which must be left empty. Each of those fields states its own condition in the schema; satisfy
+all of them together, because they are checked together and a mismatch is rejected outright.
 
-- `licence` — `textual` · `assumed` · `world`
-- `cites` — **required and non-empty when `textual`**, else `null`
-- `inference` — **required and non-empty when `assumed`**: name the step in one sentence
-- `toggleable` — **must be `true` when `world`**, else `false`
-
-These are checked when your answer is read, and a violation is rejected outright.
+Marking a fact `assumed` or `world` is always available. Reach for it rather than for a citation
+that merely looks plausible — an invented entity behind a passed check is the worse outcome.
 
 ### Read-backs
 
@@ -131,19 +122,14 @@ perfectly good read-back and is not an error:
 The count must match: N slots, N arguments. Because `%` is reserved for substitution you cannot use
 it to mean *per cent* — write the words instead.
 
-One line only: no quotes, braces, backslashes or newlines.
-
 ### `closure` is required, not optional
 
-For **every act class you govern**, say what the document's silence about that act means:
+For **every act class you govern** — every distinct functor appearing in `acts` — add one `closure`
+entry, with a one-sentence reason drawn from the clause. Which of the three readings each value
+stands for is on the `closure` field itself.
 
-- `cepa` — silence **permits** it (whatever is not forbidden is permitted)
-- `cnpa` — silence **prohibits** it
-- `unclear` — the clause does not settle it
-
-with a one-sentence reason from the clause. This is forced because an absent declaration reads as
-`cepa` silently, and that reading changes downstream verdicts with nothing recording that a
-commitment was ever made.
+It is forced, not optional. An absent declaration reads as `cepa` silently, and that reading
+changes downstream verdicts with nothing recording that a commitment was ever made.
 
 A clause governing no acts — a pure definition — needs no closure entry.
 

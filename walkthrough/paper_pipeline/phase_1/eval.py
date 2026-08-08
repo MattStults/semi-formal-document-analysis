@@ -324,6 +324,82 @@ def findings_metric(outcomes, arm):
     }
 
 
+#: Words that cannot rescue a gloss. A gloss made only of these plus the
+#: predicate's own words has said the name again and nothing else.
+_GLOSS_STOP = {"a", "an", "the", "is", "of", "that", "to", "in", "for", "and",
+               "or", "by", "it", "with", "has", "as", "are", "this", "be",
+               "been", "its", "which", "was", "any", "all"}
+
+
+def gloss_is_empty(name, gloss):
+    """Does this gloss restate its own predicate name and nothing more?
+
+    ⭐ ONE definition, used by BOTH gloss metrics. It was duplicated once and
+    the two copies are exactly the kind of thing that drifts by a stopword and
+    then reports two different rates for the same run.
+    """
+    extra = (set(re.findall(r"[a-z]+", (gloss or "").lower()))
+             - set(re.findall(r"[a-z]+", (name or "").lower()))
+             - _GLOSS_STOP - set("abcdefghijklmnopqrstuvwxyz"))
+    return not extra
+
+
+@metric("glosses_raw")
+def gloss_raw_metric(outcomes, arm):
+    """⭐⭐ THE SAME COUNT AS `glosses`, TAKEN OFF THE RAW RESPONSE.
+
+    ⛔ THE MEASUREMENT FAILURE THIS EXISTS FOR, and it is the reason
+    `RESULT_bad_example_6.md` is wrong about its own control arm.
+
+    `glosses` reads `o.module`, which is `None` whenever the response failed a
+    schema check — 44% of first attempts in that run. So every empty gloss
+    written inside a module that also breached the schema was INVISIBLE. Arm A
+    scored `empty_gloss_rate == 0.000` on all three repeats and was written up
+    as "the eval set does not exhibit the failure at all". Re-counting the same
+    arm's raw responses on disk found **8 empty glosses in 84 concepts (9.5%)**,
+    every one of them inside a module that did not build.
+
+    ⇒ The zero was CENSORING, not absence. A metric conditioned on schema
+    validity cannot measure a semantic habit, because the condition is
+    correlated with the thing measured: the arms differed in `unbuildable_rate`
+    (0.444 vs 0.333) as well as in glosses, so `glosses` compared two different
+    populations and called the difference an effect.
+
+    This metric conditions on nothing except "the response parsed as JSON".
+    `raw_responses_parsed` is beside the rate for the `licence_modules_scored`
+    reason: an arm whose responses do not parse at all must not read as an arm
+    with no empty glosses.
+
+    ⚠️ It is still the same PROXY as `glosses` — see that docstring. Read the
+    two together: a gap between them is the censoring above, measured.
+    """
+    empty = total = parsed = 0
+    for o in outcomes:
+        try:
+            obj = _as_object(getattr(o, "raw", "") or "")
+        except (json.JSONDecodeError, ValueError):
+            continue
+        if not isinstance(obj, dict):
+            continue
+        parsed += 1
+        for c in (obj.get("concepts") or []):
+            if not isinstance(c, dict):
+                continue
+            name, gloss = c.get("name") or "", c.get("gloss") or ""
+            if not name or not gloss:
+                continue
+            total += 1
+            empty += gloss_is_empty(name, gloss)
+    n = len(outcomes) or 1
+    return {
+        #: ⭐ FIRST, so it is read first. See the docstring.
+        "raw_responses_parsed": float(parsed),
+        "raw_gloss_concepts_scored": total / n,
+        "raw_empty_gloss_rate": (empty / total) if total else 0.0,
+        "raw_empty_glosses_per_clause": empty / n,
+    }
+
+
 @metric("glosses")
 def gloss_metric(outcomes, arm):
     """⭐ The metric for bad worked example #6 — "imports a name without its content".
@@ -345,10 +421,12 @@ def gloss_metric(outcomes, arm):
     `licence_modules_scored` is: a module that fails the schema carries no
     concepts, every rate below reads 0.0000, and "nothing measured" would be
     indistinguishable from "no empty glosses".
+
+    ⛔ AND IT IS CENSORED BY SCHEMA VALIDITY — read `glosses_raw` beside it, or
+    read neither. A module that breached the schema is `None` here and its
+    glosses are not counted at all, which once produced a control arm reading
+    0.000 while its own raw responses held 8 empty glosses in 84 concepts.
     """
-    STOP = {"a", "an", "the", "is", "of", "that", "to", "in", "for", "and",
-            "or", "by", "it", "with", "has", "as", "are", "this", "be", "been",
-            "its", "which", "was", "any", "all"}
     empty = total = 0
     for o in outcomes:
         mod = getattr(o, "module", None)
@@ -358,10 +436,7 @@ def gloss_metric(outcomes, arm):
             if not name or not gloss:
                 continue
             total += 1
-            extra = (set(re.findall(r"[a-z]+", gloss.lower()))
-                     - set(re.findall(r"[a-z]+", name.lower()))
-                     - STOP - set("abcdefghijklmnopqrstuvwxyz"))
-            empty += not extra
+            empty += gloss_is_empty(name, gloss)
     n = len(outcomes) or 1
     return {
         "gloss_concepts_scored": total / n,

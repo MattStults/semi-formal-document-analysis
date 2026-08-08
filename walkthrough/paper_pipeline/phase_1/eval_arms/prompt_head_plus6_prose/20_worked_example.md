@@ -248,11 +248,9 @@ policies. This encodes what it *does* override:
 ```
 The document never licensed that step. Absence of an exclusion is not an inclusion.
 
-**6 — imports a name without its content.** The clause is about acts of terrorism. This makes the
-whole category one symbol whose gloss just says the name again:
-```json
-{ "name": "terrorism_act", "arity": 1, "gloss": "an act of terrorism" }
-```
+**6 — imports a name without its content.** The clause is about acts of terrorism. Naming a concept
+after the category and glossing it with nothing but that same name again makes the whole category
+one symbol.
 The gloss adds nothing a reader did not already supply. `terrorism_act(X)` now stands for whatever
 the reader happens to think terrorism means, and the document's own content about it is not in the
 module at all.

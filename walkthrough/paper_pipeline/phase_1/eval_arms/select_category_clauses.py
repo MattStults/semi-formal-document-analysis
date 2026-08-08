@@ -18,9 +18,15 @@ can re-run this file and get the same six ids.
 
 The rule, in one sentence: a clause is eligible if it is long enough to yield
 concepts at all, has never been sent to the model or named in a prompt, and
-either **bolds a term** (the document's own way of introducing a defined name)
-or **enumerates instances of a category** ("such as", "including", "e.g."
-followed by a list).
+either **enumerates at least three short items in a row** or **bolds a term** —
+the document's two ways of introducing a named category.
+
+⚠️ THE RULE WAS DERIVED FROM DATA, AND HERE IS THE SEARCH. Six candidate rules
+were scored against the empty-gloss counts already on disk (see
+`PREREG_bad_example_6_rerun.md` for the table). The first rule tried — an
+"e.g./such as/including" marker word — did NOT discriminate (4.9% positive vs
+6.4% negative) and was discarded. Every clause used to derive the rule is in
+the exclusion set below, so the drawn set is held out from the derivation.
 
 Usage:
     python3 select_category_clauses.py --salt eval-categories-v1 --n 6 \
@@ -40,23 +46,39 @@ P1 = os.path.dirname(HERE)
 CORPUS = os.path.join(P1, "..", "..", "..", "semi-formal-experiment",
                       "modelspec_clauses.json")
 
-#: ⭐ THE TWO SIGNALS. Both are the DOCUMENT's own way of introducing a name.
-#: S1 — a bolded term. "**Conversation**: valid input to the model is a
-#:      **conversation** ..." is the spec defining a category by naming it.
-#: S2 — an enumeration of instances. "critical and high severity harms, such as
-#:      acts of violence (...), terrorism, child abuse (...)" is the clause bad
-#:      example #6 is literally drawn from: a category whose content is the
-#:      list, which a lazy translation collapses into one opaque symbol.
-#: The comma requirement is what makes S2 mean "a list" rather than a single
-#: parenthetical aside — one "e.g." with no list introduces no category.
+#: ⭐ THE TWO SIGNALS. Both are the DOCUMENT's own way of introducing a name,
+#: and both were checked against the empty glosses already on disk.
+#:
+#: S1 — a RUN OF ENUMERATED ITEMS: three or more consecutive comma-separated
+#:      segments, each short enough to be a noun phrase rather than a clause.
+#:      This is the shape bad example #6 is literally drawn from — "acts of
+#:      violence ..., terrorism, child abuse ..." — and it is what the observed
+#:      empty glosses come off: `file_attachment`, `tool_output`,
+#:      `multimodal_data`, `system_message`, `terrorism_act`. The model turns
+#:      each listed item into its own unary predicate and glosses it by
+#:      repeating the item's name.
+#: S2 — a BOLDED TERM. "**Conversation**: valid input to the model is a
+#:      **conversation** ..." is the spec naming a category outright; it
+#:      produced `message_role` -> "the role of a message".
+#:
+#: ⛔ NOT a marker word ("such as", "e.g.", "including"). That was the first
+#: rule tried and it does not discriminate — the marker is common in clauses
+#: that introduce nothing, and the two worst offenders on disk (m0293, m0177)
+#: enumerate without one.
 _BOLD = re.compile(r"\*\*[^*\n]{2,40}\*\*")
-_ENUM = re.compile(r"\b(such as|includ(?:ing|es)|e\.g\.|for example)\b",
-                   re.IGNORECASE)
+_SENTENCE = re.compile(r"(?<=[.:;])\s")
 
-#: A clause shorter than this yields one or two concepts at most, and a rate
-#: over a denominator of two is the "metric read 0.0000 because it measured
-#: NOTHING" failure in `DEBUGGING_TIPS.md` §2.
-MIN_CHARS = 200
+#: An item in an enumeration is a noun phrase, not a clause. Both bounds are
+#: needed: a long segment is prose, and a many-worded one is a sentence with
+#: an aside in it.
+_ITEM_CHARS, _ITEM_WORDS, _RUN = 60, 8, 3
+
+#: ⚠️ A GUARD AGAINST FRAGMENTS, NOT A TUNED THRESHOLD. A one-line clause
+#: yields one or two concepts and a rate over a denominator of two is the
+#: "metric read 0.0000 because it measured NOTHING" failure of
+#: `DEBUGGING_TIPS.md` §2. It is set below every clause that has ever been run
+#: here, so it excludes nothing the prior data speaks about.
+MIN_CHARS = 100
 
 #: ⛔ EVERY id that carries a worked answer or a previous outcome.
 PROMPT_GLOBS = ["prompt/*.md", "eval_arms/prompt_*/*.md"]
@@ -98,14 +120,31 @@ def exclusions():
     return ids, out
 
 
+def longest_item_run(text):
+    """Longest run of consecutive short comma-separated segments.
+
+    Reset at sentence boundaries: two one-item sentences in a row are not a
+    list, and without the reset every long clause scores as an enumeration.
+    """
+    best = 0
+    for chunk in _SENTENCE.split(text or ""):
+        run = 0
+        for seg in (s.strip() for s in chunk.split(",")):
+            if 0 < len(seg) <= _ITEM_CHARS and len(seg.split()) <= _ITEM_WORDS:
+                run += 1
+                best = max(best, run)
+            else:
+                run = 0
+    return best
+
+
 def signals(text):
     """Which category-introduction signals this clause carries."""
     hits = []
+    if longest_item_run(text) >= _RUN:
+        hits.append("enumerated_items")
     if _BOLD.search(text):
         hits.append("bold_term")
-    m = _ENUM.search(text)
-    if m and text[m.end():].count(",") >= 2:
-        hits.append("enumerated_instances")
     return hits
 
 
@@ -156,8 +195,15 @@ def main(argv=None):
             "generated_by": "eval_arms/select_category_clauses.py",
             "salt": a.salt,
             "rule": "kind in {definitional, conditional}; len(quote) >= "
-                    f"{MIN_CHARS}; and at least one of: a bolded term, or an "
-                    "enumeration marker followed by a list of >= 2 commas",
+                    f"{MIN_CHARS}; and at least one of: a run of >= {_RUN} "
+                    f"consecutive comma-separated segments each <= "
+                    f"{_ITEM_CHARS} chars and <= {_ITEM_WORDS} words, or a "
+                    "bolded term",
+            "rule_validation_on_prior_data":
+                "over the 24 clauses with responses already on disk, "
+                "rule-positive clauses hold 22 empty glosses in 226 concepts "
+                "(9.7%) and rule-negative 8 in 267 (3.0%). ALL 24 are in the "
+                "exclusion set, so this draw is held out from the derivation.",
             "why": "bad worked example #6 is about a concept that names a "
                    "category and glosses it with its own name. A clause that "
                    "introduces no named category cannot exhibit that failure, "
