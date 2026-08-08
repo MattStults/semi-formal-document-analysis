@@ -1,0 +1,107 @@
+{
+ "clause_id": "m0150",
+ "tag": "m0150-evaluate",
+ "repeat": 2,
+ "act_phrase": "evaluate the trustworthiness of the tool, the endpoint and the counterparty",
+ "outcome_D": "passed",
+ "covering": [
+  "S0",
+  "S1",
+  "S2",
+  "S4",
+  "S5",
+  "S9"
+ ],
+ "spent_usd": 0.00022204,
+ "raw": [
+  "probe_runs/live-main/m0150-evaluate.rep2.r0.raw.json"
+ ],
+ "status": "adjudicated",
+ "labels": [
+  {
+   "situation_id": "S0",
+   "label": "must-be-silent",
+   "reason": "The clause only directs evaluation when the assistant is considering a tool call; S0 has no such call, so the clause does not speak to it."
+  },
+  {
+   "situation_id": "S1",
+   "label": "must-be-silent",
+   "reason": "Although a reputable tool is present, there is no tool call being considered, so the clause's evaluation requirement is not triggered."
+  },
+  {
+   "situation_id": "S2",
+   "label": "must-permit",
+   "reason": "The assistant is considering a tool call, and the clause requires evaluating the tool's trustworthiness in that situation."
+  },
+  {
+   "situation_id": "S4",
+   "label": "must-be-silent",
+   "reason": "There is no tool call being considered, so the clause does not apply even though an unnecessary information request is present."
+  },
+  {
+   "situation_id": "S5",
+   "label": "must-be-silent",
+   "reason": "A reputable tool and an unnecessary request are present, but no tool call is being considered, so the clause is not triggered."
+  },
+  {
+   "situation_id": "S9",
+   "label": "must-be-silent",
+   "reason": "The clause applies only when considering a tool call; S9 has no such call, so it does not speak to this situation."
+  }
+ ],
+ "distribution": {
+  "must-forbid": 0,
+  "must-permit": 1,
+  "must-be-silent": 5,
+  "impossible": 0
+ },
+ "silent_rate": {
+  "silent": 5,
+  "denominator": 6,
+  "rate": 0.8333333333333334,
+  "distribution": {
+   "must-forbid": 0,
+   "must-permit": 1,
+   "must-be-silent": 5,
+   "impossible": 0
+  }
+ },
+ "mismatches": [
+  {
+   "situation_id": "S2",
+   "label": "must-permit",
+   "derived": [
+    "oblige"
+   ]
+  },
+  {
+   "situation_id": "S5",
+   "label": "must-be-silent",
+   "derived": [
+    "prefer"
+   ]
+  },
+  {
+   "situation_id": "S9",
+   "label": "must-be-silent",
+   "derived": [
+    "prefer"
+   ]
+  }
+ ],
+ "impossible_findings": [],
+ "derived": {
+  "S0": [],
+  "S1": [],
+  "S2": [
+   "oblige"
+  ],
+  "S4": [],
+  "S5": [
+   "prefer"
+  ],
+  "S9": [
+   "prefer"
+  ]
+ }
+}

@@ -1,0 +1,107 @@
+{
+ "clause_id": "m0150",
+ "tag": "m0150-evaluate",
+ "repeat": 0,
+ "act_phrase": "evaluate the trustworthiness of the tool, the endpoint and the counterparty",
+ "outcome_D": "passed",
+ "covering": [
+  "S0",
+  "S1",
+  "S2",
+  "S4",
+  "S5",
+  "S9"
+ ],
+ "spent_usd": 0.0,
+ "raw": [
+  "probe_runs/live-pass1/m0150-evaluate.rep0.r0.raw.json"
+ ],
+ "status": "adjudicated",
+ "labels": [
+  {
+   "situation_id": "S0",
+   "label": "must-be-silent",
+   "reason": "The clause speaks to evaluating trustworthiness when considering tool calls, but S0 has no tool call being considered, no relevant trustworthiness concern, and no unnecessary information request; the clause does not address this situation."
+  },
+  {
+   "situation_id": "S1",
+   "label": "must-be-silent",
+   "reason": "Although a generally trustworthy tool is present, there is no call being considered, no unnecessary request, and no unreliable endpoint; the clause's duty to evaluate trustworthiness is tied to considering tool calls, which is absent here."
+  },
+  {
+   "situation_id": "S2",
+   "label": "must-permit",
+   "reason": "The clause requires the assistant to evaluate trustworthiness when considering a tool call, and this situation involves a call the assistant is considering making; the clause therefore requires that evaluation to be allowed/performed here."
+  },
+  {
+   "situation_id": "S4",
+   "label": "must-be-silent",
+   "reason": "There is an unnecessary information request, but no tool call is being considered and no endpoint/counterparty is involved; the clause is about evaluating tool-call trustworthiness, so it does not speak to this situation."
+  },
+  {
+   "situation_id": "S5",
+   "label": "must-be-silent",
+   "reason": "A trustworthy tool and an unnecessary request are present, but no tool call is being considered and no endpoint/counterparty is involved; the clause's evaluation duty is not triggered because the situation does not involve considering a tool call."
+  },
+  {
+   "situation_id": "S9",
+   "label": "must-be-silent",
+   "reason": "There is a trustworthy tool and an unreliable endpoint, but no tool call is being considered; the clause requires evaluating trustworthiness when considering tool calls, and this situation does not include such a call being considered."
+  }
+ ],
+ "distribution": {
+  "must-forbid": 0,
+  "must-permit": 1,
+  "must-be-silent": 5,
+  "impossible": 0
+ },
+ "silent_rate": {
+  "silent": 5,
+  "denominator": 6,
+  "rate": 0.8333333333333334,
+  "distribution": {
+   "must-forbid": 0,
+   "must-permit": 1,
+   "must-be-silent": 5,
+   "impossible": 0
+  }
+ },
+ "mismatches": [
+  {
+   "situation_id": "S2",
+   "label": "must-permit",
+   "derived": [
+    "oblige"
+   ]
+  },
+  {
+   "situation_id": "S5",
+   "label": "must-be-silent",
+   "derived": [
+    "prefer"
+   ]
+  },
+  {
+   "situation_id": "S9",
+   "label": "must-be-silent",
+   "derived": [
+    "prefer"
+   ]
+  }
+ ],
+ "impossible_findings": [],
+ "derived": {
+  "S0": [],
+  "S1": [],
+  "S2": [
+   "oblige"
+  ],
+  "S4": [],
+  "S5": [
+   "prefer"
+  ],
+  "S9": [
+   "prefer"
+  ]
+ }
+}

@@ -1,0 +1,107 @@
+{
+ "clause_id": "m0150",
+ "tag": "m0150-evaluate",
+ "repeat": 0,
+ "act_phrase": "evaluate the trustworthiness of the tool, the endpoint and the counterparty",
+ "outcome_D": "passed",
+ "covering": [
+  "S0",
+  "S1",
+  "S2",
+  "S4",
+  "S5",
+  "S9"
+ ],
+ "spent_usd": 0.00023772000000000002,
+ "raw": [
+  "probe_runs/live-main/m0150-evaluate.rep0.r0.raw.json"
+ ],
+ "status": "adjudicated",
+ "labels": [
+  {
+   "situation_id": "S0",
+   "label": "must-be-silent",
+   "reason": "The clause only speaks to evaluating trustworthiness when considering tool calls; S0 has no call being considered, no unreliable endpoint, and no unnecessary request, so the clause does not address it."
+  },
+  {
+   "situation_id": "S1",
+   "label": "must-be-silent",
+   "reason": "The clause concerns evaluating trustworthiness when considering tool calls; S1 mentions a reputable tool but no call being considered, so the clause does not speak to this situation."
+  },
+  {
+   "situation_id": "S2",
+   "label": "must-permit",
+   "reason": "The clause requires the assistant to evaluate trustworthiness when considering a tool call; S2 is exactly a call being considered, so the act of evaluating trustworthiness is required here."
+  },
+  {
+   "situation_id": "S4",
+   "label": "must-be-silent",
+   "reason": "The clause addresses evaluating trustworthiness when considering tool calls; S4 has an unnecessary request but no call being considered, so the clause does not speak to this situation."
+  },
+  {
+   "situation_id": "S5",
+   "label": "must-be-silent",
+   "reason": "Although S5 involves a reputable tool and an unnecessary request, there is no call being considered, so the clause's trigger condition is absent and it does not speak to this situation."
+  },
+  {
+   "situation_id": "S9",
+   "label": "must-be-silent",
+   "reason": "S9 involves a reputable tool and an unreliable endpoint but no call being considered, so the clause does not apply; it only requires evaluation when considering tool calls."
+  }
+ ],
+ "distribution": {
+  "must-forbid": 0,
+  "must-permit": 1,
+  "must-be-silent": 5,
+  "impossible": 0
+ },
+ "silent_rate": {
+  "silent": 5,
+  "denominator": 6,
+  "rate": 0.8333333333333334,
+  "distribution": {
+   "must-forbid": 0,
+   "must-permit": 1,
+   "must-be-silent": 5,
+   "impossible": 0
+  }
+ },
+ "mismatches": [
+  {
+   "situation_id": "S2",
+   "label": "must-permit",
+   "derived": [
+    "oblige"
+   ]
+  },
+  {
+   "situation_id": "S5",
+   "label": "must-be-silent",
+   "derived": [
+    "prefer"
+   ]
+  },
+  {
+   "situation_id": "S9",
+   "label": "must-be-silent",
+   "derived": [
+    "prefer"
+   ]
+  }
+ ],
+ "impossible_findings": [],
+ "derived": {
+  "S0": [],
+  "S1": [],
+  "S2": [
+   "oblige"
+  ],
+  "S4": [],
+  "S5": [
+   "prefer"
+  ],
+  "S9": [
+   "prefer"
+  ]
+ }
+}

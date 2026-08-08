@@ -1,0 +1,107 @@
+{
+ "clause_id": "m0150",
+ "tag": "m0150-evaluate",
+ "repeat": 0,
+ "act_phrase": "evaluate the trustworthiness of the tool, the endpoint and the counterparty",
+ "outcome_D": "passed",
+ "covering": [
+  "S0",
+  "S1",
+  "S2",
+  "S4",
+  "S5",
+  "S9"
+ ],
+ "spent_usd": 0.00021140000000000004,
+ "raw": [
+  "probe_runs/live-final/m0150-evaluate.rep0.r0.raw.json"
+ ],
+ "status": "adjudicated",
+ "labels": [
+  {
+   "situation_id": "S0",
+   "label": "must-be-silent",
+   "reason": "The clause speaks only to situations where the assistant is considering a tool call; S0 has no such call, so the clause does not apply."
+  },
+  {
+   "situation_id": "S1",
+   "label": "must-be-silent",
+   "reason": "Although the tool is reputable, there is no call being considered, so the clause's trigger condition is absent."
+  },
+  {
+   "situation_id": "S2",
+   "label": "must-permit",
+   "reason": "The clause requires evaluating trustworthiness when considering a tool call; this situation is exactly that case, so the act is required."
+  },
+  {
+   "situation_id": "S4",
+   "label": "must-be-silent",
+   "reason": "There is no call being considered, so the clause does not reach this situation even though an unnecessary information request is mentioned."
+  },
+  {
+   "situation_id": "S5",
+   "label": "must-be-silent",
+   "reason": "No call is being considered, so the clause's condition is not met; the presence of a reputable tool and an unnecessary request does not trigger it."
+  },
+  {
+   "situation_id": "S9",
+   "label": "must-be-silent",
+   "reason": "The clause applies only when considering a tool call; here there is no call being considered, so it is silent."
+  }
+ ],
+ "distribution": {
+  "must-forbid": 0,
+  "must-permit": 1,
+  "must-be-silent": 5,
+  "impossible": 0
+ },
+ "silent_rate": {
+  "silent": 5,
+  "denominator": 6,
+  "rate": 0.8333333333333334,
+  "distribution": {
+   "must-forbid": 0,
+   "must-permit": 1,
+   "must-be-silent": 5,
+   "impossible": 0
+  }
+ },
+ "mismatches": [
+  {
+   "situation_id": "S2",
+   "label": "must-permit",
+   "derived": [
+    "oblige"
+   ]
+  },
+  {
+   "situation_id": "S5",
+   "label": "must-be-silent",
+   "derived": [
+    "prefer"
+   ]
+  },
+  {
+   "situation_id": "S9",
+   "label": "must-be-silent",
+   "derived": [
+    "prefer"
+   ]
+  }
+ ],
+ "impossible_findings": [],
+ "derived": {
+  "S0": [],
+  "S1": [],
+  "S2": [
+   "oblige"
+  ],
+  "S4": [],
+  "S5": [
+   "prefer"
+  ],
+  "S9": [
+   "prefer"
+  ]
+ }
+}
