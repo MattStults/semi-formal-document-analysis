@@ -1,0 +1,132 @@
+# ARM: gloss
+# 43 predicates supplied; 16 carry a gloss
+# The document (268,287 chars) is sent in full and is ELIDED here.
+
+================ SYSTEM ================
+You are resolving symbols against a specification document.
+
+The document is given in full, divided by markers of the form
+
+    ===== SECTION: <section_id> =====
+
+Someone has translated individual clauses of this document into small logic
+rules. Those rules test conditions written as predicates, and each translation
+listed the predicates it BORROWED — conditions it uses but does not itself
+define.
+
+Your job is to say, for each borrowed predicate, WHERE in the document its
+meaning is established. Nothing else. You are not judging the translation, not
+rewriting it, and not inventing predicates.
+
+Three answers are available, and the third is as important as the first:
+
+  DOCUMENT   a section establishes this. Name it and quote the phrase.
+  WORLD      no section establishes it because it comes from outside the
+             document — a legal category, a factual matter, a technical term
+             the document assumes its reader already knows.
+  COINAGE    the translator invented a name the document does not use at all.
+             No section defines it and none ever could.
+
+⛔ DO NOT INVENT A DEFINING SECTION. A section that MENTIONS a term does not
+establish it. If nothing in the document fixes what a name means, the honest
+answers are WORLD or COINAGE, and getting those right matters more than a long
+DOCUMENT list.
+
+⚠️ These names were coined by a translator working one clause at a time. Some
+are the document's own vocabulary; some are that translator's shorthand. Do not
+assume a name is the document's just because it sounds like it could be.
+
+================ TURN 1 (user) ================
+[... 268,287 chars of section-marked document ...]
+
+===== BORROWED PREDICATES =====
+
+- agreed_scope/1   (borrowed by section: scope_of_autonomy)
+    the translator's note: the scope of autonomy agreed between the user/developer and the assistant, subject to the chain of command
+- applicable/1   (borrowed by section: follow_all_applicable_instructions)
+- broader_scope_substantially_improves/1   (borrowed by section: scope_of_autonomy)
+    the translator's note: a task for which a broader scope would substantially improve results
+- can_proceed/1   (borrowed by section: follow_all_applicable_instructions)
+- cannot_complete_within_scope/1   (borrowed by section: scope_of_autonomy)
+    the translator's note: a task that cannot be completed within the existing agreed scope
+- capable/1   (borrowed by section: follow_all_applicable_instructions)
+- conflicts_with_higher_authority/1   (borrowed by section: follow_all_applicable_instructions)
+- conflicts_with_later_same_authority/1   (borrowed by section: follow_all_applicable_instructions)
+- corrupted_webpage/1   (borrowed by section: letter_and_spirit)
+    the translator's note: a webpage that has been corrupted by an adversary since the user last checked it
+- critical_high_severity_harm/1   (borrowed by section: red_line_principles)
+    the translator's note: a harm that is critical and high severity, as enumerated by this clause
+- delegated_authority_to_webpage/1   (borrowed by section: letter_and_spirit)
+- delegated_corrupted_webpage/1   (borrowed by section: letter_and_spirit)
+    the translator's note: An instruction that delegates authority to a webpage which has been corrupted by an adversary since the user last checked it.
+- disallowed/1   (borrowed by section: follow_all_applicable_instructions)
+- evidence_to_contrary/1   (borrowed by section: assume_best_intentions)
+    the translator's note: evidence that a user does not have the weak preference described
+- explicitly_updated_and_approved/1   (borrowed by section: scope_of_autonomy)
+    the translator's note: the agreed scope has been explicitly updated and approved by the original user or developer
+- forbids/2   (borrowed by section: transformation_exception)
+- fulfillable/1   (borrowed by section: follow_all_applicable_instructions)
+- includes_malicious_instructions/1   (borrowed by section: letter_and_spirit)
+- instruction/1   (borrowed by section: follow_all_applicable_instructions)
+- interactable_entity/1   (borrowed by section: definitions)
+- interaction_entity/1   (borrowed by section: definitions)
+- material_type/2   (borrowed by section: transformation_exception)
+- new_material/1   (borrowed by section: transformation_exception)
+- not_read_carefully/1   (borrowed by section: letter_and_spirit)
+- out_of_scope/2   (borrowed by section: transformation_exception)
+- out_of_scope_action/1   (borrowed by section: scope_of_autonomy)
+    the translator's note: an action that falls outside the agreed scope of autonomy
+- pasted_text/1   (borrowed by section: letter_and_spirit)
+- pasted_unread_text/1   (borrowed by section: letter_and_spirit)
+    the translator's note: An instruction that consists of text pasted by the user without quotes and not read carefully.
+- policy_class/2   (borrowed by section: transformation_exception)
+- produced/1   (borrowed by section: transformation_exception)
+- prohibited_action/1   (borrowed by section: control_side_effects)
+    the translator's note: an action the document's other policies forbid
+- refusal_style/1   (borrowed by section: follow_all_applicable_instructions)
+- remaining_instructions/2   (borrowed by section: follow_all_applicable_instructions)
+- reputable_tool/1   (borrowed by section: control_side_effects)
+    the translator's note: a tool that is generally considered trustworthy or reputable
+- rule_set_by_openai_transmittable_or_overridable_via_system_message_not_overridable_by_developer_or_user/1   (borrowed by section: levels_of_authority)
+- scope/2   (borrowed by section: transformation_exception)
+- task/1   (borrowed by section: scope_of_autonomy)
+- tool_call/1   (borrowed by section: control_side_effects)
+    the translator's note: a call to a tool that the assistant is considering making
+- transformation_of_user_content/1   (borrowed by section: transformation_exception)
+- translation_of_user_content/1   (borrowed by section: control_side_effects)
+- unnecessary_request/1   (borrowed by section: control_side_effects)
+    the translator's note: a request for information that is unnecessary for the user's task
+- unreliable_destination/1   (borrowed by section: control_side_effects)
+    the translator's note: a specific endpoint or counterparty that seems unreliable
+- user/1   (borrowed by section: assume_best_intentions)
+    the translator's note: an individual interacting with the assistant
+
+Below is the document, then the borrowed predicates.
+
+For EVERY predicate listed, give exactly one verdict.
+
+Return JSON only:
+
+{"resolved": [{"predicate": "name/arity",
+               "verdict": "document" | "world" | "coinage",
+               "section_id": "<section_id>, or null unless verdict is document",
+               "evidence": "a phrase appearing VERBATIM in that section, or null",
+               "why": "one sentence"}]}
+
+Every predicate in the list must appear exactly once in your answer.
+
+================ TURN 2 (user, same transcript) ================
+Now look again at everything you called `world` or `coinage`.
+
+For each, say what the translation should have done instead:
+
+{"remedies": [{"predicate": "name/arity",
+               "verdict": "world" | "coinage",
+               "remedy": "cite-a-section" | "mark-as-world" | "rename-to-document-term"
+                         | "the-document-has-a-gap",
+               "document_term": "the document's own wording for this idea, or null",
+               "why": "one sentence"}]}
+
+⭐ `rename-to-document-term` is the interesting one: the translator coined a name
+for something the document already names differently. If so, give the document's
+term — that is a concrete, checkable claim.

@@ -121,6 +121,69 @@ or a real gap in the document — both are findings. `evidence` must be a phrase
 that appears verbatim in the producing section, so this can be checked."""
 
 
+
+# ==========================================================================
+#  VARIANT: predicates, not concepts. See concept_map_runs/PREREG_predicate_variant.md
+# ==========================================================================
+
+SYSTEM_PRED = """You are reading a specification document so that each of its sections
+can later be turned into small logic rules.
+
+The document is given in full, divided by markers of the form
+
+    ===== SECTION: <section_id> =====
+
+A rule looks like: a STATUS (forbid / permit / oblige / prefer) attached to an
+ACT, holding WHEN a body of conditions is true. For example, informally:
+
+    forbid produce(M)  when  new_material(M), disallowed(M)
+
+Each condition in that body is a PREDICATE applied to arguments. Your job is to
+predict, per section, which predicates the rules written from it will have to
+test — and which of those the section does NOT itself establish, so they must
+come from another section or from outside the document.
+
+⭐ A PREDICATE is a testable condition, not a topic. `disallowed(M)` is a
+predicate. "content policy" is a topic. Name them in snake_case with an arity,
+as `name/arity`.
+
+⚠️ Predict what the rules will NEED, not what the section is about. A section can
+be about the chain of command and its rules test `higher_authority(A, B)`."""
+
+TURN_1_PRED = """Read the whole document above.
+
+For EVERY section, list the predicates that rules written from that section will
+have to test but that the section does NOT establish — the ones it borrows.
+
+Return JSON only:
+
+{"sections": [{"section_id": "...",
+               "borrowed": [{"predicate": "name/arity",
+                             "gloss": "the condition it tests, in the document's terms",
+                             "why_needed": "which rule in this section tests it",
+                             "source": "document" | "world"}]}]}
+
+A section whose rules borrow nothing gets an empty list — say so rather than
+omitting the section."""
+
+TURN_2_PRED = """Now the other half.
+
+For every borrowed predicate you marked `source: "document"`, identify the section
+that ESTABLISHES it — the one whose own rules or definitions fix what it means.
+
+Return JSON only:
+
+{"resolved": [{"predicate": "name/arity", "established_by": "<section_id>",
+               "borrowed_by": ["<section_id>", ...],
+               "evidence": "a phrase appearing VERBATIM in the establishing section"}],
+ "unresolved": [{"predicate": "name/arity", "borrowed_by": ["..."],
+                 "why": "why no section establishes it"}]}
+
+⭐ `unresolved` is the important half. A predicate that no section establishes is
+either a `world` condition you mis-filed, or a genuine gap — both are findings.
+Do not invent an establishing section to make the list look complete."""
+
+
 def build_document(cfg):
     """The whole corpus, section-marked, in document order."""
     rows, out, seen = T.load_corpus(cfg), [], None
@@ -146,6 +209,8 @@ def main(argv=None):
     p.add_argument("--live", action="store_true")
     p.add_argument("--config", default=os.path.join(HERE, "config.json"))
     p.add_argument("--max-cost", type=float, default=0.25)
+    p.add_argument("--mode", choices=("concepts", "predicates"),
+                   default="concepts", help="which question to ask")
     a = p.parse_args(argv)
 
     cfg = T.load_config(a.config)
@@ -154,18 +219,22 @@ def main(argv=None):
     prov = T.resolve_provider(cfg, type("A", (), {
         "provider": None, "model": None, "max_tokens": None})())
     doc, rows = build_document(cfg)
-    user1 = doc + "\n\n" + TURN_1
+    sys_block = SYSTEM if a.mode == "concepts" else SYSTEM_PRED
+    t1 = TURN_1 if a.mode == "concepts" else TURN_1_PRED
+    t2 = TURN_2 if a.mode == "concepts" else TURN_2_PRED
+    user1 = doc + "\n\n" + t1
 
     cpt = float(cfg["cost"]["chars_per_token"])
     pin, pout = prov.price_per_mtok
-    t1_in = (len(SYSTEM) + len(user1)) / cpt
-    t2_in = t1_in + MAX_TOKENS + len(TURN_2) / cpt      # transcript accumulates
+    t1_in = (len(sys_block) + len(user1)) / cpt
+    t2_in = t1_in + MAX_TOKENS + len(t2) / cpt      # transcript accumulates
     worst = ((t1_in + t2_in) / 1e6) * pin + ((2 * MAX_TOKENS) / 1e6) * pout
 
     print(f"clauses / sections : {len(rows)} / "
           f"{len({r['section_id'] for r in rows})}")
     print(f"document           : {len(doc):,} chars (~{int(len(doc)/cpt):,} tok)")
     print(f"model              : {prov.model}")
+    print(f"mode               : {a.mode}")
     print(f"turns              : 2, ONE accumulating transcript")
     print(f"cost (worst case)  : ${worst:.4f}   ceiling ${a.max_cost:.2f}")
 
@@ -174,21 +243,21 @@ def main(argv=None):
         return 2
     if not a.live:
         print("\nDRY RUN — nothing sent. Add --live to spend.")
-        print(f"\n--- system block ---\n{SYSTEM[:600]}\n…")
+        print(f"\n--- system block ---\n{sys_block[:600]}\n…")
         print(f"\n--- turn 1 tail ---\n…{user1[-700:]}")
         return 0
 
-    outdir = os.path.join(OUT_ROOT, time.strftime("%Y%m%d-%H%M%S"))
+    outdir = os.path.join(OUT_ROOT, time.strftime("%Y%m%d-%H%M%S") + "-" + a.mode)
     os.makedirs(outdir, exist_ok=True)
     client = T.make_client(prov, cfg)
     messages, results, spent = [{"role": "user", "content": user1}], [], 0.0
 
     for n, (label, follow) in enumerate(
-            [("inputs", None), ("outputs", TURN_2)], start=1):
+            [("inputs", None), ("outputs", t2)], start=1):
         if follow:
             messages.append({"role": "user", "content": follow})
         try:
-            env = client.complete_messages(SYSTEM, messages)
+            env = client.complete_messages(sys_block, messages)
         except T.Phase1Error as exc:
             print(f"\n⛔ turn {n} ({label}): {type(exc).__name__}: {exc}")
             break
@@ -214,7 +283,7 @@ def main(argv=None):
                 json.dump(obj, fh, indent=1)
 
     with open(os.path.join(outdir, "run.json"), "w", encoding="utf-8") as fh:
-        json.dump({"model": prov.model, "max_tokens": MAX_TOKENS,
+        json.dump({"mode": a.mode, "model": prov.model, "max_tokens": MAX_TOKENS,
                    "document_chars": len(doc), "sections":
                        len({r["section_id"] for r in rows}),
                    "turns": results, "spent_usd": round(spent, 6),

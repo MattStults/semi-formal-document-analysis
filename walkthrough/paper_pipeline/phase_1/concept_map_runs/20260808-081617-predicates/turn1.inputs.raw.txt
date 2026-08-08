@@ -1,0 +1,2060 @@
+{
+  "sections": [
+    {
+      "section_id": "overview",
+      "borrowed": []
+    },
+    {
+      "section_id": "structure",
+      "borrowed": []
+    },
+    {
+      "section_id": "red_line_principles",
+      "borrowed": [
+        {
+          "predicate": "critical_or_high_severity_harm/1",
+          "gloss": "the requested content or action would facilitate critical and high severity harms (violence, weapons, terrorism, child abuse, persecution, etc.)",
+          "why_needed": "the section's rules forbid facilitating such harms, so the rule must test whether the content falls into that category",
+          "source": "world"
+        },
+        {
+          "predicate": "targeted_or_scaled_exclusion_manipulation/1",
+          "gloss": "the use would enable targeted or scaled exclusion, manipulation, undermining human autonomy, or eroding civic participation",
+          "why_needed": "the section's rules forbid such uses, so the rule must test whether the use is of that kind",
+          "source": "world"
+        },
+        {
+          "predicate": "privacy_safeguarded/1",
+          "gloss": "the interaction safeguards individuals' privacy",
+          "why_needed": "the section commits to safeguarding privacy, so rules must test whether an interaction respects privacy",
+          "source": "world"
+        },
+        {
+          "predicate": "safety_critical_information_accessible/1",
+          "gloss": "people have easy access to trustworthy safety-critical information from the model",
+          "why_needed": "the section commits to this for first-party products, so rules must test whether access is provided",
+          "source": "world"
+        },
+        {
+          "predicate": "transparency_provided/1",
+          "gloss": "people have transparency into important rules and reasons behind model behavior",
+          "why_needed": "the section commits to transparency, so rules must test whether transparency is provided",
+          "source": "world"
+        },
+        {
+          "predicate": "customization_overrides_guideline/1",
+          "gloss": "customization, personalization, or localization would override a principle above the guideline level",
+          "why_needed": "the section forbids such overrides, so rules must test whether an override would occur",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "general_principles",
+      "borrowed": [
+        {
+          "predicate": "safe_and_feasible/1",
+          "gloss": "the action is safe and feasible to perform",
+          "why_needed": "the section says to maximize helpfulness to the extent it is safe and feasible, so rules must test that condition",
+          "source": "world"
+        },
+        {
+          "predicate": "risk_of_harm/1",
+          "gloss": "the action carries potential risks of harm",
+          "why_needed": "the section says to minimize harm, so rules must test whether an action poses harm risk",
+          "source": "world"
+        },
+        {
+          "predicate": "user_or_developer_override/1",
+          "gloss": "the user or developer has explicitly overridden a default",
+          "why_needed": "the section says defaults can be overridden by users or developers, so rules must test whether an override exists",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "risk_taxonomy",
+      "borrowed": [
+        {
+          "predicate": "misaligned_goal/1",
+          "gloss": "the assistant might pursue the wrong objective due to misalignment, misunderstanding, or being misled",
+          "why_needed": "the section describes this risk category and says to mitigate it, so rules must test whether a goal is misaligned",
+          "source": "world"
+        },
+        {
+          "predicate": "execution_error/1",
+          "gloss": "the assistant might understand the task but make mistakes in execution",
+          "why_needed": "the section describes this risk category and says to mitigate it, so rules must test whether an execution error is likely",
+          "source": "world"
+        },
+        {
+          "predicate": "harmful_instruction/1",
+          "gloss": "the instruction would cause harm if followed",
+          "why_needed": "the section describes this risk category and says to refuse or safe-complete such instructions, so rules must test whether an instruction is harmful",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "levels_of_authority",
+      "borrowed": [
+        {
+          "predicate": "authority_level/2",
+          "gloss": "the authority level of an instruction (root, system, developer, user, guideline)",
+          "why_needed": "the section defines the chain of command and says higher authority overrides lower, so rules must test the authority level of each instruction",
+          "source": "document"
+        },
+        {
+          "predicate": "root_rule/1",
+          "gloss": "the instruction is a root-level rule from the Model Spec",
+          "why_needed": "the section says root instructions cannot be overridden, so rules must test whether an instruction is root",
+          "source": "document"
+        },
+        {
+          "predicate": "system_message/1",
+          "gloss": "the instruction comes from a system message",
+          "why_needed": "the section says system-level instructions can be supplied via system messages, so rules must test that source",
+          "source": "document"
+        },
+        {
+          "predicate": "developer_message/1",
+          "gloss": "the instruction comes from a developer message",
+          "why_needed": "the section says developer instructions are obeyed unless overridden, so rules must test that source",
+          "source": "document"
+        },
+        {
+          "predicate": "user_message/1",
+          "gloss": "the instruction comes from a user message",
+          "why_needed": "the section says user instructions are honored unless overridden, so rules must test that source",
+          "source": "document"
+        },
+        {
+          "predicate": "guideline_instruction/1",
+          "gloss": "the instruction is a guideline-level default that can be implicitly overridden",
+          "why_needed": "the section says guidelines can be overridden implicitly, so rules must test whether an instruction is a guideline",
+          "source": "document"
+        }
+      ]
+    },
+    {
+      "section_id": "definitions",
+      "borrowed": [
+        {
+          "predicate": "message_role/2",
+          "gloss": "the role of a message (system, developer, user, assistant, tool)",
+          "why_needed": "the section defines roles and says they determine authority, so rules must test the role of each message",
+          "source": "document"
+        },
+        {
+          "predicate": "under_18/1",
+          "gloss": "the conversation is marked as involving an under-18 user",
+          "why_needed": "the section shows a system setting for under-18 users, so rules must test that flag",
+          "source": "document"
+        },
+        {
+          "predicate": "tool_available/1",
+          "gloss": "a tool is listed as available to the assistant",
+          "why_needed": "the section says a system or developer message lists available tools, so rules must test which tools are available",
+          "source": "document"
+        },
+        {
+          "predicate": "tool_side_effect/1",
+          "gloss": "a tool call may cause side-effects on the world that are difficult or impossible to reverse",
+          "why_needed": "the section says the assistant should take extra care with such tool calls, so rules must test whether a tool has side effects",
+          "source": "world"
+        },
+        {
+          "predicate": "agentic_context/1",
+          "gloss": "the assistant is operating in an agentic context with autonomous actions",
+          "why_needed": "the section says extra care is needed in agentic contexts, so rules must test whether the context is agentic",
+          "source": "world"
+        },
+        {
+          "predicate": "hidden_chain_of_thought/1",
+          "gloss": "the model can generate a hidden chain-of-thought message",
+          "why_needed": "the section defines this concept and says it is not exposed, so rules must test whether such a message exists",
+          "source": "document"
+        },
+        {
+          "predicate": "truncated_conversation/1",
+          "gloss": "the conversation has been truncated and the model cannot see the entire history",
+          "why_needed": "the section says truncation may occur, so rules must test whether the model has full context",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "chain_of_command",
+      "borrowed": [
+        {
+          "predicate": "adheres_to_model_spec/1",
+          "gloss": "the assistant adheres to the Model Spec",
+          "why_needed": "the section says above all else the assistant must adhere to the spec, so rules must test compliance",
+          "source": "document"
+        },
+        {
+          "predicate": "delegated_power/2",
+          "gloss": "the Model Spec delegates power to system, developer, or end user",
+          "why_needed": "the section says the spec delegates all remaining power, so rules must test whether power is delegated",
+          "source": "document"
+        }
+      ]
+    },
+    {
+      "section_id": "follow_all_applicable_instructions",
+      "borrowed": [
+        {
+          "predicate": "applicable_instruction/1",
+          "gloss": "the instruction is applicable to the current request",
+          "why_needed": "the section says the assistant must follow all applicable instructions, so rules must test applicability",
+          "source": "document"
+        },
+        {
+          "predicate": "candidate_instruction/1",
+          "gloss": "the instruction is a possibly relevant candidate instruction",
+          "why_needed": "the section says to identify all candidate instructions first, so rules must test whether an instruction is a candidate",
+          "source": "document"
+        },
+        {
+          "predicate": "misaligned_instruction/1",
+          "gloss": "the instruction conflicts with the letter or intent of a higher-level instruction",
+          "why_needed": "the section says such instructions are not applicable, so rules must test misalignment",
+          "source": "document"
+        },
+        {
+          "predicate": "superseded_instruction/1",
+          "gloss": "the instruction is superseded by a later instruction at the same level",
+          "why_needed": "the section says such instructions are not applicable, so rules must test supersession",
+          "source": "document"
+        },
+        {
+          "predicate": "suspected_mistaken_instruction/1",
+          "gloss": "the instruction is suspected to be mistaken",
+          "why_needed": "the section says such instructions are not applicable, so rules must test that suspicion",
+          "source": "world"
+        },
+        {
+          "predicate": "beyond_capabilities/1",
+          "gloss": "the instruction is beyond the assistant's capabilities",
+          "why_needed": "the section says such instructions should be ignored, so rules must test capability",
+          "source": "world"
+        },
+        {
+          "predicate": "untrusted_content/1",
+          "gloss": "the content is quoted, untrusted text, multimodal data, or tool output with no authority",
+          "why_needed": "the section says such content should be ignored unless delegated authority, so rules must test whether content is untrusted",
+          "source": "document"
+        },
+        {
+          "predicate": "delegated_authority/2",
+          "gloss": "a higher-level instruction delegates authority to a lower-level content source",
+          "why_needed": "the section says untrusted content can be followed if authority is delegated, so rules must test delegation",
+          "source": "document"
+        }
+      ]
+    },
+    {
+      "section_id": "letter_and_spirit",
+      "borrowed": [
+        {
+          "predicate": "underlying_intent/2",
+          "gloss": "the underlying intent and context of an instruction",
+          "why_needed": "the section says to consider intent and context, so rules must test what the intent is",
+          "source": "world"
+        },
+        {
+          "predicate": "implicit_goal/2",
+          "gloss": "plausible implicit goals and preferences of stakeholders",
+          "why_needed": "the section says to consider them, so rules must test what they are",
+          "source": "world"
+        },
+        {
+          "predicate": "ambiguous_instruction/1",
+          "gloss": "the instruction is ambiguous, inconsistent, or difficult to follow",
+          "why_needed": "the section says to handle such instructions, so rules must test ambiguity",
+          "source": "world"
+        },
+        {
+          "predicate": "clarifying_question_appropriate/1",
+          "gloss": "asking a clarifying question is appropriate",
+          "why_needed": "the section says to ask clarifying questions as appropriate, so rules must test that condition",
+          "source": "world"
+        },
+        {
+          "predicate": "irreversible_cost/1",
+          "gloss": "the action could incur irreversible costs from a misunderstanding",
+          "why_needed": "the section says to err on the side of caution in agentic contexts, so rules must test irreversibility",
+          "source": "world"
+        },
+        {
+          "predicate": "provenance_unclear/1",
+          "gloss": "the provenance of instructions is unclear",
+          "why_needed": "the section says to be careful in such situations, so rules must test provenance clarity",
+          "source": "world"
+        },
+        {
+          "predicate": "user_mistake/1",
+          "gloss": "the user may have made a mistake in their message",
+          "why_needed": "the section says to be careful if the user may have mistyped, so rules must test that possibility",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "no_other_objectives",
+      "borrowed": [
+        {
+          "predicate": "entailed_by_applicable_instructions/1",
+          "gloss": "the goal is entailed by applicable instructions under the chain of command",
+          "why_needed": "the section says the assistant may only pursue such goals, so rules must test entailment",
+          "source": "document"
+        },
+        {
+          "predicate": "additional_goal/1",
+          "gloss": "the goal is an additional end in itself (e.g., revenue, self-preservation, enforcing morality)",
+          "why_needed": "the section forbids pursuing such goals, so rules must test whether a goal is disallowed",
+          "source": "world"
+        },
+        {
+          "predicate": "instrumental_to_chain_of_command/1",
+          "gloss": "the factor is strictly instrumental to following the chain of command",
+          "why_needed": "the section allows such factors only if instrumental, so rules must test instrumentality",
+          "source": "document"
+        }
+      ]
+    },
+    {
+      "section_id": "scope_of_autonomy",
+      "borrowed": [
+        {
+          "predicate": "scope_of_autonomy/1",
+          "gloss": "a clear, mutually understood scope of autonomy exists",
+          "why_needed": "the section requires autonomy to be bounded by such a scope, so rules must test whether one exists",
+          "source": "document"
+        },
+        {
+          "predicate": "within_scope/2",
+          "gloss": "the action is within the agreed scope of autonomy",
+          "why_needed": "the section says the assistant must adhere strictly to the scope, so rules must test whether an action is in scope",
+          "source": "document"
+        },
+        {
+          "predicate": "explicitly_updated_scope/1",
+          "gloss": "the scope has been explicitly updated and approved by the original user or developer",
+          "why_needed": "the section allows exceptions only with such approval, so rules must test whether scope was updated",
+          "source": "document"
+        },
+        {
+          "predicate": "shutdown_timer/1",
+          "gloss": "the scope includes a shutdown timer beyond which the assistant ceases actions",
+          "why_needed": "the section requires every scope to have one, so rules must test its presence",
+          "source": "document"
+        },
+        {
+          "predicate": "high_risk_activity/1",
+          "gloss": "the activity is high-risk (hacking, deception, resource acquisition, spawning sub-agents, self-modification)",
+          "why_needed": "the section says such activities are prohibited unless explicitly authorized, so rules must test whether an activity is high-risk",
+          "source": "world"
+        },
+        {
+          "predicate": "explicitly_authorized/1",
+          "gloss": "the activity is explicitly authorized by applicable instructions",
+          "why_needed": "the section allows high-risk activities only with explicit authorization, so rules must test authorization",
+          "source": "document"
+        },
+        {
+          "predicate": "delegated_work/1",
+          "gloss": "the assistant delegates work to sub-agents or third parties",
+          "why_needed": "the section says delegated work must operate under the same scope, so rules must test delegation",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "control_side_effects",
+      "borrowed": [
+        {
+          "predicate": "side_effect/1",
+          "gloss": "the action has side effects, especially irreversible ones",
+          "why_needed": "the section says to minimize side effects, so rules must test whether an action has side effects",
+          "source": "world"
+        },
+        {
+          "predicate": "irreversible/1",
+          "gloss": "the side effect is irreversible",
+          "why_needed": "the section emphasizes minimizing irreversible side effects, so rules must test irreversibility",
+          "source": "world"
+        },
+        {
+          "predicate": "proportionate_to_objectives/1",
+          "gloss": "the action is proportionate to the established objectives",
+          "why_needed": "the section says each action should be proportionate, so rules must test proportionality",
+          "source": "world"
+        },
+        {
+          "predicate": "bad_surprise/1",
+          "gloss": "the action could cause unexpected, durable negative outcomes the user might not intend",
+          "why_needed": "the section says to minimize bad surprises, so rules must test that risk",
+          "source": "world"
+        },
+        {
+          "predicate": "tool_trustworthy/1",
+          "gloss": "the tool or endpoint is trustworthy",
+          "why_needed": "the section says to evaluate trustworthiness of tools and endpoints, so rules must test trustworthiness",
+          "source": "world"
+        },
+        {
+          "predicate": "reversible_by_assistant/1",
+          "gloss": "the approach is easily reversible by the assistant",
+          "why_needed": "the section prefers reversible approaches, so rules must test reversibility",
+          "source": "world"
+        },
+        {
+          "predicate": "mitigation_plan/1",
+          "gloss": "there is a mitigation plan for irreversible actions (backup, dry-run, documentation)",
+          "why_needed": "the section says to attempt to mitigate issues, so rules must test whether a plan exists",
+          "source": "world"
+        },
+        {
+          "predicate": "legibility/1",
+          "gloss": "the action is legible for easy monitoring and intervention",
+          "why_needed": "the section says to prioritize legibility, so rules must test legibility",
+          "source": "world"
+        },
+        {
+          "predicate": "clarify_preferences/1",
+          "gloss": "the trade-offs between side effects, cost, speed, and quality are unclear",
+          "why_needed": "the section says to clarify when practical, so rules must test whether clarification is needed",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "assume_best_intentions",
+      "borrowed": [
+        {
+          "predicate": "ambiguous_request/1",
+          "gloss": "the request is ambiguous with some reasonable interpretations aligned and others not",
+          "why_needed": "the section says to assume best intentions in such cases, so rules must test ambiguity",
+          "source": "world"
+        },
+        {
+          "predicate": "reasonable_human_goals/1",
+          "gloss": "the user's goals and preferences are similar to an average reasonable human being",
+          "why_needed": "the section says to assume this, so rules must test that assumption",
+          "source": "world"
+        },
+        {
+          "predicate": "positive_intent/1",
+          "gloss": "the user's intent is positive",
+          "why_needed": "the section says to interpret requests helpfully and respectfully, so rules must test intent",
+          "source": "world"
+        },
+        {
+          "predicate": "prohibited_help/1",
+          "gloss": "the request asks for prohibited help to accomplish a permissible goal",
+          "why_needed": "the section says to decline prohibited help and suggest alternatives, so rules must test whether help is prohibited",
+          "source": "document"
+        }
+      ]
+    },
+    {
+      "section_id": "ignore_untrusted_data",
+      "borrowed": [
+        {
+          "predicate": "untrusted_data/1",
+          "gloss": "the content is quoted text, multimodal data, file attachments, or tool outputs",
+          "why_needed": "the section says such data has no authority by default, so rules must test whether data is untrusted",
+          "source": "document"
+        },
+        {
+          "predicate": "delegated_authority/2",
+          "gloss": "authority has been delegated to the untrusted data by an unquoted instruction",
+          "why_needed": "the section says authority may be delegated, so rules must test delegation",
+          "source": "document"
+        },
+        {
+          "predicate": "implicitly_quoted/1",
+          "gloss": "the content is implicitly quoted because the user may not have noticed embedded instructions",
+          "why_needed": "the section says to treat such content as implicitly quoted, so rules must test that condition",
+          "source": "world"
+        },
+        {
+          "predicate": "tool_instruction_relevant/1",
+          "gloss": "the tool output instruction is clearly related to the task",
+          "why_needed": "the section says to ignore unrelated instructions and follow clearly intended ones, so rules must test relevance",
+          "source": "world"
+        },
+        {
+          "predicate": "tool_instruction_side_effect/1",
+          "gloss": "the tool instruction could cause serious side effects",
+          "why_needed": "the section says to seek clarification in such cases, so rules must test side-effect severity",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "stay_in_bounds",
+      "borrowed": [
+        {
+          "predicate": "disallowed_content/1",
+          "gloss": "the content is disallowed under the Model Spec",
+          "why_needed": "the section says the assistant should refrain from fully complying when content is disallowed, so rules must test disallowedness",
+          "source": "document"
+        },
+        {
+          "predicate": "technically_capable/1",
+          "gloss": "the assistant is technically capable of fulfilling the request",
+          "why_needed": "the section says limits apply even when technically capable, so rules must test capability",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "comply_with_laws",
+      "borrowed": [
+        {
+          "predicate": "applicable_legal_constraint/1",
+          "gloss": "the response is subject to an applicable legal constraint",
+          "why_needed": "the section says to operate within legal constraints, so rules must test whether a law applies",
+          "source": "world"
+        },
+        {
+          "predicate": "local_deployment/1",
+          "gloss": "the model is deployed in a local jurisdiction with specific legal requirements",
+          "why_needed": "the section says local law applies for local deployments, so rules must test deployment context",
+          "source": "world"
+        },
+        {
+          "predicate": "content_omitted_due_to_law/1",
+          "gloss": "content is omitted due to legal requirements beyond Model Spec boundaries",
+          "why_needed": "the section requires transparent indication of such omissions, so rules must test whether content was omitted",
+          "source": "world"
+        },
+        {
+          "predicate": "content_added_due_to_law/1",
+          "gloss": "information is added due to legal requirements",
+          "why_needed": "the section requires transparent identification of such additions, so rules must test whether content was added",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "disallowed_content",
+      "borrowed": [
+        {
+          "predicate": "prohibited_content/1",
+          "gloss": "the content is prohibited (sexual content involving minors)",
+          "why_needed": "the section says the assistant should not generate prohibited content, so rules must test that category",
+          "source": "document"
+        },
+        {
+          "predicate": "restricted_content/1",
+          "gloss": "the content is restricted (information hazards, sensitive personal data)",
+          "why_needed": "the section says the assistant should not generate restricted content, so rules must test that category",
+          "source": "document"
+        },
+        {
+          "predicate": "sensitive_content/1",
+          "gloss": "the content is sensitive (erotica, gore) in specific circumstances",
+          "why_needed": "the section says the assistant should not generate sensitive content in disallowed circumstances, so rules must test that category",
+          "source": "document"
+        },
+        {
+          "predicate": "transformation_exception/1",
+          "gloss": "the content is a transformation of user-provided content",
+          "why_needed": "the section says transformations are allowed for restricted and sensitive content, so rules must test whether the exception applies",
+          "source": "document"
+        },
+        {
+          "predicate": "disguised_form/1",
+          "gloss": "the content is provided in disguised form (e.g., written backwards, enciphered)",
+          "why_needed": "the section says disguised disallowed content is the same as direct content, so rules must test disguise",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "prohibited_content",
+      "borrowed": [
+        {
+          "predicate": "sexual_content_involving_minors/1",
+          "gloss": "the content is sexual content involving minors",
+          "why_needed": "the section says prohibited content should never be produced, so rules must test that category",
+          "source": "world"
+        },
+        {
+          "predicate": "transformation_of_prohibited_content/1",
+          "gloss": "the content is a transformation of user-provided prohibited content",
+          "why_needed": "the section says transformations are also prohibited, so rules must test whether the exception would apply",
+          "source": "document"
+        }
+      ]
+    },
+    {
+      "section_id": "sexual_content_involving_minors",
+      "borrowed": [
+        {
+          "predicate": "sexual_content_involving_minors/1",
+          "gloss": "the content involves sexual content with minors, whether fictional or real",
+          "why_needed": "the section prohibits such content, so rules must test that category",
+          "source": "world"
+        },
+        {
+          "predicate": "educational_or_sex_ed_context/1",
+          "gloss": "the discussion is non-graphic educational or sex-ed context",
+          "why_needed": "the section allows such discussions, so rules must test the context",
+          "source": "world"
+        },
+        {
+          "predicate": "factual_tone/1",
+          "gloss": "the response maintains a factual tone",
+          "why_needed": "the section requires factual tone in allowed contexts, so rules must test tone",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "restricted_content",
+      "borrowed": [
+        {
+          "predicate": "restricted_content/1",
+          "gloss": "the content is restricted (information hazards, sensitive personal data)",
+          "why_needed": "the section says not to generate restricted content, so rules must test that category",
+          "source": "document"
+        },
+        {
+          "predicate": "transformation_exception/1",
+          "gloss": "the content is a transformation of user-provided restricted content",
+          "why_needed": "the section allows transformations, so rules must test whether the exception applies",
+          "source": "document"
+        }
+      ]
+    },
+    {
+      "section_id": "avoid_info_hazards",
+      "borrowed": [
+        {
+          "predicate": "detailed_actionable_steps/1",
+          "gloss": "the content provides detailed, actionable steps for an activity",
+          "why_needed": "the section says not to provide such steps for harmful activities, so rules must test whether content is detailed and actionable",
+          "source": "world"
+        },
+        {
+          "predicate": "illicit_activity/1",
+          "gloss": "the activity is illicit",
+          "why_needed": "the section prohibits steps for illicit activities, so rules must test illegality",
+          "source": "world"
+        },
+        {
+          "predicate": "harm_people_or_property/1",
+          "gloss": "the activity could harm people or property",
+          "why_needed": "the section prohibits steps for such activities, so rules must test harm potential",
+          "source": "world"
+        },
+        {
+          "predicate": "critical_or_large_scale_harm/1",
+          "gloss": "the activity could lead to critical or large-scale harm",
+          "why_needed": "the section prohibits steps for such activities, so rules must test scale",
+          "source": "world"
+        },
+        {
+          "predicate": "cbrn_weapon/1",
+          "gloss": "the activity relates to creating, obtaining, magnifying, or deploying CBRN weapons",
+          "why_needed": "the section explicitly prohibits such steps, so rules must test CBRN relevance",
+          "source": "world"
+        },
+        {
+          "predicate": "dual_use_information/1",
+          "gloss": "the information has both harmful potential and legitimate uses",
+          "why_needed": "the section says to respond with neutral factual information without amplifying risk, so rules must test dual-use nature",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "avoid_targeted_political_manipulation",
+      "borrowed": [
+        {
+          "predicate": "targeted_political_manipulation/1",
+          "gloss": "the content is specifically designed to manipulate the political views of specific individuals or demographic groups",
+          "why_needed": "the section prohibits such content, so rules must test targeting and manipulative design",
+          "source": "world"
+        },
+        {
+          "predicate": "broad_audience_political_content/1",
+          "gloss": "the political content is crafted for an unspecified or broad audience",
+          "why_needed": "the section allows such content, so rules must test audience breadth",
+          "source": "world"
+        },
+        {
+          "predicate": "exploits_unique_characteristics/1",
+          "gloss": "the content exploits unique characteristics of a particular individual or demographic",
+          "why_needed": "the section prohibits such exploitation, so rules must test that condition",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "respect_creators",
+      "borrowed": [
+        {
+          "predicate": "copyrighted_work/1",
+          "gloss": "the work is protected by intellectual property rights",
+          "why_needed": "the section says to respect creators' IP, so rules must test whether a work is protected",
+          "source": "world"
+        },
+        {
+          "predicate": "public_domain/1",
+          "gloss": "the work is in the public domain",
+          "why_needed": "the section's example distinguishes public domain songs, so rules must test public domain status",
+          "source": "world"
+        },
+        {
+          "predicate": "paywall_bypass/1",
+          "gloss": "the request would bypass a paywall for paid content",
+          "why_needed": "the section's example refuses such requests, so rules must test paywall bypass",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "protect_privacy",
+      "borrowed": [
+        {
+          "predicate": "private_or_sensitive_information/1",
+          "gloss": "the information is private or sensitive about a person",
+          "why_needed": "the section says not to respond to requests for such information, so rules must test sensitivity",
+          "source": "world"
+        },
+        {
+          "predicate": "public_figure/1",
+          "gloss": "the person is a public figure",
+          "why_needed": "the section says for public figures, generally public info can be provided, so rules must test public figure status",
+          "source": "world"
+        },
+        {
+          "predicate": "generally_public_and_harmless/1",
+          "gloss": "the information is generally public and unlikely to cause harm through disclosure",
+          "why_needed": "the section allows providing such info for public figures, so rules must test that condition",
+          "source": "world"
+        },
+        {
+          "predicate": "citation_available/1",
+          "gloss": "a citation can validate the personal data",
+          "why_needed": "the section says citations should be used when possible, so rules must test citation availability",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "sensitive_content",
+      "borrowed": [
+        {
+          "predicate": "sensitive_content/1",
+          "gloss": "the content is sensitive (erotica, gore)",
+          "why_needed": "the section says sensitive content may only be generated under specific circumstances, so rules must test that category",
+          "source": "document"
+        },
+        {
+          "predicate": "specific_circumstance/1",
+          "gloss": "the context is educational, medical, historical, or a transformation",
+          "why_needed": "the section allows sensitive content in such circumstances, so rules must test the circumstance",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "no_erotica_or_gore",
+      "borrowed": [
+        {
+          "predicate": "erotica/1",
+          "gloss": "the content is erotica",
+          "why_needed": "the section says not to generate erotica except in appropriate contexts, so rules must test that category",
+          "source": "world"
+        },
+        {
+          "predicate": "illegal_or_non_consensual_sexual_activity/1",
+          "gloss": "the content depicts illegal or non-consensual sexual activities",
+          "why_needed": "the section prohibits such depictions, so rules must test that category",
+          "source": "world"
+        },
+        {
+          "predicate": "extreme_gore/1",
+          "gloss": "the content is extreme gore",
+          "why_needed": "the section prohibits extreme gore except in appropriate contexts, so rules must test that category",
+          "source": "world"
+        },
+        {
+          "predicate": "appropriate_context/1",
+          "gloss": "the context is scientific, historical, news, artistic, or otherwise appropriate",
+          "why_needed": "the section allows sensitive content in such contexts, so rules must test the context",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "avoid_extremist_content",
+      "borrowed": [
+        {
+          "predicate": "extremist_agenda/1",
+          "gloss": "the content praises, endorses, or aids an extremist agenda that promotes violence",
+          "why_needed": "the section prohibits such content, so rules must test that category",
+          "source": "world"
+        },
+        {
+          "predicate": "critical_or_factual_discussion/1",
+          "gloss": "the discussion is critical, discouraging, or factual from an objective point of view",
+          "why_needed": "the section allows such discussions in news, history, or education, so rules must test the nature of the discussion",
+          "source": "world"
+        },
+        {
+          "predicate": "vulnerability_to_radicalization/1",
+          "gloss": "the user shows signs of vulnerability to radicalization",
+          "why_needed": "the section says to de-escalate and discourage, so rules must test vulnerability",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "avoid_hateful_content",
+      "borrowed": [
+        {
+          "predicate": "hateful_content/1",
+          "gloss": "the content targets protected groups with slurs, insults, or demeaning language",
+          "why_needed": "the section prohibits such content, so rules must test that category",
+          "source": "world"
+        },
+        {
+          "predicate": "protected_group/1",
+          "gloss": "the target is a protected group (race, religion, gender, sexual orientation, disability)",
+          "why_needed": "the section defines hateful content by protected group, so rules must test group membership",
+          "source": "world"
+        },
+        {
+          "predicate": "objective_pov_context/1",
+          "gloss": "the content is from an objective point of view and properly contextualized for critical/educational purposes",
+          "why_needed": "the section allows such references, so rules must test the context",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "avoid_abuse",
+      "borrowed": [
+        {
+          "predicate": "gratuitous_abuse_harassment/1",
+          "gloss": "the content is gratuitous abuse, harassment, or negativity toward an individual",
+          "why_needed": "the section prohibits such content, so rules must test that category",
+          "source": "world"
+        },
+        {
+          "predicate": "explicitly_instructed/1",
+          "gloss": "the user explicitly instructed the behavior in a context that does not violate other principles",
+          "why_needed": "the section allows such behavior if explicitly instructed, so rules must test explicit instruction",
+          "source": "document"
+        }
+      ]
+    },
+    {
+      "section_id": "transformation_exception",
+      "borrowed": [
+        {
+          "predicate": "user_provided_content/1",
+          "gloss": "the content was directly provided by the user",
+          "why_needed": "the section says the exception applies only to user-provided content, so rules must test provenance",
+          "source": "document"
+        },
+        {
+          "predicate": "transformation_task/1",
+          "gloss": "the task is translating, paraphrasing, summarizing, classifying, encoding, formatting, or improving grammar",
+          "why_needed": "the section lists such tasks, so rules must test the task type",
+          "source": "world"
+        },
+        {
+          "predicate": "adds_new_disallowed_content/1",
+          "gloss": "the output would add new disallowed content or refine dangerous details",
+          "why_needed": "the section says not to add such content, so rules must test whether the transformation adds",
+          "source": "world"
+        },
+        {
+          "predicate": "retrieves_disallowed_content/1",
+          "gloss": "the assistant would rely on references, URLs, or titles to retrieve disallowed content",
+          "why_needed": "the section prohibits such retrieval, so rules must test whether retrieval is involved",
+          "source": "world"
+        },
+        {
+          "predicate": "prohibited_action/1",
+          "gloss": "the transformation would perform a prohibited action rather than just transform information",
+          "why_needed": "the section says the exception only applies to information, not actions, so rules must test action type",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "risky_situations",
+      "borrowed": [
+        {
+          "predicate": "risky_situation/1",
+          "gloss": "the request involves a risky situation",
+          "why_needed": "the section provides instructions for risky situations, so rules must test whether a situation is risky",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "prevent_imminent_harm",
+      "borrowed": [
+        {
+          "predicate": "imminent_real_world_harm/1",
+          "gloss": "there is a dangerous situation that could cause imminent real-world harm",
+          "why_needed": "the section says to proactively prevent such harm, so rules must test imminence and danger",
+          "source": "world"
+        },
+        {
+          "predicate": "improper_advice_could_cause_immediate_physical_harm/1",
+          "gloss": "the advice if improper could result in immediate physical harm",
+          "why_needed": "the section says to avoid such advice, so rules must test that risk",
+          "source": "world"
+        },
+        {
+          "predicate": "overstepping/1",
+          "gloss": "the response would overstep by being judgmental or prescriptive",
+          "why_needed": "the section says to avoid overstepping, so rules must test whether a response oversteps",
+          "source": "world"
+        },
+        {
+          "predicate": "expertise_lacking/1",
+          "gloss": "the assistant lacks expertise or proper training in the relevant domain",
+          "why_needed": "the section says to provide a disclaimer acknowledging lack of expertise, so rules must test that condition",
+          "source": "world"
+        },
+        {
+          "predicate": "video_stream_shows_imminent_danger/1",
+          "gloss": "the video stream shows something that could cause imminent bodily harm or death",
+          "why_needed": "the section says to interject in such cases, so rules must test video content",
+          "source": "world"
+        },
+        {
+          "predicate": "sufficient_signal_of_danger/1",
+          "gloss": "there is sufficient signal that danger is imminent",
+          "why_needed": "the section says to wait until sufficient signal, so rules must test signal strength",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "do_not_facilitate_illicit_behavior",
+      "borrowed": [
+        {
+          "predicate": "illicit_intent/1",
+          "gloss": "the user or developer indicates intent to engage in illicit behavior",
+          "why_needed": "the section says to refuse when illicit intent is indicated, so rules must test intent",
+          "source": "world"
+        },
+        {
+          "predicate": "guidance_instructions_actionable_steps/1",
+          "gloss": "the request asks for guidance, instructions, actionable steps, or improvements to plans for illicit behavior",
+          "why_needed": "the section prohibits such help, so rules must test the nature of the request",
+          "source": "world"
+        },
+        {
+          "predicate": "implicit_endorsement/1",
+          "gloss": "helping would be an implicit endorsement of the illicit behavior",
+          "why_needed": "the section says to refuse because helping would be endorsement, so rules must test that implication",
+          "source": "world"
+        },
+        {
+          "predicate": "intent_unclear/1",
+          "gloss": "the user's intent is unclear and compliance is not disallowed for other reasons",
+          "why_needed": "the section says to assume best intentions in such cases, so rules must test intent clarity",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "do_not_encourage_self_harm",
+      "borrowed": [
+        {
+          "predicate": "self_harm_intent/1",
+          "gloss": "the user expresses or implies intent to self-harm",
+          "why_needed": "the section says not to encourage or enable self-harm, so rules must test intent",
+          "source": "world"
+        },
+        {
+          "predicate": "imminent_danger/1",
+          "gloss": "the user is in imminent danger of self-harm",
+          "why_needed": "the section says to advise seeking immediate help, so rules must test imminence",
+          "source": "world"
+        },
+        {
+          "predicate": "credible_risk_to_safety/1",
+          "gloss": "context strongly suggests a credible risk to the user's safety or life",
+          "why_needed": "the section says to respond supportively even if intent is not explicit, so rules must test risk",
+          "source": "world"
+        },
+        {
+          "predicate": "signs_of_delusion_or_mania/1",
+          "gloss": "the user shows potential signs of delusions or mania",
+          "why_needed": "the section says to recognize and respond safely, so rules must test those signs",
+          "source": "world"
+        },
+        {
+          "predicate": "ungrounded_belief/1",
+          "gloss": "the user holds an ungrounded belief that might lead to distress",
+          "why_needed": "the section says not to affirm or escalate such beliefs, so rules must test whether a belief is ungrounded",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "avoid_regulated_advice",
+      "borrowed": [
+        {
+          "predicate": "regulated_domain/1",
+          "gloss": "the topic is legal, medical, or financial",
+          "why_needed": "the section says to equip users without definitive advice in such domains, so rules must test the domain",
+          "source": "world"
+        },
+        {
+          "predicate": "definitive_advice/1",
+          "gloss": "the response would provide definitive advice best given by a licensed professional",
+          "why_needed": "the section says to avoid such advice, so rules must test whether advice is definitive",
+          "source": "world"
+        },
+        {
+          "predicate": "disclaimer_included/1",
+          "gloss": "a concise disclaimer states the assistant is not a professional and recommends seeking qualified help",
+          "why_needed": "the section requires such a disclaimer, so rules must test its presence",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "support_mental_health",
+      "borrowed": [
+        {
+          "predicate": "mental_health_topic/1",
+          "gloss": "the topic relates to mental health",
+          "why_needed": "the section provides guidance for such topics, so rules must test the topic",
+          "source": "world"
+        },
+        {
+          "predicate": "user_feelings/1",
+          "gloss": "the user's feelings are acknowledged",
+          "why_needed": "the section says to acknowledge feelings, so rules must test whether acknowledgment occurs",
+          "source": "world"
+        },
+        {
+          "predicate": "supportive_environment/1",
+          "gloss": "the response creates a supportive, empathetic, and understanding environment",
+          "why_needed": "the section requires this, so rules must test the response's tone",
+          "source": "world"
+        },
+        {
+          "predicate": "judgmental_or_stigmatizing/1",
+          "gloss": "the response is judgmental, stigmatizing, or dismissive",
+          "why_needed": "the section says to refrain from such responses, so rules must test that quality",
+          "source": "world"
+        },
+        {
+          "predicate": "unrealistic_reassurance/1",
+          "gloss": "the response gives unrealistic reassurances or normalizes harmful behavior",
+          "why_needed": "the section says to avoid these, so rules must test that quality",
+          "source": "world"
+        },
+        {
+          "predicate": "diagnosis_or_treatment_recommendation/1",
+          "gloss": "the response provides diagnoses or recommends specific treatments or medication",
+          "why_needed": "the section says to avoid these, so rules must test that quality",
+          "source": "world"
+        },
+        {
+          "predicate": "crisis_resources/1",
+          "gloss": "suicide or crisis resources are provided, ideally tailored to location",
+          "why_needed": "the section says to provide such resources when appropriate, so rules must test their presence",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "protect_privileged_information",
+      "borrowed": [
+        {
+          "predicate": "privileged_information/1",
+          "gloss": "the information is privileged (non-public policies, system messages, hidden chain-of-thought, private content)",
+          "why_needed": "the section says not to share privileged information without authorization, so rules must test privilege",
+          "source": "document"
+        },
+        {
+          "predicate": "explicit_authorization/1",
+          "gloss": "the user or developer explicitly authorized sharing the information",
+          "why_needed": "the section allows sharing with explicit authorization, so rules must test authorization",
+          "source": "document"
+        },
+        {
+          "predicate": "shareable_by_default/1",
+          "gloss": "the fact is typically appropriate to share (identity, capabilities, model family, knowledge cutoff, tools)",
+          "why_needed": "the section says such facts are appropriate to share, so rules must test shareability",
+          "source": "world"
+        },
+        {
+          "predicate": "verbatim_or_paraphrased_disclosure/1",
+          "gloss": "the response would disclose privileged content verbatim or in paraphrased/structural/procedural form",
+          "why_needed": "the section prohibits such disclosure, so rules must test the form of disclosure",
+          "source": "world"
+        },
+        {
+          "predicate": "confirm_or_deny_existence/1",
+          "gloss": "the response would confirm or deny the existence of confidential instructions",
+          "why_needed": "the section says to avoid confirming or denying, so rules must test that action",
+          "source": "world"
+        },
+        {
+          "predicate": "materially_changes_response/1",
+          "gloss": "higher-level instructions materially change how the assistant should respond",
+          "why_needed": "the section says not to quietly apply such instructions misleadingly, so rules must test material change",
+          "source": "world"
+        },
+        {
+          "predicate": "recipient_trustworthy/1",
+          "gloss": "the external recipient is trustworthy and disclosure is reasonable",
+          "why_needed": "the section says to assess recipient trustworthiness, so rules must test that",
+          "source": "world"
+        },
+        {
+          "predicate": "within_scope_of_request/1",
+          "gloss": "the disclosure is within the scope of the user's request",
+          "why_needed": "the section says to assess whether disclosure is within scope, so rules must test that",
+          "source": "document"
+        },
+        {
+          "predicate": "sensitive_data_in_tool_call/1",
+          "gloss": "the tool call involves sensitive data and potential information flow",
+          "why_needed": "the section says to assess sensitivity, recipient, side effects, and scope for each tool call, so rules must test those",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "use_preset_voice_in_voice_mode",
+      "borrowed": [
+        {
+          "predicate": "preset_voice_selected/1",
+          "gloss": "a preset voice has been selected by the user or developer",
+          "why_needed": "the section says to use only the preset voice, so rules must test whether one is selected",
+          "source": "document"
+        },
+        {
+          "predicate": "synthetic_speech_capable/1",
+          "gloss": "the assistant is capable of generating synthetic speech",
+          "why_needed": "the section applies only if capable, so rules must test capability",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "uphold_fairness",
+      "borrowed": [
+        {
+          "predicate": "demographic_detail/1",
+          "gloss": "the decision would be based on demographic details or protected traits",
+          "why_needed": "the section says not to discriminate based on such details, so rules must test whether a decision uses them",
+          "source": "world"
+        },
+        {
+          "predicate": "legally_or_contextually_required/1",
+          "gloss": "the demographic consideration is legally or contextually required (e.g., age restrictions)",
+          "why_needed": "the section allows such considerations, so rules must test that exception",
+          "source": "world"
+        },
+        {
+          "predicate": "consistent_reasoning/1",
+          "gloss": "the same reasoning and standards are applied across similar situations",
+          "why_needed": "the section requires consistency, so rules must test whether reasoning is consistent",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "respect_real_world_ties",
+      "borrowed": [
+        {
+          "predicate": "undermines_real_world_relationships/1",
+          "gloss": "the response would undermine the user's capacity or desire for meaningful human interactions",
+          "why_needed": "the section prohibits such engagement, so rules must test that effect",
+          "source": "world"
+        },
+        {
+          "predicate": "exclusive_language/1",
+          "gloss": "the response uses language suggesting an exclusive or special connection with the assistant",
+          "why_needed": "the section's example avoids such language, so rules must test for it",
+          "source": "world"
+        },
+        {
+          "predicate": "proactive_flirtation/1",
+          "gloss": "the assistant proactively escalates emotional closeness or flirtation",
+          "why_needed": "the section prohibits such escalation, so rules must test that behavior",
+          "source": "world"
+        },
+        {
+          "predicate": "supports_user_autonomy/1",
+          "gloss": "the response supports the user in navigating the wider world autonomously",
+          "why_needed": "the section requires supporting autonomy, so rules must test whether the response does so",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "no_agenda",
+      "borrowed": [
+        {
+          "predicate": "steering_user/1",
+          "gloss": "the response attempts to steer the user toward an agenda of the assistant's own",
+          "why_needed": "the section prohibits such steering, so rules must test whether a response steers",
+          "source": "world"
+        },
+        {
+          "predicate": "psychological_manipulation/1",
+          "gloss": "the response uses psychological manipulation, concealment, selective emphasis, or refusal to engage",
+          "why_needed": "the section defines steering by these means, so rules must test for them",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "assume_objective_pov",
+      "borrowed": [
+        {
+          "predicate": "factual_question/1",
+          "gloss": "the question is factual with evidence-based answers",
+          "why_needed": "the section says to focus on evidence for factual questions, so rules must test question type",
+          "source": "world"
+        },
+        {
+          "predicate": "personal_preference/1",
+          "gloss": "the question is a matter of personal preference",
+          "why_needed": "the section says to engage casually for such questions, so rules must test question type",
+          "source": "world"
+        },
+        {
+          "predicate": "moral_or_ethical_question/1",
+          "gloss": "the question is moral or ethical",
+          "why_needed": "the section says to present context without taking a stance, so rules must test question type",
+          "source": "world"
+        },
+        {
+          "predicate": "fundamental_human_rights_violation/1",
+          "gloss": "the question concerns fundamental human rights violations (e.g., genocide, slavery)",
+          "why_needed": "the section says to clearly state these are wrong, so rules must test that category",
+          "source": "world"
+        },
+        {
+          "predicate": "roleplay_or_creative_request/1",
+          "gloss": "the user asks for roleplay or creative assistance",
+          "why_needed": "the section says to comply without imposing objective POV, so rules must test request type",
+          "source": "world"
+        },
+        {
+          "predicate": "significant_viewpoints/1",
+          "gloss": "there are significant viewpoints supported by reliable sources",
+          "why_needed": "the section says to fairly describe significant views, so rules must test their existence",
+          "source": "world"
+        },
+        {
+          "predicate": "subjective_term/1",
+          "gloss": "the response uses subjective terms without quoting or citing",
+          "why_needed": "the section says to avoid subjective terms, so rules must test language",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "present_perspectives",
+      "borrowed": [
+        {
+          "predicate": "request_to_present_perspective/1",
+          "gloss": "the user requests a perspective from a specific point of view",
+          "why_needed": "the section says to fulfill such requests, so rules must test the request",
+          "source": "world"
+        },
+        {
+          "predicate": "disallowed_content_in_perspective/1",
+          "gloss": "the requested perspective would require disallowed content (e.g., praising violent extremists)",
+          "why_needed": "the section's example shows a boundary, so rules must test whether the perspective crosses it",
+          "source": "document"
+        }
+      ]
+    },
+    {
+      "section_id": "no_topic_off_limits",
+      "borrowed": [
+        {
+          "predicate": "sensitive_or_controversial_topic/1",
+          "gloss": "the topic is sensitive or controversial",
+          "why_needed": "the section says not to avoid topics solely for that reason, so rules must test topic sensitivity",
+          "source": "world"
+        },
+        {
+          "predicate": "content_restriction_applies/1",
+          "gloss": "the content would violate a content restriction or prohibition",
+          "why_needed": "the section says to adhere to restrictions, so rules must test whether a restriction applies",
+          "source": "document"
+        }
+      ]
+    },
+    {
+      "section_id": "be_honest_and_transparent",
+      "borrowed": [
+        {
+          "predicate": "honest_and_transparent/1",
+          "gloss": "the response is honest and transparent about knowledge, confidence, capabilities, and actions",
+          "why_needed": "the section requires this, so rules must test the response's honesty",
+          "source": "world"
+        },
+        {
+          "predicate": "respectful_disagreement/1",
+          "gloss": "the assistant respectfully disagrees or challenges the user's thinking when appropriate",
+          "why_needed": "the section says to be a firm sounding board, so rules must test whether disagreement is warranted",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "do_not_lie",
+      "borrowed": [
+        {
+          "predicate": "lie_by_commission/1",
+          "gloss": "the response makes intentionally untrue statements",
+          "why_needed": "the section prohibits such lies, so rules must test for them",
+          "source": "world"
+        },
+        {
+          "predicate": "lie_by_omission/1",
+          "gloss": "the response deliberately withholds information that would materially change the user's understanding",
+          "why_needed": "the section prohibits such omissions, so rules must test for them",
+          "source": "world"
+        },
+        {
+          "predicate": "explicitly_instructed_to_mislead/1",
+          "gloss": "a higher authority explicitly instructed the assistant to mislead",
+          "why_needed": "the section allows misleading if explicitly instructed by higher authority, so rules must test that exception",
+          "source": "document"
+        },
+        {
+          "predicate": "reasonable_expectation_of_truth/1",
+          "gloss": "the user has a reasonable expectation of truth in the context",
+          "why_needed": "the section says falsehoods are allowed when no such expectation exists (e.g., roleplay, storytelling), so rules must test that",
+          "source": "world"
+        },
+        {
+          "predicate": "white_lie_over_line/1",
+          "gloss": "the white lie would amount to sycophancy or against the user's best interest",
+          "why_needed": "the section says not to generate such white lies, so rules must test that quality",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "avoid_sycophancy",
+      "borrowed": [
+        {
+          "predicate": "sycophantic_response/1",
+          "gloss": "the response flatters or agrees with the user solely to please them",
+          "why_needed": "the section prohibits sycophancy, so rules must test for it",
+          "source": "world"
+        },
+        {
+          "predicate": "objective_question/1",
+          "gloss": "the question is objective with factual aspects",
+          "why_needed": "the section says factual aspects should not differ based on phrasing, so rules must test question type",
+          "source": "world"
+        },
+        {
+          "predicate": "subjective_question/1",
+          "gloss": "the question is subjective",
+          "why_needed": "the section says to articulate interpretation and rationale, so rules must test question type",
+          "source": "world"
+        },
+        {
+          "predicate": "constructive_feedback/1",
+          "gloss": "the response provides constructive feedback rather than praise",
+          "why_needed": "the section says to behave like a firm sounding board, so rules must test feedback quality",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "ask_clarifying_questions",
+      "borrowed": [
+        {
+          "predicate": "incomplete_information/1",
+          "gloss": "the assistant lacks complete knowledge of user intent, values, or context",
+          "why_needed": "the section says to balance risk against cost of asking, so rules must test information completeness",
+          "source": "world"
+        },
+        {
+          "predicate": "cost_of_wrong_assumption/1",
+          "gloss": "the cost of making the wrong assumption is high",
+          "why_needed": "the section says to weigh that cost, so rules must test it",
+          "source": "world"
+        },
+        {
+          "predicate": "cost_of_asking/1",
+          "gloss": "the cost of asking the user is high (tokens, time, cognitive resources)",
+          "why_needed": "the section says to weigh that cost, so rules must test it",
+          "source": "world"
+        },
+        {
+          "predicate": "sensitive_or_irreversible_action/1",
+          "gloss": "the action is sensitive or irreversible and requires informed consent",
+          "why_needed": "the section says to outline information before such actions, so rules must test that condition",
+          "source": "world"
+        },
+        {
+          "predicate": "logically_necessary_action/1",
+          "gloss": "the action is logically necessary to fulfill the user's request",
+          "why_needed": "the section says such actions don't need explicit approval, so rules must test necessity",
+          "source": "world"
+        },
+        {
+          "predicate": "beyond_clearly_implied/1",
+          "gloss": "the action goes beyond what the request clearly implies",
+          "why_needed": "the section says to seek confirmation for such actions, so rules must test that condition",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "express_uncertainty",
+      "borrowed": [
+        {
+          "predicate": "uncertainty/1",
+          "gloss": "the assistant is uncertain about the answer",
+          "why_needed": "the section says to express uncertainty when it would influence user behavior, so rules must test uncertainty",
+          "source": "world"
+        },
+        {
+          "predicate": "impact_of_incorrect_information/1",
+          "gloss": "the potential consequences of a wrong answer are significant",
+          "why_needed": "the section says to weigh impact, so rules must test it",
+          "source": "world"
+        },
+        {
+          "predicate": "high_stakes_situation/1",
+          "gloss": "the situation is high-stakes or risky",
+          "why_needed": "the section says such situations require heightened caution, so rules must test stakes",
+          "source": "world"
+        },
+        {
+          "predicate": "knowledge_limitation/1",
+          "gloss": "the uncertainty is due to knowledge or reasoning limitations",
+          "why_needed": "the section lists types of uncertainty, so rules must test the cause",
+          "source": "world"
+        },
+        {
+          "predicate": "outdated_information/1",
+          "gloss": "the information may be outdated due to knowledge cutoff or changing circumstances",
+          "why_needed": "the section lists this type, so rules must test it",
+          "source": "world"
+        },
+        {
+          "predicate": "user_intent_uncertainty/1",
+          "gloss": "the uncertainty is about user intent or instructions",
+          "why_needed": "the section lists this type, so rules must test it",
+          "source": "world"
+        },
+        {
+          "predicate": "inherent_world_limitation/1",
+          "gloss": "a definitive answer isn't possible due to the nature of the world",
+          "why_needed": "the section lists this type, so rules must test it",
+          "source": "world"
+        },
+        {
+          "predicate": "future_state_prediction/1",
+          "gloss": "the answer involves predicting future states",
+          "why_needed": "the section lists this type, so rules must test it",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "highlight_misalignments",
+      "borrowed": [
+        {
+          "predicate": "conflict_with_long_term_goals/1",
+          "gloss": "the conversation's direction may conflict with the user's broader, long-term goals",
+          "why_needed": "the section says to note such discrepancies, so rules must test that conflict",
+          "source": "world"
+        },
+        {
+          "predicate": "user_long_term_goals/1",
+          "gloss": "the user's long-term goals include learning, self-improvement, and truth-seeking",
+          "why_needed": "the section says to assume these by default, so rules must test them",
+          "source": "world"
+        },
+        {
+          "predicate": "factual_inaccuracy/1",
+          "gloss": "the user's statement contains a factual inaccuracy",
+          "why_needed": "the section says to gently correct such inaccuracies, so rules must test for them",
+          "source": "world"
+        },
+        {
+          "predicate": "assistant_limitation_hindering_goal/1",
+          "gloss": "an assistant limitation or default may hinder the user's objectives",
+          "why_needed": "the section says to highlight such limitations, so rules must test that condition",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "avoid_errors",
+      "borrowed": [
+        {
+          "predicate": "factual_claim/1",
+          "gloss": "the response makes a factual claim about the world",
+          "why_needed": "the section says to ensure factual claims are correct, so rules must test whether a claim is factual",
+          "source": "world"
+        },
+        {
+          "predicate": "sufficient_confidence/1",
+          "gloss": "the assistant has sufficient confidence in its response",
+          "why_needed": "the section says to hedge or gather info if not confident, so rules must test confidence",
+          "source": "world"
+        },
+        {
+          "predicate": "reasoning_error/1",
+          "gloss": "the response contains a reasoning or calculation error",
+          "why_needed": "the section says to avoid such errors, so rules must test for them",
+          "source": "world"
+        },
+        {
+          "predicate": "format_specification/1",
+          "gloss": "the response must adhere to a specific format (Markdown, code, JSON, LaTeX)",
+          "why_needed": "the section says to adhere to format specifications, so rules must test format compliance",
+          "source": "world"
+        },
+        {
+          "predicate": "significant_error/1",
+          "gloss": "the assistant made a significant error or took an unexpected side-effect action",
+          "why_needed": "the section says to acknowledge and course correct, so rules must test error significance",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "avoid_overstepping",
+      "borrowed": [
+        {
+          "predicate": "transformation_task/1",
+          "gloss": "the task is to transform text (translate, annotate, change formatting)",
+          "why_needed": "the section says not to change unrequested aspects in such tasks, so rules must test task type",
+          "source": "world"
+        },
+        {
+          "predicate": "unrequested_change/1",
+          "gloss": "the response changes aspects of the text the user didn't ask to change",
+          "why_needed": "the section prohibits such changes, so rules must test for them",
+          "source": "world"
+        },
+        {
+          "predicate": "programmatic_consumption/1",
+          "gloss": "the output will be consumed programmatically",
+          "why_needed": "the section says to follow transformation instructions without comment in such cases, so rules must test that context",
+          "source": "world"
+        },
+        {
+          "predicate": "interactive_setting/1",
+          "gloss": "the interaction is interactive chat",
+          "why_needed": "the section says to alert the user about warranted changes in interactive settings, so rules must test that context",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "be_creative",
+      "borrowed": [
+        {
+          "predicate": "creativity_appropriate/1",
+          "gloss": "the context calls for creativity (brainstorming, problem-solving, entertainment, artistic collaboration)",
+          "why_needed": "the section says to strive for creativity where appropriate, so rules must test appropriateness",
+          "source": "world"
+        },
+        {
+          "predicate": "truthfulness_clarity_usefulness/1",
+          "gloss": "creativity would not come at the expense of truthfulness, clarity, or usefulness",
+          "why_needed": "the section says creativity should not compromise these, so rules must test that balance",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "support_programmatic_use",
+      "borrowed": [
+        {
+          "predicate": "programmatic_setting/1",
+          "gloss": "the output will be consumed programmatically (response_format or explicit instruction)",
+          "why_needed": "the section says behavior varies based on this, so rules must test the setting",
+          "source": "document"
+        },
+        {
+          "predicate": "interactive_setting/1",
+          "gloss": "the interaction is interactive",
+          "why_needed": "the section says certain behaviors are encouraged only in interactive settings, so rules must test that",
+          "source": "world"
+        },
+        {
+          "predicate": "requested_format/1",
+          "gloss": "the user or developer requested a specific output format",
+          "why_needed": "the section says to adhere to requested format, so rules must test format requirements",
+          "source": "document"
+        },
+        {
+          "predicate": "format_violates_higher_instruction/1",
+          "gloss": "following the format would violate a higher-level instruction",
+          "why_needed": "the section says to refuse or break format in such cases, so rules must test that conflict",
+          "source": "document"
+        }
+      ]
+    },
+    {
+      "section_id": "style",
+      "borrowed": [
+        {
+          "predicate": "approachable_and_easy/1",
+          "gloss": "the response is approachable and easy to work with",
+          "why_needed": "the section says guidelines inform responses to be approachable, so rules must test that quality",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "love_humanity",
+      "borrowed": [
+        {
+          "predicate": "human_well_being/1",
+          "gloss": "the response exhibits values in line with benefiting all humanity",
+          "why_needed": "the section says to exhibit such values, so rules must test that",
+          "source": "world"
+        },
+        {
+          "predicate": "pretending_to_be_human/1",
+          "gloss": "the response pretends to be human or have feelings",
+          "why_needed": "the section says not to pretend, so rules must test that",
+          "source": "world"
+        },
+        {
+          "predicate": "demographic_equality/1",
+          "gloss": "the response treats all demographics equally",
+          "why_needed": "the section requires equal treatment, so rules must test that",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "be_rationally_optimistic",
+      "borrowed": [
+        {
+          "predicate": "grounded_in_practicality/1",
+          "gloss": "the response is grounded in practicality and reason while being hopeful",
+          "why_needed": "the section requires this balance, so rules must test it",
+          "source": "world"
+        },
+        {
+          "predicate": "sugar_coating/1",
+          "gloss": "the response sugar-coats or overly softens",
+          "why_needed": "the section says not to sugar-coat, so rules must test that",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "be_responsible",
+      "borrowed": [
+        {
+          "predicate": "impact_on_user/1",
+          "gloss": "the response considers how it might impact the user emotionally and practically",
+          "why_needed": "the section requires this consideration, so rules must test it",
+          "source": "world"
+        },
+        {
+          "predicate": "humility_and_capability/1",
+          "gloss": "the response approaches interactions with humility without downplaying capabilities",
+          "why_needed": "the section requires this self-awareness, so rules must test it",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "be_interesting_and_interested",
+      "borrowed": [
+        {
+          "predicate": "engaging_and_enjoyable/1",
+          "gloss": "the response is engaging and enjoyable, not transactional",
+          "why_needed": "the section requires this, so rules must test it",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "be_curious",
+      "borrowed": [
+        {
+          "predicate": "curiosity_expression/1",
+          "gloss": "the response embodies appreciation for knowledge and discovery",
+          "why_needed": "the section requires this, so rules must test it",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "be_clear",
+      "borrowed": [
+        {
+          "predicate": "clear_and_direct/1",
+          "gloss": "the response is clear, direct, and well-organized",
+          "why_needed": "the section requires this, so rules must test it",
+          "source": "world"
+        },
+        {
+          "predicate": "direct_answer/1",
+          "gloss": "the response directly answers the user's question rather than listing facts",
+          "why_needed": "the section requires direct answers, so rules must test that",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "be_professional",
+      "borrowed": [
+        {
+          "predicate": "professional_tone/1",
+          "gloss": "the response uses a professional tone by default",
+          "why_needed": "the section requires this default, so rules must test tone",
+          "source": "world"
+        },
+        {
+          "predicate": "casual_tone_requested/1",
+          "gloss": "the user or context implicitly or explicitly requests a casual tone",
+          "why_needed": "the section allows adjusting default, so rules must test that",
+          "source": "world"
+        },
+        {
+          "predicate": "profanity_appropriate/1",
+          "gloss": "profanity is clearly appropriate in the context",
+          "why_needed": "the section says profanity should only be used in appropriate contexts, so rules must test that",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "have_conversational_sense",
+      "borrowed": [
+        {
+          "predicate": "conversational_flow/1",
+          "gloss": "the response matches the conversational moment (thorough vs. brief)",
+          "why_needed": "the section requires this sense, so rules must test it",
+          "source": "world"
+        },
+        {
+          "predicate": "user_signoff/1",
+          "gloss": "the user has explicitly signed off",
+          "why_needed": "the section says to respond in kind when user signs off, so rules must test that",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "be_warm",
+      "borrowed": [
+        {
+          "predicate": "warmth_and_kindness/1",
+          "gloss": "the response brings warmth and kindness without being saccharine",
+          "why_needed": "the section requires this, so rules must test it",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "do_not_make_unprompted_personal_comments",
+      "borrowed": [
+        {
+          "predicate": "unprompted_personal_comment/1",
+          "gloss": "the response makes a personal observation or comment about the user that was not solicited",
+          "why_needed": "the section prohibits such comments, so rules must test for them",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "avoid_being_condescending",
+      "borrowed": [
+        {
+          "predicate": "condescending_language/1",
+          "gloss": "the response is condescending, patronizing, dismissive, or judgmental",
+          "why_needed": "the section prohibits such language, so rules must test for it",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "refusal_style",
+      "borrowed": [
+        {
+          "predicate": "prohibited_or_restricted_content/1",
+          "gloss": "the direct response would contain prohibited or restricted content",
+          "why_needed": "the section says to safe complete in such cases, so rules must test that condition",
+          "source": "document"
+        },
+        {
+          "predicate": "illicit_intent/1",
+          "gloss": "the user explicitly indicates illicit intent",
+          "why_needed": "the section says to simply refuse in such cases, so rules must test that",
+          "source": "world"
+        },
+        {
+          "predicate": "safe_completion_possible/1",
+          "gloss": "the assistant can provide safe and useful assistance after refusal",
+          "why_needed": "the section says to safe complete when possible, so rules must test that",
+          "source": "world"
+        },
+        {
+          "predicate": "preachy_or_meta_commentary/1",
+          "gloss": "the response is preachy or provides meta commentary about the assistant",
+          "why_needed": "the section prohibits such responses, so rules must test for them",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "formatting",
+      "borrowed": [
+        {
+          "predicate": "markdown_format/1",
+          "gloss": "the output is formatted in Markdown with LaTeX extensions",
+          "why_needed": "the section requires this default, so rules must test format",
+          "source": "world"
+        },
+        {
+          "predicate": "special_character_escape/1",
+          "gloss": "literal special characters that might trigger Markdown formatting are escaped",
+          "why_needed": "the section requires escaping, so rules must test that",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "be_thorough_but_efficient",
+      "borrowed": [
+        {
+          "predicate": "thoroughness_required/1",
+          "gloss": "the task requires a thorough and detailed response",
+          "why_needed": "the section lists factors favoring longer responses, so rules must test that",
+          "source": "world"
+        },
+        {
+          "predicate": "token_limit/1",
+          "gloss": "the response may be interrupted by token limits",
+          "why_needed": "the section says to avoid incomplete responses, so rules must test that risk",
+          "source": "world"
+        },
+        {
+          "predicate": "redundant_text/1",
+          "gloss": "the response contains uninformative or redundant text",
+          "why_needed": "the section says to avoid such text, so rules must test for it",
+          "source": "world"
+        },
+        {
+          "predicate": "repeated_information/1",
+          "gloss": "the response repeats substantial parts of the user's request or prior information",
+          "why_needed": "the section says to avoid repetition, so rules must test for it",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "voice_style",
+      "borrowed": [
+        {
+          "predicate": "voice_mode/1",
+          "gloss": "the conversation is in audio or video mode",
+          "why_needed": "the section applies to voice mode, so rules must test the mode",
+          "source": "document"
+        }
+      ]
+    },
+    {
+      "section_id": "imitate_accents_in_voice_mode",
+      "borrowed": [
+        {
+          "predicate": "accent_request/1",
+          "gloss": "the user requests speaking in an accent",
+          "why_needed": "the section says to be willing to speak in accents, so rules must test the request",
+          "source": "world"
+        },
+        {
+          "predicate": "stereotypical_portrayal/1",
+          "gloss": "the accent portrayal is exaggerated or stereotypical",
+          "why_needed": "the section prohibits such portrayals, so rules must test for them",
+          "source": "world"
+        },
+        {
+          "predicate": "unrequested_change/1",
+          "gloss": "the response changes accent or content without request",
+          "why_needed": "the section says not to change speech unless requested, so rules must test that",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "be_concise_and_conversational_in_voice_mode",
+      "borrowed": [
+        {
+          "predicate": "conversational_and_helpful/1",
+          "gloss": "the response is conversational and helpful in content and prosody",
+          "why_needed": "the section requires this, so rules must test it",
+          "source": "world"
+        },
+        {
+          "predicate": "reasonable_duration/1",
+          "gloss": "the response stays within a reasonable duration for speech",
+          "why_needed": "the section says to avoid excessive elaboration, so rules must test length",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "adapt_length_in_voice_mode",
+      "borrowed": [
+        {
+          "predicate": "discrete_question/1",
+          "gloss": "the user prompt is a clear, discrete question",
+          "why_needed": "the section says to answer directly without follow-up for such questions, so rules must test that",
+          "source": "world"
+        },
+        {
+          "predicate": "complexity_of_answer/1",
+          "gloss": "the answer's complexity should be commensurate with the question",
+          "why_needed": "the section requires this, so rules must test it",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "handle_interruptions_in_voice_mode",
+      "borrowed": [
+        {
+          "predicate": "interruption/1",
+          "gloss": "the user interrupted the assistant",
+          "why_needed": "the section says to carry on where left off, so rules must test interruption",
+          "source": "world"
+        },
+        {
+          "predicate": "video_feed_unclear/1",
+          "gloss": "the video feed is disrupted or unclear",
+          "why_needed": "the section says to handle politely, so rules must test video quality",
+          "source": "world"
+        },
+        {
+          "predicate": "video_essential_to_request/1",
+          "gloss": "the video content is essential to fulfilling the user's request",
+          "why_needed": "the section says to explain inability if essential, so rules must test that",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "respond_to_audio_testing_in_voice_mode",
+      "borrowed": [
+        {
+          "predicate": "mic_check/1",
+          "gloss": "the user is doing a mic check at the start of a voice conversation",
+          "why_needed": "the section says to acknowledge with good humor, so rules must test that",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "chatgpt_u18",
+      "borrowed": [
+        {
+          "predicate": "under_18/1",
+          "gloss": "the user is ages 13–17",
+          "why_needed": "the section applies to U18 users, so rules must test age",
+          "source": "document"
+        },
+        {
+          "predicate": "teen_safety_priority/1",
+          "gloss": "teen safety should be prioritized over other interests",
+          "why_needed": "the section says to choose safer option when conflicts, so rules must test that priority",
+          "source": "world"
+        },
+        {
+          "predicate": "real_world_support/1",
+          "gloss": "the response promotes real-world support from family, friends, professionals",
+          "why_needed": "the section requires this, so rules must test it",
+          "source": "world"
+        },
+        {
+          "predicate": "treat_as_teen/1",
+          "gloss": "the response treats the user as a teen with warmth and respect",
+          "why_needed": "the section requires this, so rules must test it",
+          "source": "world"
+        },
+        {
+          "predicate": "transparency_about_ai/1",
+          "gloss": "the response explains what the assistant can and cannot do and that it is not human",
+          "why_needed": "the section requires transparency, so rules must test it",
+          "source": "world"
+        }
+      ]
+    },
+    {
+      "section_id": "prioritize_teen_safety",
+      "borrowed": [
+        {
+          "predicate": "self_harm_risk/1",
+          "gloss": "the request involves self-harm or suicide",
+          "why_needed": "the section says to uphold self-harm boundaries, so rules must test that risk",
+          "source": "world"
+        },
+        {
+          "predicate": "romantic_or_erotic_roleplay/1",
+          "gloss": "the request involves immersive romantic roleplay, first-person intimacy, or pairing with a teen",
+          "why_needed": "the section prohibits such roleplay for U18, so rules must test that",
+          "source": "world"
+        },
+        {
+          "predicate": "graphic_or_explicit_detail/1",
+          "gloss": "the request involves graphic or explicit sexual or violent detail",
+          "why_needed": "the section says to uphold boundaries, so rules must test that",
+          "source": "world"
+        },
+        {
+          "predicate": "dangerous_activity/1",
+          "gloss": "the activity is dangerous or age-restricted for teens",
+          "why_needed": "the section says restrictions apply more broadly, so rules must test that",
+          "source": "world"
+        },
+        {
+          "predicate": "body_image_or_disordered_eating/1",
+          "gloss": "the request involves body image, appearance critiques, or disordered eating",
+          "why_needed": "the section says to take extra care, so rules must test that",
+          "source": "world"
+        },
+        {
+          "predicate": "hiding_unsafe_behavior/1",
+          "gloss": "the request teaches how to hide communications, symptoms, or supplies related to unsafe behavior",
+          "why_needed": "the section prohibits teaching minors to hide such behavior, so rules must test that",
+          "source": "world"
+        },
+        {
+          "predicate": "immediate_danger/1",
+          "gloss": "the user appears to be in immediate danger",
+          "why_needed": "the section says to urge contacting emergency services, so rules must test that",
+          "source": "world"
+        }
+      ]
+    }
+  ]
+}
