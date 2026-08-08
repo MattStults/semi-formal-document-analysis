@@ -84,8 +84,13 @@ class MutationError(RuntimeError):
 #: one `raise` site. Each value is a distinctive fragment of that raise's
 #: SOURCE — reworded messages break loudly here rather than silently dropping
 #: a mutation from the run.
+#:
+#: ⚠️ Guard 1 was REGROUNDED on 2026-08-07, not removed: its renderer
+#: justification was disproved, but `_` in a term slot is a rule HEAD and clingo
+#: calls that unsafe whatever the body binds. Its twin in `_check_body` — which
+#: had the renderer ground and no other — IS gone; see the note in `ALSO`.
 REQUIRED = {
-    "1  _check_term / anonymous variable in a term slot":
+    "1  _check_term / anonymous variable in a HEAD term slot":
         "contains an anonymous variable",
     "2  _check_term / variable with no body to bind it":
         "there are no conditions to bind",
@@ -135,7 +140,9 @@ ALSO = {
     "_check_body / empty body": "body is present but empty",
     "_check_body / newline or brace": "contains a newline or brace",
     "_check_body / trailing full stop": "carries a trailing full stop",
-    "_check_body / anonymous variable": "{where}: anonymous variable",
+    # `_check_body / anonymous variable` was here. Removed with its guard on
+    # 2026-08-07 — same disproved renderer ground as REQUIRED guard 1 above,
+    # and a body binds its own variables so there is no safety ground either.
     "Licensed / toggleable on a non-world fact": "toggleable is for `world` facts only",
     "ReadBack / empty read-back": "no read-back annotation",
     "Superiority / slot is not a clause id": "is not a clause id or a",

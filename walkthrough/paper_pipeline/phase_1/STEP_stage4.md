@@ -1,6 +1,16 @@
 # Step X — stage 4: the read-back, and the four review seats
 
-**Status: revision 1, for review. Nothing is built. This document is the plan only.**
+**Status: revision 2, for review. This document is the plan only.**
+
+⭐ **Revision 2 (2026-08-07) changed §2.3 and only §2.3** (plus the rows it adds to §8, and §2.4's
+statement that both layers are checked). Revision 1 made the renderer a **gate**: a construct with
+no template had no rendering, so admitting a new kind of logic meant writing renderer code first,
+and that pressure had already produced two restrictions in `schema.py` justified by nothing but
+*"the renderer cannot cope"* — both now removed, on `[RAN]` evidence and on the published
+renderer's own handling of the same construct. §2.3 is now a **two-layer, total** design: a
+rendering always exists, templates are a fluency layer on top, and which layer produced a rendering
+is stamped in the report. Nothing else in this document is amended; §2.2's ruling, §2.4's five
+checks, §3–§7 stand as written.
 
 ⚠️ **Every claim below about existing code was executed**, and is marked `[RAN]` with the command
 or the number it produced. Claims taken from reading a file are marked `[READ]`. Four Step-X plans
@@ -239,10 +249,56 @@ example; *(c)* **"drop the authored `read_back` field"** — it is the only inde
 whether the mechanical rendering matches the author's intent, and removing it makes 4a's job
 unfalsifiable.
 
-### 2.3 The composition rules
+### 2.3 ⭐ AMENDED 2026-08-07 — the renderer is TOTAL. Two layers, and a missing template is never an error
 
-Templates, one per item type. Every predicate name is replaced by its gloss; **no bare predicate
-name may survive into the English.**
+⚠️ **What this replaces, and why, because the replaced version is the more natural design.**
+Revision 1 specified exactly the table below and nothing else: one template per item type, and a
+construct with no row had no rendering. That makes **the renderer a gate on the logic**. Anything a
+clause needs that the table does not already cover — an aggregate, a comparison, an interval, a
+conditional literal, `_` — is inadmissible until someone writes renderer code for it, and the
+pressure to keep the table small lands on `schema.py` as a restriction on what a translation may
+say. Two such restrictions had already been written into `schema.py` on exactly this ground and are
+now removed (`_check_body`'s anonymous-variable rejection: *"the tool that renders a rule back into
+English cannot process it"*).
+
+⭐ **RULING (Matt, 2026-08-07):** *"I don't want to put any restrictions on the ASP for rendering."*
+The purpose of the whole implementation is **to let the model represent section logic less
+constrainedly, so that a new concept does not require new code.** A renderer that can fail to
+render is a standing source of exactly that code. So the renderer is **total**: for every program
+clingo accepts, a rendering exists.
+
+**Layer 1 — the total fallback. It has no failure branch.**
+
+Parse with `clingo.ast.parse_string` and walk the AST. `str(node)` is defined on **every** node
+type, so a string always exists; the renderer's only job on top of that is to substitute each
+predicate name with its gloss. **No node-type dispatch, no `else: raise`, no template lookup.**
+
+`[RAN]` — `clingo.ast.parse_string(src, cb)`, pyclingo 5.8.0, `str(node)` on each statement, with
+no introspection of node type at all:
+
+| ASP written | `str(node)` |
+|---|---|
+| `p(X) :- q(X,_).` | `p(X) :- q(X,_).` |
+| `ok :- #count{X : q(X)} > 2.` | `ok :- 2 < #count { X: q(X) }.` |
+| `p(X) :- q(X), r(Y) : s(Y).` | `p(X) :- q(X); r(Y): s(Y).` |
+| `p(X) :- q(X), X > 3, X != 7.` | `p(X) :- q(X); X > 3; X != 7.` |
+| `p(X) :- X = 1..5.` | `p(X) :- X = (1..5).` |
+| `p(a;b).` · `p(X) :- q(X;Y).` | `p(a;b).` · `p(X) :- q(X;Y).` |
+| `:- p(X), not q(X).` | `#false :- p(X); not q(X).` |
+| `{ p(X) : q(X) } = 1 :- r(X).` | `1 = { p(X): q(X) } :- r(X).` |
+| `#minimize{ 1@2, X : p(X) }.` | `:~ p(X). [1@2,X]` |
+| `p(X) :- q(X), #sum{ C,Y : c(Y,C) } >= 5.` | `p(X) :- q(X); 5 <= #sum { C,Y: c(Y,C) }.` |
+| `p(f(g(X),_)) :- q(X).` | `p(f(g(X),_)) :- q(X).` |
+
+Aggregates, conditional literals, comparisons, intervals, pooling, choice rules, weak constraints,
+nested functions and `_` — twelve for twelve, none of them anticipated by any table.
+
+⚠️ Layer 1 is **not** fluent English and is not claimed to be. It is a normalised, gloss-substituted
+form of the rule. Its job is to guarantee that *something faithful to the rule's own structure* is
+always in front of a seat, so that the alternative — no rendering, and therefore no review — never
+arises.
+
+**Layer 2 — fluency. The templates, now OPTIONAL.**
 
 ```
 concept   c/n, gloss g          -> "«g»"                              (the definition IS the item)
@@ -257,12 +313,98 @@ body      p(X), q(X), not r(X)  -> "«gloss(p)» and «gloss(q)» and it is NOT 
 the module's `acts` declaration. The negation marker is emitted from the rule's own `not`, never
 from prose.
 
-⛔ **Two templates cannot be written today**, and that is a finding rather than a blocker:
-`defines` has no gloss for its `term` (finding 4: `interactable_entity`), and `Definition` has no
-field to hold one. The renderer therefore emits a **`readback-ungloss` ERROR** naming the symbol,
-and the clause does not proceed to any seat. It fires on `m0053` today, which is the point — a
-symbol with no written definition cannot have its definition rendered, and the current behaviour is
-to render its label and say nothing.
+⭐ **A missing template falls back to layer 1. It is NEVER an error, and it never stops a clause.**
+Layer 2 is a readability improvement over a rendering that already exists, not a precondition for
+admitting one. This is what removes the renderer from the admission path: a construct nobody has
+written a template for still reaches a seat, in layer-1 form, and the absence of the template is
+reported rather than enforced.
+
+⭐ **Every rendering records the layer that produced it, and the layer is visible in the report.**
+Per rendering: `layer: 1 | 2`. Per clause and per run: the layer-1 fraction, printed even when zero
+(§5.4's rule for the `unclear` rate, same reason). **RB4's `non-evidential` stamp is the precedent
+— stamp, do not fail.** A run mostly at layer 1 is a finding about the renderer's fluency coverage,
+routed to whoever writes templates; it is not a finding about the modules, and no clause is refused
+for it. ⚠️ Without the stamp the two layers are indistinguishable in the output, which is the same
+defect §2.4/RB5 exists to prevent one level up: an artifact that reads like a pass and records
+nothing about how it was produced.
+
+⚠️ **Both layers are still subject to RB1–RB5 (§2.4).** Layer 1 is a fallback for the *composition*
+step only; it buys no exemption from the checks. In particular RB1 (*no label survives*) applies to
+a layer-1 rendering exactly as to a layer-2 one — gloss substitution is what layer 1 does on top of
+`str(node)`, and a predicate with no gloss to substitute is `readback-ungloss` below.
+
+**`readback-ungloss` survives the amendment, and its meaning is now narrower — do not blur these.**
+
+| | fires when | consequence |
+|---|---|---|
+| `readback-ungloss` | a **symbol has no written gloss**, so there is nothing to substitute for its name | **ERROR.** Invariant 1 is *render the definition, not the label*; a symbol with no definition cannot have one rendered. The clause proceeds to no seat |
+| *(no finding)* | a **construct has no layer-2 template** | layer 1 renders it; `layer: 1` is recorded |
+
+⛔ Before the amendment these were one thing, because a missing template and a missing gloss both
+ended in "cannot render". They are opposite in kind. A missing template is **our** gap and costs
+fluency; a missing gloss is a **hole in the translation** and is the failure mode the read-back
+exists to catch. `defines` still has no gloss for its `term` (finding (4): `interactable_entity`)
+and `Definition` still has no field to hold one, so `readback-ungloss` fires on `m0053` today —
+unchanged, and for the unchanged reason.
+
+#### 2.3a ⭐ ASP2CNL: the reference for layer 2, and the part of it that is rejected by name
+
+*On the Translation of ASP Rules to (Controlled) Natural Language Sentences* — Caruso, Dodaro,
+Lo Scudo, Maratea, Reale (CEUR Vol-4117, `short_rcra_3.pdf`). `[READ]`, full text.
+
+**What it is used for.** It is the published reference for the *shapes* layer-2 templates should
+take, and it covers more constructs than revision 1's table did: atoms, facts (*"There is a/an …"*),
+normal and disjunctive rules (*"Whenever there is … then we must/can have …"*), constraints (*"It is
+prohibited that …"*), choice rules (*"exactly / at most / at least / between X and Y"*), aggregates
+(`#count`/`#sum`/`#min`/`#max`), and weak constraints (*"It is preferred, with priority 4, that …"*).
+Where we write a layer-2 template, this is the prior art to start from.
+
+**It also settles the `_` question, which is why the two `schema.py` guards went.** Its atom rule
+skips hidden terms: `assignment(X,C1)` → *"an assignment with node X, and with color C1"*, whereas
+`assignment(_,blue)` → *"an assignment with color equal to blue"*, *"since hidden terms are simply
+skipped"*. Its own Example 6 renders `node(X) :- edge(X,_).` A published ASP→English renderer
+handles `_` in one line of its atom template. `[RAN]` clingo derives `p(a)` from
+`p(X) :- q(X,_). q(a,b).` ⇒ *"the tool that renders a rule back into English cannot process it"* was
+false about both halves.
+
+⛔ **REJECTED BY NAME: ASP2CNL's naming model.** Its Concepts Data Structures map a predicate to a
+list of **attribute names**, and its atom template is literally *"a/an \*predicate\* with \*attribute
+i\* …"* — it verbalises the predicate's **name** and its arguments' **names**. The paper is explicit:
+*"CNL2ASP defines concepts only by their names, ensuring each concept … is uniquely identified."*
+That is precisely what **Invariant 1 forbids**: we render the **definition, not the label**.
+Adopting the naming model would manufacture failure mode **#4, "imports a name without its
+content"** — measured in our own output at 7.5 % (§0(5): 10 of 133 concepts add zero words beyond
+the predicate name) — *inside the renderer*, where no seat could see it, since seats read only the
+rendering. ⇒ We take ASP2CNL's **sentence frames** and reject its **term source**: where it writes
+the attribute name, we write the gloss, and a symbol with no gloss is `readback-ungloss` rather than
+a name printed as though it were a meaning.
+
+⭐ **The one property it has that we lack, recorded as SPECULATIVE and NOT a dependency.** ASP2CNL
+targets the input language of CNL2ASP, so its output is in principle re-parsable back into ASP, and
+a renderer that round-trips gives a **mechanical check that the rendering recovers the original
+program** — the one thing that could tell a faithful rendering from a fluent wrong one without a
+reader. We have no such check and no route to one today.
+
+⚠️ **Weaker than it first looks, and this changed after reading the paper rather than the
+abstract.** The paper does **not** claim its output round-trips. What it says about bidirectionality
+is about a *different* system, PENGASP, and it says the property held *"only … for ASP rules
+produced by PENGASP"* — i.e. the one documented round-trip in the area is closed-loop, not
+arbitrary-input. So the round-trip is an inference from "the target language is CNL2ASP's input
+language", not a reported result. On top of that, **nobody has verified that CNL2ASP's grammar
+covers our modules** — `asserts/3`, `beats/3`, `defines/3`, `%!trace_rule` annotations and the
+gloss-substituted terms are all outside anything the paper exercises.
+
+⇒ Recorded as a **possible future renderer self-check**. It is not in scope for this plan, nothing
+in §2.4 or §8 depends on it, and it must not be cited as a check we have.
+
+**And one finding of theirs that supports §2.2 independently.** The paper's own reason for building
+ASP2CNL is that an LLM asked to explain ASP gets it wrong: *"ChatGPT does not appear to fully capture
+the semantics of ASP, generating inaccurate translations, as shown in Table 1."* ⚠️ Read it for what
+it is — evidence from a different model on a different corpus, reported by authors with an interest
+in the conclusion, and the paper's own human review found the combined tool better in only three of
+five benchmarks. It is **corroboration, not the argument**: §2.2 refuses to have a model author the
+read-back on our own measurements (finding (4): one authored sentence over four clauses; the
+polarity case), and this is an independent group reaching the same place from the other direction.
 
 ### 2.4 ⭐ How a bad read-back is detected, before any model call
 
@@ -627,6 +769,7 @@ on everything is pinned by nothing.
 | 5 | ⭐ RB4 ≥ threshold ⇒ 4b/4d verdicts stamped `non-evidential` **and still recorded** | below threshold ⇒ no stamp, same verdicts recorded | §4.2. A design that *drops* the verdicts hides the measurement that produced the stamp |
 | 6 | ⭐ RB5: `m0037` (0 rules, 5 concepts) ⇒ `no-readable-content` | patched `m0217` ⇒ proceeds | §3b third instance. `[RAN]` `m0037` passes stage 2 with **0** findings |
 | 7 | `readback-ungloss`: `defines(m0053, assistant, interactable_entity)` ⇒ ERROR naming the term | a `defines` whose `term` has a concept row ⇒ renders | §2.3. `[RAN]` the term exists nowhere else in the run |
+| 7b | ⭐ a construct with **no layer-2 template** ⇒ renders at layer 1 and emits **no** `readback-ungloss` | a symbol with no gloss ⇒ `readback-ungloss` | §2.3. The amendment's whole point: a missing template is our gap, a missing gloss is a hole in the translation, and conflating them makes the renderer a gate |
 | 8 | ⭐ 4d `covered` on a claim with **0** discriminating stage-3 situations ⇒ `covered-but-inert` | 4d `covered` with ≥1 discriminating situation ⇒ plain `covered` | §3b, the `m0255` C3 case. `[RAN]` 144/144 answer sets identical, subsumption UNSAT over 331,776 models |
 | 9 | ⭐ 4d `covered` when **no stage-3 output exists** ⇒ stamped `unsupported` | stage-3 output present ⇒ cross-checked | an unavailable check must never read as a passed one |
 | 10 | a 4c prompt built with a rendering in it ⇒ refused at construction | a 4c prompt of item + cited clause text ⇒ allowed | §4.1. 4c is the anchor **because** it is not downstream of the rendering |
@@ -642,6 +785,10 @@ on everything is pinned by nothing.
 | 20 | a `seat-divergence` promoted to a document-side finding without a recorded human triage ⇒ refused | promoted **with** triage grounds recorded ⇒ allowed | §6. The route must not exist, not merely be discouraged |
 | 21 | the `unclear` rate absent from the report ⇒ refused | rate present and **zero** ⇒ allowed | §5.4. A field printed only when non-zero cannot be read as "we measured it" |
 | 22 | the renderer handed a module whose body predicate is declared only as a `Concepts` entry ⇒ never reached, because stage 2 rejects it `[RAN]` | the patched `m0217` fixture ⇒ renders | §0(1)/(2). Stage 4's fixtures depend on that stage-2 guard; it **is** pinned (two tests), so this row asserts the dependency, not the guard |
+| 23 | ⭐ **totality.** Each of §2.3's twelve `[RAN]` constructs — aggregate, conditional literal, comparison, interval, pooling, choice rule, weak constraint, nested function, `_`, … — ⇒ a non-empty rendering, no exception, no `None` | — the control here is that **all twelve** pass; one failing is the finding | §2.3. A renderer with a failure branch puts the pressure back on `schema.py` as a restriction on what a translation may say |
+| 24 | a rendering produced by the fallback ⇒ `layer: 1` recorded | a rendering produced by a template ⇒ `layer: 2` | §2.3. Untagged, the two are indistinguishable in the report and a fluency gap reads as a pass |
+| 25 | the layer-1 fraction **absent** from the report ⇒ refused | fraction present and **zero** ⇒ allowed | §2.3, on §5.4's rule: a number printed only when non-zero cannot be read as "we measured it" |
+| 26 | ⛔ a layer-2 template sourced from a predicate **name** or an argument name (ASP2CNL's model) ⇒ refused | the same frame with the **gloss** substituted ⇒ allowed | §2.3a. Invariant 1 renders the definition, not the label; the naming model manufactures failure mode #4 inside the renderer, where no seat can see it |
 
 ⚠️ **Three of these pin things that must be built in the same diff, not after:**
 `DISCLOSABLE_ORIGINS` gains `readback-structural` (test 14); the new module registers in

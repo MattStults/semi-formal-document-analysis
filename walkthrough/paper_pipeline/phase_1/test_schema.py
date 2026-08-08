@@ -132,8 +132,25 @@ def test_the_worked_examples_compile_in_clingo(which, tmp_path):
     assert not errs, f"clingo rejected the rendered module: {errs[:2]}"
 
 
-# ------------------------------------------- failure mode 7, in all four slots
+# --------------------------- `_` in a HEAD term slot: the SOLVER's rule, ours
 # mutation: _check_term's _ANON branch
+#
+# ⚠️ THE GROUND UNDER THIS TEST CHANGED ON 2026-08-07, and so did its scope.
+# It used to say `_` "breaks the explainer" (failure mode 7). That is false:
+# clingo derives `p(a)` from `p(X) :- q(X,_). q(a,b).`, and ASP2CNL renders `_`
+# by skipping hidden terms. The BODY half of the old guard was deleted for that
+# reason.
+#
+# ⭐ The term-slot half survives on an independent ground that nobody had run:
+# every slot `_check_term` guards is rendered into a rule HEAD, and `_` in a
+# head is unsafe however the body is written —
+#
+#     q(a). p(_) :- q(X).   ->   error: unsafe variables in: p(#Anon0):-…;q(X).
+#
+# so this is clingo refusing the whole file, not a tool we wrote being fussy.
+# ⚠️ Note the `act` case below carries a BODY: under the old renderer ground
+# that was the same failure as the others, and under the real one it is the
+# case that shows the body does not rescue a head.
 
 @pytest.mark.parametrize("field,obj", [
     ("act", module(acts=["produce(_)"],
@@ -148,14 +165,32 @@ def test_the_worked_examples_compile_in_clingo(which, tmp_path):
     ("defines term", module(defines=[dict(
         kind="prohibited", term="csam(_)", **LIC)])),
 ])
-def test_anonymous_variable_rejected_in_every_term_slot(field, obj):
-    """`_` is Loud-crashes (mode 7) and was accepted in THREE slots.
-
-    `_ANON` was only ever applied to rule BODIES. A term is interpolated into
-    `asserts/3` and into the `%!trace_rule` line above it, so the same `_`
-    breaks the explainer twice.
-    """
+def test_anonymous_variable_rejected_in_every_HEAD_term_slot(field, obj):
     bad(obj, "anonymous variable")
+
+
+def test_an_anonymous_variable_in_a_BODY_is_accepted_and_clingo_loads_it(
+        tmp_path):
+    """⭐ The paired control for the guard that was WITHDRAWN.
+
+    A restriction is only withdrawn honestly if something proves the newly
+    permitted case works end to end — not merely that the validator stopped
+    complaining. So this renders the module and runs clingo over it. Without
+    this test, restoring the deleted `_check_body` guard would break nothing.
+    """
+    obj = module(
+        ontology=[dict(atom="disallowed(M)", gloss="the material is disallowed",
+                       body="restricted(M), tag(M, _)", **ASSUMED)],
+        requires=["restricted/1", "tag/2"])
+    mod = schema.validate(obj, clause_id="m0001", known_clause_ids=IDS)
+    lp = tmp_path / "m.lp"
+    lp.write_text(schema.render_lp(
+        mod, {"section_id": "s", "kind": "conditional", "quote": "text"}))
+    r = subprocess.run([str(VENV_PY), "-m", "clingo", str(lp), "--outf=3"],
+                       capture_output=True, text=True)
+    errs = [ln for ln in (r.stdout + r.stderr).splitlines()
+            if "error" in ln.lower()]
+    assert not errs, f"clingo rejected the rendered module: {errs[:2]}"
 
 
 # ------------------------------------------------- unsafe variables kill files
@@ -600,14 +635,18 @@ def test_a_whole_rule_in_a_term_slot_is_not_a_term(case):
     bad(obj, "is not a term")
 
 
-# ------------------------------------------------------ _check_body, all four
-# mutation: _check_body / empty body · newline or brace · trailing full stop ·
-#           anonymous variable
+# ----------------------------------------------------- _check_body, all three
+# mutation: _check_body / empty body · newline · trailing full stop
 #
-# ⚠️ The `_ANON` case is the ORIGINAL home of failure mode 7. The parametrized
-# term-slot test above (`test_anonymous_variable_rejected_in_every_term_slot`)
-# pins only the COPY added later in `_check_term`; deleting the body check left
-# all 47 tests green.
+# ⚠️ There used to be a fourth: an anonymous-variable rejection, whose stated
+# ground was that the read-back tool cannot process `_`. It is GONE, together
+# with `test_an_anonymous_variable_in_a_BODY` which pinned it, because the
+# ground is false — clingo derives `p(a)` from `p(X) :- q(X,_). q(a,b).`, and
+# ASP2CNL renders `_` by skipping hidden terms. A body binds its own variables,
+# so there is no safety ground for it either — unlike a HEAD term slot, where
+# `_` is unsafe and `_check_term` still rejects it. The newly permitted case is
+# pinned positively by
+# `test_an_anonymous_variable_in_a_BODY_is_accepted_and_clingo_loads_it`.
 
 def test_a_body_that_is_present_but_empty():
     """`""` is not `null`: a renderer would emit `... :- .` and clingo balks."""
@@ -627,18 +666,6 @@ def test_a_body_carrying_its_own_full_stop():
     """The renderer appends one; two produce an empty rule after it."""
     bad(module(asserts=[an_assert(body="disallowed(M).")]),
         "trailing full stop")
-
-
-def test_an_anonymous_variable_in_a_BODY():
-    """Failure mode 7 in the slot it was first found in.
-
-    The fragment carries the leading `": "` deliberately: `_check_term`'s copy
-    of this guard says "…contains an anonymous variable", so matching the bare
-    phrase would pass on either, and this test would keep passing with the body
-    check gone — which is exactly the hole being closed.
-    """
-    bad(module(asserts=[an_assert(body="disallowed(_)")]),
-        ": anonymous variable")
 
 
 # ------------------------------------- Invariant 2's fourth arm: toggleable

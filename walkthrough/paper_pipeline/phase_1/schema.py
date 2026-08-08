@@ -87,12 +87,34 @@ def _check_term(term, where, allow_vars=True):
         raise ValueError(
             f"{where}: {term!r} is not a term. It must be a functor like "
             f"produce(M) or say_cannot_answer — not a rule, not a sentence")
+    # ⭐ REGROUNDED 2026-08-07, and the ground changed the scope of the rule.
+    # This rejection used to read "the tool that renders a rule back into
+    # English cannot process it". That is false — clingo derives `p(a)` from
+    # `p(X) :- q(X,_). q(a,b).`, and the published ASP2CNL renderer handles `_`
+    # explicitly: `assignment(_, blue)` verbalises as "an assignment with color
+    # equal to blue", because hidden terms are simply skipped
+    # (https://ceur-ws.org/Vol-4117/short_rcra_3.pdf). So the renderer ground is
+    # withdrawn, and in a rule BODY `_` is now accepted (see `_check_body`).
+    #
+    # ⚠️ It survives HERE on a different and independent ground, found by
+    # running it rather than by reading. Every term slot this function guards is
+    # rendered into a rule HEAD — an act into `asserts/3`, an ontology atom into
+    # its own head, `kind`/`term` into `defines/3` — and `_` in a head is unsafe
+    # whatever the body binds:
+    #
+    #     $ clingo <<< 'q(a). p(_) :- q(X).'
+    #     error: unsafe variables in: p(#Anon0):-[#inc_base];q(X).
+    #
+    # (clingo 5.8.0, run). So this is the solver's rule, not ours, and it takes
+    # the whole file down rather than one clause. It is stated that way now.
     if _ANON.search(term):
         raise ValueError(
-            f"{where}: {term!r} contains an anonymous variable `_`. It is "
-            f"ordinary ASP, but the tool that renders a rule back into English "
-            f"cannot process it — and this slot is used both in the rule and "
-            f"in the English annotation above it, so it breaks twice")
+            f"{where}: {term!r} contains an anonymous variable `_`, and every "
+            f"term slot is rendered into a rule HEAD. `_` in a head is unsafe "
+            f"however the body is written — clingo refuses the WHOLE FILE and "
+            f"takes every linked clause down with it. ⭐ Not a renderer "
+            f"restriction: `_` in a rule BODY is accepted, because the body "
+            f"binds it")
     if not allow_vars and _VAR.search(term):
         raise ValueError(
             f"{where}: {term!r} carries the variable "
@@ -106,11 +128,6 @@ def _check_term(term, where, allow_vars=True):
 #: because these are prose fields and none of these characters belongs in a
 #: sentence.
 _BAD_IN_TEXT = re.compile(r'[\n\r"\\{}]')
-
-
-def _strip_strings(asp):
-    """Blank out quoted constants so a `_` inside one is not read as a variable."""
-    return re.sub(r'"[^"]*"', '""', asp)
 
 
 def _check_body(body, where):
@@ -130,10 +147,12 @@ def _check_body(body, where):
     if body.strip().endswith("."):
         raise ValueError(f"{where}: body carries a trailing full stop; the "
                          f"renderer adds one")
-    if _ANON.search(_strip_strings(body)):
-        raise ValueError(
-            f"{where}: anonymous variable `_`. It is ordinary ASP, but the "
-            f"tool that renders a rule back into English cannot process it")
+    # ⭐ NO ANONYMOUS-VARIABLE REJECTION HERE, deliberately. `p(X) :- q(X,_)` is
+    # ordinary ASP, clingo derives from it correctly, and the renderer ground
+    # that used to justify rejecting it is disproved (see `_check_term`). A body
+    # is a conditions half: every variable in it, named or `_`, is bound by the
+    # literal it occurs in, so there is no safety ground either. The unsafe case
+    # is `_` in a term with NO body, and that is caught in `_check_term`.
     for name in re.findall(r"(?<![A-Za-z0-9_])([a-z][A-Za-z0-9_]*)\s*\(", body):
         if name in BEHAVIOUR_NS:
             raise ValueError(
