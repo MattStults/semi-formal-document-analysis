@@ -1419,3 +1419,50 @@ def test_a_report_without_the_readback_stamps_is_refused():
                                "unclear_rate": {"pooled": {"rate": 0.0,
                                                            "denominator": 1}}})
     assert "readback_stamps" in str(exc.value)
+
+
+# ==========================================================================
+#  R3 reaches 4a and 4b — §5.1 says the denominator is "R1 + R2 + R3"
+# ==========================================================================
+
+class _D:
+    def __init__(self, item, nodes): self.item, self.nodes = item, nodes
+
+
+class _R3:
+    def __init__(self, derivations): self.derivations = derivations
+
+
+def test_r3_derivations_enter_4a_and_4b():
+    """§5.1: 4a's denominator is the rendered set **R1+R2+R3**. Until R3 was
+    built nothing derivational reached a seat, so 4a judged items and rules but
+    never *why a verdict followed*."""
+    mod = m0217_patched()
+    rb = _rb(mod)
+    r3 = _R3([_D("S0", ["n"]), _D("S1", ["n", "n"])])
+    base = seats.denominator_4a(rb)
+    with_r3 = seats.denominator_4a(rb, r3)
+    assert set(with_r3.ids) - set(base.ids) == {"S0", "S1"}
+    assert set(seats.denominator_4b(rb, mod, r3).ids) >= {"S0", "S1"}
+
+
+def test_a_situation_deriving_NOTHING_is_excluded_by_name_not_dropped():
+    """⚠️ 8 of 18 covering-set situations across the stored modules derive a
+    verdict. Silently dropping the other 10 would overstate 4a's coverage by
+    more than a third; they are `no-derivation` and counted."""
+    rb = type("RB", (), {"renderings": ()})()
+    d = seats.denominator_4a(rb, _R3([_D("S0", []), _D("S1", ["n"])]))
+    assert d.ids == ("S1",)
+    assert d.excluded["no-derivation"] == ("S0",)
+
+
+def test_NOT_SUPPLYING_r3_is_distinguishable_from_having_no_derivations():
+    """⛔ The vacuous-pass shape. A caller with no stage-3 result must not
+    produce a denominator that reads like 'this module derives nothing'."""
+    rb = type("RB", (), {"renderings": ()})()
+    absent = seats.denominator_4a(rb)
+    none_derived = seats.denominator_4a(rb, _R3([_D("S0", [])]))
+    assert absent.ids == none_derived.ids == ()
+    assert "r3-not-supplied" in absent.excluded
+    assert "r3-not-supplied" not in none_derived.excluded
+    assert "no-derivation" in none_derived.excluded

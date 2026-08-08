@@ -461,20 +461,36 @@ def _item_index(mod):
     return out
 
 
-def denominator_4a(rb):
-    """The rendered set.
+def denominator_4a(rb, r3=None):
+    """The rendered set — R1 + R2 + R3, as §5.1 specifies.
 
-    ⚠️ R1 + R2 only. §2.1 lists an R3 layer — one rendering per stage-3
-    covering-set situation, the xclingo tree with every leaf replaced by its R1
-    rendering — and `readback.py` as built does not produce one. Recorded, not
-    papered over: 4a's and 4b's denominators are smaller than §2.1 describes,
-    and no derivation tree reaches any seat today.
+    ⭐ R3 arrives as an optional argument rather than off `rb`, because
+    `readback_r3` needs a stage-3 covering set and a solver run that plain
+    rendering does not. A caller with no stage-3 result gets R1+R2 and the
+    denominator SAYS SO in `excluded`, so "R3 was not supplied" can never read
+    as "this module has no derivations" — the distinction §2.1 depends on.
+
+    ⚠️ A situation that derives no verdict atom is NOT a derivation. It is
+    carried as `no-derivation` and counted, never dropped: 8 of 18 covering-set
+    situations across the stored modules derive a verdict, and reporting the
+    other 10 as absent would overstate coverage by more than a third.
     """
-    return Denominator("4a", tuple(r.item for r in rb.renderings))
+    items = [r.item for r in rb.renderings]
+    if r3 is None:
+        return Denominator("4a", tuple(items),
+                           {"r3-not-supplied": ("no stage-3 covering set was "
+                                                "given, so no derivation is in "
+                                                "this denominator",)})
+    derived = tuple(d.item for d in getattr(r3, "derivations", ()) or ()
+                    if getattr(d, "nodes", None))
+    empty = tuple(d.item for d in getattr(r3, "derivations", ()) or ()
+                  if not getattr(d, "nodes", None))
+    return Denominator("4a", tuple(items) + derived,
+                       {"no-derivation": empty} if empty else None)
 
 
-def denominator_4b(rb, mod):
-    """The rendered set, minus items whose licence is `world`.
+def denominator_4b(rb, mod, r3=None):
+    """The rendered set (R1+R2+R3), minus items whose licence is `world`.
 
     A `world` item does not rest on the clause, so *"does the rendering assert
     anything the clause does not support?"* has no answer for it and any answer
@@ -482,13 +498,18 @@ def denominator_4b(rb, mod):
     """
     index = _item_index(mod)
     keep, dropped = [], []
-    for r in rb.renderings:
-        item = index.get(r.item)
+    # 4a already decides what R3 contributes and what it excludes; 4b filters
+    # that set rather than re-deriving it, so the two cannot drift apart.
+    base = denominator_4a(rb, r3)
+    for name in base.ids:
+        item = index.get(name)
         if item is not None and getattr(item, "licence", None) == "world":
-            dropped.append(r.item)
+            dropped.append(name)
         else:
-            keep.append(r.item)
-    return Denominator("4b", tuple(keep), {"world": tuple(dropped)})
+            keep.append(name)
+    excluded = {"world": tuple(dropped)}
+    excluded.update(base.excluded or {})
+    return Denominator("4b", tuple(keep), excluded)
 
 
 def denominator_4c(mod, kinds=LICENSED_KINDS):
