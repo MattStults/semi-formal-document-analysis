@@ -701,6 +701,94 @@ One model call per clause, plus repair attempts. The corpus is 593 clauses. Noth
 pipeline costs anything per clause, so this stage is essentially the whole budget — which is why
 abstention and the arm choice should be settled on a handful of clauses first.
 
+#### ⭐ RULED 2026-08-08 (Matt) — artifact versioning, and when a module is translated again
+
+A translated module is a claim about *specific inputs*: this clause text, this output contract, this
+prompt, this model. When any of those move, the artifact on disk keeps looking authoritative and
+stops being one. So **every artifact carries a version — two deterministic hashes of the state that
+produced it — and the version is what decides whether it runs again.**
+
+| hash | covers | a change means |
+|---|---|---|
+| `contract_hash` | the clause text + the schema source | the artifact **may no longer validate** |
+| `provenance_hash` | the prompt + the model + the request params (`max_tokens`, `format_forcing`, `max_attempts`) | it is **not reproducible** from today's inputs, though it is still valid |
+
+**Both trigger a re-run.** That is the ruling. A `contract_hash` change is not optional — the module
+may not even satisfy the contract any more. A `provenance_hash` change re-runs too, because a corpus
+half-translated under one prompt and half under another is not evidence about either. Specifically,
+it is potentially dangerous to change a prompt for a specific failing instance and not run it on
+the rest of a corpus since it might damage the other members AND definitely leaves the resulting
+output unreproducible.
+
+⚠️ **Why are the two hashes distinct?** They answer different questions. A module whose
+`provenance_hash` moved is still **valid**: it compiles, it links, it is a translation of its clause
+— it simply cannot be cited as evidence about the current prompt. A module whose `contract_hash`
+moved may be none of those things. Every report distinguishes them, and only one of them is ever
+waivable.
+
+**Five states**, and an artifact is classified into exactly one: `current`, `provenance-stale`,
+`contract-stale`, `unstamped` (it makes no claim about its inputs — treated as stale, because *"no
+claim"* is not *"current"*), and `no-longer-in-corpus` (its clause is gone; it cannot be re-run, so
+it is reported apart from the work list rather than swelling it). When both hashes moved, the state
+is **`contract-stale`** — the harder one wins, because the softer one is the waivable one.
+
+⛔ **The counts are printed before anything is priced.** A staleness tool that silently re-translates
+593 clauses is a spend incident, so the census — every class, with its denominator — goes on screen
+above the cost line, and the existing cost gate applies unchanged to the narrowed selection. Turning
+staleness into a selection is opt-in (`--only-stale`); changing what a bare run translates would
+itself be a spend change.
+
+##### The intention flag, and what it may not excuse
+
+Some prompt edits genuinely do not change the answer — a typo in a comment, a reflowed paragraph.
+Re-translating 593 clauses to discover that costs real money. So a **waiver** may scope a partial
+re-run. It is also the mechanism by which one word could make 593 stale modules not-stale, so it is
+built to be hard to use carelessly:
+
+* **It is a reviewed file, not a flag.** `--waivers path` points at something diffable and
+  committable that carries `who`, `date` and `why`. A bare `--force` leaves its record in a shell
+  history.
+* **It names the exact transition** — the stored hash it excuses *and* the current hash it excuses
+  it against. The next prompt edit moves the current hash and every waiver written against the old
+  one stops applying, automatically. A waiver is a statement about one move, never a standing
+  exemption.
+* **It enumerates clauses.** No wildcard, no `"all"`, no empty list; each is refused by name.
+  Enumerating 593 ids is mechanical, and the file that holds them *is* the record of what was
+  waived.
+* ⛔ **It can never excuse a `contract_hash` change.** A waiver naming a contract-stale clause does
+  not quietly fail to apply — it **refuses the run**, because the operator wrote it down believing
+  it was covered.
+* **It cannot excuse an `unstamped` artifact** either: there is no recorded provenance to vouch for.
+* **It is inert without `--only-stale`**, and the run reports what it honoured — on screen with the
+  who and the why, and in `run.json`. A waiver that matched nothing is reported **unused**, loudly:
+  a silently ignored waiver file is the pass-indistinguishable-from-did-not-run failure wearing a
+  bureaucratic hat.
+
+##### Rejected by name
+
+* **"One hash for everything."** Rejected: it marks the whole corpus stale on every prompt edit, so
+  iterating on the prompt becomes unaffordable and the distinction between *may not validate* and
+  *not reproducible* is destroyed. `graveyard.py`'s docstring has carried this argument since the
+  graveyard landed.
+* **"A provenance change only relabels, never re-runs."** Considered and rejected by Matt on
+  2026-08-08. It leaves a corpus whose modules were produced by different prompts and asserts they
+  are comparable; the relabelling would be true and nobody would act on it.
+* **"An unstamped artifact is current until shown otherwise."** Rejected: it makes the absence of a
+  record indistinguishable from a good record. Every module written before this ruling is unstamped,
+  and those are precisely the ones nobody can vouch for.
+* **"Put the version inside the module object."** Rejected: the module is a contract the *model*
+  must satisfy, so a hash field there is something the model emits — forgeable, and wrong in kind.
+  Provenance is a fact about the run. The stamp is written by the harness beside the module
+  (`<clause>.version.json`), mirrored per-clause in `run.json`, and echoed into the `.lp` as a `%`
+  comment only — the `.lp` is a rendering, and a version that lived only in a rendering is lost the
+  next time it is re-rendered.
+* **"A `--force-current` switch that clears staleness in one command."** Rejected: that is the
+  593-modules-with-one-word failure this whole design is shaped against.
+
+⚠️ **Determinism is the load-bearing property, not a nicety.** A hash that moves between two runs
+over identical inputs turns every decision above into noise. sha256 only — never Python's salted
+`hash()` — every dict serialised with sorted keys, every directory listing sorted.
+
 ### 2 — Why a witness, not a test run
 
 A rule that never fires during testing is not thereby dead. Instead ask the solver to *construct*
@@ -826,6 +914,31 @@ threshold required.
 ⚠️ Alternative readings must land in the project's existing interpretation registry, which carries
 anti-fitting constraints this design lacks: a frozen sha-pinned set, adoption on document-side
 grounds only, one recorded vector never a grid, and blind adoption *including the proposal queue*.
+
+#### ⭐ Clarification 2026-08-08 — §6 is about ONE question, not about comparing seats
+
+Nothing above changes; this says what it was already about, because it has been misread once and the
+misreading is the kind that recurs.
+
+* **§6 is about REPLICATE JUDGEMENTS ON ONE QUESTION** — two reviewers, one brief, one item,
+  opposite verdicts. That is inter-rater disagreement, and the standing diagnosis above (brief defect
+  or under-informative dossier *before* "the document is ambiguous") is written for exactly it. The
+  worked example is two readers of one paraphrase.
+* ⛔ **It is NOT a mechanism for comparing seats that ask DIFFERENT questions.** Two seats answering
+  different questions differently is not a contradiction: `4b: faithful` and `4c: unlicensed` can
+  both be true, because a rendering can faithfully render an item that lacks a valid citation. The
+  four seats do not even share a unit — 4a/4b judge the whole rendering, 4c judges one item, 4d
+  judges one claim. Comparing them manufactures divergences.
+* ⭐ **One cross-seat comparison IS meaningful, and it is a different kind of thing.** 4b is anchored
+  to the **rendering** and never sees the code; 4c is composed from the **module** and refuses any
+  renderer mark. If those two disagree about one item, the only thing standing between them is the
+  rendering — so the disagreement is evidence that **the instrument is wrong**, and it routes to a
+  human, never back to the translator. `STEP_stage4.md` §6 is being rewritten to keep exactly that
+  and drop the general machinery.
+* **The misreading itself, recorded because it will recur:** a within-question mechanism was applied
+  across questions. `[RAN]` the result was 0 divergence records over all 81 legal verdict
+  combinations — every seat's verdict vocabulary is disjoint from every other's and every
+  contradiction pair sits inside a single seat, so the machinery could never fire.
 
 ### 5 and 6 — Why normalising and parameterising are different operations
 
