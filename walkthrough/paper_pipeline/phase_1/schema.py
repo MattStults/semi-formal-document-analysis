@@ -152,6 +152,23 @@ def _check_body(body, where):
     if body.strip().endswith("."):
         raise ValueError(f"{where}: body carries a trailing full stop; the "
                          f"renderer adds one")
+    # ⛔ AN INTERNAL FULL STOP IS A SECOND STATEMENT, and it was a SILENT DROP.
+    # Only the trailing case was checked, so `adult(P). N > 5, N != 9` validated;
+    # the renderer parsed two statements, rendered the first and discarded the
+    # rest, and every read-back check passed on the remnant. A seat was shown
+    # one of three conditions with `outcome=rendered` and zero findings. RB2
+    # could not see it (it scans for `name(`, and a dropped comparison has
+    # none) and RB3 could not either (it counts `not` in the same broken parse
+    # on both sides, so it agrees with itself).
+    #
+    # `..` is the interval operator and is legal — `p(X), X = 1..3`.
+    if re.search(r"(?<!\.)\.(?!\.)", _strip_strings(body).rstrip()):
+        raise ValueError(
+            f"{where}: body contains a full stop, which ends a statement in "
+            f"ASP. A body is ONE conjunction of conditions; everything after "
+            f"the `.` would be silently discarded. Split it into separate "
+            f"entries, or use `,` if you meant 'and'. (`1..3` is fine — that "
+            f"is the interval operator)")
     # ⛔ RESTORED 2026-08-07 after being withdrawn the same day ON A FALSE
     # GROUND. The withdrawal argued the renderer could cope, citing bare clingo
     # (which does derive from `p(X) :- q(X,_)`) and the published ASP2CNL

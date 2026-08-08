@@ -1241,3 +1241,27 @@ def test_a_concept_that_is_ALSO_declared_properly_is_accepted():
                                  gloss="falls under the restricted policy")],
                requires=["restricted/1"]),
         clause_id="m0001", known_clause_ids=IDS)
+
+
+def test_an_internal_full_stop_in_a_body_is_rejected():
+    """⛔ It validated, and the renderer then SILENTLY DROPPED everything after
+    the `.`. Only the trailing case was checked. `adult(P). N > 5, N != 9`
+    reached a seat as "the person is an adult" alone — one of three conditions,
+    `outcome=rendered`, RB1-RB5 all green, zero findings.
+
+    Neither backstop could see it: RB2 scans for `name(` and a dropped
+    comparison has none, and RB3 counts `not` in the same broken parse on both
+    sides so it agrees with itself.
+    """
+    bad(module(ontology=[dict(atom="d(M)", gloss="g",
+                              body="adult(M). N > 5, N != 9", **ASSUMED)],
+               requires=["adult/1"]), "full stop")
+
+
+def test_the_interval_operator_is_NOT_mistaken_for_a_full_stop():
+    """`1..3` is ordinary ASP and the control for the guard above. Without this,
+    the cheapest way to write that guard also bans intervals."""
+    obj = module(ontology=[dict(atom="d(M)", gloss="g",
+                                body="adult(M), M = 1..3", **ASSUMED)],
+                 requires=["adult/1", "disallowed/1", "new_material/1"])
+    assert schema.validate(obj, clause_id="m0001", known_clause_ids=IDS)

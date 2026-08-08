@@ -644,3 +644,22 @@ def test_the_schema_admissible_split_is_real_and_not_vacuous():
     assert any("_" in b for b in EXOTIC), (
         "EXOTIC no longer exercises an anonymous variable at all, so layer 1 "
         "is untested on the one construct the contract refuses")
+
+
+def test_a_body_carrying_TWO_statements_loses_nothing():
+    """⛔ `_parse_body` returned the first Rule's literals and discarded the
+    rest — a SILENT DROP, with every read-back check passing on the remnant.
+
+    `schema._check_body` now rejects an internal full stop, so this is defence
+    in depth. It is kept because a renderer that drops content silently is the
+    exact failure the read-back exists to prevent, and trusting the layer above
+    is how the first one got through.
+    """
+    body = "adult(P). N > 5, N != 9"
+    spans = readback.render_body(body, {"adult": "the person is an adult"})
+    joined = " ".join(s.text for s in spans)
+    assert "N > 5" in joined and "N != 9" in joined, (
+        f"content after the full stop was dropped: {joined!r}")
+    assert all(s.layer == 1 for s in spans), (
+        "an unparseable-as-one-rule body must fall back to layer 1, so the "
+        "report shows it is ASP-with-glosses and not fluent English")

@@ -162,9 +162,19 @@ def _parse_body(body: str):
                          logger=lambda code, msg: None, message_limit=0)
     except Exception:
         return None
-    for st in stmts:
-        if st.ast_type == ast.ASTType.Rule:
-            return list(st.body)
+    # ⛔ MORE THAN ONE RULE MEANS THE BODY CARRIED A STATEMENT SEPARATOR, and
+    # returning the first one's literals SILENTLY DROPS the rest. That is what
+    # this did: `adult(P). N > 5, N != 9` rendered as "the person is an adult"
+    # alone, with `outcome=rendered` and RB1-RB5 all green, and a seat was shown
+    # one of three conditions. `schema._check_body` now rejects an internal full
+    # stop, so this is defence in depth — but a renderer that drops content
+    # silently is exactly the failure the read-back exists to prevent, so it
+    # refuses here too rather than trusting the layer above.
+    rules = [st for st in stmts if st.ast_type == ast.ASTType.Rule]
+    if len(rules) > 1:
+        return None            # -> layer 1 over the RAW text: nothing is lost
+    for st in rules:
+        return list(st.body)
     return None
 
 
