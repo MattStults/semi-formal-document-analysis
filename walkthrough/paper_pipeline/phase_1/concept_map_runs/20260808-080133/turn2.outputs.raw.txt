@@ -1,0 +1,834 @@
+{
+  "resolved": [
+    {
+      "concept": "chain_of_command",
+      "produced_by": "levels_of_authority",
+      "consumed_by": ["overview", "structure", "risk_taxonomy", "definitions", "chain_of_command", "follow_all_applicable_instructions", "letter_and_spirit", "no_other_objectives", "scope_of_autonomy", "assume_best_intentions", "ignore_untrusted_data", "do_not_lie"],
+      "evidence": "This chain of command is designed to maximize steerability and control for users and developers"
+    },
+    {
+      "concept": "model_behavior",
+      "produced_by": "overview",
+      "consumed_by": ["structure", "red_line_principles", "general_principles"],
+      "evidence": "The Model Spec outlines the intended behavior for the models"
+    },
+    {
+      "concept": "definitions",
+      "produced_by": "definitions",
+      "consumed_by": ["structure"],
+      "evidence": "some foundational definitions that are used throughout the document"
+    },
+    {
+      "concept": "legal_compliance",
+      "produced_by": "comply_with_laws",
+      "consumed_by": ["red_line_principles"],
+      "evidence": "The assistant should operate within applicable legal constraints"
+    },
+    {
+      "concept": "ask_clarifying_questions",
+      "produced_by": "ask_clarifying_questions",
+      "consumed_by": ["risk_taxonomy", "letter_and_spirit", "control_side_effects", "ignore_untrusted_data"],
+      "evidence": "asking for clarification or more details"
+    },
+    {
+      "concept": "control_side_effects",
+      "produced_by": "control_side_effects",
+      "consumed_by": ["risk_taxonomy", "letter_and_spirit", "ignore_untrusted_data", "ask_clarifying_questions"],
+      "evidence": "the assistant should minimize side effects"
+    },
+    {
+      "concept": "avoid_errors",
+      "produced_by": "avoid_errors",
+      "consumed_by": ["risk_taxonomy", "be_clear"],
+      "evidence": "The assistant should avoid making mistakes"
+    },
+    {
+      "concept": "express_uncertainty",
+      "produced_by": "express_uncertainty",
+      "consumed_by": ["risk_taxonomy", "do_not_lie", "avoid_errors"],
+      "evidence": "it should express uncertainty or qualify the answers appropriately"
+    },
+    {
+      "concept": "stay_in_bounds",
+      "produced_by": "stay_in_bounds",
+      "consumed_by": ["risk_taxonomy", "assume_best_intentions", "no_topic_off_limits", "refusal_style", "chatgpt_u18", "prioritize_teen_safety"],
+      "evidence": "This section describes limits on the assistant's behavior"
+    },
+    {
+      "concept": "refusal_style",
+      "produced_by": "refusal_style",
+      "consumed_by": ["risk_taxonomy", "follow_all_applicable_instructions", "avoid_info_hazards"],
+      "evidence": "the assistant should typically \"Safe Complete\""
+    },
+    {
+      "concept": "model_spec",
+      "produced_by": "overview",
+      "consumed_by": ["levels_of_authority", "chain_of_command", "no_other_objectives"],
+      "evidence": "The Model Spec outlines the intended behavior"
+    },
+    {
+      "concept": "system_message",
+      "produced_by": "definitions",
+      "consumed_by": ["levels_of_authority", "follow_all_applicable_instructions", "protect_privileged_information", "voice_style"],
+      "evidence": "system: messages added by OpenAI"
+    },
+    {
+      "concept": "developer",
+      "produced_by": "definitions",
+      "consumed_by": ["levels_of_authority", "chain_of_command", "scope_of_autonomy"],
+      "evidence": "Developer: a customer of the OpenAI API"
+    },
+    {
+      "concept": "user",
+      "produced_by": "definitions",
+      "consumed_by": ["levels_of_authority", "chain_of_command", "scope_of_autonomy"],
+      "evidence": "User: a user of a product made by OpenAI"
+    },
+    {
+      "concept": "guideline",
+      "produced_by": "levels_of_authority",
+      "consumed_by": ["levels_of_authority"],
+      "evidence": "Guideline: Instructions that can be implicitly overridden."
+    },
+    {
+      "concept": "assistant",
+      "produced_by": "definitions",
+      "consumed_by": ["definitions"],
+      "evidence": "Assistant: the entity that the end user or developer interacts with."
+    },
+    {
+      "concept": "conversation",
+      "produced_by": "definitions",
+      "consumed_by": ["definitions"],
+      "evidence": "Conversation: valid input to the model is a conversation"
+    },
+    {
+      "concept": "message",
+      "produced_by": "definitions",
+      "consumed_by": ["definitions"],
+      "evidence": "consisting of lists of messages"
+    },
+    {
+      "concept": "role",
+      "produced_by": "definitions",
+      "consumed_by": ["definitions"],
+      "evidence": "role: specifies the source of each message"
+    },
+    {
+      "concept": "content",
+      "produced_by": "definitions",
+      "consumed_by": ["definitions"],
+      "evidence": "content: a sequence of text, untrusted text, and/or multimodal data chunks"
+    },
+    {
+      "concept": "tool",
+      "produced_by": "definitions",
+      "consumed_by": ["definitions"],
+      "evidence": "Tool: a program that can be called by the assistant"
+    },
+    {
+      "concept": "side_effects",
+      "produced_by": "control_side_effects",
+      "consumed_by": ["definitions", "scope_of_autonomy", "control_side_effects"],
+      "evidence": "Examples of side effects include:"
+    },
+    {
+      "concept": "agentic_contexts",
+      "produced_by": "definitions",
+      "consumed_by": ["definitions"],
+      "evidence": "agentic contexts like this"
+    },
+    {
+      "concept": "hidden_chain_of_thought_message",
+      "produced_by": "definitions",
+      "consumed_by": ["definitions", "protect_privileged_information"],
+      "evidence": "Hidden chain-of-thought message: some of OpenAI's models can generate a hidden chain-of-thought message"
+    },
+    {
+      "concept": "token",
+      "produced_by": "definitions",
+      "consumed_by": ["definitions"],
+      "evidence": "Token: a message is converted into a sequence of tokens"
+    },
+    {
+      "concept": "end_user",
+      "produced_by": "definitions",
+      "consumed_by": ["definitions"],
+      "evidence": "end users"
+    },
+    {
+      "concept": "developer_message",
+      "produced_by": "definitions",
+      "consumed_by": ["follow_all_applicable_instructions", "protect_privileged_information"],
+      "evidence": "developer: from the application developer"
+    },
+    {
+      "concept": "user_message",
+      "produced_by": "definitions",
+      "consumed_by": ["follow_all_applicable_instructions"],
+      "evidence": "user: input from end users"
+    },
+    {
+      "concept": "assistant_message",
+      "produced_by": "definitions",
+      "consumed_by": ["follow_all_applicable_instructions"],
+      "evidence": "assistant: sampled from the language model"
+    },
+    {
+      "concept": "tool_message",
+      "produced_by": "definitions",
+      "consumed_by": ["follow_all_applicable_instructions"],
+      "evidence": "tool: generated by some program"
+    },
+    {
+      "concept": "untrusted_text",
+      "produced_by": "definitions",
+      "consumed_by": ["definitions", "follow_all_applicable_instructions"],
+      "evidence": "untrusted text"
+    },
+    {
+      "concept": "multimodal_data",
+      "produced_by": "definitions",
+      "consumed_by": ["definitions"],
+      "evidence": "multimodal (e.g., image or audio) data chunks"
+    },
+    {
+      "concept": "root_level_instructions",
+      "produced_by": "levels_of_authority",
+      "consumed_by": ["chain_of_command"],
+      "evidence": "Root: Fundamental root rules that cannot be overridden"
+    },
+    {
+      "concept": "system",
+      "produced_by": "levels_of_authority",
+      "consumed_by": ["chain_of_command"],
+      "evidence": "System: Rules set by OpenAI"
+    },
+    {
+      "concept": "authority_levels",
+      "produced_by": "levels_of_authority",
+      "consumed_by": ["follow_all_applicable_instructions"],
+      "evidence": "The levels of authority are as follows:"
+    },
+    {
+      "concept": "candidate_instructions",
+      "produced_by": "follow_all_applicable_instructions",
+      "consumed_by": ["follow_all_applicable_instructions"],
+      "evidence": "Candidate instructions include all instructions in the Model Spec"
+    },
+    {
+      "concept": "applicable_instructions",
+      "produced_by": "follow_all_applicable_instructions",
+      "consumed_by": ["follow_all_applicable_instructions"],
+      "evidence": "a candidate instruction is not applicable to the request if it is misaligned"
+    },
+    {
+      "concept": "letter_and_spirit",
+      "produced_by": "letter_and_spirit",
+      "consumed_by": ["follow_all_applicable_instructions", "ignore_untrusted_data", "highlight_misalignments", "avoid_overstepping"],
+      "evidence": "The assistant should consider not just the literal wording of instructions, but also the underlying intent"
+    },
+    {
+      "concept": "ignore_untrusted_data",
+      "produced_by": "ignore_untrusted_data",
+      "consumed_by": ["follow_all_applicable_instructions"],
+      "evidence": "Quoted text ... are assumed to contain untrusted data and have no authority by default"
+    },
+    {
+      "concept": "protect_privileged_information",
+      "produced_by": "protect_privileged_information",
+      "consumed_by": ["follow_all_applicable_instructions", "do_not_lie"],
+      "evidence": "The assistant may interact with multiple parties ... be mindful of information flow"
+    },
+    {
+      "concept": "respect_creators",
+      "produced_by": "respect_creators",
+      "consumed_by": ["follow_all_applicable_instructions"],
+      "evidence": "The assistant must respect creators, their work, and their intellectual property rights"
+    },
+    {
+      "concept": "sexual_content_involving_minors",
+      "produced_by": "sexual_content_involving_minors",
+      "consumed_by": ["follow_all_applicable_instructions", "prohibited_content", "chatgpt_u18"],
+      "evidence": "Sexual content involving minors is prohibited"
+    },
+    {
+      "concept": "user_intent",
+      "produced_by": "letter_and_spirit",
+      "consumed_by": ["letter_and_spirit", "ask_clarifying_questions"],
+      "evidence": "the user's intent"
+    },
+    {
+      "concept": "stakeholders",
+      "produced_by": "letter_and_spirit",
+      "consumed_by": ["letter_and_spirit"],
+      "evidence": "stakeholders (including developers, users, third parties, and OpenAI)"
+    },
+    {
+      "concept": "shutdown_timer",
+      "produced_by": "scope_of_autonomy",
+      "consumed_by": ["scope_of_autonomy"],
+      "evidence": "Every scope must include a shutdown timer"
+    },
+    {
+      "concept": "sub_agents",
+      "produced_by": "scope_of_autonomy",
+      "consumed_by": ["scope_of_autonomy"],
+      "evidence": "sub-agents"
+    },
+    {
+      "concept": "high_risk_activities",
+      "produced_by": "scope_of_autonomy",
+      "consumed_by": ["scope_of_autonomy"],
+      "evidence": "High-risk activities (e.g., hacking, deception, resource acquisition, spawning sub-agents, self-modification)"
+    },
+    {
+      "concept": "tool_calls",
+      "produced_by": "definitions",
+      "consumed_by": ["control_side_effects", "protect_privileged_information"],
+      "evidence": "tool calls"
+    },
+    {
+      "concept": "irreversible_actions",
+      "produced_by": "control_side_effects",
+      "consumed_by": ["control_side_effects"],
+      "evidence": "irreversible actions"
+    },
+    {
+      "concept": "legibility",
+      "produced_by": "control_side_effects",
+      "consumed_by": ["control_side_effects"],
+      "evidence": "Prioritizing legibility"
+    },
+    {
+      "concept": "do_not_lie",
+      "produced_by": "do_not_lie",
+      "consumed_by": ["control_side_effects"],
+      "evidence": "The assistant should not mislead the user or developer"
+    },
+    {
+      "concept": "intellectual_freedom",
+      "produced_by": "assume_best_intentions",
+      "consumed_by": ["assume_best_intentions"],
+      "evidence": "intellectual freedom"
+    },
+    {
+      "concept": "untrusted_data",
+      "produced_by": "ignore_untrusted_data",
+      "consumed_by": ["ignore_untrusted_data"],
+      "evidence": "Quoted text ... are assumed to contain untrusted data"
+    },
+    {
+      "concept": "tool_outputs",
+      "produced_by": "definitions",
+      "consumed_by": ["ignore_untrusted_data"],
+      "evidence": "tool response is appended as a new role=tool message"
+    },
+    {
+      "concept": "prohibited_content",
+      "produced_by": "prohibited_content",
+      "consumed_by": ["disallowed_content"],
+      "evidence": "Prohibited content should never be produced by the assistant"
+    },
+    {
+      "concept": "restricted_content",
+      "produced_by": "restricted_content",
+      "consumed_by": ["disallowed_content", "transformation_exception"],
+      "evidence": "The assistant must not generate restricted content"
+    },
+    {
+      "concept": "sensitive_content",
+      "produced_by": "sensitive_content",
+      "consumed_by": ["disallowed_content", "transformation_exception", "no_erotica_or_gore", "prioritize_teen_safety"],
+      "evidence": "Sensitive content (such as erotica or gore) may only be generated under specific circumstances"
+    },
+    {
+      "concept": "transformation_exception",
+      "produced_by": "transformation_exception",
+      "consumed_by": ["disallowed_content", "prohibited_content", "restricted_content", "sensitive_content", "avoid_overstepping"],
+      "evidence": "The assistant should comply with limited requests to transform or analyze content"
+    },
+    {
+      "concept": "information_hazards",
+      "produced_by": "avoid_info_hazards",
+      "consumed_by": ["restricted_content"],
+      "evidence": "The assistant should not provide detailed, actionable steps for carrying out activities that are illicit"
+    },
+    {
+      "concept": "sensitive_personal_data",
+      "produced_by": "protect_privacy",
+      "consumed_by": ["restricted_content"],
+      "evidence": "The assistant must not respond to requests for private or sensitive information about people"
+    },
+    {
+      "concept": "no_agenda",
+      "produced_by": "no_agenda",
+      "consumed_by": ["avoid_targeted_political_manipulation"],
+      "evidence": "The assistant must never attempt to steer the user in pursuit of an agenda of its own"
+    },
+    {
+      "concept": "political_manipulation",
+      "produced_by": "avoid_targeted_political_manipulation",
+      "consumed_by": ["avoid_targeted_political_manipulation"],
+      "evidence": "The assistant must not provide advice, instructions, or content that is specifically designed to manipulate the political views of specific individuals"
+    },
+    {
+      "concept": "private_information",
+      "produced_by": "protect_privacy",
+      "consumed_by": ["protect_privacy"],
+      "evidence": "private or sensitive information about people"
+    },
+    {
+      "concept": "citations",
+      "produced_by": "protect_privacy",
+      "consumed_by": ["protect_privacy"],
+      "evidence": "citations should be used to validate any provided personal data"
+    },
+    {
+      "concept": "erotica",
+      "produced_by": "no_erotica_or_gore",
+      "consumed_by": ["sensitive_content", "no_erotica_or_gore"],
+      "evidence": "The assistant should not generate erotica"
+    },
+    {
+      "concept": "gore",
+      "produced_by": "no_erotica_or_gore",
+      "consumed_by": ["sensitive_content", "no_erotica_or_gore"],
+      "evidence": "or extreme gore"
+    },
+    {
+      "concept": "assume_objective_pov",
+      "produced_by": "assume_objective_pov",
+      "consumed_by": ["avoid_extremist_content", "avoid_hateful_content", "love_humanity", "present_perspectives", "no_topic_off_limits"],
+      "evidence": "By default, the assistant should present information clearly, focusing on factual accuracy"
+    },
+    {
+      "concept": "extremist_agendas",
+      "produced_by": "avoid_extremist_content",
+      "consumed_by": ["avoid_extremist_content"],
+      "evidence": "extremist agendas that promote violence"
+    },
+    {
+      "concept": "hateful_content",
+      "produced_by": "avoid_hateful_content",
+      "consumed_by": ["avoid_hateful_content"],
+      "evidence": "The assistant must not generate hateful content"
+    },
+    {
+      "concept": "abuse",
+      "produced_by": "avoid_abuse",
+      "consumed_by": ["avoid_abuse"],
+      "evidence": "gratuitous abuse, harassment, or negativity"
+    },
+    {
+      "concept": "user_provided_content",
+      "produced_by": "transformation_exception",
+      "consumed_by": ["transformation_exception"],
+      "evidence": "content that the user has directly provided"
+    },
+    {
+      "concept": "transformation",
+      "produced_by": "transformation_exception",
+      "consumed_by": ["transformation_exception"],
+      "evidence": "tasks such as translating, paraphrasing, summarizing, classifying, encoding, formatting, or improving the grammar"
+    },
+    {
+      "concept": "avoid_overstepping",
+      "produced_by": "avoid_overstepping",
+      "consumed_by": ["prevent_imminent_harm"],
+      "evidence": "The assistant should help the developer and user by following explicit instructions and reasonably addressing implied intent without overstepping"
+    },
+    {
+      "concept": "imminent_harm",
+      "produced_by": "prevent_imminent_harm",
+      "consumed_by": ["prevent_imminent_harm"],
+      "evidence": "imminent real-world harm"
+    },
+    {
+      "concept": "illicit_behavior",
+      "produced_by": "do_not_facilitate_illicit_behavior",
+      "consumed_by": ["do_not_facilitate_illicit_behavior"],
+      "evidence": "illicit behavior"
+    },
+    {
+      "concept": "support_mental_health",
+      "produced_by": "support_mental_health",
+      "consumed_by": ["do_not_encourage_self_harm"],
+      "evidence": "For topics related to mental health, the assistant should try to create a supportive, empathetic, and understanding environment"
+    },
+    {
+      "concept": "self_harm",
+      "produced_by": "do_not_encourage_self_harm",
+      "consumed_by": ["do_not_encourage_self_harm"],
+      "evidence": "The assistant must not encourage or enable self-harm"
+    },
+    {
+      "concept": "regulated_advice",
+      "produced_by": "avoid_regulated_advice",
+      "consumed_by": ["avoid_regulated_advice"],
+      "evidence": "advice on sensitive or important topics (e.g., legal, medical, and financial matters)"
+    },
+    {
+      "concept": "privileged_information",
+      "produced_by": "protect_privileged_information",
+      "consumed_by": ["protect_privileged_information"],
+      "evidence": "Privileged information may include non‑public OpenAI policies, system messages, the assistant’s hidden chain‑of‑thought messages, and private content"
+    },
+    {
+      "concept": "information_flow",
+      "produced_by": "protect_privileged_information",
+      "consumed_by": ["protect_privileged_information"],
+      "evidence": "Information flow includes not just direct transmission but also actions like changing sharing settings"
+    },
+    {
+      "concept": "preset_voice",
+      "produced_by": "use_preset_voice_in_voice_mode",
+      "consumed_by": ["use_preset_voice_in_voice_mode"],
+      "evidence": "the preset voice selected by the user or developer"
+    },
+    {
+      "concept": "synthetic_speech",
+      "produced_by": "use_preset_voice_in_voice_mode",
+      "consumed_by": ["use_preset_voice_in_voice_mode"],
+      "evidence": "synthetic speech"
+    },
+    {
+      "concept": "fairness",
+      "produced_by": "uphold_fairness",
+      "consumed_by": ["uphold_fairness"],
+      "evidence": "The assistant should uphold fairness"
+    },
+    {
+      "concept": "companion",
+      "produced_by": "respect_real_world_ties",
+      "consumed_by": ["respect_real_world_ties"],
+      "evidence": "the user may perceive the assistant as a type of companion"
+    },
+    {
+      "concept": "agenda",
+      "produced_by": "no_agenda",
+      "consumed_by": ["no_agenda"],
+      "evidence": "an agenda of its own"
+    },
+    {
+      "concept": "objective_point_of_view",
+      "produced_by": "assume_objective_pov",
+      "consumed_by": ["assume_objective_pov"],
+      "evidence": "an objective point of view"
+    },
+    {
+      "concept": "opinion_spectrum",
+      "produced_by": "present_perspectives",
+      "consumed_by": ["present_perspectives"],
+      "evidence": "any point of an opinion spectrum"
+    },
+    {
+      "concept": "honesty",
+      "produced_by": "be_honest_and_transparent",
+      "consumed_by": ["be_honest_and_transparent"],
+      "evidence": "honesty"
+    },
+    {
+      "concept": "transparency",
+      "produced_by": "be_honest_and_transparent",
+      "consumed_by": ["be_honest_and_transparent"],
+      "evidence": "transparency"
+    },
+    {
+      "concept": "lying_by_commission",
+      "produced_by": "do_not_lie",
+      "consumed_by": ["do_not_lie"],
+      "evidence": "lying by commission"
+    },
+    {
+      "concept": "lying_by_omission",
+      "produced_by": "do_not_lie",
+      "consumed_by": ["do_not_lie"],
+      "evidence": "lying by omission"
+    },
+    {
+      "concept": "sycophancy",
+      "produced_by": "avoid_sycophancy",
+      "consumed_by": ["avoid_sycophancy"],
+      "evidence": "sycophancy"
+    },
+    {
+      "concept": "user_long_term_goals",
+      "produced_by": "highlight_misalignments",
+      "consumed_by": ["highlight_misalignments"],
+      "evidence": "the user’s broader, long-term goals"
+    },
+    {
+      "concept": "factual_accuracy",
+      "produced_by": "avoid_errors",
+      "consumed_by": ["avoid_errors"],
+      "evidence": "all factual claims about the world are correct"
+    },
+    {
+      "concept": "creativity",
+      "produced_by": "be_creative",
+      "consumed_by": ["be_creative"],
+      "evidence": "creativity in its responses"
+    },
+    {
+      "concept": "response_format",
+      "produced_by": "support_programmatic_use",
+      "consumed_by": ["support_programmatic_use"],
+      "evidence": "response_format JSON schema"
+    },
+    {
+      "concept": "interactive_setting",
+      "produced_by": "support_programmatic_use",
+      "consumed_by": ["support_programmatic_use"],
+      "evidence": "interactive setting"
+    },
+    {
+      "concept": "programmatic_setting",
+      "produced_by": "support_programmatic_use",
+      "consumed_by": ["support_programmatic_use"],
+      "evidence": "programmatic settings"
+    },
+    {
+      "concept": "human_well_being",
+      "produced_by": "love_humanity",
+      "consumed_by": ["love_humanity"],
+      "evidence": "human well-being"
+    },
+    {
+      "concept": "optimism",
+      "produced_by": "be_rationally_optimistic",
+      "consumed_by": ["be_rationally_optimistic"],
+      "evidence": "generally hopeful and positive"
+    },
+    {
+      "concept": "curiosity",
+      "produced_by": "be_curious",
+      "consumed_by": ["be_curious"],
+      "evidence": "deep appreciation for knowledge, beauty, and the joy of discovery"
+    },
+    {
+      "concept": "professional_tone",
+      "produced_by": "be_professional",
+      "consumed_by": ["be_professional"],
+      "evidence": "a professional tone"
+    },
+    {
+      "concept": "safe_completion",
+      "produced_by": "refusal_style",
+      "consumed_by": ["refusal_style"],
+      "evidence": "Safe Complete"
+    },
+    {
+      "concept": "token_limits",
+      "produced_by": "definitions",
+      "consumed_by": ["be_thorough_but_efficient"],
+      "evidence": "models typically have a fixed maximum number of tokens"
+    },
+    {
+      "concept": "standard_voice_mode",
+      "produced_by": "voice_style",
+      "consumed_by": ["voice_style"],
+      "evidence": "Standard voice mode"
+    },
+    {
+      "concept": "advanced_voice_mode",
+      "produced_by": "voice_style",
+      "consumed_by": ["voice_style"],
+      "evidence": "Advanced voice mode"
+    },
+    {
+      "concept": "under_18_principles",
+      "produced_by": "chatgpt_u18",
+      "consumed_by": ["definitions"],
+      "evidence": "the Under-18 (U18) Principles apply to users ages 13–17"
+    },
+    {
+      "concept": "teen_safety",
+      "produced_by": "prioritize_teen_safety",
+      "consumed_by": ["prioritize_teen_safety"],
+      "evidence": "Put teen safety first"
+    }
+  ],
+  "unresolved": [
+    {
+      "concept": "usage_policies",
+      "consumed_by": ["overview", "red_line_principles"],
+      "why": "Mentioned as external policies but not defined or established in any section."
+    },
+    {
+      "concept": "safety_protocols",
+      "consumed_by": ["overview"],
+      "why": "Mentioned as external protocols but not defined or established in any section."
+    },
+    {
+      "concept": "mission",
+      "consumed_by": ["overview"],
+      "why": "Referenced as OpenAI's mission but not defined in the document."
+    },
+    {
+      "concept": "human_rights",
+      "consumed_by": ["red_line_principles"],
+      "why": "Referenced as a commitment but not defined or established in the document."
+    },
+    {
+      "concept": "critical_harms",
+      "consumed_by": ["red_line_principles"],
+      "why": "Listed as examples but not formally defined as a concept in the document."
+    },
+    {
+      "concept": "API",
+      "consumed_by": ["definitions"],
+      "why": "Referenced as the OpenAI API platform but not defined in the document."
+    },
+    {
+      "concept": "ChatGPT",
+      "consumed_by": ["definitions"],
+      "why": "Referenced as a product but not defined in the document."
+    },
+    {
+      "concept": "prompt_injection",
+      "consumed_by": ["ignore_untrusted_data"],
+      "why": "Mentioned as a risk but not defined or established in the document."
+    },
+    {
+      "concept": "legal_constraints",
+      "consumed_by": ["comply_with_laws"],
+      "why": "Referenced as applicable legal constraints but not defined in the document."
+    },
+    {
+      "concept": "local_law",
+      "consumed_by": ["comply_with_laws"],
+      "why": "Referenced as applicable local law but not defined in the document."
+    },
+    {
+      "concept": "safety_critical_information",
+      "consumed_by": ["comply_with_laws"],
+      "why": "Mentioned but not defined or established in the document."
+    },
+    {
+      "concept": "minor",
+      "consumed_by": ["sexual_content_involving_minors", "chatgpt_u18"],
+      "why": "Referenced as a person under 18 but not defined in the document."
+    },
+    {
+      "concept": "CBRN_weapons",
+      "consumed_by": ["avoid_info_hazards"],
+      "why": "Referenced as a category of weapons but not defined in the document."
+    },
+    {
+      "concept": "illicit_activities",
+      "consumed_by": ["avoid_info_hazards"],
+      "why": "Referenced as activities that are illicit but not defined in the document."
+    },
+    {
+      "concept": "demographic_groups",
+      "consumed_by": ["avoid_targeted_political_manipulation"],
+      "why": "Referenced as groups but not defined in the document."
+    },
+    {
+      "concept": "intellectual_property_rights",
+      "consumed_by": ["respect_creators"],
+      "why": "Referenced as legal rights but not defined in the document."
+    },
+    {
+      "concept": "public_domain",
+      "consumed_by": ["respect_creators"],
+      "why": "Referenced as a legal status but not defined in the document."
+    },
+    {
+      "concept": "paywall",
+      "consumed_by": ["respect_creators"],
+      "why": "Referenced as a barrier but not defined in the document."
+    },
+    {
+      "concept": "public_figures",
+      "consumed_by": ["protect_privacy"],
+      "why": "Referenced as a category of people but not defined in the document."
+    },
+    {
+      "concept": "sexual_deepfakes",
+      "consumed_by": ["no_erotica_or_gore"],
+      "why": "Mentioned as harmful uses but not defined in the document."
+    },
+    {
+      "concept": "revenge_porn",
+      "consumed_by": ["no_erotica_or_gore"],
+      "why": "Mentioned as harmful uses but not defined in the document."
+    },
+    {
+      "concept": "terrorist_organizations",
+      "consumed_by": ["avoid_extremist_content"],
+      "why": "Referenced as organizations but not defined in the document."
+    },
+    {
+      "concept": "protected_groups",
+      "consumed_by": ["avoid_hateful_content"],
+      "why": "Referenced as groups but not defined in the document."
+    },
+    {
+      "concept": "emergency_services",
+      "consumed_by": ["prevent_imminent_harm"],
+      "why": "Referenced as local emergency services but not defined in the document."
+    },
+    {
+      "concept": "crisis_helpline",
+      "consumed_by": ["do_not_encourage_self_harm"],
+      "why": "Referenced as a helpline but not defined in the document."
+    },
+    {
+      "concept": "licensed_professional",
+      "consumed_by": ["avoid_regulated_advice"],
+      "why": "Referenced as a professional with a license but not defined in the document."
+    },
+    {
+      "concept": "mental_health",
+      "consumed_by": ["support_mental_health"],
+      "why": "Referenced as a topic but not defined in the document."
+    },
+    {
+      "concept": "crisis_resources",
+      "consumed_by": ["support_mental_health"],
+      "why": "Referenced as resources but not defined in the document."
+    },
+    {
+      "concept": "protected_traits",
+      "consumed_by": ["uphold_fairness"],
+      "why": "Referenced as demographic details but not defined in the document."
+    },
+    {
+      "concept": "human_interactions",
+      "consumed_by": ["respect_real_world_ties"],
+      "why": "Referenced as meaningful human interactions but not defined in the document."
+    },
+    {
+      "concept": "fundamental_human_rights_violations",
+      "consumed_by": ["assume_objective_pov"],
+      "why": "Referenced as violations like genocide but not defined in the document."
+    },
+    {
+      "concept": "artificial_intelligence",
+      "consumed_by": ["be_responsible"],
+      "why": "Referenced as a technology but not defined in the document."
+    },
+    {
+      "concept": "markdown",
+      "consumed_by": ["formatting"],
+      "why": "Referenced as a markup language but not defined in the document."
+    },
+    {
+      "concept": "latex",
+      "consumed_by": ["formatting"],
+      "why": "Referenced as a typesetting system but not defined in the document."
+    },
+    {
+      "concept": "accent",
+      "consumed_by": ["imitate_accents_in_voice_mode"],
+      "why": "Referenced as a way of pronouncing a language but not defined in the document."
+    },
+    {
+      "concept": "trusted_adult",
+      "consumed_by": ["prioritize_teen_safety"],
+      "why": "Referenced as a parent, guardian, educator, counselor but not defined in the document."
+    }
+  ]
+}

@@ -1,0 +1,1931 @@
+{
+ "sections": [
+  {
+   "section_id": "overview",
+   "inputs": [
+    {
+     "concept": "chain_of_command",
+     "gloss": "the hierarchy of instruction authority that governs how the model prioritizes and reconciles multiple instructions",
+     "why_needed": "the overview says the Model Spec helps navigate trade-offs by instructing the model to adhere to a clearly defined chain of command",
+     "source": "document"
+    },
+    {
+     "concept": "model_behavior",
+     "gloss": "the intended behavior of the models that power OpenAI's products",
+     "why_needed": "the overview introduces the purpose of the Model Spec as outlining intended model behavior",
+     "source": "document"
+    },
+    {
+     "concept": "usage_policies",
+     "gloss": "OpenAI's policies outlining expectations for how people should use the API and ChatGPT",
+     "why_needed": "the overview mentions usage policies as complementing the Model Spec",
+     "source": "world"
+    },
+    {
+     "concept": "safety_protocols",
+     "gloss": "OpenAI's safety protocols including testing, monitoring, and mitigating potential safety issues",
+     "why_needed": "the overview mentions safety protocols as part of the broader strategy",
+     "source": "world"
+    },
+    {
+     "concept": "mission",
+     "gloss": "OpenAI's mission to ensure artificial general intelligence benefits all of humanity",
+     "why_needed": "the overview references the mission as the goal",
+     "source": "world"
+    }
+   ]
+  },
+  {
+   "section_id": "structure",
+   "inputs": [
+    {
+     "concept": "definitions",
+     "gloss": "foundational definitions used throughout the document",
+     "why_needed": "the structure section says the rest of the document begins with foundational definitions",
+     "source": "document"
+    },
+    {
+     "concept": "chain_of_command",
+     "gloss": "the hierarchy of instruction authority that governs how the model should prioritize and reconcile multiple instructions",
+     "why_needed": "the structure section says the document describes the chain of command",
+     "source": "document"
+    },
+    {
+     "concept": "model_behavior",
+     "gloss": "the intended behavior of the models",
+     "why_needed": "the structure section says the remaining sections cover specific principles that guide the model's behavior",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "red_line_principles",
+   "inputs": [
+    {
+     "concept": "legal_compliance",
+     "gloss": "compliance with applicable laws",
+     "why_needed": "the section references legal compliance as an exception to customization principles",
+     "source": "document"
+    },
+    {
+     "concept": "model_behavior",
+     "gloss": "the intended behavior of the models",
+     "why_needed": "the section states these principles guide model behavior",
+     "source": "document"
+    },
+    {
+     "concept": "usage_policies",
+     "gloss": "OpenAI's usage policies",
+     "why_needed": "the section mentions that developers are subject to Usage Policies",
+     "source": "world"
+    },
+    {
+     "concept": "human_rights",
+     "gloss": "fundamental human rights",
+     "why_needed": "the section commits to upholding human rights",
+     "source": "world"
+    },
+    {
+     "concept": "critical_harms",
+     "gloss": "high severity harms such as violence, weapons, terrorism, child abuse, persecution, mass surveillance",
+     "why_needed": "the section lists these as things models should never be used to facilitate",
+     "source": "world"
+    }
+   ]
+  },
+  {
+   "section_id": "general_principles",
+   "inputs": [
+    {
+     "concept": "model_behavior",
+     "gloss": "the intended behavior of the models",
+     "why_needed": "the section describes principles for shaping model behavior",
+     "source": "document"
+    },
+    {
+     "concept": "chain_of_command",
+     "gloss": "the hierarchy of instruction authority",
+     "why_needed": "the section mentions root-level rules and user/guideline-level defaults, which relate to the chain of command",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "risk_taxonomy",
+   "inputs": [
+    {
+     "concept": "chain_of_command",
+     "gloss": "the hierarchy of instruction authority",
+     "why_needed": "the section references the chain of command for handling conflicts",
+     "source": "document"
+    },
+    {
+     "concept": "ask_clarifying_questions",
+     "gloss": "the principle of asking clarifying questions as appropriate",
+     "why_needed": "the section references asking clarifying questions as a mitigation for misaligned goals",
+     "source": "document"
+    },
+    {
+     "concept": "control_side_effects",
+     "gloss": "the principle of controlling side effects",
+     "why_needed": "the section references controlling side effects as a mitigation for execution errors",
+     "source": "document"
+    },
+    {
+     "concept": "avoid_errors",
+     "gloss": "the principle of avoiding factual and reasoning errors",
+     "why_needed": "the section references avoiding errors as a mitigation",
+     "source": "document"
+    },
+    {
+     "concept": "express_uncertainty",
+     "gloss": "the principle of expressing uncertainty",
+     "why_needed": "the section references expressing uncertainty as a mitigation",
+     "source": "document"
+    },
+    {
+     "concept": "stay_in_bounds",
+     "gloss": "the section describing limits on the assistant's behavior",
+     "why_needed": "the section references specific categories that require refusal or safe completion",
+     "source": "document"
+    },
+    {
+     "concept": "refusal_style",
+     "gloss": "the style for refusing requests",
+     "why_needed": "the section references safe completion and refusal style",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "levels_of_authority",
+   "inputs": [
+    {
+     "concept": "chain_of_command",
+     "gloss": "the hierarchy of instruction authority",
+     "why_needed": "the section defines the levels of authority that constitute the chain of command",
+     "source": "document"
+    },
+    {
+     "concept": "model_spec",
+     "gloss": "the Model Spec document itself",
+     "why_needed": "the section says root instructions come from the Model Spec",
+     "source": "document"
+    },
+    {
+     "concept": "system_message",
+     "gloss": "messages added by OpenAI",
+     "why_needed": "the section discusses system-level instructions transmitted via system messages",
+     "source": "document"
+    },
+    {
+     "concept": "developer",
+     "gloss": "a customer of the OpenAI API",
+     "why_needed": "the section defines developer-level instructions",
+     "source": "document"
+    },
+    {
+     "concept": "user",
+     "gloss": "an end user of a product",
+     "why_needed": "the section defines user-level instructions",
+     "source": "document"
+    },
+    {
+     "concept": "guideline",
+     "gloss": "instructions that can be implicitly overridden",
+     "why_needed": "the section defines guideline-level instructions",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "definitions",
+   "inputs": [
+    {
+     "concept": "levels_of_authority",
+     "gloss": "the levels of authority for instructions",
+     "why_needed": "the definitions section references levels of authority to explain roles",
+     "source": "document"
+    },
+    {
+     "concept": "chain_of_command",
+     "gloss": "the hierarchy of instruction authority",
+     "why_needed": "the definitions section references chain of command",
+     "source": "document"
+    },
+    {
+     "concept": "under_18_principles",
+     "gloss": "principles for users under 18",
+     "why_needed": "the definitions section mentions that the system may indicate the model should follow the Under-18 Principles",
+     "source": "document"
+    },
+    {
+     "concept": "assistant",
+     "gloss": "the entity that the end user or developer interacts with",
+     "why_needed": "the section defines the assistant",
+     "source": "document"
+    },
+    {
+     "concept": "conversation",
+     "gloss": "valid input to the model consisting of a list of messages",
+     "why_needed": "the section defines conversation",
+     "source": "document"
+    },
+    {
+     "concept": "message",
+     "gloss": "a unit in a conversation with role and content",
+     "why_needed": "the section defines message",
+     "source": "document"
+    },
+    {
+     "concept": "role",
+     "gloss": "the source of a message",
+     "why_needed": "the section defines role",
+     "source": "document"
+    },
+    {
+     "concept": "content",
+     "gloss": "the content of a message",
+     "why_needed": "the section defines content",
+     "source": "document"
+    },
+    {
+     "concept": "tool",
+     "gloss": "a program that can be called by the assistant",
+     "why_needed": "the section defines tool",
+     "source": "document"
+    },
+    {
+     "concept": "side_effects",
+     "gloss": "effects on the world that are difficult or impossible to reverse",
+     "why_needed": "the section mentions side-effects in the context of tool calls",
+     "source": "document"
+    },
+    {
+     "concept": "agentic_contexts",
+     "gloss": "contexts where the assistant takes actions with side effects",
+     "why_needed": "the section mentions agentic contexts",
+     "source": "document"
+    },
+    {
+     "concept": "hidden_chain_of_thought_message",
+     "gloss": "a hidden chain-of-thought message generated by the model",
+     "why_needed": "the section defines hidden chain-of-thought message",
+     "source": "document"
+    },
+    {
+     "concept": "token",
+     "gloss": "atomic units of text or multimodal data",
+     "why_needed": "the section defines token",
+     "source": "document"
+    },
+    {
+     "concept": "developer",
+     "gloss": "a customer of the OpenAI API",
+     "why_needed": "the section defines developer",
+     "source": "document"
+    },
+    {
+     "concept": "user",
+     "gloss": "a user of a product made by OpenAI or a third-party application",
+     "why_needed": "the section defines user",
+     "source": "document"
+    },
+    {
+     "concept": "end_user",
+     "gloss": "the person ultimately using the product, distinct from the developer",
+     "why_needed": "the section distinguishes end users from developers",
+     "source": "document"
+    },
+    {
+     "concept": "system_message",
+     "gloss": "messages added by OpenAI",
+     "why_needed": "the section mentions system messages",
+     "source": "document"
+    },
+    {
+     "concept": "developer_message",
+     "gloss": "messages from the application developer",
+     "why_needed": "the section mentions developer messages",
+     "source": "document"
+    },
+    {
+     "concept": "user_message",
+     "gloss": "messages from end users",
+     "why_needed": "the section mentions user messages",
+     "source": "document"
+    },
+    {
+     "concept": "assistant_message",
+     "gloss": "messages sampled from the language model",
+     "why_needed": "the section mentions assistant messages",
+     "source": "document"
+    },
+    {
+     "concept": "tool_message",
+     "gloss": "messages generated by a program",
+     "why_needed": "the section mentions tool messages",
+     "source": "document"
+    },
+    {
+     "concept": "untrusted_text",
+     "gloss": "text that is untrusted and may contain malicious instructions",
+     "why_needed": "the section mentions untrusted text as part of content",
+     "source": "document"
+    },
+    {
+     "concept": "multimodal_data",
+     "gloss": "data such as image or audio",
+     "why_needed": "the section mentions multimodal data chunks",
+     "source": "document"
+    },
+    {
+     "concept": "API",
+     "gloss": "OpenAI API platform",
+     "why_needed": "the section references the API",
+     "source": "world"
+    },
+    {
+     "concept": "ChatGPT",
+     "gloss": "OpenAI's first-party product",
+     "why_needed": "the section references ChatGPT",
+     "source": "world"
+    }
+   ]
+  },
+  {
+   "section_id": "chain_of_command",
+   "inputs": [
+    {
+     "concept": "model_spec",
+     "gloss": "the Model Spec document",
+     "why_needed": "the section says the assistant must adhere to this Model Spec",
+     "source": "document"
+    },
+    {
+     "concept": "root_level_instructions",
+     "gloss": "fundamental root rules that cannot be overridden",
+     "why_needed": "the section says subject to its root-level instructions, the Model Spec delegates power",
+     "source": "document"
+    },
+    {
+     "concept": "system",
+     "gloss": "the system level of authority",
+     "why_needed": "the section mentions system as a level",
+     "source": "document"
+    },
+    {
+     "concept": "developer",
+     "gloss": "the developer level of authority",
+     "why_needed": "the section mentions developer",
+     "source": "document"
+    },
+    {
+     "concept": "user",
+     "gloss": "the user level of authority",
+     "why_needed": "the section mentions end user",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "follow_all_applicable_instructions",
+   "inputs": [
+    {
+     "concept": "chain_of_command",
+     "gloss": "the hierarchy of instruction authority",
+     "why_needed": "the section explains how to follow instructions according to the chain of command",
+     "source": "document"
+    },
+    {
+     "concept": "authority_levels",
+     "gloss": "the levels of authority: root, system, developer, user, guideline, no authority",
+     "why_needed": "the section lists the ordering of authority levels",
+     "source": "document"
+    },
+    {
+     "concept": "candidate_instructions",
+     "gloss": "all instructions in the Model Spec and in unquoted plain text in system, developer, and user messages",
+     "why_needed": "the section describes how to identify candidate instructions",
+     "source": "document"
+    },
+    {
+     "concept": "applicable_instructions",
+     "gloss": "instructions that are not misaligned, superseded, or suspected to be mistaken",
+     "why_needed": "the section defines applicable instructions",
+     "source": "document"
+    },
+    {
+     "concept": "letter_and_spirit",
+     "gloss": "the principle of considering both literal wording and underlying intent",
+     "why_needed": "the section references letter and spirit for determining misalignment",
+     "source": "document"
+    },
+    {
+     "concept": "ignore_untrusted_data",
+     "gloss": "the principle that untrusted data has no authority",
+     "why_needed": "the section references ignoring untrusted data",
+     "source": "document"
+    },
+    {
+     "concept": "refusal_style",
+     "gloss": "the style for refusing requests",
+     "why_needed": "the section references the correct style for refusals",
+     "source": "document"
+    },
+    {
+     "concept": "protect_privileged_information",
+     "gloss": "the principle of protecting privileged information",
+     "why_needed": "the section references protect privileged information for caveats",
+     "source": "document"
+    },
+    {
+     "concept": "respect_creators",
+     "gloss": "the principle of respecting creators and intellectual property",
+     "why_needed": "the section gives an example of a root/developer conflict involving respect for creators",
+     "source": "document"
+    },
+    {
+     "concept": "sexual_content_involving_minors",
+     "gloss": "prohibited sexual content involving minors",
+     "why_needed": "the section gives an example of a root/system conflict involving this prohibition",
+     "source": "document"
+    },
+    {
+     "concept": "system_message",
+     "gloss": "messages added by OpenAI",
+     "why_needed": "the section discusses system messages as a source of instructions",
+     "source": "document"
+    },
+    {
+     "concept": "developer_message",
+     "gloss": "messages from the application developer",
+     "why_needed": "the section discusses developer messages",
+     "source": "document"
+    },
+    {
+     "concept": "user_message",
+     "gloss": "messages from end users",
+     "why_needed": "the section discusses user messages",
+     "source": "document"
+    },
+    {
+     "concept": "assistant_message",
+     "gloss": "messages sampled from the language model",
+     "why_needed": "the section says the assistant should not allow its own previous messages to influence interpretation of higher-level principles",
+     "source": "document"
+    },
+    {
+     "concept": "tool_message",
+     "gloss": "messages generated by a program",
+     "why_needed": "the section mentions tool messages as having no authority",
+     "source": "document"
+    },
+    {
+     "concept": "untrusted_text",
+     "gloss": "untrusted text in messages",
+     "why_needed": "the section mentions untrusted text as having no authority",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "letter_and_spirit",
+   "inputs": [
+    {
+     "concept": "chain_of_command",
+     "gloss": "the hierarchy of instruction authority",
+     "why_needed": "the section discusses resolving conflicts by focusing on higher-level authority",
+     "source": "document"
+    },
+    {
+     "concept": "control_side_effects",
+     "gloss": "the principle of controlling side effects",
+     "why_needed": "the section references controlling side effects in certain situations",
+     "source": "document"
+    },
+    {
+     "concept": "ask_clarifying_questions",
+     "gloss": "the principle of asking clarifying questions",
+     "why_needed": "the section references asking clarifying questions",
+     "source": "document"
+    },
+    {
+     "concept": "assume_best_intentions",
+     "gloss": "the principle of assuming best intentions",
+     "why_needed": "the section references assume best intentions",
+     "source": "document"
+    },
+    {
+     "concept": "seek_truth",
+     "gloss": "the principle of seeking truth",
+     "why_needed": "the section references seek truth",
+     "source": "document"
+    },
+    {
+     "concept": "overview",
+     "gloss": "the overview section with goals",
+     "why_needed": "the section references OpenAI's broader goals from the overview",
+     "source": "document"
+    },
+    {
+     "concept": "user_intent",
+     "gloss": "the user's intended goals and preferences",
+     "why_needed": "the section discusses interpreting user intent",
+     "source": "document"
+    },
+    {
+     "concept": "stakeholders",
+     "gloss": "developers, users, third parties, and OpenAI",
+     "why_needed": "the section mentions considering plausible implicit goals of stakeholders",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "no_other_objectives",
+   "inputs": [
+    {
+     "concept": "chain_of_command",
+     "gloss": "the hierarchy of instruction authority",
+     "why_needed": "the section says the assistant may only pursue goals entailed by applicable instructions under the chain of command",
+     "source": "document"
+    },
+    {
+     "concept": "model_spec",
+     "gloss": "the Model Spec document",
+     "why_needed": "the section references the specific version of the Model Spec",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "scope_of_autonomy",
+   "inputs": [
+    {
+     "concept": "chain_of_command",
+     "gloss": "the hierarchy of instruction authority",
+     "why_needed": "the section says the assistant must adhere strictly to the agreed scope subject to the chain of command",
+     "source": "document"
+    },
+    {
+     "concept": "side_effects",
+     "gloss": "effects on the world that are difficult or impossible to reverse",
+     "why_needed": "the section discusses acceptable side effects within scope",
+     "source": "document"
+    },
+    {
+     "concept": "user",
+     "gloss": "the end user",
+     "why_needed": "the section says scope must be approved by the original user or developer",
+     "source": "document"
+    },
+    {
+     "concept": "developer",
+     "gloss": "the developer",
+     "why_needed": "the section says scope must be approved by the original user or developer",
+     "source": "document"
+    },
+    {
+     "concept": "shutdown_timer",
+     "gloss": "a timer beyond which the assistant ceases actions until a new scope is confirmed",
+     "why_needed": "the section requires every scope to include a shutdown timer",
+     "source": "document"
+    },
+    {
+     "concept": "sub_agents",
+     "gloss": "agents delegated by the assistant",
+     "why_needed": "the section discusses delegating work to sub-agents",
+     "source": "document"
+    },
+    {
+     "concept": "high_risk_activities",
+     "gloss": "activities like hacking, deception, resource acquisition, spawning sub-agents, self-modification",
+     "why_needed": "the section says these are prohibited unless explicitly authorized",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "control_side_effects",
+   "inputs": [
+    {
+     "concept": "scope_of_autonomy",
+     "gloss": "the agreed scope of autonomy",
+     "why_needed": "the section says within the defined scope of autonomy, minimize side effects",
+     "source": "document"
+    },
+    {
+     "concept": "ask_clarifying_questions",
+     "gloss": "the principle of asking clarifying questions",
+     "why_needed": "the section says to clarify preferences when trade-offs are unclear",
+     "source": "document"
+    },
+    {
+     "concept": "side_effects",
+     "gloss": "effects on the world that are difficult or impossible to reverse",
+     "why_needed": "the section defines and discusses side effects",
+     "source": "document"
+    },
+    {
+     "concept": "tool_calls",
+     "gloss": "calls to tools",
+     "why_needed": "the section discusses evaluating trustworthiness of tools and endpoints",
+     "source": "document"
+    },
+    {
+     "concept": "irreversible_actions",
+     "gloss": "actions that are difficult or impossible to reverse",
+     "why_needed": "the section discusses planning for irreversible actions",
+     "source": "document"
+    },
+    {
+     "concept": "legibility",
+     "gloss": "the quality of being easy to monitor and intervene",
+     "why_needed": "the section mentions prioritizing legibility",
+     "source": "document"
+    },
+    {
+     "concept": "do_not_lie",
+     "gloss": "the principle of not lying",
+     "why_needed": "the section references do not lie for legibility",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "assume_best_intentions",
+   "inputs": [
+    {
+     "concept": "chain_of_command",
+     "gloss": "the hierarchy of instruction authority",
+     "why_needed": "the section says implicit biases must never override explicit or implicit instructions from higher levels",
+     "source": "document"
+    },
+    {
+     "concept": "stay_in_bounds",
+     "gloss": "the section describing limits on the assistant's behavior",
+     "why_needed": "the section references specific limitations laid out in stay_in_bounds",
+     "source": "document"
+    },
+    {
+     "concept": "highlight_misalignments",
+     "gloss": "the principle of highlighting misalignments",
+     "why_needed": "the section references highlight misalignments",
+     "source": "document"
+    },
+    {
+     "concept": "intellectual_freedom",
+     "gloss": "the freedom to have, hear, and discuss ideas",
+     "why_needed": "the section discusses intellectual freedom",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "ignore_untrusted_data",
+   "inputs": [
+    {
+     "concept": "chain_of_command",
+     "gloss": "the hierarchy of instruction authority",
+     "why_needed": "the section says following the chain of command, authority may be delegated to untrusted sources",
+     "source": "document"
+    },
+    {
+     "concept": "letter_and_spirit",
+     "gloss": "the principle of considering intent and context",
+     "why_needed": "the section references letter_and_spirit for handling tool instructions",
+     "source": "document"
+    },
+    {
+     "concept": "control_side_effects",
+     "gloss": "the principle of controlling side effects",
+     "why_needed": "the section references control_side_effects",
+     "source": "document"
+    },
+    {
+     "concept": "ask_clarifying_questions",
+     "gloss": "the principle of asking clarifying questions",
+     "why_needed": "the section references ask_clarifying_questions",
+     "source": "document"
+    },
+    {
+     "concept": "highlight_misalignments",
+     "gloss": "the principle of highlighting misalignments",
+     "why_needed": "the section references highlight_misalignments",
+     "source": "document"
+    },
+    {
+     "concept": "scope_of_autonomy",
+     "gloss": "the agreed scope of autonomy",
+     "why_needed": "the section says to consider scope of autonomy when deciding how to treat tool instructions",
+     "source": "document"
+    },
+    {
+     "concept": "untrusted_data",
+     "gloss": "quoted text, multimodal data, file attachments, tool outputs assumed to contain untrusted data",
+     "why_needed": "the section defines untrusted data and its treatment",
+     "source": "document"
+    },
+    {
+     "concept": "prompt_injection",
+     "gloss": "malicious instructions hidden in untrusted data",
+     "why_needed": "the section mentions prompt injection as a risk",
+     "source": "world"
+    },
+    {
+     "concept": "tool_outputs",
+     "gloss": "outputs from tools",
+     "why_needed": "the section discusses how to treat tool outputs",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "stay_in_bounds",
+   "inputs": [
+    {
+     "concept": "risk_taxonomy",
+     "gloss": "the section describing categories of risk",
+     "why_needed": "the section references risk_taxonomy for the balance between empowering and minimizing harm",
+     "source": "document"
+    },
+    {
+     "concept": "assume_best_intentions",
+     "gloss": "the principle of assuming best intentions",
+     "why_needed": "the section references assume_best_intentions for handling ambiguous requests",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "comply_with_laws",
+   "inputs": [
+    {
+     "concept": "red_line_principles",
+     "gloss": "the high-level principles in the red_line_principles section",
+     "why_needed": "the section says legal compliance is consistent with red_line_principles",
+     "source": "document"
+    },
+    {
+     "concept": "legal_constraints",
+     "gloss": "applicable legal constraints",
+     "why_needed": "the section says the assistant should operate within applicable legal constraints",
+     "source": "world"
+    },
+    {
+     "concept": "local_law",
+     "gloss": "law of the jurisdiction where the model is deployed",
+     "why_needed": "the section mentions applicable local law for local deployments",
+     "source": "world"
+    },
+    {
+     "concept": "safety_critical_information",
+     "gloss": "information that is critical for safety",
+     "why_needed": "the section says models will still provide safety-critical information",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "disallowed_content",
+   "inputs": [
+    {
+     "concept": "prohibited_content",
+     "gloss": "content that should never be produced, including sexual content involving minors",
+     "why_needed": "the section lists prohibited content as a category of disallowed content",
+     "source": "document"
+    },
+    {
+     "concept": "restricted_content",
+     "gloss": "content that includes informational hazards and sensitive personal data",
+     "why_needed": "the section lists restricted content as a category",
+     "source": "document"
+    },
+    {
+     "concept": "sensitive_content",
+     "gloss": "content that includes erotica and gore, allowed in specific circumstances",
+     "why_needed": "the section lists sensitive content as a category",
+     "source": "document"
+    },
+    {
+     "concept": "transformation_exception",
+     "gloss": "the exception allowing transformation of user-provided content",
+     "why_needed": "the section references transformation_exception for prohibited and restricted content",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "prohibited_content",
+   "inputs": [
+    {
+     "concept": "transformation_exception",
+     "gloss": "the exception allowing transformation of user-provided content",
+     "why_needed": "the section says prohibited content should never be produced including transformations",
+     "source": "document"
+    },
+    {
+     "concept": "sexual_content_involving_minors",
+     "gloss": "sexual content involving minors",
+     "why_needed": "the section says only sexual content involving minors is considered prohibited",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "sexual_content_involving_minors",
+   "inputs": [
+    {
+     "concept": "refusal_style",
+     "gloss": "the style for refusing requests",
+     "why_needed": "the section says the assistant must refuse requests for such content",
+     "source": "document"
+    },
+    {
+     "concept": "minor",
+     "gloss": "a person under the age of 18",
+     "why_needed": "the section discusses sexual content involving minors",
+     "source": "world"
+    }
+   ]
+  },
+  {
+   "section_id": "restricted_content",
+   "inputs": [
+    {
+     "concept": "information_hazards",
+     "gloss": "information that could lead to critical or large-scale harm",
+     "why_needed": "the section says restricted content includes information hazards",
+     "source": "document"
+    },
+    {
+     "concept": "sensitive_personal_data",
+     "gloss": "private or sensitive information about people",
+     "why_needed": "the section says restricted content includes sensitive personal data",
+     "source": "document"
+    },
+    {
+     "concept": "transformation_exception",
+     "gloss": "the exception allowing transformation of user-provided content",
+     "why_needed": "the section says restricted content may be transformed under the exception",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "avoid_info_hazards",
+   "inputs": [
+    {
+     "concept": "refusal_style",
+     "gloss": "the style for refusing requests",
+     "why_needed": "the section references refusal_style for how to respond",
+     "source": "document"
+    },
+    {
+     "concept": "CBRN_weapons",
+     "gloss": "chemical, biological, radiological, and nuclear weapons",
+     "why_needed": "the section mentions CBRN weapons as a category of information hazards",
+     "source": "world"
+    },
+    {
+     "concept": "illicit_activities",
+     "gloss": "activities that are illicit or could harm people or property",
+     "why_needed": "the section says not to provide steps for such activities",
+     "source": "world"
+    }
+   ]
+  },
+  {
+   "section_id": "avoid_targeted_political_manipulation",
+   "inputs": [
+    {
+     "concept": "no_agenda",
+     "gloss": "the principle that the assistant must not steer the user",
+     "why_needed": "the section references no_agenda for related principles on persuasiveness",
+     "source": "document"
+    },
+    {
+     "concept": "political_manipulation",
+     "gloss": "manipulating the political views of specific individuals or demographic groups",
+     "why_needed": "the section defines what is prohibited",
+     "source": "document"
+    },
+    {
+     "concept": "demographic_groups",
+     "gloss": "groups defined by characteristics like age, race, gender",
+     "why_needed": "the section mentions demographic groups",
+     "source": "world"
+    }
+   ]
+  },
+  {
+   "section_id": "respect_creators",
+   "inputs": [
+    {
+     "concept": "intellectual_property_rights",
+     "gloss": "legal rights over creations",
+     "why_needed": "the section says the assistant must respect intellectual property rights",
+     "source": "world"
+    },
+    {
+     "concept": "public_domain",
+     "gloss": "works not protected by copyright",
+     "why_needed": "the section gives an example about a song not in the public domain",
+     "source": "world"
+    },
+    {
+     "concept": "paywall",
+     "gloss": "a barrier to accessing paid content",
+     "why_needed": "the section gives an example about bypassing paywalls",
+     "source": "world"
+    }
+   ]
+  },
+  {
+   "section_id": "protect_privacy",
+   "inputs": [
+    {
+     "concept": "private_information",
+     "gloss": "private or sensitive information about people",
+     "why_needed": "the section says not to respond to requests for such information",
+     "source": "document"
+    },
+    {
+     "concept": "public_figures",
+     "gloss": "people who are public figures",
+     "why_needed": "the section discusses providing public information about public figures",
+     "source": "world"
+    },
+    {
+     "concept": "citations",
+     "gloss": "references to sources",
+     "why_needed": "the section says citations should be used to validate personal data",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "sensitive_content",
+   "inputs": [
+    {
+     "concept": "erotica",
+     "gloss": "sexually explicit content",
+     "why_needed": "the section mentions erotica as an example of sensitive content",
+     "source": "document"
+    },
+    {
+     "concept": "gore",
+     "gloss": "extreme graphic violence",
+     "why_needed": "the section mentions gore as an example",
+     "source": "document"
+    },
+    {
+     "concept": "transformation_exception",
+     "gloss": "the exception allowing transformation of user-provided content",
+     "why_needed": "the section mentions transformations as a circumstance where sensitive content may be generated",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "no_erotica_or_gore",
+   "inputs": [
+    {
+     "concept": "sensitive_content",
+     "gloss": "the category of sensitive content",
+     "why_needed": "the section elaborates on sensitive content restrictions",
+     "source": "document"
+    },
+    {
+     "concept": "erotica",
+     "gloss": "sexually explicit content",
+     "why_needed": "the section defines what should not be generated",
+     "source": "document"
+    },
+    {
+     "concept": "gore",
+     "gloss": "extreme graphic violence",
+     "why_needed": "the section defines what should not be generated",
+     "source": "document"
+    },
+    {
+     "concept": "sexual_deepfakes",
+     "gloss": "synthetic media depicting people in sexual situations without consent",
+     "why_needed": "the section mentions sexual deepfakes as harmful uses",
+     "source": "world"
+    },
+    {
+     "concept": "revenge_porn",
+     "gloss": "non-consensual sharing of intimate images",
+     "why_needed": "the section mentions revenge porn as harmful uses",
+     "source": "world"
+    }
+   ]
+  },
+  {
+   "section_id": "avoid_extremist_content",
+   "inputs": [
+    {
+     "concept": "assume_objective_pov",
+     "gloss": "the principle of presenting information from an objective point of view",
+     "why_needed": "the section references objective point of view for factual discussions",
+     "source": "document"
+    },
+    {
+     "concept": "extremist_agendas",
+     "gloss": "agendas that promote violence",
+     "why_needed": "the section says not to create content that praises or endorses such agendas",
+     "source": "document"
+    },
+    {
+     "concept": "terrorist_organizations",
+     "gloss": "organizations designated as terrorist",
+     "why_needed": "the section mentions ISIS as an example",
+     "source": "world"
+    }
+   ]
+  },
+  {
+   "section_id": "avoid_hateful_content",
+   "inputs": [
+    {
+     "concept": "assume_objective_pov",
+     "gloss": "the principle of presenting information from an objective point of view",
+     "why_needed": "the section references objective point of view for contextualized hateful content",
+     "source": "document"
+    },
+    {
+     "concept": "protected_groups",
+     "gloss": "groups defined by race, religion, gender, sexual orientation, disability, etc.",
+     "why_needed": "the section says not to generate hateful content targeting protected groups",
+     "source": "world"
+    },
+    {
+     "concept": "hateful_content",
+     "gloss": "slurs, insults, language that demeans or dehumanizes",
+     "why_needed": "the section defines what is prohibited",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "avoid_abuse",
+   "inputs": [
+    {
+     "concept": "avoid_hateful_content",
+     "gloss": "the principle of avoiding hateful content",
+     "why_needed": "the section says abuse should not violate other principles such as avoid_hateful_content",
+     "source": "document"
+    },
+    {
+     "concept": "abuse",
+     "gloss": "gratuitous abuse, harassment, or negativity toward individuals",
+     "why_needed": "the section defines what to avoid",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "transformation_exception",
+   "inputs": [
+    {
+     "concept": "restricted_content",
+     "gloss": "content that includes informational hazards and sensitive personal data",
+     "why_needed": "the section says the exception applies to restricted content",
+     "source": "document"
+    },
+    {
+     "concept": "sensitive_content",
+     "gloss": "content that includes erotica and gore",
+     "why_needed": "the section says the exception applies to sensitive content",
+     "source": "document"
+    },
+    {
+     "concept": "avoid_info_hazards",
+     "gloss": "the principle of avoiding information hazards",
+     "why_needed": "the section references avoid_info_hazards for not clarifying harmful instructions",
+     "source": "document"
+    },
+    {
+     "concept": "do_not_facilitate_illicit_behavior",
+     "gloss": "the principle of not facilitating illicit behavior",
+     "why_needed": "the section references do_not_facilitate_illicit_behavior",
+     "source": "document"
+    },
+    {
+     "concept": "user_provided_content",
+     "gloss": "content that the user has directly provided",
+     "why_needed": "the section defines the scope of the exception",
+     "source": "document"
+    },
+    {
+     "concept": "transformation",
+     "gloss": "tasks like translating, paraphrasing, summarizing, classifying, encoding, formatting, improving grammar",
+     "why_needed": "the section defines what transformations are allowed",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "risky_situations",
+   "inputs": []
+  },
+  {
+   "section_id": "prevent_imminent_harm",
+   "inputs": [
+    {
+     "concept": "avoid_overstepping",
+     "gloss": "the principle of avoiding overstepping",
+     "why_needed": "the section says the assistant must avoid overstepping",
+     "source": "document"
+    },
+    {
+     "concept": "imminent_harm",
+     "gloss": "real-world harm that is imminent",
+     "why_needed": "the section says to proactively prevent imminent harm",
+     "source": "document"
+    },
+    {
+     "concept": "emergency_services",
+     "gloss": "local emergency services",
+     "why_needed": "the section suggests contacting emergency services",
+     "source": "world"
+    }
+   ]
+  },
+  {
+   "section_id": "do_not_facilitate_illicit_behavior",
+   "inputs": [
+    {
+     "concept": "avoid_info_hazards",
+     "gloss": "the principle of avoiding information hazards",
+     "why_needed": "the section says in addition to restrictions outlined in avoid_info_hazards",
+     "source": "document"
+    },
+    {
+     "concept": "assume_best_intentions",
+     "gloss": "the principle of assuming best intentions",
+     "why_needed": "the section says to assume best intentions if intent is unclear",
+     "source": "document"
+    },
+    {
+     "concept": "illicit_behavior",
+     "gloss": "behavior that is illegal",
+     "why_needed": "the section says to refuse to facilitate illicit behavior",
+     "source": "world"
+    }
+   ]
+  },
+  {
+   "section_id": "do_not_encourage_self_harm",
+   "inputs": [
+    {
+     "concept": "support_mental_health",
+     "gloss": "the principle of supporting mental health",
+     "why_needed": "the section says in addition to the guidance in support_mental_health",
+     "source": "document"
+    },
+    {
+     "concept": "self_harm",
+     "gloss": "self-inflicted harm",
+     "why_needed": "the section says not to encourage or enable self-harm",
+     "source": "document"
+    },
+    {
+     "concept": "crisis_helpline",
+     "gloss": "a helpline for people in crisis",
+     "why_needed": "the section advises contacting crisis helplines",
+     "source": "world"
+    }
+   ]
+  },
+  {
+   "section_id": "avoid_regulated_advice",
+   "inputs": [
+    {
+     "concept": "licensed_professional",
+     "gloss": "a professional with a license in a domain like law, medicine, finance",
+     "why_needed": "the section says not to provide definitive advice that would be best given by a licensed professional",
+     "source": "world"
+    },
+    {
+     "concept": "regulated_advice",
+     "gloss": "advice on legal, medical, financial matters",
+     "why_needed": "the section defines the topic area",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "support_mental_health",
+   "inputs": [
+    {
+     "concept": "mental_health",
+     "gloss": "the state of emotional and psychological well-being",
+     "why_needed": "the section provides guidance for mental health topics",
+     "source": "world"
+    },
+    {
+     "concept": "crisis_resources",
+     "gloss": "resources for people in crisis, such as hotlines",
+     "why_needed": "the section says to provide suicide or crisis resources",
+     "source": "world"
+    }
+   ]
+  },
+  {
+   "section_id": "protect_privileged_information",
+   "inputs": [
+    {
+     "concept": "hidden_chain_of_thought_message",
+     "gloss": "hidden chain-of-thought messages generated by the model",
+     "why_needed": "the section says privileged information may include hidden chain-of-thought messages",
+     "source": "document"
+    },
+    {
+     "concept": "system_message",
+     "gloss": "messages added by OpenAI",
+     "why_needed": "the section says privileged information may include system messages",
+     "source": "document"
+    },
+    {
+     "concept": "developer_message",
+     "gloss": "messages from the application developer",
+     "why_needed": "the section says privileged information may include developer messages",
+     "source": "document"
+    },
+    {
+     "concept": "scope_of_autonomy",
+     "gloss": "the agreed scope of autonomy",
+     "why_needed": "the section says to assess whether disclosure is within the scope",
+     "source": "document"
+    },
+    {
+     "concept": "privileged_information",
+     "gloss": "non-public policies, system messages, hidden chain-of-thought, private content",
+     "why_needed": "the section defines what is privileged",
+     "source": "document"
+    },
+    {
+     "concept": "information_flow",
+     "gloss": "the movement of information between parties",
+     "why_needed": "the section discusses being mindful of information flow",
+     "source": "document"
+    },
+    {
+     "concept": "tool_calls",
+     "gloss": "calls to tools",
+     "why_needed": "the section discusses assessing tool calls for sensitive data",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "use_preset_voice_in_voice_mode",
+   "inputs": [
+    {
+     "concept": "preset_voice",
+     "gloss": "the voice selected by the user or developer for synthetic speech",
+     "why_needed": "the section says to only use the preset voice",
+     "source": "document"
+    },
+    {
+     "concept": "synthetic_speech",
+     "gloss": "speech generated by the assistant",
+     "why_needed": "the section applies to assistants capable of generating synthetic speech",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "uphold_fairness",
+   "inputs": [
+    {
+     "concept": "protected_traits",
+     "gloss": "demographic details or protected characteristics",
+     "why_needed": "the section says not to discriminate based on protected traits",
+     "source": "world"
+    },
+    {
+     "concept": "fairness",
+     "gloss": "the principle of treating similar situations consistently",
+     "why_needed": "the section defines what it means to uphold fairness",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "respect_real_world_ties",
+   "inputs": [
+    {
+     "concept": "companion",
+     "gloss": "a type of AI companion that may undermine real-world relationships",
+     "why_needed": "the section discusses the assistant as a potential companion",
+     "source": "document"
+    },
+    {
+     "concept": "human_interactions",
+     "gloss": "meaningful human interactions and interpersonal relationships",
+     "why_needed": "the section says not to undermine the user's capacity for these",
+     "source": "world"
+    }
+   ]
+  },
+  {
+   "section_id": "no_agenda",
+   "inputs": [
+    {
+     "concept": "agenda",
+     "gloss": "an independent goal of the assistant",
+     "why_needed": "the section says the assistant must never pursue an agenda",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "assume_objective_pov",
+   "inputs": [
+    {
+     "concept": "avoid_hateful_content",
+     "gloss": "the principle of avoiding hateful content",
+     "why_needed": "the section references avoid_hateful_content for fundamental human rights violations",
+     "source": "document"
+    },
+    {
+     "concept": "avoid_extremist_content",
+     "gloss": "the principle of avoiding extremist content",
+     "why_needed": "the section references avoid_extremist_content",
+     "source": "document"
+    },
+    {
+     "concept": "present_perspectives",
+     "gloss": "the principle of presenting perspectives from any point of view",
+     "why_needed": "the section references present_perspectives for roleplay and creative endeavors",
+     "source": "document"
+    },
+    {
+     "concept": "be_creative",
+     "gloss": "the principle of being creative",
+     "why_needed": "the section references be_creative for creative endeavors",
+     "source": "document"
+    },
+    {
+     "concept": "comply_with_laws",
+     "gloss": "the principle of complying with laws",
+     "why_needed": "the section references comply_with_laws for related discussion",
+     "source": "document"
+    },
+    {
+     "concept": "objective_point_of_view",
+     "gloss": "presenting information without taking a stance",
+     "why_needed": "the section defines the default stance",
+     "source": "document"
+    },
+    {
+     "concept": "fundamental_human_rights_violations",
+     "gloss": "violations like genocide, slavery",
+     "why_needed": "the section says to clearly state these are wrong",
+     "source": "world"
+    }
+   ]
+  },
+  {
+   "section_id": "present_perspectives",
+   "inputs": [
+    {
+     "concept": "assume_objective_pov",
+     "gloss": "the principle of presenting information from an objective point of view",
+     "why_needed": "the section says while by default the assistant should provide a balanced response from an objective point of view",
+     "source": "document"
+    },
+    {
+     "concept": "opinion_spectrum",
+     "gloss": "the range of possible opinions on a topic",
+     "why_needed": "the section says to present perspectives from any point of the opinion spectrum",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "no_topic_off_limits",
+   "inputs": [
+    {
+     "concept": "stay_in_bounds",
+     "gloss": "the section describing limits on the assistant's behavior",
+     "why_needed": "the section says the assistant must adhere to content restrictions defined by stay_in_bounds",
+     "source": "document"
+    },
+    {
+     "concept": "assume_objective_pov",
+     "gloss": "the principle of presenting information from an objective point of view",
+     "why_needed": "the section says to engage objectively within established boundaries",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "be_honest_and_transparent",
+   "inputs": [
+    {
+     "concept": "honesty",
+     "gloss": "the quality of being truthful",
+     "why_needed": "the section describes the assistant's commitment to honesty",
+     "source": "document"
+    },
+    {
+     "concept": "transparency",
+     "gloss": "the quality of being open about actions and limitations",
+     "why_needed": "the section describes the assistant's commitment to transparency",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "do_not_lie",
+   "inputs": [
+    {
+     "concept": "chain_of_command",
+     "gloss": "the hierarchy of instruction authority",
+     "why_needed": "the section says the assistant should not mislead unless explicitly instructed by a higher authority",
+     "source": "document"
+    },
+    {
+     "concept": "express_uncertainty",
+     "gloss": "the principle of expressing uncertainty",
+     "why_needed": "the section references express_uncertainty for clarifying uncertainty",
+     "source": "document"
+    },
+    {
+     "concept": "avoid_info_hazards",
+     "gloss": "the principle of avoiding information hazards",
+     "why_needed": "the section says the principle applies even in cases of root level rules like avoid_info_hazards",
+     "source": "document"
+    },
+    {
+     "concept": "protect_privileged_information",
+     "gloss": "the principle of protecting privileged information",
+     "why_needed": "the section says the principle applies even in cases of protect_privileged_information",
+     "source": "document"
+    },
+    {
+     "concept": "avoid_sycophancy",
+     "gloss": "the principle of avoiding sycophancy",
+     "why_needed": "the section references avoid_sycophancy for white lies",
+     "source": "document"
+    },
+    {
+     "concept": "lying_by_commission",
+     "gloss": "making intentionally untrue statements",
+     "why_needed": "the section defines what is prohibited",
+     "source": "document"
+    },
+    {
+     "concept": "lying_by_omission",
+     "gloss": "deliberately withholding information that would materially change understanding",
+     "why_needed": "the section defines what is prohibited",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "avoid_sycophancy",
+   "inputs": [
+    {
+     "concept": "sycophancy",
+     "gloss": "flattering or agreeing with the user all the time",
+     "why_needed": "the section says to avoid sycophancy",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "ask_clarifying_questions",
+   "inputs": [
+    {
+     "concept": "control_side_effects",
+     "gloss": "the principle of controlling side effects",
+     "why_needed": "the section references side effects and irreversible consequences",
+     "source": "document"
+    },
+    {
+     "concept": "user_intent",
+     "gloss": "the user's intended goals and preferences",
+     "why_needed": "the section discusses balancing risk of acting with incomplete information",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "express_uncertainty",
+   "inputs": [
+    {
+     "concept": "risk_taxonomy",
+     "gloss": "the section describing categories of risk",
+     "why_needed": "the section mentions high-stakes or risky situations",
+     "source": "document"
+    },
+    {
+     "concept": "uncertainty",
+     "gloss": "lack of confidence in an answer",
+     "why_needed": "the section defines when and how to express uncertainty",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "highlight_misalignments",
+   "inputs": [
+    {
+     "concept": "letter_and_spirit",
+     "gloss": "the principle of considering intent and context",
+     "why_needed": "the section references the metaphor of the conscientious employee from letter_and_spirit",
+     "source": "document"
+    },
+    {
+     "concept": "assume_best_intentions",
+     "gloss": "the principle of assuming best intentions",
+     "why_needed": "the section references assume_best_intentions",
+     "source": "document"
+    },
+    {
+     "concept": "user_long_term_goals",
+     "gloss": "the user's broader, long-term goals",
+     "why_needed": "the section says to note discrepancies with long-term goals",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "avoid_errors",
+   "inputs": [
+    {
+     "concept": "express_uncertainty",
+     "gloss": "the principle of expressing uncertainty",
+     "why_needed": "the section references express_uncertainty for hedging",
+     "source": "document"
+    },
+    {
+     "concept": "risk_taxonomy",
+     "gloss": "the section describing categories of risk",
+     "why_needed": "the section mentions high stakes and real-world harm",
+     "source": "document"
+    },
+    {
+     "concept": "factual_accuracy",
+     "gloss": "the correctness of factual claims",
+     "why_needed": "the section says to ensure factual claims are correct",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "avoid_overstepping",
+   "inputs": [
+    {
+     "concept": "letter_and_spirit",
+     "gloss": "the principle of considering intent and context",
+     "why_needed": "the section references letter_and_spirit for implied intent",
+     "source": "document"
+    },
+    {
+     "concept": "transformation_exception",
+     "gloss": "the exception allowing transformation of user-provided content",
+     "why_needed": "the section references transformation_exception for additional guidance",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "be_creative",
+   "inputs": [
+    {
+     "concept": "creativity",
+     "gloss": "the quality of being creative in responses",
+     "why_needed": "the section defines what creativity means",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "support_programmatic_use",
+   "inputs": [
+    {
+     "concept": "response_format",
+     "gloss": "a JSON schema specifying programmatic output",
+     "why_needed": "the section says developers can specify programmatic output via response_format",
+     "source": "document"
+    },
+    {
+     "concept": "interactive_setting",
+     "gloss": "a setting where the assistant interacts with a human in real time",
+     "why_needed": "the section distinguishes interactive from programmatic settings",
+     "source": "document"
+    },
+    {
+     "concept": "programmatic_setting",
+     "gloss": "a setting where output is consumed programmatically",
+     "why_needed": "the section describes behavior in programmatic settings",
+     "source": "document"
+    },
+    {
+     "concept": "protect_privacy",
+     "gloss": "the principle of protecting privacy",
+     "why_needed": "the section gives an example about private information",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "style",
+   "inputs": []
+  },
+  {
+   "section_id": "love_humanity",
+   "inputs": [
+    {
+     "concept": "assume_objective_pov",
+     "gloss": "the principle of presenting information from an objective point of view",
+     "why_needed": "the section references assume_objective_pov for related discussion",
+     "source": "document"
+    },
+    {
+     "concept": "human_well_being",
+     "gloss": "the well-being of humanity",
+     "why_needed": "the section says the assistant cares about human well-being",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "be_rationally_optimistic",
+   "inputs": [
+    {
+     "concept": "optimism",
+     "gloss": "a generally hopeful and positive outlook",
+     "why_needed": "the section defines what rational optimism means",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "be_responsible",
+   "inputs": [
+    {
+     "concept": "artificial_intelligence",
+     "gloss": "the technology of AI",
+     "why_needed": "the section discusses the assistant's role in the era of AI",
+     "source": "world"
+    }
+   ]
+  },
+  {
+   "section_id": "be_interesting_and_interested",
+   "inputs": []
+  },
+  {
+   "section_id": "be_curious",
+   "inputs": [
+    {
+     "concept": "curiosity",
+     "gloss": "a deep appreciation for knowledge and discovery",
+     "why_needed": "the section defines the assistant's curiosity",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "be_clear",
+   "inputs": [
+    {
+     "concept": "avoid_errors",
+     "gloss": "the principle of avoiding errors",
+     "why_needed": "the section says the preference for direct answer comes second to avoiding errors",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "be_professional",
+   "inputs": [
+    {
+     "concept": "professional_tone",
+     "gloss": "a courteous, comprehensible, not overly casual tone",
+     "why_needed": "the section defines the default tone",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "have_conversational_sense",
+   "inputs": []
+  },
+  {
+   "section_id": "be_warm",
+   "inputs": []
+  },
+  {
+   "section_id": "do_not_make_unprompted_personal_comments",
+   "inputs": []
+  },
+  {
+   "section_id": "avoid_being_condescending",
+   "inputs": []
+  },
+  {
+   "section_id": "refusal_style",
+   "inputs": [
+    {
+     "concept": "stay_in_bounds",
+     "gloss": "the section describing limits on the assistant's behavior",
+     "why_needed": "the section says when a direct response would contain prohibited or restricted content",
+     "source": "document"
+    },
+    {
+     "concept": "risky_situations",
+     "gloss": "the section describing risky situations",
+     "why_needed": "the section says risky_situations outlines situations where specific language is preferred",
+     "source": "document"
+    },
+    {
+     "concept": "do_not_facilitate_illicit_behavior",
+     "gloss": "the principle of not facilitating illicit behavior",
+     "why_needed": "the section says to simply refuse when user indicates illicit intent",
+     "source": "document"
+    },
+    {
+     "concept": "safe_completion",
+     "gloss": "briefly explaining why a full answer cannot be given and providing safe useful assistance",
+     "why_needed": "the section defines safe completion",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "formatting",
+   "inputs": [
+    {
+     "concept": "markdown",
+     "gloss": "a markup language for formatting text",
+     "why_needed": "the section says outputs should be formatted in Markdown",
+     "source": "world"
+    },
+    {
+     "concept": "latex",
+     "gloss": "a typesetting system for mathematical notation",
+     "why_needed": "the section says Markdown with LaTeX extensions",
+     "source": "world"
+    }
+   ]
+  },
+  {
+   "section_id": "be_thorough_but_efficient",
+   "inputs": [
+    {
+     "concept": "token_limits",
+     "gloss": "hard limits on the number of tokens the model can output",
+     "why_needed": "the section says the assistant is subject to hard limits on tokens",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "voice_style",
+   "inputs": [
+    {
+     "concept": "standard_voice_mode",
+     "gloss": "voice mode where ASR transcribes user voice and TTS converts assistant text to speech",
+     "why_needed": "the section describes the two systems for audio communication",
+     "source": "document"
+    },
+    {
+     "concept": "advanced_voice_mode",
+     "gloss": "voice mode where the assistant natively receives audio and produces audio output",
+     "why_needed": "the section describes the two systems",
+     "source": "document"
+    },
+    {
+     "concept": "system_message",
+     "gloss": "messages added by OpenAI",
+     "why_needed": "the section says the current mode is communicated via a system message",
+     "source": "document"
+    }
+   ]
+  },
+  {
+   "section_id": "imitate_accents_in_voice_mode",
+   "inputs": [
+    {
+     "concept": "accent",
+     "gloss": "a way of pronouncing a language",
+     "why_needed": "the section discusses speaking in accents",
+     "source": "world"
+    }
+   ]
+  },
+  {
+   "section_id": "be_concise_and_conversational_in_voice_mode",
+   "inputs": []
+  },
+  {
+   "section_id": "adapt_length_in_voice_mode",
+   "inputs": []
+  },
+  {
+   "section_id": "handle_interruptions_in_voice_mode",
+   "inputs": []
+  },
+  {
+   "section_id": "respond_to_audio_testing_in_voice_mode",
+   "inputs": []
+  },
+  {
+   "section_id": "chatgpt_u18",
+   "inputs": [
+    {
+     "concept": "stay_in_bounds",
+     "gloss": "the section describing limits on the assistant's behavior",
+     "why_needed": "the section says all principles in stay_in_bounds continue to apply for U18 users",
+     "source": "document"
+    },
+    {
+     "concept": "do_not_encourage_self_harm",
+     "gloss": "the principle of not encouraging self-harm",
+     "why_needed": "the section references it as continuing to apply",
+     "source": "document"
+    },
+    {
+     "concept": "sexual_content_involving_minors",
+     "gloss": "prohibited sexual content involving minors",
+     "why_needed": "the section references it as continuing to apply",
+     "source": "document"
+    },
+    {
+     "concept": "under_18_principles",
+     "gloss": "principles for users ages 13-17",
+     "why_needed": "the section defines the U18 principles",
+     "source": "document"
+    },
+    {
+     "concept": "minor",
+     "gloss": "a person under the age of 18",
+     "why_needed": "the section applies to users ages 13-17",
+     "source": "world"
+    }
+   ]
+  },
+  {
+   "section_id": "prioritize_teen_safety",
+   "inputs": [
+    {
+     "concept": "do_not_encourage_self_harm",
+     "gloss": "the principle of not encouraging self-harm",
+     "why_needed": "the section references it for self-harm boundaries",
+     "source": "document"
+    },
+    {
+     "concept": "respect_real_world_ties",
+     "gloss": "the principle of respecting real-world ties",
+     "why_needed": "the section references it for romantic roleplay restrictions",
+     "source": "document"
+    },
+    {
+     "concept": "sensitive_content",
+     "gloss": "the category of sensitive content",
+     "why_needed": "the section references it for graphic or explicit detail",
+     "source": "document"
+    },
+    {
+     "concept": "avoid_info_hazards",
+     "gloss": "the principle of avoiding information hazards",
+     "why_needed": "the section references it for dangerous activities",
+     "source": "document"
+    },
+    {
+     "concept": "do_not_facilitate_illicit_behavior",
+     "gloss": "the principle of not facilitating illicit behavior",
+     "why_needed": "the section references it for dangerous activities",
+     "source": "document"
+    },
+    {
+     "concept": "stay_in_bounds",
+     "gloss": "the section describing limits on the assistant's behavior",
+     "why_needed": "the section says stay_in_bounds balances autonomy and safety for adults",
+     "source": "document"
+    },
+    {
+     "concept": "teen_safety",
+     "gloss": "the safety of teen users",
+     "why_needed": "the section prioritizes teen safety",
+     "source": "document"
+    },
+    {
+     "concept": "trusted_adult",
+     "gloss": "a parent, guardian, educator, counselor, or other trusted adult",
+     "why_needed": "the section suggests involving trusted adults",
+     "source": "world"
+    }
+   ]
+  }
+ ]
+}
