@@ -3,6 +3,19 @@
 **Maintained by the autonomous run. Everything here BLOCKED work; everything else continued.**
 Newest first. Each entry says what is blocked, what I did instead, and what a decision costs.
 
+## ⛔ ONE ACTION NEEDED BEFORE ANY FURTHER COMMIT TOUCHING A WATCHED FILE
+
+```
+semi-formal-experiment/.venv/bin/python walkthrough/model/guard.py --accept paper_pipeline/phase_1/schema.py
+```
+
+`schema.py` moved twice after you accepted it, both times to **restore or complete a guard**, and
+both on evidence: the anonymous-variable rejection (`b7c663e` — xclingo dies on `_` in a body, so my
+earlier withdrawal was wrong) and the internal-full-stop rejection (`f8f83ed` — a body carrying a
+second statement was having two thirds of itself silently dropped). Nothing was relaxed.
+
+---
+
 ⚠️ **Nothing here was decided unilaterally.** Where a design question arose I recorded it and
 worked around it. Where a design ruling already existed I followed it, even where I would have
 chosen differently — that is the standing instruction.
@@ -335,6 +348,15 @@ dominates the frontier figure. `likely` assumes 40 output tokens per judgement a
 ⇒ **On the configured flash model a full stage-4 run over everything that can reach a seat costs
 about four cents.** That is inside any reasonable ceiling. On a frontier model it is $3.58, which is
 42% of the entire remaining project budget.
+
+⛔ **AT CORPUS SCALE THE FRONTIER NUMBER IS DISQUALIFYING, and the first estimate understated it.**
+`STEP_stage4.md` §7 said roughly $25 for 593 clauses. Measured: **$303 worst / $33.7 likely** at the
+hard-coded `(5.0, 30.0)` frontier price — and once the code reads the *real* maximum in
+`providers.json` (`fable`, `10/50`), **$509 worst / $60.1 likely**. That is **60× the entire $8.50
+project cap**, and even the optimistic figure is 7×.
+
+⇒ **A frontier stage-4 pass over the corpus is not affordable and never was.** The flash figure
+scales to roughly $3 for 593 clauses, which is. §7 now carries the measured table.
 
 ⛔ Only **7 of 19** stored modules reach a seat: 5 fail stage 2, 7 are blocked by `readback-ungloss`
 (**Q-6**). The check was not relaxed to raise that number.
