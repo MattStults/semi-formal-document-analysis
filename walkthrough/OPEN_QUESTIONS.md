@@ -9,6 +9,67 @@ chosen differently — that is the standing instruction.
 
 ---
 
+## Q-10 ⭐ THE LABELLED HALF FOUND A LIVE TRANSLATION DEFECT THE DETERMINISTIC HALF SCORED CLEAN
+
+**This is the result that justifies building the `[L]` half at all, and it needs your adjudication.**
+
+`m0150`: the deterministic half scores it **`passed`, |R| = 5, coverage 5/5** — a clean sheet. The
+seat labels situations S5 and S9 `must-be-silent`. The module asserts `prefer make_tool_call` in
+both, **because its rules never require a tool call to be under consideration**.
+
+⇒ The rule fires in situations the clause does not speak to. `[D]` cannot see this **by
+construction** — mutation coverage asks whether deleting a rule changes an outcome, and this rule
+does change outcomes; it changes them in the wrong situations.
+
+⛔ **`CLAUDE.md` requires every flip to be adjudicated against the document, with label values
+nowhere in the room. I have not done that** — it is a judgement about what clause m0150 says, which
+is yours. The seat's reason and the situations are in `RESULT_stage3_labelled_live.md`.
+
+⚠️ One caveat that cuts the other way: the seat's errors on `m0217` all run in **one direction** —
+over-reaching past the clause's trigger. If that is the seat's bias rather than the module's defect,
+S5/S9 could be the same over-reach. That is exactly why this needs a human and not me.
+
+---
+
+## Q-11 · `render_situation` is defective at k = 1, and it cost the run its only forbid-side module
+
+With a single fact line the seat reads the fact **as the situation id**, `adjudicate` refuses, and
+`m0014` returned 6 refusals from 6 calls. The guard behaved correctly — a refusal, not a partial
+pass — but the rendering is wrong, and the run therefore has **no forbid-side / `cnpa` coverage at
+all**.
+
+**Not fixed:** the fix changes what the seat is shown, which `STEP_stage3.md` §5 specifies row by
+row. That is a design edit.
+
+---
+
+## Q-12 · The label set has no answer for `oblige` or `prefer`
+
+Four of twelve mismatches are this artefact, not disagreement. The three-valued set
+(`must-forbid` / `must-permit` / `must-be-silent`) covers the forbid/permit axis; the closed status
+set is **four** values. A seat with no way to say "the clause requires this" must answer with one of
+the three it has.
+
+**What a decision costs:** either a fourth and fifth label (changing §5's brief and every stored
+labelling), or an explicit ruling that `oblige`/`prefer` rules are out of scope for stage 3 and
+excluded from the denominator by name.
+
+---
+
+## Q-13 · The seat is NOT validated, and the standing ruling names the test that would do it
+
+`CLAUDE.md`: *"the adjudication seat is proven at small-model/frontier parity, and divergence from a
+frontier model on the same brief is a seat defect, not a model failure."*
+
+That test has **not been run**. There was no ground truth in this run, so "working" currently means
+only *"did not exhibit the failure §9 named"*. The actual validation is a frontier model on the
+identical brief over the identical 23 cells — **≈ $0.20**.
+
+**I did not run it:** it is the validation the ruling requires, and Q-10's adjudication depends on
+knowing whether the seat over-reaches. Say the word and it is twenty minutes.
+
+---
+
 ## Q-6 ⛔ HALF THE CORPUS CANNOT REACH ANY STAGE-4 SEAT — the biggest finding today
 
 **Blocked:** running stage 4 on most of what we have.
