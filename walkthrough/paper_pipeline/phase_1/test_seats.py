@@ -17,6 +17,7 @@ and `probe_live.py` drives it.
 """
 
 import dataclasses
+import hashlib
 import inspect
 import json
 import pathlib
@@ -1510,3 +1511,298 @@ def test_NOT_SUPPLYING_r3_is_distinguishable_from_having_no_derivations():
     # the membership tests above would have raised TypeError on it.
     assert isinstance(absent.excluded, dict)
     assert isinstance(none_derived.excluded, dict)
+
+
+# ==========================================================================
+#  ⭐ Findings of the stage-4 adversarial review, 2026-08-08. Every test below
+#  was RED when it was written: the reviewer's mutant survived all 137 tests,
+#  or the reproduction ran on the shipped code and printed the wrong answer.
+# ==========================================================================
+
+# --- the stage-3 join key (F4) -------------------------------------------
+
+def test_a_discrimination_map_that_joins_NOTHING_may_not_report_as_available():
+    """⛔ THE SILENT INVERSION. 4d's denominator ids are CLAIM SENTENCES;
+    stage 3 counts discrimination per claim ID (`C1`). Nothing joined the two,
+    so every `covered` came back `unsupported` — the same bytes as *"stage 3
+    never ran"* — while the report asserted `stage3_discrimination_available:
+    True` and the line a human reads said nothing at all.
+
+    ⚠️ The guard is HERE and not in `cross_check_4d`: that function is
+    deliberately per-item and an absent key for one item is correctly not a
+    zero (`test_a_claim_missing_from_the_stage3_map_is_unsupported_not_inert`).
+    A whole map that joins nothing is a mispaired artifact, and only the
+    report sees the whole map beside the whole denominator.
+    """
+    mod = m0217_patched()
+    rb = _rb(mod)
+    d4d = seats.denominator_4d(mod)
+    js, _ = seats.cross_check_4d(_judgements("4d", d4d.ids, "covered"),
+                                 {"C1": 3, "C2": 0})
+    with pytest.raises(seats.ReportRefused) as exc:
+        seats.build_report(mod.clause_id, rb, {"4d": js}, {"4d": d4d},
+                           discrimination={"C1": 3, "C2": 0})
+    assert "C1" in str(exc.value) and "join" in str(exc.value).lower()
+
+
+def test_control_a_discrimination_map_keyed_on_the_claims_is_accepted():
+    mod = m0217_patched()
+    rb = _rb(mod)
+    d4d = seats.denominator_4d(mod)
+    disc = {c: 3 for c in d4d.ids}
+    js, _ = seats.cross_check_4d(_judgements("4d", d4d.ids, "covered"), disc)
+    rep = seats.build_report(mod.clause_id, rb, {"4d": js}, {"4d": d4d},
+                             discrimination=disc)
+    assert rep["stage3_discrimination_available"] is True
+    assert rep["stage3_discrimination_keys_unmatched"] == []
+    assert "UNAVAILABLE" not in seats.report_line(rep)
+    assert "JOINED" not in seats.report_line(rep)
+
+
+def test_a_discrimination_key_matching_no_claim_is_counted_on_the_line():
+    """DEBUGGING_TIPS §2: the denominator printed beside the number. A partial
+    join is not refused — stage 3 may legitimately not have reached a claim —
+    but the misses are counted where a human reads them."""
+    mod = m0217_patched()
+    rb = _rb(mod)
+    d4d = seats.denominator_4d(mod)
+    disc = {d4d.ids[0]: 3, "C9 a claim nobody read out of this clause": 1}
+    js, _ = seats.cross_check_4d(_judgements("4d", d4d.ids, "covered"), disc)
+    rep = seats.build_report(mod.clause_id, rb, {"4d": js}, {"4d": d4d},
+                             discrimination=disc)
+    assert rep["stage3_discrimination_keys_unmatched"] == \
+        ["C9 a claim nobody read out of this clause"]
+    assert "1 stage-3 discrimination key(s) match no claim" in \
+        seats.report_line(rep)
+
+
+# --- 4a is not in the pooled `unclear` rate (F5) --------------------------
+
+def test_the_pass_line_is_BYTE_IDENTICAL_when_4a_answers_unclear():
+    """§4.3(2). `report_line`'s docstring says it does not read `advisory`; it
+    did not read the KEY and printed a number derived from it, because the
+    pooled `unclear` rate pooled 4a in with the three evidential seats.
+
+    ⛔ Substantively, not cosmetically, wrong: §5.4 makes the `unclear` rate
+    evidence about the BRIEF or the ARTIFACT, and pooling the author's own
+    self-grading seat into it lets a defensive — or an unusually candid — 4a
+    move the run-level diagnostic that is supposed to be about the other three.
+    """
+    mod = m0217_patched()
+    rb = _rb(mod)
+    d = seats.denominator_4a(rb)
+
+    def line(v4a):
+        return seats.report_line(seats.build_report(
+            mod.clause_id, rb,
+            judgements={"4a": _judgements("4a", d.ids, v4a),
+                        "4b": _judgements("4b", d.ids, "faithful")},
+            denominators={"4a": d, "4b": d}))
+
+    assert line("as-meant") == line("unclear") == line("not-as-meant")
+
+
+def test_4as_unclear_rate_is_still_recorded_per_seat():
+    """⛔ NOT dropped — moved. 4a's own abstention rate is evidence about 4a's
+    brief and stays in `by_seat`; what it may not do is move the pooled number
+    the pass line prints."""
+    mod = m0217_patched()
+    rb = _rb(mod)
+    d = seats.denominator_4a(rb)
+    rep = seats.build_report(
+        mod.clause_id, rb,
+        judgements={"4a": _judgements("4a", d.ids, "unclear"),
+                    "4b": _judgements("4b", d.ids, "faithful")},
+        denominators={"4a": d, "4b": d})
+    assert rep["unclear_rate"]["by_seat"]["4a"]["rate"] == 1.0
+    assert rep["unclear_rate"]["pooled"]["unclear"] == 0
+    assert rep["unclear_rate"]["pooled"]["denominator"] == len(d.ids)
+
+
+# --- consensus has no route, at any nesting depth (F7) -------------------
+
+@pytest.mark.parametrize("payload", [
+    {"summary": {"consensus": "4/4 agreed", "n_passed": 4}},
+    {"rollup": [{"note": "4/4 seats agree the translation is faithful"}]},
+    {"overall": "ALL FOUR SEATS AGREE"},
+    {"notes": ["the seats were unanimous"]},
+])
+def test_20_consensus_has_no_route_at_any_nesting_depth(payload):
+    """§6 test 20's standard: *the route must not exist, not merely be
+    discouraged*. The scan read TOP-LEVEL KEY NAMES only, so one nesting level
+    down — or the same words in a VALUE — was accepted."""
+    with pytest.raises(seats.ReportRefused):
+        seats.refuse_aggregate(payload)
+
+
+def test_20_control_an_ordinary_nested_report_is_not_refused():
+    """The paired control. A refusal that fires on everything is pinned by
+    nothing, and stage 4's real report is deeply nested."""
+    seats.refuse_aggregate({
+        "clause_id": "m0217",
+        "seats": {"4b": [{"item": "asserts[0]", "verdict": "faithful",
+                          "reason": "the clause permits it"}]},
+        "unclear_rate": {"pooled": {"unclear": 0, "denominator": 3}},
+        "renderings": [{"item": "concepts[0]", "text": "the term means x"}],
+    })
+
+
+# --- 4c's material is composed by a SECOND renderer (F6) -----------------
+
+def test_a_rule_body_dropped_from_4cs_ITEM_TEXT_is_caught():
+    """⭐ §4.1's anchor property, pinned against a CONTENT change rather than
+    against a marker check.
+
+    4c's independence was anchored against `readback.py` — and 4c does not read
+    `readback.py`. Its material is composed by `_item_text`, a second renderer
+    with no RB1–RB5 equivalent. Dropping the rule body from it survived all 137
+    tests, and under that mutant 4c is asked whether the clause licenses
+    *"clause m0217 permits the act produce(M)"* with every condition deleted —
+    RB2's named failure (*a dropped condition renders as a weaker, TRUE
+    sentence*) in the one seat RB1–RB5 structurally cannot see.
+    """
+    mod = m0217_patched()
+    d = seats.denominator_4c(mod)
+    items = {it.item: it for it in
+             seats.source_items(mod, d, {"m0217": CLAUSE_M0217})}
+    text = items["asserts[0]"].text
+    for condition in ("political_content(M)", "broad_audience(M)",
+                      "not exploits_individual(M)"):
+        assert condition in text, (
+            f"4c is asked about a strictly weaker claim than the module makes: "
+            f"{condition!r} is missing from {text!r}")
+    assert text in seats.build_4c_prompt(tuple(items.values()))
+
+
+def test_an_ontology_and_a_beats_body_survive_into_4cs_item_text():
+    """The other two conditional kinds, each with its own arm — a check that
+    covers only the arm that fires most often converts the rest into
+    decoration (`DEBUGGING_TIPS` §8)."""
+    mod = _mod(
+        clause_id="m0217",
+        concepts=[_concept("known", "a written meaning"),
+                  _concept("cond", "another written meaning")],
+        inputs=["known/1", "cond/1"],
+        ontology=[_lic(atom="derived(X)", gloss="a derived thing",
+                       body="known(X), cond(X)")],
+        beats=[_lic(sayer="m0217", winner="m0217", loser="m0053",
+                    body="known(X)", read_back="m0217 outranks m0053",
+                    read_back_slots=[])])
+    onto = seats._item_text("ontology", mod.ontology[0], "m0217")
+    beats = seats._item_text("beats", mod.beats[0], "m0217")
+    assert "known(X), cond(X)" in onto
+    assert "known(X)" in beats
+
+
+# --- six surviving hand-written mutants (F10) ----------------------------
+
+def test_a_module_whose_only_content_is_a_DEFINES_has_a_4c_denominator():
+    """S2. `LICENSED_KINDS` dropping `defines` shrinks 4c's denominator
+    silently: the `concepts` exclusion has an explicit `raise` and a test, and
+    the other four kinds had neither. `m0053`'s only content item is a
+    `defines`, and under the mutant it passes the provenance seat vacuously —
+    with an EMPTY denominator, which is the vacuous pass RB5 is about."""
+    mod = _mod(clause_id="m0053",
+               defines=[_lic(kind="harm_category", term="terrorism")])
+    d = seats.denominator_4c(mod)
+    assert "defines[0]" in d.ids
+    assert "defines[0]" in d.judgeable
+    assert set(seats.LICENSED_KINDS) == {"concepts", "ontology", "asserts",
+                                         "beats", "defines"}
+
+
+def test_source_items_honours_judgeable_only_on_a_module_with_a_world_item():
+    """S3. §5.2 routes `world` items away from 4c. That was pinned at
+    `build_4c_prompt` using hand-built `SourceItem`s; the COMPOSITION
+    `source_items → build_4c_prompt` on a module that actually HAS a `world`
+    item was exercised by nothing, so `judgeable_only` could be ignored
+    outright and every test stayed green."""
+    mod = _mod(concepts=[
+        _concept("known", "a written meaning for it"),
+        _concept("from_the_world", "a fact about the world",
+                 licence="world", cites=None, toggleable=True)])
+    d = seats.denominator_4c(mod)
+    judgeable = seats.source_items(mod, d, {"m0217": CLAUSE_M0217})
+    everything = seats.source_items(mod, d, {"m0217": CLAUSE_M0217},
+                                   judgeable_only=False)
+    assert [it.item for it in judgeable] == ["concepts[0]"]
+    assert [it.item for it in everything] == ["concepts[0]", "concepts[1]"]
+    # and the composition, end to end: the judgeable set builds, the full one
+    # is refused BY the world item rather than by a missing citation.
+    seats.build_4c_prompt(judgeable)
+    with pytest.raises(seats.SeatRefused) as exc:
+        seats.build_4c_prompt(everything)
+    assert "world" in str(exc.value)
+
+
+def test_the_rendering_sha_changes_when_the_RENDERING_changes():
+    """S5. §6(2) requires a divergence record to carry the sha of each seat's
+    brief AND OF THE RENDERING, so *"under-informative dossier"* is checkable
+    against the artifact. `brief_sha` was pinned; `rendering_sha` was not, and
+    a constant one cannot tell two renderings apart."""
+    mod = m0217_patched()
+    rb = _rb(mod)
+    other = _rb(m0037_like(), quote="some other clause text entirely")
+    assert seats.rendering_sha(rb) == seats.rendering_sha(_rb(mod))
+    assert seats.rendering_sha(rb) != seats.rendering_sha(other)
+    assert seats.rendering_sha(rb) != hashlib.sha256(b"").hexdigest()
+
+
+def test_the_length_split_DISCRIMINATES_rather_than_naming_one_bucket():
+    """S6. §9's mitigation is the split BY LENGTH — *a rate that rises with
+    length is a renderer finding*. The shipped mutant setting `lb = None` dies;
+    a CONSTANT bucket survived, because the test pinned that a key exists
+    rather than that the bucketing discriminates. The measurement §9 rests on
+    was unpinned AS A MEASUREMENT."""
+    mod = _mod(
+        clause_id="m0217",
+        concepts=[_concept("s", "short"),
+                  _concept("l", "a written meaning long enough to fall in a "
+                                "different length bucket from the short one, "
+                                "padded well past eighty characters so the "
+                                "bucketing has something to discriminate")],
+    )
+    rb = _rb(mod)
+    lengths = sorted(len(r.text) for r in rb.renderings)
+    assert lengths[0] <= 80 < lengths[-1], "fixture does not span two buckets"
+    js = tuple(seats.Judgement("4b", r.item, "unclear", "hard")
+               for r in rb.renderings)
+    by_len, _ = seats.unclear_split(js, rb)
+    assert len(by_len) >= 2, (
+        f"every rendering landed in one bucket {sorted(by_len)} — a constant "
+        f"bucket measures nothing and reads exactly like a real split")
+    assert "<=80" in by_len
+
+
+# --- the frontier price is READ, not typed (F12) --------------------------
+
+def test_the_frontier_price_is_the_MAXIMUM_row_in_the_real_price_table():
+    """§7: *"frontier-tier seats are priced from `providers.json` at run
+    time"*. It was a hard-coded `(5.0, 30.0)` — `sol`'s price — while the
+    table's maximum is `fable` at `(10.0, 50.0)`, so the printed worst case sat
+    BELOW the real worst case on the project with a hard ledger ceiling.
+
+    ⚠️ Not a pinned constant: the assertion is that whatever the tool prints is
+    the maximum OF THE TABLE ON DISK, so a price edit cannot make this stale
+    (`DEBUGGING_TIPS` §9)."""
+    table = json.load(open(seats.PROVIDERS_JSON, encoding="utf-8"))
+    priced = [tuple(r["price_per_mtok"]) for r in table if r.get("price_per_mtok")]
+    name, price = seats.most_expensive_provider()
+    assert price[1] == max(p[1] for p in priced)
+    assert all(price[1] >= p[1] for p in priced), (name, price)
+    rows, planned = seats.survey()
+    assert planned and all(tuple(r["frontier_price_per_mtok"]) == price
+                           for r in planned)
+    assert name in seats.render_survey(rows, planned)
+
+
+def test_an_unreadable_price_table_REFUSES_rather_than_falling_back(tmp_path):
+    """⛔ An unpriced call counts as OVER budget, never as free — and a
+    fallback literal is exactly how a printed worst case ends up below the real
+    one (`DEBUGGING_TIPS` #14)."""
+    with pytest.raises(seats.SeatRefused):
+        seats.most_expensive_provider(str(tmp_path / "nothing.json"))
+    empty = tmp_path / "empty.json"
+    empty.write_text('[{"name": "x"}]')
+    with pytest.raises(seats.SeatRefused):
+        seats.most_expensive_provider(str(empty))

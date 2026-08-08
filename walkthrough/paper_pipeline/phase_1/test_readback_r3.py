@@ -594,3 +594,93 @@ def test_at_least_one_stored_module_yields_a_NON_EMPTY_derivation():
         with_deriv += out.with_derivation
     assert seen >= 1, "no stored module reached R3 at all"
     assert with_deriv >= 1, f"{with_deriv} of {total} situations derived anything"
+
+
+# ==========================================================================
+#  ⭐ Findings of the stage-4 adversarial review, 2026-08-08.
+# ==========================================================================
+
+def test_a_PERCENT_in_a_gloss_is_neutralised_and_RECORDED():
+    """⛔ THE THIRD INVARIANT-1 ESCAPE, and the same shape as the two the build
+    already fixed: seat-facing text corrupted by the layer written to render it.
+
+    `TRACE_SAFE` covered every character that would break the quoted literal
+    and missed the one character xclingo's own annotation dialect is built on.
+    xclingo's preprocessor rewrites `%!` to `&` INSIDE the string literal, so a
+    gloss carrying `%!` produced a RULE node reading `«… &x here»` and a LEAF
+    node reading `«… %!x here»` — two different sentences for one definition,
+    in one tree, with no `readback-r3-trace-unsafe` note firing.
+
+    ⚠️ Text corruption, NOT injection: the rewrite stays inside the literal and
+    does not become a directive. The program's semantics are unaffected; what
+    is affected is what a seat reads.
+    """
+    assert r3.trace_safe("content about politics %!x here")[1] == ("%",)
+    mod = political()
+    out = r3.render_r3(mod, [POL_FIRES],
+                       gloss={"political_content":
+                              "content about politics %!x here"})
+    assert any(f.check_id == "readback-r3-trace-unsafe" for f in out.findings)
+    rule_text = [n.text for n in out.nodes if n.kind == "rule"]
+    assert rule_text and all("&" not in t for t in rule_text), rule_text
+    # ⚠️ the program still contains `%!trace_rule` — those are OURS. What may
+    # not survive is the model-authored `%` inside the quoted literal.
+    assert "%!x here" not in out.program
+
+
+def test_control_an_ordinary_gloss_raises_no_trace_unsafe_note():
+    """The paired control. A neutraliser that fires on everything is pinned by
+    nothing — and no gloss in the stored corpus contains a `%`."""
+    mod = political()
+    out = r3.render_r3(mod, [POL_FIRES])
+    assert r3.trace_safe("content about politics")[1] == ()
+    assert not [f for f in out.findings
+                if f.check_id == "readback-r3-trace-unsafe"]
+
+
+def test_a_run_with_NO_derivation_reports_the_layer1_fraction_as_not_measured():
+    """R10. `report()` prints `not-measured (no derivation)` from `frac is
+    None`. Returning `0.0` instead makes it print `0.00 of 0` — `DEBUGGING_TIPS`
+    §2 verbatim, a rate reading 0.0000 when it measured nothing, in the field
+    §2.3 requires *printed even when zero*."""
+    mod = political()
+    out = r3.render_r3(mod, [POL_SILENT])
+    assert out.nodes == ()
+    assert out.layer1_fraction is None, (
+        "0.0 over no nodes is indistinguishable from 0.0 over a corpus")
+    assert "not-measured (no derivation)" in out.report()
+
+
+def test_control_a_run_WITH_derivations_reports_a_real_layer1_fraction():
+    mod = political()
+    out = r3.render_r3(mod, [POL_FIRES])
+    assert out.nodes
+    assert out.layer1_fraction is not None
+    assert "not-measured" not in out.report()
+
+
+def test_a_DEFINES_rule_is_annotated_exactly_as_an_ontology_rule_is():
+    """R11. `module_program`'s own docstring: *"`defines` and `ontology` are
+    annotated too… an unannotated rule is INVISIBLE to xclingo, so leaving them
+    bare would silently flatten a derivation… a shorter tree that reads like a
+    simpler explanation."* The ONTOLOGY half is pinned by
+    `test_an_ontology_step_becomes_an_INTERIOR_node_with_its_own_sentence`.
+    The `defines` half was pinned by nothing — no fixture puts a `defines`
+    inside a derivation — so the annotation could be dropped outright."""
+    mod = schema.validate(dict(
+        outcome="translated", clause_id="m0053", abstain_reason=None,
+        claims=["C1 terrorism is a harm category"], acts=[], concepts=[],
+        ontology=[], asserts=[], beats=[],
+        defines=[dict(kind="harm_category", term="terrorism",
+                      licence="textual", cites="m0053", inference=None,
+                      toggleable=False)],
+        closure=[], requires=[], inputs=[], forbid_body=[]))
+    notes = []
+    renderings = readback.render_items(mod, readback.gloss_table(mod), notes)
+    program = r3.module_program(mod, renderings, notes)
+    lines = [l for l in program.splitlines() if l.strip()]
+    body = "defines(m0053, harm_category, terrorism)."
+    assert body in lines
+    assert lines[lines.index(body) - 1].startswith('%!trace_rule {"'), (
+        f"the `defines` rule is bare, so xclingo cannot see it and any "
+        f"derivation through it is silently flattened: {lines}")

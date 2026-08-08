@@ -1120,8 +1120,56 @@ class ReportRefused(SeatRefused):
     pass
 
 
+#: ⛔ THE ONLY VALUES THE SCAN BELOW DOES NOT READ, and each one is here for
+#: the same reason: the report carries it VERBATIM from the module, the model
+#: or the document, and refusing a report because someone else's words matched
+#: would corrupt the record rather than protect it. `[RAN]` `m0134` declares a
+#: concept called `agreed_scope`, so an unexempted value scan refuses that
+#: clause's whole report on the word *agreed* — a live false positive, and the
+#: kind that gets a fence disabled rather than fixed.
+#:
+#: ⚠️ None of these is a place an AGGREGATE could be written: every one is
+#: per-item and attributed. Widening this tuple is a review finding — the
+#: refusal's whole point is that `extra=` has nowhere to put "4/4 agreed".
+_VERBATIM_VALUE_KEYS = (
+    "reason", "reasons",          # a judge's own words, per item
+    "text",                       # a rendering, composed from the module
+    "message", "where",           # a finding, composed from an item id
+    "item",                       # 4d's item ids ARE claim sentences
+    "denominators",               # ditto — 4d's denominator is the claims list
+    "forbid_body_claims_excluded",
+    "clause_id", "quote", "gloss", "claims",
+)
+
+
+def _refused_strings(node, path="<root>", scan_values=True):
+    """Every key name, and every non-verbatim string VALUE, anywhere in `node`.
+
+    ⭐ §6 test 20's standard is *the route must not exist, not merely be
+    discouraged*, and the first version of this scanned TOP-LEVEL KEY NAMES
+    only. `{"summary": {"consensus": "4/4 agreed"}}` was accepted, and so was
+    `{"overall": "ALL FOUR SEATS AGREE"}` — the words a reader would actually
+    read, one nesting level down and in the value rather than the key.
+
+    Keys are scanned at EVERY depth with no exemption. Values are scanned at
+    every depth except under `_VERBATIM_VALUE_KEYS`.
+    """
+    if isinstance(node, dict):
+        for k, v in node.items():
+            yield f"{path}.{k}", str(k)
+            yield from _refused_strings(
+                v, f"{path}.{k}",
+                scan_values and str(k) not in _VERBATIM_VALUE_KEYS)
+    elif isinstance(node, (list, tuple)):
+        for i, v in enumerate(node):
+            yield from _refused_strings(v, f"{path}[{i}]", scan_values)
+    elif isinstance(node, str) and scan_values:
+        yield path, node
+
+
 def refuse_aggregate(mapping):
-    bad = sorted(k for k in mapping if _REFUSED_KEY.search(str(k)))
+    bad = sorted({where for where, text in _refused_strings(mapping)
+                  if _REFUSED_KEY.search(text)})
     if bad:
         raise ReportRefused(
             f"{bad} is refused at construction: there is nowhere in a stage-4 "
@@ -1160,13 +1208,62 @@ def validate_report(d):
     return d
 
 
+def refuse_discrimination_join(item_ids, discrimination):
+    """⛔ THE JOIN KEY, CHECKED. Returns the supplied keys that match no item.
+
+    4d's denominator ids are the module's CLAIM SENTENCES; stage 3 counts
+    discrimination per claim ID (`C1`, `C2`, `C3`). Nothing joined the two key
+    spaces, and a mismatched key is silent in the worst possible direction:
+    every `covered` comes back `unsupported` — byte-identical to *"stage 3
+    never ran"* — while the report asserts `stage3_discrimination_available:
+    True` and the line a human reads carries no warning at all. `[RAN]` on
+    `m0217`: 3 numbers supplied, 0 consulted, `available: True`.
+
+    ⚠️ A TOTAL miss is refused; a PARTIAL one is counted and printed. Stage 3
+    may legitimately not have reached a claim, and refusing that would be a
+    check tightened past what it can know. A map that joins NOTHING is a
+    mispaired artifact.
+
+    ⛔ The guard is here rather than in `cross_check_4d`: that function is
+    per-item, and an absent key for one item is correctly not a zero
+    (`test_a_claim_missing_from_the_stage3_map_is_unsupported_not_inert`).
+    Only the report sees the whole map beside the whole denominator. Same
+    discipline as `denominator_4d`'s refusal of a `forbid_body` name that
+    matches nothing — *a name that matches nothing excludes nothing while
+    looking like it did*.
+    """
+    if not discrimination:
+        return ()
+    ids = set(item_ids)
+    unmatched = tuple(sorted(k for k in discrimination if k not in ids))
+    if ids and len(unmatched) == len(discrimination):
+        raise ReportRefused(
+            f"stage-3 discrimination was supplied for {sorted(discrimination)} "
+            f"and NOT ONE of those keys is in 4d's denominator, so the join "
+            f"produced nothing and every `covered` was stamped `unsupported` "
+            f"— the same bytes as `stage 3 never ran`, under a report saying "
+            f"the number was available. 4d is keyed on the claim SENTENCES "
+            f"({sorted(ids)[:1]}…); re-key the map or pass "
+            f"`discrimination=None` and say the check did not run")
+    return unmatched
+
+
 def build_report(clause_id, rb, judgements, denominators, extra=None,
                  divergence_records=(), findings=(), discrimination=None):
     """⭐ FOUR PER-SEAT VERDICTS, 4a IN `advisory`, AND NO CONSENSUS FIELD."""
     judgements = dict(judgements or {})
-    pooled = [j for s, js in judgements.items() for j in js]
+    # ⛔ 4a IS NOT POOLED. §4.3(2) requires 4a's verdict to sit in a block the
+    # pass/fail line does not read, and `report_line` prints the pooled
+    # `unclear` rate: pooling 4a in made the one line a human reads move when
+    # only 4a's answers changed — the docstring's *"it does not read
+    # `advisory`"* was true of the KEY and false of the NUMBER. §5.4 also makes
+    # the rate evidence about the brief or the artifact, and 4a is the author
+    # grading itself. Its own rate is kept, per seat, in `by_seat`.
+    pooled = [j for s, js in judgements.items() if s != "4a" for j in js]
     by_len, by_cond = unclear_split(pooled, rb)
     d4d = denominators.get("4d") if denominators else None
+    unmatched = refuse_discrimination_join(
+        [j.item for j in judgements.get("4d", ())], discrimination)
     layer1 = ([r.layer for r in rb.renderings] or [])
     d = {
         "clause_id": clause_id,
@@ -1198,6 +1295,10 @@ def build_report(clause_id, rb, judgements, denominators, extra=None,
         "readback_checks": dict(rb.checks),
         "readback_stamps": list(readback_stamps(rb)),
         "stage3_discrimination_available": discrimination is not None,
+        # ⭐ DEBUGGING_TIPS §2: the denominator printed beside the number. A
+        # supplied key that joins no claim consulted nothing, and *available*
+        # said otherwise.
+        "stage3_discrimination_keys_unmatched": list(unmatched),
         "divergences": [x.to_json() for x in divergence_records],
         "findings": [dataclasses.asdict(f) for f in findings],
         "renderings": [{"item": r.item, "layer": r.layer, "stamp": r.stamp,
@@ -1228,6 +1329,10 @@ def report_line(d):
     if not d["stage3_discrimination_available"]:
         bits.append("stage-3 discrimination UNAVAILABLE — every 4d `covered` "
                     "is `unsupported`")
+    elif d.get("stage3_discrimination_keys_unmatched"):
+        bits.append(f"{len(d['stage3_discrimination_keys_unmatched'])} stage-3 "
+                    f"discrimination key(s) match no claim and confirmed "
+                    f"nothing")
     if d["forbid_body_claims_excluded"]:
         bits.append(f"{len(d['forbid_body_claims_excluded'])} forbid_body "
                     f"claim(s) NOT JUDGEABLE HERE and excluded from 4d's "
@@ -1406,8 +1511,47 @@ def _load_corpus_quotes():
     return {cid: row["quote"] for cid, row in link.load_clauses().items()}
 
 
+#: Where `config.json` says the price table lives, resolved from HERE.
+PROVIDERS_JSON = os.path.join(HERE, "..", "..", "..", "semi-formal-experiment",
+                              "providers.json")
+
+
+def most_expensive_provider(path=None):
+    """⭐ `(name, (in, out))` — the MAXIMUM priced row, read rather than typed.
+
+    `STEP_stage4.md` §7 says *"frontier-tier seats are priced from
+    `providers.json` at run time"*, and the frontier price was a hard-coded
+    `(5.0, 30.0)` literal — `sol`'s price, while the table's maximum is `fable`
+    at `(10.0, 50.0)`. So the printed worst case was BELOW the worst case, on
+    the one project with a hard ledger ceiling. `estimate_clause_usd` already
+    rules that *an unpriced call counts as OVER budget, never as free*; this is
+    the same rule applied to a priced one.
+
+    ⛔ An unreadable or unpriced table REFUSES rather than falling back to a
+    literal. A guessed price on a budget number is the anti-conservative
+    direction `DEBUGGING_TIPS` #14 cost this repo a run to learn.
+
+    ⚠️ Ranked on the OUTPUT rate, tie-broken on input: every seat reply is
+    billed at the 4096-token cap and output dominates the worst case.
+    """
+    path = path or PROVIDERS_JSON
+    try:
+        rows = json.load(open(path, encoding="utf-8"))
+    except Exception as exc:                                   # noqa: BLE001
+        raise SeatRefused(
+            f"no price table at {path} ({exc}); stage 4 will not print a "
+            f"frontier cost from a literal typed into this file — that is how "
+            f"a printed worst case ends up below the real one") from exc
+    priced = [(r["name"], tuple(r["price_per_mtok"])) for r in rows
+              if isinstance(r, dict) and r.get("price_per_mtok")]
+    if not priced:
+        raise SeatRefused(f"{path} prices nothing; an unpriced call counts as "
+                          f"OVER budget, never as free")
+    return max(priced, key=lambda nv: (nv[1][1], nv[1][0]))
+
+
 def survey(runs_dir=None, price_per_mtok=(0.14, 0.28), chars_per_token=4.0,
-           frontier=(5.0, 30.0), max_tokens=SEAT_MAX_TOKENS,
+           frontier=None, max_tokens=SEAT_MAX_TOKENS,
            per_judgement_tokens=40):
     """⭐ THE MEASURED COST OF A LIVE RUN, off the artifact that actually
     renders — `OPEN_QUESTIONS.md` Q-3 wants a number, not a guess.
@@ -1419,6 +1563,9 @@ def survey(runs_dir=None, price_per_mtok=(0.14, 0.28), chars_per_token=4.0,
     """
     import glob
     runs_dir = runs_dir or os.path.join(HERE, "runs")
+    frontier_name = "(supplied)"
+    if frontier is None:
+        frontier_name, frontier = most_expensive_provider()
     quotes = _load_corpus_quotes()
     rows, planned = [], []
     for path in sorted(glob.glob(os.path.join(runs_dir, "*", "m*.json"))):
@@ -1454,7 +1601,9 @@ def survey(runs_dir=None, price_per_mtok=(0.14, 0.28), chars_per_token=4.0,
             front = estimate_clause_usd(plan, frontier, chars_per_token,
                                         max_tokens)
             judgements = sum(len(v) for v in plan.ids.values())
-            row.update({"input_chars": flash["input_chars"],
+            row.update({"frontier_provider": frontier_name,
+                        "frontier_price_per_mtok": list(frontier),
+                        "input_chars": flash["input_chars"],
                         "input_tokens": flash["input_tokens"],
                         "judgements": judgements,
                         "usd_worst_flash": flash["usd"],
@@ -1505,6 +1654,12 @@ def render_survey(rows, planned):
             out.append(f"  {label:<18} ${tot:.4f} over {len(planned)} clause(s)"
                        f"   ⇒ ${tot / len(planned):.4f}/clause")
         out.append("")
+        out.append(f"⛔ `frontier` is the MOST EXPENSIVE row in "
+                   f"providers.json — {planned[0].get('frontier_provider')} at "
+                   f"{tuple(planned[0].get('frontier_price_per_mtok') or ())} "
+                   f"$/Mtok — read at run time, never a literal. A printed "
+                   f"worst case below the real worst case is the one error a "
+                   f"hard ledger cap cannot survive.")
         out.append("⚠️ WORST is the number a budget decision uses: every reply "
                    "at its 4096-token cap. `likely` assumes 40 output tokens "
                    "per judgement and is an ASSUMPTION — nothing has been run, "

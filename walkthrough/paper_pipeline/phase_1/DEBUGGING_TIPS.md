@@ -373,3 +373,72 @@ and a real user block), and add an isolation test: hold everything fixed, raise 
 `max_tokens`, and require the **input** token count to move. `test_cost_and_summary.py` does both,
 with `::test_one_attempt_bills_no_carried_completion` as the guard that stops "just inflate the
 estimate" from passing.
+
+## 15 ⛔ A MUTATION SWEEP is a check, and it can pass without running either
+
+**Found 2026-08-08 by adversarial review, and it is §8 applied to the instrument
+that certifies §8's fixes.** `mutate_seats.py` reported **`83 mutants applied, 0
+survivor(s)`, exit 0, against a suite with an always-failing test appended.** The whole kill
+rule was:
+
+```python
+killed = r.returncode != 0
+```
+
+⇒ **a red suite kills every mutant, so every guard reads as pinned.** Two more of the same
+shape sat behind it: a mutant that broke the import gave pytest **`rc=2`** — a *collection
+error*, i.e. the suite did not run — and was reported KILLED; and nothing recorded *which*
+test died, so a mutant killed by an unrelated flake was indistinguishable from one killed by
+its named guard.
+
+⛔ **The trap is that the documented trap was fixed.** The file carried a careful, correct
+note about `.pyc` invalidation `(mtime seconds, size)` making a second mutant silently not
+take effect — a real instance of "a pass indistinguishable from did-not-run", found inside
+the tool built to detect it, and genuinely closed with `rmtree(__pycache__)` +
+`PYTHONDONTWRITEBYTECODE=1`. **Fixing the instance is what §8a warns about.** The general
+shape — *this tool decides pass/fail from one weak signal* — was left standing one line below
+the note about it.
+
+⇒ **A mutation harness needs four things, and `mutate_schema.py` had all four in the same
+directory the whole time:**
+
+1. a **green baseline through the SAME isolation path**, before any mutation;
+2. **return-code triage** — `rc in (2,3,4,5)` is *the suite did not run*, never a kill;
+3. a **collected-count comparison** against the baseline — a mutant whose run collected a
+   different number of tests proves nothing;
+4. an **`error` status at all**. Without a third status every failure folds into `killed`,
+   which is the flattering direction.
+
+⚠️ **And "killed" must mean A NAMED TEST DIED**, read off pytest's `-rfE` summary — not "the
+process exited non-zero". That is also what makes the entanglement table possible, which is
+how you see a test that dies under many unrelated mutants and is therefore failing for a
+reason other than the one it names.
+
+### 15a ⚠️ The mirror's LOCATION is load-bearing, and I got this wrong first
+
+The obvious rewrite is *"stop editing the source in place; copy the tree to `/tmp` and mutate
+the copy"*. `[RAN]` that makes **every** mutant die, for a reason that has nothing to do with
+its guard:
+
+```
+FileNotFoundError: …/scratchpad/repro/semi-formal-experiment/modelspec_clauses.json
+```
+
+`seats.py` computes `WALKTHROUGH = dirname(dirname(HERE))` and `link.py` resolves the clause
+corpus relative to the repo root **above that**, so a mirror under `/tmp` breaks `survey()`
+and the sweep reports a clean 100 % kill built entirely out of import errors — *the same
+defect it was rewritten to fix, wearing the opposite sign*. The mirror is therefore created
+**inside `paper_pipeline/`**, dot-prefixed so pytest never collects it, and removed in a
+`finally`. Directories are symlinked (`runs/`, `probe_runs/` are the bulk); files are copied,
+so pytest's import machinery never has to resolve a symlink to decide a module's identity.
+
+⇒ **When you isolate a tree, check what the code under test computes from `__file__`.** The
+baseline guard (1) is what catches this — it fires before a single mutant runs — which is the
+second reason to have it.
+
+### 15b `21/21 killed` with no committed harness is a claim, not a measurement
+
+`readback_r3.py` shipped with *"mutation sweep 21/21 killed, 0 survivors"* in a commit message
+and **no mutation harness in the repo**. Nobody but the author could re-run it, and CI never
+could. `mutate_readback_r3.py` now exists and runs on the same engine — 33 mutants, 0
+survivors. ⇒ **A number that cannot be re-run does not meet a bar; it describes one.**

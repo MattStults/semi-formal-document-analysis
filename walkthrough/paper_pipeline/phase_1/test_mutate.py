@@ -269,3 +269,143 @@ def test_the_mutated_copy_is_what_the_tests_import():
     rep = M.run_all(REAL_SCHEMA, REAL_TESTS, mutations=[one])
     assert rep.results[0].status == "killed"
     assert "test_a_module_that_renames_itself" in rep.results[0].killed
+
+
+# ==========================================================================
+#  ⭐ `mutate_seats.py`'s engine — the instrument that certifies stage 4.
+#
+#  It shipped reporting `83 mutants applied, 0 survivor(s)`, exit 0, against a
+#  RED suite: the whole kill rule was `returncode != 0`. These pin the three
+#  guards it did not have, in the same order `mutate_schema.py`'s docstring
+#  lists them. ⛔ Without these the guards themselves would be unpinned — the
+#  same shape, one level up.
+# ==========================================================================
+
+import mutate_seats as S  # noqa: E402
+
+FAKE_MOD = textwrap.dedent('''\
+    """Two guards; the fake test file pins exactly one of them."""
+
+
+    class Refused(RuntimeError):
+        pass
+
+
+    def check(obj):
+        if obj.get("a") == "bad":
+            raise Refused("guard A is pinned by a test")
+        if obj.get("b") == "bad":
+            raise Refused("guard B is pinned by nothing at all")
+        return obj
+''')
+
+FAKE_MOD_TESTS = textwrap.dedent('''\
+    import pytest
+
+    import fakeguards
+
+
+    def test_guard_a_fires():
+        with pytest.raises(fakeguards.Refused):
+            fakeguards.check({"a": "bad"})
+
+
+    def test_the_happy_path():
+        assert fakeguards.check({}) == {}
+''')
+
+_A = ('    if obj.get("a") == "bad":\n'
+      '        raise Refused("guard A is pinned by a test")')
+_B = ('    if obj.get("b") == "bad":\n'
+      '        raise Refused("guard B is pinned by nothing at all")')
+
+
+@pytest.fixture
+def fake_pair(tmp_path):
+    m = tmp_path / "fakeguards.py"
+    t = tmp_path / "test_fakeguards_for_mutate_seats.py"
+    m.write_text(FAKE_MOD)
+    t.write_text(FAKE_MOD_TESTS)
+    return m, t
+
+
+def _by_name(results):
+    return {r.name: r.status for r in results}
+
+
+def test_seats_engine_reports_a_survivor_as_a_survivor(fake_pair):
+    """The whole point. Guard B is pinned by nothing and must say so."""
+    m, t = fake_pair
+    results, n = S.run_all(
+        [("guard-a-deleted", _A, "    pass"),
+         ("guard-b-deleted", _B, "    pass")], str(m), str(t))
+    assert n == 2
+    assert _by_name(results) == {"guard-a-deleted": "killed",
+                                "guard-b-deleted": "survivor"}
+
+
+def test_seats_engine_REFUSES_a_red_baseline(fake_pair):
+    """⛔ THE DEFECT THIS FILE WAS REWRITTEN FOR. `[RAN]` 2026-08-08 against
+    `29e018c`: one always-failing test appended to `test_seats.py`, and the
+    sweep printed `83 mutants applied, 0 survivor(s)` and exited 0. A red suite
+    kills every mutant, so every guard reads as pinned."""
+    m, t = fake_pair
+    t.write_text(FAKE_MOD_TESTS + "\n\ndef test_already_red():\n"
+                                  "    assert False\n")
+    with pytest.raises(M.MutationError, match="baseline"):
+        S.run_all([("guard-a-deleted", _A, "    pass")], str(m), str(t))
+
+
+def test_seats_engine_calls_a_COLLECTION_ERROR_an_error_not_a_kill(fake_pair):
+    """⛔ `rc=2` is pytest saying *the suite did not run*. The old rule
+    (`killed = returncode != 0`) reported a mutant that broke the import as
+    KILLED — the flattering direction, and the one this repo names as its
+    signature failure."""
+    m, t = fake_pair
+    results, _n = S.run_all(
+        [("import-raises", 'class Refused(RuntimeError):',
+          'raise RuntimeError("the module cannot be imported")\n'
+          'class Refused(RuntimeError):')],
+        str(m), str(t))
+    assert [r.status for r in results] == ["error"]
+    assert "did not run comparably" in results[0].detail
+
+
+def test_seats_engine_calls_a_DRIFTED_ANCHOR_an_error_not_a_kill(fake_pair):
+    """A mutation that was never applied kills nothing and proves nothing. The
+    old version counted it separately as `NOT APPLIED` and still printed
+    `0 survivor(s)` on the headline line."""
+    m, t = fake_pair
+    results, _n = S.run_all(
+        [("anchor-drifted", "a guard that was reworded months ago", "pass")],
+        str(m), str(t))
+    assert [r.status for r in results] == ["error"]
+    assert "matches 0 times" in results[0].detail
+
+
+def test_seats_engine_leaves_the_real_source_byte_identical(fake_pair):
+    """⛔ The old sweep rewrote `seats.py` IN PLACE and restored it in a
+    `finally`; an interrupted run left the working tree mutated. Nothing is
+    written outside the mirror now, and the digest is asserted."""
+    m, t = fake_pair
+    before = _sha(HERE / "seats.py")
+    S.run_all([("guard-a-deleted", _A, "    pass")], str(m), str(t))
+    assert _sha(HERE / "seats.py") == before
+
+
+def test_the_seats_mutant_table_still_anchors_on_the_real_source():
+    """⚠️ Anchors are source fragments, so an ordinary edit to `seats.py` can
+    silently drop a mutant from the run. A short run reports fewer holes than
+    exist, so it fails HERE, cheaply, instead of in a sweep that prints 0."""
+    src = (HERE / "seats.py").read_text()
+    drifted = {name: src.count(old) for name, old, _new in S.MUTANTS
+               if src.count(old) != 1}
+    assert not drifted, drifted
+
+
+def test_the_r3_mutant_table_still_anchors_on_the_real_source():
+    import mutate_readback_r3 as R3
+    src = (HERE / "readback_r3.py").read_text()
+    drifted = {name: src.count(old) for name, old, _new in R3.MUTANTS
+               if src.count(old) != 1}
+    assert not drifted, drifted

@@ -82,11 +82,24 @@ XCLINGO_ARGS = ("--auto-tracing=facts", "--output", "ascii-trees",
 #: is told apart from "the tool ran and found nothing".
 DONE_MARK = "##Total Explanations:"
 
-#: Characters that break the `%!trace_rule {"..."}` literal. ⛔ `schema
-#: ._BAD_IN_TEXT` fences the model's `read_back` and NOTHING ELSE — a *gloss*
-#: may hold any of these, and R3 interpolates glosses.
+#: Characters that break — or SILENTLY REWRITE — the `%!trace_rule {"..."}`
+#: literal. ⛔ `schema._BAD_IN_TEXT` fences the model's `read_back` and NOTHING
+#: ELSE — a *gloss* may hold any of these, and R3 interpolates glosses.
+#:
+#: ⭐ `%` IS HERE FOR A DIFFERENT REASON FROM THE REST, and it is the third
+#: escape of this shape the build has had to close. The others break the
+#: literal loudly. `%` does not: xclingo's own preprocessor lifts `%!` into a
+#: theory atom and rewrites it to `&` **inside the quoted string**, so a gloss
+#: reading `content about politics %!x here` produced a RULE node saying
+#: `«… &x here»` and a LEAF node — rendered by `gloss_leaf` from the untouched
+#: gloss — saying `«… %!x here»`. Two sentences for one definition, in one
+#: tree, and no note fired. Neutralising every `%` rather than only `%!` is
+#: deliberate: the rewrite rule is xclingo's, not ours, and a fence that
+#: tracked one dialect's spelling would have to be re-derived on every xclingo
+#: release. No gloss in the stored corpus contains a `%`, so the cost is nil.
+#: ⚠️ Text corruption, never injection — the rewrite stays inside the literal.
 TRACE_SAFE = {'"': "”", "\\": "/", "{": "(", "}": ")",
-              "\n": " ", "\r": " "}
+              "\n": " ", "\r": " ", "%": "％"}
 
 _ERROR_LINE = re.compile(r"(^|\s)(\*\*\* ERROR|error:)", re.MULTILINE)
 _ANSWER = re.compile(r"^Answer:\s*\d+", re.MULTILINE)

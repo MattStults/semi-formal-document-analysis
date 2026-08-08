@@ -726,15 +726,54 @@ from `providers.json` at run time; the estimate below is given at both.
 ⭐ **4c is batched per clause, not per item** — the coverage rule requires the seat to see the whole
 denominator anyway, and per-item calls would multiply the clause context by the item count.
 
+### ⭐ CORRECTED 2026-08-08 — the estimate above was an order of magnitude low
+
+The numbers below the table were **written before anything was built** and were never restated
+once `seats.py --cost` could measure the real prompts. An adversarial review re-derived the
+arithmetic, found the **code right and this section stale**, and the gap is in the direction this
+repo has already been bitten by twice: the design quoted the *optimistic* figure while the tool's
+own header says *"WORST is the number a budget decision uses"*.
+
+`[RAN]` `seats.py --cost`, over the **7 stored modules that actually reach a seat** — the measured
+per-clause figures, not the pre-build estimate:
+
+| | worst (every reply at its 4,096-token cap) | likely (40 output tokens per judgement) |
+|---|---:|---:|
+| flash, per clause | **$0.0051** | $0.00090 |
+| frontier, per clause | **$0.8585** | $0.1013 |
+| 4 clauses, frontier | **$3.43** | $0.41 |
+| 593 clauses, flash | **$3.02** | $0.53 |
+| 593 clauses, frontier | **$509** | **$60.1** |
+
+⛔ Against what this section used to say: *"$0.10–$0.20 for the four-clause run"* → **$3.43**;
+*"~$25 at frontier"* for the corpus → **$509**, which is **60× the entire $8.50 cap**. Even the
+*likely* corpus run at frontier is **7× the cap**. `[RAN]` `spend.py`: **$2.057 of $8.50 used**.
+
+⚠️ **`frontier` is now the MAXIMUM row in `providers.json`, read at run time** (`fable`,
+$10/$50 per Mtok), not the `(5.0, 30.0)` literal `seats.py` used to carry. That literal was `sol`'s
+price, i.e. **below** the table's maximum, so the printed worst case sat below the real worst case
+on the one project with a hard ledger ceiling. At the old literal the same measurement gives
+**$0.5112/clause worst → $303 at 593 clauses**, and **$33.7 "likely"** — still 4× the cap, which is
+why the conclusion below does not change and the number still had to be corrected.
+
+⚠️ **`estimate_clause_usd` prices NO re-translation**, so this total is not the same quantity as the
+*"under $0.01 all in"* figure above, which included at most one re-translation per clause at the
+measured stage-1 cost `[RAN]` ($0.001085 for `m0217`). `render_survey` says so in its footer. Add
+the stage-1 term before comparing the two.
+
 **Per clause: ≈ $0.0012** at flash rates. **A four-clause run: ≈ $0.005**, plus at most one
 re-translation per clause at the measured translation cost `[RAN]` ($0.001085 for `m0217`) — call
 it **under $0.01 all in.** At frontier rates, roughly 20–40×: **$0.10–$0.20** for the four-clause
 run. Against `[RAN]` `spend.py`: **$2.057 of $8.50 used (24 %)**. Stage 4 at four clauses is not a
-budget question at any tier.
+budget question at any tier. ⛔ *(Superseded by the measured table above — kept so the size of the
+pre-build error is legible rather than quietly overwritten.)*
 
-⚠️ **At 593 clauses it becomes one:** ~$0.7 at flash rates, ~$25 at frontier — **over the ceiling**.
-So the tier decision above is explicitly a *first-run* decision, and corpus-scale stage 4 is blocked
-on the small-model parity measurement, not on a preference.
+⚠️ **At 593 clauses it becomes one:** ~~~$0.7 at flash rates, ~$25 at frontier~~ **$3.02 flash /
+$509 frontier worst case, $60.1 frontier likely — 7× to 60× over the ceiling.** So the tier
+decision above is explicitly a *first-run* decision, and corpus-scale stage 4 is blocked on the
+small-model parity measurement, not on a preference. **At four clauses the frontier tier is $3.43
+worst case, not "cents either way"** — still affordable against the remaining ledger, and no longer
+a rounding error.
 
 ⚠️ **The honest four-clause picture, from the same table as §0(4):** of the last run's four clauses,
 `m0091` never reached stage 2, `m0037` is `no-readable-content` (RB5), `m0053` halts at
