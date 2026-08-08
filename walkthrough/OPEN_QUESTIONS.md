@@ -288,29 +288,54 @@ knowing whether the seat over-reaches. Say the word and it is twenty minutes.
 
 ---
 
-## Q-6 ⛔ HALF THE CORPUS CANNOT REACH ANY STAGE-4 SEAT — the biggest finding today
+## Q-6 ⛔ REFRAMED 2026-08-08 — it is a STAGE-1 CONTRACT gap, not a stage-4 threshold
 
-**Blocked:** running stage 4 on most of what we have.
+**Superseded reading:** *"is `readback-ungloss` too strict?"* ⇒ **No. It is correct, and relaxing it
+would have been the wrong fix.** 7 of 19 stored modules are blocked, and the cause is upstream.
 
-`[RAN]` Of the 14 stored modules that validate against today's schema, the renderer returns
-`readback-ungloss` on **7** — they are blocked from every seat. 14 distinct symbols have no written
-meaning: `interactable_entity`, `interaction_entity` (both `m0053`, exactly as `STEP_stage4.md`
-§2.3 predicted), plus `task`, `disallowed`, `pasted_text`, `policy_class` and others. **Almost all
-are `requires`/`inputs` predicates that no clause in the corpus defines.**
+**What is actually wrong.** `[RAN]` 14 distinct symbols block those modules, and **not one is
+glossed by any module we have translated**. Every one is a predicate a module *uses in a body* and
+declares in `requires` or `inputs`. The contract demands a gloss for `concepts` — the names a clause
+**introduces** — and demands nothing for the names a clause **borrows**.
 
-`STEP_stage4.md` §2.3 says a missing gloss is an ERROR and the clause reaches no seat. That ruling
-was written expecting it to fire on `defines.term`. It fires on half the corpus.
+⇒ **So the accumulation the design assumes has no source.** `concepts.json` is the union of
+`concepts` blocks; a borrowed symbol never appears in one.
 
-**Three readings, and I am not choosing between them:**
-1. The renderer is right and the corpus is not ready — a symbol with no written meaning genuinely
-   cannot have its meaning rendered, and Invariant 1 says so.
-2. `requires` predicates are defined *elsewhere*, so demanding a local gloss is the wrong test at
-   single-module scope — that is D-3's link-scope question wearing a stage-4 costume.
-3. The threshold is right but the corpus needs a gloss-supplying pass first.
+### ⛔ And `DEFERRED.md` D-3's escape clause is half wrong
 
-**What I did instead:** built and tested everything, and left the 7 blocked rather than relaxing the
-check to make the number look better. **Lowering a floor to make a run pass is the one thing
-`CLAUDE.md` forbids outright.**
+D-3 defers corpus-wide resolution on the ground that it *"resolves itself as the corpus grows."*
+`[RAN]`, classifying all 14 against the document:
+
+| | n | |
+|---|---|---|
+| a clause plausibly **owns** it | 6 | `disallowed`, `new_material`, `out_of_scope`, `task`, `includes_malicious_instructions`, `translation_of_user_content` |
+| barely mentioned | 2 | `conflicts_with_higher_authority`, `not_read_carefully` |
+| ⛔ **appears NOWHERE in the document** | **6** | `policy_class`, `pasted_text`, `interactable_entity`, `interaction_entity`, `delegated_authority_to_webpage`, `conflicts_with_later_same_authority` |
+
+**Growth resolves 6 of 14 and can never resolve 6**, because the model coined names whose words
+appear in no clause at all. ⚠️ `m0053` invented **`interactable_entity` AND `interaction_entity`**
+for one idea and glossed neither — two spellings, one clause, no other clause to point at.
+
+### Can linking find the definitions without re-reading the source?
+
+`[RAN]` **Probably not.** None of the five blocking clauses carries a single markdown anchor, and
+corpus-wide only **77 of 593 (13%)** carry any. The document's cross-reference structure is mostly
+implicit, so the only information a module carries about a borrowed symbol is **name + arity** — and
+name-matching is measured at **20% wrong** (46 of 228 reused names carry conflicting definitions).
+
+### ⇒ The real question, and it is Invariant 1's open arm
+
+Either a clause glosses every symbol it uses — which **manufactures problem #9 at source**, since
+the borrower invents a meaning for a term another clause owns — or something resolves symbols across
+modules. That is Invariant 1's undecided A/B/C choice, and **open question 2's "run both arms on the
+same clauses" is currently unrunnable, because neither arm has a dictionary.**
+
+⭐ **Matt's proposal, 2026-08-08:** a pre-translation pass mapping concepts to input/output names
+across the whole document, statically checked, supplied per section. That is **arm A** in delivery —
+but the recorded objection to A is about feeding a model *its own accumulated output*, and a
+document-derived, statically-checked vocabulary is a materially different artifact. It is also the
+**lookup arm C requires and lacks**, so building it makes the A/B/C comparison possible rather than
+pre-empting it. A one-off experiment is being run before any design is written.
 
 ---
 

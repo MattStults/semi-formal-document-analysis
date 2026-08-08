@@ -164,6 +164,14 @@ made by implementation — **a thing to undo, not a thing to justify.**
 module. It is a **link-scope** check exactly like D2 (witness) — blocked on having translated enough
 clauses, not on a missing phase, and it resolves itself as the corpus grows.
 
+⛔ **HALF WRONG, corrected 2026-08-08 by measurement.** `[RAN]` Of the 14 symbols currently blocking
+a stage-4 read-back, **6 appear nowhere in the document at all** — `policy_class`, `pasted_text`,
+`interactable_entity`, `interaction_entity`, `delegated_authority_to_webpage`,
+`conflicts_with_later_same_authority`. Growth cannot resolve a name the document does not contain;
+those are coinages, not borrowings. 6 of 14 are genuinely owned by some clause and will resolve;
+2 are marginal. ⇒ **The deferral holds for the borrowings and fails for the coinages**, and the
+difference is not visible from inside a single module. See `OPEN_QUESTIONS.md` Q-6.
+
 **Consequence to carry:** problem #9 (same name, different meanings) now lives **inside the ontology
 blocks**. Two clauses writing `disallowed/1` with different extensions link cleanly and are wrong.
 That is a **stage 5 (normalise)** problem — see `SCRATCH_concept_phase.md` §5, where the merge veto
