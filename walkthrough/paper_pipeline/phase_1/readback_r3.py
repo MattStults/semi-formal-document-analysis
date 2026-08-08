@@ -303,6 +303,17 @@ class Node:
     children: tuple = ()
     #: The bare ASP term xclingo printed for this node, when it printed one.
     atom: str = ""
+    #: ⭐ §2.3: "Every rendering records the layer that produced it, and the
+    #: layer is visible in the report." A rule node inherits the layer of the
+    #: R1/R2 rendering that composed its sentence; a leaf is layer 2 when a
+    #: leaf is layer 2 whenever the template fitted — including when the gloss
+    #: it wanted was missing, because that is `readback-ungloss`, not a
+    #: fluency gap (§2.3 forbids blurring the two).
+    layer: int = 1
+
+    @property
+    def stamp(self):
+        return readback.LAYER_STAMP[self.layer]
 
     @property
     def is_leaf(self):
@@ -482,15 +493,24 @@ def gloss_leaf(atom, gloss, placeholder=None):
     return text, True
 
 
-def _gloss_tree(node, gloss, placeholder, missing):
-    text = node.text
+def _gloss_tree(node, gloss, placeholder, missing, layers):
+    text, layer = node.text, layers.get(node.text, 1)
     if node.kind != "rule":
         text, ok = gloss_leaf(node.atom or node.raw, gloss, placeholder)
+        # ⛔ LAYER 2 EVEN WHEN THE GLOSS IS MISSING, and the two must not be
+        # blurred (§2.3). The layer stamp tracks whether a TEMPLATE existed;
+        # `«meaning» (concerning: …)` is that template and it fitted. What is
+        # absent is the written definition, and that is `readback-ungloss` —
+        # an ERROR that stops the clause, not a fluency note that does not.
+        # Folding it into the layer stamp would demote a hole in the
+        # TRANSLATION into a gap in OUR renderer.
+        layer = 2
         if not ok:
             missing.add((node.atom or node.raw).split("(")[0].strip())
     return Node(raw=node.raw, text=text, kind=node.kind, depth=node.depth,
-                atom=node.atom,
-                children=tuple(_gloss_tree(c, gloss, placeholder, missing)
+                atom=node.atom, layer=layer,
+                children=tuple(_gloss_tree(c, gloss, placeholder, missing,
+                                           layers)
                                for c in node.children))
 
 
@@ -518,10 +538,29 @@ class ModuleR3:
     covering: int
     with_derivation: int
 
+    @property
+    def nodes(self):
+        return tuple(n for s in self.situations for d in s.derivations
+                     for n in walk(d))
+
+    @property
+    def layer1_fraction(self):
+        """⭐ §2.3: printed EVEN WHEN ZERO. A run mostly at layer 1 is a
+        finding about the renderer's fluency coverage, routed to whoever writes
+        templates — never a finding about the modules, and never a refusal."""
+        nodes = self.nodes
+        if not nodes:
+            return None
+        return sum(1 for n in nodes if n.layer == 1) / len(nodes)
+
     def report(self):
+        frac = self.layer1_fraction
         head = [f"readback-R3 {self.clause_id}  outcome={self.outcome}",
                 f"  derivations: {self.with_derivation} of {self.covering} "
-                f"covering-set situation(s) have a non-empty derivation"]
+                f"covering-set situation(s) have a non-empty derivation",
+                "  layer-1 nodes: "
+                + ("not-measured (no derivation)" if frac is None
+                   else f"{frac:.2f} of {len(self.nodes)}")]
         for s in self.situations:
             head.append(f"  {s.situation_id}  [{s.outcome}]  "
                         f"verdicts: {', '.join(s.verdicts) or '(none)'}")
@@ -530,7 +569,7 @@ class ModuleR3:
                 for n in walk(d):
                     head.append("      " + "   " * (n.depth - 1)
                                 + f"{'·' if n.kind == 'fact' else '-'} "
-                                + n.text)
+                                + n.text + f"   [{n.stamp}]")
         for f in self.findings:
             head.append(f"  {f.severity.upper():<5} {f.check_id}: {f.message}")
         return "\n".join(head)
@@ -576,6 +615,9 @@ def render_r3(mod, situations, *, extra_gloss=None, gloss=None, link_texts=(),
 
     notes = []
     renderings = readback.render_items(mod, table, notes)
+    # §2.3's stamp, carried from the rendering that composed the sentence.
+    # Keyed on the trace-safe form, which is what xclingo prints back.
+    layers = {trace_safe(r.text)[0]: r.layer for r in renderings}
     program = module_program(mod, renderings, notes)
     sources = [(f"{mod.clause_id} (module)", program)] + list(link_texts)
     _refuse_anonymous(sources)
@@ -604,7 +646,7 @@ def render_r3(mod, situations, *, extra_gloss=None, gloss=None, link_texts=(),
             for lab, roots in rooted:
                 derivations.append(Derivation(
                     lab, atom,
-                    tuple(_gloss_tree(r, table, placeholder, missing)
+                    tuple(_gloss_tree(r, table, placeholder, missing, layers)
                           for r in roots)))
         for name in sorted(missing):
             s_findings.append(readback.Finding(

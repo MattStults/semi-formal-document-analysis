@@ -213,6 +213,61 @@ def test_a_LEAFS_CONSTANT_survives_into_its_rendering():
     assert ok and "concerning" not in plain
 
 
+def test_every_node_carries_the_LAYER_that_produced_it():
+    """§2.3: *"Every rendering records the layer that produced it, and the
+    layer is visible in the report"*, and the layer-1 fraction is printed even
+    when zero. Without it the two layers are indistinguishable in the output,
+    which is the defect RB5 exists to prevent one level up."""
+    out = r3.render_r3(political(), [POL_FIRES])
+    nodes = out.nodes
+    assert nodes and all(n.layer in (1, 2) for n in nodes)
+    assert all(readback.LAYER_STAMP[n.layer] in out.report() for n in nodes)
+    assert out.layer1_fraction == 0.0
+    assert "layer-1 nodes: 0.00" in out.report()
+
+
+def test_a_MISSING_GLOSS_is_not_reported_as_a_missing_TEMPLATE():
+    """⛔ §2.3 forbids blurring these and says why: a missing template is OUR
+    gap and costs fluency; a missing gloss is a hole in the TRANSLATION and is
+    the failure the read-back exists to catch. So an unglossed leaf stays
+    layer 2 — the template fitted — and the signal is carried by an ERROR that
+    stops the clause, not by a fluency statistic nobody acts on.
+
+    ⚠️ This test was written the other way round first, and the assertion was
+    wrong: `readback._gloss_slot` already stamps a marked hole layer 2 inside
+    a rule rendering, so stamping the same hole layer 1 at a leaf would have
+    made R3 and R1 disagree about the same missing definition.
+    """
+    out = r3.render_r3(political(), [POL_FIRES],
+                       gloss={"broad_audience": None})
+    holes = [n for n in out.nodes if readback.UNGLOSS_MARK in n.text]
+    assert holes and all(n.layer == 2 for n in holes)
+    assert out.layer1_fraction == 0.0
+    assert out.outcome == "readback-ungloss"
+
+
+def test_a_layer_1_rule_rendering_reaches_the_tree_stamped_as_such():
+    """The other half: a construct with no layer-2 template still renders, in
+    layer-1 form, and the stamp says so rather than the clause being refused."""
+    mod = schema.validate(fixtures.political_module(
+        asserts=[dict(**fixtures.textual("m0217"), status="permit",
+                      act="produce(M)",
+                      # ⚠️ POOLING. `readback` has layer-2 templates for
+                      # aggregates, comparisons, intervals and conditional
+                      # literals — `[RAN]` all four render at layer 2 — so a
+                      # fixture reaching for "something exotic" does NOT
+                      # exercise the fallback. `p(X;Y)` does.
+                      body="political_content(M), broad_audience(M;M)",
+                      read_back="producing % is permitted",
+                      read_back_slots=["M"])]))
+    s = situation("S3", ["political_content(x)", "broad_audience(x)"],
+                  ["asserts(m0217,permit,produce(x))"])
+    out = r3.render_r3(mod, [s])
+    assert out.outcome == "rendered", out.report()
+    assert out.layer1_fraction > 0
+    assert any(n.layer == 1 and readback.ASP_MARK in n.text for n in out.nodes)
+
+
 def test_a_semicolon_INSIDE_a_rendered_sentence_is_not_a_label_boundary():
     """The `if True:` guard on the splitter. `readback.render_body` joins with
     ` and `, but a gloss the model wrote may hold a `;` and splitting on it
