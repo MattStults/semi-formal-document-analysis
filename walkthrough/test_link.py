@@ -338,6 +338,84 @@ def test_d4_clean_file_has_no_clingo_error(tmp_path):
     assert not by_id(link.collect([p]), "clingo-error")
 
 
+# --------------------------------------------------------------------------
+#  DEFECT 4, second arm — clingo NEVER RAN
+# --------------------------------------------------------------------------
+#
+# ⛔ `_check_clingo`'s guard is `if errs or r.returncode not in CLINGO_OK_RC:`
+# — two DELIBERATELY REDUNDANT detectors, and only the text one was tested.
+# Mutating the line to `if errs:` survived all 352 tests and `--self-test`
+# 19/19. The arm left untested is the one covering the ENVIRONMENT failure,
+# which is the one you cannot reach by writing a bad program: with `clingo`
+# missing from the interpreter the output is "No module named clingo",
+# `CLINGO_ERR` matches ZERO of it, and the finding comes from the return code
+# alone. Under the mutant a link check over a program that was never compiled
+# reports CLEAN — the "a pass indistinguishable from a did-not-run" shape that
+# `DEBUGGING_TIPS.md` §8 names as this project's recurring failure, sitting
+# inside the function whose docstring exists to prevent it.
+
+def _fake_interpreter(tmp_path, name, rc, out="", err=""):
+    """A stand-in for `link.PY` that ignores its arguments.
+
+    ⭐ Deliberately NOT "use a python that happens to lack clingo". That makes
+    the test a claim about the machine it runs on: install clingo system-wide
+    and the test stops testing anything, silently. This scripts the two
+    observables `_check_clingo` reads — the return code and the output — so the
+    return-code arm is exercised on any host.
+    """
+    p = tmp_path / name
+    p.write_text(
+        "#!/bin/sh\n"
+        f"cat <<'EOF'\n{out}\nEOF\n"
+        f"cat >&2 <<'EOF'\n{err}\nEOF\n"
+        f"exit {rc}\n")
+    p.chmod(0o755)
+    return str(p)
+
+
+def test_d4_clingo_that_NEVER_RAN_is_a_failure_even_with_no_error_text(
+        tmp_path, monkeypatch):
+    """The return-code arm, on its own, with the text arm seeing nothing.
+
+    This is the real shape: `python -m clingo` on an interpreter without the
+    module prints `No module named clingo` and exits 1. That string contains no
+    `error:`, so `CLINGO_ERR` matches nothing at all.
+    """
+    p = render(tmp_path, "ok.lp")
+    blob = "/usr/bin/python3: No module named clingo"
+    fake = _fake_interpreter(tmp_path, "no_clingo", rc=1, err=blob)
+    monkeypatch.setattr(link, "PY", fake)
+
+    # The premise, asserted rather than assumed: the TEXT arm is blind here.
+    assert link.CLINGO_ERR.findall(blob) == [], (
+        "this test only pins the return-code arm if the text arm sees nothing; "
+        "CLINGO_ERR now matches the missing-module message, so rewrite it")
+
+    findings, _ = link._check_clingo([p])
+    hits = by_id(findings, "clingo-error")
+    assert len(hits) == 1, (
+        "clingo exited 1 and compiled nothing, and no `error:` line was "
+        f"printed — the return code is the ONLY signal. Got {ids(findings)}")
+    assert hits[0].severity == "error"
+    assert "exit code 1" in hits[0].message, hits[0].message
+
+
+def test_d4_every_documented_clingo_exit_code_stays_silent(tmp_path,
+                                                           monkeypatch):
+    """The guard that must kill the test above.
+
+    ⚠️ Without this, `if True:` also passes. clingo signals SAT/UNSAT through
+    its exit code (10/20/30 are outcomes, not failures), so the return-code arm
+    must fire on codes OUTSIDE `CLINGO_OK_RC` and on nothing else.
+    """
+    p = render(tmp_path, "ok.lp")
+    for rc in link.CLINGO_OK_RC:
+        fake = _fake_interpreter(tmp_path, f"rc{rc}", rc=rc, out="")
+        monkeypatch.setattr(link, "PY", fake)
+        assert not by_id(link._check_clingo([p])[0], "clingo-error"), \
+            f"exit {rc} is a documented clingo outcome, not a refusal"
+
+
 # ==========================================================================
 #  DEFECT 5 — closure / acts / concepts headers were unreadable
 # ==========================================================================

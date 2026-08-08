@@ -57,6 +57,16 @@ unordered set and to name this entry.
 - **Tie-break:** document order is total over clauses — but two of nine specimens examined had **no
   clause at all**, so they are unsortable and also unretrievable. That is a coverage problem wearing
   a sorting costume.
+- ⭐ **Weakest-licence inheritance is stated and unbuilt, and tier 3 is the thing that needs it.**
+  `resources/03_pipeline.md` Invariant 2: *"A conclusion inherits the weakest licence in its
+  derivation."* `prompt/00_task.md:31` tells the model so, as a note. **Nothing computes it** —
+  verified 2026-08-07: not `schema.py`, not `link.py`, not `checks.py`; the only occurrences of the
+  word are those two statements of intent. Tier 3 (*"licence strength: proof uses only `textual` >
+  requires `assumed` > requires `world`"*) is a statement **about a derivation**, so it cannot be
+  read off the per-fact licences the contract collects; it has to be **propagated**. Note this is
+  the same propagation the citation checker's licence-dependent denominator needs, and the same one
+  D-4 below needs to make toggling mean anything — one piece of work serving three consumers, not
+  an ordering feature.
 
 **Revisit when:** a behaviour query returns a set, and licences exist.
 
@@ -158,6 +168,43 @@ clauses, not on a missing phase, and it resolves itself as the corpus grows.
 blocks**. Two clauses writing `disallowed/1` with different extensions link cleanly and are wrong.
 That is a **stage 5 (normalise)** problem — see `SCRATCH_concept_phase.md` §5, where the merge veto
 is the proposed instrument.
+
+⚠️ **Sharper than "incomplete": the live wiring makes `concept-multi-gloss` STRUCTURALLY INCAPABLE
+of firing.** `run()` accumulates `_concepts` across the whole run — exactly the data the check wants
+— and then calls `repair_loop` **without** `concepts=`, so `run_checks` falls back to the module's
+own rows and every link sees a one-module table. A check that reports over a population of one is
+the "0.0000 means it measured nothing" shape (`phase_1/DEBUGGING_TIPS.md` §2), not merely a partial
+check. Verified still true 2026-08-07.
+
+---
+
+## D-4 — `world` facts are marked toggleable but are not actually switchable
+
+**Deferred 2026-08-07.** Invariant 2 requires a `world` fact to be *"marked and toggleable — a
+result resting on world knowledge is a different claim"*, and `schema.Licensed` enforces the **mark**:
+`licence: "world"` without `toggleable: true` is rejected (`schema.py:197`), and `toggleable` on a
+non-`world` fact is rejected (`:202`). **The switch does not exist.** `render_lp` emits the fact
+unconditionally and `_line` appends a trailing `% [W] toggleable` **comment** (`schema.py:910`); the
+only thing in a rendered module that is actually switchable is the **whole ontology block**, via
+`#const onto = on.` (`:972-973`).
+
+**What this blocks, precisely.** `03_pipeline.md`'s citation-checker table gives the `world` row as
+*"is it marked as world knowledge, and is it toggleable?"* — a deterministic check standing in for a
+human seat. Today it can only check the first half, so half of that check cannot run. And D-1's
+tier 3 ("licence strength") rests on the same mechanism, with stage-0 finding **F4** already showing
+the naive version wrong: *"change that one fact and the match disappears"* was false, because the
+match survived through a second independent world fact. **Toggleability needs minimal supports,
+plural** — which is an argument for building the switch once, properly, rather than per-fact.
+
+**Why deferring is safe.** Nothing stage 1 emits changes: a fact declares `world` and carries
+`toggleable: true` whether or not the renderer later gives it its own `#const`. The switch is a
+**rendering decision over an existing contract**, so no stored module is invalidated by building it
+later.
+
+⛔ **What must not happen** is `STEP_stage4.md:452`'s claim being read as closing this. It says the
+deterministic marked-and-toggleable check *"already exists in `schema.Licensed`"*. `Licensed`
+enforces the **flag**, which is the marking, not the switchability. Deleting this entry on the
+strength of that line would retire a check that was never built — and it would look like progress.
 
 ---
 

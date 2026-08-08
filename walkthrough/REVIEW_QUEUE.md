@@ -24,9 +24,12 @@ touching a watched file while **any** watched file is unreviewed.
 
 Accepting is per file: `guard.py --accept <path>`. There is deliberately no accept-all.
 
-⚠️ **A clean review of the five already ran** (`model/TRANSCRIPTION_REVIEW.md`). It found six items.
-Four are fixed. **§2.1 is now RULED and closed; §2.2 remains open.** Accepting the five now would
-certify files a review just found drifted.
+⚠️ **A clean review of the five already ran** (`model/TRANSCRIPTION_REVIEW.md`). Re-audited
+2026-08-07 (`REVIEW_DOC_AUDIT.md`): six of its nine findings are fixed, including both it called
+highest-cost, and its central decline is explicitly closed in the design. **§2.1 and §2.2 below are
+both now RULED and closed.** What is still open from it is **§2.3** — two prompt-set drifts — plus
+the design's own internal contradictions, collected in §8. Accepting the five now would certify
+files a review has found drifted and nobody has re-read.
 
 ⚠️ `resources/03_pipeline.md` and `phase_1/schema.py` were edited again on 2026-08-07 (the §2.1
 ruling, and the field-documentation move out of `10_output_format.md`). All three of those files
@@ -67,11 +70,49 @@ fourth licence class Invariant 2 says is still needed. **That gap is UNCHANGED a
 Adding `illegal/1` to the prompt is a prompt change and needs its own held-out measurement — it is
 not a documentation edit and must not be slipped in as one.
 
-### 2.2 The other open transcription item
+### 2.2 ✅ CLOSED 2026-08-07 — the two bad worked examples the prompt dropped
 
-Two of the design's five bad worked examples were swapped out for act-indexing and missing-sayer
-cases. Dropped: *"translates in isolation"* and the hollow stub the design calls *"survives a
-paraphrase check by construction."* Restore, or record the swap as deliberate.
+⭐ **RULED and recorded in `phase_1/DECISION_bad_worked_examples.md`.** Both halves are decided, and
+the second half was then decided **again** on evidence — read all three steps, because the middle one
+alone is the version this queue used to carry:
+
+1. **#4, the hollow stub** (*"survives a paraphrase check by construction"*) — **RESTORED** as bad
+   example #6, on a measurement: 10 of 133 concepts carry a gloss adding zero words beyond the
+   predicate name.
+2. **#2 "translates in isolation"** — the drop is **recorded as deliberate**, with grounds (the user
+   block now supplies every cross-referenced clause text: 77/77 anchored clauses) and a named reopen
+   condition. A stage-2 check for #4 is rejected **by name, twice**, with the measurement showing the
+   obvious proxy is inverted.
+3. ⚠️ **Bad example #6 was then REMOVED again** — added, measured twice, reverted by its own
+   pre-registered falsifier. See that file's **AMENDMENT 2026-08-07**.
+
+⛔ **Read step 3 correctly.** It is a **null result on a weak instrument**, not a refutation: n = 6
+clauses, one model, one temperature, and a proxy metric (`empty_gloss_rate`) that scores legitimate
+primitives like `system_message` as empty. Every delta was **inside the noise band** — the example
+was not shown to make anything worse. The failure mode is **real** (the 10-of-133 measurement, plus
+`STEP_stage4.md` finding (5) measuring it independently), and detection still lives at stage-4 seat
+4r.
+
+⛔ **This is NOT a blocklist.** Re-proposing it is explicitly allowed on a better instrument,
+adequate power (12 rule-positive clauses × 6 repeats, ≈ $0.21 — this ran 6 × 3), a different form
+(only one was tried, and neither form was ruled out), or a different model. **What must not happen is
+re-adding it without a fresh pre-registration because it reads well.**
+
+### 2.3 Two prompt-set drifts a transcription review found, still open
+
+Both are edits to **watched** files, so neither is a documentation fix: they need a held-out
+measurement and a review, like any other prompt change. Both re-verified 2026-08-07.
+
+1. **`00_task.md:35` says "a rule is not a fact… licences are for the facts your module asserts",
+   and the schema disagrees.** `10_output_format.md:89` and `schema.Licensed` require a licence on
+   `asserts` and `beats`, **both of which carry a `body`** — they are rules. The worked example's
+   `beats` entry is a rule carrying `licence: textual`. `00_task.md` is faithful to the design's
+   dataclass sketch and inconsistent with the three files beside it, which is what the model reads
+   together.
+2. **`00_task.md` never states that cross-referenced clause texts will be supplied.** Rule 2 (`:48`)
+   hedges — *"If you were shown the cross-referenced text, you may cite it"* — while the design makes
+   it one of four GIVEN items and calls it load-bearing. A model told it *might* be shown a
+   dependency has a licence to guess when it is.
 
 ---
 
@@ -154,3 +195,108 @@ transcriptions.
 4. ~~Retire `STEP_stage2_and_repair.md` into the design~~ — **done 2026-08-07. File deleted.**
    Abstention-as-an-outcome and the typed repair guard went into `resources/03_pipeline.md`; the
    arm-B withdrawal went into `DEFERRED.md` D-3; its stale "fresh conversation" text was dropped.
+
+---
+
+## 8 ⛔ HELD FOR ONE EDIT TO `resources/03_pipeline.md` — do not land these piecemeal
+
+**Collected 2026-08-07 from `REVIEW_DOC_AUDIT.md`.** Every item below has `resources/03_pipeline.md`
+as its destination. It is a **watched** file with another change in flight, so they are parked here
+rather than applied one at a time. **All four were re-verified against the file on 2026-08-07 and
+every line number below is current.** They are the *only* surviving reason to keep
+`model/REVIEW_FINDINGS.md` (604 lines) and are half the reason to keep
+`model/TRANSCRIPTION_REVIEW.md` — landing them retires documents, which is why they are worth doing
+together.
+
+⚠️ **Do them as ONE edit, then re-run `guard.py` and re-review the file.** Four separate edits to a
+watched file is four review points.
+
+### 8.1 The document contradicts itself on stage numbers, and the diagram is right
+
+Draft, to be placed **near the top of Part 1** so it is read before the diagrams:
+
+> ### ⚠️ Known internal inconsistencies in this document, 2026-08-07
+>
+> Recorded rather than silently carried, because two reviews independently stalled on them and a
+> third could not check `check(C, Stage, _)` against any single authority.
+>
+> **The stage numbers in the prose do not match the diagram, and the diagram is right.** Diagram:
+> 5 NORMALISE · 6 PARAMETERISE · 7 EXPAND · 8 LINK · 9 MUTATION. Prose that disagrees: *"Stage 7's
+> merge"* (`:1052` — the merge is stage 5); *"visible only at stage 9"* (`:1164` — that is LINK,
+> stage 8); *"seat 5c"* (`:1061` — the seats are 4a–4d); a heading `### 6 — Divergence` (`:806`)
+> where the diagram leaves DIVERGENCE unnumbered and gives 6 to PARAMETERISE; a heading `### 9 and
+> 10 — Testing the tests` (`:860`) whose body opens *"**11 — Translate twice**"*.
+>
+> **The failure-mode count is given as 16 in one place and 17 in every other.** Part 3's diagram node
+> reads *"and the 16 error cases"* (`:232`); the stage-1 diagram says *"the 17 known failure modes"*
+> (`:394`); Part 1's table has seventeen rows and `phase_1/prompt/30_failure_modes.md` transcribes
+> all seventeen. **#17 was added later and that one node was not updated.**
+>
+> **Part 6's *"⭐ Stage 1 has never been run"* is stale** (`:1139`). It has run: three clauses on
+> 2026-08-07, then 36 first attempts across two prompt arms in `phase_1/eval_arms/`. The same
+> sentence survives in `phase_1/translate.py`'s module docstring (`:7`) — recorded in
+> `phase_1/README.md` under "What a run does".
+>
+> ⇒ **Until these are corrected, do not derive anything from a stage number stated in prose.** Read
+> the diagram, and cite the stage by NAME. A reviewer who cannot resolve "stage 2" against a single
+> authority cannot check whether a check is at the right stage, which is how a coverage check ended
+> up asserted at a stage that could not build its inputs.
+
+### 8.2 The unresolved inline reviewer query at `:437` is still embedded in the design
+
+Part 4 §1's GIVEN table still carries, in the right-hand column of the cross-reference row, an
+unanswered query: *"<√Are you confidence the document's own mardown anchors are sufficient to give
+every cross reference accurately?…>"* — while the cell beside it asserts the anchors *"give this list
+mechanically"*, unqualified, in the **source of truth**. It is **partly answered** and the answer is
+not next to it. Draft replacement for the cell (and delete the query column):
+
+> | the text of every clause this one cross-references | ⭐ a clause that modifies rules defined
+> elsewhere cannot be translated in isolation. The document's own markdown anchors give this list
+> mechanically — ⚠️ **for the 13 % of clauses that carry one.** `[RAN]` 77 clauses of 593 have a
+> resolvable anchor and all 77 receive the referenced text; the rest are supplied nothing. Finding
+> the unanchored dependencies is an open problem, and a clause that depends on another without an
+> anchor still reaches failure mode #2 with nothing to prevent it. Recorded with its measurement in
+> `phase_1/DECISION_bad_worked_examples.md`, which drops the "translates in isolation" worked example
+> on the strength of the mechanism existing — **not** of the mode being impossible. |
+
+### 8.3 Attack D belongs in the typed-repair-guard attack table
+
+`CONFORMANCE_REVIEW.md` F10, **reproduced 2026-08-07**: a module with `acts: []`, `asserts: []`,
+`ontology: []`, `beats: []`, `defines: []`, `closure: []` and **one** `concepts` entry validates
+clean and reports `outcome == "translated"`. Its rendered `.lp` is comment lines and two
+`%!show_trace` directives — **not one fact, not one rule.**
+
+⚠️ One correction to the review's version: `claims` must be **non-empty** (validation raises
+*"translated with no `claims`"*), so the attack carries a claims block it never encodes. That makes
+it *worse*, not better — the `.lp` states in a comment what the logic does not say.
+
+Draft:
+
+> ⛔ **Attack D — delete the content, keep the declarations.** A module whose only surviving field is
+> `concepts` satisfies the "did you translate anything" guard, and a module with `acts: []` owes no
+> closure declaration at all, because the forced closure is derived from the acts the module governs.
+> Together they make a **contentless module a passing translation**: zero asserts, zero ontology
+> facts, zero rules, a `.lp` containing only comments, `status: "translated"`, counted in the run's
+> success line. Measured on `m0037`: attempt 1 wrote a whole rule into an `atom` slot, the finding
+> was correct, and attempt 2 cleared it by **deleting the entry** rather than moving the conditions
+> into `body`.
+>
+> This is the same shape as attacks A–C and belongs with them: the guard must be **typed**, not
+> sized. The `shrank` flag is not the fix — it fires and sets no outcome. A translated module owes at
+> least one of `asserts` / `defines` / `ontology` / `beats`, and a module that governs no act is a
+> claim about the clause that should have been an abstention.
+
+⚠️ **8.3 touches `schema.py` as well as the design, and `schema.py` is watched too.** Its two guards
+sit immediately beside the F4 fix (`concepts` was deliberately REMOVED from the declaration set). See
+§8.4 — fix them together or not at all.
+
+### 8.4 ⛔ `acts` is not a declaration site, and F4 must not be re-opened while fixing it
+
+Recorded in full as `phase_1/DEBUGGING_TIPS.md` §13, with the reproduction. Named here because the
+**design** side of it belongs in the same `03_pipeline.md` pass, and because the trap is the sort
+that gets walked into by whoever fixes §8.3: `schema.py` builds `known` from
+`ontology ∪ requires ∪ inputs`; `concepts` was removed from it **deliberately**, because a rule
+resting only on concept declarations can never fire. **The distinction to preserve: an act is a
+declaration site because the module governs it and owes a closure over it; a concept is not, because
+saying what a name means never says that anything derives it.** Fixing F5 by loosening `known` is how
+F4 comes back.

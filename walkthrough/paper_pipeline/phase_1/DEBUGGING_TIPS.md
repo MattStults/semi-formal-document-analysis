@@ -68,6 +68,27 @@ indistinguishable from "no difference" unless the population size is reported ne
 ⇒ **Every rate needs its denominator printed beside it.** If you cannot see how many things a
 metric was computed over, you cannot read the metric.
 
+⛔ **A live instance, found 2026-08-07 and now fixed: the run summary counted `abstained_under_repair`
+as TRANSLATED.** `run()` computed `n_ab` by matching `status == "abstained"` **exactly**, then printed
+`len(results) - failures - n_ab` as the translated count. `abstained_under_repair` matches neither the
+abstained test nor the failure branch — it is admitted on the success branch — so it landed in
+"translated". A clause the model declined after two failed attempts was reported as a success, in the
+one line a human reads.
+
+⇒ **When a status set grows, every place that partitions on it has to grow with it.** The record was
+fixed months before the arithmetic was: `run.json` carries the distinction and `test_repair.py
+::test_abstained_UNDER_REPAIR_survives_into_the_record` pins it — but that test reads the **stored
+field**, and the defect was in a number **derived** from it one line below. `README.md`'s status list
+was missing the value too, which is how it stayed invisible.
+
+⭐ **The generalisable form: a fix and its test must meet at the number a human actually reads.**
+Grep every consumer of a status before adding one, pin the **derived counts** and not just the stored
+field, and make the residual loud — `run()` now counts `translated` by name and prints a warning
+naming any status its partition does not cover, so the next status added cannot be silently absorbed
+into the most flattering bucket. Pinned by `test_cost_and_summary.py
+::test_the_PRINTED_SUMMARY_does_not_count_an_abstention_as_a_translation`, which asserts on the
+printed line via `capsys`.
+
 ## 3 ⛔ Never measure a fix on the clauses that motivated it
 
 The `read_back` fix went 6 → 0 on the eight clauses it was diagnosed from, and read as
@@ -129,6 +150,16 @@ them"* and never converged.
 ⇒ Only `error` severity drives repair. When reading a graveyard entry, filter to errors before
 counting anything, or the ranking is dominated by findings that are true of correct modules.
 
+⚠️ **`per_attempt` in `run.json` is not an error count.** `repair_loop` records `len(found)` over the
+**complete** findings list, notes included (`translate.py`, `per_attempt.append(len(found))` at the
+top of the attempt loop). A clause whose only surviving findings are `requires-unprovided` notes —
+true of every correct single-clause module — reads as `per_attempt: [1, 1]`, **byte-identical** to a
+clause with one real error on both attempts, which is what `m0091` was. Any convergence rate computed
+off this field is measuring note volume. Filter by severity before counting, or read
+`surviving_findings`, which is only written on the failure path. The rule above tells a *reader* to
+filter; the recorded field itself still mixes the two, and `per_attempt` is what a convergence
+measurement would group on.
+
 ## 8 A check that cannot run must not exit like a check that passed
 
 The staleness guard was red for two hours and nobody looked, because the hook had never been
@@ -137,6 +168,29 @@ vacuously** because pytest runs files alphabetically and it ran first.
 
 ⇒ Verify RED before you trust GREEN: break the thing on purpose and confirm the check fails. A
 missing venv, a regex that matches nothing, an empty artifact — all must **block**, never skip.
+
+⛔ **A live instance of exactly this, found 2026-08-07 inside the function written to prevent it.**
+`link._check_clingo`'s guard is `if errs or r.returncode not in CLINGO_OK_RC:` — two **deliberately
+redundant** detectors, and only the first was tested. Mutating the line to `if errs:` **survived all
+352 tests and `link.py --self-test` 19/19**. The redundancy is not decorative: with `clingo` missing
+from the interpreter the output is *"No module named clingo"*, `CLINGO_ERR` matches **zero** of it,
+and the finding is raised by the return code **alone**. Under the mutant, a link check over a program
+that was never compiled reports **clean** — the "pass indistinguishable from did-not-run" shape this
+project names as its recurring failure, sitting unpinned inside its own guard.
+
+⇒ **When a guard is deliberately redundant, each arm needs its own RED test.** A test that only
+exercises the arm that fires most often converts the redundancy into decoration — and the arm left
+behind is the one covering the **environment** failure, which is precisely the one you cannot reach
+by writing a bad program. Both arms are now pinned (`test_link.py
+::test_d4_clingo_that_NEVER_RAN_is_a_failure_even_with_no_error_text`, with
+`::test_d4_every_documented_clingo_exit_code_stays_silent` as the `if True:` guard).
+
+⚠️ **And do not write that test as "run a python that happens to lack clingo".** That makes the test
+a claim about the machine it runs on: install clingo system-wide and it silently stops testing
+anything — this same failure mode, one level up. Script the two observables the check reads (a fake
+interpreter that ignores its arguments, prints what you choose and exits the code you choose), and
+**assert the premise inside the test**: `CLINGO_ERR.findall(blob) == []`, so the day the regex grows
+to match the missing-module message the test says so instead of quietly passing on the other arm.
 
 ## 9 Do not pin an exact value of a live artifact in a test
 
@@ -210,3 +264,76 @@ that lost, and exclude every clause used to derive it from the draw. A selection
 *where* a failure occurs, not *what fixes it*, so it cannot manufacture a difference between arms
 — but it can make the eval set atypical, and that is a real limitation to write down rather than a
 loophole.
+
+## 13 ⛔ `acts` is not in the body-declaration set, and the message it produces is wrong
+
+**Still live, reproduced 2026-08-07.** `schema.py`'s D4b-level-1 check builds `known` from
+`ontology ∪ requires ∪ inputs`. `acts` is **not** in it. So a module that declares
+`be_explicit_about_inability(I)` in `acts` — correctly — and then references it in a rule body is
+told:
+
+```
+body references `be_explicit_about_inability` but nothing declares it. Put it in this module's
+`ontology`, in `requires` (another clause defines it), or in `inputs` (a fact about the case).
+An undeclared name cannot be told apart from a typo
+```
+
+All three remedies are **wrong for an act**, and following any of them corrupts the module.
+
+**The cost is not a bad message, it is non-convergence.** The finding is `error` severity, so it
+drives repair; the model can only clear it by doing something wrong; the loop exhausts. `m0091` was
+the one `unrepaired` clause of the first live run for exactly this reason, and it burned a paid
+attempt to learn nothing.
+
+⛔ **The trap:** the neighbouring block was tightened **deliberately** — `concepts` was REMOVED from
+`known` because a rule resting only on concept declarations can never fire, and `fixtures.py:14-19`
+records a wrong test fixture (`political()`) corrected in that same change. Do not undo that while
+fixing this. **The distinction to preserve: an act is a declaration site because the module governs
+it and owes a closure over it; a concept is not, because saying what a name means never says that
+anything derives it.**
+
+⚠️ Getting to the reproduction takes four rounds with the validator, and every intermediate failure
+is a *different, correct* error — act-entry-is-not-a-term, act-not-declared, closure-not-declared,
+closure-field-name. Do not read those as "the schema already catches it". The reproduction is: both
+acts declared, a closure row for each, and the act referenced in another assertion's `body`.
+
+## 14 ⛔ The cost estimate was on the wrong side of its own stated rule
+
+**Found and fixed 2026-08-07.** `estimate_cost` grew the *input* term triangularly in
+`max_attempts` — but only over `len(system) + len(user)`. Each repair turn also resends **every prior
+completion**, worth up to `max_tokens` (16,384 — about 12× the user block), and that term was
+**absent**. At the shipped `max_attempts: 3` the printed worst case was **12.7 % below** the true
+worst case; at 5, **21.4 %** below.
+
+| `max_attempts` | printed "cost (worst)" | true worst case | under by |
+|---|---|---|---|
+| 2 | $0.013265 | $0.014196 | 7.0 % |
+| **3 (shipped)** | **$0.021943** | **$0.024734** | **12.7 %** |
+| 4 | $0.031984 | $0.037566 | 17.5 % |
+| 5 | $0.043389 | $0.052692 | 21.4 % |
+
+⛔ **The trap is that two documents told you this could not happen.** `config.json`'s comment says
+*"Overstating an estimate is survivable; understating is how a hard cap gets passed"*, and
+`README.md` explained the triangular growth as *"because each repair turn resends the transcript"* —
+**which is the exact term that was missing**. The estimate was described by its own rationale as
+conservative while being anti-conservative, on the project with a hard $8.50 ledger. A reader
+checking the estimate against the README was told the error could not exist.
+
+⚠️ **Two errors point in opposite directions and partly mask each other.** The estimate
+**over**-charges the full user block on every repair turn, while the loop actually re-sends only an
+error log. **Do not net them off.** The over-charge is deliberately kept; high is survivable, low is
+not.
+
+**The check to run:** price a repair sequence **by hand, attempt by attempt** — attempt 1 is
+`system + user`; attempt *k* is `system + user + (k−1) × max_tokens` of prior completions — and diff
+it against the printed number. Write it out as a loop, not as a closed form: re-deriving the same
+algebra the code uses lets one slip pass both.
+
+⛔ **A test asserting `three > one * 2.5` cannot see this**, and one existed. With `max_tokens=1000`
+and the strings `"sys"` / `"user"`, the **output** term alone gives exactly 3×, so the assertion
+passes with the input term contributing nothing measurable. ⇒ **A cost test written on toy strings
+measures the output term and nothing else.** Use realistic sizes (the real 33,614-char system block
+and a real user block), and add an isolation test: hold everything fixed, raise **only**
+`max_tokens`, and require the **input** token count to move. `test_cost_and_summary.py` does both,
+with `::test_one_attempt_bills_no_carried_completion` as the guard that stops "just inflate the
+estimate" from passing.

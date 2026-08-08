@@ -35,6 +35,16 @@ One clause at a time, and each clause runs the same three steps:
 The output is a **JSON object**, not raw ASP. `schema.py` validates it and renders the `.lp`; the
 object is the record and the `.lp` is a rendering of it.
 
+⚠️ **`translate.py`'s module docstring and its end-of-run banner are STALE and say the opposite of
+what the harness does.** Both still date from before stage 2 existed: the docstring opens *"Stage 1
+has never been run"* and *"⛔ IT VALIDATES NOTHING ABOUT THE TRANSLATION… Stage 2 is those checks and
+it is deliberately not built yet"*, and every run ends by printing *"⛔ NOTHING here has been
+validated. No compile, no link, no read-back."* Since stage 2 became the unconditional gate, every
+attempt is compiled by clingo, link-checked, rule-shape checked and cycle checked before anything is
+written. Believe this file and the code, not those three strings, until they are corrected.
+(`translate.py` is not a watched file, so nothing will catch it. Verified still present
+2026-08-07: `translate.py:7`, `:10-14`, `:1225`.)
+
 ## What it checks, and what it still does not
 
 **Checked, deterministically, before a module is ever written:** the schema contract (every field,
@@ -161,6 +171,20 @@ attempt count because each repair turn resends the transcript — because on a r
 hidden reasoning is billed as output and dominates. Overstating is survivable; understating is how
 a hard cap gets passed. The gate refuses before anything is sent.
 
+⛔ **This paragraph was false for the term it names, and the correction is worth reading.** "Each
+repair turn resends the transcript" was the stated reason for the triangular growth, and the
+transcript's largest component — the **prior completions**, up to `max_tokens` each, roughly 12× the
+user block — was never billed as input on the next attempt. At the shipped `repair.max_attempts: 3`
+the printed worst case came out **12.7 % below** the true worst case (7.0 % at 2, 17.5 % at 4,
+21.4 % at 5), i.e. anti-conservative, in the one direction `config.json`'s own comment says must
+never be wrong. `estimate_cost` now adds `(k−1) × max_tokens` of carried-forward completion to
+attempt *k*'s input, and `test_cost_and_summary.py` prices a repair sequence attempt by attempt and
+asserts the estimate is never below it.
+
+⚠️ The estimate still **over**-charges the full user block on every repair turn (the loop actually
+re-sends only an error log). That is left in deliberately, and the two errors must not be netted off
+against each other: high is survivable, low is not.
+
 ⚠️ **This harness's spend is invisible to `spend.py`.** The configured provider is defined inline in
 `config.json` rather than in `providers.json`, and `spend.py` prices only from the latter, so these
 rows are logged and then dropped from the total. Every run prints the residue rather than swallowing
@@ -189,9 +213,38 @@ runs/<timestamp>-<provider>/
                              per-clause status, attempts, findings, licence counts, spend
 ```
 
-`run.json`'s `status` is one of `translated` · `abstained` · `unrepaired` · `error`.
-`unrepaired` means the repair loop was exhausted with findings still standing; those findings are
-written out beside it as `surviving_findings`.
+`run.json`'s `status` is one of `translated` · `abstained` · **`abstained_under_repair`** ·
+`unrepaired` · `error`. `unrepaired` means the repair loop was exhausted with findings still
+standing; those findings are written out beside it as `surviving_findings`.
+
+⭐ **`abstained_under_repair` is a distinct status and this list used to omit it**, which is exactly
+how it also went missing from the run summary's arithmetic — for a while a clause the model refused
+*after being told twice that it was wrong* was printed as a successful **translation**. A
+first-attempt abstention is a real answer; one produced under repair pressure is not, and counted
+together a model can abstain its way out of the hard clauses while the rate reads ordinary. The
+summary now counts `translated` by name, prints the two abstention kinds separately, and says so
+loudly if any status it does not partition on appears — so the next status added is loud rather than
+silently absorbed into the most flattering bucket.
 
 `run.json` is rewritten after **every** clause, not at the end, so an interrupt or a network drop
 never loses the record of clauses already paid for.
+
+## Known unpinned edges
+
+These are true today (re-verified 2026-08-07), cheap, and recorded so nobody rediscovers them:
+
+- **`cross_references.max_clauses_per_target` is observed by no test.** Its only occurrence outside
+  `config.json` is `translate.py:224`. It changes what is sent and what is billed.
+- **`CorpusError("selection matched no clauses (kinds=…)")` misdiagnoses** (`translate.py:180`).
+  After the empty-selection branch has already raised, the only way to reach it is a section+kind
+  intersection — so it blames `kinds` for an intersection failure. Untested.
+- **`resolve_provider` prepends the `providers.json` directory to `sys.path` permanently**
+  (`translate.py:449`), ahead of `phase_1/`, and that directory (`semi-formal-experiment/`) contains
+  its own `translate.py`. Nothing imports `translate` after that today; it is one filename away from
+  a very confusing bug.
+- **`self_test`'s `_StubClient` has no `complete_messages`** (`translate.py:1711-1722`). Stage 2 is
+  now unconditional, so a stub that ever returns a repairable failure will die with `AttributeError`
+  instead of a named refusal. More consequential now than when it was written.
+- **The repair default disagrees three ways:** `run()` falls back to `1` (`translate.py:968`),
+  `repair_loop`'s signature says `3` (`:2207`), `config.json` ships `3`. The severe half is fixed —
+  `max_attempts=1` no longer disables stage 2, because `repair_loop` runs the checks once regardless.

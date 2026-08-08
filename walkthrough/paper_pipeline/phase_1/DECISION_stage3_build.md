@@ -153,6 +153,20 @@ no-reduction version as the mutant that must kill it.
 
 ## 3b What the tool reproduces on `m0255`, independently of the plan
 
+⭐ **The exact invocation, from `walkthrough/paper_pipeline/phase_1/`:**
+
+```bash
+../../../semi-formal-experiment/.venv/bin/python probe.py ../../m0255.lp ../../clauses/*.lp
+```
+
+⛔ **THE LINKED CLAUSES ARE PART OF THE FIGURE, NOT SCENERY.** `7/9` is the number **with**
+`clauses/m0200.lp m0201.lp m0203.lp` on the command line. The module **alone**
+(`probe.py ../../m0255.lp`) scores **`discrimination = 4/9`** — a different and much worse-looking
+number for the same file, because the signature drops from 8 ground atoms to 6 (`2^8` → `2^6`
+candidates) and rules 0, 2 and 3 lose every situation that could distinguish them. A coverage figure
+for a single module is a figure about **what it was linked against**; quoting one without its link
+set is not reproducible. `[RAN]` 2026-08-07, both invocations.
+
 ```
 |R| = 9 rule(s) mutated · coverage: discrimination = 7/9 covered
   rule 7: uncovered — 0 discriminating situation(s)      ← C3

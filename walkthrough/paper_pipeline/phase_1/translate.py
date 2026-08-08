@@ -783,9 +783,30 @@ def estimate_cost(system, users, prov, cfg, max_attempts=1):
     # the transcript so far — so input grows too. Triangular in the attempt
     # count, not linear. Over-estimating is survivable; under-estimating is how
     # a hard cap gets passed.
+    #
+    # ⛔ THE TRANSCRIPT CONTAINS THE PRIOR COMPLETIONS, AND THEY WERE NOT
+    # BILLED. The prose above and `config.json`'s comment both said this
+    # estimate was conservative "because each repair turn resends the
+    # transcript" — while pricing only `system + user`. Attempt k also resends
+    # every earlier completion, worth up to `max_tokens` each (16,384: about
+    # 12× the user block). At the shipped `max_attempts: 3` the printed worst
+    # case was 12.7 % BELOW the true worst case; at 5, 21.4 % below. That is
+    # the one direction the design says must never be wrong, on a project with
+    # a hard ledger cap.
+    #
+    # Worst case, attempt k: `system + user + (k-1) * max_tokens`. Summed over
+    # k = 1..T that is `T*(system+user) + max_tokens*T*(T-1)/2`.
+    #
+    # ⚠️ The `system + user` block is kept at the OLD triangular T(T+1)/2
+    # rather than the exact T. It over-charges — the loop resends an error log,
+    # not the full user block — and that is deliberate: an estimate is allowed
+    # to be high and is not allowed to be low. Do NOT net the two errors off
+    # against each other; that is how the anti-conservative half got in.
     turns = max(1, int(max_attempts))
     growth = turns * (turns + 1) / 2
-    in_tok = sum((len(system) + len(u)) / cpt for u in users) * growth
+    resent = turns * (turns - 1) / 2          # completions carried forward
+    in_tok = (sum((len(system) + len(u)) / cpt for u in users) * growth
+              + prov.max_tokens * len(users) * resent)
     out_tok = prov.max_tokens * len(users) * turns
     if not prov.price_per_mtok:
         raise CostGateError(
@@ -1174,9 +1195,33 @@ def run(cfg, args, client_factory=None):
     finally:
         flush()
 
+    # ⛔ COUNT `translated` BY NAME, and partition on the WHOLE status set.
+    # This used to read `len(results) - failures - n_ab` with `n_ab` matching
+    # `status == "abstained"` exactly. `abstained_under_repair` is neither that
+    # nor a failure — it is admitted on the success branch above — so it landed
+    # in the TRANSLATED count: a clause the model refused after being told
+    # twice that it was wrong, printed as a successful translation, in the one
+    # line a human reads. The distinction was fixed in `run.json` and NOT in
+    # the arithmetic one line below it, because the test that closed it asserts
+    # on the stored field and never on this line.
+    #
+    # ⚠️ Any status this does not name now shows up in `other` and says so,
+    # rather than being absorbed into the most flattering bucket. That is the
+    # actual lesson: when a status set grows, every place that partitions on it
+    # has to grow with it, and a residual is how you find out that it did not.
+    n_tr = sum(1 for r in results if r.get("status") == "translated")
     n_ab = sum(1 for r in results if r.get("status") == "abstained")
-    print(f"\n{len(results) - failures - n_ab} translated, {n_ab} abstained, "
+    n_abr = sum(1 for r in results
+                if r.get("status") == "abstained_under_repair")
+    print(f"\n{n_tr} translated, {n_ab} abstained, "
+          f"{n_abr} abstained under repair, "
           f"{failures} failed. Raw responses kept in {outdir}")
+    other = len(results) - n_tr - n_ab - n_abr - failures
+    if other:
+        print(f"⚠️ {other} of {len(results)} result(s) carry a status this "
+              f"summary does not partition on, so the counts above do not add "
+              f"up. Statuses seen: "
+              f"{sorted({str(r.get('status')) for r in results})}")
     print("⛔ NOTHING here has been validated. No compile, no link, no read-back.")
     spent = getattr(client, "spent_usd", 0.0)
     if spent:

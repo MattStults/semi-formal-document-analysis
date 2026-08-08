@@ -50,6 +50,10 @@ Checked with `grep -rn "<basename>" --include=*.md --include=*.py --include=*.js
 `prompt/20_worked_example.md` and recorded the *other* drop as deliberate with a named reopen
 condition. `REVIEW_QUEUE.md` should be updated whether or not anything is retired.
 
+> ⛔ **This paragraph is itself incomplete — see §6.** Bad example #6 was restored, then measured
+> twice and **REMOVED again** (that file's AMENDMENT). `REVIEW_QUEUE.md` §2.2 now records all three
+> steps. Left standing above as written, because the correction is the point.
+
 ---
 
 # 1 · `paper_pipeline/phase_1/CONFORMANCE_REVIEW.md` (400 lines)
@@ -709,6 +713,50 @@ declarations can never fire, and `fixtures.py:14-19` records a wrong test fixtur
 in the same change. Fixing F5 by loosening `known` is how F4 comes back. The distinction to preserve:
 **an act is a declaration site because the module governs it and owes a closure over it; a concept is
 not, because saying what a name means never says that anything derives it.**
+
+---
+
+# 6 · ⭐ LANDED 2026-08-07 (later session) — what happened to each open finding
+
+The drafted paragraphs above are kept **as drafts, verbatim**, because two of them were landed with
+corrections and the diff between draft and landed text is the useful record. Every finding was
+**re-verified against the code before it was written down**; nothing here was transcribed on the
+audit's authority.
+
+| finding | disposition |
+|---|---|
+| ENG **F7** — `_check_clingo`'s return-code arm unpinned | ⭐ **FIXED, not just recorded.** Two tests added (`test_link.py::test_d4_clingo_that_NEVER_RAN_is_a_failure_even_with_no_error_text` + an `if True:` guard). RED-verified: the `if errs:` mutant fails the first, the `if True:` mutant fails the second. Lesson landed in `DEBUGGING_TIPS.md` §8 |
+| ENG **F4** — the cost estimate under-states | ⭐ **FIXED.** 12.7 % at `max_attempts: 3` re-derived independently and matches the table above exactly (7.0 / 12.7 / 17.5 / 21.4 %). `estimate_cost` now bills `(k−1) × max_tokens` of carried-forward completion on attempt *k*. Lesson landed as `DEBUGGING_TIPS.md` **§14** (not §12 — the file had grown), and `README.md`'s false paragraph corrected in place |
+| **NEW** — `abstained_under_repair` counted as translated | ⭐ **FIXED.** The summary now counts `translated` by name, prints both abstention kinds, and warns on any status it does not partition on. Pinned on the **printed line** (`test_cost_and_summary.py`). `README.md`'s status list corrected. Lesson landed in `DEBUGGING_TIPS.md` §2 |
+| CONF **F11-caveat** — `per_attempt` counts notes | landed in `DEBUGGING_TIPS.md` §7, as drafted. Re-verified |
+| CONF **F5** — `acts` not a declaration site | landed as `DEBUGGING_TIPS.md` **§13**. ⚠️ Reproduced, and the audit's recipe is incomplete: it takes four rounds with the validator, each intermediate failure a *different correct* error. The working reproduction is now in the tip |
+| CONF **F8a** — `world` toggleability | landed as `DEFERRED.md` **D-4**, as drafted. Re-verified (`schema.py:910` comment; `:972-973` is the only real switch) |
+| CONF **F8b** — weakest-licence inheritance | landed as a bullet on `DEFERRED.md` D-1, as drafted. Re-verified: the only two occurrences of the word are the two statements of intent |
+| ENG **RECORDED (partial)** — `concept-multi-gloss` cannot fire | one sentence added to `DEFERRED.md` D-3, as the audit recommended. Re-verified |
+| ENG **F10-residue** — `translate.py`'s stale docstring/banner | landed in `phase_1/README.md`, as drafted, with current line numbers (`:7`, `:10-14`, `:1225`). ⚠️ **The strings themselves were NOT corrected** — deliberately out of scope; the note is the tracking, and correcting the code is still owed |
+| ENG **smaller items a–e** | landed as `phase_1/README.md` "Known unpinned edges". **All five re-verified individually** and all five still true |
+| TRANS **I1 / I4** — two prompt drifts | landed as `REVIEW_QUEUE.md` §2.3, as drafted. Both re-verified |
+| REVIEW_FINDINGS **§4** + TRANS **H-residue** (stage numbers, 16-vs-17, `:437`, Part 6) and CONF **F10** (Attack D) | ⛔ **NOT LANDED — destination is `resources/03_pipeline.md`, which is watched with another change in flight.** Parked in `REVIEW_QUEUE.md` **§8**, in one clearly-marked section, for a single edit. All four re-verified with current line numbers |
+| **§5 item 12** — `REVIEW_QUEUE.md` is stale | fixed: §1's citation and §2.2 both rewritten |
+
+## ⚠️ Two things this audit got wrong, corrected on landing
+
+1. **The bad-worked-example item is closed differently than recorded.** This audit says bad example
+   #6 was *restored*. It was restored, then **measured twice and REMOVED again** — see
+   `DECISION_bad_worked_examples.md`'s **AMENDMENT**. The result is a **null on a weak instrument**
+   (n = 6, one model, deltas inside the noise band), explicitly **not** a blocklist, and the failure
+   mode is still real. `REVIEW_QUEUE.md` §2.2 now carries all three steps, because carrying only the
+   middle one is how the queue got stale in the first place.
+2. **The drafts' section numbers were already taken.** "new section 11" / "new section 12" for
+   `DEBUGGING_TIPS.md` collide with the existing §11 and §12; they landed as §13 and §14. A draft
+   that pins a position in a live file is the same class of defect as pinning an exact count.
+
+Also corrected: F10's contentless module must carry a **non-empty `claims`** (validation raises
+otherwise), so its `.lp` is comments *plus a CLAIMS block asserting things the logic does not say* —
+worse than the review's version, not better.
+
+**Suite after landing: 359 passed** (352 before + 7 new). No test was weakened, deleted or xfailed.
+No `guard.py --accept`, no `--live`, no spend, no push.
 
 ---
 
