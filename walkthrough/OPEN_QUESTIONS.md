@@ -9,6 +9,26 @@ chosen differently — that is the standing instruction.
 
 ---
 
+## Q-18 · Stage 0's competency check has 2 unexpected failures — red, and correctly loud
+
+`walkthrough/paper_pipeline/cq_check.py` reports **14 as declared, 2 unexpected, 2 blocked**.
+CQ-6.a and CQ-6.b fail against their written-first expectations. Pre-existing, unrelated to today's
+work, and outside the stage 1–4 scope I was given — recorded so it is not lost.
+
+⚠️ **A correction worth reading, because two of us got it wrong in the same way.** A subagent
+reported *"the tool exits 0 anyway, so stage 0's competency check is red and quiet"*, and I nearly
+filed that as a defect. It is false: `[RAN]` `cq_check.py` exits **1**. Both measurements had been
+taken through a shell pipe, where `$?` reports `tail`'s status and not the program's.
+
+⇒ The check is red and **loud**. Nothing needs fixing in its signalling; what needs attention is the
+two failures themselves, which is a stage-0 question.
+
+⭐ The general lesson is worth more than the finding: **`cmd | tail` silently discards the exit
+code**, and this repo's whole discipline is that a check must not be able to look like it passed.
+Two independent agents produced the same false "exits 0" claim from that one habit.
+
+---
+
 ## Q-16 ⛔ STAGE 4'S R3 LAYER DOES NOT EXIST — the xclingo derivation trees
 
 `STEP_stage4.md` §2.1 specifies **three** rendering layers. `readback.py` produces **R1 and R2
