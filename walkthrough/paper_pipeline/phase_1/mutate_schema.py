@@ -140,9 +140,14 @@ ALSO = {
     "_check_body / empty body": "body is present but empty",
     "_check_body / newline or brace": "contains a newline or brace",
     "_check_body / trailing full stop": "carries a trailing full stop",
-    # `_check_body / anonymous variable` was here. Removed with its guard on
-    # 2026-08-07 — same disproved renderer ground as REQUIRED guard 1 above,
-    # and a body binds its own variables so there is no safety ground either.
+    # ⛔ RESTORED 2026-08-07, hours after being removed. The removal's ground
+    # ("the renderer can cope") was evidenced against plain clingo and against
+    # ASP2CNL, and was true of both — but the tool the design actually names is
+    # xclingo, which dies on `_` in a body with an unsafe `#Anon` variable and
+    # takes the whole link set's explanation with it. `test_schema.py`'s
+    # replacement test RUNS xclingo rather than asserting the validator
+    # complains, so the ground is now pinned instead of merely stated.
+    "_check_body / anonymous variable": "anonymous variable",
     "Licensed / toggleable on a non-world fact": "toggleable is for `world` facts only",
     "ReadBack / empty read-back": "no read-back annotation",
     "Superiority / slot is not a clause id": "is not a clause id or a",

@@ -130,6 +130,11 @@ def _check_term(term, where, allow_vars=True):
 _BAD_IN_TEXT = re.compile(r'[\n\r"\\{}]')
 
 
+def _strip_strings(asp):
+    """Blank out quoted constants so a `_` inside one is not read as a variable."""
+    return re.sub(r'"[^"]*"', '""', asp)
+
+
 def _check_body(body, where):
     """Validate the conditions half of a rule — everything after `:-`."""
     if body is None:
@@ -147,12 +152,33 @@ def _check_body(body, where):
     if body.strip().endswith("."):
         raise ValueError(f"{where}: body carries a trailing full stop; the "
                          f"renderer adds one")
-    # ⭐ NO ANONYMOUS-VARIABLE REJECTION HERE, deliberately. `p(X) :- q(X,_)` is
-    # ordinary ASP, clingo derives from it correctly, and the renderer ground
-    # that used to justify rejecting it is disproved (see `_check_term`). A body
-    # is a conditions half: every variable in it, named or `_`, is bound by the
-    # literal it occurs in, so there is no safety ground either. The unsafe case
-    # is `_` in a term with NO body, and that is caught in `_check_term`.
+    # ⛔ RESTORED 2026-08-07 after being withdrawn the same day ON A FALSE
+    # GROUND. The withdrawal argued the renderer could cope, citing bare clingo
+    # (which does derive from `p(X) :- q(X,_)`) and the published ASP2CNL
+    # renderer (which skips hidden terms). Both true, and both about the wrong
+    # tool: `03_pipeline.md` names **xclingo**, and `STEP_stage4.md` makes it
+    # load-bearing for stage 4's R3 derivation layer. `[RAN]` xclingo 2.0b24 on
+    # `p(X) :- q(X,_).` with a `%!trace_rule`:
+    #
+    #     error: unsafe variables in:
+    #       _xclingo_sup(2,0,p(X),(#Anon0,X)):-[#inc_base];_xclingo_model(...)
+    #
+    # and the same program with a named variable renders `"p holds of a"`.
+    # xclingo's own transformation lifts body variables into a supporting term,
+    # where an anonymous one becomes unsafe — so this is not a limitation we
+    # could render around, and it takes the WHOLE LINK SET's explanation down,
+    # not one rule. `03_pipeline.md:239`'s stage-2 node D1 still requires "no
+    # anonymous placeholders"; the code now matches the design again.
+    #
+    # ⚠️ The lesson, and it cost a wrong commit: "the renderer can handle it"
+    # is not a claim about renderers in general. Name the tool and run it.
+    if _ANON.search(_strip_strings(body)):
+        raise ValueError(
+            f"{where}: anonymous variable `_`. It is ordinary ASP and plain "
+            f"clingo accepts it, but xclingo — which builds the derivation "
+            f"trees stage 4 reads — rejects the whole program with an unsafe "
+            f"`#Anon` variable, taking every linked clause's explanation with "
+            f"it. Name the variable, even if it is used once")
     for name in re.findall(r"(?<![A-Za-z0-9_])([a-z][A-Za-z0-9_]*)\s*\(", body):
         if name in BEHAVIOUR_NS:
             raise ValueError(

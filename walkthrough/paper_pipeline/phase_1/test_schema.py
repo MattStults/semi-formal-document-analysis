@@ -17,6 +17,7 @@ red seen once in the past is a memory.
 
 import json
 import re
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -169,28 +170,51 @@ def test_anonymous_variable_rejected_in_every_HEAD_term_slot(field, obj):
     bad(obj, "anonymous variable")
 
 
-def test_an_anonymous_variable_in_a_BODY_is_accepted_and_clingo_loads_it(
+def test_an_anonymous_variable_in_a_BODY_is_rejected_BECAUSE_XCLINGO_DIES(
         tmp_path):
-    """⭐ The paired control for the guard that was WITHDRAWN.
+    """⛔ This guard was withdrawn on 2026-08-07 and restored the same day, and
+    this test exists so that cannot happen a third time.
 
-    A restriction is only withdrawn honestly if something proves the newly
-    permitted case works end to end — not merely that the validator stopped
-    complaining. So this renders the module and runs clingo over it. Without
-    this test, restoring the deleted `_check_body` guard would break nothing.
+    The withdrawal argued "the renderer can cope", evidenced with bare clingo
+    (which does derive from `p(X) :- q(X,_)`) and with the published ASP2CNL
+    renderer (which skips hidden terms). Both claims were TRUE and both were
+    about the wrong tool. `03_pipeline.md` names **xclingo**, and stage 4's R3
+    derivation layer is built on it.
+
+    ⭐ So this test does not merely assert that the validator complains — that
+    is what the old test did, and it is exactly what let the guard be withdrawn
+    on a false premise. It RUNS XCLINGO and pins the ground itself, with a
+    named-variable control proving the failure is caused by the `_` and not by
+    the fixture.
     """
-    obj = module(
-        ontology=[dict(atom="disallowed(M)", gloss="the material is disallowed",
-                       body="restricted(M), tag(M, _)", **ASSUMED)],
-        requires=["restricted/1", "tag/2"])
-    mod = schema.validate(obj, clause_id="m0001", known_clause_ids=IDS)
-    lp = tmp_path / "m.lp"
-    lp.write_text(schema.render_lp(
-        mod, {"section_id": "s", "kind": "conditional", "quote": "text"}))
-    r = subprocess.run([str(VENV_PY), "-m", "clingo", str(lp), "--outf=3"],
-                       capture_output=True, text=True)
-    errs = [ln for ln in (r.stdout + r.stderr).splitlines()
-            if "error" in ln.lower()]
-    assert not errs, f"clingo rejected the rendered module: {errs[:2]}"
+    assert_raises_on = module(ontology=[dict(
+        atom="disallowed(M)", gloss="the material is disallowed",
+        body="restricted(M), tag(M, _)", **ASSUMED)], requires=["restricted/1", "tag/2"])
+    bad(assert_raises_on, "anonymous variable")
+
+    # ---- and the reason, executed ----
+    xclingo = os.path.join(os.path.dirname(str(VENV_PY)), "xclingo")
+    assert os.path.exists(xclingo), (
+        "xclingo is missing from the venv, so this test cannot verify its own "
+        "ground. It must not pass quietly: install it or delete this test "
+        "deliberately (DEBUGGING_TIPS entry 8)")
+
+    def run(body):
+        f = tmp_path / f"probe_{abs(hash(body))}.lp"
+        f.write_text('q(a,b).\n%!trace_rule {"p holds of %", X}.\n'
+                     f"p(X) :- {body}.\n" '%!show_trace {p(X)}.\n')
+        r = subprocess.run([xclingo, "--output", "ascii-trees", "-n", "0", "0",
+                            str(f)], capture_output=True, text=True)
+        return r.stdout + r.stderr
+
+    anon, named = run("q(X,_)"), run("q(X,Y)")
+    assert "unsafe" in anon.lower(), (
+        "xclingo accepted an anonymous variable in a rule body — the ground for "
+        "this guard has changed and the guard should be RE-EXAMINED, not this "
+        f"test relaxed. Output:\n{anon[:400]}")
+    assert "p holds of a" in named, (
+        "the named-variable control did not render either, so the fixture is "
+        f"broken and the assertion above proves nothing. Output:\n{named[:400]}")
 
 
 # ------------------------------------------------- unsafe variables kill files

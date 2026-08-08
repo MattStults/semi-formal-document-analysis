@@ -144,7 +144,18 @@ def test_layer1_renders_every_construct_without_error(body):
     assert all(s.text.strip() for s in spans)
 
 
-@pytest.mark.parametrize("body", EXOTIC)
+#: EXOTIC minus the constructs `schema.py` refuses at the CONTRACT layer.
+#: ⭐ The split is the point, not an inconvenience: the renderer must handle
+#: `_` — hand-written `.lp` files in this repo contain it, and `render_body` is
+#: called on them — while the stage-1 contract refuses to EMIT it, because
+#: xclingo dies on `_` in a body and takes the whole link set's explanation
+#: down. "The renderer can render it" and "the contract should admit it" are
+#: different claims, and conflating them is what caused that guard to be
+#: withdrawn on a false ground and restored hours later.
+SCHEMA_ADMISSIBLE = [b for b in EXOTIC if "_)" not in b and "_," not in b]
+
+
+@pytest.mark.parametrize("body", SCHEMA_ADMISSIBLE)
 def test_no_construct_is_refused_at_module_level(body):
     """The same constructs, reached through the public entry point."""
     mod = _mod(
@@ -620,3 +631,16 @@ def test_rb1_says_whether_the_label_is_in_the_gloss_or_in_the_renderers_text():
     msg = [f.message for f in rb.findings
            if f.check_id == "RB1-label-survives" and "nameless" in f.message]
     assert msg and "renderer's own text" in msg[0]
+
+
+def test_the_schema_admissible_split_is_real_and_not_vacuous():
+    """Guards the list comprehension above. If it silently became "everything"
+    or "nothing", the module-level test would either fail confusingly or cover
+    nothing at all — the vacuous-pass shape this repo keeps re-learning."""
+    assert SCHEMA_ADMISSIBLE, "the schema-admissible split is empty"
+    assert len(SCHEMA_ADMISSIBLE) < len(EXOTIC), (
+        "nothing was excluded, so the split is not doing its job — an "
+        "anonymous variable is expected to be excluded")
+    assert any("_" in b for b in EXOTIC), (
+        "EXOTIC no longer exercises an anonymous variable at all, so layer 1 "
+        "is untested on the one construct the contract refuses")
