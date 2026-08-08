@@ -1614,8 +1614,23 @@ def self_test():
     # to produce output the harness will reject on every clause.
 
     _ex_path = rel("prompt/20_worked_example.md")
-    _ex_blocks = [json.loads(b) for b in _JSON_FENCE.findall(
-        open(_ex_path, encoding="utf-8").read())]
+    # ⛔ FILTER, THEN PARSE. This used to `json.loads` every fenced block and
+    # filter afterwards, so ONE illustrative fragment killed the whole
+    # self-test before a single check ran — the same shape as the bare-fence
+    # bug this line already had once. A partial fragment legitimately uses a
+    # `...` placeholder to mean "and the rest of the fields"; it is not a
+    # module and is not this check's business.
+    #
+    # ⚠️ `test_prompt_examples.py` scans the same file and STRIPS `...` before
+    # parsing, so the two extractors disagreed and only this one broke. Kept
+    # deliberately different: that test asserts every fragment is well-formed,
+    # this one only cares about whole modules.
+    _ex_blocks = []
+    for _b in _JSON_FENCE.findall(open(_ex_path, encoding="utf-8").read()):
+        try:
+            _ex_blocks.append(json.loads(_b))
+        except json.JSONDecodeError:
+            continue                      # a fragment, not a module
     _ex_modules = [b for b in _ex_blocks if isinstance(b, dict)
                    and "outcome" in b]
     require(f"the worked example we SHOW the model validates "
