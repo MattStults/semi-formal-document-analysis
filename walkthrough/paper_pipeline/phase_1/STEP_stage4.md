@@ -178,13 +178,13 @@ link scope, and its stage-3 output:
 | **4b** | **Clean check** — a fresh seat, shown clause + rendering and **never the code**: *does the rendering assert anything the clause does not support?* | yes |
 | **4c** | **Source check** — per licensed item, shown that item and the text of the clause it cites: *does this clause license this?* Routed by licence class | yes |
 | **4d** | **Completeness** — shown the clause and **all** renderings across the stage-3 covering set: *which of the clause's claims does no rendering convey?* | yes |
-| **4v** | **Validate and route** — coverage, `unclear` rate, divergence triage, origin-filtered findings | no |
+| **4v** | **Validate and route** — coverage, `unclear` rate, the 4b/4c instrument check (§6), origin-filtered findings | no |
 
 ### What stage 4 does not do
 
-- **It does not decide whether the document is ambiguous.** Seat disagreement is a brief defect
-  until triaged otherwise (§6), and stage 4's output schema has no field in which a document-side
-  finding can be written.
+- **It does not decide whether the document is ambiguous.** The one cross-seat disagreement it
+  records is an accusation against the **renderer** (§6), and stage 4's output schema has no field in
+  which a document-side finding can be written.
 - **It does not judge behaviour or relevance.** No behaviour text enters any seat, per the
   namespace ruling (`STATE.md` NEW-2) that `schema.BEHAVIOUR_NS` already enforces at generation
   `[READ]`.
@@ -614,7 +614,7 @@ Parameterised by how its denominator is computed, exactly as the design says.
 ### 5.4 What an `unclear` rate is for
 
 `unclear` is a closed verdict in every seat's response schema (element 3, ≈ free at generation).
-Its rate is **not** evidence about the document. Under the divergence rule it is evidence about the
+Its rate is **not** evidence about the document. Under §6's rule it is evidence about the
 **brief or the artifact**, and it is read that way:
 
 - a high `unclear` rate on **one seat** ⇒ that seat's brief is under-informative;
@@ -658,44 +658,120 @@ zero bits.
 
 ---
 
-## 6 Divergence — enforced, not stated
+## 6 ⭐ AMENDED 2026-08-08 — the general divergence machinery is DELETED; one narrow check replaces it
 
-*"Diverge" means opposite verdicts, not different words* (`03_pipeline.md` §6). Two seats phrasing
-the same judgement differently is expected and uninteresting.
+**Matt's ruling, 2026-08-08.** Drop the general cross-seat divergence machinery. Keep one check:
+**4b vs 4c on the same item.** What follows is that ruling, the root cause it answers, and the
+alternatives rejected by name.
 
-⭐ **The enforcement is structural: there is no route by which stage 4 can emit a document-side
-finding.** The output schema's finding types are the six in §5.5, plus `seat-divergence`. There is
-no `ambiguity`, no `interpretation`, no `document-finding` field. A divergence therefore cannot
-become a claim about the document by being written down, because there is nowhere to write it.
+### 6.1 ⛔ The root cause: a transposition, not a coding error
 
-When two seats reach opposite verdicts on one item:
+`divergences()` produced **0 records over all 81 legal verdict combinations** — and 0 over all
+**255** combinations across every seat subset. `[RAN]`, twice, independently. The reason is
+structural: each seat's closed verdict set is **disjoint** from every other's (all six pairs), and
+both members of every `CONTRADICTIONS` pair sat inside **one** seat's vocabulary. `seat-divergence`,
+the brief-sha record, `promote`, `Triage`, and `report_line`'s *"NOT ADJUDICATED until triaged"*
+branch were all unreachable, and the five tests that pinned them built judgements
+`validate_judgements` **refuses** (`Judgement("4d", …, "unfaithful", …)`). §6's own headline was
+*"Divergence — enforced, not stated"*; as built it was neither.
 
-1. the item's verdict is recorded **`unclear`**, never resolved by fiat and never by a third seat
-   acting as tie-breaker;
-2. a `seat-divergence` record is emitted carrying the item id, both verdicts, both reasons, and the
-   **sha of each seat's brief and of the rendering** — so the two diagnoses the design names first
-   (ambiguous question, under-informative dossier) are checkable against the artifacts that
-   produced them;
-3. the record is `not adjudicated` until a human has triaged it as brief-defect or not, and the
-   triage is written into the run record with its grounds;
-4. **only then**, and only by a separate human-signed step, may an alternative reading enter the
-   project's interpretation registry — which carries the anti-fitting constraints this design lacks
-   (sha-pinned frozen set, adoption on document-side grounds only, one recorded vector never a
-   grid, blind adoption including the proposal queue).
+⭐ **The cause is a transposition from `03_pipeline.md`.** That §6's divergence is between **two
+reviewers answering the SAME question** — its own example is *"one reviewer saying the paraphrase is
+faithful and another saying it is not"*. This plan imported it as a mechanism **across four seats
+asking different questions**, which do not even share a unit:
 
-⚠️ **The design's preferred mechanism does not apply here and this plan says so.** §6's *"hold both
-readings and enumerate the situations where they decide differently; empty set ⇒ immaterial"* is
-native to ASP and is exactly right for **two translations** (stage 10). Two *seats* disagreeing
-about a paraphrase produce no second program to enumerate against. Borrowing the sentence without
-the mechanism would be self-report dressed as a deterministic check. Where a divergence can be
-reduced to two candidate modules, stage 10's machinery is used and the enumeration is run; where it
-cannot, step 3 above is the whole procedure and is recorded as a weaker one.
+| seat | its unit | its question |
+|---|---|---|
+| 4a / 4b | the whole rendering | is this rendering as-meant / faithful to the clause? |
+| 4c | one licensed item | does the cited clause license this item? |
+| 4d | one claim | do the sentences convey this claim? |
 
-⚠️ **Also recorded: `unclear`-vs-`faithful` is not a divergence.** Only `faithful` vs `unfaithful`
-is a contradiction in content. Firing seat-defect review on a seat that abstained would punish the
-honesty the closed-verdict set exists to permit, and would make `unclear` the expensive answer.
+⇒ **Two seats answering different questions differently is not a contradiction.** `4b: faithful`
+and `4c: unlicensed` can **both be true** — a rendering can faithfully render an item that lacks a
+valid citation. So can `4b: faithful` beside `4d: not-conveyed`. Nothing was broken; the wrong
+mechanism was imported.
 
----
+### 6.2 ⭐ The one check that earns its place: 4b vs 4c, same item
+
+**It is different in kind, not in degree.**
+
+* **4b is anchored to the RENDERING** and never sees the code — `build_4b_prompt` refuses every
+  `_MODULE_PATTERNS` shape.
+* **4c is composed from the MODULE** — `_item_text` builds its material out of the module's own
+  content, `build_4c_prompt` refuses any renderer mark, and `stamp_evidential` never stamps 4c
+  (pinned by its own test).
+
+⇒ When those two disagree about **one item**, **the only thing standing between them is the
+rendering.** That is evidence the **INSTRUMENT** is wrong, not the translation — which is why:
+
+1. a finding is emitted whose **origin marks it as an instrument defect** (`instrument-4b-4c`),
+   carrying **both verdicts, both reasons, the rendering sha and both brief shas**. The provenance
+   is the point, not bookkeeping: the diagnosis accuses the apparatus, so the artifacts that
+   produced the two answers must be re-readable — and *"the brief was under-informative"* has to be
+   ruled out before *"the renderer is wrong"* is believed;
+2. ⛔ **it routes to a HUMAN and never into the repair transcript.** `INSTRUMENT_ORIGIN` is not in
+   `DISCLOSABLE_ORIGINS`, `append_findings_to_transcript` refuses it, and `route` tests it
+   **first** — because whichever seat returned the negative verdict also emits its own seat
+   finding, which alone routes `re-translate`. Sending it back would ask the model to fix **our
+   renderer**, which it cannot see and cannot touch: a stage-1 call spent to learn nothing;
+3. ⛔ **neither verdict is rewritten.** The deleted machinery replaced both with `unclear`. That
+   destroyed the one thing §4.1 buys — 4c is the anchor *because* it is not downstream of the
+   rendering, and erasing its verdict because a rendering-reading seat disagreed makes the anchor
+   answerable to the very thing it exists to be independent of. The defect is recorded **beside**
+   both verdicts, both of which stay readable in the report and on the line.
+
+**Polarity, not verdict strings.** 4b and 4c answer in different words, so a check keyed on shared
+strings is a check that cannot fire — which is exactly what `CONTRADICTIONS` was. What the two
+seats **do** share is a sign: each closed set is one affirmative, one negative, one abstention.
+`POLARITY` maps `faithful`/`licensed` → true, `unfaithful`/`unlicensed` → false, `unclear` → none.
+A disagreement is **true vs false**. A verdict added to either set without a polarity is **refused
+at run time**, not silently read as an abstention.
+
+### 6.3 ⛔ Rejected by name
+
+* **"Compare every seat pair."** They ask different questions and do not share a unit (§6.1's
+  table). `4b: faithful` beside `4d: not-conveyed` is two true statements about one artifact. This
+  is the exact transposition that made the deleted machinery dead, and generalising the surviving
+  check back out would reintroduce it wearing a working coat.
+* **"Treat `unclear` as a divergence."** `unclear` from either side is **not** a disagreement. This
+  matches §6's own note, and more importantly it avoids making `unclear` expensive for a seat to
+  say: this project's standing position is that `unclear` gets *"the same framing abstention gets at
+  stage 1"*. Penalising it creates pressure toward **false confidence**, which is worse than a
+  missed divergence because it is **invisible** — a missed divergence leaves the artifact intact for
+  the next reader; a manufactured `faithful` does not.
+* **"Key `divergences` on one seat run at two model tiers"** (`REVIEW_stage4` F1's candidate (a)).
+  Not taken here, and not because it is wrong — §7's small-model/frontier parity run is a real and
+  separate measurement, with a separate authorisation and a separate brief. Folding it into a
+  cross-**seat** mechanism would make one function mean two different things, and the tier
+  comparison does not need this machinery to exist.
+* **"Resolve the disagreement to `unclear` and carry on."** See §6.2(3).
+
+### 6.4 What is unchanged
+
+⭐ **There is still no route by which stage 4 can emit a document-side finding.** The output schema
+has no `ambiguity`, no `interpretation`, no `document-finding` field, and `refuse_aggregate` refuses
+one at construction **at every nesting depth, in keys and in values**. An instrument defect is a
+finding about the renderer; it is not, and cannot become, a claim about the document. `promote` and
+`Triage` are gone with the machinery they served — the human triage of an instrument defect happens
+outside stage 4 entirely, and stage 4's job ends at handing over the record with its provenance.
+
+⚠️ **The design's preferred mechanism still does not apply here and this plan still says so.**
+`03_pipeline.md` §6's *"hold both readings and enumerate the situations where they decide
+differently; empty set ⇒ immaterial"* is native to ASP and exactly right for **two translations**
+(stage 10). Two seats disagreeing about one item produce no second program to enumerate against.
+
+### 6.5 ⚠️ Does it fire? Not on today's corpus, and the reason is honest
+
+**No seat has ever been run.** Nothing has been spent, so there are no stored judgements and the
+check has fired **zero** times — as has every other seat-verdict mechanism in stage 4. Stated
+plainly because *"a check that cannot fire"* is precisely what is being replaced, and the
+replacement must not be sold as more than it is.
+
+What **is** established, and is what the deleted machinery could not claim: the check is
+**reachable**. `[RAN]` over every stored module that reaches a seat, 4b's denominator and 4c's
+judgeable set share **every** item id — 5 to 18 shared items per clause across 7 clauses — and both
+verdicts in a disagreement are legal for their own seat. `test_20_run_clause_emits_the_instrument_
+defect_END_TO_END` drives it on a real module through the same seam a live run uses.
 
 ## 7 Cost
 
@@ -820,8 +896,10 @@ on everything is pinned by nothing.
 | 16 | a 4c denominator excluding `Concepts` ⇒ refused | denominator = concepts + ontology + asserts + beats + defines ⇒ allowed | §5.1. `[RAN]` excluding them takes the run's denominator from **12 to 1** |
 | 17 | a judgement naming an id not in the denominator, a missing id, or an empty reason ⇒ **not adjudicated** | a complete judgement set with reasons ⇒ adjudicated | §5.3, the coverage rule |
 | 18 | a `world`-licensed item appearing in 4c's judgeable set ⇒ refused | a `world` item checked deterministically for marked+toggleable ⇒ allowed | §5.2. `[RAN]` the deterministic half already exists in `schema.Licensed` |
-| 19 | `faithful` vs `unfaithful` on one item ⇒ `unclear` + `seat-divergence` with both brief shas | `faithful` vs `unclear` ⇒ no divergence record | §6. Firing on abstention punishes the honesty `unclear` exists to permit |
-| 20 | a `seat-divergence` promoted to a document-side finding without a recorded human triage ⇒ refused | promoted **with** triage grounds recorded ⇒ allowed | §6. The route must not exist, not merely be discouraged |
+| 19 | ⭐ **AMENDED 2026-08-08.** 4b `faithful` + 4c `unlicensed` on one item ⇒ an **instrument defect** carrying both verdicts, both reasons, the rendering sha and both brief shas | `unclear` from EITHER side ⇒ no record; and no OTHER seat pair is compared at all | §6.2/§6.3. Both verdicts are legal for their own seat — which is what the deleted machinery could not manage. Firing on abstention prices honest hedging |
+| 19a | ⭐ an instrument defect reaching a repair transcript ⇒ refused; `route` returns `carry` → a human | a seat finding ALONE ⇒ `re-translate`, as §5.6 says | §6.2(2). The instrument branch must win, or every defect is handed back to the translator |
+| 19b | a verdict in `VERDICTS["4b"]`/`["4c"]` with no `POLARITY` entry ⇒ refused | the six mapped verdicts ⇒ judged | §6.2. An unmapped verdict read as an abstention is a check that silently stops firing |
+| 20 | any consensus / `ambiguity` / `interpretation` / `document-finding` field, at ANY nesting depth, in a key or a value ⇒ refused at construction | four per-seat verdicts + 4a in `advisory` + the instrument record ⇒ allowed | §6.4. The route must not exist, not merely be discouraged |
 | 21 | the `unclear` rate absent from the report ⇒ refused | rate present and **zero** ⇒ allowed | §5.4. A field printed only when non-zero cannot be read as "we measured it" |
 | 22 | the renderer handed a module whose body predicate is declared only as a `Concepts` entry ⇒ never reached, because stage 2 rejects it `[RAN]` | the patched `m0217` fixture ⇒ renders | §0(1)/(2). Stage 4's fixtures depend on that stage-2 guard; it **is** pinned (two tests), so this row asserts the dependency, not the guard |
 | 23 | ⭐ **totality.** Each of §2.3's twelve `[RAN]` constructs — aggregate, conditional literal, comparison, interval, pooling, choice rule, weak constraint, nested function, `_`, … — ⇒ a non-empty rendering, no exception, no `None` | — the control here is that **all twelve** pass; one failing is the finding | §2.3. A renderer with a failure branch puts the pressure back on `schema.py` as a restriction on what a translation may say |

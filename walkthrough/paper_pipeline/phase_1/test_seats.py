@@ -771,66 +771,166 @@ def test_the_unclear_rate_is_split_by_sentence_length(monkeypatch):
 
 
 # ==========================================================================
-#  §6 / tests 19 and 20 — divergence, enforced not stated
+#  §6 / tests 19 and 20 — the ONE cross-seat check: 4b vs 4c on one item
 # ==========================================================================
+#
+# ⛔ WHAT THESE TESTS REPLACED, so the deletion is auditable rather than a
+# quiet shrink. The five tests here previously pinned a GENERAL cross-seat
+# divergence machinery (`divergences`, `Divergence`, `Triage`, `promote`,
+# `CONTRADICTIONS`). It could not fire: each seat's verdict set is disjoint
+# from every other's and every contradiction pair sat inside ONE seat, so
+# `divergences()` produced 0 records over all 81 legal verdict combinations
+# (255 over every seat SUBSET). The tests only passed because they built
+# judgements — `Judgement("4d", …, "unfaithful", …)` — that
+# `validate_judgements` refuses. They pinned a state no seat can produce.
+#
+# ⭐ What is kept is the one comparison that is different IN KIND. 4b is
+# anchored to the RENDERING and never sees the code; 4c is composed from the
+# MODULE by `_item_text`, which refuses any renderer mark. So when they
+# disagree about ONE item, the only thing standing between them is the
+# rendering — which makes it evidence the INSTRUMENT is wrong, not the
+# translation, and is why it routes to a human and never to the translator.
 
-def test_19_opposite_verdicts_become_unclear_and_emit_a_divergence():
+
+def test_19_4b_and_4c_disagreeing_about_ONE_item_is_an_INSTRUMENT_defect():
+    """⭐ Both verdicts are legal for their own seat — which is exactly what
+    the deleted machinery could not manage."""
     js = {"4b": (seats.Judgement("4b", "asserts[0]", "faithful", "it matches"),),
-          "4d": (seats.Judgement("4d", "asserts[0]", "unfaithful", "it does not"),)}
-    resolved, divs = seats.divergences(js, brief_shas={"4b": "aaa", "4d": "bbb"},
-                                       rendering_sha="ccc")
-    assert divs and divs[0].item == "asserts[0]"
-    assert divs[0].brief_shas == {"4b": "aaa", "4d": "bbb"}
-    assert divs[0].rendering_sha == "ccc"
-    assert divs[0].adjudicated is False
-    assert {j.verdict for j in resolved["4b"]} == {"unclear"}
-    assert {j.verdict for j in resolved["4d"]} == {"unclear"}
+          "4c": (seats.Judgement("4c", "asserts[0]", "unlicensed", "not cited"),)}
+    out = seats.instrument_defects(js, brief_shas={"4b": "aaa", "4c": "bbb"},
+                                   rendering_sha="ccc")
+    assert len(out) == 1
+    d = out[0]
+    assert d.item == "asserts[0]"
+    assert d.origin == seats.INSTRUMENT_ORIGIN
+    assert d.verdicts == {"4b": "faithful", "4c": "unlicensed"}
 
 
-def test_19_control_faithful_versus_unclear_is_not_a_divergence():
-    """Firing on abstention would punish the honesty `unclear` exists to
-    permit, and make `unclear` the expensive answer."""
-    js = {"4b": (seats.Judgement("4b", "asserts[0]", "faithful", "matches"),),
-          "4d": (seats.Judgement("4d", "asserts[0]", "unclear", "cannot tell"),)}
-    resolved, divs = seats.divergences(js, brief_shas={"4b": "a", "4d": "b"},
-                                       rendering_sha="c")
-    assert divs == ()
-    assert resolved["4b"][0].verdict == "faithful"
+def test_19_the_other_polarity_is_a_defect_too():
+    """`unfaithful` + `licensed` is the same disagreement with the signs
+    swapped. A check pinned in one direction only is half a check."""
+    js = {"4b": (seats.Judgement("4b", "x", "unfaithful", "asserts more"),),
+          "4c": (seats.Judgement("4c", "x", "licensed", "the clause says it"),)}
+    assert len(seats.instrument_defects(js, {}, "sha")) == 1
 
 
-def test_19_a_divergence_record_carries_both_reasons():
+def test_19_control_agreement_in_either_direction_is_NOT_a_defect():
+    for vb, vc in (("faithful", "licensed"), ("unfaithful", "unlicensed")):
+        js = {"4b": (seats.Judgement("4b", "x", vb, "r"),),
+              "4c": (seats.Judgement("4c", "x", vc, "r"),)}
+        assert seats.instrument_defects(js, {}, "sha") == (), (vb, vc)
+
+
+def test_19_control_UNCLEAR_from_either_side_is_NOT_a_disagreement():
+    """⭐ §6's own note, and the standing position that `unclear` gets the same
+    framing abstention gets at stage 1. Making `unclear` fire an instrument
+    review makes honest hedging the expensive answer, and the pressure it
+    creates is toward false confidence — worse than a missed divergence
+    because it is invisible."""
+    for vb, vc in (("faithful", "unclear"), ("unclear", "unlicensed"),
+                   ("unclear", "unclear"), ("unfaithful", "unclear"),
+                   ("unclear", "licensed")):
+        js = {"4b": (seats.Judgement("4b", "x", vb, "r"),),
+              "4c": (seats.Judgement("4c", "x", vc, "r"),)}
+        assert seats.instrument_defects(js, {}, "sha") == (), (vb, vc)
+
+
+def test_19_the_record_carries_the_provenance_the_diagnosis_rests_on():
+    """§6(2). The finding is about the APPARATUS, so the artifacts that
+    produced it — both briefs and the rendering — must be checkable."""
     js = {"4b": (seats.Judgement("4b", "x", "faithful", "reason one"),),
-          "4c": (seats.Judgement("4c", "x", "unfaithful", "reason two"),)}
-    _r, divs = seats.divergences(js, brief_shas={"4b": "a", "4c": "b"},
-                                 rendering_sha="c")
-    assert set(divs[0].reasons.values()) == {"reason one", "reason two"}
+          "4c": (seats.Judgement("4c", "x", "unlicensed", "reason two"),)}
+    d = seats.instrument_defects(js, {"4b": "sha-b", "4c": "sha-c"}, "sha-r")[0]
+    assert d.reasons == {"4b": "reason one", "4c": "reason two"}
+    assert d.brief_shas == {"4b": "sha-b", "4c": "sha-c"}
+    assert d.rendering_sha == "sha-r"
+    blob = d.to_json()
+    assert blob["brief_shas"] == {"4b": "sha-b", "4c": "sha-c"}
+    assert blob["rendering_sha"] == "sha-r"
+    assert blob["origin"] == seats.INSTRUMENT_ORIGIN
 
 
-def test_19_no_third_seat_ever_acts_as_a_tie_breaker():
+def test_19_NO_OTHER_SEAT_PAIR_IS_COMPARED():
+    """⛔ REJECTED BY NAME: *compare every seat pair*. 4a/4b/4d judge the whole
+    rendering, 4c judges one licensed item, 4d judges one claim — they ask
+    different questions and do not even share a unit. `4b: faithful` and
+    `4d: not-conveyed` can both be true of one artifact."""
+    js = {"4a": (seats.Judgement("4a", "x", "not-as-meant", "no"),),
+          "4b": (seats.Judgement("4b", "x", "faithful", "yes"),),
+          "4d": (seats.Judgement("4d", "x", "not-conveyed", "no"),)}
+    assert seats.instrument_defects(js, {}, "sha") == ()
+    # and 4a is not in the record even when 4b/4c DO disagree
+    js["4c"] = (seats.Judgement("4c", "x", "unlicensed", "no"),)
+    d = seats.instrument_defects(js, {"4a": "s", "4b": "s", "4c": "s"},
+                                 "sha")[0]
+    assert set(d.verdicts) == {"4b", "4c"}
+    assert "4a" not in d.brief_shas and "4d" not in d.verdicts
+
+
+def test_19_NEITHER_VERDICT_IS_REWRITTEN_and_4cs_anchor_survives():
+    """⭐ The deleted machinery rewrote both verdicts to `unclear` and stamped
+    them. That destroyed the one thing §4.1 buys: 4c is the anchor precisely
+    because it is not downstream of the rendering, and erasing its verdict
+    because a rendering-reading seat disagreed makes the anchor answerable to
+    the thing it exists to be independent of. The disagreement is a finding
+    ABOUT the apparatus; it is not grounds to delete two considered verdicts.
+    """
     js = {"4b": (seats.Judgement("4b", "x", "faithful", "one"),),
-          "4c": (seats.Judgement("4c", "x", "unfaithful", "two"),),
-          "4d": (seats.Judgement("4d", "x", "faithful", "three"),)}
-    resolved, divs = seats.divergences(js, brief_shas={}, rendering_sha="c")
-    assert len(divs) == 1
-    assert all(j.verdict == "unclear" for s in resolved.values() for j in s)
+          "4c": (seats.Judgement("4c", "x", "unlicensed", "two"),)}
+    seats.instrument_defects(js, {}, "sha")
+    assert js["4c"][0].verdict == "unlicensed"
+    assert js["4c"][0].stamps == ()
+    assert js["4b"][0].verdict == "faithful"
 
 
-def test_20_promoting_a_divergence_without_a_recorded_triage_is_refused():
-    div = seats.Divergence("x", {"4b": "faithful", "4c": "unfaithful"},
-                           {"4b": "one", "4c": "two"}, {}, "sha")
+def test_19_POLARITY_covers_every_4b_and_4c_verdict():
+    """A verdict added to either closed set without a polarity would be read
+    as an abstention — silently, and in the direction that never fires."""
+    for seat in ("4b", "4c"):
+        for v in seats.VERDICTS[seat]:
+            assert v in seats.POLARITY, (seat, v)
+    assert seats.POLARITY[seats.UNCLEAR] is None
+
+
+def test_19_an_UNMAPPED_verdict_is_refused_rather_than_read_as_an_abstention():
+    js = {"4b": (seats.Judgement("4b", "x", "probably-fine", "r"),),
+          "4c": (seats.Judgement("4c", "x", "unlicensed", "r"),)}
     with pytest.raises(seats.SeatRefused) as exc:
-        seats.promote(div, triage=None)
-    assert "triage" in str(exc.value)
+        seats.instrument_defects(js, {}, "sha")
+    assert "probably-fine" in str(exc.value)
 
 
-def test_20_control_a_promotion_with_recorded_grounds_is_allowed():
-    div = seats.Divergence("x", {"4b": "faithful", "4c": "unfaithful"},
-                           {"4b": "one", "4c": "two"}, {}, "sha")
-    out = seats.promote(div, triage=seats.Triage(
-        "brief-defect", "4c's brief does not say what `licensed` means",
-        "matt"))
-    assert out.adjudicated is True
-    assert out.triage.grounds
+def test_20_an_instrument_defect_may_NEVER_enter_a_repair_transcript():
+    """⛔ §5.5/§5.6. It names the item AND the direction, and worse: sending it
+    back asks the model to fix OUR renderer."""
+    assert seats.INSTRUMENT_ORIGIN not in seats.DISCLOSABLE_ORIGINS
+    assert seats.INSTRUMENT_ORIGIN not in translate.DISCLOSABLE_ORIGINS
+    f = seats.instrument_finding("asserts[0]", "4b and 4c disagree")
+    with pytest.raises(seats.DisclosureRefused):
+        seats.append_findings_to_transcript([], [f])
+    log = seats.render_findings_log([("stage 4", [f])])
+    assert "withheld" in log
+    assert "asserts[0]" not in log
+
+
+def test_20_an_instrument_defect_routes_to_a_HUMAN_never_to_the_translator():
+    f = seats.instrument_finding("asserts[0]", "4b and 4c disagree")
+    r = seats.route([f], retranslations_used=0, max_retranslations=1)
+    assert r.action == "carry"
+    assert r.transcript == ()
+    assert "instrument" in str(r.status)
+
+
+def test_20_control_an_instrument_defect_BESIDE_a_seat_finding_still_carries():
+    """⭐ The case that actually happens: whichever of 4b/4c said the negative
+    thing ALSO emits its own seat finding, which on its own routes
+    `re-translate`. If the instrument branch did not win, every instrument
+    defect would be handed straight back to the translator."""
+    findings = [seats.seat_finding("4c", "m0217.lp", "4c returned unlicensed"),
+                seats.instrument_finding("asserts[0]", "4b and 4c disagree")]
+    assert seats.route(findings).action == "carry"
+    # the paired control: the seat finding ALONE re-translates, as §5.6 says
+    assert seats.route(findings[:1]).action == "re-translate"
 
 
 def test_20_there_is_nowhere_in_the_output_to_write_a_document_finding():
@@ -844,9 +944,67 @@ def test_20_there_is_nowhere_in_the_output_to_write_a_document_finding():
                                denominators={}, extra={key: "the doc is vague"})
 
 
-def test_20_a_triage_with_no_grounds_is_refused():
-    with pytest.raises(seats.SeatRefused):
-        seats.Triage("brief-defect", "   ", "matt")
+def test_20_the_report_LINE_names_the_instrument_defect_and_who_it_goes_to():
+    mod = m0217_patched()
+    rb = _rb(mod)
+    d = seats.InstrumentDefect(
+        item="asserts[0]", verdicts={"4b": "faithful", "4c": "unlicensed"},
+        reasons={"4b": "one", "4c": "two"},
+        brief_shas={"4b": "a", "4c": "b"}, rendering_sha="c")
+    rep = seats.build_report(mod.clause_id, rb, judgements={}, denominators={},
+                             instrument_defect_records=(d,))
+    assert rep["instrument_defects"][0]["item"] == "asserts[0]"
+    line = seats.report_line(rep)
+    assert "INSTRUMENT" in line
+    assert "human" in line
+    # ⛔ and the old wording, which said the RUN was not adjudicated, is gone:
+    # nothing about this stops the run being read.
+    assert "NOT ADJUDICATED" not in line
+
+
+def test_20_a_clean_report_line_says_nothing_about_the_instrument():
+    """The paired control. A warning that fires on every clause is invisible."""
+    mod = m0217_patched()
+    rb = _rb(mod)
+    rep = seats.build_report(mod.clause_id, rb, judgements={}, denominators={})
+    assert "INSTRUMENT" not in seats.report_line(rep)
+
+
+def test_20_run_clause_emits_the_instrument_defect_END_TO_END():
+    """⭐ On a real module, through the same seam a live run uses, with 4b and
+    4c each answering inside its OWN closed verdict set."""
+    mod = m0217_patched()
+    rb = _rb(mod)
+    plan = seats.plan_clause(mod, rb, clause_text=CLAUSE_M0217,
+                             corpus_texts={"m0217": CLAUSE_M0217})
+    shared = [i for i in plan.ids["4b"] if i in plan.ids["4c"]]
+    assert shared, "4b and 4c must share at least one item id or the check is dead"
+    target = shared[0]
+    stubs = {
+        "4b": StubClient({"judgements": [
+            {"item": i, "verdict": "faithful", "reason": "matches"}
+            for i in plan.ids["4b"]]}),
+        "4c": StubClient({"judgements": [
+            {"item": i,
+             "verdict": ("unlicensed" if i == target else "licensed"),
+             "reason": "the cited clause does not say this"}
+            for i in plan.ids["4c"]]}),
+    }
+    rep = seats.run_clause(plan, client_factories={
+        s: (lambda c=c: c) for s, c in stubs.items()})
+    recs = rep["instrument_defects"]
+    assert [r["item"] for r in recs] == [target]
+    assert recs[0]["verdicts"] == {"4b": "faithful", "4c": "unlicensed"}
+    assert recs[0]["rendering_sha"] == seats.rendering_sha(rb)
+    assert recs[0]["brief_shas"] == {"4b": seats.brief_sha("4b"),
+                                     "4c": seats.brief_sha("4c")}
+    # it routes to a human, NOT back into stage 1
+    assert rep["routing"]["action"] == "carry"
+    # and both verdicts are still readable in the report
+    assert [j["verdict"] for j in rep["seats"]["4c"] if j["item"] == target] \
+        == ["unlicensed"]
+    assert [j["verdict"] for j in rep["seats"]["4b"] if j["item"] == target] \
+        == ["faithful"]
 
 
 # ==========================================================================
@@ -1131,48 +1289,6 @@ def test_a_forbid_body_name_matching_no_claim_is_refused():
     with pytest.raises(seats.SeatRefused) as exc:
         seats.denominator_4d(mod, forbid_body_claims=("C9 not a claim",))
     assert "C9" in str(exc.value)
-
-
-def test_4as_own_verdict_is_never_rewritten_by_another_seats_divergence():
-    """⚠️ 4a takes no part in divergence. Letting the author's opinion be
-    forced to `unclear` by two other seats would make the never-evidence seat
-    consequential after all."""
-    js = {"4a": (seats.Judgement("4a", "x", "as-meant", "I meant it"),),
-          "4b": (seats.Judgement("4b", "x", "faithful", "one"),),
-          "4c": (seats.Judgement("4c", "x", "unfaithful", "two"),)}
-    resolved, divs = seats.divergences(js, brief_shas={}, rendering_sha="c")
-    assert len(divs) == 1
-    assert resolved["4a"][0].verdict == "as-meant"
-    assert resolved["4a"][0].stamps == ()
-    assert resolved["4b"][0].verdict == "unclear"
-    # ⭐ and 4a is not IN the record either. A divergence carrying the author's
-    # own opinion beside two disagreeing seats invites a human to read it as
-    # 2-against-1 — a consensus, reconstructed by eye, in the one artifact §4.3
-    # exists to keep consensus out of.
-    assert "4a" not in divs[0].verdicts
-    assert "4a" not in divs[0].reasons
-
-
-def test_promotion_without_a_triage_names_the_triage_and_not_the_type():
-    """⛔ DEBUGGING_TIPS §8: two deliberately redundant arms, and only one was
-    tested. `triage=None` also fails the isinstance arm, so a test asserting
-    only `raises` cannot tell which arm fired — and the arm left behind is the
-    one that matters."""
-    div = seats.Divergence("x", {"4b": "faithful", "4c": "unfaithful"},
-                           {"4b": "one", "4c": "two"}, {}, "sha")
-    with pytest.raises(seats.SeatRefused) as exc:
-        seats.promote(div, triage=None)
-    assert "recorded human triage" in str(exc.value)
-
-
-def test_promotion_refuses_a_triage_that_is_not_a_triage():
-    """The second arm, with its own RED test: a bare string carries no grounds
-    and no signature, and would promote a divergence on a shrug."""
-    div = seats.Divergence("x", {"4b": "faithful", "4c": "unfaithful"},
-                           {"4b": "one", "4c": "two"}, {}, "sha")
-    with pytest.raises(seats.SeatRefused) as exc:
-        seats.promote(div, triage="brief defect, obviously")
-    assert "Triage" in str(exc.value)
 
 
 def test_a_report_whose_unclear_rate_has_no_denominator_is_refused():
@@ -1736,10 +1852,11 @@ def test_source_items_honours_judgeable_only_on_a_module_with_a_world_item():
 
 
 def test_the_rendering_sha_changes_when_the_RENDERING_changes():
-    """S5. §6(2) requires a divergence record to carry the sha of each seat's
-    brief AND OF THE RENDERING, so *"under-informative dossier"* is checkable
-    against the artifact. `brief_sha` was pinned; `rendering_sha` was not, and
-    a constant one cannot tell two renderings apart."""
+    """S5. §6(2) requires an instrument-defect record to carry the sha of each
+    seat's brief AND OF THE RENDERING — and the rendering sha matters MORE
+    under the 4b/4c check than it did before, because the rendering is the
+    thing the finding accuses. `brief_sha` was pinned; `rendering_sha` was not,
+    and a constant one cannot tell two renderings apart."""
     mod = m0217_patched()
     rb = _rb(mod)
     other = _rb(m0037_like(), quote="some other clause text entirely")

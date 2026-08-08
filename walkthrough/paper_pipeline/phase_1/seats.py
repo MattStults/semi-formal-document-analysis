@@ -104,16 +104,26 @@ VERDICTS = {
     "4d": ("covered", "not-conveyed", UNCLEAR),
 }
 
-#: ⭐ §6: *"diverge" means OPPOSITE VERDICTS, not different words.* Only these
-#: pairs contradict. `unclear` against anything is an abstention, and firing a
-#: seat-defect review on it would punish the honesty the closed set exists to
-#: permit and make `unclear` the expensive answer.
-CONTRADICTIONS = frozenset({
-    frozenset({"faithful", "unfaithful"}),
-    frozenset({"licensed", "unlicensed"}),
-    frozenset({"covered", "not-conveyed"}),
-    frozenset({"as-meant", "not-as-meant"}),
-})
+#: ⭐ §6, AMENDED 2026-08-08. The two seats the one cross-seat check compares,
+#: and the ONLY two. See `instrument_defects` for why these two and no others.
+CROSS_CHECKED = ("4b", "4c")
+
+#: ⭐ POLARITY, NOT VERDICT STRINGS. 4b and 4c answer different questions in
+#: different words, so a check keyed on shared strings is a check that cannot
+#: fire — which is exactly what the deleted `CONTRADICTIONS` was. What they do
+#: share is a SIGN: each seat's closed set is one affirmative, one negative and
+#: one abstention.
+#:
+#: ⛔ `unclear` maps to `None` and `None` is never a disagreement (§6's own
+#: note). This project's standing position is that `unclear` gets the same
+#: framing abstention gets at stage 1; making it fire an instrument review
+#: prices honest hedging, and the pressure that creates is toward false
+#: confidence — worse than a missed divergence because it is invisible.
+POLARITY = {
+    "faithful": True, "unfaithful": False,
+    "licensed": True, "unlicensed": False,
+    UNCLEAR: None,
+}
 
 #: The seats whose verdicts RB4 can stamp. 4c never reads a rendering, so an
 #: echo score says nothing about it; 4a is advisory and is never evidence.
@@ -127,6 +137,18 @@ ECHO_STAMPED = ("4b", "4d")
 READBACK_STRUCTURAL = "readback-structural"
 INERT_ORIGIN = "covered-but-inert"
 SEAT_ORIGIN = {s: f"seat-{s}" for s in SEATS}
+
+#: ⭐ §6. The 4b-vs-4c disagreement, and it is its OWN origin rather than a
+#: `seat-4b`/`seat-4c` one, because it is not a finding about the translation
+#: at all: it accuses the RENDERING. It is on the withheld side of the fence
+#: for two reasons, and the second is the stronger:
+#:   1. it names the item and the direction of the error, exactly like a seat
+#:      finding;
+#:   2. ⛔ sending it back would ask the MODEL to fix OUR renderer. There is
+#:      nothing a re-translation can do about it, so a route that spends a
+#:      stage-1 call on it spends money to learn nothing.
+#: It goes to a human. See `route`.
+INSTRUMENT_ORIGIN = "instrument-4b-4c"
 
 #: ⭐ WHAT MAY REACH A TRANSLATOR. `readback-structural` is derived from the
 #: module and the concept table alone: RB1–RB5, `readback-ungloss`, the
@@ -170,6 +192,16 @@ def inert_finding(where, message):
     """⛔ `covered-but-inert` is a 4d verdict wearing a structural coat."""
     return checks.Finding("readback-covered-but-inert", "error", where,
                           message, INERT_ORIGIN)
+
+
+def instrument_finding(where, message):
+    """⛔ An accusation against the APPARATUS, withheld from every transcript.
+
+    Same withholding as a seat finding, and one extra reason: there is no
+    edit to the module that answers it.
+    """
+    return checks.Finding("readback-instrument-4b-4c", "error", where,
+                          message, INSTRUMENT_ORIGIN)
 
 
 def render_findings_log(attempts):
@@ -236,7 +268,17 @@ def route(findings, retranslations_used=0, max_retranslations=1):
     is hill-climbing against a hidden answer key).
 
     ⛔ 4a routes NOWHERE. It is not withheld because it leaks.
+
+    ⭐ AND THE INSTRUMENT BRANCH GOES FIRST, which is not a stylistic ordering.
+    Whichever of 4b/4c returned the negative verdict ALSO emits its own seat
+    finding, and a seat finding on its own routes `re-translate`. If the
+    instrument branch did not win, every 4b-vs-4c disagreement would be handed
+    straight back to the translator — a stage-1 call asking a model to fix a
+    defect in OUR renderer, which it cannot see and cannot touch.
     """
+    instrument = [f for f in findings if f.origin == INSTRUMENT_ORIGIN]
+    if instrument:
+        return probe.Routing("carry", (), "instrument-4b-4c")
     driving = [f for f in findings
                if f.origin in (SEAT_ORIGIN["4b"], SEAT_ORIGIN["4c"],
                                SEAT_ORIGIN["4d"], INERT_ORIGIN)]
@@ -391,9 +433,10 @@ it, and you have no way to see that from here; it is checked elsewhere.
 
 
 def brief_sha(seat):
-    """§6(2): a divergence record carries the sha of each seat's brief, so
-    *"the brief was under-informative"* is checkable against the brief that
-    actually produced the two answers."""
+    """§6(2): an instrument-defect record carries the sha of each seat's brief,
+    so *"the brief was under-informative"* is checkable against the brief that
+    actually produced the two answers — and is ruled out before *"the renderer
+    is wrong"* is believed."""
     return hashlib.sha256(BRIEFS[seat].encode("utf-8")).hexdigest()
 
 
@@ -940,106 +983,112 @@ def cross_check_4d(judgements, discrimination):
 
 
 # ==========================================================================
-#  §6 — divergence
+#  §6 — the ONE cross-seat check: 4b vs 4c, on the same item
 # ==========================================================================
+#
+# ⛔ WHAT USED TO BE HERE, AND WHY IT IS GONE (2026-08-08). A general
+# cross-seat divergence machinery — `divergences`, `Divergence`, `Triage`,
+# `promote`, `CONTRADICTIONS` — and it could never fire. `[RAN]` 0 records
+# over all 81 legal verdict combinations, and 0 over all 255 combinations
+# across every seat SUBSET. Each seat's closed verdict set is DISJOINT from
+# every other's (all six pairs) and both members of every contradiction pair
+# sat inside ONE seat, so the two halves of a pair could never appear in one
+# item's verdict set. The five tests that pinned it built judgements
+# `validate_judgements` refuses.
+#
+# ⭐ THE ROOT CAUSE IS A TRANSPOSITION, NOT A CODING ERROR. `03_pipeline.md`
+# §6's divergence is between TWO REVIEWERS ANSWERING THE SAME QUESTION — its
+# own example is *"one reviewer saying the paraphrase is faithful and another
+# saying it is not"*. This file imported it as a mechanism across four seats
+# asking DIFFERENT questions, which do not even share a unit: 4a and 4b judge
+# the whole rendering, 4c judges one licensed item, 4d judges one claim. Two
+# seats answering different questions differently is not a contradiction.
+# `4b: faithful` and `4c: unlicensed` can both be true — a rendering can
+# faithfully render an item that lacks a valid citation.
+
 
 @dataclasses.dataclass(frozen=True)
-class Triage:
-    kind: str                 # brief-defect | not-a-brief-defect
-    grounds: str
-    signed_by: str
+class InstrumentDefect:
+    """One item on which 4b and 4c disagree ⇒ an accusation against the
+    RENDERING, carrying the provenance the accusation rests on.
 
-    def __post_init__(self):
-        if not str(self.grounds or "").strip():
-            raise SeatRefused(
-                "a triage with no grounds is refused: transcript-only "
-                "procedure is a review finding, and a divergence promoted "
-                "without written grounds is exactly that")
-        if not str(self.signed_by or "").strip():
-            raise SeatRefused("a triage nobody signed is refused")
+    ⭐ THE PROVENANCE IS THE POINT, not bookkeeping. The diagnosis is *"the
+    apparatus is wrong"*, so the two briefs and the rendering that produced
+    the two answers are the artifacts a human has to be able to re-read.
+    """
 
-
-@dataclasses.dataclass(frozen=True)
-class Divergence:
     item: str
     verdicts: dict
     reasons: dict
     brief_shas: dict
     rendering_sha: str
-    adjudicated: bool = False
-    triage: Optional[Triage] = None
+    origin: str = INSTRUMENT_ORIGIN
 
     def to_json(self):
         return {"item": self.item, "verdicts": dict(self.verdicts),
                 "reasons": dict(self.reasons),
                 "brief_shas": dict(self.brief_shas),
                 "rendering_sha": self.rendering_sha,
-                "adjudicated": self.adjudicated,
-                "triage": (None if self.triage is None
-                           else dataclasses.asdict(self.triage))}
+                "origin": self.origin}
 
 
-def divergences(judgements_by_seat, brief_shas, rendering_sha):
-    """Two seats, opposite verdicts, one item ⇒ the item is `unclear` and a
-    record is emitted.
+def instrument_defects(judgements_by_seat, brief_shas, rendering_sha):
+    """⭐ 4b and 4c, opposite POLARITIES, one item ⇒ an INSTRUMENT defect.
 
-    ⛔ NEVER resolved by fiat and never by a third seat acting as tie-breaker.
-    ⚠️ 4a takes no part: it is advisory, and letting the author's own opinion
-    force another seat's verdict to `unclear` would make the never-evidence
-    seat the most consequential one.
-    ⚠️ §6's preferred mechanism — hold both readings, enumerate where they
-    decide differently, empty set ⇒ immaterial — does NOT apply. It is native
-    to ASP and right for two TRANSLATIONS (stage 10). Two seats disagreeing
-    about a paraphrase produce no second program to enumerate against, and
-    borrowing the sentence without the mechanism would be self-report dressed
-    as a deterministic check. This is the weaker procedure, recorded as weaker.
+    ⭐ WHY THIS PAIR AND NO OTHER, and it is a difference in kind rather than
+    in degree. 4b is anchored to the RENDERING and never sees the code
+    (`build_4b_prompt` refuses every `_MODULE_PATTERNS` shape). 4c is composed
+    from the MODULE — `_item_text` builds it out of the module's own content
+    and `build_4c_prompt` refuses any renderer mark — and 4c is never echo-
+    stamped, which `stamp_evidential` and its test already pin. The two seats
+    are looking at the same item through two different windows, and **the only
+    thing standing between them is the rendering**. So a disagreement here is
+    evidence that the INSTRUMENT is wrong, not that the translation is — which
+    is why it routes to a human (`route`) and never back to the translator.
+
+    ⛔ REJECTED BY NAME — *"compare every seat pair"*. 4a/4b judge the whole
+    rendering, 4c one licensed item, 4d one claim. They ask different
+    questions and do not share a unit; `4b: faithful` beside `4d:
+    not-conveyed` is two true statements about one artifact, not a
+    contradiction. That transposition is what made the deleted machinery dead.
+
+    ⛔ REJECTED BY NAME — *"treat `unclear` as a divergence"*. See `POLARITY`.
+
+    ⛔ NEITHER VERDICT IS REWRITTEN. The deleted machinery replaced both with
+    `unclear` and stamped them `seat-divergence`. That destroys the one thing
+    §4.1 buys: 4c is the anchor precisely because it is not downstream of the
+    rendering, and erasing its verdict because a rendering-reading seat
+    disagreed makes the anchor answerable to the thing it exists to be
+    independent of. The disagreement is recorded ALONGSIDE both verdicts.
     """
-    considered = {s: js for s, js in judgements_by_seat.items() if s != "4a"}
     by_item = {}
-    for seat, js in considered.items():
-        for j in js:
+    for seat in CROSS_CHECKED:
+        for j in judgements_by_seat.get(seat, ()) or ():
             by_item.setdefault(j.item, {})[seat] = j
-    out, diverged = [], set()
+    out = []
     for item, per_seat in sorted(by_item.items()):
-        verdicts = {s: j.verdict for s, j in per_seat.items()}
-        vals = set(verdicts.values())
-        if not any(pair <= vals for pair in CONTRADICTIONS):
+        if len(per_seat) != len(CROSS_CHECKED):
             continue
-        diverged.add(item)
-        out.append(Divergence(
-            item=item, verdicts=verdicts,
+        pol = {}
+        for seat, j in per_seat.items():
+            if j.verdict not in POLARITY:
+                raise SeatRefused(
+                    f"{seat} returned {j.verdict!r} on {item!r} and POLARITY "
+                    f"does not map it. An unmapped verdict read as an "
+                    f"abstention is a check that silently stops firing — say "
+                    f"which sign it carries or take it out of VERDICTS[{seat}]")
+            pol[seat] = POLARITY[j.verdict]
+        vals = [pol[s] for s in CROSS_CHECKED]
+        if None in vals or vals[0] == vals[1]:
+            continue
+        out.append(InstrumentDefect(
+            item=item,
+            verdicts={s: j.verdict for s, j in per_seat.items()},
             reasons={s: j.reason for s, j in per_seat.items()},
-            brief_shas={s: brief_shas[s] for s in per_seat
+            brief_shas={s: (brief_shas or {})[s] for s in per_seat
                         if s in (brief_shas or {})},
             rendering_sha=rendering_sha))
-    resolved = {}
-    for seat, js in judgements_by_seat.items():
-        resolved[seat] = tuple(
-            dataclasses.replace(j, verdict=UNCLEAR,
-                                stamps=tuple(j.stamps) + ("seat-divergence",))
-            if (j.item in diverged and seat != "4a") else j
-            for j in js)
-    return resolved, tuple(out)
-
-
-def promote(divergence, triage=None):
-    """⭐ §6(3)–(4): the route from a divergence to a document-side reading runs
-    through a HUMAN TRIAGE with recorded grounds, or it does not run.
-
-    ⛔ And even then this returns an adjudicated divergence — never a
-    document-side finding. Stage 4's output schema has no field one could be
-    written into (`build_report` refuses `ambiguity`, `interpretation`,
-    `document_finding`); entering the project's interpretation registry is a
-    separate human-signed step with anti-fitting constraints this design lacks.
-    """
-    if triage is None:
-        raise SeatRefused(
-            "a divergence may not be promoted without a recorded human triage: "
-            "seat disagreement is a BRIEF DEFECT until triaged otherwise, and "
-            "stage 4 does not decide whether the document is ambiguous")
-    if not isinstance(triage, Triage):
-        raise SeatRefused("triage must be a `Triage` carrying its grounds")
-    return dataclasses.replace(divergence, adjudicated=True, triage=triage)
+    return tuple(out)
 
 
 # ==========================================================================
@@ -1249,7 +1298,7 @@ def refuse_discrimination_join(item_ids, discrimination):
 
 
 def build_report(clause_id, rb, judgements, denominators, extra=None,
-                 divergence_records=(), findings=(), discrimination=None):
+                 instrument_defect_records=(), findings=(), discrimination=None):
     """⭐ FOUR PER-SEAT VERDICTS, 4a IN `advisory`, AND NO CONSENSUS FIELD."""
     judgements = dict(judgements or {})
     # ⛔ 4a IS NOT POOLED. §4.3(2) requires 4a's verdict to sit in a block the
@@ -1299,7 +1348,8 @@ def build_report(clause_id, rb, judgements, denominators, extra=None,
         # supplied key that joins no claim consulted nothing, and *available*
         # said otherwise.
         "stage3_discrimination_keys_unmatched": list(unmatched),
-        "divergences": [x.to_json() for x in divergence_records],
+        # ⭐ §6. Recorded BESIDE both verdicts, never in place of them.
+        "instrument_defects": [x.to_json() for x in instrument_defect_records],
         "findings": [dataclasses.asdict(f) for f in findings],
         "renderings": [{"item": r.item, "layer": r.layer, "stamp": r.stamp,
                         "text": r.text} for r in rb.renderings],
@@ -1337,9 +1387,14 @@ def report_line(d):
         bits.append(f"{len(d['forbid_body_claims_excluded'])} forbid_body "
                     f"claim(s) NOT JUDGEABLE HERE and excluded from 4d's "
                     f"denominator")
-    if d["divergences"]:
-        bits.append(f"{len(d['divergences'])} seat-divergence(s), NOT "
-                    f"ADJUDICATED until triaged")
+    if d["instrument_defects"]:
+        # ⛔ NOT "the run is not adjudicated". Nothing here stops the run being
+        # read: both verdicts stand and both are printed above. What it says is
+        # WHERE the defect is and WHO it goes to — a human, because there is no
+        # edit to the module that answers it.
+        bits.append(f"{len(d['instrument_defects'])} 4b/4c INSTRUMENT "
+                    f"defect(s) — the rendering is accused, routed to a human, "
+                    f"never to the translator")
     return "   ·   ".join(bits)
 
 
@@ -1464,10 +1519,18 @@ def run_clause(plan, client_factories, discrimination=None,
                 findings.append(seat_finding(
                     seat, f"{plan.clause_id}.lp",
                     f"{seat} returned {j.verdict} on {j.item}{mark}"))
-    resolved, divs = divergences(
+    # ⭐ §6. AFTER the seat findings, and it does not touch `judgements`: an
+    # instrument defect is recorded beside both verdicts, never over them.
+    defects = instrument_defects(
         judgements, {s: brief_sha(s) for s in SEATS}, rendering_sha(rb))
-    rep = build_report(plan.clause_id, rb, resolved, plan.denominators,
-                       divergence_records=divs, findings=findings,
+    for d in defects:
+        findings.append(instrument_finding(
+            d.item, f"4b returned {d.verdicts['4b']} and 4c returned "
+                    f"{d.verdicts['4c']} on {d.item}. 4b reads only the "
+                    f"rendering and 4c reads only the module, so the rendering "
+                    f"is the only thing between them"))
+    rep = build_report(plan.clause_id, rb, judgements, plan.denominators,
+                       instrument_defect_records=defects, findings=findings,
                        discrimination=discrimination)
     rep["routing"] = dataclasses.asdict(route(
         findings, retranslations_used, max_retranslations))

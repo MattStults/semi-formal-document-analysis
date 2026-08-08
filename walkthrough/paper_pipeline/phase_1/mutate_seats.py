@@ -175,27 +175,57 @@ MUTANTS = [
      '        if n == 0:', '        if False:'),
     ("cross-check-judges-a-not-conveyed-verdict",
      'if j.verdict != "covered":', 'if False:'),
-    ("divergence-fires-on-an-abstention",
-     '    frozenset({"faithful", "unfaithful"}),',
-     '    frozenset({"faithful", "unfaithful"}), frozenset({"faithful", "unclear"}),'),
-    ("divergence-rewrites-4as-own-verdict",
-     '            if (j.item in diverged and seat != "4a") else j',
-     '            if j.item in diverged else j'),
-    ("divergence-lets-4a-force-a-verdict",
-     '    considered = {s: js for s, js in judgements_by_seat.items() if s != "4a"}',
-     '    considered = dict(judgements_by_seat)'),
-    ("divergence-does-not-resolve-to-unclear",
-     '        diverged.add(item)', '        pass'),
-    ("divergence-record-drops-the-brief-shas",
-     '            brief_shas={s: brief_shas[s] for s in per_seat\n'
+    # ⛔ EIGHT MUTANTS WERE DELETED HERE ON 2026-08-08 and this is the record
+    # of it, because deleting a mutant is deleting a floor unless the guard it
+    # broke is gone too. `divergence-fires-on-an-abstention`,
+    # `-rewrites-4as-own-verdict`, `-lets-4a-force-a-verdict`,
+    # `-does-not-resolve-to-unclear`, `-record-drops-the-brief-shas`,
+    # `promotion-needs-no-triage`, `promotion-accepts-a-non-triage`,
+    # `triage-needs-no-grounds`. Every one broke a guard inside
+    # `divergences`/`promote`/`Triage`/`CONTRADICTIONS`, and that machinery was
+    # UNREACHABLE: `[RAN]` 0 records over all 81 legal verdict combinations and
+    # 0 over all 255 seat subsets, because every seat's verdict set is disjoint
+    # from every other's. They were mutating dead code, so the tests that
+    # killed them were pinning nothing — the mutation numbers went DOWN, the
+    # floor did not. The nine below replace them and cover a check that can
+    # fire (`instrument_defects`, 4b vs 4c on one item).
+    ("instrument-check-fires-on-an-abstention",
+     '        if None in vals or vals[0] == vals[1]:',
+     '        if vals[0] == vals[1]:'),
+    ("instrument-check-reads-unclear-as-a-negative",
+     '    UNCLEAR: None,', '    UNCLEAR: False,'),
+    ("instrument-check-compares-every-seat-pair",
+     '    for seat in CROSS_CHECKED:\n'
+     '        for j in judgements_by_seat.get(seat, ()) or ():',
+     '    for seat in judgements_by_seat:\n'
+     '        for j in judgements_by_seat.get(seat, ()) or ():'),
+    ("instrument-check-drops-the-both-seats-judged-guard",
+     '        if len(per_seat) != len(CROSS_CHECKED):\n            continue',
+     '        pass'),
+    ("instrument-check-accepts-an-unmapped-verdict",
+     '            if j.verdict not in POLARITY:', '            if False:'),
+    ("instrument-record-drops-the-brief-shas",
+     '            brief_shas={s: (brief_shas or {})[s] for s in per_seat\n'
      '                        if s in (brief_shas or {})},',
      '            brief_shas={},'),
-    ("promotion-needs-no-triage",
-     'if triage is None:\n        raise SeatRefused(', 'if False:\n        raise SeatRefused('),
-    ("promotion-accepts-a-non-triage",
-     'if not isinstance(triage, Triage):', 'if False:'),
-    ("triage-needs-no-grounds",
-     'if not str(self.grounds or "").strip():', 'if False:'),
+    ("instrument-record-drops-the-rendering-sha",
+     '            rendering_sha=rendering_sha))',
+     '            rendering_sha=""))'),
+    ("instrument-defect-is-disclosable-to-a-translator",
+     'DISCLOSABLE_ORIGINS = tuple(translate.DISCLOSABLE_ORIGINS) + (READBACK_STRUCTURAL,)',
+     'DISCLOSABLE_ORIGINS = tuple(translate.DISCLOSABLE_ORIGINS) + (READBACK_STRUCTURAL, INSTRUMENT_ORIGIN)'),
+    ("instrument-defect-routes-back-to-the-translator",
+     '    instrument = [f for f in findings if f.origin == INSTRUMENT_ORIGIN]',
+     '    instrument = []'),
+    ("report-line-hides-the-instrument-defect",
+     '    if d["instrument_defects"]:', '    if False:'),
+    ("instrument-defect-overwrites-the-two-verdicts",
+     '    rep = build_report(plan.clause_id, rb, judgements, plan.denominators,',
+     '    rep = build_report(plan.clause_id, rb,\n'
+     '                       {s: tuple(dataclasses.replace(j, verdict=UNCLEAR)\n'
+     '                                 for j in js)\n'
+     '                        for s, js in judgements.items()},\n'
+     '                       plan.denominators,'),
     ("report-drops-the-pass-rate-refusal",
      '        probe.refuse_pass_rate(mapping)', '        pass'),
     ("report-accepts-a-missing-required-key",
