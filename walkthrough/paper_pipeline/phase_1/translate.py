@@ -777,6 +777,52 @@ def make_client(prov, cfg):
 # 7.  Cost gate — worst case, before anything is sent
 # ==========================================================================
 
+#: Characters allowed for ONE repair turn's user block — the error log
+#: `render_error_log` produces, which `repair_loop` appends to the transcript
+#: and every later attempt re-sends.
+#:
+#: ⛔ THIS DIMENSION WAS INVISIBLE. `estimate_cost` priced the prior completions
+#: and the `system + user` block; the repair-turn USER blocks appeared in
+#: neither the estimate nor `test_cost_and_summary._hand_priced_worst_case`, so
+#: the test could not see whether they were covered — a review can only check
+#: an estimate against what its floor knows about. Naming the budget makes the
+#: coverage a CHECKED relation (`_check_repair_log_budget` below) instead of
+#: unmeasured slack.
+#:
+#: `[RAN] 2026-08-07`, over every `surviving_findings` list in `runs/*/run.json`:
+#: the largest error log's findings total **1,062 characters** (m0036, 8
+#: findings). 8,000 is ~7.5× that, and still two orders of magnitude below the
+#: surplus that has to absorb it.
+REPAIR_LOG_CHAR_BUDGET = 8_000
+
+
+def _check_repair_log_budget(system, users, cpt):
+    """The deliberate `(system+user)` over-charge must cover the error logs.
+
+    ⭐ The coverage is exact and provable, which is why it is asserted rather
+    than assumed. Writing T for `max_attempts`:
+
+        true worst = T·(sys+user) + max_tokens·T(T-1)/2 + errlog·T(T-1)/2
+        estimate   = T(T+1)/2·(sys+user) + max_tokens·T(T-1)/2
+
+    so the estimate's surplus over the true worst case is exactly
+    `T(T-1)/2 · (sys+user)` — the SAME coefficient the error-log term carries.
+    The estimate therefore covers the error logs for every T iff
+    `errlog <= sys + user`. That is a one-line condition, so check it.
+    """
+    for u in users:
+        room = (len(system) + len(u)) / cpt
+        need = REPAIR_LOG_CHAR_BUDGET / cpt
+        if need > room:
+            raise CostGateError(
+                f"the repair-turn error log is budgeted at "
+                f"{REPAIR_LOG_CHAR_BUDGET} chars but the surplus that absorbs "
+                f"it is only {len(system) + len(u)} chars of system+user. The "
+                f"estimate would be BELOW the true worst case — the one "
+                f"direction it is not allowed to be. Price the error log "
+                f"explicitly rather than raising this budget.")
+
+
 def estimate_cost(system, users, prov, cfg, max_attempts=1):
     cpt = float(cfg["cost"]["chars_per_token"])
     # With repair, one clause is up to `max_attempts` calls, and each carries
@@ -802,7 +848,15 @@ def estimate_cost(system, users, prov, cfg, max_attempts=1):
     # not the full user block — and that is deliberate: an estimate is allowed
     # to be high and is not allowed to be low. Do NOT net the two errors off
     # against each other; that is how the anti-conservative half got in.
+    #
+    # ⚠️ And the repair turns' own USER blocks — the error logs — are carried by
+    # that same surplus rather than by a term of their own. That is a claim
+    # about magnitudes, so it is CHECKED, not asserted in a comment: see
+    # `_check_repair_log_budget`, which is where the third term of the true
+    # worst case is written down.
     turns = max(1, int(max_attempts))
+    if turns > 1:
+        _check_repair_log_budget(system, users, cpt)
     growth = turns * (turns + 1) / 2
     resent = turns * (turns - 1) / 2          # completions carried forward
     in_tok = (sum((len(system) + len(u)) / cpt for u in users) * growth

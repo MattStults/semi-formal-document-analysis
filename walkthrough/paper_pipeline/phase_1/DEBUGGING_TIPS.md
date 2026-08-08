@@ -192,6 +192,42 @@ interpreter that ignores its arguments, prints what you choose and exits the cod
 **assert the premise inside the test**: `CLINGO_ERR.findall(blob) == []`, so the day the regex grows
 to match the missing-module message the test says so instead of quietly passing on the other arm.
 
+### 8a ⭐ SWEEP FOR THE SHAPE, DO NOT FIX THE INSTANCE — and the shape has a grep
+
+**2026-08-07.** §8's instance was found again the same day in `test_schema.py`, in the commit
+that fixed it in `link.py`. Fixing the named test would have been the wrong-sized repair. The
+**generalised shape** is:
+
+> anything that shells out and decides pass/fail **purely from stdout matching**.
+
+⚠️ **The false path I took first: grepping for `clingo`.** That finds the instances someone
+already thought about. The shape is not about clingo — it is about `subprocess.run` whose result
+is read only through its text. `grep -rn subprocess --include=*.py` over the tree, then look at
+each site and ask **"what does this assert if stdout is empty?"** A negative assertion
+(`assert not errs`, `assert not leaked`, `expect: {"absent": [...]}`) is satisfied by a dead
+process; a positive one (`assert "concept table" in first`) is not. **Sort the sites by that
+question, not by which tool they call.**
+
+⛔ **What the sweep found that two adversarial reviews did not.** `paper_pipeline/cq_check.py` —
+stage 0's competency-question runner, and the *only* mechanical check on the design's written-first
+answers. Both its runners parse stdout and read no return code, so with a clingo-less interpreter
+**CQ-4.a, CQ-5.a, CQ-5.b and CQ-6.c all reported `pass`** with nothing executed. Their
+expectations are written as **absences** (`absent`, `unresolved: []`), and an absence is exactly
+what a dead process produces. Two reviews read this tree that day and neither looked outside
+`phase_1/`.
+
+⚠️ **And the return code is not always enough.** `link.py` exits **1** for both *"found
+error-severity findings"* (a real outcome) and *"the interpreter died"*. CQ-6.c survived the
+return-code arm alone for that reason. The second observable is that `link.py` **always prints**:
+a silent stdout is a dead process. ⇒ **When a tool's exit codes are ambiguous, find a second
+observable rather than widening the accept set.**
+
+Also swept and found SOUND, recorded so the coverage is auditable: `mutate_schema.py` (checks the
+baseline return code *and* that each mutant collected the same number of tests — a mutant whose
+suite did not run comparably is reported `error`, never `survivor`); `model/test_model.py`'s hook
+tests (assert on return codes); `test_link.py`'s CLI tests except the live-run acceptance case,
+which had the shape and now asserts `returncode == 0` first.
+
 ## 9 Do not pin an exact value of a live artifact in a test
 
 Fixtures and assertions that hard-code prompt text break when someone legitimately edits the

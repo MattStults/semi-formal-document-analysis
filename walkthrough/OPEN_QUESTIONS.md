@@ -274,7 +274,16 @@ about four cents.** That is inside any reasonable ceiling. On a frontier model i
 
 ## Q-4 · `dryrun.txt` is stale and is the one failing self-test check
 
-`translate.py --self-test` reports 52 passed / 1 failed. The failure predates today.
+`translate.py --self-test` reports **51 passed / 1 failed** (this said 52; measured 2026-08-07).
+The failure predates today.
+
+⚠️ **It is now VISIBLE from pytest.** `test_prompt_examples.py
+::test_translate_self_test_runs_to_completion` asserted only "no Traceback" and "N passed", so
+`pytest walkthrough/` read green while the self-test exited 1. It now asserts `returncode == 0`
+— which pins no count, so it does not re-create the anti-pinning problem its old comment
+claimed — and carries `xfail(strict=True)` naming this question. **Strict matters:** the moment
+this is resolved and the self-test goes green, that test XPASSes and FAILS, so the exemption
+cannot outlive the ruling.
 
 **I have deliberately NOT regenerated it.** Regenerating bakes the current prompt into the
 artifact, which would turn a visible red into an invisible green while changing what the artifact

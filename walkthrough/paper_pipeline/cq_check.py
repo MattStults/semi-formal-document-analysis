@@ -42,6 +42,13 @@ LINK = os.path.join(WALK, "link.py")
 
 ATOM = re.compile(r"[a-z_][A-Za-z0-9_]*\([^()]*\)")
 
+#: clingo signals SAT/UNSAT through its exit code — 10/20/30 are OUTCOMES.
+#: Anything else means it never reached an answer. Mirrors `link.CLINGO_OK_RC`.
+CLINGO_OK_RC = (0, 10, 20, 30)
+#: `link.py` exits 0 (clean) or 1 (error-severity findings). 2 is a usage error
+#: and anything else is a crash.
+LINK_OK_RC = (0, 1)
+
 
 # --------------------------------------------------------------------------- prep
 
@@ -85,6 +92,36 @@ def materialise(modules, omit_facts, collapse, tmp):
 
 # ------------------------------------------------------------------------- runners
 
+def _did_not_run(r, ok_rc, what):
+    """The reason to distrust this result, or None.
+
+    ⛔ A CHECK THAT COULD NOT RUN MUST NOT EXIT LIKE A CHECK THAT PASSED
+    (`DEBUGGING_TIPS.md` §8). Both runners below read only stdout, so a tool
+    that never started produces an empty parse — no models, no unresolved
+    references — and `judge` reports `pass` on it. Measured 2026-08-07 with an
+    interpreter that has no clingo: **CQ-4.a, CQ-5.a, CQ-5.b and CQ-6.c all
+    reported `pass`** with nothing executed, because their expectations are
+    written as absences (`absent`, `unresolved: []`) and an absence is exactly
+    what a dead process produces. `python -m clingo` without the module prints
+    `No module named clingo` and exits 1 — a message containing no `error`, so
+    the text is no help either. The return code is the only signal.
+    """
+    if r.returncode not in ok_rc:
+        return (f"{what} exited {r.returncode} (expected one of {ok_rc}) — it "
+                f"never reached an answer, so the parse below is over nothing:"
+                f"\n{(r.stdout + r.stderr).strip()[:400]}")
+    # ⚠️ The return code is not enough for `link.py`: 1 is BOTH "found
+    # error-severity findings" (a real outcome) and "the interpreter died"
+    # (nothing ran). CQ-6.c survived the return-code arm alone for exactly
+    # that reason. `link.py` always prints — a silent stdout is a dead process.
+    if not r.stdout.strip():
+        return (f"{what} printed nothing at all (exit {r.returncode}). A "
+                f"silent tool is a tool that did not run, and every "
+                f"expectation here is read off its stdout:"
+                f"\n{r.stderr.strip()[:400]}")
+    return None
+
+
 def run_clingo(run, collapse, tmp):
     mods = materialise(run["modules"], run.get("omit_facts"), collapse, tmp)
     cmd = [PY, "-m", "clingo"] + mods + [str(run.get("enumerate", 1)), "--outf=0"]
@@ -100,7 +137,8 @@ def run_clingo(run, collapse, tmp):
             models[-1] = set(ATOM.findall(line))
     models = [m for m in models if m]
     return {"unsat": "UNSATISFIABLE" in blob, "models": models,
-            "union": set().union(*models) if models else set()}
+            "union": set().union(*models) if models else set(),
+            "did_not_run": _did_not_run(r, CLINGO_OK_RC, "clingo")}
 
 
 def run_link(run, collapse, tmp):
@@ -117,7 +155,8 @@ def run_link(run, collapse, tmp):
             if not s or s.startswith("Each one"):
                 break
             unresolved.append(s)
-    return {"unresolved": sorted(unresolved)}
+    return {"unresolved": sorted(unresolved),
+            "did_not_run": _did_not_run(r, LINK_OK_RC, "link.py")}
 
 
 # ------------------------------------------------------------------------- verdicts
@@ -131,6 +170,11 @@ def judge(run, res, collapse=None):
     break on every instance that happens to mention the symbol.
     """
     exp, fails = run["expect"], []
+    # ⛔ FIRST, and before any expectation is consulted: did the tool run at all?
+    # An instance whose expectation is an absence is satisfied by a dead
+    # process, and four of the sixteen here are written that way.
+    if res.get("did_not_run"):
+        return [res["did_not_run"]]
     if collapse:
         a, b = collapse
         exp = json.loads(re.sub(r"\b%s\b" % re.escape(a), b, json.dumps(exp)))

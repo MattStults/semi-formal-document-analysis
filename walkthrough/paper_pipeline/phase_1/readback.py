@@ -73,7 +73,30 @@ STATUS = {"forbid": "forbids", "permit": "permits",
           "oblige": "obliges", "prefer": "prefers"}
 
 #: ASP words that are lowercase but are not predicate names.
-KEYWORDS = {"not", "count", "sum", "min", "max", "true", "false"}
+#:
+#: ⛔ `count`, `sum`, `min`, `max`, `true` and `false` USED TO BE IN HERE, and
+#: they made the two layers disagree. `substitute` consults this set and
+#: `_gloss_slot` does not, so a module legitimately declaring `count/1` got
+#: `count(X)` from layer 1 and `«the tally»` from layer 2 — and RB1 then fired
+#: on every layer-1 span saying *"no definition was available to put there"*,
+#: which was FALSE: a definition existed and `substitute` refused to use it.
+#: The entries were also unnecessary. `_NAME`'s lookbehind is
+#: `(?<![A-Za-z0-9_#])`, so `#count`/`#sum`/`#min`/`#max`/`#true`/`#false` are
+#: already excluded by the `#` that clingo always prints. Only bare `not` is a
+#: word that appears without one, so only `not` is load-bearing.
+KEYWORDS = {"not"}
+
+#: The typography that means "this is a written meaning" (or a marked term).
+#: ⛔ IT MUST STAY UNAMBIGUOUS. `_strip` is a flat, non-nesting scanner and
+#: `schema._BAD_IN_TEXT` does not forbid these characters inside a gloss, so a
+#: model can emit one: `_strip('«a «flag» that has not been set»')` returned
+#: `' that has not been set»'`, and that residue leaks into RB1's
+#: inside/outside-gloss classification, into `echo_score`, and into `_markers`
+#: — which then counted the `not` of ordinary prose and fired RB3 on a CORRECT
+#: rendering. Neutralising the character at the point of insertion keeps the
+#: markers meaning exactly one thing; a tolerant `_strip` would not.
+_MARKER_SAFE = {"«": "“", "»": "”", "⟦": "[", "⟧": "]",
+                "⟨": "<", "⟩": ">"}
 
 _CMP = {int(ast.ComparisonOperator.Equal): "equal to",
         int(ast.ComparisonOperator.NotEqual): "different from",
@@ -107,6 +130,58 @@ _TOKEN = re.compile(r"[a-z0-9]+")
 #  LAYER 1 — the primitive everything else falls back to
 # ==========================================================================
 
+def marker_safe(text: str) -> str:
+    """A gloss with the substitution markers neutralised. See `_MARKER_SAFE`."""
+    for bad, good in _MARKER_SAFE.items():
+        text = text.replace(bad, good)
+    return text
+
+
+def has_marker(text: str) -> bool:
+    return any(ch in text for ch in _MARKER_SAFE)
+
+
+def _glossed(text: str) -> str:
+    """⭐ THE ONE PLACE a written meaning is wrapped in the gloss markers."""
+    return f"{GLOSS_OPEN}{marker_safe(text)}{GLOSS_CLOSE}"
+
+
+def _split_strings(text: str):
+    """`text` as alternating (outside, inside-a-quoted-string) fragments.
+
+    ⛔ A QUOTED STRING CONSTANT IS DATA. `substitute` had no string awareness —
+    the only string-aware helper in the pipeline is `schema._strip_strings` —
+    so `p("political_content is bad")` rendered as
+    `«a thing» (of "«content about politics» is bad")`. Two costs, and the
+    second is the serious one: a declared label sitting inside a string was
+    glossed AWAY, so RB1 — the check whose whole job is to notice a surviving
+    label — could no longer see it.
+    """
+    out, buf, i, inside = [], [], 0, False
+    while i < len(text):
+        ch = text[i]
+        if inside and ch == "\\" and i + 1 < len(text):
+            buf.append(text[i:i + 2])
+            i += 2
+            continue
+        if ch == '"':
+            buf.append(ch)
+            if inside:                       # closing quote ends the string
+                out.append(("".join(buf), True))
+                buf = []
+            else:                            # opening quote ends the prose
+                out.append(("".join(buf[:-1]), False))
+                buf = ['"']
+            inside = not inside
+            i += 1
+            continue
+        buf.append(ch)
+        i += 1
+    # An unterminated string is still data — never re-open substitution on it.
+    out.append(("".join(buf), inside))
+    return out
+
+
 def substitute(text: str, gloss: dict) -> str:
     """Every predicate name in `text` replaced by its gloss, in «».
 
@@ -115,13 +190,17 @@ def substitute(text: str, gloss: dict) -> str:
     left BARE and on purpose: that is a label surviving into the English, RB1
     catches it, and silently inventing a plausible phrase would hide the one
     defect stage 4 exists to find.
+
+    ⚠️ Quoted string constants are copied through untouched — see
+    `_split_strings` for what that cost before it was true.
     """
     def one(m):
         name = m.group(1)
         if name in KEYWORDS or name not in gloss:
             return name
-        return f"{GLOSS_OPEN}{gloss[name]}{GLOSS_CLOSE}"
-    return _NAME.sub(one, text)
+        return _glossed(gloss[name])
+    return "".join(frag if in_string else _NAME.sub(one, frag)
+                   for frag, in_string in _split_strings(text))
 
 
 @dataclasses.dataclass(frozen=True)
@@ -236,7 +315,7 @@ def _gloss_slot(name: str, gloss: dict) -> str:
     had written a meaning for.
     """
     if name in gloss:
-        return f"{GLOSS_OPEN}{gloss[name]}{GLOSS_CLOSE}"
+        return _glossed(gloss[name])
     return f"{UNGLOSS_MARK}{name}{UNGLOSS_CLOSE}"
 
 
@@ -472,7 +551,7 @@ def _act_span(act: str, gloss: dict, notes: list, item: str) -> Span:
     """
     name = act.split("(")[0]
     if name in gloss:
-        return Span(f"{GLOSS_OPEN}{gloss[name]}{GLOSS_CLOSE}", 2, act)
+        return Span(_glossed(gloss[name]), 2, act)
     notes.append(Finding(
         "readback-act-literal", "note", item,
         f"act {act!r} is rendered as its own term: nothing in the module "
@@ -494,19 +573,32 @@ def render_items(mod: schema.Module, gloss: dict, notes: list) -> tuple:
     for i, c in enumerate(mod.concepts):
         # The definition IS the item — there is nothing else to say about it.
         out.append(Rendering(f"concepts[{i}]", "concept",
-                             f"{GLOSS_OPEN}{c.gloss}{GLOSS_CLOSE}", 2, c.sig))
+                             _glossed(c.gloss), 2, c.sig))
 
     for i, f in enumerate(mod.ontology):
         name = f.atom.split("(")[0]
         args = _split_args(f.atom)
-        g = f"{GLOSS_OPEN}{f.gloss}{GLOSS_CLOSE}"
+        g = _glossed(f.gloss)
+        # ⛔ AN ARGUMENT IS NOT A WRITTEN DEFINITION, and it used to be dressed
+        # as one: `restricted(new_step)` rendered as `«new_step» is «it falls
+        # under…»` and `ok(P,N)` as `«…» holds of «P», «N»`. A variable name
+        # and a bare constant were wearing the typography reserved for a
+        # meaning somebody wrote down. It also INVERTED RB1: that check builds
+        # its `outside` scan by stripping `«…»`, so a declared label appearing
+        # as an ontology argument was reported as *"inside a gloss — the
+        # written definition reuses its own predicate's name"*, the weaker of
+        # RB1's two diagnoses and the one a reader is told to discount, when
+        # the renderer had in fact emitted the bare label itself.
+        # `substitute` is the right instrument: it glosses what has a meaning
+        # and leaves the rest bare, exactly as `_render_symbolic` already does
+        # for the arguments it shows.
+        shown = [substitute(a, gloss) for a in args]
         if len(args) == 1:
-            head = f"{GLOSS_OPEN}{args[0]}{GLOSS_CLOSE} is {g}"
+            head = f"{shown[0]} is {g}"
         elif not args:
             head = f"{g} holds"
         else:
-            shown = ", ".join(f"{GLOSS_OPEN}{a}{GLOSS_CLOSE}" for a in args)
-            head = f"{g} holds of {shown}"
+            head = f"{g} holds of " + ", ".join(shown)
         spans = render_body(f.body, gloss)
         out.append(Rendering(f"ontology[{i}]", "ontology",
                              head + _when(spans), _layer(spans), f.atom, f.body))
@@ -601,15 +693,29 @@ def _clause_ids(mod: schema.Module) -> set:
     return ids
 
 
+def _scrub_clause_refs(text: str, ids) -> str:
+    """Remove RB1's one exemption — the explicit clause reference.
+
+    ⛔ LONGEST FIRST, ALWAYS. This iterated a `set` and replaced prefix-blind:
+    with `m001` and `m0012` both in scope, replacing the shorter first turns
+    `clause m0012` into `clause2` and leaves a residue, and WHICH happens
+    depends on `PYTHONHASHSEED`. `REPRODUCIBILITY.md` requires determinism, and
+    `test_rendering_is_deterministic` cannot see this: it renders twice in one
+    process, where the hash seed is constant. Latent on today's fixed-width
+    four-digit ids — pinned so it cannot become live.
+    """
+    for cid in sorted(ids, key=len, reverse=True):
+        text = text.replace(f"clause {cid}", "clause")
+    return text
+
+
 def _rb1(mod, renderings) -> list:
     labels, ids = _label_set(mod), _clause_ids(mod)
     out = []
     for r in renderings:
         # An act term rendered as itself is the ONE exempt span, and it is
         # exempt because it is marked, not because it is quiet.
-        scan = _strip(r.text, ACT_MARK, ACT_CLOSE)
-        for cid in ids:                       # the explicit clause reference
-            scan = scan.replace(f"clause {cid}", "clause")
+        scan = _scrub_clause_refs(_strip(r.text, ACT_MARK, ACT_CLOSE), ids)
         # ⚠️ Where the label sits changes what it MEANS, and both fire.
         # Outside a gloss, the renderer emitted a name it could not define —
         # Invariant 1's subject. Inside one, the author's own definition prose
@@ -743,6 +849,18 @@ def render_module(mod: schema.Module, *, extra_gloss: Optional[dict] = None,
     """A validated module -> its read-back, its findings and its five checks."""
     gloss = gloss_table(mod, extra_gloss)
     notes: list = []
+    # A gloss carrying a substitution marker is neutralised on insertion
+    # (`marker_safe`) — but never silently: the character was in the module's
+    # own text and a reader has to be able to see that the rendering is not
+    # byte-for-byte what the model wrote.
+    for name in sorted(n for n, g in gloss.items() if has_marker(g)):
+        notes.append(Finding(
+            "readback-marker-in-gloss", "note", None,
+            f"the written meaning of {name!r} contains a gloss marker "
+            f"({''.join(sorted(set(c for c in gloss[name] if c in _MARKER_SAFE)))}). "
+            f"It is rewritten to a plain equivalent before insertion, because "
+            f"the markers must stay unambiguous: a nested one defeats `_strip` "
+            f"and leaves prose in RB1's, RB3's and RB4's scans"))
     renderings = render_items(mod, gloss, notes)
 
     findings = list(notes)

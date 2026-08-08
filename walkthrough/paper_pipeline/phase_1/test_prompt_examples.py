@@ -190,6 +190,11 @@ def test_a_simple_act_list_is_unchanged(tmp_path):
 # translate.py --self-test must RUN. It was the only self-test not in pytest.
 # ==========================================================================
 
+@pytest.mark.xfail(strict=True, reason=(
+    "OPEN_QUESTIONS.md Q-4: `dryrun.txt` is stale and is deliberately NOT "
+    "regenerated — that is Matt's ruling to make. The self-test therefore "
+    "exits 1. STRICT so this flips to a FAILURE the day Q-4 is resolved and "
+    "the xfail stops being true."))
 def test_translate_self_test_runs_to_completion():
     """⛔ THE GAP THIS CLOSES. `link.py --self-test` and `guard.py --self-test`
     are both driven from pytest. `translate.py --self-test` was not — so when a
@@ -203,6 +208,24 @@ def test_translate_self_test_runs_to_completion():
     passed" would fail the moment someone legitimately adds a check
     (DEBUGGING_TIPS entry 9). A crash is the thing being caught here; individual
     check failures are visible in the summary and are a separate question.
+
+    ⛔ THAT LAST SENTENCE WAS WRONG, and this test was RED-BLIND because of it.
+    `ENGINEERING_REVIEW_2026-08-07b.md` F3: as written, the wrapper closed the
+    "self-test crashed" hole and left the "self-test FAILED" hole wide open, in
+    the file whose own docstring says a check that cannot run must not be
+    reachable from the same state as a check that passed. `--self-test` has
+    been exiting 1 since `6be3a4a` and `pytest walkthrough/` never noticed.
+
+    The anti-pinning rule is not in tension with this: `returncode == 0` pins
+    no count, so a cycle that legitimately adds a check still passes.
+
+    ⚠️ XFAIL(strict), NOT a skip and NOT a deletion. The one failing check is
+    `dryrun.txt is missing or STALE`, which is **`OPEN_QUESTIONS.md` Q-4** —
+    Matt's call, and deliberately NOT regenerated, because regenerating bakes
+    today's prompt into the artifact and turns a visible red into an invisible
+    green while changing what the artifact attests. `strict=True` means this
+    test FAILS the moment the self-test goes green, so the xfail cannot outlive
+    the ruling that justifies it.
     """
     import subprocess
     r = subprocess.run(
@@ -214,6 +237,11 @@ def test_translate_self_test_runs_to_completion():
     assert re.search(r"\d+ passed", out), (
         "no summary line — the self-test did not reach its own report:\n"
         + out[-2000:])
+    assert r.returncode == 0, (
+        "translate.py --self-test reported a FAILING check and pytest was "
+        "green anyway. Expected while Q-4 is open (`dryrun.txt` is stale and "
+        "must not be regenerated without a ruling); this assertion is what "
+        "makes the red visible and tracked instead of hidden.\n" + out[-2000:])
 
 
 def test_every_json_block_in_the_prompt_is_valid_json():

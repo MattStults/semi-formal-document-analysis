@@ -344,12 +344,25 @@ def test_the_cost_gate_PRICES_the_repair_attempts():
 
     A gate that prices one call per clause under-estimates by that factor —
     the one direction an estimate against a hard cap must never err in.
+
+    ⚠️ THIS ASSERTION IS NEARLY BLIND and is kept only as a smoke test.
+    `DEBUGGING_TIPS.md` §14: with `max_tokens=1000` and the strings `"sys"` /
+    `"user"`, the OUTPUT term alone gives exactly 3×, so `three > one * 2.5`
+    passes with the whole input term contributing nothing measurable. The real
+    pins are in `test_cost_and_summary.py`, against a hand-priced worst case at
+    realistic sizes.
+
+    ⚠️ The strings are now realistic for a second reason:
+    `translate._check_repair_log_budget` refuses to price a repair sequence
+    whose `system + user` block is too small to absorb one repair-turn error
+    log — which is exactly the case where the printed estimate would be low.
     """
     cfg = T.load_config(str(HERE / "config.json"))
     prov = T.Provider("p", "openai-compatible", "m", "u", "K", 0.2, 1000,
                       [1.0, 1.0])
-    one, _, _ = T.estimate_cost("sys", ["user"], prov, cfg, max_attempts=1)
-    three, _, _ = T.estimate_cost("sys", ["user"], prov, cfg, max_attempts=3)
+    system, users = "s" * 33_506, ["u" * 5_341]
+    one, _, _ = T.estimate_cost(system, users, prov, cfg, max_attempts=1)
+    three, _, _ = T.estimate_cost(system, users, prov, cfg, max_attempts=3)
     assert three > one * 2.5, (one, three)
 
 

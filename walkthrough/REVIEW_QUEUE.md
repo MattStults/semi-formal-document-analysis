@@ -172,8 +172,25 @@ at explanation granularity). Recorded as unresolved, not accepted.
 
 ## 6 WHAT IS BUILT AND GREEN
 
-**270 tests** (was 217) · `translate.py --self-test` 53/53 · `link.py --self-test` 19/19 ·
-`mutate_schema.py` **45 guards, 0 survivors** · spend **~$0.19** of $8.50.
+**500 passed + 1 xfail** (was 217) · `translate.py --self-test` **51 passed / 1 FAILED** ·
+`link.py --self-test` 19/19 · `mutate_schema.py` **46 guards, 0 survivors** ·
+spend **~$0.19** of $8.50. *(Measured 2026-08-07, excluding the in-flight
+`test_seats.py`.)*
+
+⛔ **The one red is deliberate and is not "green".** `dryrun.txt` is stale
+(`OPEN_QUESTIONS.md` **Q-4**) and has not been regenerated, because regenerating
+bakes today's prompt into the artifact and turns a visible red into an invisible
+green while changing what the artifact attests. `test_prompt_examples.py
+::test_translate_self_test_runs_to_completion` now asserts `returncode == 0` and
+is marked `xfail(strict=True)` naming Q-4, so the red is tracked and flips back
+to a hard failure the day Q-4 is decided.
+
+⚠️ These four numbers were **53/53, 270, 45 and "GREEN"** until 2026-08-07 and
+every one of them was wrong — the guard count had legitimately moved (a
+withdrawn `_check_body` guard) and the self-test had been failing since
+`6be3a4a`. `ENGINEERING_REVIEW_2026-08-07b.md` F3: *a status section asserting
+green for a red check is worse than no status section.* The test count is a
+moving live artifact; treat it as of its date, not as a pin.
 
 Since: the graveyard's persistence layer, `eval.py` (an A/B harness that measures its own
 noise first and scores the FIRST attempt only), `eval_arms/make_arm.py` (an arm generated as a

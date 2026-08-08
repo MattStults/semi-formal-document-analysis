@@ -117,9 +117,18 @@ def test_substitute_replaces_predicate_names_with_glosses():
 
 
 def test_substitute_leaves_keywords_alone():
-    out = readback.substitute("not count sum min max true false",
+    """⚠️ REWRITTEN 2026-08-07. This used to pass a gloss for `count` and
+    assert it was NOT used, which pinned the defect rather than the property:
+    `count` is a legal predicate name, `_gloss_slot` glosses it, and layer 1
+    refusing to made the two layers disagree and RB1 fire with a false message.
+    See `KEYWORDS` and `test_a_predicate_legitimately_named_count_...`.
+
+    What is actually true: the aggregate DIRECTIVES carry a `#`, which `_NAME`
+    excludes, and bare `not` is a keyword.
+    """
+    out = readback.substitute("not #count #sum #min #max #true #false",
                               {"not": "WRONG", "count": "WRONG"})
-    assert "«" not in out
+    assert "«" not in out, out
 
 
 def test_substitute_leaves_variables_and_directives_alone():
@@ -279,7 +288,9 @@ def test_ontology_ground_fact_renders_x_is_g():
                               body=None)])
     rb = readback.render_module(mod)
     o = [r for r in rb.renderings if r.kind == "ontology"][0]
-    assert "«new_step»" in o.text
+    # ⚠️ `«new_step»` UNTIL 2026-08-07, which was the F9 defect: an argument is
+    # not a written definition and must not wear the typography of one.
+    assert "new_step is " in o.text and "«new_step»" not in o.text, o.text
     assert "«it falls under the restricted policy»" in o.text
 
 
@@ -663,3 +674,315 @@ def test_a_body_carrying_TWO_statements_loses_nothing():
     assert all(s.layer == 1 for s in spans), (
         "an unparseable-as-one-rule body must fall back to layer 1, so the "
         "report shows it is ASP-with-glosses and not fluent English")
+
+
+# ==========================================================================
+#  ENGINEERING_REVIEW_2026-08-07b — F4 F5 F6 F7 F8 F9 F10
+#  Every test below reproduced as RED against the reviewed tree first.
+# ==========================================================================
+
+# ---- F4: a quoted string constant is DATA, not a place to substitute ----
+
+def test_a_gloss_is_not_substituted_INSIDE_a_quoted_string_constant():
+    """⛔ `p("political_content is bad")` rendered as
+    `«a thing» (of "«content about politics» is bad")`.
+
+    Two costs, and the second is the serious one. A data constant is rewritten
+    into prose; and a declared label sitting inside a string is glossed AWAY,
+    so RB1 — the check whose entire job is to notice a surviving label — can no
+    longer see it. `schema._strip_strings` is the only string-aware helper in
+    the pipeline and the renderer had no counterpart.
+    """
+    gloss = {"p": "a thing", "political_content": "content about politics"}
+    out = readback.substitute('p("political_content is bad")', gloss)
+    assert '"political_content is bad"' in out, (
+        f"the string constant was rewritten: {out!r}")
+    assert "«a thing»" in out, f"the predicate name was not glossed: {out!r}"
+
+    joined = " ".join(s.text for s in
+                      readback.render_body('p("political_content is bad")',
+                                           gloss))
+    assert '"political_content is bad"' in joined, joined
+
+
+def test_a_label_hiding_in_a_string_constant_is_still_visible_to_RB1():
+    """The consequence, at the check. Glossing inside the string made the label
+    disappear from RB1's scan, which is the inverse of what RB1 is for."""
+    mod = _mod(
+        concepts=[_concept("restricted", "the material is restricted")],
+        inputs=["restricted/1", "tagged/1"],
+        ontology=[_lic(atom="flagged(X)", gloss="the item is flagged",
+                       body='tagged("restricted")')],
+        requires=["flagged/1"])
+    rb = readback.render_module(mod)
+    text = " ".join(r.text for r in rb.renderings)
+    assert '"restricted"' in text, (
+        f"the label inside the string constant was glossed away: {text!r}")
+    assert rb.checks["RB1"] is False, (
+        "a declared label survives verbatim into the English and RB1 must say "
+        "so")
+
+
+# ---- F5: the substitution markers must stay unambiguous ----
+
+def test_a_gloss_carrying_a_gloss_MARKER_does_not_break_the_stripper():
+    """⛔ `_strip` is a flat scanner and `schema._BAD_IN_TEXT` does not forbid
+    `«»` in a gloss, so a model can emit one:
+
+        _strip('«a «flag» that has not been set»') -> ' that has not been set»'
+
+    The residue leaks into every consumer — RB1's inside/outside gloss
+    classification, `echo_score`, and `_markers`, which then counts the `not`
+    of ordinary prose and fires RB3 on a CORRECT rendering.
+    """
+    raw = "a «flag» that has not been set"
+    assert readback._strip(f"«{raw}»", readback.GLOSS_OPEN,
+                           readback.GLOSS_CLOSE) != "", (
+        "the premise of this test: `_strip` is a flat, non-nesting scanner, so "
+        "a nested marker leaves prose behind. If that ever stops being true, "
+        "this test is testing nothing and the fix below can be withdrawn")
+
+    # ⭐ The fix is at INSERTION, not in the stripper: the markers have to keep
+    # meaning exactly one thing for RB1 to mean anything, so a gloss carrying
+    # one is neutralised on the way in — and said out loud, never silently.
+    mod = _mod(concepts=[_concept("unread", raw)])
+    rb = readback.render_module(mod)
+    c = [r for r in rb.renderings if r.kind == "concept"][0]
+    assert readback._strip(c.text, readback.GLOSS_OPEN,
+                           readback.GLOSS_CLOSE) == "", (
+        f"marker residue escaped the gloss: {c.text!r}")
+    assert "flag" in c.text, f"the gloss's content was lost, not marked: {c.text!r}"
+    assert any(f.check_id == "readback-marker-in-gloss" for f in rb.findings), (
+        "rewriting a model's own text without saying so is the silent-edit "
+        "shape this module exists to prevent")
+
+
+def test_a_marker_inside_a_gloss_does_not_make_RB3_fire_on_a_correct_rendering():
+    mod = _mod(
+        concepts=[_concept("unread",
+                           "text with a «flag» the user has not seen")],
+        inputs=["unread/1"],
+        ontology=[_lic(atom="stale(X)", gloss="the item is stale",
+                       body="unread(X)")],
+        requires=["stale/1"])
+    rb = readback.render_module(mod)
+    assert rb.checks["RB3"] is True, (
+        "the body has zero `not`; the negation counted came out of the gloss's "
+        "own prose, reachable only because the marker broke the stripper: "
+        + str([f.message for f in rb.findings]))
+
+
+# ---- F6: the converse table, all six operators, both guard positions ----
+
+_CMP_CASES = [
+    ("#count{ X : harmed(X) } = 3", "equal to 3"),
+    ("#count{ X : harmed(X) } != 3", "different from 3"),
+    ("#count{ X : harmed(X) } < 3", "less than 3"),
+    ("#count{ X : harmed(X) } <= 3", "at most 3"),
+    ("#count{ X : harmed(X) } > 3", "greater than 3"),
+    ("#count{ X : harmed(X) } >= 3", "at least 3"),
+    # ⭐ THE GUARD ON THE LEFT — the position `_CONVERSE` exists for. Read from
+    # the aggregate's side the relation is the CONVERSE, and getting it
+    # backwards inverts the bound silently. Only `<=` was covered before, and
+    # only incidentally: clingo normalises `#count{…} >= 3` into `3 <= #count`.
+    ("3 = #count{ X : harmed(X) }", "equal to 3"),
+    ("3 != #count{ X : harmed(X) }", "different from 3"),
+    ("3 < #count{ X : harmed(X) }", "greater than 3"),
+    ("3 <= #count{ X : harmed(X) }", "at least 3"),
+    ("3 > #count{ X : harmed(X) }", "less than 3"),
+    ("3 >= #count{ X : harmed(X) }", "at most 3"),
+]
+
+
+@pytest.mark.parametrize("body,phrase", _CMP_CASES)
+def test_every_aggregate_bound_reads_from_the_aggregates_side(body, phrase):
+    spans = readback.render_body(body, {"harmed": "a person is harmed"})
+    text = " ".join(s.text for s in spans)
+    assert phrase in text, (
+        f"{body!r} rendered as {text!r}; the bound must read {phrase!r} from "
+        f"the aggregate's side. An inverted `_CONVERSE` entry flips a threshold "
+        f"with every check still green")
+
+
+def test_the_comparison_table_and_its_converse_are_a_bijection():
+    """The guard that must kill the table above.
+
+    Six asserts on rendered text cannot see a table that maps two operators
+    onto one phrase, and `_CMP[Equal] = "different from"` survived the whole
+    suite. Each operator needs its own phrase, and converting twice must be the
+    identity.
+    """
+    assert len(set(readback._CMP.values())) == len(readback._CMP), (
+        f"two comparison operators share a phrase: {readback._CMP}")
+    for op in readback._CMP:
+        assert readback._CONVERSE[readback._CONVERSE[op]] == op, (
+            f"converting {readback._CMP[op]!r} twice is not the identity")
+
+
+# ---- F7: the layer stamp of a MIXED item ----
+
+def test_an_item_mixing_the_two_layers_is_stamped_with_the_WEAKER_one():
+    """⛔ `_layer`'s `min` -> `max` survived the whole suite.
+
+    Nothing built an item whose body mixes layers, so the module's own ⭐
+    property — every rendering records WHICH layer produced it, because the two
+    carry different amounts of trust — was unpinned exactly where it matters.
+    Under `max` an item containing glossed raw ASP is handed to a seat stamped
+    `fluent`.
+    """
+    body = "adult(P), 2 { q(P) } 4"
+    spans = readback.render_body(body, {"adult": "the person is an adult",
+                                        "q": "a condition"})
+    assert sorted(s.layer for s in spans) == [1, 2], (
+        f"this fixture no longer mixes the layers: "
+        f"{[(s.text, s.layer) for s in spans]}")
+    assert readback._layer(spans) == 1
+
+    mod = _mod(
+        concepts=[_concept("adult", "the person is an adult"),
+                  _concept("q", "a condition")],
+        inputs=["adult/1", "q/1"],
+        ontology=[_lic(atom="eligible(P)", gloss="the person is eligible",
+                       body=body)],
+        requires=["eligible/1"])
+    r = [x for x in readback.render_module(mod).renderings
+         if x.kind == "ontology"][0]
+    assert r.layer == 1, (
+        "half this sentence is raw ASP; stamping it `fluent` tells a seat to "
+        "trust it as English")
+    assert readback.ASP_MARK in r.text
+
+
+# ---- F8: layer 1 and layer 2 must agree about what a predicate name is ----
+
+def test_a_predicate_legitimately_named_count_is_glossed_by_BOTH_layers():
+    """⛔ `substitute` consulted `KEYWORDS`; `_gloss_slot` did not.
+
+        substitute('count(X)', {'count': 'the tally'})  -> 'count(X)'
+        render_body('count(X)', {'count': 'the tally'}) -> '«the tally»'
+
+    So a module declaring `count/1` had RB1 fire on every layer-1 span with the
+    message *"no definition was available to put there"* — which is FALSE: a
+    definition existed and `substitute` refused to use it.
+
+    The entries were also unnecessary. `_NAME`'s lookbehind is
+    `(?<![A-Za-z0-9_#])`, so `#count`/`#sum`/`#min`/`#max`/`#true`/`#false` are
+    already excluded by the `#`. Only bare `not` is load-bearing.
+    """
+    for word in ("count", "sum", "min", "max", "true", "false"):
+        out = readback.substitute(f"{word}(X)", {word: "the tally"})
+        assert "«the tally»" in out, (
+            f"{word!r} is a legal predicate name and it has a written meaning, "
+            f"but layer 1 emitted the label: {out!r}")
+
+
+def test_the_aggregate_directives_are_still_left_alone():
+    """The guard that must kill the test above: dropping the whole KEYWORDS
+    check would gloss `#count` itself, and `not` is genuinely a keyword."""
+    out = readback.substitute("#count{ X : p(X) }, not q(X)",
+                              {"count": "WRONG", "not": "WRONG", "p": "a thing",
+                               "q": "a condition"})
+    assert "#count" in out and "WRONG" not in out, out
+    assert "not «a condition»" in out, out
+
+
+def test_layer_1_and_layer_2_agree_on_a_predicate_named_count():
+    mod = _mod(
+        concepts=[_concept("count", "the number of prior warnings")],
+        inputs=["count/1"],
+        ontology=[_lic(atom="warned(X)", gloss="the user has had a caution",
+                       body="count(X), 2 { count(X) } 4")],
+        requires=["warned/1"])
+    rb = readback.render_module(mod)
+    text = " ".join(r.text for r in rb.renderings)
+    assert "«the number of prior warnings»" in text, text
+    assert rb.checks["RB1"] is True, [f.message for f in rb.findings]
+
+
+# ---- F9: an ontology ARGUMENT is not a written definition ----
+
+def test_ontology_arguments_are_not_dressed_as_glosses():
+    """⛔ `render_items` wrapped raw arguments in `«»` — the typography
+    reserved for a written definition:
+
+        restricted(new_step) -> '«new_step» is «it falls under…»'
+        ok(P,N)              -> '«…» holds of «P», «N»'
+
+    Because RB1 builds its `outside` scan by stripping `«…»`, a declared label
+    appearing as an ontology argument was reported as *"inside a gloss — the
+    written definition reuses its own predicate's name"* when the renderer had
+    in fact emitted the bare label itself. That is the WEAKER of RB1's two
+    diagnoses and the one a reader is told to discount: the classification was
+    inverted for this case.
+    """
+    mod = _mod(
+        inputs=["new_step/1"],
+        ontology=[_lic(atom="restricted(new_step)",
+                       gloss="it falls under the restriction", body=None)],
+        requires=["restricted/1"])
+    r = readback.render_module(mod).renderings[0]
+    assert "new_step" in r.text
+    assert "«new_step»" not in r.text, (
+        f"a bare constant is not a written meaning: {r.text!r}")
+
+
+def test_a_label_in_an_ontology_argument_is_blamed_on_the_RENDERER():
+    """`new_step` is a declared input with no written meaning anywhere, so the
+    renderer emits the bare label. RB1 must blame the renderer for it — before
+    the fix the `«»` wrapper made the `outside` scan miss it and RB1 reported
+    the module's gloss prose instead, sending the repair to the wrong place."""
+    mod = _mod(
+        inputs=["new_step/1"],
+        ontology=[_lic(atom="restricted(new_step)",
+                       gloss="it falls under the restriction", body=None)],
+        requires=["restricted/1"])
+    rb = readback.render_module(mod)
+    hits = [f for f in rb.findings if f.check_id == "RB1-label-survives"
+            and "new_step" in f.message]
+    assert hits, [f.message for f in rb.findings]
+    assert "renderer's own text" in hits[0].message, (
+        "the renderer emitted the bare label itself; blaming the module's "
+        "gloss prose sends the repair to the wrong place:\n" + hits[0].message)
+
+
+def test_an_ontology_argument_that_HAS_a_meaning_still_gets_it():
+    """The guard that must kill the two above: stripping the markers must not
+    become "never gloss an argument"."""
+    mod = _mod(
+        concepts=[_concept("new_step", "a step that has just been added")],
+        inputs=["new_step/1", "covers/2"],
+        ontology=[_lic(atom="restricted(f(new_step))",
+                       gloss="it falls under the restriction", body=None)],
+        requires=["restricted/1", "f/1"])
+    r = [x for x in readback.render_module(mod).renderings
+         if x.kind == "ontology"][0]
+    assert "«a step that has just been added»" in r.text, r.text
+
+
+# ---- F10: RB1's clause-reference scrub is order-dependent ----
+
+def test_the_clause_reference_scrub_is_not_prefix_blind():
+    """⛔ `for cid in ids` iterates a SET, and the replacement is
+    prefix-blind: with `m001` and `m0012` both in scope, replacing the shorter
+    first corrupts the longer, and which happens depends on `PYTHONHASHSEED`.
+
+    `REPRODUCIBILITY.md` requires determinism and
+    `test_rendering_is_deterministic` runs both renders in ONE process, where
+    the hash seed is constant — so it cannot see this class of defect at all.
+    Latent on today's fixed-width ids; pinned so it cannot become live.
+    """
+    text = "clause m001 says clause m0012 outranks clause m0013"
+    ids = {"m001", "m0012", "m0013"}
+    got = readback._scrub_clause_refs(text, ids)
+    assert got == "clause says clause outranks clause", (
+        f"a clause reference was left half-erased: {got!r}. Replacing `m001` "
+        f"first turns `clause m0012` into `clause2`")
+
+    # ⭐ And it must not depend on the order the ids arrive in. This is the
+    # part `test_rendering_is_deterministic` cannot see: it renders twice in
+    # ONE process, where `PYTHONHASHSEED` is constant, so a set-iteration
+    # dependency is invisible to it.
+    import itertools
+    outs = {readback._scrub_clause_refs(text, list(p))
+            for p in itertools.permutations(sorted(ids))}
+    assert len(outs) == 1, outs

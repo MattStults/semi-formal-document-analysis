@@ -795,6 +795,14 @@ def test_d4b_acceptance_the_live_run_directory(tmp_path):
     assert declared, "this run's modules declare concepts"
     r = subprocess.run([PY, "link.py"] + lps, cwd=HERE,
                        capture_output=True, text=True)
+    # ⛔ THE RETURN CODE FIRST. `leaked` is derived by regex from `r.stdout`, so
+    # a link.py that crashed (or an interpreter that could not start) produces
+    # an EMPTY stdout, an empty `leaked`, and a green acceptance test over a
+    # check that never ran. Same shape as F2 in
+    # `ENGINEERING_REVIEW_2026-08-07b.md`; `DEBUGGING_TIPS.md` §8.
+    assert r.returncode == 0, (
+        f"link.py exited {r.returncode} on the live run directory, so the "
+        f"scan below would be over no output at all:\n{r.stdout}{r.stderr}")
     leaked = [s for s in declared
               if re.search(r"`%s`[^\n]*declared neither" % re.escape(s),
                            r.stdout)]

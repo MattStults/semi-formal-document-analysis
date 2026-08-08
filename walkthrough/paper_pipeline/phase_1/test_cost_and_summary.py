@@ -61,7 +61,14 @@ def _hand_priced_worst_case(system, users, prov, cfg, max_attempts):
     in_tok = out_tok = 0.0
     for u in users:
         for k in range(1, max(1, int(max_attempts)) + 1):
-            in_tok += (len(system) + len(u)) / cpt + (k - 1) * prov.max_tokens
+            # ⚠️ THE THIRD TERM. Attempt k re-sends every earlier completion
+            # AND every earlier repair-turn USER block — the error log. That
+            # dimension was missing from both the estimate and this hand
+            # pricing, so the test could not see it at all: a review can only
+            # check the estimate against what the floor knows about.
+            in_tok += ((len(system) + len(u)) / cpt
+                       + (k - 1) * prov.max_tokens
+                       + (k - 1) * T.REPAIR_LOG_CHAR_BUDGET / cpt)
             out_tok += prov.max_tokens
     return (in_tok / 1e6) * pin + (out_tok / 1e6) * pout
 
@@ -113,9 +120,13 @@ def test_the_completion_carried_forward_is_priced_as_INPUT():
                        1_000, [1.0, 1.0])
     large = T.Provider("p", "openai-compatible", "m", "u", "K", 0.2,
                        100_000, [1.0, 1.0])
-    _, in_small, _ = T.estimate_cost("s" * 4000, ["u" * 400], small, cfg,
+    # ⚠️ REALISTIC sizes, per this file's own docstring — and now required:
+    # `_check_repair_log_budget` refuses a `system + user` block too small to
+    # absorb one repair-turn error log, which is exactly the situation in which
+    # the printed estimate would be low.
+    _, in_small, _ = T.estimate_cost("s" * 33_506, ["u" * 5_341], small, cfg,
                                      max_attempts=3)
-    _, in_large, _ = T.estimate_cost("s" * 4000, ["u" * 400], large, cfg,
+    _, in_large, _ = T.estimate_cost("s" * 33_506, ["u" * 5_341], large, cfg,
                                      max_attempts=3)
     assert in_large > in_small, (
         f"input tokens are {in_small} either way, so the prior completion is "
@@ -123,6 +134,87 @@ def test_the_completion_carried_forward_is_priced_as_INPUT():
     # Two attempts carry a completion forward at max_attempts=3 (attempt 2
     # carries one, attempt 3 carries two): 3 completions' worth of difference.
     assert in_large - in_small >= 3 * (100_000 - 1_000), (in_small, in_large)
+
+
+def test_the_repair_turns_OWN_user_blocks_are_priced_somewhere():
+    """⛔ The third term of the true worst case, which nothing measured.
+
+    `repair_loop` appends an error log as a USER turn after every failed
+    attempt, and every later attempt re-sends it. That term was in neither the
+    estimate nor the hand pricing above, so "the estimate is conservative" was
+    a claim about a dimension no test could see — the same shape as the missing
+    completion term one commit earlier.
+
+    The fix is not another additive term: the deliberate `T(T-1)/2` surplus on
+    `(system+user)` already carries it, EXACTLY when the log is no larger than
+    one `system + user` block. So the budget is named, priced into the floor
+    above, and the covering relation is checked.
+    """
+    cfg = T.load_config(str(HERE / "config.json"))
+    prov = _shipped_provider(cfg)
+    system, users = "s" * 33_506, ["u" * 5_341]
+
+    for attempts in (2, 3, 4, 5):
+        est, _, _ = T.estimate_cost(system, users, prov, cfg,
+                                    max_attempts=attempts)
+        floor = _hand_priced_worst_case(system, users, prov, cfg, attempts)
+        assert est >= floor, (
+            f"max_attempts={attempts}: ${est:.6f} printed against a true "
+            f"worst case of ${floor:.6f} once the repair-turn user blocks are "
+            f"counted")
+
+
+def test_a_budget_the_surplus_cannot_absorb_is_REFUSED_not_quietly_swallowed():
+    """The guard that must kill the test above.
+
+    Without it, `REPAIR_LOG_CHAR_BUDGET = 0` passes everything and the term is
+    back to being invisible. The estimate covers the error logs iff the log is
+    no bigger than one `system + user` block, so shrink that block below the
+    budget and the estimate must refuse rather than print a number that is low.
+    """
+    import pytest
+    cfg = T.load_config(str(HERE / "config.json"))
+    prov = _shipped_provider(cfg)
+    tiny_system, tiny_users = "s" * 10, ["u" * 10]
+    assert len(tiny_system) + len(tiny_users[0]) < T.REPAIR_LOG_CHAR_BUDGET
+
+    # One attempt sends no error log at all, so it is still priceable.
+    T.estimate_cost(tiny_system, tiny_users, prov, cfg, max_attempts=1)
+
+    with pytest.raises(T.CostGateError) as exc:
+        T.estimate_cost(tiny_system, tiny_users, prov, cfg, max_attempts=3)
+    assert "error log" in str(exc.value)
+
+
+def test_the_error_log_budget_is_above_what_the_pipeline_has_ever_produced():
+    """A budget is only a bound if it was measured against something.
+
+    Read off the stored runs rather than pinned: `DEBUGGING_TIPS.md` §9 — a run
+    that legitimately grows must not fail this.
+    """
+    import glob
+    import os
+    biggest, where = 0, None
+    for p in glob.glob(str(HERE / "runs" / "*" / "run.json")):
+        for r in json.loads(Path(p).read_text()).get("results", []):
+            found = r.get("surviving_findings") or []
+            if not found:
+                continue
+            # `surviving_findings` is stored ALREADY RENDERED, one string per
+            # finding — the same lines `render_error_log` emits. Sum them and
+            # allow generously for the header and footer it wraps them in.
+            size = sum(len(str(f)) + 6 for f in found) + 200
+            if size > biggest:
+                biggest, where = size, (os.path.basename(os.path.dirname(p)),
+                                        r["clause_id"])
+    if where is None:
+        import pytest
+        pytest.skip("no stored run carries a surviving-findings list")
+    assert biggest <= T.REPAIR_LOG_CHAR_BUDGET, (
+        f"the largest error log this pipeline has produced is {biggest} chars "
+        f"({where}) and the budget is {T.REPAIR_LOG_CHAR_BUDGET}. Raising the "
+        f"budget is only safe while it stays under one system+user block — see "
+        f"`_check_repair_log_budget`")
 
 
 def test_one_attempt_bills_no_carried_completion():

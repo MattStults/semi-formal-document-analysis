@@ -112,6 +112,33 @@ def test_the_shape_we_teach_is_a_shape_the_contract_accepts():
         schema.validate(obj, clause_id=obj["clause_id"], known_clause_ids=IDS)
 
 
+# ⭐ clingo's documented exit codes. Mirrors `link.CLINGO_OK_RC`: 10/20/30 are
+# SAT/UNSAT/SAT-with-more, i.e. OUTCOMES, not failures. Anything else means the
+# solver did not get as far as an answer.
+CLINGO_OK_RC = (0, 10, 20, 30)
+
+
+def clingo_complaints(lp_path, py=None):
+    """Load `lp_path` with clingo and return every reason to call it rejected.
+
+    ⛔ THE RETURN CODE IS PART OF THE ANSWER, and it is the part that used to be
+    missing. `python -m clingo` on an interpreter without the module prints
+    `No module named clingo` and exits 1 — a message containing no `error`, so
+    a check reading only the text sees a clean file and passes on a file
+    NOTHING EVER COMPILED. `DEBUGGING_TIPS.md` §8; `link._check_clingo` carries
+    the same two deliberately redundant detectors.
+    """
+    r = subprocess.run([str(py or VENV_PY), "-m", "clingo", str(lp_path),
+                        "--outf=3"], capture_output=True, text=True)
+    blob = r.stdout + r.stderr
+    out = [ln for ln in blob.splitlines() if "error" in ln.lower()]
+    if r.returncode not in CLINGO_OK_RC:
+        out.append(f"clingo exited {r.returncode}, which is not one of "
+                   f"{CLINGO_OK_RC} — it never reached an answer: "
+                   f"{blob.strip()[:200]}")
+    return out
+
+
 @pytest.mark.parametrize("which", [0, 1])
 def test_the_worked_examples_compile_in_clingo(which, tmp_path):
     """Rendering is not enough: the file has to be one clingo will load.
@@ -126,11 +153,67 @@ def test_the_worked_examples_compile_in_clingo(which, tmp_path):
     lp = tmp_path / "m.lp"
     lp.write_text(schema.render_lp(
         mod, {"section_id": "s", "kind": "conditional", "quote": "text"}))
-    r = subprocess.run([str(VENV_PY), "-m", "clingo", str(lp), "--outf=3"],
-                       capture_output=True, text=True)
-    errs = [ln for ln in (r.stdout + r.stderr).splitlines()
-            if "error" in ln.lower()]
+    errs = clingo_complaints(lp)
     assert not errs, f"clingo rejected the rendered module: {errs[:2]}"
+
+
+def fake_interpreter(tmp_path, name, rc, out="", err=""):
+    """A stand-in for `VENV_PY` that ignores its arguments.
+
+    ⭐ Deliberately NOT "point at a python that happens to lack clingo". That
+    makes the test a claim about the machine it runs on: install clingo
+    system-wide and the test silently stops testing anything — this same
+    failure mode, one level up. Copied from `test_link._fake_interpreter`,
+    which `ENGINEERING_REVIEW_2026-08-07b.md` names as the correct pattern.
+    """
+    p = tmp_path / name
+    p.write_text("#!/bin/sh\n"
+                 f"cat <<'EOF'\n{out}\nEOF\n"
+                 f"cat >&2 <<'EOF'\n{err}\nEOF\n"
+                 f"exit {rc}\n")
+    p.chmod(0o755)
+    return str(p)
+
+
+def test_a_clingo_that_NEVER_RAN_is_a_complaint_even_with_no_error_text(
+        tmp_path):
+    """⛔ The F2 shape, pinned at the helper every clingo check here goes through.
+
+    The deleted `test_an_anonymous_variable_in_a_BODY_is_accepted_and_clingo_
+    loads_it` passed on an interpreter with no clingo: it read only stdout and
+    filtered on `"error" in ln.lower()`, which matches ZERO of
+    `No module named clingo`. It was the entire positive evidence for
+    withdrawing a schema guard.
+    """
+    lp = tmp_path / "m.lp"
+    lp.write_text("p(a).\n")
+    blob = "/usr/bin/python3: No module named clingo"
+
+    # The premise, asserted rather than assumed: the TEXT arm is blind here.
+    assert "error" not in blob.lower(), (
+        "this test only pins the return-code arm if the text arm sees nothing")
+
+    fake = fake_interpreter(tmp_path, "no_clingo", rc=1, err=blob)
+    errs = clingo_complaints(lp, py=fake)
+    assert errs, ("clingo exited 1 having compiled nothing and printed no "
+                  "`error` line — the return code is the ONLY signal, and a "
+                  "check that misses it reports a file that never compiled as "
+                  "clean")
+    assert "never reached an answer" in errs[0], errs
+
+
+def test_every_documented_clingo_exit_code_stays_silent(tmp_path):
+    """The guard that must kill the test above; without it `return ['x']` passes.
+
+    clingo signals SAT/UNSAT through its exit code, so 10/20/30 are outcomes
+    and must not be read as refusals.
+    """
+    lp = tmp_path / "m.lp"
+    lp.write_text("p(a).\n")
+    for rc in CLINGO_OK_RC:
+        fake = fake_interpreter(tmp_path, f"rc{rc}", rc=rc)
+        assert clingo_complaints(lp, py=fake) == [], (
+            f"exit {rc} is a documented clingo outcome, not a refusal")
 
 
 # --------------------------- `_` in a HEAD term slot: the SOLVER's rule, ours
