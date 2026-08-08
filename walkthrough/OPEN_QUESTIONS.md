@@ -22,6 +22,39 @@ chosen differently — that is the standing instruction.
 
 ---
 
+## Q-20 ✅ RULED — artifact versioning and the re-run strategy
+
+**Matt, 2026-08-08:** *"It should probably trigger a re-run. If there's an intention flag that would
+make sense for a partial re-run we could respect that."*
+
+⛔ **This was under-tracked and that is my failure, not a design gap.** The two hash functions have
+existed since the graveyard landed, but `[RAN]` they are called **only when writing a graveyard
+entry** — metadata on a FAILURE record. Zero occurrences across every `run.json` and `m*.json`.
+Nothing compared a stored hash to a current one; nothing selected clauses for re-translation. The
+strategy did not exist, and it appeared nowhere in this file despite 19 other entries being here.
+
+**The ruling, now being implemented:**
+
+| hash | covers | on a change |
+|---|---|---|
+| `contract_hash` | clause text + schema source | the artifact **may no longer validate** ⇒ re-translate, not optional |
+| `provenance_hash` | prompt + model + params | ⭐ **also re-runs**, per this ruling |
+
+⚠️ **The two stay separate even though both now re-run**, because they answer different questions: a
+module whose `provenance_hash` moved is still **valid** and still links — it simply cannot be cited
+as evidence about the current prompt. Collapsing them marks the whole corpus stale on every prompt
+edit, which makes iteration impossible. `graveyard.py`'s docstring already carries that argument.
+
+**Rejected by name** (to be written into `03_pipeline.md` with the ruling): *"one hash for
+everything"*, and *"a provenance change only relabels, never re-runs"* — the latter considered and
+rejected by Matt today.
+
+**The intention flag is the part to watch.** It is the mechanism by which someone makes 593 stale
+modules not-stale with one word, so it is being designed to be hard to use carelessly, to leave a
+record, and to be **incapable of excusing a `contract_hash` change**.
+
+---
+
 ## Q-19 ⛔ §6's DIVERGENCE MACHINERY CAN NEVER FIRE — and the design, not the code, is why
 
 `[RAN]` **0 divergence records over all 81 legal verdict combinations.** Every seat's verdict
