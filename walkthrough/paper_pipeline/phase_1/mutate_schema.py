@@ -87,8 +87,9 @@ class MutationError(RuntimeError):
 #:
 #: ⚠️ Guard 1 was REGROUNDED on 2026-08-07, not removed: its renderer
 #: justification was disproved, but `_` in a term slot is a rule HEAD and clingo
-#: calls that unsafe whatever the body binds. Its twin in `_check_body` — which
-#: had the renderer ground and no other — IS gone; see the note in `ALSO`.
+#: calls that unsafe whatever the body binds. Its twin in `_check_body` IS gone
+#: as of 2026-08-08, replaced by a transform rather than dropped; see the note
+#: in `ALSO` for why that is not floor-lowering.
 REQUIRED = {
     "1  _check_term / anonymous variable in a HEAD term slot":
         "contains an anonymous variable",
@@ -138,16 +139,26 @@ REQUIRED = {
 ALSO = {
     "_check_term / not a term at all": "is not a term. It must be a functor",
     "_check_body / empty body": "body is present but empty",
-    "_check_body / newline or brace": "contains a newline or brace",
+    "_check_body / newline": "contains a newline",
     "_check_body / trailing full stop": "carries a trailing full stop",
-    # ⛔ RESTORED 2026-08-07, hours after being removed. The removal's ground
-    # ("the renderer can cope") was evidenced against plain clingo and against
-    # ASP2CNL, and was true of both — but the tool the design actually names is
-    # xclingo, which dies on `_` in a body with an unsafe `#Anon` variable and
-    # takes the whole link set's explanation with it. `test_schema.py`'s
-    # replacement test RUNS xclingo rather than asserting the validator
-    # complains, so the ground is now pinned instead of merely stated.
-    "_check_body / anonymous variable": "anonymous variable",
+    # ⛔ GONE 2026-08-08, and the mutant went with the guard. `_check_body /
+    # anonymous variable` used to sit here. It is NOT floor-lowering: the guard
+    # it pinned was a restriction on the document language justified by a TOOL
+    # (xclingo cannot lift `_` out of a positive body literal), and the tool's
+    # limit is now removed by a meaning-preserving transform on the way to it,
+    # `readback_r3.deanonymise`. The obligation MOVED rather than lapsed —
+    # `mutate_readback_r3.py` gained six mutants covering the transform
+    # (distinct names, no collision, `not` literals, comments, and both places
+    # the transformed text is handed to xclingo), and the round-trip property
+    # that licenses the whole thing is pinned by running clingo on both
+    # programs. `_check_term`'s `_` mutant (guard 1) is untouched: `_` in a
+    # HEAD is the SOLVER's rule and no transform reaches it.
+    #
+    # ⚠️ `_check_body / two statements` is NOT a replacement for it — that is
+    # the regrounded full-stop guard, which counts parsed RULE statements
+    # instead of matching a `.` character. Both are discovered structurally.
+    "_check_body / two statements": "statements, not one",
+    "_rule_statements / body clingo cannot parse": "is not ASP that clingo can parse",
     "Licensed / toggleable on a non-world fact": "toggleable is for `world` facts only",
     "ReadBack / empty read-back": "no read-back annotation",
     "Superiority / slot is not a clause id": "is not a clause id or a",

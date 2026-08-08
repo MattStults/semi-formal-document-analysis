@@ -253,51 +253,63 @@ def test_anonymous_variable_rejected_in_every_HEAD_term_slot(field, obj):
     bad(obj, "anonymous variable")
 
 
-def test_an_anonymous_variable_in_a_BODY_is_rejected_BECAUSE_XCLINGO_DIES(
-        tmp_path):
-    """⛔ This guard was withdrawn on 2026-08-07 and restored the same day, and
-    this test exists so that cannot happen a third time.
+def test_an_anonymous_variable_in_a_BODY_is_ACCEPTED(tmp_path):
+    """⭐ THE GUARD IS GONE, and this test exists so it is not restored a third
+    time on the ground that was withdrawn with it.
 
-    The withdrawal argued "the renderer can cope", evidenced with bare clingo
-    (which does derive from `p(X) :- q(X,_)`) and with the published ASP2CNL
-    renderer (which skips hidden terms). Both claims were TRUE and both were
-    about the wrong tool. `03_pipeline.md` names **xclingo**, and stage 4's R3
-    derivation layer is built on it.
+    History, because it is the whole lesson. The rejection was withdrawn on
+    2026-08-07 arguing *"the renderer can cope"*, evidenced with plain clingo
+    and with ASP2CNL — both true, both about the wrong tool — and restored the
+    same day when someone `[RAN]` **xclingo**, which the design actually names,
+    and watched it die.
 
-    ⭐ So this test does not merely assert that the validator complains — that
-    is what the old test did, and it is exactly what let the guard be withdrawn
-    on a false premise. It RUNS XCLINGO and pins the ground itself, with a
-    named-variable control proving the failure is caused by the `_` and not by
-    the fixture.
+    ⛔ THE RESTORATION WAS ALSO WRONG, for a reason neither round tested: the
+    ground was a TOOL, and a tool's limits are removed by a TRANSFORM, not by a
+    restriction on the document language. An anonymous variable in a positive
+    literal IS a fresh variable used once, so renaming it is alpha-renaming.
+    `readback_r3.deanonymise` does it on the way to xclingo; the module and its
+    `.lp` keep the author's `_`.
+
+    ⭐ So this test does not merely assert that the validator is quiet — that
+    proves nothing on its own. It runs xclingo on the raw form and on the
+    TRANSFORMED form, and pins the difference.
     """
-    assert_raises_on = module(ontology=[dict(
+    obj = module(ontology=[dict(
         atom="disallowed(M)", gloss="the material is disallowed",
-        body="restricted(M), tag(M, _)", **ASSUMED)], requires=["restricted/1", "tag/2"])
-    bad(assert_raises_on, "anonymous variable")
+        body="restricted(M), tag(M, _)", **ASSUMED)],
+        requires=["restricted/1", "tag/2"])
+    mod = schema.validate(obj, clause_id="m0001", known_clause_ids=IDS)
+    assert mod.ontology[0].body == "restricted(M), tag(M, _)", (
+        "the `_` must survive into the stored module — the transform is a "
+        "render-path step, not an edit to what the author wrote")
 
-    # ---- and the reason, executed ----
+    # ---- and the ground, executed, both halves ----
     xclingo = os.path.join(os.path.dirname(str(VENV_PY)), "xclingo")
     assert os.path.exists(xclingo), (
         "xclingo is missing from the venv, so this test cannot verify its own "
         "ground. It must not pass quietly: install it or delete this test "
         "deliberately (DEBUGGING_TIPS entry 8)")
+    sys.path.insert(0, str(HERE))
+    import readback_r3
 
-    def run(body):
-        f = tmp_path / f"probe_{abs(hash(body))}.lp"
-        f.write_text('q(a,b).\n%!trace_rule {"p holds of %", X}.\n'
-                     f"p(X) :- {body}.\n" '%!show_trace {p(X)}.\n')
+    def run(program):
+        f = tmp_path / f"probe_{abs(hash(program))}.lp"
+        f.write_text(program)
         r = subprocess.run([xclingo, "--output", "ascii-trees", "-n", "0", "0",
                             str(f)], capture_output=True, text=True)
         return r.stdout + r.stderr
 
-    anon, named = run("q(X,_)"), run("q(X,Y)")
-    assert "unsafe" in anon.lower(), (
-        "xclingo accepted an anonymous variable in a rule body — the ground for "
-        "this guard has changed and the guard should be RE-EXAMINED, not this "
-        f"test relaxed. Output:\n{anon[:400]}")
-    assert "p holds of a" in named, (
-        "the named-variable control did not render either, so the fixture is "
-        f"broken and the assertion above proves nothing. Output:\n{named[:400]}")
+    raw = ('q(a,b).\n%!trace_rule {"p holds of %", X}.\n'
+           "p(X) :- q(X,_).\n" '%!show_trace {p(X)}.\n')
+    fixed, _n = readback_r3.deanonymise(raw)
+    assert fixed != raw, "the transform did nothing, so neither arm below means anything"
+    assert "unsafe" in run(raw).lower(), (
+        "xclingo now accepts an anonymous body variable unaided. The transform "
+        "has become unnecessary rather than wrong — RE-EXAMINE it, do not "
+        f"relax this test. Output:\n{run(raw)[:400]}")
+    assert "p holds of a" in run(fixed), (
+        "the TRANSFORMED program did not render, so the whole basis for "
+        f"dropping the guard is unsound. Output:\n{run(fixed)[:400]}")
 
 
 # ------------------------------------------------- unsafe variables kill files
@@ -742,18 +754,21 @@ def test_a_whole_rule_in_a_term_slot_is_not_a_term(case):
     bad(obj, "is not a term")
 
 
-# ----------------------------------------------------- _check_body, all three
-# mutation: _check_body / empty body · newline · trailing full stop
+# ----------------------------------------------------- _check_body, all four
+# mutation: _check_body / empty body · newline · trailing full stop ·
+#           two-statement body (`_rule_statements`, plus its parse-error exit)
 #
-# ⚠️ There used to be a fourth: an anonymous-variable rejection, whose stated
-# ground was that the read-back tool cannot process `_`. It is GONE, together
-# with `test_an_anonymous_variable_in_a_BODY` which pinned it, because the
-# ground is false — clingo derives `p(a)` from `p(X) :- q(X,_). q(a,b).`, and
-# ASP2CNL renders `_` by skipping hidden terms. A body binds its own variables,
-# so there is no safety ground for it either — unlike a HEAD term slot, where
-# `_` is unsafe and `_check_term` still rejects it. The newly permitted case is
-# pinned positively by
-# `test_an_anonymous_variable_in_a_BODY_is_accepted_and_clingo_loads_it`.
+# ⚠️ There used to be a fifth: an anonymous-variable rejection. It is GONE as of
+# 2026-08-08 — not because its ground was false (it was true: xclingo dies on
+# `_`) but because the ground was a TOOL, and the tool's limit is removed by a
+# meaning-preserving transform (`readback_r3.deanonymise`) rather than by a
+# restriction on the document language. `test_an_anonymous_variable_in_a_BODY_
+# is_ACCEPTED` pins the permitted case AND runs both xclingo arms, so the guard
+# cannot be restored on a claim about xclingo that nobody re-ran.
+#
+# ⚠️ And the full-stop guard was REGROUNDED in the same change: it counted a
+# character, it now counts parsed RULE statements. `test_ordinary_ASP_is_NOT_
+# mistaken_for_a_SECOND_STATEMENT` is its control set.
 
 def test_a_body_that_is_present_but_empty():
     """`""` is not `null`: a renderer would emit `... :- .` and clingo balks."""
@@ -1326,7 +1341,7 @@ def test_a_concept_that_is_ALSO_declared_properly_is_accepted():
         clause_id="m0001", known_clause_ids=IDS)
 
 
-def test_an_internal_full_stop_in_a_body_is_rejected():
+def test_a_body_that_produces_TWO_STATEMENTS_is_rejected():
     """⛔ It validated, and the renderer then SILENTLY DROPPED everything after
     the `.`. Only the trailing case was checked. `adult(P). N > 5, N != 9`
     reached a seat as "the person is an adult" alone — one of three conditions,
@@ -1335,16 +1350,45 @@ def test_an_internal_full_stop_in_a_body_is_rejected():
     Neither backstop could see it: RB2 scans for `name(` and a dropped
     comparison has none, and RB3 counts `not` in the same broken parse on both
     sides so it agrees with itself.
+
+    ⭐ REGROUNDED 2026-08-08 and the test name changed with it. The guard used
+    to match a full-stop CHARACTER; it now counts the RULE statements clingo's
+    own parser produces, because the defect is the extra statement, not the
+    punctuation. The message must name the count — a test asserting on the
+    words "full stop" would pass against either implementation and is exactly
+    how the character-matching version survived review.
     """
     bad(module(ontology=[dict(atom="d(M)", gloss="g",
                               body="adult(M). N > 5, N != 9", **ASSUMED)],
-               requires=["adult/1"]), "full stop")
+               requires=["adult/1"]), "produced 2 statements")
 
 
-def test_the_interval_operator_is_NOT_mistaken_for_a_full_stop():
-    """`1..3` is ordinary ASP and the control for the guard above. Without this,
-    the cheapest way to write that guard also bans intervals."""
-    obj = module(ontology=[dict(atom="d(M)", gloss="g",
-                                body="adult(M), M = 1..3", **ASSUMED)],
-                 requires=["adult/1", "disallowed/1", "new_material/1"])
-    assert schema.validate(obj, clause_id="m0001", known_clause_ids=IDS)
+@pytest.mark.parametrize("body,note", [
+    ("adult(M), M = 1..3", "the interval operator"),
+    ('adult(M), tag(M, "a.b.c")', "a full stop inside a quoted constant"),
+    ("adult(M), 1 = #count{ X : adult(X) }", "an aggregate, braces and all"),
+    ("adult(M), not tag(M, _)", "a negated literal with an anonymous variable"),
+    ("adult(M) ; disallowed(M)", "a pooled body"),
+])
+def test_ordinary_ASP_is_NOT_mistaken_for_a_SECOND_STATEMENT(body, note):
+    """⭐ THE CONTROL SET, and it is what makes the regrounding worth doing.
+
+    Every row here is legal ASP that the character-matching guard either banned
+    outright or needed a hand-written exception for (`..` had one;
+    `kind(P,"a.b")` needed `_strip_strings`). clingo's parser handles all five
+    with no special case, so the guard has no false positives left to carve
+    out. Without this test the cheapest way to write the guard bans them again.
+    """
+    obj = module(ontology=[dict(atom="d(M)", gloss="g", body=body, **ASSUMED)],
+                 requires=["adult/1", "disallowed/1", "new_material/1",
+                           "tag/2"])
+    assert schema.validate(obj, clause_id="m0001", known_clause_ids=IDS), note
+
+
+def test_a_body_clingo_CANNOT_PARSE_is_rejected_and_says_so():
+    """The other exit from `_rule_statements`. A body that does not parse used
+    to slip through to `link.py`, where clingo refuses the whole file and the
+    message names a line in a generated `.lp` rather than the field."""
+    bad(module(ontology=[dict(atom="d(M)", gloss="g",
+                              body="adult(M) )(", **ASSUMED)],
+               requires=["adult/1"]), "not ASP that clingo can parse")

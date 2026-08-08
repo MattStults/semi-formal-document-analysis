@@ -150,7 +150,8 @@ def _split_strings(text: str):
     """`text` as alternating (outside, inside-a-quoted-string) fragments.
 
     ⛔ A QUOTED STRING CONSTANT IS DATA. `substitute` had no string awareness —
-    the only string-aware helper in the pipeline is `schema._strip_strings` —
+    the only string-aware helper in the pipeline then was
+    `schema._strip_strings`, since deleted (`readback_r3._code` is its heir) —
     so `p("political_content is bad")` rendered as
     `«a thing» (of "«content about politics» is bad")`. Two costs, and the
     second is the serious one: a declared label sitting inside a string was

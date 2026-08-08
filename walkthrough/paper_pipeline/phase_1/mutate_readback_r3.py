@@ -73,8 +73,38 @@ MUTANTS = [
     ("the-link-scope-is-not-scanned-at-all",
      '    _refuse_anonymous(sources)', '    sources = sources'),
     ("an-anonymous-variable-is-not-refused",
-     '        hits = anonymous_variables(text)\n        if hits:',
-     '        hits = anonymous_variables(text)\n        if False:'),
+     '        hits = anonymous_variables(heads_only(text))\n        if hits:',
+     '        hits = anonymous_variables(heads_only(text))\n        if False:'),
+    # ⚠️ The refusal was NARROWED on 2026-08-08, not weakened: a BODY `_` is
+    # renamed before xclingo sees it and a `not` literal's `_` never needed
+    # renaming, so refusing either is a false positive that blocks a whole
+    # link scope. Only a `_` outside any body is still fatal. This mutant is
+    # the floor for that narrowing — remove `heads_only` and the refusal goes
+    # back to blocking legal ASP.
+    ("the-refusal-scans-BODIES-as-well-as-HEADS",
+     '        hits = anonymous_variables(heads_only(text))',
+     '        hits = anonymous_variables(text)'),
+
+    # --- the pre-render transform: distinctness, collisions, and `not` -----
+    ("every-anonymous-variable-gets-THE-SAME-fresh-name",
+     '        taken.add(_FRESH % n)\n        out[pos] = _FRESH % n\n        n += 1',
+     '        out[pos] = _FRESH % n'),
+    ("a-fresh-name-may-COLLIDE-with-a-variable-already-present",
+     '    taken = set(reserved) | set(_ANY_VAR.findall(_code(text)))',
+     '    taken = set(reserved)'),
+    ("a-NOT-literal-is-transformed-too",
+     '            if _NOT_TOKEN.search(code, a, b):\n                continue',
+     '            if False:\n                continue'),
+    ("the-transform-reads-COMMENTS",
+     '        if c == "%":', '        if False:'),
+    ("the-MODULE-program-is-handed-to-xclingo-untransformed",
+     '    program_run = run_sources[0][1]', '    program_run = program'),
+    ("the-LINK-SCOPE-is-handed-to-xclingo-untransformed",
+     '    link_blob = "\\n".join(t for _n, t in run_sources[1:])',
+     '    link_blob = "\\n".join(t for _n, t in sources[1:])'),
+    ("the-TRANSFORMED-program-is-what-gets-STORED",
+     '    return ModuleR3(clause_id=mod.clause_id, program=program,',
+     '    return ModuleR3(clause_id=mod.clause_id, program=program_run,'),
 
     # --- xclingo's THREE deliberately redundant detectors -----------------
     ("a-NONZERO-EXIT-is-ignored",

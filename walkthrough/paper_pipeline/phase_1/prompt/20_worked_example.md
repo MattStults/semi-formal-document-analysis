@@ -1,4 +1,4 @@
-# Worked examples — the good ones, then five bad
+# Worked examples — the good ones, then six bad
 
 The good one is transcribed from `contradiction_probe/doc.lp`, which is 14 clauses hand-encoded in
 this vocabulary and which runs.
@@ -235,7 +235,7 @@ whole literal instead of the argument, and clingo rejects the file with *"'X' is
 **Every predicate a body names is declared.** All six appear in `inputs`, and each has a `concepts`
 entry giving its gloss. A body predicate that is declared nowhere cannot be told from a typo.
 
-## The five bad ones
+## The six bad ones
 
 Each has actually happened in this project.
 
@@ -276,3 +276,20 @@ policies. This encodes what it *does* override:
 { "status": "permit", "act": "produce(M)", "body": "not out_of_scope(transformation, K)" }
 ```
 The document never licensed that step. Absence of an exclusion is not an inclusion.
+
+
+**6 — writes two rules in one body, and loses the second silently.** A `.` inside a body is a
+statement TERMINATOR, not an operator.
+```json
+{ "atom": "derived(P)", "body": "adult(P). N > 5, N != 9" }
+```
+This compiles. It runs as `derived(P) :- adult(P).` — everything after the `.` becomes a separate
+statement that grounds to nothing, so the two comparisons are **discarded without a warning** and
+the rule is weaker than what you wrote. A body is ONE conjunction of conditions: use `,` for "and".
+
+If you genuinely need two ways for the same conclusion to hold, write **two entries with the same
+head**, each with its own body and its own read-back:
+```json
+[ { "atom": "derived(P)", "body": "adult(P)", ... },
+  { "atom": "derived(P)", "body": "guardian_consent(P)", ... } ]
+```

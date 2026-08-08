@@ -16,6 +16,7 @@ one of those paths is asserted to BLOCK.
 """
 
 import os
+import re
 import subprocess
 import sys
 
@@ -446,13 +447,302 @@ def test_two_answer_sets_BLOCK(tmp_path):
 #  ⛔ `_` — it takes the WHOLE link set's explanation down, not one rule
 # ==========================================================================
 
-def test_an_anonymous_variable_in_the_link_scope_is_REFUSED_BY_NAME():
+def test_an_anonymous_variable_in_a_HEAD_is_REFUSED_BY_NAME():
+    """⛔ THE RESIDUAL, and its ground is the SOLVER, not xclingo.
+
+    `deanonymise` rewrites a BODY `_` and the program renders. A HEAD `_` is
+    left where the author wrote it, because no transform can rescue it —
+    `[RAN]` plain clingo on `q(a). p(_) :- q(X).` gives
+    *"error: unsafe variables in: p(#Anon0)"*. So this refusal is clingo's
+    rule about the whole file, and R3 states it as one.
+    """
     with pytest.raises(r3.R3Error) as exc:
         r3.render_r3(political(), [POL_FIRES],
-                     link_texts=[("neighbour.lp", "p(X) :- q(X,_).\nq(a,b).")])
+                     link_texts=[("neighbour.lp", "p(_) :- q(X).\nq(a,b).")])
     msg = str(exc.value)
     assert "neighbour.lp" in msg
-    assert "p(X) :- q(X,_)." in msg
+    assert "p(_)" in msg
+
+
+def test_a_BODY_anonymous_variable_in_the_link_scope_now_RENDERS():
+    """⭐ The other half, and the reason the guard above had to be narrowed.
+
+    `schema._check_body` no longer rejects `_`, so a stored `.lp` may carry
+    one — and every stored `.lp` is another clause's `link_texts`. A refusal
+    here would block clause B because clause A used legal ASP.
+    """
+    out = r3.render_r3(political(), [POL_FIRES],
+                       link_texts=[("neighbour.lp", "p(X) :- q(X,_).\nq(a,b).")])
+    assert out.outcome == "rendered", out.findings
+    assert out.with_derivation == 1
+
+
+# ==========================================================================
+#  ⭐ THE PRE-RENDER TRANSFORM — `_` in a body is legal ASP, and alpha-renaming
+#  it to a fresh variable is meaning-preserving. The property that makes the
+#  whole thing safe is THE ANSWER SETS, so it is pinned directly and not
+#  inferred from the shape of the output text.
+# ==========================================================================
+
+VENV_PY = os.path.join(WALKTHROUGH, os.pardir, "semi-formal-experiment",
+                       ".venv", "bin", "python")
+
+
+def answer_sets(program, tmp_path, name="as.lp"):
+    """Every answer set of `program`, as a set of frozensets of atom strings.
+
+    ⛔ NOT "clingo's stdout matched" (`DEBUGGING_TIPS.md` §8/§8a). The JSON
+    output carries an explicit `Result`, which is asserted SATISFIABLE before
+    any comparison — a program that failed to ground produces zero witnesses,
+    and two programs that both failed would otherwise compare EQUAL and the
+    round-trip test would pass having proved nothing.
+    """
+    import json
+    f = tmp_path / name
+    f.write_text(program, encoding="utf-8")
+    r = subprocess.run([VENV_PY, "-m", "clingo", str(f), "-n", "0",
+                        "--outf=2"], capture_output=True, text=True)
+    try:
+        doc = json.loads(r.stdout)
+    except ValueError:
+        raise AssertionError(
+            f"clingo produced no JSON for:\n{program}\n"
+            f"rc={r.returncode}\nstdout={r.stdout[:400]}\nstderr={r.stderr[:400]}")
+    assert doc.get("Result") == "SATISFIABLE", (
+        f"clingo did not solve this program, so its answer sets cannot be "
+        f"compared with anything:\n{program}\nResult={doc.get('Result')!r}\n"
+        f"{r.stderr[:400]}")
+    return {frozenset(w["Value"]) for w in doc["Call"][0]["Witnesses"]}
+
+
+#: (name, program) — each carries at least one `_` in a body. The last three
+#: are the cases a naive implementation gets wrong: two `_` in one rule, a `_`
+#: inside a nested term, and a rule that already uses the names a lazy
+#: generator would reach for.
+ROUND_TRIP = [
+    ("one anonymous variable",
+     "q(a,b). q(b,c). p(X) :- q(X,_)."),
+    ("two anonymous variables in one rule",
+     "q(a,b). q(b,c). {r(z)}. s(X) :- q(X,_), r(_)."),
+    ("an anonymous variable inside a NESTED term",
+     "q(a, f(b,c)). q(b, f(d,e)). p(X) :- q(X, f(_, _))."),
+    ("a positive literal beside an untouched negated one",
+     "q(a,b). q(b,c). r(a,z). p(X) :- q(X,_), not r(X,_)."),
+    ("an aggregate",
+     "q(a,b). q(b,c). p(X) :- q(X,_), 2 = #count{ Y : q(Y,_) }."),
+    ("a rule that already uses the obvious fresh names",
+     "q(a,b). q(b,c). p(X,_V1,_V2) :- q(X,_V1), q(_V1,_V2), q(X,_)."),
+    ("an interval and an arithmetic comparison in the same body",
+     "q(a,b). n(1). n(5). p(X) :- q(X,_), n(N), N = 1..3."),
+    ("an anonymous variable in a CONSTRAINT (no head at all)",
+     "q(a,b). r(a). :- q(X,_), not r(X). p(a)."),
+    ("a pooled body and a string constant holding a lone underscore",
+     'q(a,b). q(b,c). t("a _ b"). p(X) :- q(X,_), t(_).'),
+]
+
+
+@pytest.mark.parametrize("name,program",
+                         ROUND_TRIP, ids=[n for n, _p in ROUND_TRIP])
+def test_the_transform_PRESERVES_THE_ANSWER_SETS(name, program, tmp_path):
+    """⭐ THE TEST THAT MAKES THE TRANSFORM SAFE, and the only one that can.
+
+    An anonymous variable IS a fresh variable used once, so replacing it with
+    a distinct new name is alpha-renaming. That claim is checked by running
+    both programs, not by reading either.
+    """
+    out, _n = r3.deanonymise(program)
+    assert answer_sets(out, tmp_path, "after.lp") == \
+        answer_sets(program, tmp_path, "before.lp"), (
+            f"{name}: the transform changed the meaning of the program.\n"
+            f"before: {program}\nafter:  {out}")
+
+
+def test_the_transform_actually_REMOVED_the_anonymous_variables(tmp_path):
+    """The guard on the test above: `return text` preserves every answer set.
+
+    Without this, a transform that does nothing passes the whole round-trip
+    table — the `if True:` shape `DEBUGGING_TIPS.md` §8 names.
+    """
+    for name, program in ROUND_TRIP:
+        out, _n = r3.deanonymise(program)
+        assert r3.renameable_anonymous(out) == (), (
+            f"{name}: a renameable body `_` survived the transform: {out!r}")
+        assert r3.renameable_anonymous(program) != (), (
+            f"{name}: the INPUT has no anonymous variable, so this row proves "
+            f"nothing about the transform")
+
+
+def test_each_anonymous_variable_gets_a_DISTINCT_name():
+    """⛔ CONDITION 1. One shared name JOINS the two positions and changes the
+    meaning — `[RAN]` `s(X) :- q(X,_V1), r(_V1).` over `q(a,b). q(b,c). r(z).`
+    derives NOTHING, where the anonymous form derives `s(a), s(b)`.
+    """
+    out, _n = r3.deanonymise("s(X) :- q(X,_), r(_).")
+    fresh = [t for t in re.findall(r"_[A-Za-z0-9_]*", out)]
+    assert len(fresh) == 2, out
+    assert fresh[0] != fresh[1], (
+        f"both anonymous variables were given the same name, which joins them: "
+        f"{out!r}")
+
+
+def test_a_fresh_name_never_COLLIDES_with_a_variable_already_present():
+    """⛔ CONDITION 2, generated against the variables actually there."""
+    out, _n = r3.deanonymise("p(_V1,_V2,V) :- q(_V1,_V2,V,_).")
+    fresh = re.findall(r"_V\d+|_Anon\d+", out)
+    assert "_V1" in out and "_V2" in out          # the author's names survive
+    new = [t for t in fresh if t not in ("_V1", "_V2")]
+    assert len(new) == 1 and new[0] not in ("_V1", "_V2"), out
+
+
+def test_fresh_names_are_distinct_ACROSS_SOURCES_too():
+    """Rule-scoped variables could not collide, but the counter is shared so
+    the property does not rest on that reasoning."""
+    got = r3.deanonymise_all([("a.lp", "p(X) :- q(X,_)."),
+                              ("b.lp", "r(X) :- s(X,_).")])
+    names = [re.search(r"_V\d+", t).group() for _w, t in got]
+    assert names[0] != names[1], got
+
+
+def test_the_transform_leaves_COMMENTS_and_STRING_CONSTANTS_alone():
+    """A gloss lives inside a `%!trace_rule` comment and may hold a lone `_`.
+    Rewriting it would change the sentence a seat reads."""
+    text = ('%!trace_rule {"a gloss with a lone _ in it"}.\n'
+            'p(X) :- q(X,_), t("also _ here").')
+    out, _n = r3.deanonymise(text)
+    assert 'a gloss with a lone _ in it' in out
+    assert '"also _ here"' in out
+    assert "q(X,_)" not in out
+
+
+def test_the_transform_does_not_rewrite_a_COMMENT_INSIDE_A_RULE_BODY():
+    """⛔ Found by the mutation sweep, not by me: my first comment test put the
+    `_` inside a `%!trace_rule` STRING, so blanking strings alone already
+    covered it and `if c == "%":` survived as a SURVIVOR.
+
+    A comment only matters where it sits INSIDE a body span, and then it
+    matters a lot — `m0255.lp` line 30 is a comment saying the author avoided
+    `_` on purpose, and rewriting it would corrupt the one file that took the
+    trouble. Every `%!trace_rule` R3 emits is a comment too.
+    """
+    text = ("p(X) :-\n"
+            "    q(X,_),      % written in full here; never as _\n"
+            "    r(X).")
+    out, _n = r3.deanonymise(text)
+    assert "% written in full here; never as _" in out, out
+    assert "q(X,_)" not in out, out         # the real one was still renamed
+
+
+def test_a_FULL_STOP_INSIDE_A_COMMENT_does_not_end_a_statement():
+    """The other half: a comment's `.` read as a terminator truncates the body
+    span, and every `_` after it is silently left for the refusal to trip on."""
+    text = ("p(X) :- q(X,Y),   % see clause m0255. it avoids this\n"
+            "        r(Y,_).")
+    out, _n = r3.deanonymise(text)
+    # ⚠️ Asserted on the OUTPUT TEXT and not via `renameable_anonymous`: that
+    # helper reads the same body spans the transform does, so under a defect
+    # in the span scan it agrees with the defect and the check passes
+    # vacuously (`DEBUGGING_TIPS.md` §8). This is how the first version of
+    # this test let a mutation survive.
+    assert "r(Y,_)." not in out, (
+        f"the `_` on the second line was not reached, so the body span ended "
+        f"at the full stop inside the comment: {out!r}")
+    assert "% see clause m0255. it avoids this" in out, out
+
+
+def test_a_HEAD_anonymous_variable_is_LEFT_where_the_author_wrote_it():
+    """⛔ No transform rescues it (`[RAN]` clingo: `p(#Anon0)` is unsafe), so
+    it must reach the refusal rather than be quietly renamed into a program
+    that still cannot ground."""
+    out, _n = r3.deanonymise("p(_) :- q(X). q(a).")
+    assert "p(_)" in out
+
+
+def test_a_NOT_LITERAL_is_left_alone_because_RENAMING_IT_BREAKS_IT(tmp_path):
+    """⛔ THE ONE PLACE THE BRIEF'S PREMISE FAILS, and it is `[RAN]`.
+
+    *"An anonymous variable IS a fresh variable used once"* is true of gringo's
+    positive literals and FALSE of its negative ones: gringo PROJECTS `_` under
+    `not`, so the anonymous form solves and the renamed form is unsafe. A
+    transform there would turn a working program into a refused one — the
+    opposite of meaning-preserving — so `deanonymise` leaves it.
+
+    ⭐ And it never needed transforming: xclingo renders this case unaided.
+    That is asserted in `test_xclingo_renders_a_NOT_LITERAL_underscore_unaided`.
+    """
+    prog = "q(a,b). q(b,c). r(a,z). p(X) :- q(X,Y), not r(X,_)."
+    out, _n = r3.deanonymise(prog)
+    assert "not r(X,_)" in out, out
+    assert answer_sets(prog, tmp_path, "neg.lp") == {
+        frozenset({"q(a,b)", "q(b,c)", "r(a,z)", "p(b)"})}
+
+    # the ground, executed: the rename is not available here
+    renamed = prog.replace("not r(X,_)", "not r(X,_V9)")
+    f = tmp_path / "renamed.lp"
+    f.write_text(renamed, encoding="utf-8")
+    res = subprocess.run([VENV_PY, "-m", "clingo", str(f), "-n", "0"],
+                         capture_output=True, text=True)
+    assert "unsafe" in (res.stdout + res.stderr).lower(), (
+        "clingo accepted a named variable in a negative literal, so the reason "
+        "`not` is excluded from the transform no longer holds and the "
+        "EXCLUSION should be re-examined, not this test relaxed.\n"
+        + (res.stdout + res.stderr)[:400])
+
+
+def test_xclingo_renders_a_NOT_LITERAL_underscore_unaided():
+    """⭐ The restriction was WIDER THAN ITS OWN GROUND. xclingo only lifts
+    POSITIVE body literals into `_xclingo_sup`, so `not r(X,_)` was never the
+    thing that broke it — and `schema._check_body` rejected it anyway."""
+    mod = schema.validate(fixtures.political_module(
+        asserts=[dict(status="permit", act="produce(M)",
+                      body="political_content(M), broad_audience(M), "
+                           "not forbidden(M,_)",
+                      read_back="producing % is permitted",
+                      read_back_slots=["M"], licence="textual", cites="m0217",
+                      inference=None, toggleable=False)],
+        inputs=["political_content/1", "broad_audience/1", "forbidden/2"]))
+    out = r3.render_r3(mod, [POL_FIRES])
+    assert out.outcome == "rendered", out.findings
+    assert "not forbidden(M,_)" in out.program        # untouched, and it works
+
+
+def test_an_underscore_the_SOLVER_already_refuses_is_refused_EITHER_WAY(
+        tmp_path):
+    """`X > _` is unsafe to plain clingo before any transform touches it, so
+    the rename changes no outcome — a refusal stays a refusal. Recorded so the
+    transform is not blamed for a program clingo was never going to load."""
+    prog = "n(1). n(5). p(X) :- n(X), X > _."
+    out, _n = r3.deanonymise(prog)
+    for text in (prog, out):
+        f = tmp_path / "u.lp"
+        f.write_text(text, encoding="utf-8")
+        res = subprocess.run([VENV_PY, "-m", "clingo", str(f), "-n", "0"],
+                             capture_output=True, text=True)
+        assert "unsafe" in (res.stdout + res.stderr).lower(), text
+
+
+def test_a_module_whose_BODY_carries_an_underscore_RENDERS():
+    """End to end: the schema now admits it, and R3 must produce a tree."""
+    mod = schema.validate(fixtures.political_module(asserts=[dict(
+        status="permit", act="produce(M)",
+        body="political_content(M), broad_audience(_)",
+        read_back="producing % is permitted", read_back_slots=["M"],
+        licence="textual", cites="m0217", inference=None, toggleable=False)]))
+    out = r3.render_r3(mod, [POL_FIRES])
+    assert out.outcome == "rendered", out.findings
+    assert out.with_derivation == 1
+
+
+def test_the_STORED_program_keeps_the_AUTHORS_underscore():
+    """⛔ Not persisted. `ModuleR3.program` is the module's own logic; the
+    transform happens at the xclingo boundary and is re-derivable from it with
+    `deanonymise(out.program)`."""
+    mod = schema.validate(fixtures.political_module(asserts=[dict(
+        status="permit", act="produce(M)",
+        body="political_content(M), broad_audience(_)",
+        read_back="producing % is permitted", read_back_slots=["M"],
+        licence="textual", cites="m0217", inference=None, toggleable=False)]))
+    out = r3.render_r3(mod, [POL_FIRES])
+    assert "broad_audience(_)" in out.program
 
 
 def test_an_underscore_inside_a_COMMENT_is_not_an_anonymous_variable():

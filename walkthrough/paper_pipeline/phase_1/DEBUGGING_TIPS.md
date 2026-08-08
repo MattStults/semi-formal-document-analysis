@@ -442,3 +442,110 @@ second reason to have it.
 and **no mutation harness in the repo**. Nobody but the author could re-run it, and CI never
 could. `mutate_readback_r3.py` now exists and runs on the same engine — 33 mutants, 0
 survivors. ⇒ **A number that cannot be re-run does not meet a bar; it describes one.**
+
+## 16 ⛔ A restriction justified by a TOOL is a bug report about the tool, not a rule about the input
+
+**2026-08-08. The false path was mine and I took it twice in one day, in the same function.**
+
+### The rule
+
+Before adding a guard to `schema.py`, ask what its ground is. Three grounds are legitimate:
+
+| ground | example | what to do |
+|---|---|---|
+| the **SOLVER** | `p(_) :- q(X).` — clingo: *unsafe variables in `p(#Anon0)`* | reject |
+| the **CONTRACT** | `act` holds one term, and a rule is not a term | reject |
+| the **LEAK FENCE** | `b_asserts` may not appear in a clause translation | reject |
+
+A fourth is not: **"a tool of ours cannot cope"**. That is a bug report about the tool, and it must
+first be tested for a **meaning-preserving transform** applied on the way to the tool.
+
+⭐ **THE SAFETY CRITERION, and it is the only one that licenses any transform:**
+
+> **A transform is safe iff it preserves the ANSWER SETS of the program that actually runs.**
+
+Not "it looks equivalent", not "the renderer copes" — run both programs and compare the witness
+sets. `test_readback_r3.py::test_the_transform_PRESERVES_THE_ANSWER_SETS` is the reference: it
+compares `clingo --outf=2` witnesses, and asserts `Result == SATISFIABLE` first, because two
+programs that both failed to ground compare **equal** and would pass having proved nothing.
+
+### Worked case that QUALIFIES — `_` in a rule body
+
+`_check_body` rejected an anonymous variable. The stated ground was true and was `[RAN]`: xclingo
+2.0b24 dies on `p(X) :- q(X,_).` with `unsafe variables in: _xclingo_sup(...#Anon0)`, exits 0, and
+takes the **whole link set's** explanation down.
+
+⛔ **What nobody tried was renaming it.** An anonymous variable in a positive literal *is* a fresh
+variable used once, so the substitution is alpha-renaming:
+
+```
+p(X) :- q(X,_).      -> p(a), p(b)
+p(X) :- q(X,_V1).    -> p(a), p(b)      identical, and it RENDERS: |__"p holds of a"
+```
+
+The guard is gone; `readback_r3.deanonymise` does the substitution on the text handed to xclingo,
+and the module and its `.lp` keep the author's `_`. **The cost of the guard had been paid for a
+year in expressiveness the design explicitly wants**, to work around one tool's grounding order.
+
+⚠️ **Two things the transform is NOT, both found by running it and neither predicted:**
+
+* **A `not` literal must be left alone.** gringo does not rename `_` there, it **projects** the
+  literal — so `not r(X,_)` solves and `not r(X,_V2)` is **unsafe**. Renaming would turn a working
+  program into a refused one, which is the opposite of meaning-preserving. ⇒ *"An anonymous
+  variable is a fresh variable used once"* is true of positive literals and **false under `not`**.
+* **And that case never needed a guard at all.** `[RAN]` xclingo renders `not r(X,_)` unaided,
+  because it only lifts POSITIVE body literals into `_xclingo_sup`. **The restriction had been
+  wider than its own ground the entire time** — which is the second reason to run the tool on each
+  shape rather than reason from one failure to a class.
+
+### Worked case that does NOT qualify — an internal full stop
+
+`derived(P) :- adult(P). N > 5, N != 9.` is two statements. All three readings, `[RAN]`:
+
+| reading | outcome |
+|---|---|
+| what runs today | `derived(a)`, comparisons **severed and silently gone** |
+| the OR reading (two rules) | **REFUSED** — `N` and `P` unsafe |
+| the AND reading (one comma) | **REFUSED** — `N` unsafe |
+
+⇒ There is nothing to transform *into*: the OR program **does not exist**, so rendering English for
+it would describe a rule that can never fire. And a `.` is a **terminator, not an operator**, so
+picking any reading resolves an ambiguity the read-back exists to surface. This stays a refusal.
+
+### ⭐ But the guard was still wrong, and this is the second half of the lesson
+
+**Test the DEFECT, not the character.** The guard was `re.search(r"(?<!\.)\.(?!\.)", _strip_strings(body))`
+— it matched a `.`, which merely *correlates* with the failure. It therefore needed a hand-written
+exception for `..`, a string-blanking pass for `kind(P,"a.b")`, and it still banned nothing a
+motivated author could not reintroduce another way.
+
+The actual defect is **one declared entry producing more than one statement**, and clingo's own
+parser reports that directly:
+
+```python
+parse_string(f"x :- {body}.", seen.append)      # count ASTType.Rule
+adult(P). N > 5, N != 9   -> 2      <- the defect
+adult(P), N > 5, N != 9   -> 1
+p(X), X = 1..3            -> 1      no special case needed
+p(X), 2 = #count{Y:q(Y)}  -> 1      no special case needed
+kind(P,"a.b")             -> 1      no special case needed
+```
+
+Same rejection, **no false positives, no special-casing, every ASP construct permitted**, and it
+generalises to any future cause of a split. `_strip_strings` was deleted with it — it existed only
+to prop up the two character-matching guards, and both are gone.
+
+⛔ **The trap, and it caught the test as well as the code:** the old test asserted the message
+contained the words `"full stop"`. That assertion passes against **either** implementation, so it
+could not tell a guard that catches the defect from a guard that catches a character. A test that
+names the symptom in the guard's own vocabulary cannot audit the guard's ground. It now asserts on
+`"produced 2 statements"`, and `test_ordinary_ASP_is_NOT_mistaken_for_a_SECOND_STATEMENT` carries
+the five-row control set of legal ASP the character version banned or needed exceptions for.
+
+### The check to run
+
+Grep every `raise` in a validator and put each one in the four-column table above. Anything landing
+in the fourth column — **and every guard whose message names one of our own tools** — is a
+candidate. For each: write the transform, run both programs, compare answer sets. If the transform
+exists, the guard goes and the transform lives in the render path. If it does not, say *why* in the
+guard, with the failed candidate readings **named**, so the next reader does not re-derive it.

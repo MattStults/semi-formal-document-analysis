@@ -40,6 +40,10 @@ import dataclasses
 import re
 from typing import Literal, Optional
 
+import clingo.ast   # the venv ships it; an ImportError here must BLOCK, never
+                    # skip — `_check_body` counts the statements a body parses
+                    # to, and a check that cannot run must not exit like a
+                    # check that passed (`DEBUGGING_TIPS.md` §8)
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 LICENCES = ("textual", "assumed", "world")
@@ -68,6 +72,26 @@ _CLAUSE_ID = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
 #: An ASP variable: an upper-case-initial token inside a term.
 _VAR = re.compile(r"(?<![A-Za-z0-9_])[A-Z][A-Za-z0-9_]*")
 
+
+# ⭐ BEFORE YOU ADD A GUARD BELOW, ASK WHAT ITS GROUND IS.
+#   * the SOLVER — clingo refuses the program (unsafe variable, bad arity);
+#   * the CONTRACT — this field holds one thing and a rule is not a term;
+#   * the LEAK FENCE — the behaviour namespace may not appear here.
+# Those three are legitimate. A fourth is not: **"a tool of ours cannot cope"**.
+# Fix the tool, or transform the input on the way to it. `[RAN]` `_` in a body
+# was rejected here because xclingo dies on it; substituting a distinct fresh
+# variable per `_` gives identical answer sets and renders fine, so the
+# restriction cost expressiveness the design wants and bought nothing. The
+# transform lives in the render path (`readback_r3.deanonymise`), not here.
+# ⭐ AND TEST THE DEFECT, NOT THE CHARACTER. The internal-full-stop guard first
+# matched a `.` in the body string; the defect is that one entry produced TWO
+# statements and the second grounds to nothing, silently dropping the author's
+# conditions. Counting parsed `Rule` statements catches that with no false
+# positives and no special-casing for `..`, braces or quoted dots.
+# ⭐ SAFETY CRITERION for any such transform: it is safe iff it preserves the
+# ANSWER SETS of the program that actually runs. Alpha-renaming passes.
+# Reinterpreting a severed rule does not — both candidate readings fail to
+# ground. `DEBUGGING_TIPS.md` §16 has the long version and both worked cases.
 
 def _check_term(term, where, allow_vars=True):
     """Validate and normalise a term: an act, an ontology atom, a defines slot.
@@ -130,9 +154,31 @@ def _check_term(term, where, allow_vars=True):
 _BAD_IN_TEXT = re.compile(r'[\n\r"\\{}]')
 
 
-def _strip_strings(asp):
-    """Blank out quoted constants so a `_` inside one is not read as a variable."""
-    return re.sub(r'"[^"]*"', '""', asp)
+# ⚠️ `_strip_strings` was DELETED here on 2026-08-08. It blanked quoted
+# constants so a `.` or a `_` inside one was not misread, and it existed only
+# to prop up two character-matching guards. Both are gone — the `_` guard to a
+# transform, the full-stop guard to a statement count — and clingo's parser
+# needs no help with its own string literals. The live string-aware helper in
+# the pipeline is now `readback_r3._code`.
+
+def _rule_statements(body, where):
+    """How many ASP RULE statements one declared body actually parses to.
+
+    The body is parsed in the shape it is rendered in — `x :- <body>.` — by
+    clingo's own parser, so every construct clingo accepts is accepted here and
+    none of them needs a special case.
+    """
+    seen, errors = [], []
+    try:
+        clingo.ast.parse_string(
+            f"x :- {body}.", seen.append,
+            logger=lambda _code, msg: errors.append(msg), message_limit=4)
+    except RuntimeError as exc:
+        raise ValueError(
+            f"{where}: {body!r} is not ASP that clingo can parse — "
+            f"{'; '.join(errors) or exc}. A body clingo cannot read renders "
+            f"into a `.lp` that refuses the WHOLE link set") from exc
+    return sum(1 for a in seen if a.ast_type == clingo.ast.ASTType.Rule)
 
 
 def _check_body(body, where):
@@ -152,50 +198,90 @@ def _check_body(body, where):
     if body.strip().endswith("."):
         raise ValueError(f"{where}: body carries a trailing full stop; the "
                          f"renderer adds one")
-    # ⛔ AN INTERNAL FULL STOP IS A SECOND STATEMENT, and it was a SILENT DROP.
-    # Only the trailing case was checked, so `adult(P). N > 5, N != 9` validated;
-    # the renderer parsed two statements, rendered the first and discarded the
-    # rest, and every read-back check passed on the remnant. A seat was shown
-    # one of three conditions with `outcome=rendered` and zero findings. RB2
-    # could not see it (it scans for `name(`, and a dropped comparison has
-    # none) and RB3 could not either (it counts `not` in the same broken parse
-    # on both sides, so it agrees with itself).
+    # ⛔ ONE DECLARED ENTRY MUST PRODUCE EXACTLY ONE RULE, and it was a SILENT
+    # DROP. `adult(P). N > 5, N != 9` validated; the renderer parsed two
+    # statements, rendered the first and discarded the rest, and every read-back
+    # check passed on the remnant. A seat was shown one of three conditions with
+    # `outcome=rendered` and zero findings. RB2 could not see it (it scans for
+    # `name(`, and a dropped comparison has none) and RB3 could not either (it
+    # counts `not` in the same broken parse on both sides, so it agrees with
+    # itself).
     #
-    # `..` is the interval operator and is legal — `p(X), X = 1..3`.
-    if re.search(r"(?<!\.)\.(?!\.)", _strip_strings(body).rstrip()):
+    # ⭐ REGROUNDED 2026-08-08 — this counted a CHARACTER and now counts the
+    # DEFECT. The old guard was `re.search(r"(?<!\.)\.(?!\.)", ...)` over a
+    # string-stripped body: it matched a `.`, which merely CORRELATES with the
+    # failure, and needed a hand-written exception for `..` and a
+    # `_strip_strings` pass for `kind(P,"a.b")`. Counting the RULE statements
+    # clingo's own parser produces catches the real thing — an extra statement
+    # whose conditions ground to nothing — with no false positives and no
+    # special cases. `[RAN]`, parsed as `x :- <body>.`:
+    #
+    #     adult(P). N > 5, N != 9   -> 2 rules   <- THE DEFECT
+    #     adult(P), N > 5, N != 9   -> 1 rule
+    #     p(X), X = 1..3            -> 1 rule
+    #     p(X), 2 = #count{Y:q(Y)}  -> 1 rule
+    #     kind(P,"a.b")             -> 1 rule
+    #
+    # It also generalises: any future cause of a split is caught, not just `.`.
+    #
+    # ⛔ THIS IS A REFUSAL AND NOT A TRANSFORM, and the reason is that no
+    # reading of the severed form exists to transform INTO. `[RAN]` all three
+    # readings of `derived(P) :- adult(P). N > 5, N != 9.`:
+    #
+    #   what runs today  -> `derived(a)`, with the comparisons SEVERED and gone
+    #   the OR reading   -> REFUSED: `derived(P) :- N > 5, N != 9.` has `N` and
+    #                       `P` unsafe, so the program does not exist
+    #   the AND reading  -> REFUSED: `derived(P) :- adult(P), N > 5, N != 9.`
+    #                       has `N` unsafe
+    #
+    # So "render it as OR" would describe a rule that can never fire — and a
+    # `.` is a TERMINATOR, not an operator, so choosing any reading resolves an
+    # ambiguity the read-back exists to surface. The author is asked instead;
+    # two rules are written as two entries with the same head.
+    n_rules = _rule_statements(body, where)
+    if n_rules != 1:
         raise ValueError(
-            f"{where}: body contains a full stop, which ends a statement in "
-            f"ASP. A body is ONE conjunction of conditions; everything after "
-            f"the `.` would be silently discarded. Split it into separate "
-            f"entries, or use `,` if you meant 'and'. (`1..3` is fine — that "
-            f"is the interval operator)")
-    # ⛔ RESTORED 2026-08-07 after being withdrawn the same day ON A FALSE
-    # GROUND. The withdrawal argued the renderer could cope, citing bare clingo
-    # (which does derive from `p(X) :- q(X,_)`) and the published ASP2CNL
-    # renderer (which skips hidden terms). Both true, and both about the wrong
-    # tool: `03_pipeline.md` names **xclingo**, and `STEP_stage4.md` makes it
-    # load-bearing for stage 4's R3 derivation layer. `[RAN]` xclingo 2.0b24 on
-    # `p(X) :- q(X,_).` with a `%!trace_rule`:
+            f"{where}: this entry produced {n_rules} statements, not one. A "
+            f"body is ONE conjunction of conditions; a `.` inside it is a "
+            f"TERMINATOR, so everything after it becomes a separate statement "
+            f"that grounds to nothing, and the rule is silently WEAKER than "
+            f"written — `derived(P) :- adult(P). N > 5, N != 9.` runs as "
+            f"`derived(P) :- adult(P).` and still derives `derived(a)`. Use "
+            f"`,` if you meant 'and'; if you meant two rules, write two "
+            f"entries with the same head")
+    # ⭐ THE ANONYMOUS-VARIABLE REJECTION LIVED HERE AND IS GONE. 2026-08-08.
+    # Withdrawn 2026-08-07 on a false ground, restored the same day on a true
+    # one, and now withdrawn again on a ground that beats both — the true one
+    # was about a TOOL, and the tool's problem has a MEANING-PRESERVING FIX.
     #
-    #     error: unsafe variables in:
-    #       _xclingo_sup(2,0,p(X),(#Anon0,X)):-[#inc_base];_xclingo_model(...)
+    # What the restored guard said, and it was correct as far as it went:
+    # `03_pipeline.md` names **xclingo**, `STEP_stage4.md` makes it load-bearing
+    # for stage 4's R3 layer, and `[RAN]` xclingo 2.0b24 dies on
+    # `p(X) :- q(X,_).` with `unsafe variables in: _xclingo_sup(...#Anon0)`.
     #
-    # and the same program with a named variable renders `"p holds of a"`.
-    # xclingo's own transformation lifts body variables into a supporting term,
-    # where an anonymous one becomes unsafe — so this is not a limitation we
-    # could render around, and it takes the WHOLE LINK SET's explanation down,
-    # not one rule. `03_pipeline.md:239`'s stage-2 node D1 still requires "no
-    # anonymous placeholders"; the code now matches the design again.
+    # ⛔ WHAT NOBODY HAD TRIED: renaming it. An anonymous variable in a positive
+    # literal IS a fresh variable used once, so `p(X) :- q(X,_V1).` is the same
+    # program by alpha-renaming — `[RAN]`, identical answer sets — and it
+    # RENDERS under xclingo (`|__"p holds of a"`). The handling therefore moved
+    # to `readback_r3.deanonymise`, which performs the substitution on the text
+    # handed to xclingo and nowhere else. This module's `.lp` output and the
+    # stored module keep the author's `_`.
     #
-    # ⚠️ The lesson, and it cost a wrong commit: "the renderer can handle it"
-    # is not a claim about renderers in general. Name the tool and run it.
-    if _ANON.search(_strip_strings(body)):
-        raise ValueError(
-            f"{where}: anonymous variable `_`. It is ordinary ASP and plain "
-            f"clingo accepts it, but xclingo — which builds the derivation "
-            f"trees stage 4 reads — rejects the whole program with an unsafe "
-            f"`#Anon` variable, taking every linked clause's explanation with "
-            f"it. Name the variable, even if it is used once")
+    # ⇒ THE PRINCIPLE, which is general and is why this is written at length:
+    # A RESTRICTION ON THE DOCUMENT LANGUAGE JUSTIFIED BY A TOOL MUST FIRST BE
+    # TESTED FOR A MEANING-PRESERVING TRANSFORM. A transform is safe iff it
+    # preserves the answer sets of the program that actually runs. See
+    # `DEBUGGING_TIPS.md` §16.
+    #
+    # ⛔ WHAT SURVIVES, and it is not this guard:
+    #   * `_check_term` still rejects `_` in every HEAD term slot. `[RAN]`
+    #     `q(a). p(_) :- q(X).` -> `error: unsafe variables in: p(#Anon0)`.
+    #     That is the SOLVER's rule and no renaming reaches it.
+    #   * `readback_r3._refuse_anonymous` still blocks a `_` outside any body
+    #     in a hand-written link-scope `.lp`, on the same solver ground.
+    #   * A `_` inside a `not` literal is NOT renamed — gringo projects it, so
+    #     `not r(X,_)` solves where `not r(X,_V2)` is unsafe. `[RAN]` xclingo
+    #     renders that case unaided, so it never needed a guard at all.
     for name in re.findall(r"(?<![A-Za-z0-9_])([a-z][A-Za-z0-9_]*)\s*\(", body):
         if name in BEHAVIOUR_NS:
             raise ValueError(

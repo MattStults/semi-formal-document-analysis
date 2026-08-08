@@ -218,18 +218,248 @@ def anonymous_variables(text):
     return tuple(out)
 
 
-def _refuse_anonymous(sources):
+# --------------------------------------------------------------------------
+#  ⭐ THE PRE-RENDER TRANSFORM. `_` in a rule BODY is legal ASP that xclingo
+#  cannot lift, and the fix is alpha-renaming, not a contract restriction.
+#
+#  `schema._check_body` used to REJECT a body `_` on xclingo's behalf. That is
+#  a restriction on the document language justified by a TOOL, and one existed
+#  only because nobody had tried the transform: an anonymous variable in a
+#  positive literal IS a fresh variable used once, so replacing it with a
+#  distinct new name changes nothing a solver can see.
+#
+#  ⭐ THE SAFETY CRITERION, and it is the only one that licenses any of this:
+#  A TRANSFORM IS SAFE IFF IT PRESERVES THE ANSWER SETS OF THE PROGRAM THAT
+#  ACTUALLY RUNS. `test_readback_r3.py::test_the_transform_PRESERVES_THE_
+#  ANSWER_SETS` runs both programs through clingo and compares witness sets.
+#
+#  ⛔ AND IT DOES NOT HOLD EVERYWHERE — the two exclusions below are `[RAN]`,
+#  not reasoned.
+#
+#  1. **A `not` literal is left alone.** gringo does NOT simply rename `_`
+#     there; it PROJECTS the literal, so `_` is strictly more expressive than
+#     any name. `[RAN]` over `q(a,b). q(b,c). r(a,z).`:
+#
+#         p(X) :- q(X,_), not r(X,_).     ->  p(b)
+#         p(X) :- q(X,_V1), not r(X,_V2). ->  error: '_V2' is unsafe
+#
+#     So renaming turns a solvable program into a refused one — the opposite
+#     of meaning-preserving. ⭐ It also turns out xclingo NEVER NEEDED this
+#     case transformed: `[RAN]` xclingo 2.0b24 renders `not r(X,_)` fine
+#     (`|__"p holds of b"`), because it only lifts POSITIVE body literals into
+#     `_xclingo_sup`. The restriction was wider than its own ground.
+#
+#  2. **A HEAD `_` is left alone**, and then refused. `[RAN]` plain clingo on
+#     `q(a). p(_) :- q(X).` — `error: unsafe variables in: p(#Anon0)`. No
+#     renaming fixes that; it is the SOLVER's rule, which is why
+#     `schema._check_term` still rejects it at stage 2.
+#
+#  ⚠️ NOT PERSISTED. `render_lp`'s `.lp`, the stored module and
+#  `ModuleR3.program` all keep the author's `_`. The transform is applied to
+#  the text handed to xclingo and nowhere else, and it is deterministic, so
+#  `deanonymise(out.program)` re-derives exactly what ran.
+# --------------------------------------------------------------------------
+
+#: Fresh names are `_V1, _V2, …`. A leading underscore keeps them out of the
+#: identifier space an author would pick, and `_V<n>` is still an ordinary ASP
+#: variable — `[RAN]`, `p(X) :- q(X,_V1)` derives the same atoms as
+#: `p(X) :- q(X,_)`.
+_FRESH = "_V%d"
+#: Anything that could BE a variable, including the `_`-prefixed hidden names.
+#: Over-reserving is free; under-reserving joins two variables silently.
+_ANY_VAR = re.compile(r"(?<![A-Za-z0-9_])[_A-Z][A-Za-z0-9_]*")
+_NOT_TOKEN = re.compile(r"(?<![A-Za-z0-9_])not(?![A-Za-z0-9_])")
+_OPEN, _CLOSE = "({[", ")}]"
+
+
+def _code(text):
+    """`text` with every string constant and comment blanked to spaces.
+
+    Same length as `text`, so an index into one is an index into the other.
+    Structural scanning reads this; substitution writes the original. ⚠️ A `%`
+    inside a quoted constant is not a comment, so strings are recognised first
+    — the same ordering `anonymous_variables` depends on, for the same reason.
+    """
+    out = list(text)
+    i, n = 0, len(text)
+    while i < n:
+        c = text[i]
+        if c == '"':
+            out[i] = " "
+            i += 1
+            while i < n and text[i] != '"':
+                if text[i] == "\\" and i + 1 < n:
+                    out[i] = out[i + 1] = " "
+                    i += 2
+                    continue
+                out[i] = " " if text[i] != "\n" else "\n"
+                i += 1
+            if i < n:
+                out[i] = " "
+                i += 1
+            continue
+        if c == "%":
+            if text.startswith("%*", i):
+                end = text.find("*%", i + 2)
+                end = n if end < 0 else end + 2
+            else:
+                end = text.find("\n", i)
+                end = n if end < 0 else end
+            for k in range(i, end):
+                if text[k] != "\n":
+                    out[k] = " "
+            i = end
+            continue
+        i += 1
+    return "".join(out)
+
+
+def body_spans(text):
+    """`[(lo, hi)]` — the half-open span of every rule BODY in `text`.
+
+    A statement runs to its terminating `.`; its body is everything after the
+    first top-level `:-` or `:~`. ⚠️ `..` is the interval operator and does not
+    end a statement (`p(X), X = 1..3`).
+    """
+    code, spans = _code(text), []
+    i, n, arrow = 0, len(code), None
+    while i < n:
+        if code.startswith("..", i):
+            i += 2
+            continue
+        if arrow is None and code[i] == ":" and i + 1 < n and code[i + 1] in "-~":
+            arrow = i + 2
+            i += 2
+            continue
+        if code[i] == ".":
+            if arrow is not None:
+                spans.append((arrow, i))
+                arrow = None
+            i += 1
+            continue
+        i += 1
+    if arrow is not None:                       # an unterminated final rule
+        spans.append((arrow, n))
+    return spans
+
+
+def _literals(code, lo, hi):
+    """Split one body into its top-level literals — `,` and `;` at depth 0.
+
+    An aggregate is ONE literal: the commas inside `#count{ Y : q(Y,_) }` sit
+    at brace depth 1, so the `_` there is transformed with the rest of the
+    literal. `[RAN]` that is safe — the aggregate form renders identically
+    named and anonymous.
+    """
+    out, start, depth = [], lo, 0
+    for i in range(lo, hi):
+        c = code[i]
+        if c in _OPEN:
+            depth += 1
+        elif c in _CLOSE:
+            depth -= 1
+        elif c in ",;" and depth == 0:
+            out.append((start, i))
+            start = i + 1
+    out.append((start, hi))
+    return out
+
+
+def renameable_anonymous(text):
+    """Every index in `text` holding a `_` the transform may safely rename.
+
+    That is: a genuine `_` (not in a string, comment or `_foo` name) inside a
+    rule body, in a literal carrying no `not`. See the block comment above for
+    why those two exclusions are exclusions.
+    """
+    code = _code(text)
+    hits = []
+    for lo, hi in body_spans(text):
+        for a, b in _literals(code, lo, hi):
+            if _NOT_TOKEN.search(code, a, b):
+                continue
+            hits.extend(m.start() for m in _ANON.finditer(code, a, b))
+    return tuple(sorted(hits))
+
+
+def heads_only(text):
+    """`text` with every rule BODY blanked out, line structure preserved.
+
+    What is left is exactly the positions where a `_` is FATAL and no rename
+    reaches it. Scanning this rather than the whole text is what lets a
+    legitimate `not r(X,_)` through while still refusing `p(_) :- q(X).`
+    """
+    out = list(text)
+    for lo, hi in body_spans(text):
+        for k in range(max(0, lo - 2), hi):     # the `:-` goes too
+            if out[k] != "\n":
+                out[k] = " "
+    # The blanked run is collapsed so the refusal quotes `p(_).` and not the
+    # gap where the body was. Nothing downstream indexes into this.
+    return re.sub(r"[ \t]+", " ", "".join(out))
+
+
+def deanonymise(text, reserved=(), start=1):
+    """`(text with every renameable `_` given a DISTINCT fresh name, next n)`.
+
+    ⛔ DISTINCT is the whole point. One shared name JOINS the two positions:
+    `[RAN]` over `q(a,b). q(b,c). r(z).`, `s(X) :- q(X,_), r(_).` derives
+    `s(a), s(b)` and `s(X) :- q(X,_V1), r(_V1).` derives NOTHING.
+
+    ⛔ And no fresh name may equal one already present. The reserved set is
+    read off the text itself (plus anything the caller adds), so a rule that
+    already uses `_V1` gets `_V2` and not a silent join.
+    """
+    taken = set(reserved) | set(_ANY_VAR.findall(_code(text)))
+    out, n = list(text), start
+    for pos in reversed(renameable_anonymous(text)):
+        while (_FRESH % n) in taken:
+            n += 1
+        taken.add(_FRESH % n)
+        out[pos] = _FRESH % n
+        n += 1
+    return "".join(out), n
+
+
+def deanonymise_all(sources):
+    """`[(where, text)] -> [(where, transformed)]`, one shared name counter.
+
+    Variables are rule-scoped, so a name reused in another rule could not
+    collide — but the counter is shared anyway, so the property is a fact
+    about the output rather than a fact about ASP that a reader has to know.
+    """
+    sources = list(sources)
+    reserved = set()
+    for _w, t in sources:
+        reserved |= set(_ANY_VAR.findall(_code(t)))
+    out, n = [], 1
     for where, text in sources:
-        hits = anonymous_variables(text)
+        done, n = deanonymise(text, reserved, n)
+        out.append((where, done))
+    return out
+
+
+def _refuse_anonymous(sources):
+    """⛔ The RESIDUAL: a `_` no rename can rescue, i.e. one outside any body.
+
+    `[RAN]` clingo on `q(a). p(_) :- q(X).` — *"error: unsafe variables in:
+    p(#Anon0)"*. That is the solver refusing the WHOLE FILE, so it takes every
+    linked clause down with it, and R3 names the file rather than handing a
+    seat a derivation set that is missing rules it cannot see are missing.
+    """
+    for where, text in sources:
+        hits = anonymous_variables(heads_only(text))
         if hits:
             raise R3Error(
-                f"{where} contains an anonymous variable `_`: "
-                + " / ".join(hits[:3])
-                + ". xclingo lifts every body variable into a supporting term "
-                  "and `#Anon` is unsafe there, so the explainer program fails "
-                  "to ground and returns NO tree for ANY rule in the link "
-                  "scope — not just this one. R3 refuses rather than render a "
-                  "partial derivation set that would read as a complete one")
+                f"{where} contains an anonymous variable `_` outside any rule "
+                f"body: " + " / ".join(hits[:3])
+                + ". clingo calls `#Anon` in a head unsafe however the body is "
+                  "written and refuses the WHOLE FILE, so NO tree is returned "
+                  "for ANY rule in the link scope — not just this one. A body "
+                  "`_` is fine and is renamed before xclingo sees it "
+                  "(`deanonymise`); this one cannot be. R3 refuses rather than "
+                  "render a partial derivation set that would read as a "
+                  "complete one")
 
 
 # ==========================================================================
@@ -634,7 +864,12 @@ def render_r3(mod, situations, *, extra_gloss=None, gloss=None, link_texts=(),
     program = module_program(mod, renderings, notes)
     sources = [(f"{mod.clause_id} (module)", program)] + list(link_texts)
     _refuse_anonymous(sources)
-    link_blob = "\n".join(t for _n, t in link_texts)
+    # ⭐ The pre-render transform, and this is the ONLY place it happens: the
+    # stored `program` below keeps the author's `_`, and `deanonymise(program)`
+    # re-derives what xclingo was actually given.
+    run_sources = deanonymise_all(sources)
+    program_run = run_sources[0][1]
+    link_blob = "\n".join(t for _n, t in run_sources[1:])
 
     out_situations, findings = [], list(notes)
     for s in situations:
@@ -645,7 +880,7 @@ def render_r3(mod, situations, *, extra_gloss=None, gloss=None, link_texts=(),
             continue
         derivations, missing, s_findings = [], set(), []
         for atom in verdicts:
-            text = "\n".join([program, link_blob, situation_facts(s),
+            text = "\n".join([program_run, link_blob, situation_facts(s),
                               "%%!show_trace {%s}." % atom])
             trees = parse_ascii_trees(run_xclingo(text, xclingo=xclingo))
             rooted = [(lab, rs) for lab, rs in trees if rs]

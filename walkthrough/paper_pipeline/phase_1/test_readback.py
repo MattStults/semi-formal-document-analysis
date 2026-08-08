@@ -690,8 +690,9 @@ def test_a_gloss_is_not_substituted_INSIDE_a_quoted_string_constant():
     Two costs, and the second is the serious one. A data constant is rewritten
     into prose; and a declared label sitting inside a string is glossed AWAY,
     so RB1 — the check whose entire job is to notice a surviving label — can no
-    longer see it. `schema._strip_strings` is the only string-aware helper in
-    the pipeline and the renderer had no counterpart.
+    longer see it. `schema._strip_strings` was then the only string-aware
+    helper in the pipeline (it is gone; `readback_r3._code` is its heir) and
+    the renderer had no counterpart.
     """
     gloss = {"p": "a thing", "political_content": "content about politics"}
     out = readback.substitute('p("political_content is bad")', gloss)
