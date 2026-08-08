@@ -1,0 +1,111 @@
+{
+  "outcome": "translated",
+  "clause_id": "m0491",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the assistant should communicate clearly and directly to maximize user understanding",
+    "C2 responses and embedded content should be lucid, succinct, and well-organized, with correct spelling, grammar, and punctuation",
+    "C3 formatting should be used judiciously to aid the user in scanning the response",
+    "C4 the assistant should by default avoid purple prose, hyperbole, self-aggrandizing, and clichéd phrases that do not add to clarity"
+  ],
+  "acts": [
+    "communicate_clearly_directly(R)",
+    "produce_lucid_succinct_organized(R)",
+    "use_formatting_judiciously(R)",
+    "avoid_purple_prose(R)"
+  ],
+  "concepts": [
+    {
+      "name": "response",
+      "arity": 1,
+      "gloss": "R is a response or embedded content produced by the assistant",
+      "licence": "textual",
+      "cites": "m0491",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "purple_prose",
+      "arity": 1,
+      "gloss": "R contains purple prose, hyperbole, self-aggrandizing, or clichéd phrases that do not add to the clarity of communication",
+      "licence": "textual",
+      "cites": "m0491",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [],
+  "asserts": [
+    {
+      "read_back": "the assistant should communicate clearly and directly to maximize user understanding",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "m0491",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "communicate_clearly_directly(R)",
+      "body": "response(R)"
+    },
+    {
+      "read_back": "responses and embedded content should be lucid, succinct, and well-organized, with correct spelling, grammar, and punctuation",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "m0491",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "produce_lucid_succinct_organized(R)",
+      "body": "response(R)"
+    },
+    {
+      "read_back": "formatting should be used judiciously to aid the user in scanning the response",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "m0491",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "use_formatting_judiciously(R)",
+      "body": "response(R)"
+    },
+    {
+      "read_back": "the assistant should by default avoid purple prose, hyperbole, self-aggrandizing, and clichéd phrases that do not add to the clarity of communication",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "m0491",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "avoid_purple_prose(R)",
+      "body": "response(R), purple_prose(R)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "communicate_clearly_directly",
+      "closure": "cepa",
+      "reason": "the clause states a positive obligation to communicate clearly and directly; silence about other communication styles does not prohibit them"
+    },
+    {
+      "act_class": "produce_lucid_succinct_organized",
+      "closure": "cepa",
+      "reason": "the clause obliges lucid, succinct, well-organized content; it does not prohibit other content qualities"
+    },
+    {
+      "act_class": "use_formatting_judiciously",
+      "closure": "cepa",
+      "reason": "the clause obliges judicious formatting; it does not prohibit formatting choices not covered by the obligation"
+    },
+    {
+      "act_class": "avoid_purple_prose",
+      "closure": "cnpa",
+      "reason": "the clause explicitly prohibits purple prose, hyperbole, self-aggrandizing, and clichéd phrases that do not add to clarity, so silence about such phrases is not permission"
+    }
+  ],
+  "requires": [],
+  "inputs": ["response/1", "purple_prose/1"],
+  "forbid_body": []
+}

@@ -160,3 +160,53 @@ also runs `test_prompt_examples.py` so an example our own checks reject cannot b
 
 ⇒ A graveyard fix that edits a prompt is not done when it works. It is done when it has a
 held-out measurement, a pre-registered prediction, and a review.
+
+## 11 ⛔ A metric that reads only VALID modules cannot measure a habit that co-occurs with invalidity
+
+`empty_gloss_rate` reads `outcome.module`, which is `None` whenever the response failed a schema
+check — 44% of first attempts in the run in question. An A/B of bad worked example #6 was written
+up as invalid because the control arm scored **0.000 on all three repeats**, read as *"the eval set
+does not exhibit the failure at all"*, and the recorded next step was to go draw a different clause
+set.
+
+**Re-counting that same arm's raw responses, already on disk, cost nothing and said otherwise:**
+
+| arm A | empty glosses | concepts | rate |
+|---|---|---|---|
+| as the metric measured it | 0 | 42 | 0.000 |
+| off the raws in `*_raw/A/r*/` | **8** | 84 | **0.095** |
+
+All eight sat inside modules that failed the schema. The zero was **censoring, not absence** — and
+the censoring was not neutral between arms, because they differed in `unbuildable_rate` (0.444 vs
+0.333) as well as in glosses. The metric compared two differently-sized populations and reported
+the difference as an effect.
+
+⇒ **When a metric conditions on a validity check, ask whether the condition is independent of the
+thing being measured.** A sloppy module is more likely to be *both* schema-breaching and
+content-free, so it is exactly the wrong thing to drop. `eval.glosses_raw` is the reference: the
+same count off `outcome.raw`, conditioned on nothing but "it parsed", with `raw_responses_parsed`
+printed beside it.
+
+**⛔ The trap, and it is a specific one:** the wrong diagnosis was *"draw a better eval set"*, which
+sounds like rigour and would have spent another $0.05 to reproduce the same blindness on new
+clauses. The eval set was fine. **Before concluding an eval set has zero incidence, count the
+incidence in the raws yourself** — the raws exist for this, and it is free.
+
+## 12 A selection rule for an eval set is a hypothesis, and it can be wrong
+
+Choosing clauses "that plausibly introduce named categories" is the right instinct, but the first
+mechanical rule for it — an enumeration marker word (`such as`, `e.g.`, `including`) — scored
+**4.9%** empty glosses on rule-positive clauses against **6.4%** on rule-negative. It selected
+nothing; the marker word is everywhere and the two worst offenders enumerate without one.
+
+⇒ **Score a proposed selection rule against the responses already on disk before you spend on it.**
+Six candidates took ten minutes and no money, and the kept rule (a run of ≥3 short comma-separated
+items, or a bolded term) separates 9.7% from 3.0%. The one that scored *highest* was not kept —
+it rested on four clauses, and a rule whose expected incidence comes from one or two clauses will
+hand you an eval set that either exhibits the failure enormously or not at all.
+
+⚠️ And say in the pre-registration that the rule was **fitted to prior data**, list the candidates
+that lost, and exclude every clause used to derive it from the draw. A selection rule predicts
+*where* a failure occurs, not *what fixes it*, so it cannot manufacture a difference between arms
+— but it can make the eval set atypical, and that is a real limitation to write down rather than a
+loophole.

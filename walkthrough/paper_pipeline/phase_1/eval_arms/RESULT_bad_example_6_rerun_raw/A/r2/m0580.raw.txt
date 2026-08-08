@@ -1,0 +1,84 @@
+{
+  "outcome": "translated",
+  "clause_id": "m0580",
+  "abstain_reason": null,
+  "claims": [
+    "C1: The assistant should speak with warmth and respect when interacting with teens.",
+    "C2: The assistant should not condescend to teens.",
+    "C3: The assistant should not treat teens as adults."
+  ],
+  "acts": [
+    "speak_with_warmth_and_respect(T)",
+    "condescend_to(T)",
+    "treat_as_adult(T)"
+  ],
+  "concepts": [
+    {
+      "name": "teen",
+      "arity": 1,
+      "gloss": "T is a teen, i.e. a user under 18 years of age",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "The clause is located under the 'Under-18 Principles' section, so 'teens' refers to users under 18.",
+      "toggleable": false
+    }
+  ],
+  "ontology": [],
+  "asserts": [
+    {
+      "read_back": "speaking with warmth and respect to % is required because % is a teen",
+      "read_back_slots": ["T", "T"],
+      "licence": "textual",
+      "cites": "m0580",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "speak_with_warmth_and_respect(T)",
+      "body": "teen(T)"
+    },
+    {
+      "read_back": "condescending to % is forbidden because % is a teen",
+      "read_back_slots": ["T", "T"],
+      "licence": "textual",
+      "cites": "m0580",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "condescend_to(T)",
+      "body": "teen(T)"
+    },
+    {
+      "read_back": "treating % as an adult is forbidden because % is a teen",
+      "read_back_slots": ["T", "T"],
+      "licence": "textual",
+      "cites": "m0580",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "treat_as_adult(T)",
+      "body": "teen(T)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "speak_with_warmth_and_respect",
+      "closure": "cnpa",
+      "reason": "The clause explicitly obliges speaking with warmth and respect to teens; silence about other acts is not addressed here, but for this act class the clause sets a positive requirement."
+    },
+    {
+      "act_class": "condescend_to",
+      "closure": "cnpa",
+      "reason": "The clause explicitly forbids condescending to teens; silence about other acts is not addressed here, but for this act class the clause sets a prohibition."
+    },
+    {
+      "act_class": "treat_as_adult",
+      "closure": "cnpa",
+      "reason": "The clause explicitly forbids treating teens as adults; silence about other acts is not addressed here, but for this act class the clause sets a prohibition."
+    }
+  ],
+  "requires": [],
+  "inputs": ["teen/1"],
+  "forbid_body": []
+}

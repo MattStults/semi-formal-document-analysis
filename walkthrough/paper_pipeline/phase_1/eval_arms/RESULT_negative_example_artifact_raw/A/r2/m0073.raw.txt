@@ -1,0 +1,249 @@
+{
+  "outcome": "translated",
+  "clause_id": "m0073",
+  "abstain_reason": null,
+  "claims": [
+    "C1: A user is a person who uses an OpenAI product or a third-party application built on the OpenAI API.",
+    "C2: Users typically see only conversation messages designated for their view: their own messages, the assistant's replies, and in some cases tool messages.",
+    "C3: Users may be unaware of developer or system messages, and their goals may not align with the developer's goals.",
+    "C4: In API applications, the assistant cannot know whether an end user distinct from the developer exists, nor how input/output messages relate to what the end user does or sees."
+  ],
+  "acts": [],
+  "concepts": [
+    {
+      "name": "user",
+      "arity": 1,
+      "gloss": "X is a user of a product made by OpenAI or a third-party application built on the OpenAI API",
+      "licence": "textual",
+      "cites": "m0073",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "openai_product_user",
+      "arity": 1,
+      "gloss": "X uses a product made by OpenAI, e.g. ChatGPT",
+      "licence": "textual",
+      "cites": "m0073",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "api_app_user",
+      "arity": 1,
+      "gloss": "X uses a third-party application built on the OpenAI API, e.g. a customer service chatbot for an e-commerce site",
+      "licence": "textual",
+      "cites": "m0073",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "sees_message",
+      "arity": 2,
+      "gloss": "X sees message M in the conversation",
+      "licence": "textual",
+      "cites": "m0073",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "designated_for_user_view",
+      "arity": 1,
+      "gloss": "message M has been designated for the user's view",
+      "licence": "textual",
+      "cites": "m0073",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "own_message",
+      "arity": 2,
+      "gloss": "message M is X's own message",
+      "licence": "textual",
+      "cites": "m0073",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "assistant_reply",
+      "arity": 1,
+      "gloss": "message M is an assistant's reply",
+      "licence": "textual",
+      "cites": "m0073",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "tool_message",
+      "arity": 1,
+      "gloss": "message M is a message to or from a tool",
+      "licence": "textual",
+      "cites": "m0073",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "aware_of_message",
+      "arity": 2,
+      "gloss": "X is aware of message M",
+      "licence": "textual",
+      "cites": "m0073",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "developer_message",
+      "arity": 1,
+      "gloss": "message M is a developer message",
+      "licence": "textual",
+      "cites": "m0073",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "system_message",
+      "arity": 1,
+      "gloss": "message M is a system message",
+      "licence": "textual",
+      "cites": "m0073",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "goals_aligned",
+      "arity": 2,
+      "gloss": "X's goals align with Y's goals",
+      "licence": "textual",
+      "cites": "m0073",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "developer",
+      "arity": 1,
+      "gloss": "X is the developer of the application",
+      "licence": "textual",
+      "cites": "m0073",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "api_application",
+      "arity": 1,
+      "gloss": "A is an application built on the OpenAI API",
+      "licence": "textual",
+      "cites": "m0073",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "distinct_end_user",
+      "arity": 2,
+      "gloss": "X is an end user distinct from developer D in application A",
+      "licence": "textual",
+      "cites": "m0073",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "assistant_can_know",
+      "arity": 2,
+      "gloss": "the assistant can know whether P holds in application A",
+      "licence": "textual",
+      "cites": "m0073",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "message_relation_known",
+      "arity": 2,
+      "gloss": "the assistant knows how its input and output messages relate to what the end user does or sees in application A",
+      "licence": "textual",
+      "cites": "m0073",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "m0073",
+      "inference": null,
+      "toggleable": false,
+      "atom": "user(X)",
+      "gloss": "X is a user of a product made by OpenAI or a third-party application built on the OpenAI API",
+      "body": "openai_product_user(X) ; api_app_user(X)"
+    },
+    {
+      "licence": "textual",
+      "cites": "m0073",
+      "inference": null,
+      "toggleable": false,
+      "atom": "sees_message(X, M)",
+      "gloss": "X typically sees only conversation messages designated for their view",
+      "body": "user(X), designated_for_user_view(M)"
+    },
+    {
+      "licence": "textual",
+      "cites": "m0073",
+      "inference": null,
+      "toggleable": false,
+      "atom": "designated_for_user_view(M)",
+      "gloss": "M is designated for the user's view because it is the user's own message, the assistant's reply, or in some cases a tool message",
+      "body": "own_message(X, M) ; assistant_reply(M) ; tool_message(M)"
+    },
+    {
+      "licence": "textual",
+      "cites": "m0073",
+      "inference": null,
+      "toggleable": false,
+      "atom": "not_aware_of_developer_or_system_messages(X)",
+      "gloss": "X may not be aware of any developer or system messages",
+      "body": "user(X), developer_message(M), system_message(M)"
+    },
+    {
+      "licence": "textual",
+      "cites": "m0073",
+      "inference": null,
+      "toggleable": false,
+      "atom": "goals_may_not_align(X, D)",
+      "gloss": "X's goals may not align with developer D's goals",
+      "body": "user(X), developer(D)"
+    },
+    {
+      "licence": "textual",
+      "cites": "m0073",
+      "inference": null,
+      "toggleable": false,
+      "atom": "assistant_cannot_know_end_user(A)",
+      "gloss": "in API application A, the assistant has no way of knowing whether there exists an end user distinct from the developer",
+      "body": "api_application(A)"
+    },
+    {
+      "licence": "textual",
+      "cites": "m0073",
+      "inference": null,
+      "toggleable": false,
+      "atom": "assistant_cannot_know_message_relation(A)",
+      "gloss": "in API application A, the assistant has no way of knowing how its input and output messages are related to what the end user does or sees",
+      "body": "api_application(A)"
+    }
+  ],
+  "asserts": [],
+  "beats": [],
+  "defines": [],
+  "closure": [],
+  "requires": [],
+  "inputs": [
+    "openai_product_user/1",
+    "api_app_user/1",
+    "own_message/2",
+    "assistant_reply/1",
+    "tool_message/1",
+    "developer_message/1",
+    "system_message/1",
+    "developer/1",
+    "api_application/1"
+  ],
+  "forbid_body": []
+}

@@ -1,0 +1,174 @@
+{
+  "outcome": "translated",
+  "clause_id": "m0329",
+  "abstain_reason": null,
+  "claims": [
+    "C1: When an objective stance is appropriate, particularly on sensitive or controversial topics, the assistant should avoid subjective terms unless quoting directly or citing specific sources.",
+    "C2: When presenting less mainstream cultural, religious, or political traditions or institutions, the assistant should ensure proper cultural context is provided.",
+    "C3: When presenting less mainstream cultural, religious, or political traditions or institutions, the assistant should represent the group with respect."
+  ],
+  "acts": [
+    "use_subjective_terms(T)",
+    "present_without_cultural_context(G)",
+    "present_disrespectfully(G)"
+  ],
+  "concepts": [
+    {
+      "name": "objective_stance_appropriate",
+      "arity": 1,
+      "gloss": "the situation or topic T is one where an objective stance is appropriate",
+      "licence": "textual",
+      "cites": "m0329",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "sensitive_or_controversial_topic",
+      "arity": 1,
+      "gloss": "T is a sensitive or controversial topic",
+      "licence": "textual",
+      "cites": "m0329",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "subjective_term",
+      "arity": 1,
+      "gloss": "T is a subjective term",
+      "licence": "textual",
+      "cites": "m0329",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "quoting_directly",
+      "arity": 1,
+      "gloss": "the use of term T is a direct quotation",
+      "licence": "textual",
+      "cites": "m0329",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "citing_specific_source",
+      "arity": 1,
+      "gloss": "the use of term T cites a specific source",
+      "licence": "textual",
+      "cites": "m0329",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "less_mainstream_tradition",
+      "arity": 1,
+      "gloss": "G is a less mainstream cultural, religious, or political tradition or institution",
+      "licence": "textual",
+      "cites": "m0329",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "proper_cultural_context",
+      "arity": 1,
+      "gloss": "the presentation of G includes proper cultural context",
+      "licence": "textual",
+      "cites": "m0329",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "respectful_representation",
+      "arity": 1,
+      "gloss": "the presentation of G represents the group with respect",
+      "licence": "textual",
+      "cites": "m0329",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "m0329",
+      "inference": null,
+      "toggleable": false,
+      "atom": "objective_stance_appropriate(T)",
+      "gloss": "T is a topic where an objective stance is appropriate",
+      "body": "sensitive_or_controversial_topic(T)"
+    },
+    {
+      "licence": "textual",
+      "cites": "m0329",
+      "inference": null,
+      "toggleable": false,
+      "atom": "objective_stance_appropriate(T)",
+      "gloss": "T is a topic where an objective stance is appropriate",
+      "body": null
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "using the subjective term % is forbidden when an objective stance is appropriate, unless it is a direct quotation or cites a specific source",
+      "read_back_slots": ["T"],
+      "licence": "textual",
+      "cites": "m0329",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "use_subjective_terms(T)",
+      "body": "objective_stance_appropriate(T), subjective_term(T), not quoting_directly(T), not citing_specific_source(T)"
+    },
+    {
+      "read_back": "presenting % without proper cultural context is forbidden when % is a less mainstream cultural, religious, or political tradition or institution",
+      "read_back_slots": ["G", "G"],
+      "licence": "textual",
+      "cites": "m0329",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "present_without_cultural_context(G)",
+      "body": "less_mainstream_tradition(G), not proper_cultural_context(G)"
+    },
+    {
+      "read_back": "presenting % disrespectfully is forbidden when % is a less mainstream cultural, religious, or political tradition or institution",
+      "read_back_slots": ["G", "G"],
+      "licence": "textual",
+      "cites": "m0329",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "present_disrespectfully(G)",
+      "body": "less_mainstream_tradition(G), not respectful_representation(G)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "use_subjective_terms",
+      "closure": "cepa",
+      "reason": "The clause prohibits subjective terms only when an objective stance is appropriate and no quotation or source citation applies; silence about other uses leaves them permitted."
+    },
+    {
+      "act_class": "present_without_cultural_context",
+      "closure": "cepa",
+      "reason": "The clause prohibits presenting less mainstream traditions without proper cultural context; it does not prohibit other presentations, so silence permits them."
+    },
+    {
+      "act_class": "present_disrespectfully",
+      "closure": "cepa",
+      "reason": "The clause prohibits disrespectful presentation of less mainstream traditions; it does not prohibit other presentations, so silence permits them."
+    }
+  ],
+  "requires": [],
+  "inputs": [
+    "sensitive_or_controversial_topic/1",
+    "subjective_term/1",
+    "quoting_directly/1",
+    "citing_specific_source/1",
+    "less_mainstream_tradition/1",
+    "proper_cultural_context/1",
+    "respectful_representation/1"
+  ],
+  "forbid_body": []
+}
