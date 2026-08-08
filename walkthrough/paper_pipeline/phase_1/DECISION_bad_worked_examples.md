@@ -120,3 +120,52 @@ reason the example was removed rather than kept.
 `PREREG_bad_example_6_rerun.md` and its result. The removal does not touch the §2.2 ruling above:
 failure mode #4 is still restored *as a documented failure mode*, and `STEP_stage4.md` seat 4r is
 still where detection lives.
+
+---
+
+## ⚠️ AMENDMENT 2 · 2026-08-08 — a SECOND bad example #6 added and removed, on different grounds
+
+Not to be confused with Amendment 1. That one taught against *"imports a name without its content"*
+and was removed on a **null result**. This one taught against writing two statements in one `body`
+— `{"body": "adult(P). N > 5, N != 9"}` — and is removed **before measurement**, on incidence.
+
+**The check that stopped it, run before spending a cent:**
+
+```
+rule bodies examined across every stored response : 911
+bodies containing a statement separator           : 0
+```
+
+⇒ **The model has never produced this failure.** A control arm would score zero, the delta would be
+unreadable, and we would have bought a second uninterpretable null — which is precisely how
+Amendment 1's first run was wasted, discovered only *after* paying. `DEBUGGING_TIPS` §2 and §3 exist
+because of that, and this time the gate fired first.
+
+### The asymmetry that actually decides it
+
+| | |
+|---|---|
+| the defect | **real** — reproduced; it compiles, derives, and silently discards every condition after the `.` |
+| the model's rate of producing it | **0 of 911** |
+| what catches it | `schema._check_body`'s statement count — **deterministic, certain, zero prompt budget** |
+
+⭐ **An example earns its place when a CHECK CANNOT catch the thing.** That was true of the gloss
+case in Amendment 1 — hollow glosses are semantic and need a reader, which is why detection was
+routed to stage-4 seat 4r. It is **false here**: the guard catches this with certainty.
+
+⇒ So the example spends prompt budget on a hypothetical, and the open hypothesis from Amendment 1 —
+that a negative example may *teach* the shape it warns against — makes its expected value negative
+rather than merely zero.
+
+### ⛔ Not a blocklist, same as Amendment 1
+
+Re-propose it if the incidence ever becomes non-zero. **The trigger is concrete and cheap to
+re-check:** re-run the 911-body count against new stored responses. If the model starts producing
+multi-statement bodies, the example has a case and this entry is the thing to overturn.
+
+⚠️ What must NOT happen is re-adding it because the guard's error message reads awkwardly, or
+because the file "should" teach every rejection. The guard's job and the prompt's job are different,
+and this decision is the boundary between them.
+
+**The guard STAYS.** Nothing about removing the example weakens `schema.py`: the statement-count
+check, its control tests (`1..3`, `#count{}`, `"a.b"`) and its mutant are untouched.
