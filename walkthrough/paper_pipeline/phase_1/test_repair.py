@@ -580,3 +580,38 @@ def test_abstained_UNDER_REPAIR_survives_into_the_record(tmp_path):
     _, rec = _run_one(tmp_path, {"repair": {"max_attempts": 2}}, Stub)
     assert rec["results"][0]["status"] == "abstained_under_repair", \
         rec["results"][0]["status"]
+
+
+def test_the_repair_log_carries_ONLY_error_severity_findings():
+    """A `note` is true of a CORRECT module and must never be shown as a fault.
+
+    `requires-unprovided` fires on every well-formed single-clause module —
+    `requires` means another clause defines it, and at single-module scope no
+    other clause is linked. m0036 was handed eight of these under "Fix every one
+    of them", twice, and never converged. The only way to clear one is to move
+    the predicate into `inputs`, which destroys the distinction the design calls
+    load-bearing.
+
+    `checks.py` already rules that only errors drive repair. The log has to
+    agree with that ruling or the loop asks for the impossible.
+    """
+    note = T.RepairFinding(check_id="requires-unprovided", severity="note",
+                           where="m.lp", message="`x/1` is declared in "
+                           "`%% requires:` and no module here defines it",
+                           origin="link")
+    err = T.RepairFinding(check_id="schema-breach", severity="error",
+                          where="asserts[0]", message="read_back has 0 slots",
+                          origin="schema")
+    log = T.render_error_log([("attempt 1", [note, err])])
+    assert "read_back has 0 slots" in log
+    assert "requires-unprovided" not in log, log
+    assert "no module here defines it" not in log, log
+
+
+def test_a_log_of_only_notes_says_so_rather_than_looking_empty():
+    """Otherwise the model is sent a prompt telling it to fix nothing."""
+    note = T.RepairFinding(check_id="requires-unprovided", severity="note",
+                           where="m.lp", message="declared and unprovided",
+                           origin="link")
+    log = T.render_error_log([("attempt 1", [note])])
+    assert "no error-severity" in log.lower(), log

@@ -7,8 +7,8 @@ You translate one clause of a specification document into a small logic program 
 do not produce more than one module, and you never fold another clause's content into this one.
 Other clauses become `requires` entries, never copied rules.
 
-The document is a behavioural specification for an AI assistant. Its clauses state obligations,
-permissions, prohibitions, exceptions, definitions, and priority orderings between them.
+The document's clauses state obligations, permissions, prohibitions, exceptions, definitions,
+and priority orderings between them. What the document IS arrives with the clause.
 
 ---
 

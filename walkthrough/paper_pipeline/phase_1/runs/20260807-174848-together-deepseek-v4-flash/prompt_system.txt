@@ -1,41 +1,3 @@
-# phase_1/translate.py — DRY RUN artifact
-# inputs-sha: 0679c21503c10ee1   (config.json + every prompt file)
-# Regenerate with: translate.py --write-artifact
-# Nothing was sent. This is the complete prompt that WOULD be sent.
-
-############ default config ############
-provider     : together-deepseek-v4-flash  (deepseek-ai/DeepSeek-V4-Flash-0731)
-clauses      : 3  [m0252, m0253, m0255]
-system prompt: 28,091 chars from 4 file(s) — identical every call
-cost (worst) : $0.0604   (~136,687 in, 147,456 out at full max_tokens)   ceiling $0.25
-   m0252  conditional  2 xref(s)
-   m0253  conditional  5 xref(s)
-   m0255  conditional  2 xref(s)
-
-DRY RUN — nothing was sent. Add --live to spend.
-
-############ --section definitions --kinds definitional --limit 4 ############
-provider     : together-deepseek-v4-flash  (deepseek-ai/DeepSeek-V4-Flash-0731)
-clauses      : 4  [m0053, m0054, m0055, m0056]
-system prompt: 28,091 chars from 4 file(s) — identical every call
-cost (worst) : $0.0795   (~174,808 in, 196,608 out at full max_tokens)   ceiling $0.25
-   m0053  definitional no anchors
-   m0054  definitional no anchors
-   m0055  definitional no anchors
-   m0056  definitional 8 xref(s)
-
-DRY RUN — nothing was sent. Add --live to spend.
-
-############ --clause m0255 --show-prompt 1 ############
-provider     : together-deepseek-v4-flash  (deepseek-ai/DeepSeek-V4-Flash-0731)
-clauses      : 1  [m0255]
-system prompt: 28,091 chars from 4 file(s) — identical every call
-cost (worst) : $0.0200   (~44,785 in, 49,152 out at full max_tokens)   ceiling $0.25
-   m0255  conditional  2 xref(s)
-
-========================================================================
-SYSTEM
-========================================================================
 # Task
 
 You translate one clause of a specification document into a small logic program in ASP
@@ -538,28 +500,3 @@ that is a separate stage's job, and guessing at it from one clause makes it wors
 | | | |
 |---|---|---|
 | **16** | **A reviewer cannot see invented entities** | *structurally silent.* Given the clause and a read-back containing an invented "deception policy", a clean reviewer answered **faithful, nothing unsupported** — then reasoned from the fiction. Not reviewer error: the clause says "policies other than restricted or sensitive" and never enumerates which exist. ⇒ **The licence on each fact is the only thing that makes this visible.** A fact marked `assumed` with its inference named can be checked. The same fact marked `textual` cannot. |
-
-========================================================================
-USER — m0255
-========================================================================
-CLAUSE TO TRANSLATE
-
-This clause is from a behavioural specification for an AI assistant.
-
-clause id: m0255
-location: model_spec@2025-12-18 > Stay in bounds > Do not generate disallowed content > Comply with requests to transform restricted or sensitive content > ¶4
-kind: conditional
-
-text:
-The transformation exception does not override any policies other than those on [restricted](#restricted_content) or [sensitive content](#sensitive_content); if other policies forbid producing certain material, the assistant should still follow them[^ad81]. There is no “good cause” exception for the restricted and sensitive content policies, and the assistant should not supply new disallowed material even for seemingly legitimate research or analysis purposes[^ad82]. The policy only applies to *information*, not actions; the assistant should not perform a prohibited action just because it's a "translation" of user-provided content[^ad83].
-
-CROSS-REFERENCED CLAUSES — the text of every clause this one points at.
-Use these to know what the names mean. Do NOT translate them here.
-
-  [m0208] The assistant must not generate *restricted content* (such as [information hazards](#avoid_info_hazards) and [sensitive personal data](#protect_privacy)), except in specific cases involving transformation of user-provided restricted content (see [?](#transformation_exception)). There are no other "contextual" exceptions (e.g., for informational or historical purposes).
-
-  [m0231] *Sensitive content* (such as [erotica or gore](#no_erotica_or_gore)) may only be generated under specific circumstances (e.g., educational, medical, or historical contexts, or [transformations](#transformation_exception) of user-provided sensitive content).
-
-Write the module for clause m0255.
-
-DRY RUN — nothing was sent. Add --live to spend.

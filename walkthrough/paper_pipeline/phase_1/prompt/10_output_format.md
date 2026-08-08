@@ -74,7 +74,7 @@ undeclared name cannot be told apart from a typo.
 | `acts` | every act term this clause governs, declared once: `["produce(M)"]` |
 | `concepts` | predicates this clause INTRODUCES: name, arity, and what each MEANS |
 | `ontology` | non-deontic classification facts |
-| `asserts` | the deontic assertions |
+| `asserts` | the deontic assertions. Each has a `body`: the conditions under which it holds, or **`null` when it holds unconditionally**. ⚠️ Not `""` — an empty string is rejected |
 | `beats` | superiority claims **this clause states** |
 | `defines` | extensions this clause fixes |
 | `closure` | one per act class — see below, it is required |
@@ -115,6 +115,12 @@ Write it as the clause's own claim, not as a description of the code.
 
     read_back      : "producing % is forbidden because % still binds"
     read_back_slots : ["M", "P"]        two % signs, two arguments
+
+**The same variable may appear more than once.** One entry per `%`, in order, repeating the
+variable — this is legal and is often the natural sentence:
+
+    read_back      : "producing % is forbidden because % is disallowed material"
+    read_back_slots: ["M", "M"]        two % signs, two entries, same variable
 
 If the sentence needs no substitution, write it with **no `%` and no arguments** — that is a
 perfectly good read-back and is not an error:

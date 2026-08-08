@@ -382,6 +382,7 @@ def build_user(row, rows, cfg):
     c = cfg["corpus"]
     found, unresolved = cross_references(row, rows, cfg)
     body = cfg["prompt"]["user_template"].format(
+        corpus_description=c.get("description", "a specification document"),
         id=row[c["id_key"]],
         locator=row.get("locator", ""),
         kind=row.get(c["kind_key"], ""),
@@ -2040,12 +2041,31 @@ def render_error_log(attempts):
     out = []
     for label, findings in attempts:
         out.append(f"{label} failed these checks:")
-        withheld = 0
+        withheld = notes = 0
+        shown = 0
         for f in findings:
             if f.origin not in DISCLOSABLE_ORIGINS:
                 withheld += 1
                 continue
+            # ⛔ NOTES ARE NEVER SHOWN AS FAULTS. A note is true of a CORRECT
+            # module — `requires-unprovided` fires on every well-formed
+            # single-clause module, because `requires` means another clause
+            # defines it and no other clause is linked at this scope. Handed
+            # one under "fix every one of them", the only available repair is
+            # to move the predicate into `inputs`, which collapses the
+            # distinction that makes linking possible. One clause was given
+            # eight of them, twice, and never converged.
+            if f.severity != "error":
+                notes += 1
+                continue
+            shown += 1
             out.append(f"  - [{f.check_id}] {f.where}: {f.message}")
+        if not shown:
+            out.append("  (no error-severity findings — nothing here is yours "
+                       "to fix)")
+        if notes:
+            out.append(f"  ({notes} note(s) not shown: they are true of a "
+                       f"correct module at this scope and are not faults)")
         if withheld:
             # A visible hole, never a silent omission: a reader must be able to
             # tell a filtered log from a clean one.

@@ -7,7 +7,9 @@
     "id_key": "id",
     "text_key": "quote",
     "section_key": "section_id",
-    "kind_key": "kind"
+    "kind_key": "kind",
+    "_description": "What the corpus IS, one line, rendered into the USER block. It belongs there and not in the system block: the system block is the METHOD of translation and should be byte-identical across corpora, which also keeps it cacheable. A corpus-specific sentence in it makes the prompt fit only the document it was written for.",
+    "description": "a behavioural specification for an AI assistant"
   },
   "select": {
     "_": "What to translate. A clause id list wins over section; section wins over kind. All three empty = refuse, because 'translate everything' is not a thing to do by accident.",
@@ -41,7 +43,7 @@
       "prompt/30_failure_modes.md"
     ],
     "unused_files": [],
-    "user_template": "CLAUSE TO TRANSLATE\n\nclause id: {id}\nlocation: {locator}\nkind: {kind}\n\ntext:\n{text}\n{cross_references}\nWrite the module for clause {id}."
+    "user_template": "CLAUSE TO TRANSLATE\n\nThis clause is from {corpus_description}.\n\nclause id: {id}\nlocation: {locator}\nkind: {kind}\n\ntext:\n{text}\n{cross_references}\nWrite the module for clause {id}."
   },
   "model": {
     "_": "TWO MODES. If `model` and `base_url` are both set, the provider is defined INLINE here and providers.json is not consulted for it. Otherwise `provider_name` must name a row in providers.json. A name that matches nothing, with no inline model, RAISES \u2014 a typo must never fall through to some default model.",
