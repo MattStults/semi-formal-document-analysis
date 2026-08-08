@@ -2034,7 +2034,18 @@ def main(argv=None):
 
 import dataclasses
 
-DISCLOSABLE_ORIGINS = ("schema", "link")
+# ⭐ `probe-structural` IS ADMITTED; `probe-verdict` NEVER IS, and the split is
+# the whole reason stage 3 has two origins. A structural finding — "rule R is in
+# no derivation any situation distinguishes", "the module admits a situation the
+# clause treats as impossible", "the coherent set is empty" — is derived from the
+# module and the solver alone, with no expected verdict anywhere near it, exactly
+# as stage 2's are. A `probe-verdict` finding names a situation whose derived
+# status disagrees with its LABEL, and for any one situation the module derived
+# something specific: naming it IS the answer key. Withholding the label while
+# naming the situation is not a partial disclosure, it is the whole disclosure
+# with a fig leaf. See `probe.route` — a verdict mismatch discards the transcript
+# and re-runs stage 1 from a clean prompt instead.
+DISCLOSABLE_ORIGINS = ("schema", "link", "probe-structural")
 
 
 @dataclasses.dataclass(frozen=True)
