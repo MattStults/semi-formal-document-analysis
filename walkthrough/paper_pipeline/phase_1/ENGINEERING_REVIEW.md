@@ -1,5 +1,12 @@
 # Adversarial engineering review — `phase_1`, `link.py`, and today's repair loop
 
+
+> ⛔ **`STEP_stage2_and_repair.md` was RETIRED 2026-08-07.** Stage 2 is built; the plan's
+> load-bearing rulings were folded into `resources/03_pipeline.md` (abstention as an outcome,
+> and the typed repair guard) and `DEFERRED.md` D-3 (the arm-B withdrawal). References to it
+> below are historical and are left as written.
+
+
 **Reviewed 2026-08-07 ~15:50–16:20.** Nothing was spent; no `--live`; no git. Files were read
 from the working tree and mutation-tested in a **copy** under a scratchpad — the repo tree was
 never written to except for this file.

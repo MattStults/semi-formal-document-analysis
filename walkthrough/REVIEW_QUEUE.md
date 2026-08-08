@@ -82,7 +82,7 @@ paraphrase check by construction."* Restore, or record the swap as deliberate.
 | **the graveyard** | `phase_1/PROPOSAL_graveyard.md` | you have read it; you asked for re-review then implement. **Not yet re-reviewed** |
 | **stage 3** | `phase_1/STEP_stage3.md` | ⛔ **revision 2's §0 is REFUTED** and not yet reverted — see §4 |
 | **stage 4** | `phase_1/STEP_stage4.md` | written by an agent, **not reviewed by me or you** |
-| ⭐ **the atom-slot defect** | `phase_1/PROPOSAL_atom_slot.md` | the dominant held-out failure, 59 in 36 attempts. **Nothing implemented** — a fix edits a watched transcription. Includes a hypothesis I formed and then refuted myself |
+| ~~the atom-slot defect~~ | ~~`phase_1/PROPOSAL_atom_slot.md`~~ | **CLOSED 2026-08-07, file deleted.** Fixed by worked example `m0088`: 18→0 on the diagnosis set, 10→0 held-out. Its findings live in `DEBUGGING_TIPS.md` §1 (the demonstration gap, the clause-concentration rule) and §4 (the hypothesis I refuted) |
 
 ---
 
@@ -151,5 +151,6 @@ transcriptions.
    now the only open transcription item.
 2. Re-review + implement the graveyard (you have already called this).
 3. `STEP_stage3.md` revision 3, re-reviewed, then implement both halves.
-4. Retire `STEP_stage2_and_repair.md` into the design — it is **already** stale, still describing
-   repair as a "fresh conversation", the formulation the design corrected today.
+4. ~~Retire `STEP_stage2_and_repair.md` into the design~~ — **done 2026-08-07. File deleted.**
+   Abstention-as-an-outcome and the typed repair guard went into `resources/03_pipeline.md`; the
+   arm-B withdrawal went into `DEFERRED.md` D-3; its stale "fresh conversation" text was dropped.

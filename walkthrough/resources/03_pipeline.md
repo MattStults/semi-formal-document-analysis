@@ -503,6 +503,37 @@ withheld — rather than silently vanishing, so a reader can tell a filtered log
 does not converge, the split is the first suspect — so findings-per-attempt is recorded per clause,
 and non-convergence has to be visible as data rather than as a loop quietly exhausting its budget.
 
+##### ⛔ RULING: the repair guard is TYPED, not sized — the cheap attacks GROW the module
+
+*(Folded in from `phase_1/STEP_stage2_and_repair.md` §4 when that plan was retired, 2026-08-07.)*
+
+An earlier draft guarded against a repair that **shrinks** the module. That is the wrong axis: every
+cheap way to go green **grows** it.
+
+| | the repair | why it goes green, and why it is wrong |
+|---|---|---|
+| **A** | move a predicate from `requires` to `inputs` | Satisfies disjointness — it left one list — and the link checker then reads it as a declared situation input. **Destroys the distinction this document calls load-bearing**: *"without it, 'a name nothing defines' cannot be told apart from 'a name supplied at query time', and every translation looks broken or every one looks fine."* The loop would teach the model to make every translation look fine |
+| **B** | answer `closure: "unclear"` on every act class | A legal enum value, and the module grows. **Re-creates the silent CEPA default behind a declaration claiming a commitment was made** — measured on this corpus, `open` and `cepa` are bit-identical, which is why the declaration is forced at all |
+| **C** | broaden the act term and retarget the assertion | Grows. Green |
+
+⇒ **The guard is a TYPED comparison between attempts.** A change to `requires` / `inputs` / `acts` /
+`closure` / `forbid_body` is a **declaration edit**; a change to `asserts` / `beats` / `defines` or
+an `ontology` body is a **translation edit**. A repair that is mostly declaration edits is flagged
+beside the green result, **in either direction** — growth and shrinkage both.
+
+⚠️ **Attack B needs a RATE, not a flag.** A model answering `unclear` everywhere is making no
+commitments, and no per-attempt diff reveals that, because each attempt looks locally fine. The
+`unclear` closure rate is reported per run.
+
+⚠️ Green-after-repair is never reported as green: the attempt count travels with the result, and the
+distribution appears in any aggregate. Part 7 applies to that aggregate and prints beside it — *any
+per-clause pass rate reported before stage 9 overstates the result.*
+
+**The attack shape is already observed at attempt 1, before any repair pressure.** In the first live
+run the model wrote `political_topic(C, _)` and annotated it *"the anonymous variable is avoided by
+using a named variable in a helper rule."* It self-reported compliance while violating — which is
+also why a model's account of its own output is a proposer and never a diagnosis.
+
 #### What it produces
 
 A module with three parts:
@@ -599,6 +630,28 @@ produce something that passes the checks. Published work on this task reports ab
 
 Without it every clause either passes or loops forever, and coverage is invisible — you cannot tell
 "we translated the document" from "we translated the easy parts of the document."
+
+##### ⭐ RULING: an abstention is an OUTCOME, never a findings list
+
+*(Folded in from `phase_1/STEP_stage2_and_repair.md` §3 when that plan was retired, 2026-08-07.
+Stage 2 is built; the plan's reasoning is kept here, its stale parts dropped.)*
+
+An abstention is forced empty on every content field, so it **passes every deterministic check
+trivially**. Both obvious defaults are harmful:
+
+- **pass it through** → it enters stage 3 as a passing module, and the abstention rate is never
+  computed — which destroys the reliability signal the rate exists to be;
+- **fire a check on it** → the loop re-prompts a model that has already said it cannot translate
+  faithfully, **producing exactly what abstention exists to prevent**, with an accumulating error
+  log behind it.
+
+⇒ **`run_checks` returns `outcome="abstained"` as a first-class result, and the repair loop
+terminates on it.** An abstention is a final answer, not a failure. The run report carries the rate
+and the reasons.
+
+⚠️ **Abstaining on attempt 2 is the maximal shrink**, so a naive "the module got smaller, be
+suspicious" guard flags the *correct* answer. That is why the guard below is typed rather than
+sized.
 
 #### What a good one looks like
 

@@ -177,8 +177,11 @@ price row, so the calls count $0.00. Being fixed.
 
 ## Never run
 
-⭐ **Stage 2 and the repair loop.** Planned in `phase_1/STEP_stage2_and_repair.md`, under review,
-nothing built.
+⛔ **STALE, corrected 2026-08-07: stage 2 and the repair loop are BUILT and running.**
+`phase_1/checks.py` + the accumulating repair transcript in `translate.py`, with typed gaming
+guards. `STEP_stage2_and_repair.md` was retired into `resources/03_pipeline.md`.
+⚠️ **This file is a deletion candidate** — it duplicates `REVIEW_QUEUE.md` and the phase_1 README
+and has drifted from both. Kept only until `STEP_stage3.md`/`STEP_stage4.md` stop citing it.
 
 ---
 

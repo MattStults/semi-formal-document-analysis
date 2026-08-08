@@ -1,5 +1,12 @@
 # Clean review of `model/pipeline.lp` against `resources/03_pipeline.md`
 
+
+> ⛔ **`STEP_stage2_and_repair.md` was RETIRED 2026-08-07.** Stage 2 is built; the plan's
+> load-bearing rulings were folded into `resources/03_pipeline.md` (abstention as an outcome,
+> and the typed repair guard) and `DEFERRED.md` D-3 (the arm-B withdrawal). References to it
+> below are historical and are left as written.
+
+
 **Date:** 2026-08-07 · **Reviewer:** clean-context agent, did not write the design or the model
 **Trigger:** `guard.py` ⛔ STALE — `resources/03_pipeline.md` `7339e4e118f6d5d8 -> 607c68e35024929d`
 **Brief:** `model/REVIEW_BRIEF.md`

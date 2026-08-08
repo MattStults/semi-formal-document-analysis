@@ -133,6 +133,23 @@ translated. That is Invariant 1's **arm B**.
 by decision.** Invariant 1 says the choice between arms is empirical and undecided; today's contract
 picks arm B by construction. Anyone re-opening it should know it was decided this way and when.
 
+⛔ **WITHDRAWN BY NAME: "stage 2 has picked arm B, so level 3 is link-scoped rather than blocked."**
+*(Folded in from `phase_1/STEP_stage2_and_repair.md` §1 when that plan was retired, 2026-08-07.)*
+That argument was made and is withdrawn on three grounds, any one sufficient:
+
+- Arm B is *"concepts fixed in a separate step that maps names → concepts"*, and its recorded cost
+  is *"needs a merge procedure with its own failure modes."* The argument claimed the arm and
+  declined the obligation — a union of coined names **is** the un-normalised state arm B exists to
+  normalise.
+- Invariant 1 says *"not decided here… do not build the merge machinery before knowing which arm we
+  are in"*, and open question 2 says *"run both arms on the same clauses."* Committing by
+  implementation and recording it afterwards is not that.
+- **Nothing in stage 2 needs an arm at all.** Level 3 excludes on the flat ground that *no
+  corpus-wide provider index exists under either arm today.*
+
+⇒ The exclusion stands on the flat ground. The arm-B note above is a record that a commitment was
+made by implementation — **a thing to undo, not a thing to justify.**
+
 **What deferring level 3 changes:** nothing stage 1 emits, and nothing stage 2 can check on one
 module. It is a **link-scope** check exactly like D2 (witness) — blocked on having translated enough
 clauses, not on a missing phase, and it resolves itself as the corpus grows.

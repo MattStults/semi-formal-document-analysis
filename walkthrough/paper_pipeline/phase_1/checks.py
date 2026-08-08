@@ -48,7 +48,8 @@ repair is to move the predicate from `requires` into `inputs` — which clears t
 finding, returns zero findings, and destroys the distinction `03_pipeline.md`
 calls load-bearing (*"without it, 'a name nothing defines' cannot be told apart
 from 'a name supplied at query time', and every translation looks broken or
-every one looks fine"*). That is attack A in `STEP_stage2_and_repair.md` §4. A
+every one looks fine"*). That is attack A in `resources/03_pipeline.md`, "the repair guard is
+TYPED, not sized". A
 loop driven by notes does not fail to terminate; it terminates by teaching the
 model to make every translation look fine. So: notes stay in `findings`, stay
 countable in the run report, and never set `repair_needed`.

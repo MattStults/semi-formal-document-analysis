@@ -45,6 +45,12 @@ alternatives-by-repeated-atom. Measured, arms A/B, first attempt only:
 shown four ground facts and told "conditionals are allowed" has been taught, in the more
 credible channel, that `ontology` holds ground facts.
 
+⭐ **AND CHECK WHETHER THE FAILURE IS CLAUSE-CONCENTRATED BEFORE THEORISING ABOUT THE PROMPT.**
+The 59 came from **2 of 6 clauses**, which produced it on *every* attempt in *both* arms; the other
+four produced it never. Both were `definitional`. A defect that tracks the clause TYPE rather than
+appearing diffusely is telling you the prompt fails totally on a kind of input, not that the model
+is sloppy — and that is a different fix. Aggregate rates hide this completely; group by clause first.
+
 **The check to run:** extract every shape the prompt demonstrates and count them by category. If
 the failing shape has zero good examples, stop — you have found it. `test_prompt_examples.py`
 does this mechanically and the pre-commit hook runs it.

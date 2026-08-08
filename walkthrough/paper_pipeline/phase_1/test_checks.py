@@ -11,7 +11,7 @@ file has to be named on the command line (or reached by a path that covers
 and never a committed live-run output. A hand-written fixture drifts from what
 stage 1 emits and then the test pins a shape nothing produces; the live-run
 outputs on disk were produced under two superseded contracts and no longer
-validate at all (`STEP_stage2_and_repair.md` §6).
+validate at all.
 
 ⚠️ EVERY test asserts a specific `check_id` AND a distinctive message fragment,
 never a count or an outcome alone, and every test has a NEGATIVE CONTROL — the
@@ -285,8 +285,9 @@ def test_a_note_is_REPORTED_but_does_not_drive_a_repair():
     `requires` predicate is head-less BY DESIGN, so the finding fires on every
     correct module in this pipeline. Its only convergent repair is to move the
     predicate into `inputs` — which destroys the requires/inputs distinction the
-    design calls load-bearing, and is attack A in `STEP_stage2_and_repair.md`
-    §4. A loop driven by notes therefore does not terminate; it terminates by
+    design calls load-bearing, and is attack A in `resources/03_pipeline.md`,
+    "the repair guard is TYPED, not sized". A loop driven by notes therefore
+    does not terminate; it terminates by
     teaching the model to make every translation look fine.
     """
     r = run(module(requires=["restricted/1"], inputs=["new_material/1"],

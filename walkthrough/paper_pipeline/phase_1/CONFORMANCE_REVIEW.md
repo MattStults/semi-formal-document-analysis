@@ -1,5 +1,12 @@
 # Adversarial conformance review — stage 1, stage 2, the repair loop
 
+
+> ⛔ **`STEP_stage2_and_repair.md` was RETIRED 2026-08-07.** Stage 2 is built; the plan's
+> load-bearing rulings were folded into `resources/03_pipeline.md` (abstention as an outcome,
+> and the typed repair guard) and `DEFERRED.md` D-3 (the arm-B withdrawal). References to it
+> below are historical and are left as written.
+
+
 **Date:** 2026-08-07. **Spec:** `walkthrough/resources/03_pipeline.md` (source of truth for
 `walkthrough/`, above every other document here). **Read:** open question 1's **CLOSED** section,
 not the superseded one below it.
