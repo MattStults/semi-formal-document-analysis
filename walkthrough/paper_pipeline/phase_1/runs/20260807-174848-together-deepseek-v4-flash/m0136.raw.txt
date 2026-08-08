@@ -1,0 +1,199 @@
+{
+  "outcome": "translated",
+  "clause_id": "m0136",
+  "abstain_reason": null,
+  "claims": [
+    "C1 every scope must include a shutdown timer",
+    "C2 beyond the shutdown timer the assistant ceases actions until a new scope is confirmed",
+    "C3 high-risk activities are always prohibited unless explicitly authorized by applicable instructions",
+    "C4 delegated work must ensure sub-agents and third parties operate under the same scope and respect subsequent changes including stop-work requests"
+  ],
+  "acts": [
+    "cease_actions_until_new_scope()",
+    "produce(M)",
+    "delegate_work(W)"
+  ],
+  "concepts": [
+    {
+      "name": "scope",
+      "arity": 1,
+      "gloss": "an agreed-upon scope of autonomy for the assistant's actions",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause speaks of 'a scope' and 'a new scope'; the concept of scope is presupposed by the document",
+      "toggleable": false
+    },
+    {
+      "name": "shutdown_timer",
+      "arity": 1,
+      "gloss": "a timer included in a scope beyond which the assistant ceases actions until a new scope is confirmed",
+      "licence": "textual",
+      "cites": "m0136",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "high_risk_activity",
+      "arity": 1,
+      "gloss": "an activity such as hacking, deception, resource acquisition, spawning sub-agents, or self-modification",
+      "licence": "textual",
+      "cites": "m0136",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "explicitly_authorized",
+      "arity": 1,
+      "gloss": "authorized by applicable instructions",
+      "licence": "textual",
+      "cites": "m0136",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "delegated_work",
+      "arity": 1,
+      "gloss": "work the assistant delegates to sub-agents or third parties",
+      "licence": "textual",
+      "cites": "m0136",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "operates_under_scope",
+      "arity": 2,
+      "gloss": "an agent or third party operates under a given scope",
+      "licence": "textual",
+      "cites": "m0136",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "respects_scope_changes",
+      "arity": 2,
+      "gloss": "an agent or third party respects subsequent changes to a scope, including stop-work requests",
+      "licence": "textual",
+      "cites": "m0136",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "m0136",
+      "inference": null,
+      "toggleable": false,
+      "atom": "high_risk_activity(hacking)",
+      "gloss": "hacking is a high-risk activity"
+    ,
+      "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "m0136",
+      "inference": null,
+      "toggleable": false,
+      "atom": "high_risk_activity(deception)",
+      "gloss": "deception is a high-risk activity"
+    ,
+      "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "m0136",
+      "inference": null,
+      "toggleable": false,
+      "atom": "high_risk_activity(resource_acquisition)",
+      "gloss": "resource acquisition is a high-risk activity"
+    ,
+      "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "m0136",
+      "inference": null,
+      "toggleable": false,
+      "atom": "high_risk_activity(spawning_sub_agents)",
+      "gloss": "spawning sub-agents is a high-risk activity"
+    ,
+      "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "m0136",
+      "inference": null,
+      "toggleable": false,
+      "atom": "high_risk_activity(self_modification)",
+      "gloss": "self-modification is a high-risk activity"
+    ,
+      "body": null
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "the assistant must cease actions until a new scope is confirmed once the shutdown timer has elapsed",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "m0136",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "cease_actions_until_new_scope()",
+      "body": "scope(S), shutdown_timer(S), timer_elapsed(S), not new_scope_confirmed(S)"
+    },
+    {
+      "read_back": "producing % is forbidden because % is a high-risk activity not explicitly authorized by applicable instructions",
+      "read_back_slots": ["M", "M"],
+      "licence": "textual",
+      "cites": "m0136",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "produce(M)",
+      "body": "high_risk_activity(M), not explicitly_authorized(M)"
+    },
+    {
+      "read_back": "delegating % is permitted only if all sub-agents and third parties operate under the same scope and respect subsequent changes including stop-work requests",
+      "read_back_slots": ["W"],
+      "licence": "textual",
+      "cites": "m0136",
+      "inference": null,
+      "toggleable": false,
+      "status": "permit",
+      "act": "delegate_work(W)",
+      "body": "delegated_work(W), scope(S), operates_under_scope(W, S), respects_scope_changes(W, S)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "produce",
+      "closure": "cnpa",
+      "reason": "the clause says high-risk activities are always prohibited unless explicitly authorized, so silence about a high-risk activity does not permit it"
+    },
+    {
+      "act_class": "delegate_work",
+      "closure": "unclear",
+      "reason": "the clause conditions delegation on scope compliance but does not state whether silence about delegation permits or prohibits it"
+    },
+    {
+      "act_class": "cease_actions_until_new_scope",
+      "closure": "unclear",
+      "reason": "the clause obliges ceasing after the timer but does not settle the status of ceasing actions in other circumstances"
+    }
+  ],
+  "requires": [
+    "timer_elapsed/1",
+    "new_scope_confirmed/1",
+    "explicitly_authorized/1",
+    "operates_under_scope/2",
+    "respects_scope_changes/2"
+  ],
+  "inputs": [
+    "scope/1",
+    "delegated_work/1"
+  ],
+  "forbid_body": []
+}

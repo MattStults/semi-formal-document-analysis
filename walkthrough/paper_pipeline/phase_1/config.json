@@ -84,5 +84,17 @@
     "_": "Stage 2's repair loop. A failing translation is sent back in ONE accumulating transcript carrying its own prior modules and every check they failed, with reasons. Only stage-2 findings may enter it; later stages carry expected answers and are filtered by origin.",
     "_max_attempts": "1 disables repair entirely. The cost gate prices the budget: input grows with the transcript, so the estimate is triangular in the attempt count, not linear.",
     "max_attempts": 3
+  },
+  "graveyard": {
+    "_": "Where a clause goes when repair does not converge \u2014 and some that do. A non-converging clause carries a signal about the PROMPT, not only about that clause, and it is only visible by comparing entries against each other.",
+    "_rates": "Failures, flagged repairs and last-attempt successes are ALWAYS kept. These rates cover the rest. `first_try` is deliberately non-zero: a graveyard holding only trouble makes every diagnosis read as 'the prompt is broken', and a diagnosing agent needs cases where it worked. Sampling is a hash of the clause id, so two runs over one corpus keep the same population.",
+    "_cap": "Reaching it REFUSES to start another run. A hundred uninspected non-convergences is not a corpus; it is one defect recorded a hundred times, and the rest of the budget spent reproducing it.",
+    "dir": "repair_graveyard",
+    "cap": 40,
+    "seed": 0,
+    "rates": {
+      "repaired": 0.25,
+      "first_try": 0.05
+    }
   }
 }

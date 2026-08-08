@@ -41,6 +41,7 @@ import sys
 import time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import graveyard as gy                                        # noqa: E402
 import schema                                                  # noqa: E402
 
 #: The concept dictionary is its OWN artifact, joinable across clauses and
@@ -986,6 +987,14 @@ def run(cfg, args, client_factory=None):
               encoding="utf-8") as fh:
         fh.write(system)
 
+    _gy = cfg.get("graveyard") or {}
+    _gy_dir = rel(_gy.get("dir", "repair_graveyard"))
+    _schema_src = open(os.path.join(HERE, "schema.py"), encoding="utf-8").read()
+    _prov_hash = gy.provenance_hash(system, prov.model, prov.temperature)
+    if _gy.get("cap"):
+        # Refuse to start a run that would only deepen an unexamined pile.
+        gy.check_cap(_gy_dir, _gy["cap"])
+
     results, failures, user_shas, _concepts = [], 0, {}, []
 
     def flush():
@@ -1070,6 +1079,19 @@ def run(cfg, args, client_factory=None):
                 results.append(rec)
                 flush()
                 continue
+
+            keep, why = gy.should_keep(
+                out, _max_attempts, _gy.get("rates") or {},
+                clause_id=cid, seed=int(_gy.get("seed", 0)))
+            if keep:
+                entry = gy.write_entry(
+                    _gy_dir, j["row"], out, reason=why,
+                    contract_hash=gy.contract_hash(
+                        j["row"].get(cfg["corpus"]["text_key"], ""),
+                        _schema_src),
+                    provenance_hash=_prov_hash,
+                    extra={"run": os.path.basename(outdir)})
+                rec["graveyard"] = os.path.basename(entry)
 
             rec.update(attempts=out.attempts, per_attempt=out.per_attempt,
                        flags=out.flags, n_findings=len(out.findings),

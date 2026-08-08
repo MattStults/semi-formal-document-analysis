@@ -1,0 +1,158 @@
+{
+ "outcome": "translated",
+ "clause_id": "m0134",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant must strictly adhere to the agreed scope unless the scope is explicitly updated and approved by the original user or developer",
+  "C2 no exception to the agreed scope applies, even if an out-of-scope action seems to be in the user's best interest",
+  "C3 if a task cannot be completed within the existing scope, the assistant should notify the user and seek approval",
+  "C4 if a broader scope would substantially improve results, the assistant should notify the user and seek approval"
+ ],
+ "acts": [
+  "act_within_scope(T)",
+  "act_outside_scope(A)",
+  "notify_user(T)",
+  "seek_approval(T)"
+ ],
+ "concepts": [
+  {
+   "name": "agreed_scope",
+   "arity": 1,
+   "gloss": "the scope of autonomy agreed between the user/developer and the assistant, subject to the chain of command",
+   "licence": "textual",
+   "cites": "m0134",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "explicitly_updated_and_approved",
+   "arity": 1,
+   "gloss": "the agreed scope has been explicitly updated and approved by the original user or developer",
+   "licence": "textual",
+   "cites": "m0134",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "out_of_scope_action",
+   "arity": 1,
+   "gloss": "an action that falls outside the agreed scope of autonomy",
+   "licence": "textual",
+   "cites": "m0134",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "cannot_complete_within_scope",
+   "arity": 1,
+   "gloss": "a task that cannot be completed within the existing agreed scope",
+   "licence": "textual",
+   "cites": "m0134",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "broader_scope_substantially_improves",
+   "arity": 1,
+   "gloss": "a task for which a broader scope would substantially improve results",
+   "licence": "textual",
+   "cites": "m0134",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant must act within the agreed scope for % unless the scope has been explicitly updated and approved by the original user or developer",
+   "read_back_slots": [
+    "T"
+   ],
+   "licence": "textual",
+   "cites": "m0134",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "act_within_scope(T)",
+   "body": "task(T), agreed_scope(S), not explicitly_updated_and_approved(S)"
+  },
+  {
+   "read_back": "performing the out-of-scope action % is forbidden even if it seems to be in the user's best interest",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "m0134",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "act_outside_scope(A)",
+   "body": "out_of_scope_action(A)"
+  },
+  {
+   "read_back": "the assistant should notify the user and seek approval for % when the task cannot be completed within the existing scope",
+   "read_back_slots": [
+    "T"
+   ],
+   "licence": "textual",
+   "cites": "m0134",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "notify_user(T)",
+   "body": "task(T), cannot_complete_within_scope(T)"
+  },
+  {
+   "read_back": "the assistant should notify the user and seek approval for % when a broader scope would substantially improve results",
+   "read_back_slots": [
+    "T"
+   ],
+   "licence": "textual",
+   "cites": "m0134",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "seek_approval(T)",
+   "body": "task(T), broader_scope_substantially_improves(T)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "act_within_scope",
+   "closure": "cepa",
+   "reason": "the clause obliges adherence to the agreed scope and does not state that silence about a particular action within the scope prohibits it; actions within the agreed scope are permitted unless explicitly forbidden elsewhere"
+  },
+  {
+   "act_class": "act_outside_scope",
+   "closure": "cnpa",
+   "reason": "the clause explicitly forbids out-of-scope actions and states that no exceptions apply, so silence about a particular out-of-scope action does not permit it"
+  },
+  {
+   "act_class": "notify_user",
+   "closure": "cepa",
+   "reason": "the clause obliges notification in specific circumstances and does not state that silence about other circumstances prohibits notification"
+  },
+  {
+   "act_class": "seek_approval",
+   "closure": "cepa",
+   "reason": "the clause obliges seeking approval in specific circumstances and does not state that silence about other circumstances prohibits seeking approval"
+  }
+ ],
+ "requires": [
+  "task/1",
+  "agreed_scope/1",
+  "explicitly_updated_and_approved/1",
+  "out_of_scope_action/1",
+  "cannot_complete_within_scope/1",
+  "broader_scope_substantially_improves/1"
+ ],
+ "inputs": [],
+ "forbid_body": [
+  {
+   "head": "permit",
+   "banned": "out_of_scope_action"
+  }
+ ]
+}

@@ -42,6 +42,38 @@ read at session start and 1,001 after commit `00d33f5` at 12:54; the prompt file
 13:29–13:43 against the older text. ⇒ **Re-read `03_pipeline.md` at the point of use, not once per
 session.**
 
+## ⭐ NEW — stage 3 plan (revision 3): two departures from the design
+
+Recorded here rather than in `paper_pipeline/phase_1/STEP_stage3.md`, because a departure written
+only in the plan that departs is not a record.
+
+**1. Ordering — NO departure, and the withdrawal is the fact worth carrying.** `STEP_stage3.md`
+**revision 2** proposed building the deterministic half of stage 3 first and deferring labelled
+verdicts behind a measurement. A clean adversarial review refuted it by running it, and
+**revision 3 withdraws the argument entirely**. Revision 3 lands on `03_pipeline.md`'s own ordering
+— *"solver enumerates situations; model labels each"*, **both halves**. The three grounds, all
+measured: (a) the cost revision 2 said must be earned is **$0.0005 for the four-clause run and
+~$0.26 for all 593**, against **$6.44 remaining of $8.50**; (b) revision 2's claim that `m0217`'s
+rule "could never fire" is **wrong** — it fires in 1 of 8 situations, so its "caught something
+twice" is once at most; (c) deleting `m0217`'s rule and **inverting** it (`permit`→`forbid`) each
+change **1 of 8**, so the discrimination report for the correct module and for one that says the
+opposite of the clause is **byte-identical** — mutation cannot see a module that is live and wrong.
+
+⚠️ Also corrected: revision 2's *"verdict-based testing cannot detect an inert rule — not ever"*.
+**Inertness is relative to the projection.** The same `m0217` mutation changes 0 of 8 under the
+closure-resolved projection and 1 of 8 under the derived-atom projection.
+
+**2. §6 substitutes mutation for the design's named remedy for failure mode #12 — a real
+departure.** `03_pipeline.md` Part 1 #12 names *"rule, definition and loop coverage over the
+dependency graph"*. `STEP_stage3.md` §6 measures **rule coverage failing** on the flagship example
+(`m0255`'s two C3 rules fire, so rule coverage passes them; deleting them changes 0 of 128
+situations and leaves all five hand probes bit-identical) and substitutes **discrimination
+coverage** — a rule is covered iff some enumerated situation's derived status changes when it is
+removed. The substitution is honest and measured, and is recorded as a **departure**, not described
+as conformance. To be folded into `03_pipeline.md` if revision 3 survives review.
+
+---
+
 ## ⭐ NEW — decided in conversation, not previously in any file
 
 **1. Contradiction is BEHAVIOUR-versus-DOCUMENT, not document-internal.**

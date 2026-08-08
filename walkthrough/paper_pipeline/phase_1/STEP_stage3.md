@@ -1,6 +1,11 @@
 # Step X — stage 3: build test cases for a translated clause, and run them
 
-**Status: revision 2, for review. Nothing is built. This document is the plan only.**
+**Status: revision 3, for review. Nothing is built. This document is the plan only.**
+
+⚠️ **Revision 2's §0 was refuted by a clean adversarial review and is withdrawn.** The new §0 says
+so and states the corrected conclusion. Sections 1–9 are revision 2's, corrected: each subsection is
+now marked with which half of stage 3 it belongs to, §6 gains `|R|` and the zero-rule refusal, §7
+gains an enumeration cap, and §8 test 1's fire condition was wrong and is fixed.
 
 ⚠️ **Every claim below about existing code was executed**, and is marked `[RAN]` with the command
 or the number it produced. Claims taken from reading a file are marked `[READ]`. Three previous
@@ -23,83 +28,134 @@ resolved: it is a defect in `03_pipeline.md`'s prose, not in this plan.
 
 ---
 
-## 0 ⭐ REVISION 2 — the order is inverted, and the reason is measured
+## 0 ⭐ REVISION 3 — revision 2's ordering argument is WITHDRAWN
 
-**Stage 3 as the design specifies it is the SECOND most valuable thing here, and the design has it
-ahead of the first.** Revision 1 planned labelled verdicts as the main event. This revision puts
-**discrimination coverage** first and puts labelled verdicts behind a measurement.
+Revision 2 opened by arguing that the deterministic half of stage 3 (mutation-based discrimination
+coverage) should be built **first** and the labelled-verdict half deferred behind a measurement.
+**A clean adversarial review refuted that argument by running it. The refutation is accepted and the
+argument is withdrawn.** Three independent grounds, each sufficient on its own:
 
-### The evidence
+| | revision 2 said | measured |
+|---|---|---|
+| **cost** | labelled verdicts must "earn their per-clause cost" | §7 of this same document measures the cost: **one labelling call for the whole four-clause run, ≈ $0.0005**, and **≈ $0.26 for all 593 clauses**. `[RAN]` `spend.py`: **$2.057 of $8.50 used, $6.44 remaining.** There is no cost to earn. §0 argued against a price §7 had already shown to be negligible |
+| **a wrong data point** | `m0217`'s rule "could never fire" | It fires. §2 of this same document reports it firing in **1 of 8** situations `[RAN]`. §0 confused *"cannot fire given the providers that exist in a four-clause corpus"* with *"inert under mutation"*. So §0's "caught something twice" is **once at most** — `m0255`'s C3 |
+| **the concession was far too weak** | "mutation proves a rule *matters*, never that the module is *right*" | `[RAN]` on `m0217`: deleting the rule changes **1 of 8** situations; **inverting its meaning (`permit` → `forbid`) also changes 1 of 8**. The discrimination report for the correct module and for a module that says **the opposite of the clause** is **byte-identical**:<br>`\|R\| = 1` / `rule 1: covered — 1 discriminating situation(s)` |
 
-`m0255` — the design's flagship worked example — has **five hand-written probe cases**, which is
-exactly what stage 3 automates. Its claim **C3** ("purpose never creates an exemption") is two
-rules. Delete both:
+⇒ ⭐ **The corrected conclusion: build BOTH halves.** They fail in orthogonal directions and neither
+ordering is a saving. The `m0255` C3 case argues for **stage 4d** — a claim can be encoded and
+behaviourally dead, and once discrimination coverage *names* it, something has to adjudicate the
+name against the clause. The `m0217` case argues for **§3's three-valued labels** — a module that is
+live and wrong is invisible to mutation by construction, because the mutant of a wrong module
+discriminates exactly as well as the mutant of a right one. **Neither case argues for deferral.**
 
-| | |
+### The one sentence that was not merely mis-weighted but false
+
+Revision 2 §0 said: *"an inert rule changes no answer in any situation, by definition… verdict-based
+testing cannot detect one — not ever."*
+
+⛔ **"Not ever" is wrong. Inertness is relative to the PROJECTION.** §3 of this same document proves
+the projection is a design variable, not a fact about the module: the *same* mutation of `m0217`
+changes **0 of 8** situations projected to the closure-resolved verdict and **1 of 8** projected to
+the derived atom `[RAN]`. Moving the projection moved the result.
+
+⇒ The correct form, which is narrower and still enough to justify building the deterministic half:
+**stage 3 projects each situation to its derived atoms, and at that granularity it cannot see a rule
+that is inert. A finer projection may.**
+
+⚠️ **One finer-projection instance, run — and it resolves a disagreement in the review.** The review
+claimed `m0255` probe case D detects the dead C3 claim at *explanation* granularity via `xclingo`
+(`orig 2 explanations vs mutant 1`); the reviewer's reader could not reproduce it and got identical
+output. **Both are right, and the difference is one flag.** `[RAN]`, from `walkthrough/`:
+
+```
+$ .venv/bin/xclingo m0255.lp clauses/m0200.lp clauses/m0201.lp clauses/m0203.lp m0255_case_d.lp
+##Total Explanations: 1        # and 1 for the C3-deleted mutant — IDENTICAL
+
+$ .venv/bin/xclingo --output ascii-trees -n 0 0 m0255.lp clauses/m020{0,1,3}.lp m0255_case_d.lp
+##Total Explanations: 2        # vs 1 for the C3-deleted mutant — DETECTED
+```
+
+xclingo's default prints **one** explanation per model, so the second explanation — *"purpose gives
+no exemption: m4 is new disallowed material"*, the one the C3 rules carry — is simply not printed.
+`-n 0 0` (all models, all explanations) prints it, and the mutant loses it. `[RAN]` At **derived-atom**
+granularity the two are identical (1 model each, same atoms), which is why §6's mutation scan reports
+`0 of 128`. ⚠️ **Two caveats before anyone builds on this:** it works only because those two rules
+carry a `%!trace_rule` annotation `[READ]` (`m0255.lp:80`) — an unannotated rule is invisible to the
+projection — and explanation *count* is a fragile signal, not a coverage criterion. **Recorded as an
+observation, not adopted.**
+
+### Which half each section below belongs to
+
+Revision 2 said in one blanket sentence that *"sections 2–9 describe the labelled-verdict half"*.
+⛔ **That was wrong and load-bearing**: §6 defines discrimination coverage and its report format, §7
+defines the `no-testable-content` outcome, and 7 of §8's tests are deterministic-half tests. Under
+revision 2's sentence the artifact to be built first had no report format, no outcome taxonomy and no
+test list. Each subsection below is now marked:
+
+| mark | half |
 |---|---|
-| the five probe cases | **bit-identical** — every one |
-| models enumerated | 144 → **144** |
-| do the rules fire? | **yes** — 36 of 144 models satisfy a C3 body, so *rule coverage passes them* |
-| what caught it | **mutation. The probe cases did not.** |
+| **[D]** | **deterministic half** — enumerate, mutate, report. No model call, no labels anywhere near it |
+| **[L]** | **labelled-verdict half** — a seat labels the covering set; one model call per clause |
+| **[D+L]** | shared: applies to both, or defines the container both write into |
 
-And the same shape from the other side, in §3 below: under `m0217`'s own declared `cepa` closure,
-deleting the module's **only** rule changes **0 of 8** situations — a naive stage 3 reports 8/8 on
-an empty module.
+| | | |
+|---|---|---|
+| §1 | scope, per row: **3a**, **3b** | **[D]** |
+| | **3c**, **3d** | **[L]** |
+| | **3e** report | **[D+L]** |
+| | failure modes **#11** (enumeration is the mechanism), **#12**, **#14** (counting and excluding), **#15** | **[D]** |
+| | failure mode **#13**, and the **#5** hollow-stub note | **[L]** |
+| §2 | the passing example: **3a/3b** steps | **[D]** |
+| | its **3c/3d** steps | **[L]** |
+| §3 | the failing example and its measurement | **[D]** — the mutation is deterministic |
+| | consequence 1 (three-valued labels) | **[L]** |
+| | consequences 2 (vector, not fraction) and 3 (closure `NOT TESTED HERE`), and the residual | **[D+L]** |
+| §4 | enumeration, suppression, the suppressed-count ERROR | **[D]** |
+| | the `impossible` label | **[L]** |
+| §5 | the whole section — seat, disclosure, the re-translation ruling | **[L]**, except the `probe-structural` origin row, which is **[D]** |
+| §6 | the report format, discrimination coverage, `\|R\|`, the zero-rule refusal | **[D]** |
+| | the `labels:` line of `probe.json` | **[L]** |
+| §7 | solver time, the enumeration cap, `no-testable-content` | **[D]** |
+| | model-call pricing and the re-translation budget | **[L]** |
+| §8 | tests **1, 2, 3, 6, 7, 14, 15, 17, 18, 19** | **[D]** |
+| | tests **4, 5, 9, 10, 11, 12, 13, 16** | **[L]** |
+| §9 | what this plan is least sure of | **[L]** |
 
-### Why this is structural, not a matter of enumerating harder
+**Build order within "both".** The deterministic half has no external dependency and its tests run
+offline, so it lands first *as scheduling*, not as a gate — nothing about the labelled half waits on
+a measurement from it, and revision 3 makes no claim that it should.
 
-A verdict comparison asks *"does the module give the right answer in situation X?"*
+### ⚠️ Two departures from `03_pipeline.md`, both recorded in `STATE.md`
 
-⇒ **An inert rule changes no answer in any situation, by definition.** So verdict-based testing
-cannot detect one — not with more situations, not with better labels, not ever.
+Recorded there rather than conditionally here, because a departure written only in the plan that
+departs is not a record. See `STATE.md` → *"⭐ NEW — stage 3 plan (revision 3): two departures from
+the design"*.
 
-And an inert rule is the failure actually observed here, twice: `m0255`'s C3, and `m0217`'s single
-rule whose body predicates were declared only as concepts so it could never fire. Both passed every
-check that existed at the time.
-
-### What each half buys
-
-| | catches | cost | has it caught something here? |
-|---|---|---|---|
-| **discrimination coverage** — mutate the module's own rules, confirm some situation changes | inert rules, claims that do nothing | **free**, deterministic, no model call | ⭐ **yes, twice** |
-| **labelled verdicts** — enumerate, have a seat label, compare | a module that is live but WRONG about the clause | a model call per clause, and a seat that must hold a three-valued distinction | not yet — no module exists rich enough to try |
-
-They are complementary and neither subsumes the other: mutation proves a rule *matters*, never that
-the module is *right*. Only a label compares the module against the document.
-
-⇒ **Build discrimination coverage first, measure what it catches on a real corpus, and let that
-decide whether labelled verdicts earn their per-clause cost.** Today we would be paying for a check
-whose failing case is demonstrated and whose passing case has never been observed — on a corpus
-holding one assertion in total.
-
-### ⚠️ This is a recorded departure from `03_pipeline.md`
-
-The design orders stage 3 as *"solver enumerates situations; model labels each"*. This plan does the
-solver half first and gates the model half on a measurement. The design's own Part 1 #12 concedes
-coverage is *"the problem this pipeline addressed least well"* and points at **structure-based
-coverage criteria** — which is what discrimination coverage is. To be folded into the design if this
-revision survives review.
-
-⇒ **Sections 2–9 below stand as written and describe the labelled-verdict half.** They are the plan
-for phase two, not for what gets built first. §3's failing example and §4's impossible-state problem
-apply to both halves and should be read now.
+1. **Ordering.** Revision 3 lands on the design's own ordering (*"solver enumerates situations; model
+   labels each"*, both halves), so on ordering there is now **no departure** — revision 2's proposed
+   one is withdrawn. Recorded because the withdrawal is itself the fact worth carrying.
+2. **§6 substitutes mutation for the design's named remedy.** Part 1 #12 names *"rule, definition and
+   loop coverage over the dependency graph"*. §6 measures rule coverage **failing** on `m0255`'s C3
+   (the rules fire, so rule coverage passes them; deleting them changes 0 of 128 `[RAN]`) and
+   substitutes **discrimination coverage**. That is a departure with a measurement behind it, and it
+   is recorded as a departure rather than described as conformance.
 
 ---
 
-## 1 Scope
+## 1 Scope — **[D+L]**, marked per row
 
 ### What stage 3 does
 
 Given one module that has **already passed stage 2**, plus its link scope (the transitive anchor
 closure of clause modules it requires):
 
-| | | model? |
-|---|---|---|
-| **3a** | **Enumerate** the coherent situations over the module's *situation signature* — every assignment to its free predicates that the module's own program admits | no |
-| **3b** | **Reduce** the enumeration to a covering set under a declared coverage criterion | no |
-| **3c** | **Label** each situation in the covering set: does the clause *require* this act be forbidden, *require* it be permitted, say *nothing* about it, or is the situation one that *cannot arise*? | ⭐ **yes — the only paid work in stage 3** |
-| **3d** | **Run** the module against each labelled situation and compare the derived status to the label | no |
-| **3e** | **Report** coverage, the label distribution, and every mismatch — routed by origin (§5) | no |
+| | | model? | half |
+|---|---|---|---|
+| **3a** | **Enumerate** the coherent situations over the module's *situation signature* — every assignment to its free predicates that the module's own program admits, subject to the cap (§7) | no | **[D]** |
+| **3b** | **Reduce** the enumeration to a covering set under a declared coverage criterion, and **mutate** each rule to compute discrimination coverage (§6) | no | **[D]** |
+| **3c** | **Label** each situation in the covering set: does the clause *require* this act be forbidden, *require* it be permitted, say *nothing* about it, or is the situation one that *cannot arise*? | ⭐ **yes — the only paid work in stage 3** | **[L]** |
+| **3d** | **Run** the module against each labelled situation and compare the derived status to the label | no | **[L]** |
+| **3e** | **Report** coverage, `\|R\|`, the label distribution, and every mismatch — routed by origin (§5) | no | **[D+L]** |
 
 ### What stage 3 does not do
 
@@ -114,22 +170,22 @@ closure of clause modules it requires):
 
 ### Which of Part 1's testing failure modes it addresses
 
-| # | | stage 3 |
-|---|---|---|
-| **11** | test cases describing impossible situations | ⭐ **addressed structurally** — situations are answer sets of the module itself, so a situation the module's constraints reject is never generated. **Partially:** a module that declares no constraints has nothing to reject with. §4 |
-| **12** | testing one branch only | ⭐ **addressed, and this is the point of 3b** — coverage becomes a computed number with a named criterion, not a judgement. ⚠️ The obvious criterion (rule coverage) is **insufficient**, measured in §6 |
-| **13** | only testing that it forbids | ⭐ **addressed by construction** — the enumeration is verdict-blind, so must-permit and must-be-silent situations appear at the same rate as must-forbid ones. ⛔ **But the global CEPA/CNPA commitment is NOT reachable from any probe**, exactly as #13 says. §3 is the demonstration |
-| **14** | claims no test case can demonstrate | ⛔ **cannot be addressed and must not appear to be.** `forbid_body` declarations are checked by `link.py` at stage 2 by inspecting the program. Stage 3 must *count* them and exclude them from its denominator, or a clause whose only unenforced claim is a `forbid_body` claim reports full coverage |
-| **15** | "never fired" has three causes | **addressed for two of three** — link scope separates *"waiting on an unlinked clause"* from *"genuinely dead"*. The third (*"the tests do not reach it"*) is dissolved: the solver enumerates, so there is no test-author to under-reach |
+| # | | stage 3 | half |
+|---|---|---|---|
+| **11** | test cases describing impossible situations | ⭐ **addressed structurally** — situations are answer sets of the module itself, so a situation the module's constraints reject is never generated. **Partially:** a module that declares no constraints has nothing to reject with. §4 | **[D]** |
+| **12** | testing one branch only | ⭐ **addressed, and this is the point of 3b** — coverage becomes a computed number with a named criterion, not a judgement. ⚠️ The obvious criterion (rule coverage) is **insufficient**, measured in §6 | **[D]** |
+| **13** | only testing that it forbids | ⭐ **addressed by construction** — the enumeration is verdict-blind, so must-permit and must-be-silent situations appear at the same rate as must-forbid ones. ⛔ **But the global CEPA/CNPA commitment is NOT reachable from any probe**, exactly as #13 says. §3 is the demonstration | **[L]** |
+| **14** | claims no test case can demonstrate | ⛔ **cannot be addressed and must not appear to be.** `forbid_body` declarations are checked by `link.py` at stage 2 by inspecting the program. Stage 3 must *count* them and exclude them from its denominator, or a clause whose only unenforced claim is a `forbid_body` claim reports full coverage | **[D]** |
+| **15** | "never fired" has three causes | **addressed for two of three** — link scope separates *"waiting on an unlinked clause"* from *"genuinely dead"*. The third (*"the tests do not reach it"*) is dissolved: the solver enumerates, so there is no test-author to under-reach. ⚠️ **Dissolved only below the cap** — over `probe.max_signature` the clause is *not* enumerated at all and returns `signature-too-large` (§7), which is a refusal to answer, never an under-reach reported as a pass | **[D]** |
 
-⚠️ **#5 (hollow stubs) arrives here in a new form and stage 3 makes it worse if built naively.**
+⚠️ **#5 (hollow stubs) arrives here in a new form and stage 3 makes it worse if built naively.** **[L]**
 The situations are expressed in the translator's own coined predicate names, which echo the
 document's words by construction. A labelling seat shown `political_content(x), broad_audience(x)`
 grades the *names*. Mitigation in §5; it is the reason the seat is shown glosses, never signatures.
 
 ---
 
-## 2 A specific PASSING example
+## 2 A specific PASSING example — **[D]** for 3a/3b, **[L]** for 3c/3d
 
 **Clause `m0217`**, from `runs/20260807-154618-together-deepseek-v4-flash/` — the only new-contract
 conditional module in the runs with any `asserts`. Its whole logic is one rule `[READ]`:
@@ -192,7 +248,7 @@ that. §3 is what happens when it is not.
 
 ---
 
-## 3 ⭐ A specific FAILING example — stage 3 reports success and is wrong
+## 3 ⭐ A specific FAILING example — stage 3 reports success and is wrong — **[D]** measurement, **[L]** consequence 1, **[D+L]** consequences 2–3
 
 **The same clause, `m0217`, and the naive design passes it 8/8 on a module with its only rule
 deleted.**
@@ -246,7 +302,7 @@ second is worth anything.
 
 ---
 
-## 4 ⭐ What it looks like when the check is measuring the wrong thing (#11)
+## 4 ⭐ What it looks like when the check is measuring the wrong thing (#11) — **[D]**, except the `impossible` label (**[L]**)
 
 #11: *"A test asserted material was both brand new AND a transformation of user-supplied content.
 The program accepted it and produced the right answer from an impossible state."* That is the
@@ -277,7 +333,7 @@ state where `lifted` and `binds` would both hold.
 
 ---
 
-## 5 Who labels, and what they are shown
+## 5 Who labels, and what they are shown — **[L]**, except the `probe-structural` origin row (**[D]**)
 
 ⛔ **Not the translator, not its transcript, not its model instance.** `03_pipeline.md`: *"A
 translator writing its own tests checks what it already thought of, and it would need the expected
@@ -324,10 +380,10 @@ disclosure; it is the whole disclosure with a fig leaf.
 
 ⇒ **Stage 3 emits findings under two distinct origins.**
 
-| origin | contains | disclosable | routes to |
-|---|---|---|---|
-| `probe-structural` | *"rule R is in no derivation over the covering set"*, *"claim C₃ is not discriminated by any situation"*, *"the module admits a situation the clause treats as impossible: ⟨situation⟩"*, *"the coherent set is empty"* | ⭐ **yes** — derived from the module and the solver alone, with **no expected verdict anywhere near them**, exactly as stage 2's are. Added to `DISCLOSABLE_ORIGINS` | the accumulating repair transcript |
-| `probe-verdict` | a situation whose derived status disagrees with its label | ⛔ **no.** Withheld, leaving the visible hole `render_error_log` already emits | ⭐ **not the transcript.** §below |
+| origin | half | contains | disclosable | routes to |
+|---|---|---|---|---|
+| `probe-structural` | **[D]** | *"rule R is in no derivation over the covering set"*, *"claim C₃ is not discriminated by any situation"*, *"the module admits a situation the clause treats as impossible: ⟨situation⟩"*, *"the coherent set is empty"* | ⭐ **yes** — derived from the module and the solver alone, with **no expected verdict anywhere near them**, exactly as stage 2's are. Added to `DISCLOSABLE_ORIGINS` | the accumulating repair transcript |
+| `probe-verdict` | **[L]** | a situation whose derived status disagrees with its label | ⛔ **no.** Withheld, leaving the visible hole `render_error_log` already emits | ⭐ **not the transcript.** §below |
 
 ⇒ ⭐ **RULING: a `probe-verdict` mismatch discards the transcript and re-runs stage 1 from a clean
 prompt**, up to `max_retranslations` (default 1), then the clause is recorded
@@ -345,13 +401,15 @@ wants the arrow, the design must say what crosses it.
 
 ---
 
-## 6 The evidence produced, and telling "the translation is right" from "the test set was too weak"
+## 6 The evidence produced, and telling "the translation is right" from "the test set was too weak" — **[D]**, except the `labels:` report line (**[L]**)
 
 Per clause, a `probe.json`:
 
 ```
+signature: k predicates · 2^k candidates · cap 2^CAP · WITHIN CAP        ← §7
+|R| = n rules mutated                 ← the denominator of discrimination coverage. n = 0 is REFUSED
 candidates · coherent · suppressed · covering-set size
-labels: must-forbid / must-permit / must-be-silent / impossible   (counts, and the situations)
+labels: must-forbid / must-permit / must-be-silent / impossible   (counts, and the situations)   [L]
 discriminating situations: n          ← the number that matters
 coverage: <criterion> = k/N covered, with the uncovered items NAMED
 forbid_body claims: n  (NOT TESTABLE HERE — checked by link.py, excluded from the denominator)
@@ -359,9 +417,43 @@ closure declared: produce = cepa      (NOT TESTED HERE — #13)
 mismatches: [(situation, label, derived)]        ⛔ withheld from any repair prompt
 ```
 
+### ⛔ `|R|` is not decoration: discrimination coverage over zero rules is a vacuous pass
+
+`[RAN]` `m0037.lp` — from the same four-clause run this plan costs in §7 — contains **no rules at
+all**: comments, a `%% concepts:` header and two `%!show_trace` directives. `link.py` passes it clean:
+
+```
+$ .venv/bin/python link.py runs/…-154618/m0037.lp
+linked 1 file(s): m0037.lp
+  ✅ no unresolved references          (exit 0)
+```
+
+Discrimination coverage over that module mutates nothing, finds **zero uncovered rules**, and — on
+the natural formulation *"a module passes when no rule is uncovered"* — **passes**. That is
+**1 of the 4 clauses** in the run this plan cites. It is the shape `STATE.md` names: *"a check whose
+'pass' state is indistinguishable from its 'did not run' state is broken by design."*
+
+⇒ ⭐ **Two requirements, and they are separate.**
+
+1. **The report prints `|R|`, the number of rules actually mutated**, on every run, at the top, next
+   to the coverage line. `0/0 covered` and `11/11 covered` must never render the same way.
+2. **`|R| = 0` is REFUSED, not passed.** The outcome is `no-testable-content` (§7) — the same
+   non-verdict outcome `m0037` gets for having no acts — and it never aggregates into a pass rate.
+   The refusal is on `|R| = 0` **specifically**, not on the acts/asserts count, because a future
+   module could carry acts and still contribute no mutable rule.
+
+Tests 17 and 18 in §8 pin both, with controls.
+
+⚠️ **This is the second instance in this document of the same bug.** §3's naive closure-resolved
+comparison scores an emptied `m0217` at 8/8; zero-rule discrimination coverage scores `m0037` at
+0-uncovered. Both halves of stage 3 have a vacuous-pass hole, and neither half's hole is patched by
+the other half. That is a third argument against §0's original either/or framing.
+
 #12 is the design's own admission that coverage is *"the problem this pipeline addressed least
 well"*, and it names the remedy: *"ASP has published structure-based coverage criteria — rule,
-definition and loop coverage over the dependency graph."*
+definition and loop coverage over the dependency graph."* ⚠️ **This plan does not adopt that remedy.
+It substitutes discrimination coverage, and the substitution is measured below and recorded as a
+departure in `STATE.md`** — not described as conformance.
 
 ### ⛔ Rule coverage is insufficient, and this was measured, not argued
 
@@ -418,12 +510,73 @@ produced by running, and it belongs in the record independently of this plan.
 from the denominator by name), cannot see the closure commitment (#13), and cannot see a claim the
 translator never encoded at all — that is stage 4d, over the whole case set.
 
+⛔ **And it cannot see a rule that is live and WRONG — measured, not argued.** `[RAN]` on `m0217`:
+deleting the rule changes 1 of 8 situations; **inverting it (`permit` → `forbid`) also changes 1 of
+8**, and this section's report renders **byte-identically** for both:
+
+```
+|R| = 1
+rule 1: covered — 1 discriminating situation(s)
+```
+
+A module asserting the exact opposite of its clause scores full discrimination coverage. That is not
+a gap to be closed inside §6 — it is the reason the **[L]** half exists, and it is why §0 withdraws
+revision 2's proposal to defer it.
+
 ---
 
-## 7 Cost
+## 7 Cost — **[D]** solver time and the cap, **[L]** model calls
 
-**Solver time is free and measured, not assumed.** `[RAN]` 128 ground-and-solve cycles over
-`m0255` at link scope (4 files): **0.13 s**. The `m0217` enumeration is 8 cycles.
+### ⛔ Solver time is NOT free, and the enumeration needs a cap
+
+Revision 2's §0 called the deterministic half **"free"**. It is free at four clauses and it is not
+free at 593. Re-measured `[RAN]` (`m0255` at link scope, 4 files, per-candidate ground+solve):
+
+```
+2^7 = 128 ground+solve cycles: 0.100 s   (0.779 ms/solve)
+  2^7  =     128 solves ->     0.10 s
+  2^10 =   1,024 solves ->     0.80 s
+  2^14 =  16,384 solves ->    12.77 s
+  2^20 = 1,048,576 solves ->  817 s   (0.23 h)
+```
+
+⚠️ **What that measures is the per-solve cost** — 128 ground-and-solve cycles over a 7-predicate
+signature at `m0255`'s link scope. It is *not* a re-measurement of §4's `92 SAT / 36 UNSAT`, which is
+over the module's own declared signature; a different 7 predicates gives a different SAT split and
+the same ms/solve. The scaling number is **0.779 ms**.
+
+And the enumeration is re-run **once per mutated rule**. `[RAN]` extrapolated at the measured
+0.779 ms/solve: **593 clauses × ~11 rules × a 14-predicate signature ≈ 23.1 hours.** The signature is
+`inputs ∪ head-less concept-table predicates` (§2), which is not bounded by anything the translator
+is told to keep small.
+
+⇒ ⭐ **A declared cap, `probe.max_signature = 10` (2^10 = 1,024 candidates)** — set so that a
+worst-case clause costs 0.8 s per mutation pass and the whole 593-clause corpus stays inside
+~1.5 hours `[RAN]` (593 × 11 × 1,024 × 0.779 ms ≈ 5,200 s). It is a config constant, printed in every
+report, not a magic number in code.
+
+| | |
+|---|---|
+| **report line** | `signature: k predicates · 2^k candidates · cap 2^10 · WITHIN CAP` — printed **always**, including when well under the cap, so the cap's absence from a report is never ambiguous |
+| **outcome when over** | `signature-too-large` — a **distinct outcome**, alongside `no-testable-content`. ⛔ Not a pass, not a fail, and it **never aggregates into a pass rate**. It carries `k` and the signature itself, and routes to a human. A clause silently truncated to a sampled sub-enumeration would report coverage over a set nobody chose |
+| **what it is not** | not a sampling fallback. Sampling would let `coverage: 11/11 covered` be printed over an arbitrary 1,024 of 16,384 situations, which is the "test set was too weak" failure this whole section exists to separate out |
+
+⚠️ **The cap is a consequence of the implementation this plan describes, and `witness.lp` already
+shows a better one.** The plan's 3a is a per-candidate **ground-and-solve loop**: 2^k solver
+invocations. `walkthrough/witness.lp` `[READ]` expresses the same enumeration as **choice rules**, so
+the solver produces every situation in **one** solve. `[RAN]`, same four files plus `witness.lp`:
+
+```
+witness.lp choice-rule enumeration: 144 models in ONE solve, 0.006 s
+```
+
+versus **0.100 s** for the 128-candidate loop — and the gap is multiplicative in 2^k, not constant.
+⇒ **3a should be built in the `witness.lp` form**, which reduces the corpus cost to roughly one solve
+per mutant (593 × 12 × 6 ms ≈ 43 s `[RAN]` extrapolated). The cap is still required even then,
+because the covering set, the report and — if the clause reaches **[L]** — the seat prompt all scale
+with the *number of situations*, not with solver time. **Choosing the implementation is not
+optional-detail:** the loop form and the choice-rule form differ by ~17× on this example and the
+difference decides whether the deterministic half runs in a minute or overnight.
 
 **Model calls.** One labelling call per clause, batched — every situation in the covering set in
 one request, because the denominator rule requires the seat to see the whole set anyway and
@@ -456,6 +609,15 @@ whatsoever. Stage 3 must report it as **`no-testable-content`** — a distinct o
 a pass. A pipeline that reports *"3 of 4 clauses passed stage 3"* over that run is reporting that
 three clauses had nothing to test.
 
+⚠️ **And `m0037` is exactly the `|R| = 0` case §6 refuses.** Its `acts` list being empty is what
+keeps it out of the **[L]** half; its **rule count being zero** is what would otherwise let it
+*pass* the **[D]** half with `0 uncovered rules`. The two exclusions are independent and both are
+required — a module could carry acts and still have no mutable rule. §6, tests 17–18.
+
+⇒ **Stage 3's outcome set is four values, three of which are not verdicts:** `passed` · `failed` ·
+`no-testable-content` (no acts, or `|R| = 0`) · `signature-too-large` (over the cap). Only the first
+two may enter any aggregate.
+
 **Re-translation budget.** A `probe-verdict` mismatch costs one further stage-1 call, priced at the
 measured translation rate `[RAN]` (`m0217`: 6,926 in / 413 out = **$0.001085**). Worst case for a
 four-clause run: $0.0005 + $0.001 ≈ **$0.0016**. Against the $8.50 ceiling with $2.057 used
@@ -468,7 +630,7 @@ run outputs; a `--live` labelling run is a separate decision.
 
 ---
 
-## 8 The TDD test list
+## 8 The TDD test list — **[D]** and **[L]**, marked per test
 
 `walkthrough/paper_pipeline/phase_1/test_probe.py`. Fixtures constructed through
 `schema.validate()` + `render_lp()`, as `test_link.py` and `test_checks.py` do — **not** the
@@ -480,33 +642,42 @@ with its own mutation run at 0 survivors, or it does not ship. Every test below 
 guard it pins **and a paired negative control that must stay SILENT** — a check that fires on
 everything is pinned by nothing.
 
-| # | the check must FIRE on | the paired control must stay SILENT on | why the control is the real test |
-|---|---|---|---|
-| 1 | a signature built from `inputs` only, when the module's body predicates live in the concept table (`m0217`-shaped) → **empty enumeration** is an ERROR | a module whose predicates genuinely are all in `inputs` (`m0255`-shaped) → no finding | §2. The bug is invisible because an empty enumeration reports green |
-| 2 | a module whose coherent set is empty (over-constrained) → ERROR | a module with 36/128 suppressed → suppression **reported**, no error | §4. Suppression must be data, not a silent filter |
-| 3 | the suppressed count appears in `probe.json` even when zero | a run with zero suppression must not acquire a warning | a warning on every run becomes invisible — `link.py`'s own recorded lesson |
-| 4 | ⭐ deleting `m0217`'s only `asserts` rule → **mismatch on ≥1 situation** under the three-valued comparison | the unmutated `m0217` → 0 mismatches, `1 must-permit · 0 must-forbid · 3 silent` | §3. **This is the test the whole document exists for.** `[RAN]` the naive closure-resolved comparison gives 0 of 8 and the mutant passes |
-| 5 | a report that resolves silence through the closure declaration before comparing → refused at construction | a report that carries the closure verbatim under `NOT TESTED HERE` | §3. #13 is unreachable from probes and must not look reached |
-| 6 | ⭐ deleting `m0255`'s two C3 rules → **`C3: uncovered`** under discrimination coverage | the same deletion under **rule** coverage → covered, i.e. the control demonstrates the criterion that does NOT work | §6. `[RAN]` fires, `[RAN]` 0/128 verdicts change, `[RAN]` all 5 hand cases SAME |
-| 7 | a situation input with no discriminating pair is NAMED in the report | an input with ≥1 discriminating pair is not named | §6. `new_material` is the live instance |
-| 8 | a `forbid_body` claim counted in the coverage denominator → refused | `forbid_body` claims counted and reported **outside** the denominator | #14. A clause whose only gap is a `forbid_body` claim must not report full coverage |
-| 9 | ⭐ a `probe-verdict` finding reaching `render_error_log` → withheld, hole visible | a `probe-structural` finding → **rendered in full**, because it carries no expected verdict | §5. Both halves needed: a filter that withholds everything is as wrong as one that withholds nothing |
-| 10 | `probe-verdict` routed into the accumulating transcript by any path → refused | `probe-verdict` routed to re-translation with a discarded transcript → allowed | §5 ruling. Assert the **absence** of the label text in every message of the next call, as `test_repair.py` does |
-| 11 | a labelling response missing a situation, or naming an unenumerated situation, or with an empty reason → **not adjudicated** | a complete labelling with reasons → adjudicated | §5, the denominator rule. A judge that skips the hard ones returns a complete-looking set |
-| 12 | a seat prompt containing any predicate signature (`political_content/1`) → refused at construction | a seat prompt containing only glosses → allowed | §5. #5 (hollow stub) at the test seat |
-| 13 | a seat prompt containing the module, the derived status, the closure, or the `claims` list → refused | the clause text and cross-references → allowed | §5 |
-| 14 | `m0037` (zero asserts, zero acts) → outcome **`no-testable-content`** | `m0217` → outcome `passed` | §7. `no-testable-content` must never aggregate into a pass rate |
-| 15 | a per-clause single-number pass rate anywhere in the output → refused | the label vector + discriminating count → allowed | §3 consequence 2. `8/8` was the whole failure |
-| 16 | an `impossible` label → a `probe-structural` finding naming the situation, **no verdict** | a `must-*` label → never produces a structural finding | §4. The one label that is not a verdict is the one that may be disclosed |
+| # | half | the check must FIRE on | the paired control must stay SILENT on | why the control is the real test |
+|---|---|---|---|---|
+| 1 | **[D]** | ⛔ **fire condition CORRECTED in revision 3.** A signature built from `inputs` only, when the module's body predicates live in the concept table (`m0217`-shaped) → the guard fires on **`signature == ∅`** (equivalently `\|coherent\| ≤ 1`), an ERROR | a module whose predicates genuinely are all in `inputs` (`m0255`-shaped) → no finding | §2. ⚠️ Revision 2 wrote the condition as `\|enumeration\| == 0`. **That guard never fires on the bug it names:** an empty signature yields `2^0 = 1` situation `[RAN]`, not zero, so the `inputs`-only build of `m0217` sails past it reporting one all-false situation and *green*. The bug is invisible precisely because the empty enumeration is not empty |
+| 2 | **[D]** | a module whose coherent set is empty (over-constrained) → ERROR | a module with 36/128 suppressed → suppression **reported**, no error | §4. Suppression must be data, not a silent filter |
+| 3 | **[D]** | the suppressed count appears in `probe.json` even when zero | a run with zero suppression must not acquire a warning | a warning on every run becomes invisible — `link.py`'s own recorded lesson |
+| 4 | **[L]** | ⭐ deleting `m0217`'s only `asserts` rule → **mismatch on ≥1 situation** under the three-valued comparison | the unmutated `m0217` → 0 mismatches, `1 must-permit · 0 must-forbid · 3 silent` | §3. **This is the test the whole document exists for.** `[RAN]` the naive closure-resolved comparison gives 0 of 8 and the mutant passes |
+| 5 | **[L]** | a report that resolves silence through the closure declaration before comparing → refused at construction | a report that carries the closure verbatim under `NOT TESTED HERE` | §3. #13 is unreachable from probes and must not look reached |
+| 6 | **[D]** | ⭐ deleting `m0255`'s two C3 rules → **`C3: uncovered`** under discrimination coverage | the same deletion under **rule** coverage → covered, i.e. the control demonstrates the criterion that does NOT work | §6. `[RAN]` fires, `[RAN]` 0/128 verdicts change, `[RAN]` all 5 hand cases SAME |
+| 7 | **[D]** | a situation input with no discriminating pair is NAMED in the report | an input with ≥1 discriminating pair is not named | §6. `new_material` is the live instance |
+| 8 | **[L]** | a `forbid_body` claim counted in the coverage denominator → refused | `forbid_body` claims counted and reported **outside** the denominator | #14. A clause whose only gap is a `forbid_body` claim must not report full coverage |
+| 9 | **[L]** | ⭐ a `probe-verdict` finding reaching `render_error_log` → withheld, hole visible | a `probe-structural` finding → **rendered in full**, because it carries no expected verdict | §5. Both halves needed: a filter that withholds everything is as wrong as one that withholds nothing |
+| 10 | **[L]** | `probe-verdict` routed into the accumulating transcript by any path → refused | `probe-verdict` routed to re-translation with a discarded transcript → allowed | §5 ruling. Assert the **absence** of the label text in every message of the next call, as `test_repair.py` does |
+| 11 | **[L]** | a labelling response missing a situation, or naming an unenumerated situation, or with an empty reason → **not adjudicated** | a complete labelling with reasons → adjudicated | §5, the denominator rule. A judge that skips the hard ones returns a complete-looking set |
+| 12 | **[L]** | a seat prompt containing any predicate signature (`political_content/1`) → refused at construction | a seat prompt containing only glosses → allowed | §5. #5 (hollow stub) at the test seat |
+| 13 | **[L]** | a seat prompt containing the module, the derived status, the closure, or the `claims` list → refused | the clause text and cross-references → allowed | §5 |
+| 14 | **[D]** | `m0037` (zero asserts, zero acts) → outcome **`no-testable-content`** | `m0217` → outcome `passed` | §7. `no-testable-content` must never aggregate into a pass rate |
+| 15 | **[D]** | a per-clause single-number pass rate anywhere in the output → refused | the label vector + discriminating count → allowed | §3 consequence 2. `8/8` was the whole failure |
+| 16 | **[L]** | an `impossible` label → a `probe-structural` finding naming the situation, **no verdict** | a `must-*` label → never produces a structural finding | §4. The one label that is not a verdict is the one that may be disclosed |
+| 17 | **[D]** | ⭐ `m0037` (**`\|R\| = 0`**, no rules to mutate) reaching discrimination coverage → outcome **`no-testable-content`**, REFUSED | `m0217` (`\|R\| = 1`) → coverage computed, outcome `passed` | §6. `[RAN]` `m0037.lp` has zero rules and `link.py` passes it clean; `0 uncovered of 0` is a vacuous pass on **1 of the 4** clauses in the cited run. Refusal must key on `\|R\|`, **not** on the empty `acts` list — test 14 already covers that path and they must not collapse |
+| 18 | **[D]** | a coverage report rendered without `\|R\|` → refused at construction | a report carrying `\|R\| = n` next to the coverage line → allowed | §6. The control is the real test: `0/0 covered` and `11/11 covered` must not render the same, and only `\|R\|` separates them |
+| 19 | **[D]** | a signature of `k > probe.max_signature` → outcome **`signature-too-large`**, carrying `k`; and **no** truncated or sampled enumeration is produced | a signature at exactly `k = probe.max_signature` → enumerated normally, `WITHIN CAP` printed | §7. `[RAN]` 0.779 ms/solve → 2^14 is 12.8 s per pass and ~23 h over the corpus. The control pins that the cap prints on **every** report, not only when exceeded — a cap visible only on failure is indistinguishable from no cap |
 
-⚠️ **Two of these pin things that do not exist yet and must be built in the same diff, not after:**
+⚠️ **Three of these pin things that do not exist yet and must be built in the same diff, not after:**
 `DISCLOSABLE_ORIGINS` gains `probe-structural` (test 9), and `checks.SEVERITIES` is *not* extended
-— `probe-structural` findings are `error`/`note` like every other. Registration, not
-documentation, is what fences a module.
+— `probe-structural` findings are `error`/`note` like every other; and the outcome enum gains
+**`signature-too-large`** alongside `no-testable-content` (tests 17, 19), with both registered as
+non-aggregating at the point the pass rate is computed. Registration, not documentation, is what
+fences a module.
+
+⚠️ **Tests 1, 17, 18 and 19 are all revision-3 additions or corrections, and three of the four are
+the same failure shape:** a guard whose passing state is indistinguishable from its not-having-run
+state. Revision 2 contained one such guard (test 1) and two such holes (`|R| = 0`, no cap).
 
 ---
 
-## 9 What this plan is least sure of
+## 9 What this plan is least sure of — **[L]** for the first item, **[D]** for the second
 
 Written here rather than left to a reviewer to find:
 
@@ -519,3 +690,16 @@ mitigation is a measurement, not an argument:** the first live labelling run rep
 `silent`-rate, and a rate near zero on a corpus where most clauses govern one act is a **seat
 defect**, investigated as one (per the standing ruling that seat divergence defaults to a brief
 defect) before any conclusion is drawn about the translations.
+
+⚠️ **[D] `probe.max_signature = 10` is set from a cost model, not from the corpus.** The signature is
+`inputs ∪ head-less concept-table predicates` (§2) and **nobody has measured its distribution over
+593 clauses** — only 4 clauses have been translated, one of which reaches stage 3 with `k = 3`
+`[RAN]`. If real signatures cluster at 12–16, the cap turns into a `signature-too-large` outcome on a
+large fraction of the corpus and the criterion silently stops covering the document. ⇒ **The first
+corpus-scale run reports the `k` histogram before anything is concluded from a coverage number**, and
+the cap is re-set from that histogram rather than defended. The failure this guards against is a
+coverage report that is honest per clause and unrepresentative in aggregate.
+
+⚠️ **What revision 3 is no longer unsure of:** revision 2 listed the build ordering as an open
+question and answered it with an argument. §0 replaces the argument with three measurements and the
+answer is *both halves*. That is settled, not deferred.

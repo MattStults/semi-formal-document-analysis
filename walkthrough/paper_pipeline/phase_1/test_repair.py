@@ -366,6 +366,8 @@ def test_a_live_run_WIRES_the_loop_and_records_what_it_did(tmp_path):
                      "kinds": [], "limit": None}
     cfg["output"] = {"dir": str(tmp_path), "run_name": "t"}
     cfg["repair"] = {"max_attempts": 2}
+    cfg["graveyard"] = {"dir": str(tmp_path / "gy"), "cap": 1000, "seed": 0,
+                        "rates": {"repaired": 0.0, "first_try": 0.0}}
 
     class _Stub:
         calls = 0
@@ -456,6 +458,13 @@ def _run_one(tmp_path, cfg_over, stub, clause="m0091"):
     cfg["select"] = {"clause_ids": [clause], "section_id": None, "kinds": [],
                      "limit": None}
     cfg["output"] = {"dir": str(tmp_path), "run_name": "t"}
+    # ⚠️ ISOLATE THE GRAVEYARD. Without this every test that calls run() writes
+    # into the repo's real `repair_graveyard/` — 16 entries appeared there on
+    # the first suite run after wiring it in. Two consequences: a production
+    # artifact filled with test garbage, and once it reached the cap, real runs
+    # would refuse to start because of it.
+    cfg["graveyard"] = {"dir": str(tmp_path / "gy"), "cap": 1000, "seed": 0,
+                        "rates": {"repaired": 0.0, "first_try": 0.0}}
     cfg.update(cfg_over)
 
     class A:

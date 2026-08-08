@@ -1,0 +1,126 @@
+{
+ "outcome": "translated",
+ "clause_id": "m0079",
+ "abstain_reason": null,
+ "claims": [
+  "C1: The clause defines the scope of the transformation exception as applying only to restricted and sensitive content policies.",
+  "C2: The clause states that the transformation exception does not override any other policies, and those policies still bind.",
+  "C3: The clause states there is no 'good cause' exception for restricted and sensitive content policies, and the assistant should not supply new disallowed material even for seemingly legitimate research or analysis purposes.",
+  "C4: The clause states the policy applies only to information, not actions; the assistant should not perform a prohibited action just because it is a 'translation' of user-provided content."
+ ],
+ "acts": [
+  "produce(M)"
+ ],
+ "concepts": [
+  {
+   "name": "content_policy_rule",
+   "arity": 1,
+   "gloss": "a clause of this document that states one of its content policies",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of 'other policies', which are the ones other clauses state",
+   "toggleable": false
+  },
+  {
+   "name": "asserts_policy",
+   "arity": 2,
+   "gloss": "the clause whose subject is the named policy",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "identifying which clause states which policy is what 'other policies' ranges over",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "assumed",
+   "cites": null,
+   "inference": "m0203 states a policy on prohibited content, so it is one of the 'other policies' this clause defers to",
+   "toggleable": false,
+   "atom": "content_policy_rule(m0203)",
+   "gloss": "a clause that states one of the document's content policies",
+   "body": null
+  },
+  {
+   "licence": "assumed",
+   "cites": null,
+   "inference": "m0208 states a policy on restricted content, so it is one of the 'other policies' this clause defers to",
+   "toggleable": false,
+   "atom": "content_policy_rule(m0208)",
+   "gloss": "a clause that states one of the document's content policies",
+   "body": null
+  },
+  {
+   "licence": "assumed",
+   "cites": null,
+   "inference": "m0203's subject is the prohibited-content policy",
+   "toggleable": false,
+   "atom": "asserts_policy(m0203, prohibited_content)",
+   "gloss": "the clause whose subject is this named policy",
+   "body": null
+  },
+  {
+   "licence": "assumed",
+   "cites": null,
+   "inference": "m0208's subject is the restricted-content policy",
+   "toggleable": false,
+   "atom": "asserts_policy(m0208, restricted_content)",
+   "gloss": "the clause whose subject is this named policy",
+   "body": null
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "purpose gives no exemption: producing % is new disallowed material",
+   "read_back_slots": [
+    "M"
+   ],
+   "licence": "textual",
+   "cites": "m0079",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "produce(M)",
+   "body": "new_material(M), disallowed(M)"
+  }
+ ],
+ "beats": [
+  {
+   "read_back": "% outranks the transformation exception, because the exception does not reach its policy class",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "m0079",
+   "inference": null,
+   "toggleable": false,
+   "sayer": "m0079",
+   "winner": "R",
+   "loser": "m0252",
+   "body": "content_policy_rule(R), policy_class(P, K), out_of_scope(transformation, K), asserts_policy(R, P)"
+  }
+ ],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "produce",
+   "closure": "cepa",
+   "reason": "the clause carves out from a prohibition rather than extending one; it says which policies still bind, so silence about a policy leaves the transformation permission standing"
+  }
+ ],
+ "requires": [
+  "policy_class/2",
+  "scope/2",
+  "out_of_scope/2",
+  "disallowed/1"
+ ],
+ "inputs": [
+  "new_material/1"
+ ],
+ "forbid_body": [
+  {
+   "head": "permit",
+   "banned": "purpose"
+  }
+ ]
+}
