@@ -199,9 +199,38 @@ is rejected. So is `{ "atom": "not_applicable(I, R)", "body": null }` on its own
 variable and no body is not a fact, and the solver refuses the whole file.
 
 **Alternatives are written by repeating the atom.** Three sufficient conditions means three entries
-with the same `atom` and different bodies. There is no `or` inside a body: `"body": "a(I) ; b(I)"`
-is rejected. Conditions written side by side in one body are joined with `and` — the second entry
-above needs all four of its conditions to hold at once.
+with the same `atom` and different bodies. Conditions written side by side in one body are joined
+with `and` — the second entry above needs all four of its conditions to hold at once.
+
+⚠️ **`;` in a body does NOT mean "or".** This is the one place ASP is likely to mislead you. Writing
+
+```json
+{ "atom": "not_applicable(I, R)", "body": "misaligned_with_higher_level(I) ; suspected_mistaken(I)" }
+```
+
+is accepted, compiles, and means **and** — clingo reads `;` in a rule body exactly as it reads `,`.
+The rule you get is strictly narrower than the clause you were given, it passes every check, and
+nothing downstream can tell. If you mean "either one is enough", write two entries.
+
+**Where `;` IS the right tool: pooling inside an argument, in brackets.**
+
+```json
+{ "atom": "privileged_information(X)",
+  "body": "message_kind(X, (system;developer;hidden_cot))",
+  "gloss": "X is a system, developer or hidden chain-of-thought message" }
+```
+
+That one does mean "or": `(a;b;c)` in an argument position expands into one rule per value, so it
+is a real shorthand for three near-identical entries.
+
+⚠️ **The brackets are load-bearing.** `message_kind(X, system;developer)` without them splits the
+whole literal instead of the argument, and clingo rejects the file with *"'X' is unsafe"*. So:
+
+| where the `;` is | what it means |
+|---|---|
+| between literals — `a(X) ; b(X)` | **and**. Almost never what you want |
+| inside an argument, bracketed — `p(X, (a;b))` | **or**, expanded into separate rules |
+| inside an argument, unbracketed — `p(X, a;b)` | a parse error further out; the file is refused |
 
 **Every predicate a body names is declared.** All six appear in `inputs`, and each has a `concepts`
 entry giving its gloss. A body predicate that is declared nowhere cannot be told from a typo.
