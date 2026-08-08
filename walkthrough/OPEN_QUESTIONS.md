@@ -9,6 +9,51 @@ chosen differently — that is the standing instruction.
 
 ---
 
+## Q-14 · The design contradicts its own grounds for disclosing an `impossible` label
+
+The spec-drift review filed this as a leak (A2, "CODE should change"). **I checked and the reviewer
+is wrong about the remedy** — but right that something is inconsistent.
+
+`STEP_stage3.md:331` **explicitly rules**: *"`impossible` is a label the seat may return, and it is
+the only label that is not a verdict… which is why it is **disclosable**"*. §8 item 16 is a TDD test
+for precisely that behaviour, and `:385` lists the finding text under `probe-structural`.
+
+⇒ **The code follows the design.** I did not change it.
+
+⚠️ **But `:385`'s stated GROUND is false of it**: *"derived from the module and the solver alone,
+with no expected verdict anywhere near them."* An `impossible` label is a **seat output**, not
+solver-derived. The ruling may well be right — an `impossible` finding names a situation and no
+status — but it is right for a different reason than the one written down.
+
+**What a decision costs:** one sentence in `:385` distinguishing *"carries no expected verdict"*
+(true, and the real ground) from *"was not produced by a model"* (false). ⛔ It is a design edit to
+a watched file, so I left it.
+
+---
+
+## Q-15 · Review findings I did NOT act on, and why
+
+Both adversarial reviews landed (`SPEC_DRIFT_REVIEW_2026-08-07.md`, `ENGINEERING_REVIEW_2026-08-07b.md`).
+Two HIGH findings are **fixed** (the silent content drop, and the anonymous-variable guard I
+withdrew on the wrong tool). These remain, each because acting would be a design decision:
+
+- **RB1's act exemption** (`readback.py`) grants a second exception where `STEP_stage4.md:415`
+  grants one. 19 of 19 `asserts` renderings show a bare functor. The reviewer's view is "a hole, not
+  a limit"; mine is that it cannot be closed without a schema field for an act gloss — which is
+  **Q-7**. Same question, two symptoms.
+- **RB4 is structurally blind to layer-1 content.** Revision 2 weakened a check while stating it
+  amended only §2.3. Latent today at 0/106 layer-1 items, live as soon as any module uses a
+  construct with no template.
+- **`readback.Finding` has no `origin`**, so `readback-structural` cannot be registered in
+  `DISCLOSABLE_ORIGINS` as §5.5 requires "in the same diff". This is the leak perimeter's
+  registration rule, and it is currently unsatisfiable for stage 4.
+- **§8 requires stage 4 to ship a mutation run at 0 survivors**, but `mutate_schema.py` deletes
+  `ast.Raise` nodes and `readback.py` has **none** by design. ⭐ The reviewer's judgement, which I
+  share: **do not weaken the bar — write the right instrument.** The reviewer hand-wrote 15 mutants
+  and killed 12; the 3 survivors are real gaps.
+
+---
+
 ## Q-10 ⭐ THE LABELLED HALF FOUND A LIVE TRANSLATION DEFECT THE DETERMINISTIC HALF SCORED CLEAN
 
 **This is the result that justifies building the `[L]` half at all, and it needs your adjudication.**
