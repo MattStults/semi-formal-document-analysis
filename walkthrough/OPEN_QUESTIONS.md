@@ -9,6 +9,33 @@ chosen differently — that is the standing instruction.
 
 ---
 
+## Q-16 ⛔ STAGE 4'S R3 LAYER DOES NOT EXIST — the xclingo derivation trees
+
+`STEP_stage4.md` §2.1 specifies **three** rendering layers. `readback.py` produces **R1 and R2
+only**. R3 — *"xclingo explanation tree, every leaf replaced by its R1 rendering"* — is absent, so
+**no derivation reaches any seat**, and 4a/4b's denominators are smaller than §2.1 describes.
+
+This is not a design question; it is unfinished implementation, and I am building it. Recorded
+because it changes what "stage 4 is implemented" means until it lands: today the seats judge
+*items* and *rules*, never *why a verdict followed*.
+
+⚠️ It is also the reason the anonymous-variable guard matters (see `b7c663e`): R3 is the layer that
+xclingo actually drives, so a `_` anywhere in the link set would take the whole tree down.
+
+---
+
+## Q-17 · 4c's independence is compromised by gating, not by design
+
+`plan_clause` refuses a clause whose read-back failed, so **4c never runs for the 7
+`readback-ungloss` modules**. §4.1's anchor property is that 4c is independent of the rendering —
+and it is provably independent of a *wrong* rendering (a test asserts 4c is never stamped), but not
+of a *missing* one.
+
+⇒ The seat designed to be the check on the shared artifact is switched off exactly when that
+artifact fails. **Worth a ruling**, and I did not change the gating.
+
+---
+
 ## Q-14 · The design contradicts its own grounds for disclosing an `impossible` label
 
 The spec-drift review filed this as a leak (A2, "CODE should change"). **I checked and the reviewer
@@ -223,11 +250,25 @@ Four review seats per clause, over a corpus of 593. The renderer is being built 
 exists I cannot count the items each seat must read, so I cannot price it. The project cap is
 $8.50 with roughly $2.5 used.
 
-**What I did instead:** everything up to the seats — renderer, the five deterministic RB checks,
-and the seat prompts exercised against stubs.
+⭐ **ANSWERED 2026-08-08 — `seats.py --cost`, computed from the real rendered artifact, free:**
 
-**What a decision costs:** an authorisation and a ceiling. I will produce a measured estimate from
-the renderer's real output before asking, so the number will be evidence rather than a guess.
+| | total (7 clauses) | per clause |
+|---|---|---|
+| **WORST, flash** | **$0.0360** | $0.0051 |
+| WORST, frontier | $3.5782 | $0.5112 |
+| likely, flash | $0.0063 | $0.0009 |
+| likely, frontier | $0.3979 | $0.0568 |
+
+⚠️ **WORST is the number a budget decision uses** — every reply at its 4096-token cap, which is what
+dominates the frontier figure. `likely` assumes 40 output tokens per judgement and is an
+**assumption**: nothing has run, so no reply length has been measured.
+
+⇒ **On the configured flash model a full stage-4 run over everything that can reach a seat costs
+about four cents.** That is inside any reasonable ceiling. On a frontier model it is $3.58, which is
+42% of the entire remaining project budget.
+
+⛔ Only **7 of 19** stored modules reach a seat: 5 fail stage 2, 7 are blocked by `readback-ungloss`
+(**Q-6**). The check was not relaxed to raise that number.
 
 ---
 
