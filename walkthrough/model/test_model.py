@@ -238,8 +238,31 @@ def test_pre_commit_is_silent_on_an_empty_stage():
 def test_pre_commit_fires_when_a_watched_file_is_staged():
     r = _run_hook("walkthrough/paper_pipeline/phase_1/schema.py")
     assert "a watched file changed" in r.stdout, r.stdout + r.stderr
-    # schema.py has never been reviewed, so this must also BLOCK
-    assert r.returncode == 1 and "COMMIT BLOCKED" in r.stdout
+
+
+def test_pre_commit_blocks_EXACTLY_WHEN_the_guard_is_unhappy():
+    """The contract, stated without reference to today's review state.
+
+    ⛔ This used to assert `returncode == 1` with the comment "schema.py has
+    never been reviewed, so this must also BLOCK". The moment schema.py was
+    legitimately reviewed the test failed and reported a completed review as a
+    defect — the third instance of pinning a live value that this repo's brief
+    already warns about. What is actually worth asserting is that the hook and
+    the guard never disagree, which holds in both states.
+    """
+    guard = subprocess.run(
+        [sys.executable, os.path.join(HERE, "guard.py")],
+        capture_output=True, text=True, cwd=REPO)
+    hook = _run_hook("walkthrough/paper_pipeline/phase_1/schema.py")
+    if guard.returncode == 0:
+        assert hook.returncode == 0, (
+            "the guard is happy but the hook blocked:\n" + hook.stdout)
+        assert "COMMIT BLOCKED" not in hook.stdout
+    else:
+        assert hook.returncode == 1, (
+            "the guard is unhappy and the hook let the commit through — the "
+            "failure this whole mechanism exists to prevent:\n" + hook.stdout)
+        assert "COMMIT BLOCKED" in hook.stdout
 
 
 def test_pre_commit_fires_for_a_prompt_file():
