@@ -90,10 +90,27 @@ def test_build_REFUSES_before_writing_anything_when_the_line_is_absent(tmp_path)
     assert not out.exists(), "a refused build must leave no half-made arm"
 
 
-def test_the_real_target_line_is_present_exactly_once_in_the_live_prompt():
-    # If this fails, the eval below it is measuring something else.
-    path = os.path.join(HERE, "..", "prompt", "00_task.md")
-    text = open(path, encoding="utf-8").read()
-    want = ('This is the most important rule here, and it is **not** '
-            '"only write what the text says".')
-    assert [ln.strip() for ln in text.split("\n")].count(want) == 1
+def test_a_generated_arm_tracks_the_LIVE_source_not_a_snapshot(tmp_path):
+    """What the deleted test should have been.
+
+    ⛔ It used to assert that one named sentence was present in `00_task.md`
+    exactly once — a guard for a pre-registered A/B that has since RUN. When
+    the sentence was legitimately deleted from the prompt the test failed,
+    reporting an ordinary edit as a defect. Pinning an exact value of a live
+    artifact is named as an anti-pattern in this repo's brief; this is the
+    third time it has bitten.
+
+    What is actually worth guarding is the GENERATOR: whatever the live file
+    says, an arm built from it must be that file minus the named line, and the
+    build must refuse when the line is not there rather than emit a copy.
+    """
+    src = tmp_path / "src.md"
+    src.write_text("alpha\nTARGET LINE\nbeta\n", encoding="utf-8")
+    out = tmp_path / "arm.md"
+    M.build(str(src), "TARGET LINE", str(out))
+    assert out.read_text(encoding="utf-8") == "alpha\nbeta\n"
+
+    # the source moves on, as a live prompt file does
+    src.write_text("alpha\nbeta\n", encoding="utf-8")
+    with pytest.raises(M.ArmError, match="byte-identical"):
+        M.build(str(src), "TARGET LINE", str(out))

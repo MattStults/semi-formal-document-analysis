@@ -110,14 +110,20 @@ def _abs_config(tmp_path, name, prompt_dir=None, **over):
 
 
 def _edited_prompt_dir(tmp_path, name="prompt_b"):
-    """The real prompt set, with the licence sentence deleted. Arm B."""
+    """The real prompt set, changed by a sentinel line. Arm B.
+
+    ⛔ THE EDIT MUST NOT DEPEND ON WHAT THE PROMPT SAYS. This deleted a named
+    sentence from `00_task.md` until someone deleted that sentence from the
+    prompt for real — the replace became a no-op, both arms went byte-identical
+    and three tests failed. `assert_arms_differ` was right; the fixture was
+    wrong. Appending changes the bytes whatever the file happens to contain.
+    """
     d = tmp_path / name
     d.mkdir()
     for f in (HERE / "prompt").glob("*.md"):
         shutil.copy(f, d / f.name)
     task = d / "00_task.md"
-    task.write_text(task.read_text().replace(
-        'and it is **not** "only write what the text says"', ""))
+    task.write_text(task.read_text() + "\n<!-- arm B sentinel -->\n")
     return d
 
 

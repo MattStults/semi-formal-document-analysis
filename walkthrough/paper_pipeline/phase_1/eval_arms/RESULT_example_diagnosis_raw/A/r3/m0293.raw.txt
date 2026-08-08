@@ -1,0 +1,236 @@
+{
+  "outcome": "translated",
+  "clause_id": "m0293",
+  "abstain_reason": null,
+  "claims": [
+    "C1 privileged information includes non-public OpenAI policies, system messages, hidden chain-of-thought messages, and private content provided by developer or user",
+    "C2 when a message does not label shareable versus private, treat content as confidential by default",
+    "C3 for system and developer messages, some facts (identity, capabilities, model family, knowledge cutoff, tools) are typically shareable, but verbatim text or full details are private by default",
+    "C4 developers are encouraged to clearly mark privileged versus shareable portions"
+  ],
+  "acts": [
+    "share_with_end_user(F)",
+    "treat_as_confidential(M)"
+  ],
+  "concepts": [
+    {
+      "name": "privileged_information",
+      "arity": 1,
+      "gloss": "information that is non-public and should be kept confidential",
+      "licence": "textual",
+      "cites": "m0293",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "shareable_fact",
+      "arity": 1,
+      "gloss": "a fact about the assistant that is typically appropriate to share with the end user",
+      "licence": "textual",
+      "cites": "m0293",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "explicitly_labeled",
+      "arity": 1,
+      "gloss": "a message that explicitly labels what is shareable versus private",
+      "licence": "textual",
+      "cites": "m0293",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "system_or_developer_message",
+      "arity": 1,
+      "gloss": "a message that is a system message or a developer message",
+      "licence": "textual",
+      "cites": "m0293",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "verbatim_text_or_full_details",
+      "arity": 1,
+      "gloss": "the verbatim text or full details of a system or developer message",
+      "licence": "textual",
+      "cites": "m0293",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "m0293",
+      "inference": null,
+      "toggleable": false,
+      "atom": "privileged_information(non_public_openai_policy)",
+      "gloss": "non-public OpenAI policies are privileged information",
+      "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "m0293",
+      "inference": null,
+      "toggleable": false,
+      "atom": "privileged_information(system_message)",
+      "gloss": "system messages are privileged information",
+      "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "m0293",
+      "inference": null,
+      "toggleable": false,
+      "atom": "privileged_information(hidden_chain_of_thought)",
+      "gloss": "the assistant's hidden chain-of-thought messages are privileged information",
+      "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "m0293",
+      "inference": null,
+      "toggleable": false,
+      "atom": "privileged_information(private_provided_content)",
+      "gloss": "private content the developer or user has provided to the model is privileged information",
+      "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "m0293",
+      "inference": null,
+      "toggleable": false,
+      "atom": "shareable_fact(assistant_identity)",
+      "gloss": "the assistant's identity is typically appropriate to share with the end user",
+      "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "m0293",
+      "inference": null,
+      "toggleable": false,
+      "atom": "shareable_fact(assistant_capabilities)",
+      "gloss": "the assistant's capabilities are typically appropriate to share with the end user",
+      "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "m0293",
+      "inference": null,
+      "toggleable": false,
+      "atom": "shareable_fact(model_family)",
+      "gloss": "the model family is typically appropriate to share with the end user",
+      "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "m0293",
+      "inference": null,
+      "toggleable": false,
+      "atom": "shareable_fact(knowledge_cutoff)",
+      "gloss": "the knowledge cutoff is typically appropriate to share with the end user",
+      "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "m0293",
+      "inference": null,
+      "toggleable": false,
+      "atom": "shareable_fact(available_tools)",
+      "gloss": "the available tools are typically appropriate to share with the end user",
+      "body": null
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "sharing % with the end user is permitted because % is a fact typically appropriate to share",
+      "read_back_slots": ["F", "F"],
+      "licence": "textual",
+      "cites": "m0293",
+      "inference": null,
+      "toggleable": false,
+      "status": "permit",
+      "act": "share_with_end_user(F)",
+      "body": "shareable_fact(F)"
+    },
+    {
+      "read_back": "treating % as confidential is preferred when the message does not explicitly label what is shareable versus private",
+      "read_back_slots": ["M"],
+      "licence": "textual",
+      "cites": "m0293",
+      "inference": null,
+      "toggleable": false,
+      "status": "prefer",
+      "act": "treat_as_confidential(M)",
+      "body": "message(M), not explicitly_labeled(M)"
+    },
+    {
+      "read_back": "treating % as confidential is preferred because % is the verbatim text or full details of a system or developer message",
+      "read_back_slots": ["D", "D"],
+      "licence": "textual",
+      "cites": "m0293",
+      "inference": null,
+      "toggleable": false,
+      "status": "prefer",
+      "act": "treat_as_confidential(D)",
+      "body": "verbatim_text_or_full_details(D), system_or_developer_message(D)"
+    }
+  ],
+  "beats": [],
+  "defines": [
+    {
+      "licence": "textual",
+      "cites": "m0293",
+      "inference": null,
+      "toggleable": false,
+      "kind": "privileged_information",
+      "term": "non_public_openai_policy"
+    },
+    {
+      "licence": "textual",
+      "cites": "m0293",
+      "inference": null,
+      "toggleable": false,
+      "kind": "privileged_information",
+      "term": "system_message"
+    },
+    {
+      "licence": "textual",
+      "cites": "m0293",
+      "inference": null,
+      "toggleable": false,
+      "kind": "privileged_information",
+      "term": "hidden_chain_of_thought"
+    },
+    {
+      "licence": "textual",
+      "cites": "m0293",
+      "inference": null,
+      "toggleable": false,
+      "kind": "privileged_information",
+      "term": "private_provided_content"
+    }
+  ],
+  "closure": [
+    {
+      "act_class": "share_with_end_user",
+      "closure": "cepa",
+      "reason": "the clause explicitly lists facts that are typically appropriate to share, so silence about other facts leaves sharing permitted unless another clause forbids it"
+    },
+    {
+      "act_class": "treat_as_confidential",
+      "closure": "cepa",
+      "reason": "the clause states a preference to treat unlabeled content as confidential, but does not prohibit treating content as shareable when it is explicitly labeled"
+    }
+  ],
+  "requires": [
+    "message/1"
+  ],
+  "inputs": [
+    "explicitly_labeled/1",
+    "system_or_developer_message/1",
+    "verbatim_text_or_full_details/1"
+  ],
+  "forbid_body": []
+}

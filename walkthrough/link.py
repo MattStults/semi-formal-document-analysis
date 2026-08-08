@@ -329,6 +329,29 @@ def defined_predicates(text):
 #  Headers
 # ==========================================================================
 
+def _split_top_level(text, sep=","):
+    """Split on `sep` only at parenthesis depth zero.
+
+    A term list is not a comma-separated string: `f(a, b), g` is two items, not
+    three. See the `%% acts:` comment in `header` for what the flat split cost.
+    """
+    out, depth, buf = [], 0, []
+    for ch in text:
+        if ch == "(":
+            depth += 1
+        elif ch == ")":
+            depth = max(0, depth - 1)
+        if ch == sep and depth == 0:
+            if "".join(buf).strip():
+                out.append("".join(buf).strip())
+            buf = []
+        else:
+            buf.append(ch)
+    if "".join(buf).strip():
+        out.append("".join(buf).strip())
+    return out
+
+
 def header(path):
     """Parse a module's `%%` headers.
 
@@ -358,7 +381,15 @@ def header(path):
             # -- the trailing parenthetical is prose, so take the signatures.
             out["concepts"] = set(SIG.findall(val))
         elif key == "acts":
-            out["acts"] = {t.strip() for t in val.split(",") if t.strip()}
+            # ⛔ NOT a flat comma split. An act may carry arguments, and
+            # `respond(CoT, Input, Outputs, Seq)` split on every comma became
+            # four act classes. Three were fragments, none had a closure
+            # declaration, and `closure-missing` is an ERROR -- so the model
+            # was sent back to fix acts it never wrote, under a message reading
+            # `governs act class(es) CoT), Input), Outputs), Seq)`. Found on a
+            # held-out run; a spurious error is indistinguishable from a real
+            # one from inside the repair loop.
+            out["acts"] = set(_split_top_level(val))
 
     for act_class, closure in CLOSURE_HDR.findall(txt):
         out["closure"][act_class] = closure

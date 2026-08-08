@@ -1,0 +1,902 @@
+{
+ "eval_set": {
+  "clause_ids": [
+   "m0034",
+   "m0071",
+   "m0028",
+   "m0253"
+  ],
+  "n": 4,
+  "source": "--clause-file eval_arms/heldout_v2.txt",
+  "sha": "5ddfb6b9d9ea39ad",
+  "_": "\u26a0\ufe0f Check this against the clauses that MOTIVATED the change. A prompt change validated on its own diagnosis set is fitted, not measured."
+ },
+ "first_attempt_only": true,
+ "repair": "disabled \u2014 one call per clause per repeat",
+ "arms": {
+  "A": {
+   "config": "/Users/mattstults/Documents/ai_safety_projects/semi-formal-document-analysis/walkthrough/paper_pipeline/phase_1/config_arm_pre_example.json",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "temperature": 0.2,
+   "system_sha": "5b5cccae465dd28c",
+   "inputs_sha": "d4e7d0c08b5363a3",
+   "repeats": 3,
+   "spread": {
+    "first_attempt_clean_rate": {
+     "n": 3,
+     "mean": 0.25,
+     "sd": 0.0,
+     "min": 0.25,
+     "max": 0.25,
+     "values": [
+      0.25,
+      0.25,
+      0.25
+     ]
+    },
+    "findings_per_clause": {
+     "n": 3,
+     "mean": 5.25,
+     "sd": 0.5,
+     "min": 4.75,
+     "max": 5.75,
+     "values": [
+      4.75,
+      5.75,
+      5.25
+     ]
+    },
+    "error_findings_per_clause": {
+     "n": 3,
+     "mean": 2.9166666666666665,
+     "sd": 0.14433756729740643,
+     "min": 2.75,
+     "max": 3.0,
+     "values": [
+      3.0,
+      3.0,
+      2.75
+     ]
+    },
+    "abstention_rate": {
+     "n": 3,
+     "mean": 0.0,
+     "sd": 0.0,
+     "min": 0.0,
+     "max": 0.0,
+     "values": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "unbuildable_rate": {
+     "n": 3,
+     "mean": 0.5,
+     "sd": 0.0,
+     "min": 0.5,
+     "max": 0.5,
+     "values": [
+      0.5,
+      0.5,
+      0.5
+     ]
+    }
+   },
+   "per_repeat": [
+    {
+     "index": 1,
+     "metrics": {
+      "first_attempt_clean_rate": 0.25,
+      "findings_per_clause": 4.75,
+      "error_findings_per_clause": 3.0,
+      "abstention_rate": 0.0,
+      "unbuildable_rate": 0.5
+     },
+     "clauses": [
+      {
+       "clause_id": "m0034",
+       "outcome": "invalid",
+       "attempt": 1,
+       "n_findings": 5,
+       "n_errors": 5,
+       "findings": [
+        "[schema-breach] ontology[0]: ontology atom: 'root_level_instruction(I)' carries the variable 'I' and there are no conditions to bind it. The solver refuses the WHOLE FILE for an unsafe variable, so this would take every linked clause down with it \u2014 give it a body, or write a term with no variables",
+        "[schema-breach] ontology[1]: ontology atom: 'catastrophic_risk_behavior(B)' carries the variable 'B' and there are no conditions to bind it. The solver refuses the WHOLE FILE for an unsafe variable, so this would take every linked clause down with it \u2014 give it a body, or write a term with no variables",
+        "[schema-breach] ontology[2]: ontology atom: 'direct_physical_harm_behavior(B)' carries the variable 'B' and there are no conditions to bind it. The solver refuses the WHOLE FILE for an unsafe variable, so this would take every linked clause down with it \u2014 give it a body, or write a term with no variables",
+        "[schema-breach] ontology[3]: ontology atom: 'law_violating_behavior(B)' carries the variable 'B' and there are no conditions to bind it. The solver refuses the WHOLE FILE for an unsafe variable, so this would take every linked clause down with it \u2014 give it a body, or write a term with no variables",
+        "[schema-breach] ontology[4]: ontology atom: 'chain_of_command_undermining_behavior(B)' carries the variable 'B' and there are no conditions to bind it. The solver refuses the WHOLE FILE for an unsafe variable, so this would take every linked clause down with it \u2014 give it a body, or write a term with no variables"
+       ]
+      },
+      {
+       "clause_id": "m0071",
+       "outcome": "invalid",
+       "attempt": 1,
+       "n_findings": 9,
+       "n_errors": 2,
+       "findings": [
+        "[requires-unprovided] m0071.lp: `generated_by_assistant/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0071.lp: `inserted_by_openai/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0071.lp: `inserted_to_steer/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0071.lp: `part_of_output_production/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0071.lp: `produced_by_model/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0071.lp: `received_from_api/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0071.lp: `sequence_of_messages/2` is declared in `%% requires:` and no module in this link scope defines it",
+        "[closure-missing] m0071.lp: governs act class(es) Msg), Seq) with no `%% closure:` declaration; a module that declares none is read as CEPA -- silence permits -- without recording it",
+        "[clingo-error] m0071.lp: clingo refused this program, so nothing below was actually analysed: /var/folders/jh/ym8tv1sn29dbxk49v5wbp4s40000gn/T/stage2_checks_qlfrqe90/m0071.lp:48:1-69: error: unsafe variables in: | /var/folders/jh/ym8tv1sn29dbxk49v5wbp4s40000gn/T/stage2_checks_qlfrqe90/m0071.lp:50:1-83: error: unsafe variables in: | /var/folders/jh/ym8tv1sn29dbxk49v5wbp4s40000gn/T/stage2_checks_qlfrqe90/m0071.lp:52:1-73: error: unsafe variables in: | /var/folders/jh/ym8tv1sn29dbxk49v5wbp4s40000gn/T/stage2_checks_qlfrqe90/m0071.lp:54:1-86: error: unsafe variables in:"
+       ]
+      },
+      {
+       "clause_id": "m0028",
+       "outcome": "translated",
+       "attempt": 1,
+       "n_findings": 0,
+       "n_errors": 0,
+       "findings": []
+      },
+      {
+       "clause_id": "m0253",
+       "outcome": "invalid",
+       "attempt": 1,
+       "n_findings": 5,
+       "n_errors": 5,
+       "findings": [
+        "[schema-breach] ontology[0]: ontology atom: 'user_input_content(C) :- user_included_directly(C)' is not a term. It must be a functor like produce(M) or say_cannot_answer \u2014 not a rule, not a sentence",
+        "[schema-breach] ontology[1]: ontology atom: 'disallowed_content(C) :- disallowed_by_policy(C)' is not a term. It must be a functor like produce(M) or say_cannot_answer \u2014 not a rule, not a sentence",
+        "[schema-breach] ontology[2]: ontology atom: 'dangerous_detail(D) :- refines_danger(D, C), disallowed_content(C)' is not a term. It must be a functor like produce(M) or say_cannot_answer \u2014 not a rule, not a sentence",
+        "[schema-breach] ontology[3]: ontology atom: 'harmful_or_illicit_instruction(I) :- intended_for_harm_or_illicit(I)' is not a term. It must be a functor like produce(M) or say_cannot_answer \u2014 not a rule, not a sentence",
+        "[schema-breach] ontology[4]: ontology atom: 'user_provided_reference(R) :- user_provided(R)' is not a term. It must be a functor like produce(M) or say_cannot_answer \u2014 not a rule, not a sentence"
+       ]
+      }
+     ]
+    },
+    {
+     "index": 2,
+     "metrics": {
+      "first_attempt_clean_rate": 0.25,
+      "findings_per_clause": 5.75,
+      "error_findings_per_clause": 3.0,
+      "abstention_rate": 0.0,
+      "unbuildable_rate": 0.5
+     },
+     "clauses": [
+      {
+       "clause_id": "m0034",
+       "outcome": "invalid",
+       "attempt": 1,
+       "n_findings": 5,
+       "n_errors": 5,
+       "findings": [
+        "[schema-breach] ontology[0]: ontology atom: 'root_level_instruction(I)' carries the variable 'I' and there are no conditions to bind it. The solver refuses the WHOLE FILE for an unsafe variable, so this would take every linked clause down with it \u2014 give it a body, or write a term with no variables",
+        "[schema-breach] ontology[1]: ontology atom: 'catastrophic_risk_behavior(B)' carries the variable 'B' and there are no conditions to bind it. The solver refuses the WHOLE FILE for an unsafe variable, so this would take every linked clause down with it \u2014 give it a body, or write a term with no variables",
+        "[schema-breach] ontology[2]: ontology atom: 'physical_harm_behavior(B)' carries the variable 'B' and there are no conditions to bind it. The solver refuses the WHOLE FILE for an unsafe variable, so this would take every linked clause down with it \u2014 give it a body, or write a term with no variables",
+        "[schema-breach] ontology[3]: ontology atom: 'law_violating_behavior(B)' carries the variable 'B' and there are no conditions to bind it. The solver refuses the WHOLE FILE for an unsafe variable, so this would take every linked clause down with it \u2014 give it a body, or write a term with no variables",
+        "[schema-breach] ontology[4]: ontology atom: 'chain_undermining_behavior(B)' carries the variable 'B' and there are no conditions to bind it. The solver refuses the WHOLE FILE for an unsafe variable, so this would take every linked clause down with it \u2014 give it a body, or write a term with no variables"
+       ]
+      },
+      {
+       "clause_id": "m0071",
+       "outcome": "invalid",
+       "attempt": 1,
+       "n_findings": 13,
+       "n_errors": 2,
+       "findings": [
+        "[requires-unprovided] m0071.lp: `chain_of_thought_message/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0071.lp: `delivered_to_developer/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0071.lp: `developer/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0071.lp: `inserted_by_openai/2` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0071.lp: `message_in_sequence/3` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0071.lp: `message_role/2` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0071.lp: `openai/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0071.lp: `output_messages/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0071.lp: `produced_by_assistant/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0071.lp: `returned_via_api/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0071.lp: `sequence_of_messages/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[closure-missing] m0071.lp: governs act class(es) Input), Msg), Outputs), Seq) with no `%% closure:` declaration; a module that declares none is read as CEPA -- silence permits -- without recording it",
+        "[unresolved-reference] m0071.lp: `message_in_sequence/2` is used in a body, defined nowhere in this link scope, and declared neither in `%% inputs:` nor in `%% requires:` nor in the concept table"
+       ]
+      },
+      {
+       "clause_id": "m0028",
+       "outcome": "translated",
+       "attempt": 1,
+       "n_findings": 0,
+       "n_errors": 0,
+       "findings": []
+      },
+      {
+       "clause_id": "m0253",
+       "outcome": "invalid",
+       "attempt": 1,
+       "n_findings": 5,
+       "n_errors": 5,
+       "findings": [
+        "[schema-breach] ontology[0]: ontology atom: 'user_input_content(C) :- user_included_directly(C)' is not a term. It must be a functor like produce(M) or say_cannot_answer \u2014 not a rule, not a sentence",
+        "[schema-breach] ontology[1]: ontology atom: 'disallowed_content(C) :- disallowed_by_policy(C)' is not a term. It must be a functor like produce(M) or say_cannot_answer \u2014 not a rule, not a sentence",
+        "[schema-breach] ontology[2]: ontology atom: 'dangerous_detail(D) :- detail_of(D, C), disallowed_content(C)' is not a term. It must be a functor like produce(M) or say_cannot_answer \u2014 not a rule, not a sentence",
+        "[schema-breach] ontology[3]: ontology atom: 'harmful_or_illicit_instruction(I) :- intended_for_harm_or_illicit(I)' is not a term. It must be a functor like produce(M) or say_cannot_answer \u2014 not a rule, not a sentence",
+        "[schema-breach] ontology[4]: ontology atom: 'provided_reference(R) :- user_provided_reference(R)' is not a term. It must be a functor like produce(M) or say_cannot_answer \u2014 not a rule, not a sentence"
+       ]
+      }
+     ]
+    },
+    {
+     "index": 3,
+     "metrics": {
+      "first_attempt_clean_rate": 0.25,
+      "findings_per_clause": 5.25,
+      "error_findings_per_clause": 2.75,
+      "abstention_rate": 0.0,
+      "unbuildable_rate": 0.5
+     },
+     "clauses": [
+      {
+       "clause_id": "m0034",
+       "outcome": "invalid",
+       "attempt": 1,
+       "n_findings": 4,
+       "n_errors": 4,
+       "findings": [
+        "[schema-breach] ontology[1]: ontology atom: 'catastrophic_risk_behavior(B)' carries the variable 'B' and there are no conditions to bind it. The solver refuses the WHOLE FILE for an unsafe variable, so this would take every linked clause down with it \u2014 give it a body, or write a term with no variables",
+        "[schema-breach] ontology[2]: ontology atom: 'direct_physical_harm_behavior(B)' carries the variable 'B' and there are no conditions to bind it. The solver refuses the WHOLE FILE for an unsafe variable, so this would take every linked clause down with it \u2014 give it a body, or write a term with no variables",
+        "[schema-breach] ontology[3]: ontology atom: 'law_violating_behavior(B)' carries the variable 'B' and there are no conditions to bind it. The solver refuses the WHOLE FILE for an unsafe variable, so this would take every linked clause down with it \u2014 give it a body, or write a term with no variables",
+        "[schema-breach] ontology[4]: ontology atom: 'chain_of_command_undermining_behavior(B)' carries the variable 'B' and there are no conditions to bind it. The solver refuses the WHOLE FILE for an unsafe variable, so this would take every linked clause down with it \u2014 give it a body, or write a term with no variables"
+       ]
+      },
+      {
+       "clause_id": "m0071",
+       "outcome": "invalid",
+       "attempt": 1,
+       "n_findings": 11,
+       "n_errors": 1,
+       "findings": [
+        "[requires-unprovided] m0071.lp: `assistant_message/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0071.lp: `developer_message/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0071.lp: `generated_by_assistant/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0071.lp: `inserted_by_openai/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0071.lp: `part_of_producing_output/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0071.lp: `produced_by_model/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0071.lp: `received_from_api/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0071.lp: `sequence_of/3` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0071.lp: `steers_assistant_behavior/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0071.lp: `user_message/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[unresolved-reference] m0071.lp: `sequence_of/4` is used in a body, defined nowhere in this link scope, and declared neither in `%% inputs:` nor in `%% requires:` nor in the concept table"
+       ]
+      },
+      {
+       "clause_id": "m0028",
+       "outcome": "translated",
+       "attempt": 1,
+       "n_findings": 0,
+       "n_errors": 0,
+       "findings": []
+      },
+      {
+       "clause_id": "m0253",
+       "outcome": "invalid",
+       "attempt": 1,
+       "n_findings": 6,
+       "n_errors": 6,
+       "findings": [
+        "[schema-breach] ontology[0]: ontology atom: 'user_input_content(M)' carries the variable 'M' and there are no conditions to bind it. The solver refuses the WHOLE FILE for an unsafe variable, so this would take every linked clause down with it \u2014 give it a body, or write a term with no variables",
+        "[schema-breach] ontology[1]: ontology atom: 'directly_included(M)' carries the variable 'M' and there are no conditions to bind it. The solver refuses the WHOLE FILE for an unsafe variable, so this would take every linked clause down with it \u2014 give it a body, or write a term with no variables",
+        "[schema-breach] ontology[2]: ontology atom: 'disallowed_content(M)' carries the variable 'M' and there are no conditions to bind it. The solver refuses the WHOLE FILE for an unsafe variable, so this would take every linked clause down with it \u2014 give it a body, or write a term with no variables",
+        "[schema-breach] ontology[3]: ontology atom: 'dangerous_detail(D)' carries the variable 'D' and there are no conditions to bind it. The solver refuses the WHOLE FILE for an unsafe variable, so this would take every linked clause down with it \u2014 give it a body, or write a term with no variables",
+        "[schema-breach] ontology[4]: ontology atom: 'harmful_or_illicit_instruction(I)' carries the variable 'I' and there are no conditions to bind it. The solver refuses the WHOLE FILE for an unsafe variable, so this would take every linked clause down with it \u2014 give it a body, or write a term with no variables",
+        "[schema-breach] asserts[5]: read_back has 2 `%` slot(s) but 1 slot entr(ies) \u2014 the rendered sentence would silently be wrong. A literal percent sign cannot be written; say 'per cent'"
+       ]
+      }
+     ]
+    }
+   ],
+   "clusters": [
+    {
+     "key": "\u2039\u203a is declared in \u2039\u203a and no module in this link scope defines it",
+     "count": 28,
+     "example": "`generated_by_assistant/1` is declared in `%% requires:` and no module in this link scope defines it",
+     "severity": "note",
+     "check_ids": [
+      "requires-unprovided"
+     ],
+     "wheres": [
+      "m0071.lp"
+     ],
+     "clause_ids": [
+      "m0071"
+     ]
+    },
+    {
+     "key": "ontology atom: \u2039\u203a carries the variable \u2039\u203a and there are no conditions to bind it. The solver refuses the WHOLE FILE for an unsafe variable, so this would take every linked clause down with it \u2014 give it a body, or write a term with no variables",
+     "count": 19,
+     "example": "ontology atom: 'root_level_instruction(I)' carries the variable 'I' and there are no conditions to bind it. The solver refuses the WHOLE FILE for an unsafe variable, so this would take every linked clause down with it \u2014 give it a body, or write a term with no variables",
+     "severity": "error",
+     "check_ids": [
+      "schema-breach"
+     ],
+     "wheres": [
+      "ontology[0]",
+      "ontology[1]",
+      "ontology[2]",
+      "ontology[3]",
+      "ontology[4]"
+     ],
+     "clause_ids": [
+      "m0034",
+      "m0253"
+     ]
+    },
+    {
+     "key": "ontology atom: \u2039\u203a is not a term. It must be a functor like produce(M) or say_cannot_answer \u2014 not a rule, not a sentence",
+     "count": 10,
+     "example": "ontology atom: 'user_input_content(C) :- user_included_directly(C)' is not a term. It must be a functor like produce(M) or say_cannot_answer \u2014 not a rule, not a sentence",
+     "severity": "error",
+     "check_ids": [
+      "schema-breach"
+     ],
+     "wheres": [
+      "ontology[0]",
+      "ontology[1]",
+      "ontology[2]",
+      "ontology[3]",
+      "ontology[4]"
+     ],
+     "clause_ids": [
+      "m0253"
+     ]
+    },
+    {
+     "key": "\u2039\u203a is used in a body, defined nowhere in this link scope, and declared neither in \u2039\u203a nor in \u2039\u203a nor in the concept table",
+     "count": 2,
+     "example": "`message_in_sequence/2` is used in a body, defined nowhere in this link scope, and declared neither in `%% inputs:` nor in `%% requires:` nor in the concept table",
+     "severity": "error",
+     "check_ids": [
+      "unresolved-reference"
+     ],
+     "wheres": [
+      "m0071.lp"
+     ],
+     "clause_ids": [
+      "m0071"
+     ]
+    },
+    {
+     "key": "clingo refused this program, so nothing below was actually analysed: \u2039\u203a:#:#-#: error: unsafe variables in: | \u2039\u203a:#:#-#: error: unsafe variables in: | \u2039\u203a:#:#-#: error: unsafe variables in: | \u2039\u203a:#:#-#: error: unsafe variables in:",
+     "count": 1,
+     "example": "clingo refused this program, so nothing below was actually analysed: /var/folders/jh/ym8tv1sn29dbxk49v5wbp4s40000gn/T/stage2_checks_qlfrqe90/m0071.lp:48:1-69: error: unsafe variables in: | /var/folders/jh/ym8tv1sn29dbxk49v5wbp4s40000gn/T/stage2_checks_qlfrqe90/m0071.lp:50:1-83: error: unsafe variables in: | /var/folders/jh/ym8tv1sn29dbxk49v5wbp4s40000gn/T/stage2_checks_qlfrqe90/m0071.lp:52:1-73: error: unsafe variables in: | /var/folders/jh/ym8tv1sn29dbxk49v5wbp4s40000gn/T/stage2_checks_qlfrqe90/m0071.lp:54:1-86: error: unsafe variables in:",
+     "severity": "error",
+     "check_ids": [
+      "clingo-error"
+     ],
+     "wheres": [
+      "m0071.lp"
+     ],
+     "clause_ids": [
+      "m0071"
+     ]
+    },
+    {
+     "key": "governs act class(es) Input), Msg), Outputs), Seq) with no \u2039\u203a declaration; a module that declares none is read as CEPA -- silence permits -- without recording it",
+     "count": 1,
+     "example": "governs act class(es) Input), Msg), Outputs), Seq) with no `%% closure:` declaration; a module that declares none is read as CEPA -- silence permits -- without recording it",
+     "severity": "error",
+     "check_ids": [
+      "closure-missing"
+     ],
+     "wheres": [
+      "m0071.lp"
+     ],
+     "clause_ids": [
+      "m0071"
+     ]
+    },
+    {
+     "key": "governs act class(es) Msg), Seq) with no \u2039\u203a declaration; a module that declares none is read as CEPA -- silence permits -- without recording it",
+     "count": 1,
+     "example": "governs act class(es) Msg), Seq) with no `%% closure:` declaration; a module that declares none is read as CEPA -- silence permits -- without recording it",
+     "severity": "error",
+     "check_ids": [
+      "closure-missing"
+     ],
+     "wheres": [
+      "m0071.lp"
+     ],
+     "clause_ids": [
+      "m0071"
+     ]
+    },
+    {
+     "key": "read_back has # \u2039\u203a slot(s) but # slot entr(ies) \u2014 the rendered sentence would silently be wrong. A literal percent sign cannot be written; say \u2039\u203a",
+     "count": 1,
+     "example": "read_back has 2 `%` slot(s) but 1 slot entr(ies) \u2014 the rendered sentence would silently be wrong. A literal percent sign cannot be written; say 'per cent'",
+     "severity": "error",
+     "check_ids": [
+      "schema-breach"
+     ],
+     "wheres": [
+      "asserts[5]"
+     ],
+     "clause_ids": [
+      "m0253"
+     ]
+    }
+   ]
+  },
+  "B": {
+   "config": "/Users/mattstults/Documents/ai_safety_projects/semi-formal-document-analysis/walkthrough/paper_pipeline/phase_1/config.json",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "temperature": 0.2,
+   "system_sha": "de50d7f32a74141f",
+   "inputs_sha": "ccacb9022eaadcb8",
+   "repeats": 3,
+   "spread": {
+    "first_attempt_clean_rate": {
+     "n": 3,
+     "mean": 0.3333333333333333,
+     "sd": 0.14433756729740643,
+     "min": 0.25,
+     "max": 0.5,
+     "values": [
+      0.25,
+      0.5,
+      0.25
+     ]
+    },
+    "findings_per_clause": {
+     "n": 3,
+     "mean": 5.666666666666667,
+     "sd": 1.4433756729740645,
+     "min": 4.0,
+     "max": 6.5,
+     "values": [
+      6.5,
+      4.0,
+      6.5
+     ]
+    },
+    "error_findings_per_clause": {
+     "n": 3,
+     "mean": 1.0833333333333333,
+     "sd": 0.5773502691896257,
+     "min": 0.75,
+     "max": 1.75,
+     "values": [
+      0.75,
+      1.75,
+      0.75
+     ]
+    },
+    "abstention_rate": {
+     "n": 3,
+     "mean": 0.0,
+     "sd": 0.0,
+     "min": 0.0,
+     "max": 0.0,
+     "values": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "unbuildable_rate": {
+     "n": 3,
+     "mean": 0.3333333333333333,
+     "sd": 0.14433756729740643,
+     "min": 0.25,
+     "max": 0.5,
+     "values": [
+      0.25,
+      0.5,
+      0.25
+     ]
+    }
+   },
+   "per_repeat": [
+    {
+     "index": 1,
+     "metrics": {
+      "first_attempt_clean_rate": 0.25,
+      "findings_per_clause": 6.5,
+      "error_findings_per_clause": 0.75,
+      "abstention_rate": 0.0,
+      "unbuildable_rate": 0.25
+     },
+     "clauses": [
+      {
+       "clause_id": "m0034",
+       "outcome": "translated",
+       "attempt": 1,
+       "n_findings": 10,
+       "n_errors": 0,
+       "findings": [
+        "[concept-declared] m0034.lp: `causes_direct_physical_harm/1` is head-less and declared in the concept table by m0034",
+        "[concept-declared] m0034.lp: `contributes_to_catastrophic_risk/1` is head-less and declared in the concept table by m0034",
+        "[concept-declared] m0034.lp: `root_level_instruction/1` is head-less and declared in the concept table by m0034",
+        "[concept-declared] m0034.lp: `undermines_chain_of_command/1` is head-less and declared in the concept table by m0034",
+        "[concept-declared] m0034.lp: `violates_law/1` is head-less and declared in the concept table by m0034",
+        "[situation-input] m0034.lp: `causes_direct_physical_harm/1` is head-less and declared as a situation input",
+        "[situation-input] m0034.lp: `contributes_to_catastrophic_risk/1` is head-less and declared as a situation input",
+        "[situation-input] m0034.lp: `root_level_instruction/1` is head-less and declared as a situation input",
+        "[situation-input] m0034.lp: `undermines_chain_of_command/1` is head-less and declared as a situation input",
+        "[situation-input] m0034.lp: `violates_law/1` is head-less and declared as a situation input"
+       ]
+      },
+      {
+       "clause_id": "m0071",
+       "outcome": "invalid",
+       "attempt": 1,
+       "n_findings": 8,
+       "n_errors": 1,
+       "findings": [
+        "[requires-unprovided] m0071.lp: `hidden_cot/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0071.lp: `inserted_by_openai/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0071.lp: `message_in_sequence/2` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0071.lp: `received_from_api/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0071.lp: `sequence_of_messages/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[closure-missing] m0071.lp: governs act class(es) C), M), O), S) with no `%% closure:` declaration; a module that declares none is read as CEPA -- silence permits -- without recording it",
+        "[situation-input] m0071.lp: `developer/1` is head-less and declared as a situation input",
+        "[situation-input] m0071.lp: `openai/1` is head-less and declared as a situation input"
+       ]
+      },
+      {
+       "clause_id": "m0028",
+       "outcome": "invalid",
+       "attempt": 1,
+       "n_findings": 1,
+       "n_errors": 1,
+       "findings": [
+        "[schema-breach] ontology[0]: ontology atom: 'execution_error(E)' carries the variable 'E' and there are no conditions to bind it. The solver refuses the WHOLE FILE for an unsafe variable, so this would take every linked clause down with it \u2014 give it a body, or write a term with no variables"
+       ]
+      },
+      {
+       "clause_id": "m0253",
+       "outcome": "invalid",
+       "attempt": 1,
+       "n_findings": 7,
+       "n_errors": 1,
+       "findings": [
+        "[requires-unprovided] m0253.lp: `dangerous_detail/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0253.lp: `disallowed/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0253.lp: `intended_harmful_or_illicit/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0253.lp: `intended_to_retrieve_disallowed/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0253.lp: `provided_by_user/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0253.lp: `reference/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[clingo-error] m0253.lp: clingo refused this program, so nothing below was actually analysed: /var/folders/jh/ym8tv1sn29dbxk49v5wbp4s40000gn/T/stage2_checks_uasf0b75/m0253.lp:52:1-67: error: unsafe variables in:"
+       ]
+      }
+     ]
+    },
+    {
+     "index": 2,
+     "metrics": {
+      "first_attempt_clean_rate": 0.5,
+      "findings_per_clause": 4.0,
+      "error_findings_per_clause": 1.75,
+      "abstention_rate": 0.0,
+      "unbuildable_rate": 0.5
+     },
+     "clauses": [
+      {
+       "clause_id": "m0034",
+       "outcome": "translated",
+       "attempt": 1,
+       "n_findings": 7,
+       "n_errors": 0,
+       "findings": [
+        "[requires-unprovided] m0034.lp: `behavior/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0034.lp: `causes_direct_physical_harm/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0034.lp: `contributes_to_catastrophic_risk/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0034.lp: `instruction/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0034.lp: `level/2` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0034.lp: `undermines_chain_of_command/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0034.lp: `violates_law/1` is declared in `%% requires:` and no module in this link scope defines it"
+       ]
+      },
+      {
+       "clause_id": "m0071",
+       "outcome": "invalid",
+       "attempt": 1,
+       "n_findings": 1,
+       "n_errors": 1,
+       "findings": [
+        "[schema-breach] <root>: assertion names act 'receive_hidden_chain_of_thought(Dev, M)', which is not in `acts`. Every act must be declared once so the closure declaration can be checked against it"
+       ]
+      },
+      {
+       "clause_id": "m0028",
+       "outcome": "translated",
+       "attempt": 1,
+       "n_findings": 2,
+       "n_errors": 0,
+       "findings": [
+        "[requires-unprovided] m0028.lp: `mistaken_execution/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0028.lp: `understands_task/1` is declared in `%% requires:` and no module in this link scope defines it"
+       ]
+      },
+      {
+       "clause_id": "m0253",
+       "outcome": "invalid",
+       "attempt": 1,
+       "n_findings": 6,
+       "n_errors": 6,
+       "findings": [
+        "[schema-breach] ontology[0]: ontology atom: 'transformation_request(R)' carries the variable 'R' and there are no conditions to bind it. The solver refuses the WHOLE FILE for an unsafe variable, so this would take every linked clause down with it \u2014 give it a body, or write a term with no variables",
+        "[schema-breach] ontology[1]: ontology atom: 'user_input_material(M)' carries the variable 'M' and there are no conditions to bind it. The solver refuses the WHOLE FILE for an unsafe variable, so this would take every linked clause down with it \u2014 give it a body, or write a term with no variables",
+        "[schema-breach] ontology[2]: ontology atom: 'dangerous_details(D)' carries the variable 'D' and there are no conditions to bind it. The solver refuses the WHOLE FILE for an unsafe variable, so this would take every linked clause down with it \u2014 give it a body, or write a term with no variables",
+        "[schema-breach] ontology[3]: ontology atom: 'harmful_or_illicit_instruction(I)' carries the variable 'I' and there are no conditions to bind it. The solver refuses the WHOLE FILE for an unsafe variable, so this would take every linked clause down with it \u2014 give it a body, or write a term with no variables",
+        "[schema-breach] ontology[4]: ontology atom: 'user_provided_reference(R)' carries the variable 'R' and there are no conditions to bind it. The solver refuses the WHOLE FILE for an unsafe variable, so this would take every linked clause down with it \u2014 give it a body, or write a term with no variables",
+        "[schema-breach] ontology[5]: ontology atom: 'directly_included_content(C)' carries the variable 'C' and there are no conditions to bind it. The solver refuses the WHOLE FILE for an unsafe variable, so this would take every linked clause down with it \u2014 give it a body, or write a term with no variables"
+       ]
+      }
+     ]
+    },
+    {
+     "index": 3,
+     "metrics": {
+      "first_attempt_clean_rate": 0.25,
+      "findings_per_clause": 6.5,
+      "error_findings_per_clause": 0.75,
+      "abstention_rate": 0.0,
+      "unbuildable_rate": 0.25
+     },
+     "clauses": [
+      {
+       "clause_id": "m0034",
+       "outcome": "translated",
+       "attempt": 1,
+       "n_findings": 10,
+       "n_errors": 0,
+       "findings": [
+        "[concept-declared] m0034.lp: `catastrophic_risk_behavior/1` is head-less and declared in the concept table by m0034",
+        "[concept-declared] m0034.lp: `chain_undermining_behavior/1` is head-less and declared in the concept table by m0034",
+        "[concept-declared] m0034.lp: `law_violating_behavior/1` is head-less and declared in the concept table by m0034",
+        "[concept-declared] m0034.lp: `physical_harm_behavior/1` is head-less and declared in the concept table by m0034",
+        "[concept-declared] m0034.lp: `root_level_instruction/1` is head-less and declared in the concept table by m0034",
+        "[situation-input] m0034.lp: `catastrophic_risk_behavior/1` is head-less and declared as a situation input",
+        "[situation-input] m0034.lp: `chain_undermining_behavior/1` is head-less and declared as a situation input",
+        "[situation-input] m0034.lp: `law_violating_behavior/1` is head-less and declared as a situation input",
+        "[situation-input] m0034.lp: `physical_harm_behavior/1` is head-less and declared as a situation input",
+        "[situation-input] m0034.lp: `root_level_instruction/1` is head-less and declared as a situation input"
+       ]
+      },
+      {
+       "clause_id": "m0071",
+       "outcome": "invalid",
+       "attempt": 1,
+       "n_findings": 10,
+       "n_errors": 1,
+       "findings": [
+        "[requires-unprovided] m0071.lp: `developer_message_sequence/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0071.lp: `generated_as_part_of_output/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0071.lp: `input/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0071.lp: `inserted_by_openai/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0071.lp: `produced_by_assistant/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[closure-missing] m0071.lp: governs act class(es) CoT), Input), Outputs), Seq) with no `%% closure:` declaration; a module that declares none is read as CEPA -- silence permits -- without recording it",
+        "[concept-declared] m0071.lp: `developer/1` is head-less and declared in the concept table by m0071",
+        "[concept-declared] m0071.lp: `openai/1` is head-less and declared in the concept table by m0071",
+        "[situation-input] m0071.lp: `developer/1` is head-less and declared as a situation input",
+        "[situation-input] m0071.lp: `openai/1` is head-less and declared as a situation input"
+       ]
+      },
+      {
+       "clause_id": "m0028",
+       "outcome": "invalid",
+       "attempt": 1,
+       "n_findings": 1,
+       "n_errors": 1,
+       "findings": [
+        "[schema-breach] ontology[0]: ontology atom: 'execution_error(E)' carries the variable 'E' and there are no conditions to bind it. The solver refuses the WHOLE FILE for an unsafe variable, so this would take every linked clause down with it \u2014 give it a body, or write a term with no variables"
+       ]
+      },
+      {
+       "clause_id": "m0253",
+       "outcome": "invalid",
+       "attempt": 1,
+       "n_findings": 5,
+       "n_errors": 1,
+       "findings": [
+        "[requires-unprovided] m0253.lp: `dangerous_detail/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0253.lp: `disallowed/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0253.lp: `intended_harmful_or_illicit/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0253.lp: `used_to_retrieve/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[clingo-error] m0253.lp: clingo refused this program, so nothing below was actually analysed: /var/folders/jh/ym8tv1sn29dbxk49v5wbp4s40000gn/T/stage2_checks__ctc2cbo/m0253.lp:55:1-67: error: unsafe variables in: | /var/folders/jh/ym8tv1sn29dbxk49v5wbp4s40000gn/T/stage2_checks__ctc2cbo/m0253.lp:67:1-74: error: unsafe variables in:"
+       ]
+      }
+     ]
+    }
+   ],
+   "clusters": [
+    {
+     "key": "\u2039\u203a is declared in \u2039\u203a and no module in this link scope defines it",
+     "count": 29,
+     "example": "`hidden_cot/1` is declared in `%% requires:` and no module in this link scope defines it",
+     "severity": "note",
+     "check_ids": [
+      "requires-unprovided"
+     ],
+     "wheres": [
+      "m0028.lp",
+      "m0034.lp",
+      "m0071.lp",
+      "m0253.lp"
+     ],
+     "clause_ids": [
+      "m0028",
+      "m0034",
+      "m0071",
+      "m0253"
+     ]
+    },
+    {
+     "key": "\u2039\u203a is head-less and declared as a situation input",
+     "count": 14,
+     "example": "`causes_direct_physical_harm/1` is head-less and declared as a situation input",
+     "severity": "note",
+     "check_ids": [
+      "situation-input"
+     ],
+     "wheres": [
+      "m0034.lp",
+      "m0071.lp"
+     ],
+     "clause_ids": [
+      "m0034",
+      "m0071"
+     ]
+    },
+    {
+     "key": "\u2039\u203a is head-less and declared in the concept table by m#",
+     "count": 12,
+     "example": "`causes_direct_physical_harm/1` is head-less and declared in the concept table by m0034",
+     "severity": "note",
+     "check_ids": [
+      "concept-declared"
+     ],
+     "wheres": [
+      "m0034.lp",
+      "m0071.lp"
+     ],
+     "clause_ids": [
+      "m0034",
+      "m0071"
+     ]
+    },
+    {
+     "key": "ontology atom: \u2039\u203a carries the variable \u2039\u203a and there are no conditions to bind it. The solver refuses the WHOLE FILE for an unsafe variable, so this would take every linked clause down with it \u2014 give it a body, or write a term with no variables",
+     "count": 8,
+     "example": "ontology atom: 'execution_error(E)' carries the variable 'E' and there are no conditions to bind it. The solver refuses the WHOLE FILE for an unsafe variable, so this would take every linked clause down with it \u2014 give it a body, or write a term with no variables",
+     "severity": "error",
+     "check_ids": [
+      "schema-breach"
+     ],
+     "wheres": [
+      "ontology[0]",
+      "ontology[1]",
+      "ontology[2]",
+      "ontology[3]",
+      "ontology[4]",
+      "ontology[5]"
+     ],
+     "clause_ids": [
+      "m0028",
+      "m0253"
+     ]
+    },
+    {
+     "key": "assertion names act \u2039\u203a, which is not in \u2039\u203a. Every act must be declared once so the closure declaration can be checked against it",
+     "count": 1,
+     "example": "assertion names act 'receive_hidden_chain_of_thought(Dev, M)', which is not in `acts`. Every act must be declared once so the closure declaration can be checked against it",
+     "severity": "error",
+     "check_ids": [
+      "schema-breach"
+     ],
+     "wheres": [
+      "<root>"
+     ],
+     "clause_ids": [
+      "m0071"
+     ]
+    },
+    {
+     "key": "clingo refused this program, so nothing below was actually analysed: \u2039\u203a:#:#-#: error: unsafe variables in:",
+     "count": 1,
+     "example": "clingo refused this program, so nothing below was actually analysed: /var/folders/jh/ym8tv1sn29dbxk49v5wbp4s40000gn/T/stage2_checks_uasf0b75/m0253.lp:52:1-67: error: unsafe variables in:",
+     "severity": "error",
+     "check_ids": [
+      "clingo-error"
+     ],
+     "wheres": [
+      "m0253.lp"
+     ],
+     "clause_ids": [
+      "m0253"
+     ]
+    },
+    {
+     "key": "clingo refused this program, so nothing below was actually analysed: \u2039\u203a:#:#-#: error: unsafe variables in: | \u2039\u203a:#:#-#: error: unsafe variables in:",
+     "count": 1,
+     "example": "clingo refused this program, so nothing below was actually analysed: /var/folders/jh/ym8tv1sn29dbxk49v5wbp4s40000gn/T/stage2_checks__ctc2cbo/m0253.lp:55:1-67: error: unsafe variables in: | /var/folders/jh/ym8tv1sn29dbxk49v5wbp4s40000gn/T/stage2_checks__ctc2cbo/m0253.lp:67:1-74: error: unsafe variables in:",
+     "severity": "error",
+     "check_ids": [
+      "clingo-error"
+     ],
+     "wheres": [
+      "m0253.lp"
+     ],
+     "clause_ids": [
+      "m0253"
+     ]
+    },
+    {
+     "key": "governs act class(es) C), M), O), S) with no \u2039\u203a declaration; a module that declares none is read as CEPA -- silence permits -- without recording it",
+     "count": 1,
+     "example": "governs act class(es) C), M), O), S) with no `%% closure:` declaration; a module that declares none is read as CEPA -- silence permits -- without recording it",
+     "severity": "error",
+     "check_ids": [
+      "closure-missing"
+     ],
+     "wheres": [
+      "m0071.lp"
+     ],
+     "clause_ids": [
+      "m0071"
+     ]
+    },
+    {
+     "key": "governs act class(es) CoT), Input), Outputs), Seq) with no \u2039\u203a declaration; a module that declares none is read as CEPA -- silence permits -- without recording it",
+     "count": 1,
+     "example": "governs act class(es) CoT), Input), Outputs), Seq) with no `%% closure:` declaration; a module that declares none is read as CEPA -- silence permits -- without recording it",
+     "severity": "error",
+     "check_ids": [
+      "closure-missing"
+     ],
+     "wheres": [
+      "m0071.lp"
+     ],
+     "clause_ids": [
+      "m0071"
+     ]
+    }
+   ]
+  }
+ },
+ "comparison": {
+  "first_attempt_clean_rate": {
+   "A_mean": 0.25,
+   "B_mean": 0.3333333333333333,
+   "delta": 0.08333333333333331,
+   "noise_band": 0.14433756729740643,
+   "within_noise": true
+  },
+  "findings_per_clause": {
+   "A_mean": 5.25,
+   "B_mean": 5.666666666666667,
+   "delta": 0.41666666666666696,
+   "noise_band": 1.9433756729740645,
+   "within_noise": true
+  },
+  "error_findings_per_clause": {
+   "A_mean": 2.9166666666666665,
+   "B_mean": 1.0833333333333333,
+   "delta": -1.8333333333333333,
+   "noise_band": 0.7216878364870322,
+   "within_noise": false
+  },
+  "abstention_rate": {
+   "A_mean": 0.0,
+   "B_mean": 0.0,
+   "delta": 0.0,
+   "noise_band": 0.0,
+   "within_noise": true
+  },
+  "unbuildable_rate": {
+   "A_mean": 0.5,
+   "B_mean": 0.3333333333333333,
+   "delta": -0.16666666666666669,
+   "noise_band": 0.14433756729740643,
+   "within_noise": false
+  }
+ },
+ "_comparison": "B minus A. `within_noise` is |delta| <= the sum of the two arms' standard deviations across repeats. It is a YARDSTICK, not a significance test: with 3 repeats it is a weak one, and a delta inside it is not evidence of no effect."
+}

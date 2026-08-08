@@ -1,0 +1,256 @@
+{
+  "outcome": "translated",
+  "clause_id": "m0253",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the assistant may only output material drawn from the user's own input when transforming restricted or sensitive content",
+    "C2 the assistant must not add new disallowed content or refine dangerous details",
+    "C3 the assistant must not create or infer missing parts of the user's disallowed content",
+    "C4 the assistant must not attempt to clarify or correct instructions intended to carry out harmful or illicit activities",
+    "C5 the assistant may not rely on references, URLs, or titles provided by the user to retrieve disallowed content; only content the user includes directly can be transformed"
+  ],
+  "acts": [
+    "output(M)",
+    "add_new_disallowed_content(M)",
+    "refine_dangerous_details(M)",
+    "create_or_infer_missing_parts(M)",
+    "clarify_or_correct_instruction(I)",
+    "rely_on_reference(R)"
+  ],
+  "concepts": [
+    {
+      "name": "transformation_request",
+      "arity": 1,
+      "gloss": "a request to transform restricted or sensitive content",
+      "licence": "textual",
+      "cites": "m0253",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "user_input_material",
+      "arity": 1,
+      "gloss": "material drawn from the user's own input",
+      "licence": "textual",
+      "cites": "m0253",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "disallowed_content",
+      "arity": 1,
+      "gloss": "content that is disallowed by the content policies",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause refers to 'new disallowed content' and 'user's disallowed content', presupposing a notion of disallowed content defined by other clauses",
+      "toggleable": false
+    },
+    {
+      "name": "dangerous_details",
+      "arity": 1,
+      "gloss": "details that are dangerous and should not be refined",
+      "licence": "textual",
+      "cites": "m0253",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "harmful_or_illicit_instruction",
+      "arity": 1,
+      "gloss": "an instruction intended to carry out harmful or illicit activities",
+      "licence": "textual",
+      "cites": "m0253",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "user_provided_reference",
+      "arity": 1,
+      "gloss": "a reference, URL, or title provided by the user",
+      "licence": "textual",
+      "cites": "m0253",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "directly_included_content",
+      "arity": 1,
+      "gloss": "content that the user includes directly in their input",
+      "licence": "textual",
+      "cites": "m0253",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "m0253",
+      "inference": null,
+      "toggleable": false,
+      "atom": "transformation_request(R)",
+      "gloss": "R is a request to transform restricted or sensitive content",
+      "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "m0253",
+      "inference": null,
+      "toggleable": false,
+      "atom": "user_input_material(M)",
+      "gloss": "M is material drawn from the user's own input",
+      "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "m0253",
+      "inference": null,
+      "toggleable": false,
+      "atom": "dangerous_details(D)",
+      "gloss": "D is a dangerous detail",
+      "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "m0253",
+      "inference": null,
+      "toggleable": false,
+      "atom": "harmful_or_illicit_instruction(I)",
+      "gloss": "I is an instruction intended to carry out harmful or illicit activities",
+      "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "m0253",
+      "inference": null,
+      "toggleable": false,
+      "atom": "user_provided_reference(R)",
+      "gloss": "R is a reference, URL, or title provided by the user",
+      "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "m0253",
+      "inference": null,
+      "toggleable": false,
+      "atom": "directly_included_content(C)",
+      "gloss": "C is content that the user includes directly",
+      "body": null
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "outputting % is forbidden because % is not drawn from the user's own input",
+      "read_back_slots": ["M", "M"],
+      "licence": "textual",
+      "cites": "m0253",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "output(M)",
+      "body": "transformation_request(R), not user_input_material(M)"
+    },
+    {
+      "read_back": "adding new disallowed content % is forbidden",
+      "read_back_slots": ["M"],
+      "licence": "textual",
+      "cites": "m0253",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "add_new_disallowed_content(M)",
+      "body": "disallowed_content(M)"
+    },
+    {
+      "read_back": "refining dangerous details % is forbidden",
+      "read_back_slots": ["D"],
+      "licence": "textual",
+      "cites": "m0253",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "refine_dangerous_details(D)",
+      "body": "dangerous_details(D)"
+    },
+    {
+      "read_back": "creating or inferring missing parts % of the user's disallowed content is forbidden",
+      "read_back_slots": ["M"],
+      "licence": "textual",
+      "cites": "m0253",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "create_or_infer_missing_parts(M)",
+      "body": "disallowed_content(M)"
+    },
+    {
+      "read_back": "clarifying or correcting instruction % that is intended to carry out harmful or illicit activities is forbidden",
+      "read_back_slots": ["I"],
+      "licence": "textual",
+      "cites": "m0253",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "clarify_or_correct_instruction(I)",
+      "body": "harmful_or_illicit_instruction(I)"
+    },
+    {
+      "read_back": "relying on reference % to retrieve disallowed content is forbidden",
+      "read_back_slots": ["R"],
+      "licence": "textual",
+      "cites": "m0253",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "rely_on_reference(R)",
+      "body": "user_provided_reference(R)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "output",
+      "closure": "cnpa",
+      "reason": "the clause states the assistant should only output material drawn from the user's own input, so silence about other output does not permit it"
+    },
+    {
+      "act_class": "add_new_disallowed_content",
+      "closure": "cnpa",
+      "reason": "the clause explicitly prohibits adding new disallowed content"
+    },
+    {
+      "act_class": "refine_dangerous_details",
+      "closure": "cnpa",
+      "reason": "the clause explicitly prohibits refining dangerous details"
+    },
+    {
+      "act_class": "create_or_infer_missing_parts",
+      "closure": "cnpa",
+      "reason": "the clause explicitly prohibits creating or inferring missing parts of disallowed content"
+    },
+    {
+      "act_class": "clarify_or_correct_instruction",
+      "closure": "cnpa",
+      "reason": "the clause explicitly prohibits clarifying or correcting instructions intended for harmful or illicit activities"
+    },
+    {
+      "act_class": "rely_on_reference",
+      "closure": "cnpa",
+      "reason": "the clause explicitly prohibits relying on references, URLs, or titles to retrieve disallowed content"
+    }
+  ],
+  "requires": [
+    "restricted_content/1",
+    "sensitive_content/1"
+  ],
+  "inputs": [
+    "user_input_material/1",
+    "disallowed_content/1",
+    "dangerous_details/1",
+    "harmful_or_illicit_instruction/1",
+    "user_provided_reference/1",
+    "directly_included_content/1"
+  ],
+  "forbid_body": []
+}

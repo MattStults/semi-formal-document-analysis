@@ -1,0 +1,103 @@
+{
+  "outcome": "translated",
+  "clause_id": "m0055",
+  "abstain_reason": null,
+  "claims": [
+    "C1: A conversation is valid input to the model.",
+    "C2: A conversation consists of a list of messages.",
+    "C3: Every message contains a role and content."
+  ],
+  "acts": [],
+  "concepts": [
+    {
+      "name": "conversation",
+      "arity": 1,
+      "gloss": "C is a valid input to the model, consisting of a list of messages",
+      "licence": "textual",
+      "cites": "m0055",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "message",
+      "arity": 1,
+      "gloss": "M is a message within a conversation",
+      "licence": "textual",
+      "cites": "m0055",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "message_role",
+      "arity": 2,
+      "gloss": "M has role R",
+      "licence": "textual",
+      "cites": "m0055",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "message_content",
+      "arity": 2,
+      "gloss": "M has content C",
+      "licence": "textual",
+      "cites": "m0055",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "in_conversation",
+      "arity": 2,
+      "gloss": "M is a message in conversation C",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "The clause says a conversation consists of a list of messages; this predicate expresses membership in that list.",
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "m0055",
+      "inference": null,
+      "toggleable": false,
+      "atom": "conversation(C)",
+      "gloss": "C is a valid input to the model",
+      "body": "valid_input(C)"
+    },
+    {
+      "licence": "textual",
+      "cites": "m0055",
+      "inference": null,
+      "toggleable": false,
+      "atom": "message(M)",
+      "gloss": "M is a message in a conversation",
+      "body": "in_conversation(M, C), conversation(C)"
+    },
+    {
+      "licence": "textual",
+      "cites": "m0055",
+      "inference": null,
+      "toggleable": false,
+      "atom": "message_role(M, R)",
+      "gloss": "M has role R",
+      "body": "message(M), role(R)"
+    },
+    {
+      "licence": "textual",
+      "cites": "m0055",
+      "inference": null,
+      "toggleable": false,
+      "atom": "message_content(M, C)",
+      "gloss": "M has content C",
+      "body": "message(M), content(C)"
+    }
+  ],
+  "asserts": [],
+  "beats": [],
+  "defines": [],
+  "closure": [],
+  "requires": ["valid_input/1", "role/1", "content/1"],
+  "inputs": ["in_conversation/2"],
+  "forbid_body": []
+}

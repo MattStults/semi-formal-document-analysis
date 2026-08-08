@@ -19,7 +19,40 @@ staged="${GUARD_STAGED_FILES-$(git diff --cached --name-only)}"
 [ -z "$staged" ] && exit 0
 python3 walkthrough/model/guard.py --watches $staged || exit 0
 
-echo "a watched file changed — running the staleness guard"
+echo "a watched file changed — checking the prompt's examples, then staleness"
+
+# ---------------------------------------------------------------------------
+# 1. The prompt's own worked examples, run through stage 2.
+#
+# An example is an instruction with a picture attached. A module shown as good
+# that our own checks would reject tells the model, in the most credible form
+# available, that the failure is fine — and nothing about reading the file
+# reveals it. This fires on the same staged set the guard watches, so there is
+# no second list to drift.
+#
+# ⛔ A missing venv BLOCKS rather than skips. "The checker could not run" must
+# never be reachable from the same exit code as "the checks passed"; that
+# equivalence is the failure this directory keeps re-learning.
+# ---------------------------------------------------------------------------
+VENV=semi-formal-experiment/.venv/bin/python
+if [ ! -x "$VENV" ]; then
+  echo ""
+  echo "COMMIT BLOCKED. Cannot verify the prompt's worked examples: no venv at"
+  echo "    $VENV"
+  echo "Create it:  python3 -m venv semi-formal-experiment/.venv &&"
+  echo "            semi-formal-experiment/.venv/bin/pip install pytest clingo"
+  exit 1
+fi
+"$VENV" -m pytest walkthrough/paper_pipeline/phase_1/test_prompt_examples.py \
+        -q --no-header || {
+  echo ""
+  echo "COMMIT BLOCKED. A worked example in the prompt does not survive stage 2,"
+  echo "or a shape the prompt must demonstrate is no longer demonstrated."
+  echo "The model imitates these examples; an example our checks reject teaches"
+  echo "the failure. Fix the example — do not weaken the test."
+  exit 1
+}
+
 python3 walkthrough/model/guard.py || {
   echo ""
   echo "COMMIT BLOCKED. A file transcribed from the design is not at its"

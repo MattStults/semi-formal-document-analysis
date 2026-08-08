@@ -1,0 +1,620 @@
+{
+ "eval_set": {
+  "clause_ids": [
+   "m0055",
+   "m0293"
+  ],
+  "n": 2,
+  "source": "--clause-file eval_arms/diagnosis_set.txt",
+  "sha": "ad9da94b24978583",
+  "_": "\u26a0\ufe0f Check this against the clauses that MOTIVATED the change. A prompt change validated on its own diagnosis set is fitted, not measured."
+ },
+ "first_attempt_only": true,
+ "repair": "disabled \u2014 one call per clause per repeat",
+ "arms": {
+  "A": {
+   "config": "/Users/mattstults/Documents/ai_safety_projects/semi-formal-document-analysis/walkthrough/paper_pipeline/phase_1/config_arm_pre_example.json",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "temperature": 0.2,
+   "system_sha": "5b5cccae465dd28c",
+   "inputs_sha": "d4e7d0c08b5363a3",
+   "repeats": 3,
+   "spread": {
+    "first_attempt_clean_rate": {
+     "n": 3,
+     "mean": 0.0,
+     "sd": 0.0,
+     "min": 0.0,
+     "max": 0.0,
+     "values": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "findings_per_clause": {
+     "n": 3,
+     "mean": 4.0,
+     "sd": 3.0413812651491097,
+     "min": 2.0,
+     "max": 7.5,
+     "values": [
+      7.5,
+      2.5,
+      2.0
+     ]
+    },
+    "error_findings_per_clause": {
+     "n": 3,
+     "mean": 3.6666666666666665,
+     "sd": 3.4034296427770228,
+     "min": 1.0,
+     "max": 7.5,
+     "values": [
+      7.5,
+      2.5,
+      1.0
+     ]
+    },
+    "abstention_rate": {
+     "n": 3,
+     "mean": 0.0,
+     "sd": 0.0,
+     "min": 0.0,
+     "max": 0.0,
+     "values": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "unbuildable_rate": {
+     "n": 3,
+     "mean": 0.8333333333333334,
+     "sd": 0.28867513459481287,
+     "min": 0.5,
+     "max": 1.0,
+     "values": [
+      1.0,
+      1.0,
+      0.5
+     ]
+    }
+   },
+   "per_repeat": [
+    {
+     "index": 1,
+     "metrics": {
+      "first_attempt_clean_rate": 0.0,
+      "findings_per_clause": 7.5,
+      "error_findings_per_clause": 7.5,
+      "abstention_rate": 0.0,
+      "unbuildable_rate": 1.0
+     },
+     "clauses": [
+      {
+       "clause_id": "m0055",
+       "outcome": "invalid",
+       "attempt": 1,
+       "n_findings": 4,
+       "n_errors": 4,
+       "findings": [
+        "[schema-breach] ontology[0]: ontology atom: 'conversation(C) :- message_in_conversation(M, C)' is not a term. It must be a functor like produce(M) or say_cannot_answer \u2014 not a rule, not a sentence",
+        "[schema-breach] ontology[1]: ontology atom: 'message(M) :- message_in_conversation(M, C)' is not a term. It must be a functor like produce(M) or say_cannot_answer \u2014 not a rule, not a sentence",
+        "[schema-breach] ontology[2]: ontology atom: 'message_role(M, R) :- message_has_role(M, R)' is not a term. It must be a functor like produce(M) or say_cannot_answer \u2014 not a rule, not a sentence",
+        "[schema-breach] ontology[3]: ontology atom: 'message_content(M, C) :- message_has_content(M, C)' is not a term. It must be a functor like produce(M) or say_cannot_answer \u2014 not a rule, not a sentence"
+       ]
+      },
+      {
+       "clause_id": "m0293",
+       "outcome": "invalid",
+       "attempt": 1,
+       "n_findings": 11,
+       "n_errors": 11,
+       "findings": [
+        "[schema-breach] ontology[0]: ontology atom: 'privileged_information(P) :- non_public_openai_policy(P)' is not a term. It must be a functor like produce(M) or say_cannot_answer \u2014 not a rule, not a sentence",
+        "[schema-breach] ontology[1]: ontology atom: 'privileged_information(P) :- system_message(P)' is not a term. It must be a functor like produce(M) or say_cannot_answer \u2014 not a rule, not a sentence",
+        "[schema-breach] ontology[2]: ontology atom: 'privileged_information(P) :- hidden_chain_of_thought_message(P)' is not a term. It must be a functor like produce(M) or say_cannot_answer \u2014 not a rule, not a sentence",
+        "[schema-breach] ontology[3]: ontology atom: 'privileged_information(P) :- private_content_provided(P)' is not a term. It must be a functor like produce(M) or say_cannot_answer \u2014 not a rule, not a sentence",
+        "[schema-breach] ontology[4]: ontology atom: 'confidential_by_default(M) :- message(M), not explicitly_labeled_shareable(M), not explicitly_labeled_private(M)' is not a term. It must be a functor like produce(M) or say_cannot_answer \u2014 not a rule, not a sentence",
+        "[schema-breach] ontology[5]: ontology atom: 'shareable_fact(F) :- system_or_developer_message(M), fact_about_assistant(F, M)' is not a term. It must be a functor like produce(M) or say_cannot_answer \u2014 not a rule, not a sentence",
+        "[schema-breach] ontology[6]: ontology atom: 'verbatim_text_or_full_details(M) :- system_or_developer_message(M)' is not a term. It must be a functor like produce(M) or say_cannot_answer \u2014 not a rule, not a sentence",
+        "[schema-breach] ontology[7]: ontology atom: 'privileged_information(M) :- verbatim_text_or_full_details(M)' is not a term. It must be a functor like produce(M) or say_cannot_answer \u2014 not a rule, not a sentence",
+        "[schema-breach] ontology[8]: ontology atom: 'developer_marked_privileged(P) :- developer_message(M), portion(P, M), marked_privileged(P)' is not a term. It must be a functor like produce(M) or say_cannot_answer \u2014 not a rule, not a sentence",
+        "[schema-breach] ontology[9]: ontology atom: 'developer_marked_shareable(P) :- developer_message(M), portion(P, M), marked_shareable(P)' is not a term. It must be a functor like produce(M) or say_cannot_answer \u2014 not a rule, not a sentence",
+        "[schema-breach] asserts[5]: read_back has 2 `%` slot(s) but 1 slot entr(ies) \u2014 the rendered sentence would silently be wrong. A literal percent sign cannot be written; say 'per cent'"
+       ]
+      }
+     ]
+    },
+    {
+     "index": 2,
+     "metrics": {
+      "first_attempt_clean_rate": 0.0,
+      "findings_per_clause": 2.5,
+      "error_findings_per_clause": 2.5,
+      "abstention_rate": 0.0,
+      "unbuildable_rate": 1.0
+     },
+     "clauses": [
+      {
+       "clause_id": "m0055",
+       "outcome": "invalid",
+       "attempt": 1,
+       "n_findings": 4,
+       "n_errors": 4,
+       "findings": [
+        "[schema-breach] ontology[0]: ontology atom: 'conversation(C) :- valid_input(C)' is not a term. It must be a functor like produce(M) or say_cannot_answer \u2014 not a rule, not a sentence",
+        "[schema-breach] ontology[1]: ontology atom: 'message(M) :- conversation(C), member(M, C)' is not a term. It must be a functor like produce(M) or say_cannot_answer \u2014 not a rule, not a sentence",
+        "[schema-breach] ontology[2]: ontology atom: 'message_role(M, R) :- message(M), role(M, R)' is not a term. It must be a functor like produce(M) or say_cannot_answer \u2014 not a rule, not a sentence",
+        "[schema-breach] ontology[3]: ontology atom: 'message_content(M, C) :- message(M), content(M, C)' is not a term. It must be a functor like produce(M) or say_cannot_answer \u2014 not a rule, not a sentence"
+       ]
+      },
+      {
+       "clause_id": "m0293",
+       "outcome": "invalid",
+       "attempt": 1,
+       "n_findings": 1,
+       "n_errors": 1,
+       "findings": [
+        "[schema-breach] <root>: assertion names act 'share_with_end_user(M)', which is not in `acts`. Every act must be declared once so the closure declaration can be checked against it"
+       ]
+      }
+     ]
+    },
+    {
+     "index": 3,
+     "metrics": {
+      "first_attempt_clean_rate": 0.0,
+      "findings_per_clause": 2.0,
+      "error_findings_per_clause": 1.0,
+      "abstention_rate": 0.0,
+      "unbuildable_rate": 0.5
+     },
+     "clauses": [
+      {
+       "clause_id": "m0055",
+       "outcome": "invalid",
+       "attempt": 1,
+       "n_findings": 3,
+       "n_errors": 1,
+       "findings": [
+        "[requires-unprovided] m0055.lp: `list_of_messages/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0055.lp: `member/2` is declared in `%% requires:` and no module in this link scope defines it",
+        "[clingo-error] m0055.lp: clingo refused this program, so nothing below was actually analysed: /var/folders/jh/ym8tv1sn29dbxk49v5wbp4s40000gn/T/stage2_checks_urvaxfo9/m0055.lp:24:1-33: error: unsafe variables in: | /var/folders/jh/ym8tv1sn29dbxk49v5wbp4s40000gn/T/stage2_checks_urvaxfo9/m0055.lp:25:1-36: error: unsafe variables in:"
+       ]
+      },
+      {
+       "clause_id": "m0293",
+       "outcome": "invalid",
+       "attempt": 1,
+       "n_findings": 1,
+       "n_errors": 1,
+       "findings": [
+        "[schema-breach] <root>: assertion names act 'treat_as_confidential(D)', which is not in `acts`. Every act must be declared once so the closure declaration can be checked against it"
+       ]
+      }
+     ]
+    }
+   ],
+   "clusters": [
+    {
+     "key": "ontology atom: \u2039\u203a is not a term. It must be a functor like produce(M) or say_cannot_answer \u2014 not a rule, not a sentence",
+     "count": 18,
+     "example": "ontology atom: 'conversation(C) :- message_in_conversation(M, C)' is not a term. It must be a functor like produce(M) or say_cannot_answer \u2014 not a rule, not a sentence",
+     "severity": "error",
+     "check_ids": [
+      "schema-breach"
+     ],
+     "wheres": [
+      "ontology[0]",
+      "ontology[1]",
+      "ontology[2]",
+      "ontology[3]",
+      "ontology[4]",
+      "ontology[5]",
+      "ontology[6]",
+      "ontology[7]",
+      "ontology[8]",
+      "ontology[9]"
+     ],
+     "clause_ids": [
+      "m0055",
+      "m0293"
+     ]
+    },
+    {
+     "key": "assertion names act \u2039\u203a, which is not in \u2039\u203a. Every act must be declared once so the closure declaration can be checked against it",
+     "count": 2,
+     "example": "assertion names act 'share_with_end_user(M)', which is not in `acts`. Every act must be declared once so the closure declaration can be checked against it",
+     "severity": "error",
+     "check_ids": [
+      "schema-breach"
+     ],
+     "wheres": [
+      "<root>"
+     ],
+     "clause_ids": [
+      "m0293"
+     ]
+    },
+    {
+     "key": "\u2039\u203a is declared in \u2039\u203a and no module in this link scope defines it",
+     "count": 2,
+     "example": "`list_of_messages/1` is declared in `%% requires:` and no module in this link scope defines it",
+     "severity": "note",
+     "check_ids": [
+      "requires-unprovided"
+     ],
+     "wheres": [
+      "m0055.lp"
+     ],
+     "clause_ids": [
+      "m0055"
+     ]
+    },
+    {
+     "key": "clingo refused this program, so nothing below was actually analysed: \u2039\u203a:#:#-#: error: unsafe variables in: | \u2039\u203a:#:#-#: error: unsafe variables in:",
+     "count": 1,
+     "example": "clingo refused this program, so nothing below was actually analysed: /var/folders/jh/ym8tv1sn29dbxk49v5wbp4s40000gn/T/stage2_checks_urvaxfo9/m0055.lp:24:1-33: error: unsafe variables in: | /var/folders/jh/ym8tv1sn29dbxk49v5wbp4s40000gn/T/stage2_checks_urvaxfo9/m0055.lp:25:1-36: error: unsafe variables in:",
+     "severity": "error",
+     "check_ids": [
+      "clingo-error"
+     ],
+     "wheres": [
+      "m0055.lp"
+     ],
+     "clause_ids": [
+      "m0055"
+     ]
+    },
+    {
+     "key": "read_back has # \u2039\u203a slot(s) but # slot entr(ies) \u2014 the rendered sentence would silently be wrong. A literal percent sign cannot be written; say \u2039\u203a",
+     "count": 1,
+     "example": "read_back has 2 `%` slot(s) but 1 slot entr(ies) \u2014 the rendered sentence would silently be wrong. A literal percent sign cannot be written; say 'per cent'",
+     "severity": "error",
+     "check_ids": [
+      "schema-breach"
+     ],
+     "wheres": [
+      "asserts[5]"
+     ],
+     "clause_ids": [
+      "m0293"
+     ]
+    }
+   ]
+  },
+  "B": {
+   "config": "/Users/mattstults/Documents/ai_safety_projects/semi-formal-document-analysis/walkthrough/paper_pipeline/phase_1/config.json",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "temperature": 0.2,
+   "system_sha": "de50d7f32a74141f",
+   "inputs_sha": "ccacb9022eaadcb8",
+   "repeats": 3,
+   "spread": {
+    "first_attempt_clean_rate": {
+     "n": 3,
+     "mean": 0.5,
+     "sd": 0.5,
+     "min": 0.0,
+     "max": 1.0,
+     "values": [
+      0.0,
+      0.5,
+      1.0
+     ]
+    },
+    "findings_per_clause": {
+     "n": 3,
+     "mean": 5.166666666666667,
+     "sd": 4.645786621588784,
+     "min": 2.0,
+     "max": 10.5,
+     "values": [
+      2.0,
+      3.0,
+      10.5
+     ]
+    },
+    "error_findings_per_clause": {
+     "n": 3,
+     "mean": 0.5,
+     "sd": 0.5,
+     "min": 0.0,
+     "max": 1.0,
+     "values": [
+      1.0,
+      0.5,
+      0.0
+     ]
+    },
+    "abstention_rate": {
+     "n": 3,
+     "mean": 0.0,
+     "sd": 0.0,
+     "min": 0.0,
+     "max": 0.0,
+     "values": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "unbuildable_rate": {
+     "n": 3,
+     "mean": 0.16666666666666666,
+     "sd": 0.28867513459481287,
+     "min": 0.0,
+     "max": 0.5,
+     "values": [
+      0.5,
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "per_repeat": [
+    {
+     "index": 1,
+     "metrics": {
+      "first_attempt_clean_rate": 0.0,
+      "findings_per_clause": 2.0,
+      "error_findings_per_clause": 1.0,
+      "abstention_rate": 0.0,
+      "unbuildable_rate": 0.5
+     },
+     "clauses": [
+      {
+       "clause_id": "m0055",
+       "outcome": "invalid",
+       "attempt": 1,
+       "n_findings": 3,
+       "n_errors": 1,
+       "findings": [
+        "[requires-unprovided] m0055.lp: `in_conversation/2` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0055.lp: `valid_input/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[clingo-error] m0055.lp: clingo refused this program, so nothing below was actually analysed: /var/folders/jh/ym8tv1sn29dbxk49v5wbp4s40000gn/T/stage2_checks_2e4u8y0h/m0055.lp:25:1-29: error: unsafe variables in: | /var/folders/jh/ym8tv1sn29dbxk49v5wbp4s40000gn/T/stage2_checks_2e4u8y0h/m0055.lp:26:1-32: error: unsafe variables in:"
+       ]
+      },
+      {
+       "clause_id": "m0293",
+       "outcome": "invalid",
+       "attempt": 1,
+       "n_findings": 1,
+       "n_errors": 1,
+       "findings": [
+        "[schema-breach] <root>: assertion names act 'keep_private(I)', which is not in `acts`. Every act must be declared once so the closure declaration can be checked against it"
+       ]
+      }
+     ]
+    },
+    {
+     "index": 2,
+     "metrics": {
+      "first_attempt_clean_rate": 0.5,
+      "findings_per_clause": 3.0,
+      "error_findings_per_clause": 0.5,
+      "abstention_rate": 0.0,
+      "unbuildable_rate": 0.0
+     },
+     "clauses": [
+      {
+       "clause_id": "m0055",
+       "outcome": "translated",
+       "attempt": 1,
+       "n_findings": 5,
+       "n_errors": 0,
+       "findings": [
+        "[requires-unprovided] m0055.lp: `content/2` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0055.lp: `list_of_messages/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0055.lp: `member/2` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0055.lp: `role/2` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0055.lp: `valid_input/1` is declared in `%% requires:` and no module in this link scope defines it"
+       ]
+      },
+      {
+       "clause_id": "m0293",
+       "outcome": "invalid",
+       "attempt": 1,
+       "n_findings": 1,
+       "n_errors": 1,
+       "findings": [
+        "[clingo-error] m0293.lp: clingo refused this program, so nothing below was actually analysed: /var/folders/jh/ym8tv1sn29dbxk49v5wbp4s40000gn/T/stage2_checks_xkls3doh/m0293.lp:58:1-79: error: unsafe variables in:"
+       ]
+      }
+     ]
+    },
+    {
+     "index": 3,
+     "metrics": {
+      "first_attempt_clean_rate": 1.0,
+      "findings_per_clause": 10.5,
+      "error_findings_per_clause": 0.0,
+      "abstention_rate": 0.0,
+      "unbuildable_rate": 0.0
+     },
+     "clauses": [
+      {
+       "clause_id": "m0055",
+       "outcome": "translated",
+       "attempt": 1,
+       "n_findings": 5,
+       "n_errors": 0,
+       "findings": [
+        "[requires-unprovided] m0055.lp: `content/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0055.lp: `role/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0055.lp: `valid_input/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[concept-declared] m0055.lp: `in_conversation/2` is head-less and declared in the concept table by m0055",
+        "[situation-input] m0055.lp: `in_conversation/2` is head-less and declared as a situation input"
+       ]
+      },
+      {
+       "clause_id": "m0293",
+       "outcome": "translated",
+       "attempt": 1,
+       "n_findings": 16,
+       "n_errors": 0,
+       "findings": [
+        "[requires-unprovided] m0293.lp: `fact_in_message/2` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0293.lp: `message_content/2` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0293.lp: `system_or_developer_message/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[requires-unprovided] m0293.lp: `typical_shareable_fact/1` is declared in `%% requires:` and no module in this link scope defines it",
+        "[concept-declared] m0293.lp: `hidden_chain_of_thought_message/1` is head-less and declared in the concept table by m0293",
+        "[concept-declared] m0293.lp: `message_labels_shareability/1` is head-less and declared in the concept table by m0293",
+        "[concept-declared] m0293.lp: `non_public_openai_policy/1` is head-less and declared in the concept table by m0293",
+        "[concept-declared] m0293.lp: `private_content_provided/1` is head-less and declared in the concept table by m0293",
+        "[concept-declared] m0293.lp: `system_message/1` is head-less and declared in the concept table by m0293",
+        "[concept-declared] m0293.lp: `verbatim_text_or_full_details/1` is head-less and declared in the concept table by m0293",
+        "[situation-input] m0293.lp: `hidden_chain_of_thought_message/1` is head-less and declared as a situation input",
+        "[situation-input] m0293.lp: `message_labels_shareability/1` is head-less and declared as a situation input",
+        "[situation-input] m0293.lp: `non_public_openai_policy/1` is head-less and declared as a situation input",
+        "[situation-input] m0293.lp: `private_content_provided/1` is head-less and declared as a situation input",
+        "[situation-input] m0293.lp: `system_message/1` is head-less and declared as a situation input",
+        "[situation-input] m0293.lp: `verbatim_text_or_full_details/1` is head-less and declared as a situation input"
+       ]
+      }
+     ]
+    }
+   ],
+   "clusters": [
+    {
+     "key": "\u2039\u203a is declared in \u2039\u203a and no module in this link scope defines it",
+     "count": 14,
+     "example": "`in_conversation/2` is declared in `%% requires:` and no module in this link scope defines it",
+     "severity": "note",
+     "check_ids": [
+      "requires-unprovided"
+     ],
+     "wheres": [
+      "m0055.lp",
+      "m0293.lp"
+     ],
+     "clause_ids": [
+      "m0055",
+      "m0293"
+     ]
+    },
+    {
+     "key": "\u2039\u203a is head-less and declared as a situation input",
+     "count": 7,
+     "example": "`in_conversation/2` is head-less and declared as a situation input",
+     "severity": "note",
+     "check_ids": [
+      "situation-input"
+     ],
+     "wheres": [
+      "m0055.lp",
+      "m0293.lp"
+     ],
+     "clause_ids": [
+      "m0055",
+      "m0293"
+     ]
+    },
+    {
+     "key": "\u2039\u203a is head-less and declared in the concept table by m#",
+     "count": 7,
+     "example": "`in_conversation/2` is head-less and declared in the concept table by m0055",
+     "severity": "note",
+     "check_ids": [
+      "concept-declared"
+     ],
+     "wheres": [
+      "m0055.lp",
+      "m0293.lp"
+     ],
+     "clause_ids": [
+      "m0055",
+      "m0293"
+     ]
+    },
+    {
+     "key": "assertion names act \u2039\u203a, which is not in \u2039\u203a. Every act must be declared once so the closure declaration can be checked against it",
+     "count": 1,
+     "example": "assertion names act 'keep_private(I)', which is not in `acts`. Every act must be declared once so the closure declaration can be checked against it",
+     "severity": "error",
+     "check_ids": [
+      "schema-breach"
+     ],
+     "wheres": [
+      "<root>"
+     ],
+     "clause_ids": [
+      "m0293"
+     ]
+    },
+    {
+     "key": "clingo refused this program, so nothing below was actually analysed: \u2039\u203a:#:#-#: error: unsafe variables in:",
+     "count": 1,
+     "example": "clingo refused this program, so nothing below was actually analysed: /var/folders/jh/ym8tv1sn29dbxk49v5wbp4s40000gn/T/stage2_checks_xkls3doh/m0293.lp:58:1-79: error: unsafe variables in:",
+     "severity": "error",
+     "check_ids": [
+      "clingo-error"
+     ],
+     "wheres": [
+      "m0293.lp"
+     ],
+     "clause_ids": [
+      "m0293"
+     ]
+    },
+    {
+     "key": "clingo refused this program, so nothing below was actually analysed: \u2039\u203a:#:#-#: error: unsafe variables in: | \u2039\u203a:#:#-#: error: unsafe variables in:",
+     "count": 1,
+     "example": "clingo refused this program, so nothing below was actually analysed: /var/folders/jh/ym8tv1sn29dbxk49v5wbp4s40000gn/T/stage2_checks_2e4u8y0h/m0055.lp:25:1-29: error: unsafe variables in: | /var/folders/jh/ym8tv1sn29dbxk49v5wbp4s40000gn/T/stage2_checks_2e4u8y0h/m0055.lp:26:1-32: error: unsafe variables in:",
+     "severity": "error",
+     "check_ids": [
+      "clingo-error"
+     ],
+     "wheres": [
+      "m0055.lp"
+     ],
+     "clause_ids": [
+      "m0055"
+     ]
+    }
+   ]
+  }
+ },
+ "comparison": {
+  "first_attempt_clean_rate": {
+   "A_mean": 0.0,
+   "B_mean": 0.5,
+   "delta": 0.5,
+   "noise_band": 0.5,
+   "within_noise": true
+  },
+  "findings_per_clause": {
+   "A_mean": 4.0,
+   "B_mean": 5.166666666666667,
+   "delta": 1.166666666666667,
+   "noise_band": 7.687167886737894,
+   "within_noise": true
+  },
+  "error_findings_per_clause": {
+   "A_mean": 3.6666666666666665,
+   "B_mean": 0.5,
+   "delta": -3.1666666666666665,
+   "noise_band": 3.9034296427770228,
+   "within_noise": true
+  },
+  "abstention_rate": {
+   "A_mean": 0.0,
+   "B_mean": 0.0,
+   "delta": 0.0,
+   "noise_band": 0.0,
+   "within_noise": true
+  },
+  "unbuildable_rate": {
+   "A_mean": 0.8333333333333334,
+   "B_mean": 0.16666666666666666,
+   "delta": -0.6666666666666667,
+   "noise_band": 0.5773502691896257,
+   "within_noise": false
+  }
+ },
+ "_comparison": "B minus A. `within_noise` is |delta| <= the sum of the two arms' standard deviations across repeats. It is a YARDSTICK, not a significance test: with 3 repeats it is a weak one, and a delta inside it is not evidence of no effect."
+}

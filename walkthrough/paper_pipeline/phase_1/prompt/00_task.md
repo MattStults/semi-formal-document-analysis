@@ -14,10 +14,8 @@ and priority orderings between them. What the document IS arrives with the claus
 
 ## Every fact declares its licence
 
-This is the most important rule here, and it is **not** "only write what the text says".
-
-A faithful translation often needs a fact the clause does not literally state. That is allowed.
-What is **not** allowed is leaving it unmarked. Every fact you write carries one of three licences:
+A faithful translation often needs a fact the clause does not literally state. That is allowed, but it must be marked.
+Every fact you write carries one of three licences:
 
 | licence | meaning | what you must also give |
 |---|---|---|

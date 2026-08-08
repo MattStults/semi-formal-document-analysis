@@ -237,14 +237,14 @@ def test_pre_commit_is_silent_on_an_empty_stage():
 
 def test_pre_commit_fires_when_a_watched_file_is_staged():
     r = _run_hook("walkthrough/paper_pipeline/phase_1/schema.py")
-    assert "running the staleness guard" in r.stdout, r.stdout + r.stderr
+    assert "a watched file changed" in r.stdout, r.stdout + r.stderr
     # schema.py has never been reviewed, so this must also BLOCK
     assert r.returncode == 1 and "COMMIT BLOCKED" in r.stdout
 
 
 def test_pre_commit_fires_for_a_prompt_file():
     r = _run_hook("walkthrough/paper_pipeline/phase_1/prompt/30_failure_modes.md")
-    assert "running the staleness guard" in r.stdout, r.stdout + r.stderr
+    assert "a watched file changed" in r.stdout, r.stdout + r.stderr
 
 
 def test_pre_commit_self_test_passes():

@@ -137,8 +137,21 @@ invisible.
 | no hypothesis survives, or causes do not cluster | **a skill**, invoked by an agent |
 | the graveyard reaches its cap | ⭐ **blocks the pipeline** — see below |
 
-**The skill is where the tripwires live**, because they are what a diagnosing agent will otherwise
-miss. It must check, every time:
+⭐ **The skill's FIRST step is to read `DEBUGGING_TIPS.md`, before forming any hypothesis.** That
+file is the accumulated record of what has already been worked out the hard way, and its first
+entry is the one that would otherwise be missed every time: *check whether the failing shape is
+DEMONSTRATED by a worked example, not merely stated in prose.* The dominant stage-2 failure —
+59 occurrences in 36 first attempts — was a rule the prompt forbade explicitly and never once
+showed the right form of. Adding one worked example took it to zero on held-out clauses. An
+agent that starts from "how do I word this rule better" will not find that.
+
+⭐ **And the skill MAINTAINS that file.** Any entry whose diagnosis took real work adds a tip
+before it adds a fix — including the false path taken first, which is the expensive part and
+the part a conclusion-only note throws away. A cleared entry whose diagnosis was hard and left
+no tip is an incomplete clearing.
+
+**The rest of the tripwires**, because they are what a diagnosing agent will otherwise miss. It
+must check, every time:
 
 - **Is this fitting?** How many hypotheses were tried for this cluster; what the held-out result was.
 - **Does the fix touch a WATCHED transcription?** The prompt files are transcriptions of the design;

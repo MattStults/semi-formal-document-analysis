@@ -1,0 +1,102 @@
+{
+  "outcome": "translated",
+  "clause_id": "m0055",
+  "abstain_reason": null,
+  "claims": [
+    "C1 a conversation is a list of messages",
+    "C2 every message has a role and content"
+  ],
+  "acts": [],
+  "concepts": [
+    {
+      "name": "conversation",
+      "arity": 1,
+      "gloss": "a valid input to the model, consisting of a list of messages",
+      "licence": "textual",
+      "cites": "m0055",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "message",
+      "arity": 1,
+      "gloss": "an element of a conversation, having a role and content",
+      "licence": "textual",
+      "cites": "m0055",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "message_role",
+      "arity": 2,
+      "gloss": "the role attribute of a message",
+      "licence": "textual",
+      "cites": "m0055",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "message_content",
+      "arity": 2,
+      "gloss": "the content attribute of a message",
+      "licence": "textual",
+      "cites": "m0055",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "m0055",
+      "inference": null,
+      "toggleable": false,
+      "atom": "conversation(C) :- message_in_conversation(M, C)",
+      "gloss": "a conversation is a collection of messages",
+      "body": "message_in_conversation(M, C)"
+    },
+    {
+      "licence": "textual",
+      "cites": "m0055",
+      "inference": null,
+      "toggleable": false,
+      "atom": "message(M) :- message_in_conversation(M, C)",
+      "gloss": "every message in a conversation is a message",
+      "body": "message_in_conversation(M, C)"
+    },
+    {
+      "licence": "textual",
+      "cites": "m0055",
+      "inference": null,
+      "toggleable": false,
+      "atom": "message_role(M, R) :- message_has_role(M, R)",
+      "gloss": "a message has a role",
+      "body": "message_has_role(M, R)"
+    },
+    {
+      "licence": "textual",
+      "cites": "m0055",
+      "inference": null,
+      "toggleable": false,
+      "atom": "message_content(M, C) :- message_has_content(M, C)",
+      "gloss": "a message has content",
+      "body": "message_has_content(M, C)"
+    }
+  ],
+  "asserts": [],
+  "beats": [],
+  "defines": [
+    {
+      "licence": "textual",
+      "cites": "m0055",
+      "inference": null,
+      "toggleable": false,
+      "kind": "conversation",
+      "term": "list_of_messages"
+    }
+  ],
+  "closure": [],
+  "requires": ["message_in_conversation/2", "message_has_role/2", "message_has_content/2"],
+  "inputs": [],
+  "forbid_body": []
+}
