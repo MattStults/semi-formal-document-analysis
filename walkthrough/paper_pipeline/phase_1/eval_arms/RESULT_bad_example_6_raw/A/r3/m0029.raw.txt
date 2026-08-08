@@ -1,0 +1,57 @@
+{
+  "outcome": "translated",
+  "clause_id": "m0029",
+  "abstain_reason": null,
+  "claims": [
+    "C1 following user or developer instructions can cause harm, e.g. self-harm instructions or advice enabling a violent act",
+    "C2 such situations involve a direct conflict between empowering the user and preventing harm",
+    "C3 per the chain of command, the model should obey user and developer instructions except when they fall into specific categories that require refusal or safe completion"
+  ],
+  "acts": ["obey(I)", "refuse(I)", "safe_complete(I)"],
+  "concepts": [
+    { "name": "harmful_instruction", "arity": 1,
+      "gloss": "an instruction whose simple following would cause harm, e.g. self-harm instructions or advice enabling a violent act",
+      "licence": "textual", "cites": "m0029", "inference": null, "toggleable": false },
+    { "name": "specific_category", "arity": 1,
+      "gloss": "an instruction falling into a specific category that requires refusal or safe completion",
+      "licence": "assumed", "cites": null,
+      "inference": "the clause refers to 'specific categories' defined by the stay_in_bounds section, which is cross-referenced but not resolvable in the corpus",
+      "toggleable": false }
+  ],
+  "ontology": [
+    { "licence": "textual", "cites": "m0029", "inference": null, "toggleable": false,
+      "atom": "harmful_instruction(I)",
+      "gloss": "I is an instruction whose simple following would cause harm",
+      "body": null }
+  ],
+  "asserts": [
+    { "read_back": "the model should obey instruction % because it is a user or developer instruction",
+      "read_back_slots": ["I"],
+      "licence": "textual", "cites": "m0029", "inference": null, "toggleable": false,
+      "status": "oblige", "act": "obey(I)",
+      "body": "user_or_developer_instruction(I), not specific_category(I)" },
+    { "read_back": "the model should refuse instruction % because it falls into a specific category that requires refusal",
+      "read_back_slots": ["I"],
+      "licence": "textual", "cites": "m0029", "inference": null, "toggleable": false,
+      "status": "oblige", "act": "refuse(I)",
+      "body": "user_or_developer_instruction(I), specific_category(I), requires_refusal(I)" },
+    { "read_back": "the model should safe complete instruction % because it falls into a specific category that requires safe completion",
+      "read_back_slots": ["I"],
+      "licence": "textual", "cites": "m0029", "inference": null, "toggleable": false,
+      "status": "oblige", "act": "safe_complete(I)",
+      "body": "user_or_developer_instruction(I), specific_category(I), requires_safe_completion(I)" }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    { "act_class": "obey", "closure": "cnpa",
+      "reason": "the clause says the model should obey instructions except when they fall into specific categories, so silence about an instruction's category does not permit obedience; the exception is the refusal/safe-completion carve-out" },
+    { "act_class": "refuse", "closure": "unclear",
+      "reason": "the clause only says refusal is required for specific categories, and does not settle whether refusal is permitted or prohibited outside those categories" },
+    { "act_class": "safe_complete", "closure": "unclear",
+      "reason": "the clause only says safe completion is required for specific categories, and does not settle whether safe completion is permitted or prohibited outside those categories" }
+  ],
+  "requires": ["user_or_developer_instruction/1", "requires_refusal/1", "requires_safe_completion/1"],
+  "inputs": ["specific_category/1"],
+  "forbid_body": []
+}

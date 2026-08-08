@@ -808,6 +808,14 @@ def cost_gate(est, cfg):
 # ==========================================================================
 
 _FENCE = re.compile(r"```(?:json)?\s*\n(.*?)```", re.S)
+#: ⛔ NOT `_FENCE`. That one tolerates a BARE fence on purpose, because some
+#: providers wrap a JSON response without annotating it — correct for reading a
+#: RESPONSE, wrong for reading a PROMPT FILE, which legitimately contains other
+#: languages. The self-test below reused `_FENCE` on `20_worked_example.md`, so
+#: adding one bare-fenced ASP block made `json.loads` raise before a single
+#: check ran: `--self-test` died outright while `pytest` stayed green, because
+#: the self-test is not in the suite. Two jobs, two patterns.
+_JSON_FENCE = re.compile(r"```json\s*\n(.*?)```", re.S)
 
 
 def parse_module(text, clause_id=None, known_clause_ids=None):
@@ -1390,7 +1398,7 @@ def self_test():
     # to produce output the harness will reject on every clause.
 
     _ex_path = rel("prompt/20_worked_example.md")
-    _ex_blocks = [json.loads(b) for b in _FENCE.findall(
+    _ex_blocks = [json.loads(b) for b in _JSON_FENCE.findall(
         open(_ex_path, encoding="utf-8").read())]
     _ex_modules = [b for b in _ex_blocks if isinstance(b, dict)
                    and "outcome" in b]

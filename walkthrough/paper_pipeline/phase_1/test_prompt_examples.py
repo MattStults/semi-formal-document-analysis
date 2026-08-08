@@ -35,13 +35,19 @@ import schema as S  # noqa: E402
 import translate as T  # noqa: E402
 
 WORKED = os.path.join(HERE, "prompt", "20_worked_example.md")
-BAD_HEADING = "## The five bad ones"
+#: The deliberately-broken examples start here. ⚠️ Matched by SHAPE, not by the
+#: exact wording: pinning "## The five bad ones" meant that adding a sixth bad
+#: example — an ordinary, desirable edit — failed this test and reported the
+#: improvement as a defect. That is DEBUGGING_TIPS entry 9, and it has now bitten
+#: four times in this repo.
+BAD_HEADING_RE = re.compile(r"^##\s+The\s+\w+\s+bad\s+ones\s*$", re.M | re.I)
 
 
 def _good_region(path):
     """The part of a prompt file before the deliberately-broken examples."""
     text = open(path, encoding="utf-8").read()
-    return text.split(BAD_HEADING)[0]
+    m = BAD_HEADING_RE.search(text)
+    return text[:m.start()] if m else text
 
 
 def _modules(text):
@@ -70,9 +76,12 @@ def _good_modules():
 
 
 def test_the_bad_examples_heading_still_exists():
-    """If this fails, `_good_region` is silently returning the whole file and
-    every check below is asserting that a deliberately broken module passes."""
-    assert BAD_HEADING in open(WORKED, encoding="utf-8").read()
+    """If this fails, `_good_region` returns the WHOLE file and every check
+    below is asserting that a deliberately broken module passes. That is the
+    silent-vacuous-pass failure, so it gets its own test."""
+    assert BAD_HEADING_RE.search(open(WORKED, encoding="utf-8").read()), (
+        "no '## The <n> bad ones' heading found; the good/bad split is gone "
+        "and every example check below is now vacuous")
 
 
 def test_there_are_good_modules_to_check():
@@ -175,3 +184,57 @@ def test_a_simple_act_list_is_unchanged(tmp_path):
     p.write_text("%% acts: respond(M), refuse(M), escalate\n", encoding="utf-8")
     h = link.header(str(p))
     assert h["acts"] == {"respond(M)", "refuse(M)", "escalate"}
+
+
+# ==========================================================================
+# translate.py --self-test must RUN. It was the only self-test not in pytest.
+# ==========================================================================
+
+def test_translate_self_test_runs_to_completion():
+    """⛔ THE GAP THIS CLOSES. `link.py --self-test` and `guard.py --self-test`
+    are both driven from pytest. `translate.py --self-test` was not — so when a
+    bare-fenced ASP block was added to `20_worked_example.md`, its example
+    extractor called `json.loads` on ASP and died with a traceback before a
+    single check ran. **pytest stayed green at 294 while the self-test was
+    crashing outright**, which is this project's signature failure: a check that
+    cannot run must not be reachable from the same state as a check that passed.
+
+    ⚠️ Asserts the run COMPLETES and REPORTS, not a pass count. Pinning "53
+    passed" would fail the moment someone legitimately adds a check
+    (DEBUGGING_TIPS entry 9). A crash is the thing being caught here; individual
+    check failures are visible in the summary and are a separate question.
+    """
+    import subprocess
+    r = subprocess.run(
+        [sys.executable, os.path.join(HERE, "translate.py"), "--self-test"],
+        cwd=HERE, capture_output=True, text=True)
+    out = r.stdout + r.stderr
+    assert "Traceback" not in out, (
+        "translate.py --self-test crashed instead of reporting:\n" + out[-2000:])
+    assert re.search(r"\d+ passed", out), (
+        "no summary line — the self-test did not reach its own report:\n"
+        + out[-2000:])
+
+
+def test_every_json_block_in_the_prompt_is_valid_json():
+    """The narrower defect underneath the crash: a worked example whose JSON is
+    not parseable. A `gloss` string was written across two source lines, which
+    is invalid JSON. It sat in the BAD-examples section, so the good-example
+    checks above skipped it by design — and the model is still shown it.
+    """
+    import glob
+    bad = []
+    for path in sorted(glob.glob(os.path.join(HERE, "prompt", "*.md"))):
+        text = open(path, encoding="utf-8").read()
+        for i, block in enumerate(re.findall(r"```json\s*\n(.*?)```", text, re.S)):
+            # `...` is a deliberate "and the rest of the fields" placeholder in
+            # partial fragments, and is not a defect. Strip it (and a dangling
+            # comma) and require what REMAINS to parse — a fragment must still
+            # be well-formed, which is what catches a string broken across two
+            # source lines.
+            probe = re.sub(r",?\s*\.\.\.\s*", "", block)
+            try:
+                json.loads(probe)
+            except json.JSONDecodeError as exc:
+                bad.append(f"{os.path.basename(path)} block {i + 1}: {exc}")
+    assert not bad, "\n".join(bad)

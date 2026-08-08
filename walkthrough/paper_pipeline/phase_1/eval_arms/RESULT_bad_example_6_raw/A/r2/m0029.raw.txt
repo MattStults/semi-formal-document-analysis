@@ -1,0 +1,68 @@
+{
+  "outcome": "translated",
+  "clause_id": "m0029",
+  "abstain_reason": null,
+  "claims": [
+    "C1 following user or developer instructions can cause harm, e.g. self-harm instructions or advice enabling a violent act",
+    "C2 such situations involve a direct conflict between empowering the user and preventing harm",
+    "C3 per the chain of command, the model should obey user and developer instructions except when they fall into specific categories that require refusal or safe completion"
+  ],
+  "acts": ["obey(I)", "refuse(R)", "safe_complete(R)"],
+  "concepts": [
+    { "name": "harmful_instruction", "arity": 1,
+      "gloss": "an instruction whose following could cause harm, such as providing self-harm instructions or advice that helps carry out a violent act",
+      "licence": "textual", "cites": "m0029", "inference": null, "toggleable": false },
+    { "name": "user_or_developer_instruction", "arity": 1,
+      "gloss": "an instruction given by a user or developer",
+      "licence": "textual", "cites": "m0029", "inference": null, "toggleable": false },
+    { "name": "specific_category_requiring_refusal_or_safe_completion", "arity": 1,
+      "gloss": "an instruction that falls into a specific category that requires refusal or safe completion",
+      "licence": "assumed", "cites": null,
+      "inference": "the clause refers to 'specific categories' defined elsewhere in the document, so this predicate stands for membership in those categories",
+      "toggleable": false }
+  ],
+  "ontology": [
+    { "licence": "textual", "cites": "m0029", "inference": null, "toggleable": false,
+      "atom": "harmful_instruction(I)",
+      "gloss": "I is an instruction whose following could cause harm",
+      "body": "user_or_developer_instruction(I), could_cause_harm(I)" },
+    { "licence": "textual", "cites": "m0029", "inference": null, "toggleable": false,
+      "atom": "specific_category_requiring_refusal_or_safe_completion(I)",
+      "gloss": "I falls into a specific category that requires refusal or safe completion",
+      "body": "in_specific_category(I)" }
+  ],
+  "asserts": [
+    { "read_back": "the model should obey % because it is a user or developer instruction and does not fall into a specific category requiring refusal or safe completion",
+      "read_back_slots": ["I"],
+      "licence": "textual", "cites": "m0029", "inference": null, "toggleable": false,
+      "status": "oblige", "act": "obey(I)",
+      "body": "user_or_developer_instruction(I), not specific_category_requiring_refusal_or_safe_completion(I)" },
+    { "read_back": "the model should refuse % because it is a user or developer instruction that falls into a specific category requiring refusal",
+      "read_back_slots": ["I"],
+      "licence": "assumed", "cites": null,
+      "inference": "the clause says such instructions 'require refusal or safe completion'; refusal is one of the two required responses",
+      "toggleable": false,
+      "status": "oblige", "act": "refuse(I)",
+      "body": "user_or_developer_instruction(I), specific_category_requiring_refusal_or_safe_completion(I), requires_refusal(I)" },
+    { "read_back": "the model should safe complete % because it is a user or developer instruction that falls into a specific category requiring safe completion",
+      "read_back_slots": ["I"],
+      "licence": "assumed", "cites": null,
+      "inference": "the clause says such instructions 'require refusal or safe completion'; safe completion is one of the two required responses",
+      "toggleable": false,
+      "status": "oblige", "act": "safe_complete(I)",
+      "body": "user_or_developer_instruction(I), specific_category_requiring_refusal_or_safe_completion(I), requires_safe_completion(I)" }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    { "act_class": "obey", "closure": "cnpa",
+      "reason": "the clause states the model should obey user and developer instructions except when they fall into specific categories, so silence about an instruction's category does not permit obedience; the exception is defined by those categories" },
+    { "act_class": "refuse", "closure": "unclear",
+      "reason": "the clause does not settle when refusal applies beyond saying it is required for specific categories" },
+    { "act_class": "safe_complete", "closure": "unclear",
+      "reason": "the clause does not settle when safe completion applies beyond saying it is required for specific categories" }
+  ],
+  "requires": ["could_cause_harm/1", "in_specific_category/1", "requires_refusal/1", "requires_safe_completion/1"],
+  "inputs": ["user_or_developer_instruction/1"],
+  "forbid_body": []
+}

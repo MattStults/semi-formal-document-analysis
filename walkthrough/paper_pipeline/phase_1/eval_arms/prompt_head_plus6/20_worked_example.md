@@ -265,7 +265,8 @@ Write what the document says the term covers, and where you cannot, say so rathe
 it into a name:
 ```json
 { "name": "terrorism_act", "arity": 1,
-  "gloss": "X is an act intended to intimidate a population or coerce a government, which this clause groups with crimes against humanity and war crimes as a critical harm" }
+  "gloss": "X is an act intended to intimidate a population or coerce a government, which this
+            clause groups with crimes against humanity and war crimes as a critical harm" }
 ```
 If the content lives in another clause, `requires` it. If it comes from outside the document, mark
 it `world` and make it toggleable. What you may not do is let a label stand in for content you

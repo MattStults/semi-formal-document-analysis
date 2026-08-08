@@ -122,6 +122,36 @@ translator currently writes*, reproduces the clause almost word for word. That i
 documented blind spot ("wording that echoes the clause") applied to seats 4b and 4d at once, and it
 is measured, not hypothesised. §4 is built on it.
 
+⭐ **CORROBORATED 2026-08-07 on a much wider sample, by a different measure.** Across **133 distinct
+concepts** (263 rows) from every stored run and eval, **10 have a gloss that adds ZERO words beyond
+the predicate name itself**: `terrorism_act` → *"an act of terrorism"*, `mass_surveillance_act` →
+*"an act of mass surveillance"*, `persecution_act` → *"an act of persecution"*. Finding (5) measured
+gloss-against-clause on one module; this measures gloss-against-its-own-name corpus-wide, and the
+two agree. **This is the design's failure mode #4, "imports a name without its content", occurring
+in our own output at 7.5 % and detected by nothing.**
+
+⛔ **AND IT HAS NO STAGE-2 CHECK, deliberately — two candidates were tested and both fail.**
+
+1. *Flag a gloss that adds no content beyond the name.* A proxy: it misfires on legitimate
+   primitives (`system_message` → *"C is a system message"* is correct, because the document treats
+   it as primitive).
+2. *Flag a concept the document elaborates elsewhere but the module collapsed into one symbol.*
+   `[RAN]` **The signal is inverted.** Clauses mentioning the term: `system_message` **12** (8
+   definitional) — the legitimate primitive — versus `terrorism` **2** (1 definitional) — the actual
+   failure. A check on this would flag the good case hardest and the bad case least.
+
+⇒ **This is a semantic question and belongs here, at 4r, not at stage 2.** "Does `terrorism_act(X)`
+carry what the document means by terrorism?" needs a reader; `README.md` already draws that line.
+A note-level stage-2 check was considered and **rejected by name**: notes drive no repair and are
+seen by nobody, and this repo has already watched the `no %% provides:` warning fire on every module
+until it became invisible.
+
+**What was done instead:** `prompt/20_worked_example.md` bad example **#6** now teaches against it,
+restoring the design's failure #4 to the prompt. That is the lever with measured evidence behind it
+— one worked example took the atom-slot cause from 59 occurrences to 0 held-out, after prose and
+error messages had done nothing. ⚠️ Teaching against it does not detect it; **4r remains the only
+thing that can, and finding (5) still bounds what 4r can be trusted to do.**
+
 ---
 
 ## 1 Scope

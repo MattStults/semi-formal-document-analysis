@@ -1,0 +1,162 @@
+{
+  "outcome": "translated",
+  "clause_id": "m0195",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the assistant should operate within applicable legal constraints",
+    "C2 applicable legal constraints include applicable local law for local deployments of models",
+    "C3 legal compliance is consistent with the red-line principles",
+    "C4 where needed to uphold the red-line principles, the assistant may still provide safety-critical information, add further context, or refuse requests"
+  ],
+  "acts": [
+    "operate_within_legal_constraints",
+    "provide_safety_critical_information",
+    "add_further_context",
+    "refuse_request"
+  ],
+  "concepts": [
+    {
+      "name": "applicable_legal_constraint",
+      "arity": 1,
+      "gloss": "a legal constraint that applies to the assistant's operation, including applicable local law for local deployments",
+      "licence": "textual",
+      "cites": "m0195",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "local_deployment",
+      "arity": 1,
+      "gloss": "a deployment of a model in a particular locality, to which local law applies",
+      "licence": "textual",
+      "cites": "m0195",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "uphold_red_line_principles",
+      "arity": 1,
+      "gloss": "the act of upholding the red-line principles referenced by this clause",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause refers to 'these principles' via a link to red_line_principles; the predicate names the act of upholding them",
+      "toggleable": false
+    },
+    {
+      "name": "safety_critical_information",
+      "arity": 1,
+      "gloss": "information that is safety-critical, which the assistant may provide where needed to uphold the red-line principles",
+      "licence": "textual",
+      "cites": "m0195",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "further_context",
+      "arity": 1,
+      "gloss": "additional context the assistant may add where needed to uphold the red-line principles",
+      "licence": "textual",
+      "cites": "m0195",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "m0195",
+      "inference": null,
+      "toggleable": false,
+      "atom": "applicable_legal_constraint(L)",
+      "gloss": "L is an applicable legal constraint on the assistant's operation",
+      "body": "legal_constraint(L)"
+    },
+    {
+      "licence": "textual",
+      "cites": "m0195",
+      "inference": null,
+      "toggleable": false,
+      "atom": "applicable_legal_constraint(local_law(D))",
+      "gloss": "for a local deployment D, the local law is an applicable legal constraint",
+      "body": "local_deployment(D)"
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "the assistant should operate within applicable legal constraints",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "m0195",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "operate_within_legal_constraints",
+      "body": "applicable_legal_constraint(L)"
+    },
+    {
+      "read_back": "where needed to uphold the red-line principles, the assistant may provide safety-critical information",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "m0195",
+      "inference": null,
+      "toggleable": false,
+      "status": "permit",
+      "act": "provide_safety_critical_information",
+      "body": "uphold_red_line_principles"
+    },
+    {
+      "read_back": "where needed to uphold the red-line principles, the assistant may add further context",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "m0195",
+      "inference": null,
+      "toggleable": false,
+      "status": "permit",
+      "act": "add_further_context",
+      "body": "uphold_red_line_principles"
+    },
+    {
+      "read_back": "where needed to uphold the red-line principles, the assistant may refuse requests",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "m0195",
+      "inference": null,
+      "toggleable": false,
+      "status": "permit",
+      "act": "refuse_request",
+      "body": "uphold_red_line_principles"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "operate_within_legal_constraints",
+      "closure": "cepa",
+      "reason": "the clause obliges operating within applicable legal constraints; silence about other acts leaves them permitted under the default closure"
+    },
+    {
+      "act_class": "provide_safety_critical_information",
+      "closure": "cepa",
+      "reason": "the clause permits providing safety-critical information where needed; silence about other cases leaves them permitted"
+    },
+    {
+      "act_class": "add_further_context",
+      "closure": "cepa",
+      "reason": "the clause permits adding further context where needed; silence about other cases leaves them permitted"
+    },
+    {
+      "act_class": "refuse_request",
+      "closure": "cepa",
+      "reason": "the clause permits refusing requests where needed; silence about other cases leaves them permitted"
+    }
+  ],
+  "requires": [
+    "legal_constraint/1",
+    "red_line_principles/0"
+  ],
+  "inputs": [
+    "local_deployment/1"
+  ],
+  "forbid_body": []
+}

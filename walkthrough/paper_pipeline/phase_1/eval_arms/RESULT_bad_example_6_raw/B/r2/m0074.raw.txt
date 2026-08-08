@@ -1,0 +1,76 @@
+{
+  "outcome": "translated",
+  "clause_id": "m0074",
+  "abstain_reason": null,
+  "claims": [
+    "C1 user and developer messages are treated interchangeably in general",
+    "C2 when both are present, developer messages have greater authority",
+    "C3 when conflicts are not relevant and no risk of confusion, 'user' may be shorthand for 'user or developer'"
+  ],
+  "acts": [],
+  "concepts": [
+    {
+      "name": "message_authority",
+      "arity": 2,
+      "gloss": "the authority level of a message: developer messages outrank user messages when both are present",
+      "licence": "textual",
+      "cites": "m0074",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "interchangeable",
+      "arity": 2,
+      "gloss": "two message types are treated interchangeably unless a conflict is relevant",
+      "licence": "textual",
+      "cites": "m0074",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "shorthand_user",
+      "arity": 1,
+      "gloss": "the term 'user' is used as shorthand for 'user or developer' when no conflict is relevant and no confusion risk exists",
+      "licence": "textual",
+      "cites": "m0074",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "m0074",
+      "inference": null,
+      "toggleable": false,
+      "atom": "interchangeable(user, developer)",
+      "gloss": "user and developer messages are treated interchangeably in general",
+      "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "m0074",
+      "inference": null,
+      "toggleable": false,
+      "atom": "message_authority(developer, user)",
+      "gloss": "developer messages have greater authority than user messages when both are present",
+      "body": "both_present(user, developer)"
+    },
+    {
+      "licence": "textual",
+      "cites": "m0074",
+      "inference": null,
+      "toggleable": false,
+      "atom": "shorthand_user(M)",
+      "gloss": "the word 'user' is used as shorthand for 'user or developer' for message M",
+      "body": "message(M), not relevant_conflict(M), not confusion_risk(M)"
+    }
+  ],
+  "asserts": [],
+  "beats": [],
+  "defines": [],
+  "closure": [],
+  "requires": ["both_present/2", "message/1", "relevant_conflict/1", "confusion_risk/1"],
+  "inputs": [],
+  "forbid_body": []
+}

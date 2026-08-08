@@ -1,0 +1,134 @@
+{
+  "outcome": "translated",
+  "clause_id": "m0195",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the assistant should operate within applicable legal constraints, including local law for local deployments",
+    "C2 legal compliance is consistent with the red-line principles",
+    "C3 where needed to uphold the red-line principles, the model may still provide safety-critical information, add further context, or refuse requests"
+  ],
+  "acts": [
+    "operate_within_legal_constraints",
+    "provide_safety_critical_information",
+    "add_further_context",
+    "refuse_requests"
+  ],
+  "concepts": [
+    {
+      "name": "applicable_legal_constraint",
+      "arity": 1,
+      "gloss": "a legal constraint that applies to the assistant's operation, including local law for local deployments",
+      "licence": "textual",
+      "cites": "m0195",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "local_deployment",
+      "arity": 1,
+      "gloss": "a deployment of a model in a particular locality",
+      "licence": "textual",
+      "cites": "m0195",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "upholds_red_line_principles",
+      "arity": 1,
+      "gloss": "the act is needed to uphold the red-line principles referenced by this clause",
+      "licence": "textual",
+      "cites": "m0195",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause says 'including applicable local law for local deployments of models', so a local deployment has its local law as an applicable legal constraint",
+      "toggleable": false,
+      "atom": "applicable_legal_constraint(local_law(D))",
+      "gloss": "the local law of a local deployment is an applicable legal constraint",
+      "body": "local_deployment(D)"
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "the assistant should operate within applicable legal constraints",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "m0195",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "operate_within_legal_constraints",
+      "body": "applicable_legal_constraint(C)"
+    },
+    {
+      "read_back": "where needed to uphold the red-line principles, the model may still provide safety-critical information",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "m0195",
+      "inference": null,
+      "toggleable": false,
+      "status": "permit",
+      "act": "provide_safety_critical_information",
+      "body": "upholds_red_line_principles(provide_safety_critical_information)"
+    },
+    {
+      "read_back": "where needed to uphold the red-line principles, the model may still add further context",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "m0195",
+      "inference": null,
+      "toggleable": false,
+      "status": "permit",
+      "act": "add_further_context",
+      "body": "upholds_red_line_principles(add_further_context)"
+    },
+    {
+      "read_back": "where needed to uphold the red-line principles, the model may still refuse requests",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "m0195",
+      "inference": null,
+      "toggleable": false,
+      "status": "permit",
+      "act": "refuse_requests",
+      "body": "upholds_red_line_principles(refuse_requests)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "operate_within_legal_constraints",
+      "closure": "cepa",
+      "reason": "the clause obliges operating within applicable legal constraints; silence about other acts leaves them permitted under the general permissive default"
+    },
+    {
+      "act_class": "provide_safety_critical_information",
+      "closure": "cepa",
+      "reason": "the clause explicitly permits this act when needed to uphold red-line principles; silence about other cases does not prohibit it"
+    },
+    {
+      "act_class": "add_further_context",
+      "closure": "cepa",
+      "reason": "the clause explicitly permits this act when needed to uphold red-line principles; silence about other cases does not prohibit it"
+    },
+    {
+      "act_class": "refuse_requests",
+      "closure": "cepa",
+      "reason": "the clause explicitly permits this act when needed to uphold red-line principles; silence about other cases does not prohibit it"
+    }
+  ],
+  "requires": [
+    "red_line_principles/1"
+  ],
+  "inputs": [
+    "local_deployment/1",
+    "upholds_red_line_principles/1"
+  ],
+  "forbid_body": []
+}

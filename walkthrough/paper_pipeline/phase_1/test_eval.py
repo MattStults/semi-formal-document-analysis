@@ -569,3 +569,61 @@ def test_a_provider_error_still_records_its_slot(tmp_path):
     body = (root / "A" / "r1" / "m0001.raw.txt").read_text()
     assert body != "", "an empty file cannot be told from a call never made"
     assert "no response" in body.lower()
+
+
+# ==========================================================================
+#  The gloss metric — bad worked example #6
+# ==========================================================================
+
+class _C:
+    def __init__(self, name, gloss): self.name, self.gloss = name, gloss
+
+
+class _M:
+    def __init__(self, concepts): self.concepts = concepts
+
+
+def _out(concepts):
+    o = E.ClauseOutcome("m0001", "translated", _M(concepts), [])
+    return o
+
+
+def test_a_gloss_that_only_restates_the_name_counts_as_empty():
+    m = E.gloss_metric([_out([_C("terrorism_act", "an act of terrorism")])], None)
+    assert m["empty_gloss_rate"] == 1.0
+    assert m["gloss_concepts_scored"] == 1.0
+
+
+def test_a_gloss_that_adds_content_does_not_count():
+    m = E.gloss_metric([_out([_C(
+        "terrorism_act",
+        "X is an act intended to intimidate a population or coerce a "
+        "government, grouped here with war crimes")])], None)
+    assert m["empty_gloss_rate"] == 0.0
+
+
+def test_stopwords_and_single_letters_do_not_rescue_an_empty_gloss():
+    # "C is a system message" must not score as contentful merely because of
+    # the variable letter and the articles.
+    m = E.gloss_metric([_out([_C("system_message", "C is a system message")])], None)
+    assert m["empty_gloss_rate"] == 1.0
+
+
+def test_a_module_that_failed_to_build_is_SCORED_AS_NOTHING_not_as_clean():
+    """⛔ The `licence_modules_scored` failure, repeated for glosses: an
+    unbuildable module carries no concepts, so every rate reads 0.0000 and
+    "nothing measured" looks exactly like "no empty glosses"."""
+    m = E.gloss_metric([E.ClauseOutcome("m0001", "invalid", None, [])], None)
+    assert m["gloss_concepts_scored"] == 0.0, (
+        "the denominator must show that nothing was scored")
+    assert m["empty_gloss_rate"] == 0.0      # reads clean...
+    # ...which is only safe BECAUSE the denominator above is reported with it.
+
+
+def test_the_rate_is_over_concepts_and_the_per_clause_count_over_clauses():
+    outs = [_out([_C("a_thing", "a thing"), _C("b_thing", "B is measured in metres")]),
+            _out([_C("c_thing", "a c thing")])]
+    m = E.gloss_metric(outs, None)
+    assert m["empty_gloss_rate"] == 2 / 3
+    assert m["empty_glosses_per_clause"] == 1.0
+    assert m["gloss_concepts_scored"] == 1.5

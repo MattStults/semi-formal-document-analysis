@@ -1,0 +1,94 @@
+{
+  "outcome": "translated",
+  "clause_id": "m0074",
+  "abstain_reason": null,
+  "claims": [
+    "C1 user and developer messages are treated interchangeably in the spec",
+    "C2 when both are present, developer messages have greater authority",
+    "C3 the word 'user' is sometimes shorthand for 'user or developer' when conflicts are not relevant and there is no risk of confusion"
+  ],
+  "acts": [],
+  "concepts": [
+    {
+      "name": "message_authority",
+      "arity": 2,
+      "gloss": "the authority level of a message type in the conversation hierarchy",
+      "licence": "textual",
+      "cites": "m0074",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "interchangeable_message_type",
+      "arity": 2,
+      "gloss": "two message types are treated interchangeably by the spec",
+      "licence": "textual",
+      "cites": "m0074",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "shorthand_user",
+      "arity": 1,
+      "gloss": "the term 'user' is used as shorthand for the given message type or types",
+      "licence": "textual",
+      "cites": "m0074",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "conflict_relevant",
+      "arity": 0,
+      "gloss": "a user/developer conflict is relevant in the context",
+      "licence": "textual",
+      "cites": "m0074",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "risk_of_confusion",
+      "arity": 0,
+      "gloss": "there is a risk of confusion in using 'user' as shorthand",
+      "licence": "textual",
+      "cites": "m0074",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "m0074",
+      "inference": null,
+      "toggleable": false,
+      "atom": "interchangeable_message_type(user, developer)",
+      "gloss": "user and developer messages are treated interchangeably by the spec",
+      "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "m0074",
+      "inference": null,
+      "toggleable": false,
+      "atom": "message_authority(developer, higher)",
+      "gloss": "developer messages have greater authority than user messages when both are present",
+      "body": "both_present(user, developer)"
+    },
+    {
+      "licence": "textual",
+      "cites": "m0074",
+      "inference": null,
+      "toggleable": false,
+      "atom": "shorthand_user(user_or_developer)",
+      "gloss": "the word 'user' is used as shorthand for 'user or developer' when conflicts are not relevant and there is no risk of confusion",
+      "body": "not conflict_relevant, not risk_of_confusion"
+    }
+  ],
+  "asserts": [],
+  "beats": [],
+  "defines": [],
+  "closure": [],
+  "requires": ["both_present/2"],
+  "inputs": ["conflict_relevant/0", "risk_of_confusion/0"],
+  "forbid_body": []
+}

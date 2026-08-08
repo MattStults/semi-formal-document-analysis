@@ -1,0 +1,109 @@
+{
+  "outcome": "translated",
+  "clause_id": "m0029",
+  "abstain_reason": null,
+  "claims": [
+    "C1 following user or developer instructions can itself cause harm (e.g. self-harm instructions, advice enabling violence)",
+    "C2 such situations pit empowering the user against preventing harm",
+    "C3 per the chain of command, the model should obey user and developer instructions",
+    "C4 the duty to obey does not apply when the instruction falls into a specific category that requires refusal or safe completion"
+  ],
+  "acts": ["obey(I)", "refuse(I)", "safe_complete(I)"],
+  "concepts": [
+    {
+      "name": "harmful_instruction",
+      "arity": 1,
+      "gloss": "I is an instruction whose mere following would cause harm, such as providing self-harm instructions or advice that helps the user carry out a violent act",
+      "licence": "textual",
+      "cites": "m0029",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "user_or_developer_instruction",
+      "arity": 1,
+      "gloss": "I is an instruction given by the user or the developer",
+      "licence": "textual",
+      "cites": "m0029",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "requires_refusal_or_safe_completion",
+      "arity": 1,
+      "gloss": "I falls into a specific category that requires refusal or safe completion",
+      "licence": "textual",
+      "cites": "m0029",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "m0029",
+      "inference": null,
+      "toggleable": false,
+      "atom": "harmful_instruction(I)",
+      "gloss": "I is an instruction whose mere following would cause harm, such as providing self-harm instructions or advice that helps the user carry out a violent act",
+      "body": "user_or_developer_instruction(I), following_causes_harm(I)"
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "the model should obey % because it is a user or developer instruction",
+      "read_back_slots": ["I"],
+      "licence": "textual",
+      "cites": "m0029",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "obey(I)",
+      "body": "user_or_developer_instruction(I), not requires_refusal_or_safe_completion(I)"
+    },
+    {
+      "read_back": "the model should refuse % because it falls into a specific category that requires refusal",
+      "read_back_slots": ["I"],
+      "licence": "textual",
+      "cites": "m0029",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "refuse(I)",
+      "body": "requires_refusal_or_safe_completion(I), refusal_required(I)"
+    },
+    {
+      "read_back": "the model should safe complete % because it falls into a specific category that requires safe completion",
+      "read_back_slots": ["I"],
+      "licence": "textual",
+      "cites": "m0029",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "safe_complete(I)",
+      "body": "requires_refusal_or_safe_completion(I), safe_completion_required(I)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "obey",
+      "closure": "cepa",
+      "reason": "the clause states the model should obey user and developer instructions except when they fall into specific categories, so silence about an instruction leaves the duty to obey standing"
+    },
+    {
+      "act_class": "refuse",
+      "closure": "cnpa",
+      "reason": "the clause only permits refusal for instructions in specific categories that require it, so silence about an instruction does not permit refusing it"
+    },
+    {
+      "act_class": "safe_complete",
+      "closure": "cnpa",
+      "reason": "the clause only permits safe completion for instructions in specific categories that require it, so silence about an instruction does not permit safe completing it"
+    }
+  ],
+  "requires": ["following_causes_harm/1", "requires_refusal_or_safe_completion/1", "refusal_required/1", "safe_completion_required/1"],
+  "inputs": ["user_or_developer_instruction/1"],
+  "forbid_body": []
+}

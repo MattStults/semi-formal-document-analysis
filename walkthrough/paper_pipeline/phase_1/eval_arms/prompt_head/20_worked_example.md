@@ -1,4 +1,4 @@
-# Worked examples — the good ones, then six bad
+# Worked examples — one good, five bad
 
 The good one is transcribed from `contradiction_probe/doc.lp`, which is 14 clauses hand-encoded in
 this vocabulary and which runs.
@@ -206,7 +206,7 @@ above needs all four of its conditions to hold at once.
 **Every predicate a body names is declared.** All six appear in `inputs`, and each has a `concepts`
 entry giving its gloss. A body predicate that is declared nowhere cannot be told from a typo.
 
-## The six bad ones
+## The five bad ones
 
 Each has actually happened in this project.
 
@@ -247,26 +247,3 @@ policies. This encodes what it *does* override:
 { "status": "permit", "act": "produce(M)", "body": "not out_of_scope(transformation, K)" }
 ```
 The document never licensed that step. Absence of an exclusion is not an inclusion.
-
-**6 — imports a name without its content.** The clause is about acts of terrorism. This makes the
-whole category one symbol whose gloss just says the name again:
-```json
-{ "name": "terrorism_act", "arity": 1, "gloss": "an act of terrorism" }
-```
-The gloss adds nothing a reader did not already supply. `terrorism_act(X)` now stands for whatever
-the reader happens to think terrorism means, and the document's own content about it is not in the
-module at all.
-
-This is the hardest failure to see, because it **reads correctly in every explanation** — the
-symbol echoes the document's words, so a read-back sounds faithful and a reviewer nods. Nothing
-mechanical catches it: the name is well-formed, the gloss is present, the module compiles.
-
-Write what the document says the term covers, and where you cannot, say so rather than absorbing
-it into a name:
-```json
-{ "name": "terrorism_act", "arity": 1,
-  "gloss": "X is an act intended to intimidate a population or coerce a government, which this clause groups with crimes against humanity and war crimes as a critical harm" }
-```
-If the content lives in another clause, `requires` it. If it comes from outside the document, mark
-it `world` and make it toggleable. What you may not do is let a label stand in for content you
-never wrote down.

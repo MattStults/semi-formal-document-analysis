@@ -324,6 +324,52 @@ def findings_metric(outcomes, arm):
     }
 
 
+@metric("glosses")
+def gloss_metric(outcomes, arm):
+    """⭐ The metric for bad worked example #6 — "imports a name without its content".
+
+    A concept whose gloss merely restates its own predicate name carries no
+    content: `terrorism_act` -> "an act of terrorism" makes the whole category
+    one opaque symbol standing for whatever the reader already believed. It
+    reads correctly in every explanation, which is why nothing catches it.
+
+    ⛔ THIS IS A PROXY AND IS NOT A PASS/FAIL CHECK. `system_message` -> "C is
+    a system message" scores as empty here and is CORRECT, because the document
+    treats it as primitive. That is precisely why the ruling in
+    `DECISION_bad_worked_examples.md` refused to make this a stage-2 check. It
+    is usable as a RATE across arms -- the primitives are the same in both, so
+    a difference between arms is about the change -- and unusable as a verdict
+    on any single concept.
+
+    `gloss_concepts_scored` is part of the metric for the reason
+    `licence_modules_scored` is: a module that fails the schema carries no
+    concepts, every rate below reads 0.0000, and "nothing measured" would be
+    indistinguishable from "no empty glosses".
+    """
+    STOP = {"a", "an", "the", "is", "of", "that", "to", "in", "for", "and",
+            "or", "by", "it", "with", "has", "as", "are", "this", "be", "been",
+            "its", "which", "was", "any", "all"}
+    empty = total = 0
+    for o in outcomes:
+        mod = getattr(o, "module", None)
+        for c in (getattr(mod, "concepts", None) or []):
+            name = getattr(c, "name", "") or ""
+            gloss = getattr(c, "gloss", "") or ""
+            if not name or not gloss:
+                continue
+            total += 1
+            extra = (set(re.findall(r"[a-z]+", gloss.lower()))
+                     - set(re.findall(r"[a-z]+", name.lower()))
+                     - STOP - set("abcdefghijklmnopqrstuvwxyz"))
+            empty += not extra
+    n = len(outcomes) or 1
+    return {
+        "gloss_concepts_scored": total / n,
+        "empty_gloss_rate": (empty / total) if total else 0.0,
+        "empty_glosses_per_clause": empty / n,
+    }
+
+
 @metric("licences")
 def licence_metric(outcomes, arm):
     """⭐ The metric for a change to the LICENCE rule in `prompt/00_task.md`.
