@@ -481,12 +481,25 @@ def denominator_4a(rb, r3=None):
                            {"r3-not-supplied": ("no stage-3 covering set was "
                                                 "given, so no derivation is in "
                                                 "this denominator",)})
-    derived = tuple(d.item for d in getattr(r3, "derivations", ()) or ()
-                    if getattr(d, "nodes", None))
-    empty = tuple(d.item for d in getattr(r3, "derivations", ()) or ()
-                  if not getattr(d, "nodes", None))
-    return Denominator("4a", tuple(items) + derived,
-                       {"no-derivation": empty} if empty else None)
+    # ⛔ READ `readback_r3`'s REAL SHAPE. The first version of this read
+    # `r3.derivations` / `d.item` / `d.nodes` — none of which exist. `ModuleR3`
+    # carries `situations`; a `SituationR3` carries `derivations`; a
+    # `Derivation` is (label, verdict, roots). So it was a NO-OP against every
+    # object the repo builds, and it failed in the SILENT direction: a module
+    # with real derivations produced ids identical to `r3=None`.
+    #
+    # ⚠️ Worse, the tests pinned a hand-written duck type nothing constructs —
+    # including the one named "the vacuous-pass shape". A fixture that models
+    # the type wrongly tests the fixture. `test_seats.py` now builds this from
+    # an actual `render_r3` result.
+    derived, empty = [], []
+    for sit in getattr(r3, "situations", ()) or ():
+        sid = getattr(sit, "situation_id", None)
+        if sid is None:
+            continue
+        (derived if (getattr(sit, "derivations", ()) or ()) else empty).append(sid)
+    excluded = {"no-derivation": tuple(empty)} if empty else {}
+    return Denominator("4a", tuple(items) + tuple(derived), excluded)
 
 
 def denominator_4b(rb, mod, r3=None):

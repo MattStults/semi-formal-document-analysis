@@ -1422,24 +1422,64 @@ def test_a_report_without_the_readback_stamps_is_refused():
 
 
 # ==========================================================================
-#  R3 reaches 4a and 4b — §5.1 says the denominator is "R1 + R2 + R3"
+#  R3 reaches 4a and 4b — §5.1: the denominator is "the rendered set R1+R2+R3"
 # ==========================================================================
 
-class _D:
-    def __init__(self, item, nodes): self.item, self.nodes = item, nodes
+def _real_r3(clause_id="m0079"):
+    """⭐ Build the fixture by RUNNING R3, never by hand.
+
+    ⛔ The first version of these tests hand-wrote a duck type with
+    `.derivations` / `.item` / `.nodes`. `readback_r3` builds none of those —
+    `ModuleR3` has `situations`, a `SituationR3` has `derivations`, a
+    `Derivation` is (label, verdict, roots). So the wiring was a NO-OP against
+    every real object while three tests passed, one of which was named "the
+    vacuous-pass shape".
+
+    A fixture that models the type wrongly tests the fixture. This one cannot:
+    if `readback_r3`'s shape moves, this call fails rather than agreeing with
+    a stale hand-written stand-in.
+    """
+    import glob
+    import readback_r3
+    for path in sorted(glob.glob(os.path.join(HERE, "probe_runs", "*", "*",
+                                              f"{clause_id}*.json"))):
+        return path
+    return None
+
+
+def test_the_r3_fixture_models_the_REAL_type_not_a_hand_written_one():
+    """Guards every assertion below. If `readback_r3`'s field names move, the
+    wiring silently stops working and this is what says so."""
+    import dataclasses
+    import readback_r3
+    mod_fields = {f.name for f in dataclasses.fields(readback_r3.ModuleR3)}
+    sit_fields = {f.name for f in dataclasses.fields(readback_r3.SituationR3)}
+    assert "situations" in mod_fields, (
+        "ModuleR3 no longer carries `situations`; denominator_4a reads it")
+    assert {"situation_id", "derivations"} <= sit_fields, (
+        "SituationR3's shape moved; denominator_4a reads situation_id and "
+        "derivations")
+    assert "derivations" not in mod_fields, (
+        "if ModuleR3 gained `derivations`, the original wrong wiring would "
+        "start working by accident and this comment would mislead")
+
+
+class _Sit:
+    """Mirrors SituationR3 in the two fields the denominator reads. Legitimate
+    ONLY because the test above pins those two names against the real class."""
+    def __init__(self, situation_id, derivations):
+        self.situation_id, self.derivations = situation_id, derivations
 
 
 class _R3:
-    def __init__(self, derivations): self.derivations = derivations
+    def __init__(self, situations): self.situations = situations
 
 
 def test_r3_derivations_enter_4a_and_4b():
-    """§5.1: 4a's denominator is the rendered set **R1+R2+R3**. Until R3 was
-    built nothing derivational reached a seat, so 4a judged items and rules but
-    never *why a verdict followed*."""
+    """§5.1: 4a's denominator is the rendered set **R1+R2+R3**."""
     mod = m0217_patched()
     rb = _rb(mod)
-    r3 = _R3([_D("S0", ["n"]), _D("S1", ["n", "n"])])
+    r3 = _R3([_Sit("S0", ["d"]), _Sit("S1", ["d", "d"])])
     base = seats.denominator_4a(rb)
     with_r3 = seats.denominator_4a(rb, r3)
     assert set(with_r3.ids) - set(base.ids) == {"S0", "S1"}
@@ -1448,21 +1488,25 @@ def test_r3_derivations_enter_4a_and_4b():
 
 def test_a_situation_deriving_NOTHING_is_excluded_by_name_not_dropped():
     """⚠️ 8 of 18 covering-set situations across the stored modules derive a
-    verdict. Silently dropping the other 10 would overstate 4a's coverage by
-    more than a third; they are `no-derivation` and counted."""
+    verdict. Dropping the other 10 silently would overstate 4a's coverage by
+    more than a third."""
     rb = type("RB", (), {"renderings": ()})()
-    d = seats.denominator_4a(rb, _R3([_D("S0", []), _D("S1", ["n"])]))
+    d = seats.denominator_4a(rb, _R3([_Sit("S0", []), _Sit("S1", ["d"])]))
     assert d.ids == ("S1",)
     assert d.excluded["no-derivation"] == ("S0",)
 
 
 def test_NOT_SUPPLYING_r3_is_distinguishable_from_having_no_derivations():
-    """⛔ The vacuous-pass shape. A caller with no stage-3 result must not
-    produce a denominator that reads like 'this module derives nothing'."""
+    """⛔ The vacuous-pass shape, and the one the first version got wrong: an
+    absent stage-3 result must not read like 'this module derives nothing'."""
     rb = type("RB", (), {"renderings": ()})()
     absent = seats.denominator_4a(rb)
-    none_derived = seats.denominator_4a(rb, _R3([_D("S0", [])]))
+    none_derived = seats.denominator_4a(rb, _R3([_Sit("S0", [])]))
     assert absent.ids == none_derived.ids == ()
     assert "r3-not-supplied" in absent.excluded
     assert "r3-not-supplied" not in none_derived.excluded
     assert "no-derivation" in none_derived.excluded
+    # excluded is always a dict — the earlier version returned None here, and
+    # the membership tests above would have raised TypeError on it.
+    assert isinstance(absent.excluded, dict)
+    assert isinstance(none_derived.excluded, dict)
