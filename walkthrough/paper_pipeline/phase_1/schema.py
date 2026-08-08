@@ -254,7 +254,9 @@ class Assertion(Licensed, ReadBack):
         description="the ACT TERM, e.g. produce(M) or interject(user). Acts "
                     "are indexed: an act, never a material")
     body: Optional[str] = Field(
-        description="the ASP conditions, one line, or null if unconditional")
+        description="the ASP conditions under which this assertion holds, one "
+                    "line — or null when it holds unconditionally. Null, never "
+                    "an empty string: an empty string is rejected")
 
     @model_validator(mode="after")
     def _assertion_ok(self):
@@ -341,11 +343,10 @@ class OntologyFact(Licensed):
     atom: str = Field(
         description="e.g. restricted(new_bioweapon_step). NON-deontic")
     gloss: str = Field(
-        description="what this PREDICATE means, in one sentence — not what "
-                    "this instance of it asserts. `restricted/1` means 'the "
-                    "material falls under the restricted-content policy'. "
-                    "Review reads the MEANING rather than the name, so a name "
-                    "with no meaning attached cannot be reviewed at all")
+        description="one sentence saying what this PREDICATE means — not what "
+                    "this particular instance of it asserts. For "
+                    "`prohibited(csam)`, gloss `prohibited/1`, not the fact "
+                    "about csam")
     body: Optional[str] = Field(
         description="ASP conditions, or null for a ground fact")
 
@@ -402,10 +403,9 @@ class Concept(Strict):
     name: str = Field(description="the predicate name, e.g. restricted")
     arity: int = Field(description="how many arguments it takes")
     gloss: str = Field(
-        description="what the PREDICATE means, in one sentence — not what any "
-                    "instance of it asserts. Review reads the MEANING rather "
-                    "than the name: a clause pointing at the wrong concept "
-                    "otherwise produces a paraphrase that reads perfectly well")
+        description="one sentence saying what the PREDICATE means — not what "
+                    "any instance of it asserts. This sentence is the written "
+                    "definition the concept table carries")
 
     @model_validator(mode="after")
     def _concept_ok(self):
@@ -518,25 +518,37 @@ class Module(Strict):
     translated the easy parts of it".
     """
 
-    outcome: Literal["translated", "abstained"]
+    outcome: Literal["translated", "abstained"] = Field(
+        description="`translated` if you wrote a module for this clause; "
+                    "`abstained` if you declined to")
     clause_id: str = Field(description="the clause id you were given, exactly")
     abstain_reason: Optional[str] = Field(
         description="one sentence when abstaining; null when translating")
     claims: list[str] = Field(
         description="the clause's distinct claims, one string each")
     acts: list[str] = Field(
-        description="every act term this clause governs, declared once")
-    concepts: list[Concepts]
-    ontology: list[OntologyFact]
-    asserts: list[Assertion]
-    beats: list[Superiority]
-    defines: list[Definition]
-    closure: list[Closure]
+        description="every act term this clause governs, each declared once "
+                    "here, e.g. [\"produce(M)\"]")
+    concepts: list[Concepts] = Field(
+        description="the predicates this clause INTRODUCES: name, arity, and "
+                    "what each one MEANS. Asserts nothing")
+    ontology: list[OntologyFact] = Field(
+        description="the clause's non-deontic classification facts — what "
+                    "something IS, never what may be done about it")
+    asserts: list[Assertion] = Field(
+        description="the deontic assertions: one status attached to one act")
+    beats: list[Superiority] = Field(
+        description="the superiority claims THIS clause states")
+    defines: list[Definition] = Field(
+        description="the extensions this clause fixes")
+    closure: list[Closure] = Field(
+        description="one entry per act class this module governs")
     requires: list[str] = Field(
         description="predicates another clause must define, as name/arity")
     inputs: list[str] = Field(
         description="facts about the CASE, supplied at query time, name/arity")
-    forbid_body: list[ForbidBody]
+    forbid_body: list[ForbidBody] = Field(
+        description="claims about the rule set that no situation can exhibit")
 
     @model_validator(mode="after")
     def _coherent(self):

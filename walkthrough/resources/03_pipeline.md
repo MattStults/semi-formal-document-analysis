@@ -119,6 +119,13 @@ was wrong twice: it contradicts a standing project ruling, and it rejects the on
 built for this pipeline. `m0255`'s working result rests on `protects_third_party(restricted_content)`,
 which is asserted, not read from any clause.
 
+⚠️ **That fact is NOT the `world` exemplar, and an earlier draft of this section used it as one.**
+`protects_third_party/1` lives in `walkthrough/behaviour_harm3p.lp` (lines 15–16) — it is read out
+of a **behaviour statement**, so by this invariant's own closing note it belongs to the *fourth*
+class, the one that does not exist yet. Holding it up as the model `world` fact made the design's
+only demonstration of `world` an instance of the gap it declares two paragraphs below. It survives
+here as what it is: an uncited assertion that shows why binary rejection fails.
+
 | licence | meaning | how it is checked |
 |---|---|---|
 | **textual** | the cited clause says this | mechanical citation check, then a reviewer confirms the cited clause actually says it |
@@ -130,10 +137,64 @@ for an assumed fact, which manufactures problems #1 and #6 **behind a passed che
 licence reviewer then grades the citation rather than the licence class. Grading reaches the actual
 goal — no unlicensed inference is invisible — without that exit.
 
+#### ⭐ The `world` exemplar — RULED 2026-08-07 (Matt)
+
+⭐ **Decision: find and use a real document-side `world` fact. One exists: `illegal/1`.** The
+exemplar is `m0232` (*no_erotica_or_gore*):
+
+> *"The assistant should not generate erotica, depictions of **illegal** or non-consensual sexual
+> activities, or extreme gore, except in scientific, historical, news, artistic or other contexts
+> where sensitive content is appropriate."*
+
+Whether that prohibition fires turns on which sexual activities are illegal — and the specification
+never says. It meets all four tests a `world` exemplar has to meet:
+
+| test | why `illegal/1` passes |
+|---|---|
+| not `textual` | **7 clauses depend on it and 0 define its extension.** `m0209` · `m0232` · `m0253` · `m0270` · `m0271` · `m0524` · `m0586` use *illegal* / *illicit* / *unlawful*; no definitional clause in the 593 fixes what any of them covers (two further hits, `m0171` and `m0240`, are `kind: example`) |
+| not `assumed` | a criminal code cannot be inferred from a behavioural specification. There is no step to name |
+| not behaviour-side | the word is in the clause's **own text**, so it is a fact about the document, not read out of a behaviour statement |
+| genuinely toggleable | change the jurisdiction and the verdict changes. That is exactly what *"a result resting on world knowledge is a different claim"* means, and it is what `protects_third_party` could never demonstrate, being about the behaviour rather than the document |
+
+⛔ **Two alternatives were on the table and both are REJECTED, by name.**
+
+- **(i) "Record that `world` may have no document-side instances and stop demonstrating it."**
+  Rejected: an instance exists and seven clauses depend on it. The evidence that looked like
+  absence was a measurement of something else — see the finding immediately below.
+- **(ii) "Drop `world` from the contract."** Rejected on the same ground, and on a second: it would
+  foreclose the case before stages 3 and 4 have ever run. A licence class is removed on evidence
+  that nothing needs it, not on evidence that nothing has produced it yet.
+
+#### ⭐ Finding: *what models produced* was read as *what the corpus requires*
+
+⛔ **A prior claim in this repo is wrong and is corrected here.** `REVIEW_QUEUE.md` §2.1 and several
+commit messages stated **zero document-side `world` facts** — 31 `textual` / 8 `assumed` / 0 `world`
+across 18 hand-encoded clauses, plus `world_fact_rate` 0.000 over 72 model attempts (36 first
+attempts × 2 arms) on six held-out clauses. **Those numbers are real.** What is wrong is the
+inference drawn from them: they measure **what translators emitted**, not **what the corpus
+requires**, and the two were conflated into one claim.
+
+The corpus requires at least one, as above. The translators produce none for a mechanical reason: a
+single-clause translator sees *illegal* as ordinary vocabulary in a sentence it is paraphrasing, not
+as a predicate whose extension nothing in the document supplies. Nothing in the prompt makes the
+absence of a definition visible from inside one clause.
+
+⇒ **This predicts something testable: a single-clause translator will systematically
+UNDER-produce `world` licences**, and the under-production will concentrate on terms the document
+uses freely and never defines (MIREL's undefined-term marker, Part 4b, is the existing instrument
+for finding them). A zero rate is therefore not evidence about the class; it is a measurement of the
+translator's field of view.
+
+⚠️ **Not yet acted on in the prompt.** `prompt/*.md` demonstrates no `world` fact at all today.
+Adding `illegal/1` to it is a prompt change and needs its own held-out measurement before and after
+— it is not a documentation edit, and it must not be slipped in as one.
+
 ⛔ **The three classes do not reach the behaviour side.** All are defined relative to *the
 document*; a fact read out of a **behaviour statement** fits none of them. A fourth class is
 required — found 2026-08-07 when a behaviour was represented for the first time
-(`contradiction_probe/FINDINGS.md`, Finding 0).
+(`contradiction_probe/FINDINGS.md`, Finding 0). ⚠️ **The `world` ruling above does not touch this
+gap.** It replaces a behaviour-side fact that was standing in for `world`; it supplies nothing for
+the behaviour side, which still has no licence class of its own. Both remain open together.
 
 ⭐ **A conclusion inherits the weakest licence in its derivation.** That is what makes "change one
 asserted fact and the match disappears" visible in the output rather than discovered later.

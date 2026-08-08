@@ -25,32 +25,47 @@ touching a watched file while **any** watched file is unreviewed.
 Accepting is per file: `guard.py --accept <path>`. There is deliberately no accept-all.
 
 ⚠️ **A clean review of the five already ran** (`model/TRANSCRIPTION_REVIEW.md`). It found six items.
-Four are fixed. **Two are open and one needs your ruling — see §2.1.** Accepting the five now would
+Four are fixed. **§2.1 is now RULED and closed; §2.2 remains open.** Accepting the five now would
 certify files a review just found drifted.
+
+⚠️ `resources/03_pipeline.md` and `phase_1/schema.py` were edited again on 2026-08-07 (the §2.1
+ruling, and the field-documentation move out of `10_output_format.md`). All three of those files
+need re-reading before `--accept`.
 
 ---
 
 ## 2 DECISIONS ONLY YOU CAN MAKE
 
-### 2.1 ⭐ Does stage 1 demonstrate a `world`-licensed fact? *(blocks §1)*
+### 2.1 ✅ CLOSED 2026-08-07 — Does stage 1 demonstrate a `world`-licensed fact?
 
-⭐ **Updated 2026-08-07 after the held-out eval: `world_fact_rate` is 0.000 in both arms over
-36 first attempts on six clauses never used for diagnosis.** That is a fourth independent
-zero, on top of the 18 hand-encoded clauses below. The evidence for option (b) — that `world`
-may have no document-side instances — has stopped being ambiguous. Still your ruling.
+⭐ **RULED (Matt): option (a) — find and use a real document-side `world` fact. One was found:
+`illegal/1`, exemplified by `m0232`.** Seven clauses depend on it (`m0209` · `m0232` · `m0253` ·
+`m0270` · `m0271` · `m0524` · `m0586`) and **zero clauses define its extension**. It is not
+`textual` (nothing defines it), not `assumed` (a criminal code cannot be inferred from a
+behavioural spec), not behaviour-side (the word is in the clause's own text), and genuinely
+toggleable (change jurisdiction, change verdict).
 
-The design's *"what a good one looks like"* holds up `m0255`'s `protects_third_party` as the
-exemplary `world` fact. Two problems, both measured:
+⛔ **Rejected by name:** (i) *"record that `world` may have no document-side instances and stop
+demonstrating it"* — an instance exists and seven clauses depend on it; (ii) *"drop `world` from
+the contract"* — same ground, plus it would foreclose the case before stages 3/4 have run.
 
-- ⛔ It lives in `behaviour_harm3p.lp` — **behaviour-side material**, which stage 1 is denied. And
-  Invariant 2 says the three licence classes *"do not reach the behaviour side… a fourth class is
-  required."*
-- Across **18 hand-encoded document clauses** (`doc.lp` + `m0255.lp` + `clauses/`): **zero**
-  document-side `world` facts. 31 textual, 8 assumed, 0 world.
+⛔ **A claim written here was wrong and is corrected in the design.** The zeros below are real —
+31 textual / 8 assumed / 0 world across 18 hand-encoded clauses, and `world_fact_rate` 0.000 over
+72 model attempts — but they measure **what translators emitted**, not **what the corpus
+requires**. Those are different questions and this entry conflated them. A single-clause translator
+reads *illegal* as ordinary vocabulary, so it will systematically **under-produce** `world`
+licences; the zero is a fact about the translator's field of view, not about the class.
 
-⇒ Either (a) find a genuine document-side `world` example for the prompt, (b) record that `world`
-may have no document-side instances and stop demonstrating it, or (c) rule that the design's example
-is simply wrong and remove it there. **I did not choose — this is a design call.**
+⚠️ The design's old exemplar, `m0255`'s `protects_third_party`, is still wrong and is now marked as
+such: it lives in `behaviour_harm3p.lp:15-16`, so it is **behaviour-side** — an instance of the
+fourth licence class Invariant 2 says is still needed. **That gap is UNCHANGED and still open.**
+
+⇒ **Recorded with its grounds in `resources/03_pipeline.md`, Invariant 2** (*"The `world` exemplar
+— RULED 2026-08-07"* and the finding that follows it).
+
+⚠️ **Follow-up, deliberately NOT done here:** `prompt/*.md` still demonstrates no `world` fact.
+Adding `illegal/1` to the prompt is a prompt change and needs its own held-out measurement — it is
+not a documentation edit and must not be slipped in as one.
 
 ### 2.2 The other open transcription item
 
@@ -132,7 +147,8 @@ transcriptions.
 
 ## 7 MY RECOMMENDED ORDER WHEN YOU RETURN
 
-1. Rule on §2.1 (`world` facts) — it unblocks the transcription review and therefore the commit.
+1. ~~Rule on §2.1 (`world` facts)~~ — **done 2026-08-07.** Ruling recorded in the design; §2.2 is
+   now the only open transcription item.
 2. Re-review + implement the graveyard (you have already called this).
 3. `STEP_stage3.md` revision 3, re-reviewed, then implement both halves.
 4. Retire `STEP_stage2_and_repair.md` into the design — it is **already** stale, still describing
