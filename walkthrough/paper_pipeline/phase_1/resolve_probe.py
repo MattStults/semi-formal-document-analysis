@@ -157,22 +157,54 @@ def borrowed_predicates(cfg):
     return sorted(out.values(), key=lambda r: r["predicate"])
 
 
-def render_list(rows, with_gloss):
-    lines = ["", "===== BORROWED PREDICATES =====", ""]
-    for r in rows:
-        line = f"- {r['predicate']}   (borrowed by section: {r['section_id']})"
+def needs_block(rows, section_id, with_gloss, translated):
+    """The predicates one section borrows, rendered AT that section.
+
+    ⭐ ATTACHED TO THE SECTION, not listed separately. A flat alphabetical list
+    divorces a predicate from the text that needs it, so the model must
+    cross-reference 43 names against 78 sections from memory. Here the question
+    sits next to the passage that raises it.
+
+    ⛔ THREE STATES, NEVER TWO. `[RAN]` only 9 of 78 sections have a translated
+    module, so a bare "none" would conflate "this section's rules borrow
+    nothing" with "nobody has translated this section yet". Those are opposite
+    facts and a resolver told the first when the second is true will reason from
+    a false premise about the document's own completeness.
+    """
+    if section_id not in translated:
+        return ("    [BORROWED PREDICATES: not applicable — no clause in this "
+                "section has been translated yet, so nothing is claimed about "
+                "what its rules would borrow.]")
+    mine = [r for r in rows if r["section_id"] == section_id]
+    if not mine:
+        return ("    [BORROWED PREDICATES: none. This section HAS been "
+                "translated, and its rules borrow no predicate from elsewhere.]")
+    out = ["    [BORROWED PREDICATES — the rules written from this section test "
+           "these, and do not define them. Where is each one established?]"]
+    for r in sorted(mine, key=lambda r: r["predicate"]):
+        out.append(f"      - {r['predicate']}")
         if with_gloss and r.get("gloss"):
-            line += f"\n    the translator's note: {r['gloss']}"
-        lines.append(line)
-    return "\n".join(lines)
+            out.append(f"          the translator's note: {r['gloss']}")
+    return "\n".join(out)
 
 
-def build_document(cfg):
-    rows, out, seen = T.load_corpus(cfg), [], None
-    for c in rows:
+def build_document(cfg, rows=None, with_gloss=False):
+    """The corpus, section-marked — with each section's borrowed predicates
+    rendered immediately under its own marker when `rows` is supplied."""
+    clauses = T.load_corpus(cfg)
+    translated = {r["section_id"] for r in (rows or [])}
+    if rows is not None:
+        # a section counts as translated if any stored module came from it,
+        # not merely if it borrowed something
+        translated = {r["section_id"] for r in rows}
+    out, seen = [], None
+    for c in clauses:
         if c["section_id"] != seen:
             seen = c["section_id"]
-            out.append(f"\n===== SECTION: {seen} =====\n")
+            out.append(f"\n===== SECTION: {seen} =====")
+            if rows is not None:
+                out.append(needs_block(rows, seen, with_gloss, translated))
+            out.append("")
         out.append(c["quote"])
     return "\n".join(out)
 
@@ -216,9 +248,9 @@ def main(argv=None):
                             "max_tokens": MAX_TOKENS}}
     prov = T.resolve_provider(cfg, type("A", (), {
         "provider": None, "model": None, "max_tokens": None})())
-    doc = build_document(cfg)
     rows = borrowed_predicates(cfg)
-    user1 = doc + render_list(rows, a.arm == "gloss") + "\n\n" + TURN_1
+    doc = build_document(cfg, rows, a.arm == "gloss")
+    user1 = doc + "\n\n" + TURN_1
 
     cpt = float(cfg["cost"]["chars_per_token"])
     pin, pout = prov.price_per_mtok
@@ -240,8 +272,10 @@ def main(argv=None):
     if not a.live:
         print("\nDRY RUN — nothing sent. Add --live to spend.\n")
         print("--- system block ---\n" + SYSTEM)
-        print("\n--- the supplied list (first 6 of "
-              f"{len(rows)}) ---" + render_list(rows[:6], a.arm == "gloss"))
+        for sec in ("scope_of_autonomy", "definitions"):
+            m = re.search(r"===== SECTION: " + sec + r" =====\n(.*?)\n\n", doc, re.S)
+            print(f"\n--- section marker as the model sees it: {sec} ---")
+            print(m.group(0).strip() if m else "(not found)")
         print("\n--- turn 1 ---" + TURN_1)
         print("\n--- turn 2 ---" + TURN_2)
         return 0
