@@ -22,6 +22,37 @@ chosen differently — that is the standing instruction.
 
 ---
 
+## Q-21 ⛔ THE RENDERER SUBSTITUTES AN INSTANCE GLOSS FOR A VARIABLE — Invariant 1, live
+
+Found while checking something a subagent flagged in passing. **Not a design question — a defect —
+and it is being fixed. Recorded because of what it says about the check set.**
+
+`m0014`'s rule body is `critical_high_severity_harm(H)` — a **variable**, ranging over six ontology
+instances (acts of violence, WMD, terrorism, child abuse, persecution, mass surveillance).
+
+| | |
+|---|---|
+| the CONCEPT's gloss | *"a harm that is critical and high severity, as enumerated in the clause"* |
+| **what the seat is shown** | *"clause m0014 forbids ⟨act facilitate(H)⟩ when «**mass surveillance** is a critical high severity harm»"* |
+
+⇒ The renderer picked **one arbitrary instance's** gloss for a universally-quantified variable. A
+seat judging *"does the clause support this?"* is shown a rule about mass surveillance when the
+actual rule covers all six — and it reads perfectly fluently.
+
+⛔ **RB1 through RB5 all PASS on it.** No label survives; every body predicate has *a* gloss present
+(an instance gloss is a gloss); polarity is right; the rendered set is non-empty. **Every check is
+green on a sentence that says something the module does not.**
+
+That is the failure the read-back exists to prevent, occurring inside the read-back, and undetected
+by the five checks written to detect exactly this class. The lesson for the check set is worth more
+than the bug: **RB2 asks whether *a* gloss is present, never whether it is the *right* gloss.**
+
+⚠️ It would defeat 4b/4c the same way it defeats RB2 — except that here the new instrument check
+helps: 4c sees the module's variable, 4b sees the instance sentence, so they disagree and the
+rendering is correctly accused. The check works; the bug is upstream of it.
+
+---
+
 ## Q-20 ✅ RULED — artifact versioning and the re-run strategy
 
 **Matt, 2026-08-08:** *"It should probably trigger a re-run. If there's an intention flag that would
