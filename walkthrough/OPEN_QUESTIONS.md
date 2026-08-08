@@ -9,6 +9,40 @@ chosen differently — that is the standing instruction.
 
 ---
 
+## Q-19 ⛔ §6's DIVERGENCE MACHINERY CAN NEVER FIRE — and the design, not the code, is why
+
+`[RAN]` **0 divergence records over all 81 legal verdict combinations.** Every seat's verdict
+vocabulary is disjoint from every other's:
+
+| seat | verdicts |
+|---|---|
+| 4a | `as-meant` · `not-as-meant` · `unclear` |
+| 4b | `faithful` · `unfaithful` · `unclear` |
+| 4c | `licensed` · `unlicensed` · `unclear` |
+| 4d | `covered` · `not-conveyed` · `unclear` |
+
+…and **every pair in `CONTRADICTIONS` sits inside a single seat's vocabulary.** So `seat-divergence`,
+the brief shas, `promote`, `Triage` and `report_line`'s NOT-ADJUDICATED branch are all unreachable,
+and the five tests pinning §6 build judgements `validate_judgements` refuses.
+
+⚠️ **The code implements the design literally.** §6 says *"when two seats reach opposite verdicts on
+one item"* — and its own worked example is *"only `faithful` vs `unfaithful`"*, **both 4b's**. The
+design describes a cross-seat mechanism using a within-seat pair.
+
+**The question is what "opposite" means across seats**, and it is genuinely yours:
+1. **Shared vocabulary** — seats answer the same question, so verdicts are comparable. Changes every
+   seat brief.
+2. **A tension table** — `4b: faithful` against `4c: unlicensed` is not literally opposite but is in
+   tension. Needs the pairs enumerated and justified.
+3. **§6 applies only within a seat** — two labellings of one item by one brief. Cheapest, and much
+   weaker than §6 reads.
+
+⛔ **This matters more than its size suggests.** §4.3's whole guard is that *unanimity must not read
+as confirmation*, and §6 is the mechanism that makes disagreement visible. If it cannot fire, four
+agreeing seats are the only possible outcome — which is the failure §4 is written to prevent.
+
+---
+
 ## Q-18 · Stage 0's competency check has 2 unexpected failures — red, and correctly loud
 
 `walkthrough/paper_pipeline/cq_check.py` reports **14 as declared, 2 unexpected, 2 blocked**.
