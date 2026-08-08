@@ -1539,10 +1539,18 @@ def self_test():
                                known_clause_ids=None),
           ResponseParseError, "two identities")
 
-    check("an anonymous variable in a rule body",
-          "idiomatic ASP that the explanation tool cannot process (mode 7)",
-          lambda: parse_module(json.dumps(onto(body="material(M), q(M, _)"))),
-          ResponseParseError, "anonymous variable")
+    # ⛔ REMOVED 2026-08-07: "an anonymous variable in a rule body" is rejected.
+    # It asserted that `_` raises, on the ground that "the explanation tool
+    # cannot process it". That ground is now disproved twice -- `[RAN]` clingo
+    # accepts `p(X) :- q(X,_).` and derives correctly, and the published
+    # ASP2CNL renderer handles `_` explicitly ("hidden terms are simply
+    # skipped"). The schema restriction was removed on that evidence; this
+    # check pinned the restriction, so it went with it.
+    #
+    # ⚠️ The self-test caught its own staleness: after the schema change it
+    # failed with "raised ResponseParseError but for the WRONG REASON" -- the
+    # module now fails an undeclared-name check instead. A check that pins a
+    # deliberately-removed rule is not a floor; deleting it is not lowering one.
 
     check("a rule with no read-back annotation",
           "the read-back is what a reviewer sees INSTEAD of the rule; without "
