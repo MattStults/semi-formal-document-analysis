@@ -33,6 +33,13 @@ Keeping them apart is what stops a prompt fix invalidating a corpus. A module
 translated under an older prompt still satisfies the contract, still compiles,
 still links — it simply cannot be cited as evidence about the current prompt.
 Collapsing them into one hash marks the whole corpus stale on every prompt edit.
+
+⭐ RULED 2026-08-08 (Matt): BOTH now trigger a re-run — a provenance change does
+not merely relabel. That does NOT merge them. They answer different questions,
+a report has to distinguish them, and only the provenance one may ever be
+waived. `version.py` is where the comparison, the classification and the
+partial-re-run flag live; these two functions stay here, where the entry that
+first needed them is written.
 """
 
 import hashlib
@@ -66,11 +73,27 @@ def contract_hash(clause_text, schema_source):
     return h.hexdigest()[:16]
 
 
-def provenance_hash(prompt, model, temperature):
-    """Changes => not reproducible from current inputs, but still valid."""
+def provenance_hash(prompt, model, temperature, params=None):
+    """Changes => not reproducible from current inputs, but still valid.
+
+    ⚠️ `params` is APPENDED ONLY WHEN NON-EMPTY, and canonicalised with
+    `sort_keys`. Both matter. Hashing `{}` differently from "no params" would
+    have marked every artifact ever written provenance-stale the day this
+    argument was added — the whole-corpus invalidation the two-hash split
+    exists to prevent, arriving from the side. And serialising a dict without
+    sorting makes an artifact's version depend on the order somebody happened
+    to write a config file in, which is not a fact about the artifact.
+
+    ⛔ Nothing here may reach Python's `hash()`: it is salted per process, so
+    two runs over identical inputs would disagree and every staleness verdict
+    downstream would be noise. See `version.py`.
+    """
     h = hashlib.sha256()
     h.update(("prompt:" + (prompt or "")).encode())
     h.update(f"model:{model}|temp:{temperature}".encode())
+    if params:
+        h.update(("params:" + json.dumps(params, sort_keys=True,
+                                         default=str)).encode())
     return h.hexdigest()[:16]
 
 

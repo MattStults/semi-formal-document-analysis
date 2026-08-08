@@ -14,6 +14,11 @@ $V translate.py --section definitions --kinds definitional --limit 4
 $V translate.py --list-models                    # GET /models, free, verifies the model id
 $V translate.py --write-artifact                 # regenerate dryrun.txt from the current inputs
 $V translate.py --live                           # needs authorisation
+
+$V version.py                                    # staleness census over runs/, free
+$V version.py --rows                             # one line per (run, module)
+$V translate.py --only-stale                     # translate only what has gone stale
+$V translate.py --only-stale --waivers w.json    # …honouring a signed provenance waiver
 ```
 
 Exit codes: `0` clean · `1` a clause failed · `2` usage/config error.
@@ -206,7 +211,8 @@ runs/<timestamp>-<provider>/
   m0255.prompt_user.txt      written BEFORE the call
   m0255.raw.txt              the complete response, written first, always
   m0255.json                 the validated module object — the record
-  m0255.lp                   the rendering of it
+  m0255.version.json         its two version hashes — what it was made from
+  m0255.lp                   the rendering of it (with the version as a % comment)
   m0255.transcript.json      every repair turn, ending in what the model last said
   concepts.json              the concept table for the whole run, as data
   run.json                   config + prompt shas, the response_format sent,
@@ -228,6 +234,48 @@ silently absorbed into the most flattering bucket.
 
 `run.json` is rewritten after **every** clause, not at the end, so an interrupt or a network drop
 never loses the record of clauses already paid for.
+
+## Artifact versioning — when a module is translated again
+
+Every translated module is stamped with two hashes of the state that produced it, and the stamp is
+what decides whether it runs again. `03_pipeline.md` §1 carries the ruling (Matt, 2026-08-08) and
+the alternatives rejected; `version.py` carries the implementation and the reasoning per function.
+The short form:
+
+| hash | covers | a change means |
+|---|---|---|
+| `contract_hash` | clause text + `schema.py` | the artifact **may no longer validate** |
+| `provenance_hash` | the system prompt + model + `max_tokens`, `format_forcing`, `max_attempts` | it is **not reproducible** from today's inputs, but is still valid |
+
+**Both trigger a re-run**, and they stay separate anyway: a provenance-stale module still compiles
+and links — it just cannot be cited as evidence about the current prompt. `version.py` classifies
+every stored module as `current` · `provenance-stale` · `contract-stale` · `unstamped` · 
+`no-longer-in-corpus`, and when both hashes moved the state is `contract-stale`, because that is the
+one a waiver may never excuse.
+
+The stamp is written **beside** the module (`<clause>.version.json`) and mirrored into `run.json`;
+the `.lp` gets it as a `%` comment. It is deliberately not a field of the module object: the object
+is a contract the *model* satisfies, and provenance is a fact about the run, not a claim the
+translation makes about itself.
+
+```bash
+$V version.py                     # census over runs/ — free, sends nothing
+$V translate.py --only-stale      # translate only the stale part of a selection
+```
+
+⛔ `--only-stale` is **off by default** — changing what a bare run translates is a spend change —
+and it prints the census, by class and with its denominator, **above** the cost line, so a run that
+is about to re-translate 593 clauses says so before it is priced.
+
+**The waiver** (`--waivers path`) is the intention flag: a reviewed file naming clauses whose
+*provenance* change does not oblige a re-run, carrying `who`, `date`, `why`, and the exact hash
+transition it excuses — so it expires by construction the next time the prompt moves. It enumerates
+clause ids (no wildcard), it can never excuse a `contract_hash` change (it refuses the run instead
+of silently not applying), it cannot excuse an `unstamped` artifact, it is inert without
+`--only-stale`, and a waiver that matched nothing is reported **unused** rather than passed over.
+
+`mutate_version.py` sweeps all of it — the classification, the waiver rules, the two hash functions
+and the wiring in `translate.py` — at 34 mutants, 0 survivors.
 
 ## Known unpinned edges
 

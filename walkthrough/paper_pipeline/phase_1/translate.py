@@ -43,6 +43,7 @@ import time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import graveyard as gy                                        # noqa: E402
 import schema                                                  # noqa: E402
+import version                                                 # noqa: E402
 
 #: The concept dictionary is its OWN artifact, joinable across clauses and
 #: across runs — never comments inside the logic files.
@@ -972,7 +973,79 @@ def response_format_payload(cfg):
     return None
 
 
-def run_record(cfg, prov, system, results, user_shas=None, spend=None):
+def stale_filter(jobs, cfg, args, prov, system, idk, text_key):
+    """`--only-stale`: keep only the jobs whose stored artifact has moved.
+
+    ⛔ IT REPORTS BEFORE IT DECIDES. The census is printed here, above the cost
+    estimate and the gate, because the failure this feature could produce is a
+    staleness tool that quietly re-runs 593 clauses. The counts, by class, with
+    their denominator, are on screen before anything is priced.
+
+    Returns (jobs, report) — `report` is what goes into `run.json`.
+    """
+    # ⚠️ VALIDATED FIRST, before any work and before any output. A malformed
+    # waiver file is a refusal, and a refusal that arrives underneath a census
+    # reads as a comment on the census.
+    waivers = load_waivers_for(args)
+
+    runs_root = rel(cfg["output"]["dir"])
+    model, temperature, params = version.model_params(cfg, prov)
+    schema_src = version.schema_source()
+    current = {}
+    for j in jobs:
+        current[j["row"][idk]] = version.stamp(
+            j["row"].get(text_key, ""), schema_src, system, model,
+            temperature, params)
+
+    rows = version.survey(runs_root, current)
+    # A clause with no artifact anywhere has never been translated: it is not
+    # "current", and it is not a stale artifact either — it is work.
+    best = version.best_per_clause(rows)
+    states = {}
+    for j in jobs:
+        cid = j["row"][idk]
+        states[cid] = best.get(cid) or {
+            "run": None, "clause_id": cid, "state": version.UNSTAMPED,
+            "differing": ["contract_hash", "provenance_hash"],
+            "stored": None, "current": current[cid]}
+
+    counts = version.census(list(states.values()))
+    print(version.format_census(counts, total=len(jobs), label="selected"))
+
+    waived, honoured, unused = version.apply_waivers(states, waivers)
+    if waivers:
+        print(version.format_waivers(honoured, unused))
+
+    keep = [j for j in jobs
+            if states[j["row"][idk]]["state"] in version.STALE
+            and j["row"][idk] not in waived]
+    print(f"only-stale  : translating {len(keep)} of {len(jobs)} selected "
+          f"clause(s); {len(jobs) - len(keep)} left as they are")
+    report = {
+        "enabled": True,
+        "census": counts,
+        "waivers_file": getattr(args, "waivers", None),
+        "selected": sorted(j["row"][idk] for j in keep),
+        "skipped": sorted(set(j["row"][idk] for j in jobs)
+                          - set(j["row"][idk] for j in keep)),
+        "states": {k: v["state"] for k, v in sorted(states.items())},
+    }
+    return keep, report, honoured
+
+
+def load_waivers_for(args):
+    """⛔ A waiver file is INERT without `--only-stale`.
+
+    Nothing is being skipped in an ordinary run, so a waiver file lying around
+    must not quietly change what gets translated. It is read here, inside the
+    only-stale path, and nowhere else.
+    """
+    path = getattr(args, "waivers", None)
+    return version.load_waivers(path) if path else []
+
+
+def run_record(cfg, prov, system, results, user_shas=None, spend=None,
+               version_block=None):
     """The contents of run.json.
 
     ⚠️ It used to record `system_sha_len`: the LENGTH of the system prompt.
@@ -992,6 +1065,12 @@ def run_record(cfg, prov, system, results, user_shas=None, spend=None):
         "user_sha": dict(user_shas or {}),
         "response_format": response_format_payload(cfg),
         "spend": spend or {},
+        # ⭐ The run-level half of the version stamp. The per-clause half is on
+        # each result and in the `<id>.version.json` sidecar; this says what
+        # every clause in the run shared — which prompt, which model, which
+        # schema source — so a run can be compared to today's inputs without
+        # opening a single module.
+        **(version_block or {}),
         "results": results,
     }
 
@@ -1020,10 +1099,23 @@ def run(cfg, args, client_factory=None):
 
     prov = resolve_provider(cfg, args)
     _max_attempts = int((cfg.get("repair") or {}).get("max_attempts", 1))
+    idk = cfg["corpus"]["id_key"]
+
+    # ⛔ BEFORE THE ESTIMATE, NOT INSIDE THE LOOP. Filtering while pricing the
+    # whole selection leaves the printed worst case describing calls that were
+    # never going to be made, and — worse — leaves the cost GATE refusing runs
+    # over clauses nobody was going to send.
+    _version_report, _honoured = None, []
+    if getattr(args, "only_stale", False):
+        jobs, _version_report, _honoured = stale_filter(
+            jobs, cfg, args, prov, system, idk, cfg["corpus"]["text_key"])
+        if not jobs:
+            print("nothing is stale — nothing to translate, nothing sent.")
+            return 0
+
     est, in_tok, out_tok = estimate_cost(
         system, [j["user"] for j in jobs], prov, cfg,
         max_attempts=_max_attempts)
-    idk = cfg["corpus"]["id_key"]
 
     print(f"provider     : {prov.name}  ({prov.model})")
     print(f"clauses      : {len(jobs)}  "
@@ -1072,8 +1164,21 @@ def run(cfg, args, client_factory=None):
 
     _gy = cfg.get("graveyard") or {}
     _gy_dir = rel(_gy.get("dir", "repair_graveyard"))
-    _schema_src = open(os.path.join(HERE, "schema.py"), encoding="utf-8").read()
-    _prov_hash = gy.provenance_hash(system, prov.model, prov.temperature)
+    # ⭐ ONE definition of what this run was made from, used by the graveyard
+    # entry, by every module's stamp and by run.json. Computed once so the
+    # three cannot drift: a sidecar that disagreed with run.json would make
+    # the staleness query answer differently depending on which it read.
+    _schema_src = version.schema_source()
+    _model, _temp, _params = version.model_params(cfg, prov)
+    _prov_hash = gy.provenance_hash(system, _model, _temp, params=_params)
+    _version_block = {
+        "schema_sha": sha16(_schema_src),
+        "provenance_hash": _prov_hash,
+        "provenance_params": _params,
+        "stamp_version": 1,
+        "waivers_honoured": _honoured,
+        "only_stale": _version_report,
+    }
     if _gy.get("cap"):
         # Refuse to start a run that would only deepen an unexamined pile.
         gy.check_cap(_gy_dir, _gy["cap"])
@@ -1104,7 +1209,8 @@ def run(cfg, args, client_factory=None):
                  "calls": getattr(client, "calls", 0),
                  "visible_to_spend_py": False,
                  "why": "spend.py prices from providers.json; this provider "
-                        "is defined inline in this config"}),
+                        "is defined inline in this config"},
+                version_block=_version_block),
                 fh, indent=1)
 
     try:
@@ -1121,6 +1227,9 @@ def run(cfg, args, client_factory=None):
                 fh.write(j["user"])
             user_shas[cid] = sha16(j["user"])
             rec["user_sha"] = user_shas[cid]
+            _stamp = version.stamp(
+                j["row"].get(cfg["corpus"]["text_key"], ""), _schema_src,
+                system, _model, _temp, _params)
 
             try:
                 env = client.complete(system, j["user"])
@@ -1169,10 +1278,8 @@ def run(cfg, args, client_factory=None):
             if keep:
                 entry = gy.write_entry(
                     _gy_dir, j["row"], out, reason=why,
-                    contract_hash=gy.contract_hash(
-                        j["row"].get(cfg["corpus"]["text_key"], ""),
-                        _schema_src),
-                    provenance_hash=_prov_hash,
+                    contract_hash=_stamp["contract_hash"],
+                    provenance_hash=_stamp["provenance_hash"],
                     extra={"run": os.path.basename(outdir)})
                 rec["graveyard"] = os.path.basename(entry)
 
@@ -1211,7 +1318,17 @@ def run(cfg, args, client_factory=None):
             lp = schema.render_lp(obj, j["row"])
             with open(os.path.join(outdir, f"{cid}.lp"), "w",
                       encoding="utf-8") as fh:
-                fh.write(lp)
+                # ⚠️ A `%` COMMENT, appended — not a `%%` header line. `%%` is
+                # the module interface and `link.py` parses it; a version
+                # there would be a header field nothing declares. The record
+                # is the sidecar written below; this line is for a human
+                # reading the rendering on its own.
+                fh.write(lp + version.lp_comment(_stamp) + "\n")
+            # ⭐ THE ARTIFACT CARRIES ITS OWN PROVENANCE. Only on the success
+            # path: a stamp beside a clause that failed would make the next
+            # `--only-stale` run skip a clause that was never translated.
+            version.write_stamp(outdir, cid, _stamp)
+            rec.update(_stamp)
             _concepts.extend(schema.concept_rows(obj))
 
             lic = {}
@@ -2090,6 +2207,20 @@ def main(argv=None):
                     metavar="N", help="print the system prompt and N user prompts")
     ap.add_argument("--live", action="store_true",
                     help="actually send. Without this nothing is sent.")
+    ap.add_argument("--only-stale", action="store_true", dest="only_stale",
+                    help="translate only the clauses of the selection whose "
+                         "stored artifact is stale — its clause text or the "
+                         "schema source moved (contract-stale), its prompt, "
+                         "model or params moved (provenance-stale), or it "
+                         "carries no version stamp at all. OFF BY DEFAULT: "
+                         "changing what a bare run translates is a spend "
+                         "change. The census is printed before the cost gate.")
+    ap.add_argument("--waivers", default=None, metavar="PATH",
+                    help="a reviewed waiver file naming clauses whose "
+                         "PROVENANCE change does not oblige a re-run, the "
+                         "exact hash transition it excuses, and who signed "
+                         "it. ⛔ It can never excuse a contract change, and it "
+                         "is inert without --only-stale.")
     ap.add_argument("--self-test", action="store_true")
     ap.add_argument("--write-artifact", action="store_true",
                     help="regenerate dryrun.txt from the current config and "
@@ -2107,7 +2238,10 @@ def main(argv=None):
         if args.list_models:
             return list_models(load_config(args.config), args)
         return run(load_config(args.config), args)
-    except Phase1Error as exc:
+    except (Phase1Error, version.VersionError) as exc:
+        # A refused waiver is a usage error and exits 2. It is NOT "a clause
+        # failed" (exit 1): no clause was sent, and the operator has to fix a
+        # file before anything can be.
         print(f"⛔ {type(exc).__name__}: {exc}", file=sys.stderr)
         return 2
 
