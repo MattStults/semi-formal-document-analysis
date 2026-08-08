@@ -79,3 +79,44 @@ there.
 
 ⚠️ **Teaching against a failure does not detect it.** Bad example #6 changes what the model writes;
 only 4r can tell whether a given symbol is hollow. Both are needed and neither substitutes.
+
+---
+
+## ⚠️ AMENDMENT 2026-08-07 — bad example #6 REMOVED, and this is NOT a blocklist
+
+The example was added, measured twice, and removed. **Read the result correctly, because the
+obvious misreading would be expensive:**
+
+| what the evidence says | what it does NOT say |
+|---|---|
+| On two independent runs, adding #6 did not reduce empty glosses on a control that demonstrably produces them (13.7 %) | that teaching against this failure mode cannot work |
+| The point estimate moved the wrong way both times | that #6 made anything worse — every delta was inside the noise band |
+| Its pre-registered falsifier said revert, so it was reverted | that the failure mode is not real. It is real: 10 of 133 concepts, and `STEP_stage4.md` finding (5) measures it independently |
+
+⇒ **This is a NULL RESULT ON A WEAK INSTRUMENT, not a refutation.** n = 6 clauses, one model, one
+temperature, and a proxy metric (`empty_gloss_rate`) that scores legitimate primitives like
+`system_message` as empty. Removing the example is the honest response to "we tested it and it did
+not help"; treating it as settled would be a much stronger claim than the data supports.
+
+### ⛔ Bringing it back is EXPLICITLY ALLOWED, and here is what would justify it
+
+Nothing about this decision blocklists the idea. Re-propose it on any of:
+
+- **A better instrument.** The metric cannot tell a hollow gloss from a legitimate primitive. A
+  measure that can — or a stage-4 seat 4r verdict, which is the only thing that actually judges this
+  — is a different and better test, and a positive result there outranks this null entirely.
+- **Adequate power.** The re-run's own recommendation: 12 rule-positive clauses × 6 repeats,
+  length-matched arms, ≈ $0.21. This ran 6 × 3.
+- **A different form.** Only one form was tried: a wrong-form JSON artifact plus prose. The prose-only
+  arm (C) was also inside the band, so **neither form was shown to work and neither was ruled out**.
+  A worked *correct* example, or a rule stated in the failure-mode table instead, are untested.
+- **A different model.** Everything here is `DeepSeek-V4-Flash-0731` at temperature 0.2.
+
+⚠️ **What must NOT happen is re-adding it without a fresh pre-registration**, on the grounds that it
+reads well. That is the failure this project has a standing ruling against, and it is the only
+reason the example was removed rather than kept.
+
+**Where the evidence lives:** `eval_arms/PREREG_bad_example_6.md`, `RESULT_bad_example_6.md`,
+`PREREG_bad_example_6_rerun.md` and its result. The removal does not touch the §2.2 ruling above:
+failure mode #4 is still restored *as a documented failure mode*, and `STEP_stage4.md` seat 4r is
+still where detection lives.
