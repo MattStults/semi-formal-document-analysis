@@ -464,6 +464,14 @@ def test_the_LIVE_cli_path_runs_end_to_end(tmp_path, capsys):
     assert rep["eval_set"]["clause_ids"] == CLAUSES
     assert set(rep["arms"]) == {"A", "B"} and "comparison" in rep
 
+    # ⭐ Every paid call left its response on disk, beside the report. Nothing
+    # asserted this before, and the first live run kept none of 36.
+    raws = sorted(p.name for p in (tmp_path / "report_raw").rglob("*.raw.txt"))
+    assert len(raws) == len(CLAUSES) * 3 * 2, (
+        f"expected one raw per clause per repeat per arm, got {len(raws)}")
+    assert (tmp_path / "report_raw" / "A" / "r3").is_dir()
+    assert (tmp_path / "report_raw" / "B" / "r1").is_dir()
+
 
 def test_the_estimate_scales_with_repeats_and_arms(tmp_path):
     """`--repeats 3` over two arms is six passes over the clause set. An
@@ -508,3 +516,50 @@ def test_a_delta_inside_the_noise_is_reported_as_such(tmp_path):
     row = rep["comparison"]["first_attempt_clean_rate"]
     assert "delta" in row and "within_noise" in row
     assert row["within_noise"] is True
+
+
+# ==========================================================================
+# Raw responses are the one thing a paid run cannot regenerate
+# ==========================================================================
+
+def test_raw_responses_are_written_for_every_paid_call(tmp_path):
+    """⛔ The regression this pins: the first live eval made 36 paid calls and
+    kept nothing but finding strings. The raw responses were captured in memory
+    and dropped, so a question the report did not anticipate — what did the
+    model actually write? — could only be answered by paying again.
+
+    `translate.py` already treats this as non-negotiable ("the raw responses of
+    a run that cost money are the one thing that cannot be regenerated").
+    """
+    outcomes = [
+        E.ClauseOutcome("m0001", "valid", None, [], raw='{"a": 1}'),
+        E.ClauseOutcome("m0002", "invalid", None, [], raw="not json at all"),
+    ]
+    root = tmp_path / "raws"
+    E.persist_raw(str(root), "A", 1, outcomes)
+    assert (root / "A" / "r1" / "m0001.raw.txt").read_text() == '{"a": 1}'
+    assert (root / "A" / "r1" / "m0002.raw.txt").read_text() == "not json at all"
+
+
+def test_raw_persistence_keeps_arms_and_repeats_apart(tmp_path):
+    # Two arms writing the same clause id must not overwrite each other: the
+    # whole point of the run is that A and B differ.
+    root = tmp_path / "raws"
+    for arm in ("A", "B"):
+        for rep in (1, 2):
+            E.persist_raw(str(root), arm, rep, [
+                E.ClauseOutcome("m0001", "valid", None, [],
+                                   raw=f"{arm}{rep}")])
+    seen = {p.read_text() for p in root.rglob("*.raw.txt")}
+    assert seen == {"A1", "A2", "B1", "B2"}
+
+
+def test_a_provider_error_still_records_its_slot(tmp_path):
+    # A failed call has no raw text, but MUST leave a trace: an absent file
+    # would be indistinguishable from a clause that was never attempted.
+    root = tmp_path / "raws"
+    E.persist_raw(str(root), "A", 1, [
+        E.ClauseOutcome("m0001", "error", None, [], raw="")])
+    body = (root / "A" / "r1" / "m0001.raw.txt").read_text()
+    assert body != "", "an empty file cannot be told from a call never made"
+    assert "no response" in body.lower()

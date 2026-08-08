@@ -34,6 +34,11 @@ certify files a review just found drifted.
 
 ### 2.1 ⭐ Does stage 1 demonstrate a `world`-licensed fact? *(blocks §1)*
 
+⭐ **Updated 2026-08-07 after the held-out eval: `world_fact_rate` is 0.000 in both arms over
+36 first attempts on six clauses never used for diagnosis.** That is a fourth independent
+zero, on top of the 18 hand-encoded clauses below. The evidence for option (b) — that `world`
+may have no document-side instances — has stopped being ambiguous. Still your ruling.
+
 The design's *"what a good one looks like"* holds up `m0255`'s `protects_third_party` as the
 exemplary `world` fact. Two problems, both measured:
 
@@ -62,6 +67,7 @@ paraphrase check by construction."* Restore, or record the swap as deliberate.
 | **the graveyard** | `phase_1/PROPOSAL_graveyard.md` | you have read it; you asked for re-review then implement. **Not yet re-reviewed** |
 | **stage 3** | `phase_1/STEP_stage3.md` | ⛔ **revision 2's §0 is REFUTED** and not yet reverted — see §4 |
 | **stage 4** | `phase_1/STEP_stage4.md` | written by an agent, **not reviewed by me or you** |
+| ⭐ **the atom-slot defect** | `phase_1/PROPOSAL_atom_slot.md` | the dominant held-out failure, 59 in 36 attempts. **Nothing implemented** — a fix edits a watched transcription. Includes a hypothesis I formed and then refuted myself |
 
 ---
 
@@ -77,6 +83,17 @@ built first and labelled verdicts deferred. A clean review refuted it on three i
 
 Revision 3 must revert §0, partition §§1–9 by half, fix a test whose fire condition cannot fire on
 the bug it names, and add an enumeration cap and a zero-rule refusal. **Not done.**
+
+⭐ **The `read_back` prompt fix did not generalise, and I reported it as if it had.** It went
+6 → 0 on the eight clauses it was diagnosed from and recurs **18 times** on six held-out
+clauses. Confounded by clause difficulty and not claimed more strongly, but "the cause went to
+zero" was a statement about the diagnosis set, not about the prompt. `eval_arms/RESULT_licence_emphasis.md`.
+
+⭐ **I also reported the prompt fixes as "19 → 18, flat".** Wrong twice: the 19 counted three
+`requires-unprovided` NOTES that the current log correctly filters, and my clustering used
+backtick-only normalisation while `schema.py` interpolates with `{term!r}` — single quotes —
+so the dominant cause stayed fragmented and invisible in the rank. Like for like, error-severity
+first-attempt findings went **16 → 8**.
 
 ⚠️ One review finding I could **not reproduce** (F1: whether a probe case detects the dead C3 claim
 at explanation granularity). Recorded as unresolved, not accepted.
@@ -99,8 +116,12 @@ at explanation granularity). Recorded as unresolved, not accepted.
 
 ## 6 WHAT IS BUILT AND GREEN
 
-217 tests · `translate.py --self-test` 53/53 · `link.py --self-test` 19/19 ·
-`mutate_schema.py` **45 guards, 0 survivors** · spend ~$0.05 of $8.50.
+**270 tests** (was 217) · `translate.py --self-test` 53/53 · `link.py --self-test` 19/19 ·
+`mutate_schema.py` **45 guards, 0 survivors** · spend **~$0.19** of $8.50.
+
+Since: the graveyard's persistence layer, `eval.py` (an A/B harness that measures its own
+noise first and scores the FIRST attempt only), `eval_arms/make_arm.py` (an arm generated as a
+verified one-line diff of the live prompt, never a copy), and stage 3 plan revision 3.
 
 Stage 1 and stage 2 run end to end: schema contract, clingo compile, unresolved names, rule shape,
 closure, `beats` acyclicity, concept table — then an accumulating repair transcript with typed

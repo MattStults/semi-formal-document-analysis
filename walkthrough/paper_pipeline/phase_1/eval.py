@@ -473,7 +473,35 @@ def _as_object(raw):
     return json.loads(text)
 
 
-def run_arm(arm, repeats=3, metrics=None, client_factory=None):
+def persist_raw(root, arm_name, repeat_index, outcomes):
+    """Every paid call's response text, on disk, before anything interprets it.
+
+    ⛔ THE FAILURE THIS EXISTS FOR. The first live eval made 36 paid calls and
+    kept nothing but finding strings. The raw text was captured in memory and
+    dropped, so the obvious follow-up question — what did the model actually
+    write? — could only be answered by paying again. `translate.py` has always
+    treated this as non-negotiable: the raw responses of a run that cost money
+    are the one thing that cannot be regenerated.
+
+    Arm and repeat are separate directories because both arms translate the
+    same clause ids, and the whole point of the run is that they differ.
+    """
+    out = os.path.join(root, str(arm_name), f"r{int(repeat_index)}")
+    os.makedirs(out, exist_ok=True)
+    for o in outcomes:
+        # ⚠️ A failed call writes an explicit marker, never an empty file: an
+        # empty file cannot be told apart from a call that was never made, and
+        # that is this project's signature failure in file form.
+        text = getattr(o, "raw", "") or (
+            f"<no response — the call did not return text. outcome="
+            f"{getattr(o, 'outcome', '?')}>")
+        with open(os.path.join(out, f"{o.clause_id}.raw.txt"), "w",
+                  encoding="utf-8") as fh:
+            fh.write(text)
+    return out
+
+
+def run_arm(arm, repeats=3, metrics=None, client_factory=None, raw_root=None):
     """`repeats` passes over the clause set with ONE prompt. Nothing repairs.
 
     ⭐ Exactly one `client.complete` per clause per repeat. The stub in
@@ -491,7 +519,10 @@ def run_arm(arm, repeats=3, metrics=None, client_factory=None):
         outcomes = []
         for job in arm.jobs:
             outcomes.append(_one_clause(arm, job, client))
-        results.append(RepeatResult(
+        if raw_root:                      # written per repeat, not at the end,
+            persist_raw(raw_root, arm.name, i, outcomes)   # so a crash keeps
+        results.append(RepeatResult(                       # what was paid for
+
             index=i, clauses=outcomes,
             metrics={k: v for n in names
                      for k, v in METRICS[n](outcomes, arm).items()}))
@@ -759,8 +790,13 @@ def main(argv=None, client_factory=None):
 
     try:
         gate(est, arms[0])
+        # Raws land beside --out, so a report and the responses behind it are
+        # never separated. Without --out there is nowhere non-arbitrary to put
+        # them, and the estimate line already told the user what they spent.
+        raw_root = (os.path.splitext(args.out)[0] + "_raw") if args.out else None
         results = [run_arm(a, repeats=args.repeats, metrics=args.metric,
-                           client_factory=client_factory) for a in arms]
+                           client_factory=client_factory, raw_root=raw_root)
+                   for a in arms]
         rep = build_report(results, clause_ids, source)
     except (EvalError, T.Phase1Error) as exc:
         print(f"⛔ {type(exc).__name__}: {exc}")
