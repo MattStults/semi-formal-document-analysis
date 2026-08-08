@@ -1,24 +1,31 @@
 #!/bin/sh
-# Blocks a commit that touches the pipeline design or its formal model without
-# the model having been reviewed against the change.
+# Blocks a commit that touches a file the staleness guard watches, unless that
+# file is at its recorded review point.
 #
 # Install:   ln -sf ../../walkthrough/model/hooks/pre-commit .git/hooks/pre-commit
 # Remove:    rm .git/hooks/pre-commit
 #
-# Scoped: silent unless one of the watched files is staged, so it does not
-# affect unrelated commits.
-# Ask the guard which files it watches rather than keeping a second copy of the
-# list here. Three copies of that list is how they drift apart.
-staged=$(git diff --cached --name-only)
+# ⭐ On 2026-08-07 the guard was RIGHT and RED for two hours and nobody looked,
+# because this hook had never been installed. Check that it is:
+#     ls -l .git/hooks/pre-commit
+#
+# Scoped: silent unless a watched file is staged, so it does not affect
+# unrelated commits. Ask the guard which files it watches rather than keeping a
+# second copy of the list here — three copies of that list is how they drift.
+#
+# GUARD_STAGED_FILES overrides the staged list. It exists so this script can be
+# tested without staging anything or running a commit; leave it unset in use.
+staged="${GUARD_STAGED_FILES-$(git diff --cached --name-only)}"
 [ -z "$staged" ] && exit 0
 python3 walkthrough/model/guard.py --watches $staged || exit 0
 
-echo "pipeline design or model changed — running the guard"
+echo "a watched file changed — running the staleness guard"
 python3 walkthrough/model/guard.py || {
   echo ""
-  echo "COMMIT BLOCKED. The formal model is stale or reporting findings."
-  echo "Either update walkthrough/model/pipeline.lp, or confirm it needs no change:"
-  echo "    python3 walkthrough/model/guard.py --accept"
-  echo "Bypass (records nothing):  git commit --no-verify"
+  echo "COMMIT BLOCKED. A file transcribed from the design is not at its"
+  echo "recorded review point. Re-read it against the design, then accept it"
+  echo "BY NAME:"
+  echo "    python3 walkthrough/model/guard.py --accept <path>"
+  echo "Bypass (records nothing, and nobody will know):  git commit --no-verify"
   exit 1
 }

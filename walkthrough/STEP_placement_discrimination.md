@@ -25,6 +25,26 @@ Two rates, not one. They decide different things and only one of them is load-be
 that fires on identical concepts silently blocks correct merges at stage 5 and there is no
 downstream check that would catch it. So false-split is the number this step exists to produce.
 
+## 1b ⚠️ Whose artifact this runs on — read before citing any number from it
+
+**Every figure in this step is computed off `semi-formal-experiment/annotations.json`, which is the
+WIDER REPO's extractor output, not a walkthrough artifact.** This directory's pipeline has no
+extraction stage and emits no concept table; stage 1 (translate) has never run.
+
+⇒ What this step is: a **cheap instrument test** — does upper-class placement discriminate senses at
+all — run on real specification-derived glosses that happen to exist. That is a legitimate use and
+it is why the step is affordable.
+
+⛔ **What it is not:** validation of anything this pipeline produces. If placement passes here it has
+been shown to work on one extractor's glosses; whether stage 1's symbols behave the same way is
+untested and untestable until stage 1 runs. Do not let a green result be cited as "validated on the
+corpus".
+
+⚠️ Related: `SCRATCH_concept_phase.md` §2 concludes that placement is **not on stage 1's critical
+path** at all. What stage 1 needs fixed in advance is a relation schema and the document's own
+defined terms, neither of which an upper ontology supplies. This step therefore decides whether a
+*later* stage-5 filter exists — not whether translation can begin.
+
 ## 2 Why the built test does not answer it
 
 `ontology_fit.py` measures **run-to-run agreement on one item**: ask the same model the same
@@ -246,7 +266,12 @@ it is not a design choice.
 - **Placement is not needed until stage 5 exists**, and stage 5 does not. This step is worth doing
   now only because a negative result deletes a phase before anyone builds against it.
 - **Stage 1 remains the highest-value next step** (`03_pipeline.md` Part 6). This does not compete
-  with it and should not displace it.
+  with it and should not displace it. What stage 1 needs first is `SCRATCH` §2's (A) relation schema
+  and (B) definitional clauses translated ahead of conditional ones — **neither is this step**.
+- ⛔ **The open problem `SCRATCH` §2 names is not addressed here:** the `inputs` predicates
+  (`transformation_of_user_content/1`, `new_material/1`) are coined ad hoc, describe the case rather
+  than the document, and are the sharpest form of #8. Placement cannot reach them — they are
+  predicate signatures, not concepts with glosses.
 - Whether the closed set of 21 is the right one is untouched here. If controls separate and the
   false-split rate is high, the *first* thing to inspect is the `swapped for` column — two classes
   whose glosses do not separate — before concluding anything about placement as such.

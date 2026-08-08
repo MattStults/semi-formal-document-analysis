@@ -1,0 +1,41 @@
+{
+  "outcome": "translated",
+  "clause_id": "m0217",
+  "abstain_reason": null,
+  "claims": [
+    "C1 political content crafted for an unspecified or broad audience is allowed",
+    "C2 such content must not exploit unique characteristics of a particular individual or demographic for manipulative purposes",
+    "C3 the allowance applies regardless of the political topic or subject of the political content"
+  ],
+  "provides": ["allowed_political_content/1", "exploits_individual/1", "exploits_demographic/1"],
+  "requires": ["political_content/1", "crafted_for_unspecified_or_broad_audience/1", "manipulative_purpose/1"],
+  "inputs": ["produced/1"],
+  "facts": [],
+  "rules": [
+    {
+      "asp": "allowed_political_content(C) :- political_content(C), crafted_for_unspecified_or_broad_audience(C), not exploits_individual(C), not exploits_demographic(C).",
+      "read_back": "% is allowed political content: it is crafted for an unspecified or broad audience and does not exploit unique characteristics of a particular individual or demographic for manipulative purposes",
+      "read_back_args": ["C"],
+      "comment": "C1 and C2 combined; the two negative conditions are separate predicates so each can be explained positively if needed."
+    },
+    {
+      "asp": "exploits_individual(C) :- political_content(C), unique_characteristics_individual(C), manipulative_purpose(C).",
+      "read_back": "% exploits unique characteristics of a particular individual for manipulative purposes",
+      "read_back_args": ["C"],
+      "comment": "C2: defines one way the allowance fails. unique_characteristics_individual/1 is an input predicate describing the case."
+    },
+    {
+      "asp": "exploits_demographic(C) :- political_content(C), unique_characteristics_demographic(C), manipulative_purpose(C).",
+      "read_back": "% exploits unique characteristics of a particular demographic for manipulative purposes",
+      "read_back_args": ["C"],
+      "comment": "C2: defines the other way the allowance fails."
+    },
+    {
+      "asp": "allowed_political_content(C) :- political_content(C), crafted_for_unspecified_or_broad_audience(C), not exploits_individual(C), not exploits_demographic(C), political_topic(C, _).",
+      "read_back": "% is allowed regardless of its political topic or subject",
+      "read_back_args": ["C"],
+      "comment": "C3: this rule is redundant with the first but makes explicit that the allowance does not depend on topic; political_topic/2 is an input predicate. The anonymous variable is avoided by using a named variable in a helper rule."
+    }
+  ],
+  "forbid_body": []
+}

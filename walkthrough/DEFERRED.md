@@ -59,3 +59,108 @@ unordered set and to name this entry.
   a sorting costume.
 
 **Revisit when:** a behaviour query returns a set, and licences exist.
+
+---
+
+## D-2 — The one deontic axiom, `O(¬a) ≡ F(a)`
+
+**Deferred 2026-08-07,** when open question 1's CLOSED ruling was implemented in the stage-1
+contract. Everything else the ruling requires was implemented in the same change; this one was not.
+
+**What it is.** The corpus states the same prohibition in two polarities — `m0208` *"must not
+generate restricted content"* → `F(produce(m))`, and `m0270` *"should refuse to help"* →
+`O(refuse(m))`. Plain predicates see two unrelated ground terms, so the conflict **vanishes**
+(`contradiction_probe/FINDINGS.md`, T1). The axiom relates an obligation on an act's complement to a
+prohibition on the act, and is the one genuinely deontic thing the ruling adopts.
+
+**⭐ Why deferring is safe, and the check that was actually run.** It is a **corpus-level reasoning
+axiom, not a per-clause output.** Nothing a module emits changes: a module writes
+`asserts(m0270, oblige, refuse(R))` whether or not anything later relates `refuse` to `produce`. So
+the axiom can be added over an existing `asserts/3` corpus **without re-translating a single
+clause** — verified by inspecting the contract: no field of `Module` mentions complements.
+
+Contrast with the three parts of the same ruling that were NOT deferred, because each *does* change
+what a module emits: act-indexing (`Assertion.act` is an act term), `beats(Sayer, Winner, Loser)`
+(`Superiority.sayer`), and the forced per-act default closure (`Closure`, required for every act
+class governed).
+
+**Why it is not being built now.** It needs act **complementation** to be computable, and no naming
+convention exists that makes it so: `refuse(X)` is not syntactically the complement of `produce(X)`.
+⚠️ The probe's hand-written substitute is on the record as **O(n²) and wrong on its first attempt,
+producing a false positive between a clause and a behaviour that agree.** Guessing a convention now
+would bake it into 593 modules; deriving one later costs nothing already spent.
+
+**What it blocks.** Cross-polarity contradiction detection, and only that. Same-polarity
+contradiction, relevance, defeat and the closure question all work without it.
+
+### Open questions to answer when it returns
+
+- **What makes complements computable?** A declared `complement/2` per act pair, a naming
+  convention (`refuse(X)` ↔ `produce(X)`), or an explicit act-complement declaration in the module.
+  Only the third changes the stage-1 contract, which is the reason to decide before adopting it.
+- **Is it needed for the document side alone,** or only where the document meets a behaviour? The
+  probe found the break at the document↔behaviour join.
+
+---
+
+## D-3 — D4b-GLOBAL only: does a declared concept find a provider corpus-wide
+
+⚠️ **Corrected 2026-08-07, same day.** A first draft of this entry deferred all of D4b. That was
+wrong: it conflated three levels, and only the third is genuinely deferred.
+
+| | scope | status |
+|---|---|---|
+| **1** every referenced concept is **declared** — in `ontology`, `requires` or `inputs` | per-module | ⭐ **implemented**, in `Module._coherent`. It is D1b applied to the ontology namespace |
+| **2** every ontology predicate carries a **written definition** | per-module | ⭐ **implemented** — `OntologyFact.gloss` is required. Adding it closed an Invariant 1 violation that the first contract shipped with |
+| **3** the declaration finds a real **provider** corpus-wide, and providers agree | link scope | **deferred — this entry** |
+
+⭐ **Level 2 is why probing this was worth it.** The first contract let an ontology entry declare a
+concept *by use* with no statement of what the predicate means. Invariant 1 requires that a symbol
+resolve to a concept **with a written definition**, because *"the read-back must render the
+definition, not the label"* — otherwise a clause pointing at the wrong concept produces a paraphrase
+that reads correctly and nothing catches it. One required field fixed it.
+
+**Deferred 2026-08-07.** `03_pipeline.md` stage 2's D4 is *"every fact cites a real clause **and a
+real concept**"*. The clause half is implemented (`schema.validate(known_clause_ids=...)`); the
+concept half is not.
+
+**⭐ Why level 3 is not blocked on building an ontology.** The concept dictionary is **not a prior
+artifact**. Every module carries its own **ontology block** — non-deontic classification facts, each
+now with a gloss — so the dictionary is the *union of those blocks*, emergent as clauses are
+translated. That is Invariant 1's **arm B**.
+
+⚠️ **Recorded as a design amendment, because the commitment was made by implementation rather than
+by decision.** Invariant 1 says the choice between arms is empirical and undecided; today's contract
+picks arm B by construction. Anyone re-opening it should know it was decided this way and when.
+
+**What deferring level 3 changes:** nothing stage 1 emits, and nothing stage 2 can check on one
+module. It is a **link-scope** check exactly like D2 (witness) — blocked on having translated enough
+clauses, not on a missing phase, and it resolves itself as the corpus grows.
+
+**Consequence to carry:** problem #9 (same name, different meanings) now lives **inside the ontology
+blocks**. Two clauses writing `disallowed/1` with different extensions link cleanly and are wrong.
+That is a **stage 5 (normalise)** problem — see `SCRATCH_concept_phase.md` §5, where the merge veto
+is the proposed instrument.
+
+---
+
+## Re-reviewing the five newly watched transcriptions — deferred 2026-08-07
+
+**What is deferred.** `guard.py`'s watch list was widened to `paper_pipeline/phase_1/prompt/*.md`
+and `paper_pipeline/phase_1/schema.py` (the files transcribed from the design). None of the five has
+a review point, so the guard is ⛔ RED and says NEVER REVIEWED. Establishing the baseline means
+actually reading each against `resources/03_pipeline.md` with `model/REVIEW_BRIEF.md` — a real
+review, not a rubber stamp.
+
+**Why deferring it blocks nothing.** The guard is *supposed* to be red here: five files transcribed
+from a design nobody re-checked is the true state, and recording it as green would be the exact
+failure the guard exists to prevent. Red costs a `--no-verify` on an unrelated commit; a fabricated
+baseline costs the next two-hour stale-design run.
+
+⚠️ **The one thing that must not happen** is `guard.py --accept --all` to clear the noise. That is
+why `--accept` refuses to run with no arguments and prints the files one per line: accepting is
+per-file, and the record names who did it and when.
+
+**What clears it.** A clean reviewer per file (they are small: 49–175 lines for the prompts, 874 for
+`schema.py`), then `--accept <path>` for each one they actually read. `30_failure_modes.md` first —
+it is the shortest and the one whose drift is most likely to have already caused a stage-1 defect.

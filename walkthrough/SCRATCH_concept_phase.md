@@ -49,33 +49,117 @@ reasoner (05 §1.2). Vendor, do not fork, do not point at anyone else's fork.
 
 ---
 
-## 2 ⛔ It should not go before extraction
+## 2 ⭐ Stage 1 does need a vocabulary fixed in advance. It is not this one.
 
-The appeal of putting it first is real: a closed vocabulary constrains the extractor, so free
-coinage (#8) and flat sibling lists (#10) never happen. But the appeal does not survive the question
-*"a closed vocabulary of what?"*
+⚠️ **Terminology, corrected 2026-08-07.** An earlier version of this section argued against putting
+placement "before extraction". There is no extraction stage in this pipeline — that is the wider
+repo's `extract_section.py`. The stage in question is **stage 1, TRANSLATE**. The argument below is
+rewritten against the right stage, and it changed the conclusion in one place: the concern is
+correct, and something *does* have to be fixed before stage 1.
 
-LKIF supplies ~21 upper classes. Our corpus has **330 distinct concepts** (`annotations.json`,
-computed 2026-08-07), and the ones that carry the specification's meaning — *restricted content*,
-*the transformation exception* — are coined by the document and will never be LKIF classes. This is
-the same wall Invariant 1's arm C hits, and the previous draft already recorded it for general
-knowledge graphs. ⭐ It applies to upper ontologies too, and for the same reason.
+**The objection, stated at full strength:** a model cannot translate 593 clauses into logic with a
+free hand and be normalised afterwards. If every clause coins its own names, nothing links, and
+post-hoc merging is a hard problem with its own failure modes. That is problem #8, and it is
+measured.
 
-So "ontology before extraction" can only mean **"the extractor must type each concept as it coins
-it."** Three objections, in increasing weight:
+⭐ **But a logic module has two vocabularies with completely different requirements, and only one of
+them causes #8.**
 
-- It **fuses two judgements** — *what is this concept* and *what kind of thing is it* — into one
-  output, so neither can be checked without the other. Separating them is arm B's independent
-  argument, which `03_pipeline.md` open question 2 already endorses.
-- It makes placement **unrepeatable**. Ontology changes, closed-set changes and model changes then
-  require re-extracting the corpus. As a separate pass it is re-runnable for ~$0.18.
-- It is **arm A with extra steps**, and arm A carries the contrary published evidence: supplying a
-  model its own accumulated vocabulary *increased* invention (`03_pipeline.md` Invariant 1).
+| | **relation schema** | **term vocabulary** |
+|---|---|---|
+| what it is | predicate name + arity: `forbids/2`, `policy_class/2`, `scope/2` | the constants filling the slots: `restricted_content`, `transformation`, `information` |
+| where linking happens | ⭐ **here** — `provides` / `requires` match on signatures | not here |
+| can it be fixed in advance? | **yes** — it is the normative relation layer, not subject matter, and it is small | **no** — the document coins it |
+| does LKIF supply it? | ⛔ **no.** LKIF has no `scope/2` and never will | ⛔ **no** — §1: the terms that matter are coined by the document |
 
-⇒ **Placement is a pass over the concept table, after extraction.** Input: a gloss and its source
-sentence. Output: a set of upper classes, or `NOT_IN_LKIF_<surface_form>`.
+### The controlled evidence, and it is a within-run comparison
 
-⚠️ **And the concept name is withheld from the prompt.** Not a detail — see §4. `ontology_fit.py`
+⭐ `smoke_live2/extraction_filtered.json` — one run, 22 rules, 6 subsections, computed 2026-08-07.
+Three fields produced by the **same model on the same clauses in the same call**:
+
+| field | how it was specified | distinct values / 22 rules | used exactly once |
+|---|---|---|---|
+| `modality` | ⭐ a **declared closed set** | **2** (`oblige` 16, `forbid` 6) | 0 |
+| `conditions` | free text | 13 | **12** |
+| `act` | free text | 15 | **14** |
+
+⇒ **The declared field did not drift at all; the free-text fields drifted almost completely.** This
+is stronger than the two separate observations recorded in Part 1, because the comparison is
+internal to one run — same model, same prompt, same clauses. n is small (22 rules, one run) and it
+is one extractor, not stage 1.
+
+⇒ ⭐ **What prevents drift is a declared schema, and the drift lives in the terms.**
+
+### What the one existing translation actually needed — read off its own header
+
+`m0255.lp`, hand-written, is the only translation this project has:
+
+```
+%% provides: lifted/2, unlifted/3, binds/2, violation/2
+%% inputs:   forbids/2, produced/1, material_type/2,
+%%           transformation_of_user_content/1, new_material/1, purpose/2
+%% requires (from other clauses): policy_class/2, scope/2, out_of_scope/2
+```
+
+Thirteen predicates. And the constants it reasons over — `restricted_content`, `restricted`,
+`transformation` — it did **not** coin. They arrive from `clauses/m0200.lp`, `m0201.lp`, `m0203.lp`,
+which are **definitional** clauses translated first, and which are nothing but facts:
+
+```prolog
+policy_class(restricted_content, restricted).
+scope(transformation, restricted).
+out_of_scope(transformation, prohibited).
+```
+
+⭐ **The document supplied its own vocabulary, through its own definitional clauses, and that is what
+made the conditional clause translatable.** n=1, and it is an existence proof rather than a rate.
+
+### ⇒ So the pre-stage-1 phase is real, and it is two things, neither of them an upper ontology
+
+**(A) A relation schema, hand-written once and frozen.** ~13 predicates for m0255's neighbourhood;
+`forbids`, `policy_class`, `scope`, `out_of_scope`, `binds`, `violation`, plus the superiority
+relation the standing ruling adopted. This is the same shape of artifact Invariant 1 already argues
+is affordable — *derived once, reviewed once, applied mechanically forever after* — and it is a far
+smaller thing to get right than 593 per-clause judgements. It is **not an ontology** and no upper
+ontology can produce it.
+
+**(B) The document's defined terms, obtained by running stage 1 on the definitional clauses first.**
+84 of them (`modelspec_kinds.json`: conditional 188, definitional 84, meta 72, holistic 66 over 410
+classified; 14.2% per `modelspec_segmentation_summary.md`). They emit facts, not rules — the easy
+end of stage 1 — and every term arrives carrying the clause that defined it, which is DPV's
+concept-id-equals-clause-id (05 §5.1) for free.
+
+⇒ **This is a topological order over the corpus, not a new artifact type.** Schema → definitional
+clauses → conditional clauses. It needs no ontology phase and no merge machinery.
+
+⚠️ **It also settles open question 2 partly, in arm A's favour, for the term side only.** The
+contrary published evidence against arm A is about supplying a model **its own accumulated list of
+coined atoms**; a closed glossary the *document itself declares*, each entry carrying its defining
+clause, is a different object. ⚠️ Marked as an **inference** — it is an argument from the difference
+between the two artifacts, not a measurement — and it is testable in the same stage-1 run that has
+to happen anyway.
+
+### ⛔ The hole this does not close, and it is the real one
+
+`m0255`'s `inputs` line — `transformation_of_user_content/1`, `new_material/1`, `material_type/2` —
+is **coined ad hoc**. No definitional clause defines those, and (A) cannot enumerate them in advance
+because they describe *the case being judged*, not the document. That is the same slot as the
+`conditions` field which drifted 12 of 13.
+
+⇒ **Drift will happen in `inputs`, and neither the schema nor the glossary nor an upper ontology
+prevents it.** The candidate answers are that the input vocabulary is derived from the behaviour
+side — which is blocked on the missing query side (`STATE.md` open #1) — or that it is normalised
+after the fact, which is exactly the hard problem the objection names. **Recorded as open. It is the
+sharpest form of #8 and it is not solved here.**
+
+### Where the ontology phase sits in all of that
+
+⛔ **Nowhere in either (A) or (B).** Placement types terms *after* they exist; it cannot produce a
+predicate signature and it cannot produce a document-coined constant. ⇒ It is a pass over a concept
+table, downstream of stage 1 — input a gloss and its source sentence, output a set of upper classes
+or `NOT_IN_LKIF_<surface_form>` — and it is not on stage 1's critical path.
+
+⚠️ **The concept name is withheld from that prompt.** Not a detail — see §4. `ontology_fit.py`
 currently sends `CONCEPT: {id}` and would have to change.
 
 ---
@@ -166,7 +250,7 @@ draft and it is defensible.
 
 ```mermaid
 flowchart TD
-    EX[["extraction output<br/>385 distinct (name, gloss) pairs"]] --> PL
+    EX[["a concept table with glosses.<br/>⚠️ today the only one that exists is the<br/>WIDER REPO's extractor output —<br/>385 distinct (name, gloss) pairs.<br/>Stage 1 does not emit one yet."]] --> PL
 
     PL{"PLACE<br/>gloss + source sentence,<br/>name WITHHELD<br/>→ set of upper classes,<br/>or NOT_IN_LKIF_&lt;surface&gt;"}
 

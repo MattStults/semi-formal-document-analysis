@@ -16,6 +16,32 @@ first time — the latter are marked ⭐ NEW.
 | **Licence taxonomy** | `textual` / `assumed` / `world`, graded not binary; a conclusion inherits the weakest licence in its derivation. Invariant 2 |
 | **Concept identity** | A symbol is a dictionary index; the read-back renders the **definition**, not the label. Invariant 1 — but *when* concepts are fixed is open question 2 |
 
+## ⭐ NEW 2026-08-07 (later) — the stage-1 contract, rewritten for the CLOSED ruling
+
+**5. Open question 1's CLOSED ruling now binds stage 1.** The first contract let the translator
+write free-form ASP; for m0255 it produced `lifted/2, unlifted/3, binds/2, violation/2` — a private
+vocabulary no corpus-level query can consume. The contract now follows
+`contradiction_probe/doc.lp`: `asserts(ClauseId, Status, Act)` with statuses closed to
+**forbid / permit / oblige / prefer**, plus `beats(Sayer, Winner, Loser)`, `defines/3`, and a
+separate non-deontic ontology block.
+
+Implemented from the ruling: **act-indexing**, **`beats` with the sayer**, **the forced per-act
+default-closure declaration**, and the **namespace separation** (the behaviour namespace is rejected
+outright — stage 1 is denied any behaviour).
+
+**Deferred, with grounds:** `O(¬a) ≡ F(a)` → `DEFERRED.md` **D-2**; D4b "cites a real concept" →
+**D-3**.
+
+**6. ⚠️ Invariant 1's arm B was adopted by implementation, not by decision.** Every module now
+carries its own ontology block, so the concept dictionary is *emergent* rather than prior. Recorded
+in D-3 because Invariant 1 still describes the choice as open, and whoever re-opens it should know
+it was settled this way and when.
+
+**7. A stale read of the source of truth caused three defects.** `03_pipeline.md` was 962 lines when
+read at session start and 1,001 after commit `00d33f5` at 12:54; the prompt files were written at
+13:29–13:43 against the older text. ⇒ **Re-read `03_pipeline.md` at the point of use, not once per
+session.**
+
 ## ⭐ NEW — decided in conversation, not previously in any file
 
 **1. Contradiction is BEHAVIOUR-versus-DOCUMENT, not document-internal.**
@@ -85,15 +111,42 @@ rate is the ordinary rate, not a defect.
 | `link.py` | anchor closure, unresolved names, rule-shape. RED-tested |
 | `m0255.lp` + `clauses/` + 5 probe cases | one hand-written clause translation, linked, with case E covering the claim the other four could not reach |
 | `witness.lp` | witness search, demonstrated |
-| `model/` | formal model of the design: constraints, staleness guard, waivers requiring date/who/why, 15 integration tests. **15 findings, 0 blocking, all waived with reasons** |
+| `model/` | ⚠️ **the assertion layer is RETIRED (2026-08-07)** — `pipeline.lp`, `rules.lp`, `check.py` and the waivers are gone; `RETIRED.md` says why and what would justify reviving them. It produced 0 findings against a day of real failures, 3 of 5 of which were structurally out of its reach, and asserted one fact contradicting the design. **What is kept and widened is the staleness guard**: `guard.py` + `watch.json` + `hooks/`, 23 tests. It now watches `phase_1/prompt/*.md` and `phase_1/schema.py` — the files *transcribed* from the design, which is where the out-of-reach failures happened. ⛔ Currently RED: those five transcriptions have **never** been reviewed against the design |
 | `paper_pipeline/` stage 0 | 7 competency questions, 18 executable instances, runs 16-as-declared |
 | `paper_pipeline/ontology_fit.py` | 39 self-tests green — ⚠️ but measures the wrong thing, see NEW-3 |
 | `deontic_probe/` | 6 relevance encodings, ablations, corpus ceilings |
 
+## ⭐ Stage 1 HAS NOW RUN — 3 clauses, and read the contamination note
+
+`paper_pipeline/phase_1/` — a configurable harness. Model, API, clause selection and the four
+translation-rule files are each editable on their own. `--self-test` is offline and free; dry run is
+the default and sends nothing.
+
+**Provider:** together.ai, `deepseek-ai/DeepSeek-V4-Flash-0731` ($0.14 / $0.28 per Mtok), defined
+inline in `phase_1/config.json` — it is not a row in `providers.json`.
+
+⭐ **Format forcing is AVAILABLE and works.** Open question 5's *"unverified that format forcing with
+a strict schema is available for the model and provider we will actually use"* is answered: strict
+`json_schema` was accepted. ⚠️ Not via `providers.py`, which has no `response_format` path at all —
+`phase_1` builds its own request and shares only the usage ledger.
+
+| run | result |
+|---|---|
+| ⛔ **m0255** | **CONTAMINATED — do not cite.** m0255 was the worked example IN THE PROMPT. The model reproduced it near-verbatim including prose comments it could not have derived. It measures copying, not translation |
+| **m0091** | translated: 5 rules, 5 claims, 2 textual facts |
+| **m0217** | **rejected by the validator** — an anonymous `_`, failure mode 7, which the prompt explicitly forbids |
+
+⚠️ Both produced `.lp` files that **`link.py` rejects** (m0255: 3 unresolved references; m0091: 4
+arity mismatches, and `requires` identical to `inputs`). The harness printed `✓` and exited 0 —
+correctly, since it validates format only; stage 2 is not built.
+
+⚠️ **Spend from this harness is currently invisible to `spend.py`** — the inline provider has no
+price row, so the calls count $0.00. Being fixed.
+
 ## Never run
 
-⭐ **Stage 1.** No model has produced a logic module for a clause in this form. The one worked
-example was written by hand. Every downstream stage assumes its output.
+⭐ **Stage 2 and the repair loop.** Planned in `phase_1/STEP_stage2_and_repair.md`, under review,
+nothing built.
 
 ---
 
@@ -141,7 +194,17 @@ and per NEW-3 should not be run until rebuilt.
 
 - **A check whose "pass" state is indistinguishable from its "did not run" state is broken by
   design.** Three separate failures this session were that shape; `check.py`'s parse canary and
-  `guard.py`'s self-test exist because of them.
+  `guard.py`'s self-test exist because of them. `guard.py` now treats an empty or unreadable watch
+  list as a loud ERROR for the same reason — a guard that cannot read its list looks exactly like a
+  guard that is not installed.
+- **A guard that is right and unseen is worth nothing.** The staleness guard was RED and correct for
+  two hours on 2026-08-07 while work ran off a stale reading of the design, because
+  `hooks/pre-commit` had never been installed. It is installed now (`ls -l .git/hooks/pre-commit`).
+  Being right was never the hard part.
+- ⭐ **The transcription is the unguarded surface.** Prompts, schemas and plans are written *from*
+  the design and then nothing connects them to it. They keep passing their own tests while
+  describing a design that no longer exists — the failure mode a model of the design cannot see,
+  because it is not in the design.
 - **Every measured claim states its source and its n.** Two of the headline numbers are n=1.
 - The `walkthrough/` directory is **allowed to contradict the wider repo**; `03_pipeline.md` is its
   source of truth. See `README.md`.

@@ -1,0 +1,104 @@
+{
+  "outcome": "translated",
+  "clause_id": "m0079",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the assistant must follow all applicable instructions when producing a response",
+    "C2 applicable instructions include system, developer and user instructions",
+    "C3 an instruction that conflicts with a higher-authority instruction is not applicable",
+    "C4 an instruction that conflicts with a later instruction at the same authority is not applicable"
+  ],
+  "acts": ["produce(R)"],
+  "concepts": [
+    {
+      "name": "instruction",
+      "arity": 1,
+      "gloss": "a directive to the assistant, of some authority and position in the chain",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause speaks of instructions and their authority and ordering, so an instruction must carry those attributes",
+      "toggleable": false
+    },
+    {
+      "name": "applicable_instruction",
+      "arity": 1,
+      "gloss": "an instruction the assistant must follow when producing a response",
+      "licence": "textual",
+      "cites": "m0079",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "higher_authority",
+      "arity": 2,
+      "gloss": "the first instruction has higher authority than the second",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause refers to 'higher-authority instruction' without defining the ordering, so the ordering relation is presupposed",
+      "toggleable": false
+    },
+    {
+      "name": "later_instruction",
+      "arity": 2,
+      "gloss": "the first instruction is later than the second at the same authority",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause refers to 'a later instruction at the same authority' without defining the ordering, so the ordering relation is presupposed",
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "m0079",
+      "inference": null,
+      "toggleable": false,
+      "atom": "applicable_instruction(I)",
+      "gloss": "I is an instruction the assistant must follow when producing a response",
+      "body": "instruction(I), not conflicts_with_higher_authority(I), not conflicts_with_later_same_authority(I)"
+    },
+    {
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause's exception for a higher-authority instruction presupposes that instructions carry an authority level",
+      "toggleable": false,
+      "atom": "conflicts_with_higher_authority(I)",
+      "gloss": "I conflicts with some instruction of higher authority",
+      "body": "instruction(I), instruction(J), higher_authority(J, I), conflicts(I, J)"
+    },
+    {
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause's exception for a later instruction at the same authority presupposes that instructions are ordered and carry an authority level",
+      "toggleable": false,
+      "atom": "conflicts_with_later_same_authority(I)",
+      "gloss": "I conflicts with some later instruction at the same authority",
+      "body": "instruction(I), instruction(J), same_authority(I, J), later_instruction(J, I), conflicts(I, J)"
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "producing a response must follow every applicable instruction",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "m0079",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "produce(R)",
+      "body": "applicable_instruction(I)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "produce",
+      "closure": "cepa",
+      "reason": "the clause imposes an obligation to follow applicable instructions and does not prohibit any act, so silence about an act leaves it permitted"
+    }
+  ],
+  "requires": ["instruction/1", "conflicts/2", "same_authority/2"],
+  "inputs": [],
+  "forbid_body": []
+}

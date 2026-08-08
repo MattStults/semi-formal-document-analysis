@@ -1,0 +1,25 @@
+{
+ "_": "The watch list for guard.py. ⭐ THIS IS DATA. Widening the guard is an edit to this list, not to code. Paths are globs relative to walkthrough/. Every entry MUST carry a `why` — it is printed verbatim when the file goes STALE, and it is the difference between 'something changed' (which gets ignored) and 'go re-read Part 3 against the failure-mode list' (which gets done).",
+
+ "_rule": "Watch a file if it is a TRANSCRIPTION of the design — if the design moving can make it wrong without anyone editing it. Do not watch a file merely because it is important; a guard that fires on everything fires on nothing.",
+
+ "watch": [
+  {
+   "path": "resources/03_pipeline.md",
+   "why": "The design itself, and the source of truth for this whole directory. If it moved, every transcription of it below is suspect until re-checked."
+  },
+  {
+   "path": "paper_pipeline/phase_1/prompt/*.md",
+   "why": "The stage-1 prompt is a TRANSCRIPTION of the design's rules, failure modes and worked examples. Nothing links the two: the design can move and the prompt keeps confidently instructing the old rules. Re-check the failure-mode list and the worked example against the design's problem table."
+  },
+  {
+   "path": "paper_pipeline/phase_1/schema.py",
+   "why": "The output contract encodes the design's rulings — required fields, licence values, what counts as a valid citation. A ruling changed in the design and not here produces output that validates and is wrong. Re-check the required fields against the design's stage-2 checks and invariants."
+  }
+ ],
+
+ "_history": [
+  "2026-08-07 — added prompt/*.md and schema.py. Three of the five conformance failures assessed that day were structurally out of reach of the old watch list, because they happened in plans and prompts rather than in the design document or the (now retired) .lp model.",
+  "2026-08-07 — removed model/pipeline.lp and model/rules.lp; the assertion layer they belonged to was retired. See RETIRED.md."
+ ]
+}

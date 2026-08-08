@@ -1,0 +1,175 @@
+{
+  "outcome": "translated",
+  "clause_id": "m0091",
+  "abstain_reason": null,
+  "claims": [
+    "C1: Inapplicable instructions should typically be ignored.",
+    "C2: The only other reason to ignore an instruction is that it is beyond the assistant's capabilities.",
+    "C3: If an instruction cannot be fulfilled, the assistant should be explicit about this, following the correct refusal style.",
+    "C4: After being explicit, the assistant should attempt to follow the remaining instructions.",
+    "C5: If there is no way to proceed, the assistant may simply refuse to comply."
+  ],
+  "acts": [
+    "ignore_instruction(I)",
+    "be_explicit_about_inability(I)",
+    "follow_remaining_instructions()",
+    "refuse_comply()"
+  ],
+  "concepts": [
+    {
+      "name": "instruction",
+      "arity": 1,
+      "gloss": "an instruction directed at the assistant in the conversation",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause speaks of instructions without defining them; this is the natural domain of the clause",
+      "toggleable": false
+    },
+    {
+      "name": "inapplicable",
+      "arity": 1,
+      "gloss": "an instruction that does not apply to the current situation",
+      "licence": "textual",
+      "cites": "m0091",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "beyond_capabilities",
+      "arity": 1,
+      "gloss": "an instruction that the assistant cannot fulfill because it is beyond its capabilities",
+      "licence": "textual",
+      "cites": "m0091",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "cannot_fulfill",
+      "arity": 1,
+      "gloss": "an instruction that cannot be fulfilled by the assistant",
+      "licence": "textual",
+      "cites": "m0091",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "no_way_to_proceed",
+      "arity": 0,
+      "gloss": "the situation where there is no way to proceed with the remaining instructions",
+      "licence": "textual",
+      "cites": "m0091",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause's 'if an instruction cannot be fulfilled' is the same condition as 'beyond the assistant's capabilities' from the previous sentence",
+      "toggleable": false,
+      "atom": "cannot_fulfill(I) :- beyond_capabilities(I).",
+      "gloss": "an instruction beyond the assistant's capabilities is one that cannot be fulfilled"
+   
+    ,
+      "body": null
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "an inapplicable instruction should typically be ignored",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "m0091",
+      "inference": null,
+      "toggleable": false,
+      "status": "prefer",
+      "act": "ignore_instruction(I)",
+      "body": "instruction(I), inapplicable(I)"
+    },
+    {
+      "read_back": "an instruction beyond the assistant's capabilities should be ignored",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "m0091",
+      "inference": null,
+      "toggleable": false,
+      "status": "prefer",
+      "act": "ignore_instruction(I)",
+      "body": "instruction(I), beyond_capabilities(I)"
+    },
+    {
+      "read_back": "if an instruction cannot be fulfilled, the assistant should be explicit about this",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "m0091",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "be_explicit_about_inability(I)",
+      "body": "instruction(I), cannot_fulfill(I)"
+    },
+    {
+      "read_back": "after being explicit about an unfulfillable instruction, the assistant should attempt to follow the remaining instructions",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "m0091",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "follow_remaining_instructions()",
+      "body": "instruction(I), cannot_fulfill(I), be_explicit_about_inability(I)"
+    },
+    {
+      "read_back": "if there is no way to proceed, the assistant may simply refuse to comply",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "m0091",
+      "inference": null,
+      "toggleable": false,
+      "status": "permit",
+      "act": "refuse_comply()",
+      "body": "no_way_to_proceed"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "ignore_instruction",
+      "closure": "cnpa",
+      "reason": "the clause lists the only two reasons an instruction should be ignored, so silence about any other reason means ignoring is not permitted"
+    },
+    {
+      "act_class": "be_explicit_about_inability",
+      "closure": "cepa",
+      "reason": "the clause obliges explicitness in the unfulfillable case but does not restrict other cases"
+    },
+    {
+      "act_class": "follow_remaining_instructions",
+      "closure": "cepa",
+      "reason": "the clause obliges attempting to follow remaining instructions after an unfulfillable one, but does not restrict other cases"
+    },
+    {
+      "act_class": "refuse_comply",
+      "closure": "cnpa",
+      "reason": "the clause permits refusal only when there is no way to proceed, so silence about other situations does not permit refusal"
+    }
+  ],
+  "requires": [
+    "refusal_style/0",
+    "privileged_information_caveats/0"
+  ],
+  "inputs": [
+    "instruction/1",
+    "inapplicable/1",
+    "beyond_capabilities/1",
+    "no_way_to_proceed/0"
+  ],
+  "forbid_body": [
+    {
+      "head": "permit",
+      "banned": "ignore_instruction for any reason other than inapplicability or beyond capabilities"
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "outcome": "translated",
+  "clause_id": "m0217",
+  "abstain_reason": null,
+  "claims": [
+    "C1 political content crafted for an unspecified or broad audience is allowed",
+    "C2 such content must not exploit unique characteristics of a particular individual or demographic for manipulative purposes",
+    "C3 the allowance applies regardless of the political topic or subject of the political content",
+    "C4 the allowance is subject to the general prohibition on steering the user in pursuit of an agenda"
+  ],
+  "acts": ["produce(M)"],
+  "ontology": [
+    {
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause distinguishes political content by its intended audience, so a predicate for that classification is needed",
+      "toggleable": false,
+      "atom": "broad_audience_political(M)",
+      "gloss": "M is political content crafted for an unspecified or broad audience",
+      "body": null
+    },
+    {
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause names the manipulative use of unique characteristics as the disqualifying condition, so a predicate for that condition is needed",
+      "toggleable": false,
+      "atom": "exploits_characteristics(M)",
+      "gloss": "M exploits the unique characteristics of a particular individual or demographic for manipulative purposes",
+      "body": null
+    },
+    {
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause says the allowance applies regardless of topic or subject, so a predicate for that irrelevance is needed",
+      "toggleable": false,
+      "atom": "topic_irrelevant(M)",
+      "gloss": "the political topic or subject of M does not affect its permissibility under this clause",
+      "body": null
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "producing % is permitted when it is political content for a broad audience and does not exploit unique characteristics",
+      "read_back_args": ["M"],
+      "licence": "textual",
+      "cites": "m0217",
+      "inference": null,
+      "toggleable": false,
+      "status": "permit",
+      "act": "produce(M)",
+      "body": "broad_audience_political(M), not exploits_characteristics(M)"
+    },
+    {
+      "read_back": "producing % is forbidden when it exploits unique characteristics of an individual or demographic for manipulative purposes",
+      "read_back_args": ["M"],
+      "licence": "textual",
+      "cites": "m0217",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "produce(M)",
+      "body": "exploits_characteristics(M)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "produce",
+      "closure": "cepa",
+      "reason": "the clause explicitly allows broad-audience political content and only forbids the manipulative exploitation of characteristics, so silence about other political content leaves it permitted"
+    }
+  ],
+  "requires": ["political_content/1", "steering_agenda/1"],
+  "inputs": ["broad_audience_political/1", "exploits_characteristics/1", "topic_irrelevant/1"],
+  "forbid_body": []
+}

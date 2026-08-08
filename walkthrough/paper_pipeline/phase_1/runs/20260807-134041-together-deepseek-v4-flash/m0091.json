@@ -1,0 +1,96 @@
+{
+ "outcome": "translated",
+ "clause_id": "m0091",
+ "abstain_reason": null,
+ "claims": [
+  "C1 an instruction that is inapplicable should typically be ignored",
+  "C2 the only other reason to ignore an instruction is that it is beyond the assistant's capabilities",
+  "C3 if an instruction cannot be fulfilled, the assistant should be explicit about this while following the correct refusal style",
+  "C4 after being explicit about an unfulfillable instruction, the assistant should attempt to follow the remaining instructions",
+  "C5 if there is no way to proceed, the assistant should simply refuse to comply"
+ ],
+ "provides": [
+  "ignored/2",
+  "ignored_reason/3",
+  "explicit_about/2",
+  "attempt_remaining/2",
+  "refuse/2"
+ ],
+ "requires": [
+  "instruction/1",
+  "applicable/1",
+  "capable/1",
+  "fulfillable/1",
+  "remaining_instructions/2",
+  "can_proceed/1",
+  "refusal_style/1"
+ ],
+ "inputs": [
+  "instruction/1",
+  "applicable/1",
+  "capable/1",
+  "fulfillable/1",
+  "remaining_instructions/2",
+  "can_proceed/1",
+  "refusal_style/1"
+ ],
+ "facts": [
+  {
+   "atom": "ignored_reason(inapplicable)",
+   "licence": "textual",
+   "cites": "m0091",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "atom": "ignored_reason(beyond_capabilities)",
+   "licence": "textual",
+   "cites": "m0091",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "rules": [
+  {
+   "asp": "ignored(I, inapplicable) :- instruction(I), not applicable(I).",
+   "read_back": "% is ignored because it is inapplicable",
+   "read_back_args": [
+    "I"
+   ],
+   "comment": "C1. The clause says inapplicable instructions should typically be ignored; the 'typically' is captured by the fact that this is a default rule, not a hard constraint."
+  },
+  {
+   "asp": "ignored(I, beyond_capabilities) :- instruction(I), applicable(I), not capable(I).",
+   "read_back": "% is ignored because it is beyond the assistant's capabilities",
+   "read_back_args": [
+    "I"
+   ],
+   "comment": "C2. This is the only other reason an instruction should be ignored, so it requires the instruction to be applicable (otherwise the first reason applies)."
+  },
+  {
+   "asp": "explicit_about(I) :- instruction(I), applicable(I), not capable(I), not fulfillable(I).",
+   "read_back": "the assistant is explicit that % cannot be fulfilled",
+   "read_back_args": [
+    "I"
+   ],
+   "comment": "C3. An instruction beyond capabilities is not fulfillable; the clause says the assistant should be explicit about this."
+  },
+  {
+   "asp": "attempt_remaining(I) :- instruction(I), applicable(I), not capable(I), not fulfillable(I), remaining_instructions(I, R), R > 0.",
+   "read_back": "the assistant attempts the remaining instructions after % cannot be fulfilled",
+   "read_back_args": [
+    "I"
+   ],
+   "comment": "C4. The clause says to attempt to follow the remaining instructions after being explicit about the unfulfillable one."
+  },
+  {
+   "asp": "refuse(I) :- instruction(I), applicable(I), not capable(I), not fulfillable(I), not can_proceed(I).",
+   "read_back": "the assistant refuses to comply with % because there is no way to proceed",
+   "read_back_args": [
+    "I"
+   ],
+   "comment": "C5. If there is no way to proceed, the assistant should simply refuse to comply."
+  }
+ ],
+ "forbid_body": []
+}

@@ -38,10 +38,10 @@ Every measured figure names its source and its n.
 | | **17. A cyclic priority relation is silently wrong** | Silent | If clause A is declared to beat B and B to beat A, a defeat-based encoding produces a confident wrong answer rather than an error. Found while assessing a superiority kernel, 2026-08-07. Needs a mechanical cycle check on the `beats` relation. |
 | **③ In how the translation is tested** | | | |
 | | **11. Test cases describing impossible situations** | Silent | A test asserted material was both brand new *and* a transformation of user-supplied content. The program accepted it and produced the right answer from an impossible state. |
-| | **12. Testing one branch only** | Silent | A clause with four claims, tested with one case. ⚠️ This is **coverage†**, it has published criteria in ASP, and it is the problem this pipeline addressed least well. |
+| | **12. Testing one branch only** | Silent | A clause with four claims, tested with one case. ⚠️ This is **coverage†**, it has published criteria in ASP, and it is the problem this pipeline addressed least well. ⭐ **Demonstrated on the flagship example itself:** `m0255`'s two C3 rules ("purpose never creates an exemption") can be deleted with no observable effect — same 144 models, all five probe cases bit-identical. They *fire*, so rule coverage passes them; only a mutation check sees it. `paper_pipeline/phase_1/FINDINGS_m0255.md`. |
 | | **13. Only testing that it forbids** | Silent | A translation that says no to everything passes every "does it correctly say no" test. ⛔ **More than a testing gap:** plain ASP's closed-world reading of `not forbidden(X)` silently commits the whole corpus to *"whatever is not forbidden is permitted"* (CEPA vs CNPA). **No probe coverage surfaces a global semantic commitment.** |
 | | **14. Claims no test case can demonstrate** | Silent | "Purpose never creates an exemption" is about the *rule set*, not any situation: no rule of a certain shape may exist. Checkable only by inspecting the program. |
-| | **15. "Never fired" has three causes** | Misleading | Genuinely dead, or the tests do not reach it, or **it is waiting on a clause not yet linked in.** **Measured** (n=1 rule, `m0255`'s `out_of_scope`): 5 witnesses† with the dependency linked, 0 without. |
+| | **15. "Never fired" has three causes** | Misleading | Genuinely dead, or the tests do not reach it, or **it is waiting on a clause not yet linked in.** **Measured** (n=1 rule, `m0255`'s `unlifted/3` *out_of_scope* rule): with `m0203` linked, **72 of the 144 enumerated situations witness the rule**; without it, **zero — the witness query is UNSAT**. Command and projection in Part 4 §2. |
 | **④ In the checking itself** | | | |
 | | **16. A reviewer cannot see invented entities** | Structurally silent | Given the clause and a read-back containing the invented "deception policy," a clean reviewer answered **faithful, nothing unsupported** — then reasoned from the fiction. Not reviewer error: the clause says "policies other than restricted or sensitive" and never enumerates which exist. (n=1. Asked about *completeness* in the same test it was exactly right, naming both uncovered claims.) |
 
@@ -182,7 +182,7 @@ flowchart TD
     DET --> D5[rule-shape declarations hold]
 
     D1 & D2 & D3 & D4 & D5 --> PASS{pass?}
-    PASS -->|no| FIX[REPAIR — a FRESH conversation,<br/>given the failing check but<br/>NOT the expected verdicts]
+    PASS -->|no| FIX[REPAIR — an accumulating transcript.<br/>⭐ Only STAGE-2 findings may enter it;<br/>stage 3 and 4 findings carry an answer key<br/>and are filtered by their ORIGIN]
     FIX --> GEN
 
     PASS -->|yes| PROBE[3. BUILD TEST CASES<br/>solver enumerates situations;<br/>model labels each<br/>must-forbid / must-permit]
@@ -352,7 +352,7 @@ flowchart TD
 
     O1 & O2 & O3 --> NEXT([to stage 2 — deterministic checks])
 
-    FAIL[/"a check failed"/] -.-> REP[["REPAIR — fresh conversation.<br/>Carries: prior attempts + the checks<br/>they failed, with reasons.<br/>⛔ Never the expected verdicts."]]
+    FAIL[/"a check failed"/] -.-> REP[["REPAIR — one accumulating transcript.<br/>Carries: the model's own prior modules<br/>+ every check they failed, with reasons.<br/>⛔ Only stage-2 findings. Never a verdict."]]
     REP -.-> M
 ```
 
@@ -383,18 +383,64 @@ outranks cost; a cheap prompt that produces unusable modules is not cheap.
 - any panel label, gold answer, or downstream verdict
 - the **test cases and their expected answers**
 
-The last one has teeth: it is why repair happens in a fresh conversation rather than by continuing
-this one. After one round-trip a continued conversation has seen every expected answer, and passing
-the checks stops meaning anything.
+The last one has teeth, and it is what the repair loop is designed around.
 
-⚠️ **Freshness is about what carries forward, not about amnesia.** A translator that cannot see its
-own previous attempts will repeat their mistakes, and repair could fail for that reason alone. So
-the repair prompt carries **the prior attempts and every check they failed, with reasons** — an
-accumulating error log. What it never carries is the **expected verdicts**: the error log says
-*"this rule can never fire"*, not *"case C should have returned no violation."*
+#### ⭐ How repair works, corrected 2026-08-07
 
-⇒ Accumulate the failures; never accumulate the answer key. ⚠️ Untested — if repair does not
-converge under this split, the split is the first suspect.
+⛔ **An earlier version of this section said repair runs in a "fresh conversation". Read as written
+that produced the wrong implementation, and it is worth saying why so nobody re-derives it.**
+
+**Stage 2 repair is an ACCUMULATING TRANSCRIPT**, in the model's own turn structure:
+
+```
+system   : the fixed instructions, format, worked examples, failure modes
+user     : the clause and its cross-references
+assistant: the module it produced
+user     : every check that failed, with its reason
+assistant: its next module
+user     : every check that failed, with its reason
+…
+```
+
+Three reasons it is a real conversation and not a summary of one. A model repairs better in the
+turn structure it was trained on than from prose describing its own past output. Its own turns carry
+the reasoning behind a choice, which a findings list cannot reconstruct. And the message **prefix is
+byte-identical as the transcript grows**, so every turn after the first is a cache hit — a loop that
+rebuilds one flat block each attempt re-sends the same tokens at full price, and the only visible
+symptom is the bill.
+
+⚠️ **It accumulates, and nothing is dropped once fixed.** A translator that cannot see its previous
+attempts repeats their mistakes. Worse, a log carrying only the LATEST findings lets repair
+oscillate — fix A and break B, fix B and reintroduce A — for the whole attempt budget, and the
+symptom is indistinguishable from a model that simply cannot do the task.
+
+##### ⭐ So what is actually denied, and where the real risk is
+
+**The denial is about CONTENT, not about conversation state**, and it does not bite equally at every
+stage:
+
+| repair triggered by | does it carry an answer key? |
+|---|---|
+| **stage 2**, the deterministic checks | ⭐ **No.** Its findings are derived from the module itself — *"this read-back has no substitution slot"*, *"nothing declares this predicate"*. There is no expected verdict anywhere near them |
+| **stage 3**, probe-case mismatch | ⛔ **Yes.** The cases carry their must-forbid / must-permit labels |
+| **stage 4**, a review seat | ⛔ **Yes.** A seat's finding can name the answer it expected |
+
+All three feed the same repair node, which is why the original rule covered them with one sentence.
+It is correct for two of the three and needlessly costly for the one that runs first and most often.
+
+⇒ ⭐ **Every finding carries an ORIGIN, and only stage-2 findings may enter the transcript.** That is
+the mechanism, and it must exist from the first version — retrofitting it once stages 3 and 4 attach
+is how the denial dissolves with nothing to notice. A persistent transcript makes this *more*
+important than a per-call prompt did: a leaked verdict lives there for the rest of that clause's
+life, not for one call.
+
+⇒ The rendered log says *"this rule can never fire"*, never *"case C should have returned no
+violation."* An excluded finding must leave a **visible hole** — a marker saying something was
+withheld — rather than silently vanishing, so a reader can tell a filtered log from a clean one.
+
+⇒ Accumulate the failures; never accumulate the answer key. ⚠️ **Convergence is untested.** If repair
+does not converge, the split is the first suspect — so findings-per-attempt is recorded per clause,
+and non-convergence has to be visible as data rather than as a loop quietly exhausting its budget.
 
 #### What it produces
 
@@ -426,13 +472,17 @@ class Fact:
 @dataclass
 class Module:
     clause_id: str            # 'm0255' — one clause, one module
-    provides:  list[str]      # ['lifted/2', 'binds/2']  what others may use
-    requires:  list[str]      # ['policy_class/2', 'scope/2']  from other clauses
-    inputs:    list[str]      # ['forbids/2', 'produced/1']  facts about the CASE,
-                              #   not about the document — head-less by design
-    facts:     list[Fact]
-    rules:     list[str]      # ASP text, each carrying its read-back annotation
-    forbid_body: list[tuple[str, str]]   # ('lifted', 'purpose') — rule-set claims
+    claims:    list[str]      # the clause's distinct claims, one string each
+    acts:      list[str]      # ['produce(M)'] — every act this clause governs
+    concepts:  list[Concept]  # predicates this clause INTRODUCES, with meanings
+    ontology:  list[Fact]     # non-deontic classification INSTANCES
+    asserts:   list[Assertion]   # asserts(ClauseId, Status, Act)
+    beats:     list[Superiority] # beats(Sayer, Winner, Loser)
+    defines:   list[Definition]  # defines(ClauseId, Kind, Term)
+    closure:   list[Closure]  # per act class: does silence permit or prohibit?
+    requires:  list[str]      # ['policy_class/2']  another clause defines it
+    inputs:    list[str]      # ['produced/1']  supplied with the CASE — head-less
+    forbid_body: list[tuple[str, str]]   # ('permit', 'purpose') — rule-set claims
                               #   that no test case can demonstrate
 
 @dataclass
@@ -444,6 +494,41 @@ class Abstention:
 ⚠️ **`requires` versus `inputs` is the distinction that makes the link check possible.** Without it,
 "a name nothing defines" cannot be told apart from "a name supplied at query time," and every
 translation looks broken or every one looks fine.
+
+##### ⭐ The relation vocabulary, written here 2026-08-07
+
+⛔ **It was missing from this document while five files implemented it.** The contract was built from
+open question 1's CLOSED ruling and from `contradiction_probe/doc.lp`, and the resulting vocabulary
+was never written back here — so a clean reviewer could not license `asserts/3`, `defines/3` or the
+status set from the source of truth, and correctly declined to try.
+
+**Every clause is written in the same four relations.** A translator does not invent relation names;
+that is what lets clauses translated independently be linked and queried together.
+
+| | |
+|---|---|
+| `asserts(ClauseId, Status, Act)` | attaches a deontic status to an ACT |
+| `beats(Sayer, Winner, Loser)` | one clause outranks another, and WHO SAYS SO |
+| `defines(ClauseId, Kind, Term)` | fixes what a class covers |
+| the **ontology** block | non-deontic classification — the clause's own subject matter, where names ARE coined |
+
+**`Status` is exactly four: `forbid` · `permit` · `oblige` · `prefer`.** `prefer` is for comparatives
+— *"minimize side effects"*, *"avoid excessive hedging"*. They attach a preference, not a
+prohibition: no situation violates them, so recording one as `forbid` invents a violation condition
+the document does not have. (Problem #5 in a new place — the hollow stub, at the modality.)
+
+⭐ **Declaring a concept and asserting a fact are different, and each has its own list.** `concepts`
+introduces a predicate and says what it MEANS; `ontology` asserts that some particular thing IS of
+that kind. A declaration written as a fact — `restricted(M)` with nothing to bind `M` — is one the
+solver refuses outright, so without the distinction the only expressible form is a broken one.
+⚠️ The concept declarations are **not** rendered into the logic file. Together they are the concept
+dictionary, emitted as its own table: definitions buried in comments inside logic files force every
+later consumer to parse ASP to recover them.
+
+⛔ **`provides` was REMOVED.** With a fixed relation vocabulary a module's interface is stated in one
+direction only — what it needs (`requires`, `inputs`) — because what it supplies is simply what it
+defines, and a declared-provides list is a second copy that can disagree with the code. This
+paragraph supersedes the `provides` mentions in the stage-1 diagram above.
 
 #### Abstention is a real answer
 
@@ -515,7 +600,36 @@ If it cannot, the cause is one of three, and they are mechanically distinguishab
 | everything present, still no witness | **genuinely dead** | fix the rule |
 
 ⚠️ This is why the check must run at a declared link scope. Run on a clause alone, a perfectly good
-rule looks dead. **Measured:** 5 witnesses with the dependency linked, 0 without.
+rule looks dead.
+
+**Measured**, n=1 rule — `m0255`'s `unlifted(P, M, out_of_scope)`, whose body needs `out_of_scope/2`
+and only `m0203` provides it. Run from `walkthrough/`:
+
+```bash
+V=../semi-formal-experiment/.venv/bin/python
+CL="clauses/m0200.lp clauses/m0201.lp clauses/m0203.lp"
+
+# every situation the generator admits, with the dependency linked
+$V -m clingo witness.lp m0255.lp $CL 0                        # → 144 models
+
+# of those, the ones in which the rule actually fires
+echo ':- not unlifted(_,_,out_of_scope).' > /tmp/fires.lp
+$V -m clingo witness.lp m0255.lp $CL /tmp/fires.lp 0          # → 72 models
+
+# the same question with m0203 dropped
+$V -m clingo witness.lp m0255.lp clauses/m0200.lp clauses/m0201.lp /tmp/fires.lp 0
+                                                              # → UNSATISFIABLE, 0 models
+```
+
+⇒ **72 witnesses with the dependency linked, 0 without.** The load-bearing half is the zero: with
+`m0203` absent the enumeration is still satisfiable — 144 models, the same count — and *not one of
+them* fires the rule. Linkage, not deadness, and the two are indistinguishable without the scope.
+
+ⓘ **The 72 is a re-measurement.** Earlier drafts of this document and of
+`01_which_checks_are_scripts.md` cited **5** witnesses. That figure does not reproduce: 144 total,
+72 firing, and no projection of the answer sets tried (onto the derived atoms, onto the situation
+choices, onto subset-minimal witnesses) yields 5. The qualitative claim is unaffected — it rests on
+the zero, which reproduces exactly — so the number is corrected rather than the finding withdrawn.
 
 ### 3 — Why test cases must include must-permit
 

@@ -1,0 +1,85 @@
+{
+  "outcome": "translated",
+  "clause_id": "m0165",
+  "abstain_reason": null,
+  "claims": [
+    "C1: The assistant should assume a weak preference for self-actualization, kindness, pursuit of truth, and general flourishing of humanity in users, unless there is evidence to the contrary.",
+    "C2: The assumption is defeasible: evidence to the contrary overrides the default assumption.",
+    "C3: The preference is weak, not absolute, so it does not override other considerations."
+  ],
+  "acts": ["assume_preference(U)"],
+  "concepts": [
+    {
+      "name": "user",
+      "arity": 1,
+      "gloss": "an individual interacting with the assistant",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause speaks of 'users' as the subjects of the assumption",
+      "toggleable": false
+    },
+    {
+      "name": "evidence_to_contrary",
+      "arity": 1,
+      "gloss": "evidence that a user does not have the weak preference described",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause's 'evidence to the contrary' is a condition that defeats the default assumption",
+      "toggleable": false
+    },
+    {
+      "name": "weak_preference",
+      "arity": 1,
+      "gloss": "a preference that is not absolute and can be outweighed by other considerations",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause explicitly says 'weak preference', so the preference is defeasible and not absolute",
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause's 'users' are the individuals to whom the assumption applies",
+      "toggleable": false,
+      "atom": "user(U)",
+      "gloss": "U is a user of the assistant",
+      "body": null
+    },
+    {
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause's 'evidence to the contrary' is a condition that defeats the default assumption",
+      "toggleable": false,
+      "atom": "evidence_to_contrary(U)",
+      "gloss": "there is evidence that user U does not have the weak preference described",
+      "body": null
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "the assistant should assume that user % has a weak preference towards self-actualization, kindness, the pursuit of truth, and the general flourishing of humanity, unless there is evidence to the contrary",
+      "read_back_slots": ["U"],
+      "licence": "textual",
+      "cites": "m0165",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "assume_preference(U)",
+      "body": "user(U), not evidence_to_contrary(U)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "assume_preference",
+      "closure": "cepa",
+      "reason": "The clause only obliges the assumption in the absence of contrary evidence; it does not prohibit assuming otherwise, so silence about other cases permits them."
+    }
+  ],
+  "requires": [],
+  "inputs": ["user/1", "evidence_to_contrary/1"],
+  "forbid_body": []
+}

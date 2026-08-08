@@ -1,0 +1,44 @@
+# Dependencies for semi-formal-document-analysis.
+#
+#   bash setup_env.sh          # creates semi-formal-experiment/.venv and installs this
+#
+# Every entry says what needs it and what breaks without it, because the failure
+# modes differ: some are collection errors you can ignore, one is a silent skip.
+# Pins are the versions this was last verified against, 2026-08-07.
+#
+# NOT here on purpose: no provider SDK. Every API call in this repo is stdlib
+# `urllib` (`semi-formal-experiment/providers.py`). `engine/panel/harness.py`
+# imports `openai` inside a function; that path is unused by the pipeline and
+# the import is deliberately not satisfied here.
+
+# --- core: the test suite will not run without these -----------------------
+pytest==9.1.1
+
+# --- the solver ------------------------------------------------------------
+# Without it the ASP tests show as COLLECTION ERRORS, which AGENTS.md records
+# as a known environment gap rather than a failure. Everything else still runs.
+clingo==5.8.0
+
+# --- walkthrough/paper_pipeline/phase_1 ------------------------------------
+# schema.py is pydantic models: the stage-1 output contract, the JSON schema
+# sent to the provider for format forcing, and the validators that enforce the
+# licence rules a schema cannot express. `translate.py --self-test` fails at
+# import without it.
+pydantic==2.13.4
+
+# --- NOT NEEDED: walkthrough/deontic_probe --------------------------------
+# RULED AGAINST. 03_pipeline.md open question 1 decided plain clingo plus a
+# superiority relation, NOT the deontic extension — so deontic_probe/ is a
+# historical artifact and nothing on the current path imports deolingo.
+# It is also not installable from a clean macOS checkout: it pulls
+# `cryptography`, which builds from source via maturin/cargo and fails without
+# a Rust toolchain and OpenSSL headers. Verified failing 2026-08-07.
+#   pip install deolingo     # after: brew install rust openssl@3
+# deolingo==1.0.3
+
+# --- OPTIONAL: weight diagnostics -----------------------------------------
+# `semi-formal-experiment/weight_diag.py` imports these lazily, INSIDE the
+# functions that use them, so their absence is not an import error — the
+# diagnostic simply cannot run. Uncomment if you need it.
+# numpy
+# scikit-learn

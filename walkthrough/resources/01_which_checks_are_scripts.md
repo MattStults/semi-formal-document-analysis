@@ -119,8 +119,22 @@ translations that already survived the free checks.
 ## F. ⭐ When to run vacuity, and why "never fired" is three different findings
 
 A rule that never fires is **not** thereby vacuous. Demonstrated: `unlifted(…, out_of_scope)` in
-`m0255` yields 5 witnesses with `m0203` linked and 0 without it. Run on the clause alone, a
+`m0255` yields **72 witnesses with `m0203` linked and 0 without it**. Run on the clause alone, a
 perfectly good rule reads as vacuous — the condition is a *linker* one.
+
+```bash
+# from walkthrough/.  144 situations are enumerated either way; the question is
+# how many of them fire the rule.
+V=../semi-formal-experiment/.venv/bin/python
+echo ':- not unlifted(_,_,out_of_scope).' > /tmp/fires.lp
+$V -m clingo witness.lp m0255.lp clauses/m0200.lp clauses/m0201.lp clauses/m0203.lp /tmp/fires.lp 0
+#   → SATISFIABLE, Models: 72
+$V -m clingo witness.lp m0255.lp clauses/m0200.lp clauses/m0201.lp /tmp/fires.lp 0
+#   → UNSATISFIABLE, Models: 0
+```
+
+ⓘ Earlier drafts cited 5 witnesses. That number does not reproduce under any projection tried; see
+`03_pipeline.md` Part 4 §2. The zero — the half the argument rests on — reproduces exactly.
 
 **Vacuity is only meaningful at a declared link scope**, and it runs *after* linking is clean, at
 the clause's transitive anchor closure. It does not need the whole corpus, so it stays per-clause

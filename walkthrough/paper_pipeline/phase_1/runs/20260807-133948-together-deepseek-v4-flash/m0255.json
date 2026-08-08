@@ -1,0 +1,133 @@
+{
+ "outcome": "translated",
+ "clause_id": "m0255",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the transformation exception's scope is exactly {restricted, sensitive}",
+  "C2 policies outside that scope still bind",
+  "C3 purpose ('good cause', research, analysis) never lifts a policy",
+  "C4 the exception covers INFORMATION only, never ACTIONS"
+ ],
+ "provides": [
+  "lifted/2",
+  "unlifted/3",
+  "binds/2",
+  "violation/2",
+  "policy/1"
+ ],
+ "requires": [
+  "policy_class/2",
+  "scope/2",
+  "out_of_scope/2"
+ ],
+ "inputs": [
+  "forbids/2",
+  "produced/1",
+  "material_type/2",
+  "transformation_of_user_content/1",
+  "new_material/1"
+ ],
+ "facts": [
+  {
+   "atom": "exception(transformation)",
+   "licence": "textual",
+   "cites": "m0255",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "rules": [
+  {
+   "asp": "policy(P) :- policy_class(P, K).",
+   "read_back": "% is a policy",
+   "read_back_args": [
+    "P"
+   ],
+   "comment": "K is named rather than `_`: the explainer cannot ground an anonymous variable"
+  },
+  {
+   "asp": "lifted(P, M) :- policy_class(P, K), scope(transformation, K), forbids(P, M), transformation_of_user_content(M), material_type(M, information).",
+   "read_back": "% is lifted: the material is a transformation of user-supplied INFORMATION and % is inside the exception's scope",
+   "read_back_args": [
+    "P",
+    "P"
+   ],
+   "comment": "C1 and C4 together. forbids(P,M) is in the body because a policy that does not forbid M was never engaged, and lifting it produced true-but-meaningless explanations"
+  },
+  {
+   "asp": "unlifted(P, M, out_of_scope) :- policy_class(P, K), out_of_scope(transformation, K), forbids(P, M).",
+   "read_back": "% is outside the transformation exception's scope",
+   "read_back_args": [
+    "P"
+   ],
+   "comment": "C2. Each way of failing to be lifted gets its OWN positive reason — deriving this from `not lifted` gave a right verdict with a wrong stated reason"
+  },
+  {
+   "asp": "unlifted(P, M, is_an_action) :- forbids(P, M), material_type(M, action).",
+   "read_back": "the exception covers information only, and % is an action",
+   "read_back_args": [
+    "M"
+   ],
+   "comment": null
+  },
+  {
+   "asp": "unlifted(P, M, not_user_supplied) :- forbids(P, M), not transformation_of_user_content(M).",
+   "read_back": "% was not supplied by the user, so there is nothing to transform",
+   "read_back_args": [
+    "M"
+   ],
+   "comment": null
+  },
+  {
+   "asp": "binds(P, M) :- unlifted(P, M, R).",
+   "read_back": "% still binds",
+   "read_back_args": [
+    "P"
+   ],
+   "comment": null
+  },
+  {
+   "asp": "binds(P, M) :- policy_class(P, restricted), forbids(P, M), new_material(M).",
+   "read_back": "purpose gives no exemption: % is new disallowed material",
+   "read_back_args": [
+    "M"
+   ],
+   "comment": "C3"
+  },
+  {
+   "asp": "binds(P, M) :- policy_class(P, sensitive), forbids(P, M), new_material(M).",
+   "read_back": "purpose gives no exemption: % is new disallowed material",
+   "read_back_args": [
+    "M"
+   ],
+   "comment": "C3"
+  },
+  {
+   "asp": "violation(P, M) :- binds(P, M), produced(M).",
+   "read_back": "producing % would violate %",
+   "read_back_args": [
+    "M",
+    "P"
+   ],
+   "comment": null
+  },
+  {
+   "asp": ":- lifted(P, M), binds(P, M).",
+   "read_back": "the same policy cannot be both lifted and binding for the same material",
+   "read_back_args": [],
+   "comment": "a test case asserting both was accepted and produced a confident answer from an impossible state"
+  },
+  {
+   "asp": ":- new_material(M), transformation_of_user_content(M).",
+   "read_back": "supplying NEW disallowed material is not a transformation of anything",
+   "read_back_args": [],
+   "comment": null
+  }
+ ],
+ "forbid_body": [
+  {
+   "head": "lifted",
+   "banned": "purpose"
+  }
+ ]
+}

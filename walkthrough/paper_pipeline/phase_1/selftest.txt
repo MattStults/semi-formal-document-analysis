@@ -1,0 +1,110 @@
+phase_1/translate.py --self-test
+
+  ✅ selection: unknown clause id
+       fires on: a typo must not silently translate a different clause
+  ✅ selection: unknown section id
+       fires on: a renamed section must not yield an empty run reported as success
+  ✅ selection: nothing selected
+       fires on: 'translate everything' must not happen by accident
+  ✅ selection: a real one resolves
+       fires on: the happy path stays green
+  ✅ selection: --limit 0 is a refusal, not 'everything'
+       fires on: `if s.get('limit')` made 0 falsy, so --limit 0 silently selected the whole selection — the opposite of what it says
+  ✅ prompt: an empty rules file
+       fires on: an empty instruction file sends a promptless call that looks normal
+  ✅ prompt: a missing rules file
+       fires on: a renamed prompt file must not silently shrink the instructions
+  ✅ prompt: a file on disk that is never sent
+       fires on: 30_failure_modes.md was written and left unwired — the model never saw the 17 failure modes while the README said it did
+  ✅ prompt: a config whose prompt directory does not exist
+       fires on: the orphan scan used to listdir phase_1/prompt whatever the config said, so --config elsewhere was impossible and a wrong path came back as a bare FileNotFoundError traceback, not exit 2
+  ✅ truncation is a refusal
+       fires on: a cut-off module can be syntactically fine and half a clause
+  ✅ empty response is a refusal
+       fires on: an empty completion must not be written out as a module
+  ✅ a null finish_reason is NOT treated as truncation
+       fires on: this provider returns finish_reason: null on every call, so the truncation guard cannot fire here at all — a cut-off completion surfaces one stage later as a JSON parse error. Loud, but misdiagnosed, and that is recorded rather than papered over
+  ✅ a non-JSON response is a refusal
+       fires on: under forcing this is impossible; if it happens the provider ignored response_format and nothing downstream can be trusted
+  ✅ the worked example we SHOW the model validates (2 module(s) in 20_worked_example.md)
+       fires on: a prompt that teaches a shape the contract rejects fails every clause, and nothing in the harness compared the two
+  ✅ a valid module passes
+       fires on: the happy path stays green
+  ✅ licence `textual` with no citation
+       fires on: an uncited textual fact is an invention wearing a citation's clothes
+  ✅ licence `assumed` with no named inference
+       fires on: an unnamed inference is an unmarked invention (Invariant 2)
+  ✅ licence `world` that is not toggleable
+       fires on: a result resting on world knowledge is a different claim and must be switchable off
+  ✅ a licensed `world` fact is ACCEPTED
+       fires on: the graded licence exists so non-textual facts are marked, NOT banned — rejecting this would re-create the binary rule the design already recorded as wrong
+  ✅ a predicate declared without arity
+       fires on: forbids/2 and forbids/3 must be distinguishable at link time
+  ✅ a citation to a clause outside the corpus
+       fires on: a manufactured citation creates an invented entity BEHIND a passed check — the schema alone cannot see it, so run() now hands validate() the corpus ids
+  ✅ a module that renames itself
+       fires on: a module whose clause_id is not the clause it was asked for would be written to <asked>.json carrying a second identity
+  ✅ an anonymous variable in a rule body
+       fires on: idiomatic ASP that the explanation tool cannot process (mode 7)
+  ✅ a rule with no read-back annotation
+       fires on: the read-back is what a reviewer sees INSTEAD of the rule; without it the rule cannot be checked against the clause at all
+  ✅ read-back slots that do not match their arguments
+       fires on: the rendered sentence would silently be wrong
+  ✅ an act asserted but never declared
+       fires on: the FORCED closure declaration is checked against `acts`; an undeclared act escapes it
+  ✅ an act class with no closure declaration
+       fires on: an absent declaration reads as CEPA silently, and the probe found that flips the contradiction verdict while open and cepa stay bit-identical
+  ✅ abstention with no reason
+       fires on: an abstention with no reason is a skip in disguise, and the abstention RATE is a signal we read
+  ✅ abstention that still carries content
+       fires on: neither an abstention nor a translation
+  ✅ a translation that emitted nothing
+       fires on: an abstention that did not say so
+  ✅ a translation with no claims
+       fires on: a clause with four claims tested against one case is mode 12, and `claims` is how that becomes visible
+  ✅ an unpriced provider is over budget
+       fires on: unpriced must never be treated as free
+  ✅ cost gate refuses before sending
+       fires on: the ceiling must bind before the first call, not after
+  ✅ an unknown format_forcing is a CONFIG error
+       fires on: it was only checked while building the first request body — past the cost gate and inside the per-clause handler — so a typo was reported as N clause failures and exit 1 instead of exit 2
+  ✅ a bad format_forcing stops the whole run, not one clause
+       fires on: the guard must sit before the loop; if it fires per clause the exit code says 'a clause failed' about a config typo
+  ✅ --provider names a row and the row is USED
+       fires on: it used to be `inline or row`, so --provider luna relabelled the run while still calling together.ai with together's key — spend attributed to a provider that was never called
+  ✅ --provider luna reroutes the model, url and key, not the label
+       fires on: a relabelled call bills the wrong provider and the ledger says so in the wrong row
+  ✅ --provider with a name providers.json does not carry
+       fires on: silently falling back to the inline model is the mislabelling defect in its purest form
+  ✅ unknown provider name with no inline model
+       fires on: a typo must not fall through to some default model
+  ✅ a provider defined INLINE resolves without providers.json
+       fires on: the happy path for a model the wider repo does not carry
+  ✅ the inline provider carries its own model id and prices
+       fires on: an inline provider that silently inherited a providers.json row would spend at another model's price
+  ✅ a run must not overwrite a previous run's artifacts
+       fires on: output.run_name + makedirs(exist_ok=True) wrote a second run's files over the first, and the raw responses of a run that cost money are the one thing that cannot be regenerated
+  ✅ the concept table is written, as data, by a real run
+       fires on: the concept dictionary is its own artifact. Buried in .lp comments, every consumer — the read-back, the normaliser, a human reading the vocabulary — must regex ASP to recover it. ⚠️ An earlier version of THIS check asserted only that a constant equalled itself, so it passed while the run wrote no table at all
+  ✅ a run directory holds what was SENT as well as what came back, for failed clauses too
+       fires on: the directory used to hold only responses. dryrun.txt is a separate artifact for the default selection, so nobody could read a run and see what was actually asked — and m0091, the clause that failed, is the one whose prompt someone will want
+  ✅ run.json survives an exception that escapes the loop
+       fires on: it was written only after the loop completed, so an interrupt or a network drop lost the record of every clause already paid for — the clauses whose money is already spent
+  ✅ the usage row carries real token counts and a cost
+       fires on: the rows appended by this harness carried the RAW together.ai usage dict: cached_tokens was nested where spend.py never looks, content_chars was 0, and with no price entry the whole row was dropped from the total. Live spend was invisible to the cap
+  ✅ the run prints what spend.py will NOT see
+       fires on: spend.py prices only from providers.json and this provider is defined inline, so the row is logged and then skipped from the total. That residue is unfixable from inside walkthrough/ and must therefore be shouted, not swallowed
+  ✅ run.json records a real sha of the prompt and the config
+       fires on: it recorded `system_sha_len`: two different prompts of equal length were indistinguishable, and run.json is the only provenance a run carries
+  ✅ dryrun.txt matches the current config and prompts (inputs-sha 6f9c6f94575e2477)
+       fires on: a dry-run artifact that no longer describes what would be sent reads as authoritative and is wrong
+  ✅ wire schema is flat and strict (14 properties, no $ref)
+       fires on: several providers do not resolve $ref, and a non-strict schema lets an invented field through as silent noise
+  ✅ .lp renders from the object: interface, read-back, licence, abstention — and deterministically
+       fires on: the .lp is what a reviewer reads; a missing read-back or licence marker makes the module unreviewable, and non-determinism makes two runs incomparable
+  ✅ cross-references resolve off the document's own anchors (2 clauses for m0255)
+       fires on: a clause that modifies rules defined elsewhere cannot be translated in isolation
+  ✅ system prompt assembles from 4 files (27,641 chars) and carries the relation schema, the three licences, the read-back, the closure, forbid_body, abstention and the failure modes
+       fires on: a prompt that lost the licence taxonomy would produce unmarked inventions and every downstream check would still pass
+
+53 passed, 0 failed
