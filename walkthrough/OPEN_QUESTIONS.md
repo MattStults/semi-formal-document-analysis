@@ -29,15 +29,30 @@ Two independent agents produced the same false "exits 0" claim from that one hab
 
 ---
 
-## Q-16 ⛔ STAGE 4'S R3 LAYER DOES NOT EXIST — the xclingo derivation trees
+## Q-16 ✅ RESOLVED — stage 4's R3 layer is built and wired
 
 `STEP_stage4.md` §2.1 specifies **three** rendering layers. `readback.py` produces **R1 and R2
 only**. R3 — *"xclingo explanation tree, every leaf replaced by its R1 rendering"* — is absent, so
 **no derivation reaches any seat**, and 4a/4b's denominators are smaller than §2.1 describes.
 
-This is not a design question; it is unfinished implementation, and I am building it. Recorded
-because it changes what "stage 4 is implemented" means until it lands: today the seats judge
-*items* and *rules*, never *why a verdict followed*.
+⭐ **DONE 2026-08-08.** `readback_r3.py` (36 tests, 21 mutants / 0 survivors) composes a
+`%!trace_rule` mechanically from the module's own glosses, runs xclingo once per derived verdict
+atom, and replaces every leaf with its R1 rendering. Wired into 4a and 4b, which §5.1 specifies as
+*"the rendered set (R1+R2+R3)"* — so the design answered the "fifth denominator?" question and no
+decision was needed.
+
+`[RAN]` **8 of 18 covering-set situations derive a verdict** across the stored modules. The other 10
+are excluded **by name** as `no-derivation`, never dropped — dropping them would overstate 4a's
+coverage by more than a third.
+
+⚠️ **Two defects it found on live material, both Invariant 1 violations reaching seat-facing text:**
+the ablation guard `o` surfaced as an unglossed leaf of every ontology-backed derivation, and a raw
+ASP atom (`asserts(m0079,oblige,produce_response)`) reached the rendered sentence because xclingo
+joins two labels with `;` and the payload was read as one quoted string.
+
+**Still unsigned:** R3 is not gated on the probe outcome — `m0134`'s probe outcome is `failed` and
+R3 renders it anyway. Arguably right, since the derivation is still real evidence, but nobody has
+ruled.
 
 ⚠️ It is also the reason the anonymous-variable guard matters (see `b7c663e`): R3 is the layer that
 xclingo actually drives, so a `_` anywhere in the link set would take the whole tree down.
