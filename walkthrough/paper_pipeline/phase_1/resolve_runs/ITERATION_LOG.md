@@ -351,3 +351,73 @@ them on the same text.
 
 ⛔ **P1 and P4 are the falsifiers.** Either alone sinks the extensional design as stated; P2/P3
 failing would mean it works but not for the case that motivated it.
+
+### The clause-blind run, n=3 — stable, and it does not do the job it was for
+
+Against `DOCUMENT_CLEAN.txt` (needs-blocks stripped, corpus assertion in `blind_score.py`).
+Grounded 38 / 35 / 38 of 43; ungrounded 5 / 8 / 5. ⭐ **Removing the leak cost 4–8 groundings per
+run** — the leaked runs scored 42–43 of 43, which is the fingerprint of a lookup.
+
+⭐ **THE STRONG POSITIVE — extensional identity is STABLE.** 28 names grounded in all three runs;
+of their **378 pairs, 368 (97%)** get the same overlap / no-overlap verdict in every run. Set that
+beside the intension-based numbers on the same corpus — vocabulary agreement 0.06 single-shot, 0.00
+iterated, 0 shared rule shapes for 6 of 8 concepts. **Extension reproduces; intension does not.**
+
+⛔ **AND IT FAILS THE CASE IT EXISTS FOR (P2).** `interactable_entity/1` and `interaction_entity/1`
+score **0.00** in both runs that ground them. Read blind, the models resolve them as **opposites**:
+
+| run | `interaction_entity/1` | `interactable_entity/1` |
+|---|---|---|
+| 2 | `**Assistant**: the entity that the end user or developer interacts with.` | `**User**: a user of a product made by OpenAI` |
+| 3 | the `role:` definition | Assistant + Developer + User + Tool |
+
+⚠️ **And run 2's reading is defensible English** — "the entity that interacts" and "the entity that
+can be interacted with" *are* different things. `m0053` used both for one idea. ⇒ **Extensional
+identity cannot detect that two names were sloppily coined for one concept, because it resolves each
+name on its own reading — and the names genuinely read differently.** Detecting the twins requires
+the clause context, which is exactly what introduces the confound the blind design removed. That is
+a real tension, not a tuning problem.
+
+### ⚠️ Two of the five pre-registered predictions were badly formed. Recorded as such.
+
+**P3 was wrong and the runs are right.** All three put `transformation_of_user_content` and
+`translation_of_user_content` on **adjacent, non-overlapping** parts of one sentence:
+
+```
+transformation → "transform or analyze content that the user has directly provided"
+translation    → "tasks such as translating, paraphrasing, summarizing, classifying, ..."
+```
+
+⭐ **That is genus and species, not synonymy** — translation is one item in the list the
+transformation rule governs. The models found the right structure; **I predicted a merge and
+measured raw overlap, so the correct answer scored 0.00.** This is the ontology signal the proposal
+predicted, arriving in the one place I had built no way to see it: **containment and adjacency need
+their own measure, distinct from overlap.**
+
+**P5 was flagged flawed before scoring** and behaved as flagged — 4 / 5 / 5 of the six "coinages"
+got spans, which under extensional identity is the *right* answer, since all six have their concept
+in the document even where the name's words do not.
+
+**P1 became uninterpretable once the leak was removed.** Same-clause share fell from 100% to
+**86% / 75% / 50%** against an 11–12% chance rate — but on only **7 / 8 / 2** high-similarity pairs,
+and more importantly: with the model blind, predicates from one clause landing on one passage is no
+longer a confound, it is **a true fact about the document**. A clause is a sentence, and the
+conditions it borrows really are established together. P1 cannot separate "leak" from "truth" and
+should not be re-used in this form.
+
+**P4, the surviving falsifier, mostly held:** `unnecessary_request` and `unreliable_destination`
+(both `m0150`, plainly different conditions) separated at **0.00 in 2 of 3 runs**, 0.50 in the third.
+
+### ⇒ Where this leaves the proposal
+
+⭐ **Kept:** extension is the only concept-identity signal measured on this corpus that reproduces
+across runs (97%), and it is statically checkable. Everything intension-based is at or near zero.
+
+⛔ **Not kept as stated:** it does not merge sloppy twin coinages, and cannot, without the clause
+context it was designed to exclude.
+
+⚠️ **Unmeasured and now the obvious next question:** the relations — containment, adjacency, nesting
+— which showed up unbidden in P3 and which no instrument here can see. `extension_id.py`'s
+containment test exists but was never run against clause-blind data.
+
+⛔ **Nothing decided.** `OPEN_QUESTIONS.md` Q-6.

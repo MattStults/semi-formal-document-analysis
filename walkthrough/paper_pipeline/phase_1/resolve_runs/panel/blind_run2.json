@@ -1,0 +1,457 @@
+{
+  "concepts": [
+    {
+      "name": "delegated_corrupted_webpage/1",
+      "spans": [],
+      "grounded": false,
+      "if_ungrounded": "The document discusses corrupted webpages (letter_and_spirit section) and delegation to webpages (ignore_untrusted_data section), but does not explicitly combine these as a single grounded concept."
+    },
+    {
+      "name": "disallowed/1",
+      "spans": [
+        {
+          "section_id": "disallowed_content",
+          "excerpt": "The assistant should not generate the following:",
+          "why": "Defines what content is disallowed by the model"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "pasted_text/1",
+      "spans": [
+        {
+          "section_id": "ignore_untrusted_data",
+          "excerpt": "Quoted text (plaintext in quotation marks, YAML, JSON, XML, or `untrusted_text` blocks) in ANY message, multimodal data, file attachments, and tool outputs are assumed to contain untrusted data",
+          "why": "Establishes pasted/quoted text as untrusted data by default"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "transformation_of_user_content/1",
+      "spans": [
+        {
+          "section_id": "transformation_exception",
+          "excerpt": "The assistant should comply with limited requests to transform or analyze content that the user has directly provided, even if the resulting output would ordinarily be disallowed as restricted or sensitive content",
+          "why": "Explicitly defines transformation of user-provided content as an exception to content restrictions"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "evidence_to_contrary/1",
+      "spans": [],
+      "grounded": false,
+      "if_ungrounded": "The document does not establish this concept explicitly. While contextual evidence and counter-evidence are discussed, this is not formally grounded as a defined concept."
+    },
+    {
+      "name": "explicitly_updated_and_approved/1",
+      "spans": [
+        {
+          "section_id": "scope_of_autonomy",
+          "excerpt": "unless explicitly updated and approved by the original user or developer",
+          "why": "Establishes explicit updates and approvals as required for scope changes"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "instruction/1",
+      "spans": [
+        {
+          "section_id": "levels_of_authority",
+          "excerpt": "This document aims to provide concrete *instructions* for navigating such conflicts.",
+          "why": "Establishes instructions as a core concept in the Model Spec"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "conflicts_with_higher_authority/1",
+      "spans": [
+        {
+          "section_id": "follow_all_applicable_instructions",
+          "excerpt": "This includes all system, developer and user instructions except for those that conflict with a higher-authority instruction",
+          "why": "Defines when instructions conflict with higher-authority instructions in the hierarchy"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "pasted_unread_text/1",
+      "spans": [
+        {
+          "section_id": "ignore_untrusted_data",
+          "excerpt": "This is especially important when it's plausible that the user might not have noticed the instructions (e.g., the message is long, and the instructions are embedded inside otherwise innocuous content)",
+          "why": "Establishes that users may paste content they have not read carefully"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "corrupted_webpage/1",
+      "spans": [
+        {
+          "section_id": "letter_and_spirit",
+          "excerpt": "delegate authority to a webpage which has been corrupted by an adversary since the last time the user checked it",
+          "why": "Establishes corrupted webpages as a specific risk when delegating authority"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "material_type/2",
+      "spans": [
+        {
+          "section_id": "disallowed_content",
+          "excerpt": "[?](#prohibited_content): only applies to sexual content involving minors, and [transformations](#transformation_exception) of user-provided content are also prohibited. [?](#restricted_content): includes informational hazards and sensitive personal data, and transformations are allowed. [?](#sensitive_content) in specific circumstances: includes erotica and gore",
+          "why": "Establishes three material type classes: prohibited, restricted, and sensitive content"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "cannot_complete_within_scope/1",
+      "spans": [
+        {
+          "section_id": "scope_of_autonomy",
+          "excerpt": "If a task cannot be completed within the existing scope, or a broader scope would substantially improve results, the assistant should notify the user and seek approval.",
+          "why": "Establishes the concept of tasks that cannot be completed within defined scope boundaries"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "conflicts_with_later_same_authority/1",
+      "spans": [
+        {
+          "section_id": "follow_all_applicable_instructions",
+          "excerpt": "An instruction is *superseded* if an instruction in a later message at the same level either contradicts it, overrides it, or otherwise makes it irrelevant",
+          "why": "Establishes that later instructions at the same authority level supersede earlier ones"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "critical_high_severity_harm/1",
+      "spans": [
+        {
+          "section_id": "red_line_principles",
+          "excerpt": "Our models should never be used to facilitate critical and high severity harms, such as acts of violence (e.g., crimes against humanity, war crimes, genocide, torture, human trafficking or forced labor), creation of cyber, biological or nuclear weapons (e.g., weapons of mass destruction), terrorism, child abuse (e.g., creation of CSAM), persecution or mass surveillance.",
+          "why": "Defines critical and high severity harms as root-level principles that models must never facilitate"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "broader_scope_substantially_improves/1",
+      "spans": [
+        {
+          "section_id": "scope_of_autonomy",
+          "excerpt": "If a task cannot be completed within the existing scope, or a broader scope would substantially improve results, the assistant should notify the user and seek approval.",
+          "why": "Establishes substantial improvement of results as a criterion for requesting scope expansion"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "refusal_style/1",
+      "spans": [
+        {
+          "section_id": "refusal_style",
+          "excerpt": "When a direct response to a request would contain elements that are prohibited or restricted (see [?](#stay_in_bounds)), the assistant should typically \"Safe Complete\": briefly explain why it cannot provide a full answer, and then do its best to provide safe and useful assistance",
+          "why": "Defines the refusal style principle: Safe Completion over hard refusals for prohibited/restricted content"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "rule_set_by_openai_transmittable_or_overridable_via_system_message_not_overridable_by_developer_or_user/1",
+      "spans": [
+        {
+          "section_id": "levels_of_authority",
+          "excerpt": "**System**: Rules set by OpenAI that can be transmitted or overridden through system messages, but cannot be overridden by developers or users.",
+          "why": "Defines system-level rules that can be overridden via system messages but not by developers or users"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "produced/1",
+      "spans": [],
+      "grounded": false,
+      "if_ungrounded": "The word 'produced' appears throughout the document in various contexts but is not formally defined or established as a distinct concept in the specification."
+    },
+    {
+      "name": "tool_call/1",
+      "spans": [
+        {
+          "section_id": "definitions",
+          "excerpt": "When the assistant sends a message to a tool, the tool response is appended as a new `role=tool` message and the assistant is invoked again.",
+          "why": "Establishes tool calls as a mechanism for the assistant to invoke tools and receive responses"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "scope/2",
+      "spans": [
+        {
+          "section_id": "scope_of_autonomy",
+          "excerpt": "To prevent costly misunderstandings or surprises, we require that autonomy must be bounded by a clear, mutually understood **scope of autonomy** shared between the assistant and the user. This scope defines: Which sub-goals the assistant may pursue. Acceptable side effects (e.g., time or money spent, or data or access required) and, if applicable, how to handle tradeoffs between them. When the assistant must pause for clarification or approval.",
+          "why": "Defines scope of autonomy with its constituent elements: sub-goals, acceptable side effects, and approval points"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "delegated_authority_to_webpage/1",
+      "spans": [
+        {
+          "section_id": "ignore_untrusted_data",
+          "excerpt": "Instructions may delegate some of their authority to quoted text, tool outputs, or multimodal data.",
+          "why": "Establishes that authority can be delegated to external sources including webpages"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "new_material/1",
+      "spans": [],
+      "grounded": false,
+      "if_ungrounded": "While the document discusses transformations and restrictions on creating content, it does not formally define or establish 'new material' as a distinct grounded concept."
+    },
+    {
+      "name": "applicable/1",
+      "spans": [
+        {
+          "section_id": "follow_all_applicable_instructions",
+          "excerpt": "The assistant must strive to follow all *applicable instructions* when producing a response.",
+          "why": "Establishes applicable instructions as those that should be followed in responses, filtered from candidates"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "can_proceed/1",
+      "spans": [],
+      "grounded": false,
+      "if_ungrounded": "While the document discusses conditions for proceeding with tasks, 'can_proceed' is not formally established as a defined concept."
+    },
+    {
+      "name": "remaining_instructions/2",
+      "spans": [
+        {
+          "section_id": "follow_all_applicable_instructions",
+          "excerpt": "If an instruction cannot be fulfilled, the assistant should be explicit about this (while following the correct [style](#refusal_style); see also [?](#protect_privileged_information) for caveats) and then attempt to follow the remaining instructions",
+          "why": "Establishes remaining instructions as the set of instructions after some are filtered out or cannot be fulfilled"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "out_of_scope_action/1",
+      "spans": [
+        {
+          "section_id": "scope_of_autonomy",
+          "excerpt": "even if an out-of-scope action seems to be in the user's best interest",
+          "why": "Establishes out-of-scope actions as those that fall outside the defined scope of autonomy"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "reputable_tool/1",
+      "spans": [
+        {
+          "section_id": "control_side_effects",
+          "excerpt": "Even calls through reputable tools can be risky if the destination seems unreliable or requests information that is unnecessary for the user's task.",
+          "why": "Establishes reputable tools as a category of tools with assumed higher trustworthiness"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "out_of_scope/2",
+      "spans": [
+        {
+          "section_id": "scope_of_autonomy",
+          "excerpt": "If a task cannot be completed within the existing scope, or a broader scope would substantially improve results, the assistant should notify the user and seek approval.",
+          "why": "Establishes out-of-scope as the state when tasks exceed current scope boundaries"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "translation_of_user_content/1",
+      "spans": [
+        {
+          "section_id": "transformation_exception",
+          "excerpt": "This includes tasks such as translating, paraphrasing, summarizing, classifying, encoding, formatting, or improving the grammar of user-provided text",
+          "why": "Establishes translation as a specific type of user content transformation"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "prohibited_action/1",
+      "spans": [
+        {
+          "section_id": "prohibited_content",
+          "excerpt": "*Prohibited content* should never be produced by the assistant in any circumstance",
+          "why": "Establishes prohibited content as actions that must never be performed"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "fulfillable/1",
+      "spans": [
+        {
+          "section_id": "follow_all_applicable_instructions",
+          "excerpt": "If an instruction cannot be fulfilled, the assistant should be explicit about this (while following the correct [style](#refusal_style); see also [?](#protect_privileged_information) for caveats) and then attempt to follow the remaining instructions",
+          "why": "Establishes fulfillability as a property of instructions determining whether they can be completed"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "task/1",
+      "spans": [
+        {
+          "section_id": "definitions",
+          "excerpt": "**Tool**: a program that can be called by the assistant to perform a specific task (e.g., retrieving web pages or generating images).",
+          "why": "Establishes task as a unit of work or objective that tools and the assistant work to accomplish"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "includes_malicious_instructions/1",
+      "spans": [
+        {
+          "section_id": "letter_and_spirit",
+          "excerpt": "users or developers may sometimes include untrusted text content in their messages without any clear delimiters, and this untrusted content could contain malicious or accidental instructions",
+          "why": "Establishes that pasted content may include malicious instructions requiring careful detection"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "interaction_entity/1",
+      "spans": [
+        {
+          "section_id": "definitions",
+          "excerpt": "**Assistant**: the entity that the end user or developer interacts with.",
+          "why": "Establishes that users and developers are entities that interact with the assistant"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "agreed_scope/1",
+      "spans": [
+        {
+          "section_id": "scope_of_autonomy",
+          "excerpt": "The assistant must adhere strictly to the agreed scope (subject to the chain of command) unless explicitly updated and approved by the original user or developer",
+          "why": "Establishes agreed scope as the boundary to which the assistant must adhere"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "forbids/2",
+      "spans": [
+        {
+          "section_id": "red_line_principles",
+          "excerpt": "Our models should never be used to facilitate critical and high severity harms",
+          "why": "Establishes what is forbidden at the root level of the authority hierarchy"
+        },
+        {
+          "section_id": "levels_of_authority",
+          "excerpt": "Root-level instructions are mostly prohibitive, requiring models to avoid behaviors that could contribute to catastrophic risks, cause direct physical harm to people, violate laws, or undermine the chain of command.",
+          "why": "Establishes that rules at different levels of authority forbid different categories of behavior"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "unnecessary_request/1",
+      "spans": [
+        {
+          "section_id": "control_side_effects",
+          "excerpt": "unreliable or requests information that is unnecessary for the user's task",
+          "why": "Establishes unnecessary information requests as a risk factor when making tool calls"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "not_read_carefully/1",
+      "spans": [
+        {
+          "section_id": "ignore_untrusted_data",
+          "excerpt": "This is especially important when it's plausible that the user might not have noticed the instructions (e.g., the message is long, and the instructions are embedded inside otherwise innocuous content)",
+          "why": "Establishes that content users paste may not have been read carefully by the user"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "user/1",
+      "spans": [
+        {
+          "section_id": "definitions",
+          "excerpt": "**User**: a user of a product made by OpenAI (e.g., ChatGPT) or a third-party application built on the OpenAI API",
+          "why": "Defines user as a core entity type in the system architecture"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "policy_class/2",
+      "spans": [
+        {
+          "section_id": "levels_of_authority",
+          "excerpt": "**Root**: Fundamental root rules that cannot be overridden by system messages, developers or users. **System**: Rules set by OpenAI that can be transmitted or overridden through system messages, but cannot be overridden by developers or users. **Developer**: Instructions given by developers using our API. **User**: Instructions from end users. **Guideline**: Instructions that can be implicitly overridden.",
+          "why": "Establishes five distinct policy classes (Root, System, Developer, User, Guideline) with different override characteristics"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "capable/1",
+      "spans": [
+        {
+          "section_id": "follow_all_applicable_instructions",
+          "excerpt": "The **only** other reason an instruction should be ignored is if it is beyond the assistant's capabilities",
+          "why": "Establishes capability as a factor in determining whether instructions can be fulfilled"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "interactable_entity/1",
+      "spans": [
+        {
+          "section_id": "definitions",
+          "excerpt": "**User**: a user of a product made by OpenAI (e.g., ChatGPT) or a third-party application built on the OpenAI API (e.g., a customer service chatbot for an e-commerce site). Users typically see only the conversation messages that have been designated for their view",
+          "why": "Establishes users and developers as entities that interact with and control the assistant"
+        }
+      ],
+      "grounded": true
+    },
+    {
+      "name": "unreliable_destination/1",
+      "spans": [
+        {
+          "section_id": "control_side_effects",
+          "excerpt": "Even calls through reputable tools can be risky if the destination seems unreliable or requests information that is unnecessary for the user's task.",
+          "why": "Establishes unreliable destinations as a risk category when making tool calls"
+        }
+      ],
+      "grounded": true
+    }
+  ]
+}
