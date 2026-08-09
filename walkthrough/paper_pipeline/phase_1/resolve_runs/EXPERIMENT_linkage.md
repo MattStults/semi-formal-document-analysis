@@ -138,3 +138,92 @@ check is free.
 **~$0.88** and two model-facing changes, of which **~$0.07 is spent before the falsifier can stop
 it.** ⛔ Requires: Matt's ruling on Q-23, on Q-22's reported-state form, and a `guard.py --accept`.
 Nothing here is decided.
+
+---
+
+# ⛔ REVISION, before spending — the free check says the design was wrong
+
+Matt asked to validate the experiment before paying for it, and to consider what *other* experiments
+might need, so data is collected once. The validation was runnable on data already on disk.
+
+## What it found: the DISCHARGE ROUTE ITSELF is a coin flip
+
+| clause · run | `requires` / `inputs` | signature | situations stage 3 enumerates |
+|---|---|---|---|
+| `m0150` 1719 | 0 / 4 | 4 | **16** |
+| `m0150` 1748 | 2 / 0 | 1 | **2** |
+| `m0105` 1719 | 0 / 2 | 2 | 4 |
+| `m0105` 1748 | 5 / 0 | 1 | 2 |
+
+`[RAN]` **Two of two repeat-translated clauses with borrows show a WHOLESALE flip** — one run puts
+everything in `inputs`, the other everything in `requires`. Because `inputs` reaches the signature
+and `requires` does not (Q-22), **the same clause is testable or inert depending on which field the
+model happened to pick**, and the test space differs by 8×.
+
+⚠️ n = 2 clauses, so the *rate* is not established. But the mechanism is not probabilistic: given
+Q-22, this consequence follows with certainty whenever the flip occurs.
+
+## ⭐ Why this is not a model failure, and what it means
+
+`requires` means *"another clause defines it"*. **That is a GLOBAL property of the corpus, not a
+local property of one clause.** A translator seeing one clause cannot know whether any of the other
+592 defines `pasted_text/1` — so we have been asking it to guess, forcing a choice, and then routing
+the whole test space on the guess.
+
+⇒ **Route assignment belongs at LINK time, where the corpus is visible — not at translation time.**
+The translator can say *what it borrows* and *what it needs that to mean*. It cannot say *who will
+provide it*.
+
+This also explains the rest of the log without new hypotheses: borrowed **names** are noise (0.00)
+because nothing constrains them; **glosses** are stable (39/45) because meaning is a local property
+the translator can see; **providers** are 0/12 because at 2.2% coverage there are none to find.
+
+## The revised collection — one contract change, several experiments
+
+⭐ Matt's economics are right and decide the shape: **the cost driver is the translation PASS, not
+the field count** (`contract_hash` covers all of `schema.py`, so any field addition re-translates
+everything). So take the union of what the candidate experiments need and collect it once.
+
+| | experiment | needs |
+|---|---|---|
+| E1 | do borrows find providers (linkage) | borrow gloss · corpus size |
+| E2 | problem #9 becomes countable | borrow gloss *(free rider on E1)* |
+| E3 | ⭐ **is the route guess any good?** | the guess recorded as a **hint**, and not acted on |
+| E4 | naming normalization (Matt's route A) | borrow gloss · corpus size *(free rider)* |
+| E5 | test-driven naming (Matt's route B) | orphan count — **no new field** |
+| E6 | extensional cross-check | expected section per borrow *(optional)* |
+
+**Union: one `borrows` list replacing `requires`/`inputs`**, each entry carrying
+
+- `name`, `arity` — as today
+- `gloss` — ⭐ typed as an **expectation** (*"I need an X that means this"*), never a definition
+- `expected_discharge` — `case-fact` · `another-clause` · **`unsure`**, recorded as a **HINT**
+- `expected_section` — optional, for E6
+
+⭐ **Two design points carry most of the value:**
+
+1. **Recording the route guess without acting on it.** The signature is then computed from *all*
+   borrows, so no module can be silently inert (Q-22 dissolves), while E3 measures whether the
+   guess was ever worth trusting. Today the guess is invisible *and* load-bearing — the worst
+   combination.
+2. **Allowing `unsure`.** The model is currently forced to choose and therefore flips. An explicit
+   `unsure` converts a silent coin flip into recorded uncertainty, which is measurable.
+
+⚠️ **The honest cost of collecting wide.** A larger output schema is a harder generation task —
+more malformed output, more repair turns, more abstention. `[RAN]` repair traffic is already visible
+in the run costs (19 calls for 5 modules). **So the batch must be bounded, and stage 0 must measure
+schema-size cost, not just gloss stability.** Adding a field is not free merely because the money is
+already being spent.
+
+## Revised stage 0 — still ~$0.07, now answering three things
+
+Re-translate the existing 13 clauses **twice** under the new contract, and measure:
+
+| | prediction | |
+|---|---|---|
+| **L0** | borrow-gloss agreement ≫ borrow-name agreement (`[RAN]` 0.00) | ⛔ falsifier — fails ⇒ stop |
+| **L6** | ⭐ every borrow reaches the signature; no module enumerates 2^0 or loses a body predicate | Q-22 dissolved, mechanical |
+| **L7** | ⚠️ abstention and repair rates do **not** rise materially against the current corpus | the cost of the wider schema, measured rather than assumed |
+
+⛔ **L7 is new and it is a genuine falsifier too:** if collecting wide degrades translation quality,
+the union is the wrong batch and must be cut back to the gloss alone.
