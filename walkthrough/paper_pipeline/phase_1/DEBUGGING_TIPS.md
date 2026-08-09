@@ -634,3 +634,77 @@ guard; today it is a documented manual step`, which is exactly the transcript-on
 `blind_run<N>.json`, and a stale leaked file that a later scorer globs up is indistinguishable from a
 real result. Delete, then confirm every leaked agent has finished before relaunching, or the old
 agent's write can land on top of the new one's.
+
+---
+
+## 19 ⛔ `requires` vs `inputs` — the WORKED EXAMPLE teaches the opposite of the prose
+
+**Matt, 2026-08-09, on a measured wholesale flip of the two fields:** *"that seems like we're not
+defining inputs and requires well enough in the prompt."* ⭐ **Correct, and §1's diagnostic finds it
+in one grep.**
+
+**The prose criterion is clear and locally decidable** (`00_task.md` rule 9):
+
+> `requires` — predicates this module uses that **another clause** must define.
+> `inputs` — predicates describing **the case being judged**, not the document.
+
+**The worked example contradicts it.** `20_worked_example.md`'s `m0088` block emits
+`"requires": []` and puts all six body predicates in `inputs` — then says approvingly *"All six
+appear in `inputs`."* Among the six:
+
+| predicate | prompt's own criterion says |
+|---|---|
+| `same_level/2` | authority levels are established by `levels_of_authority` ⇒ **document** ⇒ `requires` |
+| `misaligned_with_higher_level/1` | needs the chain of command ⇒ **document** ⇒ `requires` |
+| `later_message/2`, `suspected_mistaken/1` | ✅ genuinely about the case |
+
+⭐ **And those are exactly the concepts `m0079` later coined as `conflicts_with_higher_authority/1`
+and `conflicts_with_later_same_authority/1` — and placed in `requires`.** Two translations, two
+different fields, **both following the prompt**, because the prompt demonstrates one answer and
+states the other.
+
+### What it cost `[RAN]`
+
+`inputs` reaches the situation signature; `requires` does not (Q-22). So the field choice decides
+whether a module is testable:
+
+| clause · run | `requires`/`inputs` | signature | situations |
+|---|---|---|---|
+| `m0150` 1719 | 0 / 4 | 4 | **16** |
+| `m0150` 1748 | 2 / 0 | 1 | **2** |
+| `m0105` 1719 | 0 / 2 | 2 | 4 |
+| `m0105` 1748 | 5 / 0 | 1 | 2 |
+
+**2 of 2 repeat-translated clauses with borrows flipped wholesale.**
+
+### ⛔ The wrong diagnosis I filed first, and why it was wrong
+
+I recorded this as *"not a model failure — `requires` means another clause defines it, which is a
+GLOBAL property of the corpus the translator cannot know"*, and proposed a **schema change** to
+collapse the two fields.
+
+⚠️ **Half true, and it pointed at the expensive fix.** Whether another clause *actually* defines the
+symbol is indeed global — but **that is not the prompt's criterion.** The prompt asks *"document or
+case?"*, which is **local and decidable from the clause alone**. The model was not failing an
+impossible task; it was following a contradictory example, exactly as §1 predicts.
+
+⇒ **Check the DEMONSTRATION before concluding the task is impossible.** A contradictory example
+looks identical to an unknowable distinction from the outside — both produce a stable-looking
+coin flip — and they have wildly different fixes.
+
+### The fix is a prompt change, not a contract change, and that matters
+
+| | changes | hash moved | blast radius |
+|---|---|---|---|
+| ⛔ my proposal | `schema.py` | `contract_hash` | modules may **no longer validate** ⇒ mandatory re-translate |
+| ✅ this | `prompt/20_worked_example.md` | `provenance_hash` | modules stay **valid and still link**; they just cannot be cited as evidence about the current prompt |
+
+Both re-translate at `[RAN]` ~$0.07 for 13 clauses, but the prompt fix risks nothing structural.
+
+**The check to run:** fix the example so a document-side predicate is demonstrated in `requires`
+and a case-side one in `inputs` **in the same block**, re-translate the 13 clauses twice, and see
+whether the wholesale flip disappears. ⭐ **If it does, the `borrows` collapse may be unnecessary
+entirely** — test the cheap fix first.
+
+⚠️ `test_prompt_examples.py` counts demonstrated shapes mechanically and the pre-commit hook runs
+it. **It does not currently count `requires`/`inputs` placement**, which is why this survived.
