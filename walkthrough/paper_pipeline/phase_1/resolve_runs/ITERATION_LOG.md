@@ -421,3 +421,75 @@ context it was designed to exclude.
 containment test exists but was never run against clause-blind data.
 
 ⛔ **Nothing decided.** `OPEN_QUESTIONS.md` Q-6.
+
+## 8 · ⛔ CORRECTION: the twins never co-occur, and the tension was mis-stated
+
+Matt asked whether we can keep the context needed to tell apart two concepts established in one
+passage. Checking the stored modules to answer it overturned a claim this log and `OPEN_QUESTIONS.md`
+Q-6 had both been repeating.
+
+**`interactable_entity` and `interaction_entity` are not two names in one module.** They are one
+clause translated twice:
+
+```
+run 20260807-143853:  defines(m0053, assistant, interaction_entity).
+run 20260807-154618:  defines(m0053, assistant, interactable_entity).
+```
+
+Same clause, same slot, same `kind: assistant`, and `assistant` glossed identically in both. Only the
+coined term differs. ⇒ **Not a concept-identity failure. Run-to-run instability in one field.**
+
+### And it is not confined to that field `[RAN]`
+
+Every clause in the run store translated more than once, comparing the sets of names:
+
+| | agreement across repeat runs of the SAME clause |
+|---|---|
+| concept names — what a clause **introduces** | **0.30** (11 of 37) |
+| ⛔ **borrowed names — what a clause NEEDS** | **0.00** (0 of 22) |
+
+Per clause the borrowed-name agreement is 0.00 for `m0079` (union 8), `m0105` (7), `m0150` (6),
+`m0014` (1); the three clauses scoring 1.00 borrow **nothing**, so they are not evidence.
+
+⭐ **Zero of twenty-two borrowed names are coined the same way twice. The twins are not a special
+case — every borrowed name is a twin.** `m0053`'s pair is merely the one where both spellings
+survived into the corpus and got noticed.
+
+⚠️ Glosses are far more stable than names: of 45 concept glosses seen in more than one run, **only 6
+differ, and all 6 are paraphrase** (*"through a system message"* / *"through system messages"*). The
+model agrees about the meaning and disagrees about the label, every time.
+
+### ⇒ The answer to Matt's question: the tension is not real, because it is two jobs
+
+**Differentiating** two concepts established in one passage, and **identifying** two names as one
+concept, need different information from different sources — and only the first one needs the
+document at all.
+
+| job | source | already measured |
+|---|---|---|
+| tell apart two conditions in one sentence | the DOCUMENT | ✅ clause-blind does it — P4 separated `unnecessary_request`/`unreliable_destination` at 0.00 in 2 of 3 runs, and pairwise verdicts are **97%** stable |
+| know that two names are one concept | ⭐ **our own RUN STORE** | mechanical: same clause + same slot ⇒ same concept, **by construction**. No model, no retrieval |
+
+⇒ **The confound never came from having clause context. It came from asking one model, in one pass,
+to do both jobs while holding the clause** — at which point provenance is the cheapest way to answer
+both, and it did.
+
+**Three designs that keep the context without the confound, in increasing order of what the data
+supports:**
+
+- **(a) sibling-blind, clause-visible** — show the using clause but resolve ONE borrowed name at a
+  time with the clause's other names hidden. The clause supplies the role; the hiding prevents one
+  passage being spread over all siblings. ⚠️ Testable directly: same-clause share of high-similarity
+  pairs must stay near the 11–12% chance rate while grounding rises.
+- **(b) ground blind, then discriminate with context** — keep round 1 exactly as it is (97% stable),
+  then show the model the clause, the sibling names AND their fixed spans, asking only *"must any two
+  of these be narrowed so they stop overlapping?"* ⭐ The context cannot manufacture the extension
+  because the extension is already fixed before the context is shown.
+- **(c) never ask the model to merge at all** — identity comes from the run store, the document is
+  only ever asked *where is this grounded*. ⭐ **The design the measurements most support**, because
+  it dissolves the tension instead of trading it off.
+
+⛔ **Nothing decided.** But note what (c) implies and Q-6 must now record: with borrowed-name
+agreement at **0.00**, the coined name is not carrying information at all, and a pipeline that
+resolves names is resolving noise. The stable things are the **clause+slot** (ours, free) and the
+**gloss** (0.30–1.00, and its disagreements are paraphrase).
