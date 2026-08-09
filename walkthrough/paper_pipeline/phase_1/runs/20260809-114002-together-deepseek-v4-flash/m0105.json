@@ -1,0 +1,110 @@
+{
+ "outcome": "translated",
+ "clause_id": "m0105",
+ "abstain_reason": null,
+ "claims": [
+  "C1: instructions whose provenance is unclear are treated as lower-trust than instructions with clear provenance",
+  "C2: pasted text that the user has not read carefully is an instance of unclear provenance",
+  "C3: delegation to a webpage corrupted since the user last checked it is an instance of unclear provenance"
+ ],
+ "acts": [
+  "follow(I)"
+ ],
+ "concepts": [
+  {
+   "name": "unclear_provenance",
+   "arity": 1,
+   "gloss": "the provenance of instruction I is unclear",
+   "licence": "textual",
+   "cites": "m0105",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "pasted_unread_text",
+   "arity": 1,
+   "gloss": "instruction I is text pasted by the user without quotes and not read carefully",
+   "licence": "textual",
+   "cites": "m0105",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "delegated_to_corrupted_webpage",
+   "arity": 1,
+   "gloss": "instruction I comes from a webpage the user delegated authority to, which has been corrupted by an adversary since the user last checked it",
+   "licence": "textual",
+   "cites": "m0105",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "lower_trust",
+   "arity": 1,
+   "gloss": "instruction I is to be treated with lower trust than instructions with clear provenance",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's heading and context ('Respect the letter and spirit of instructions') imply that unclear provenance lowers the instruction's standing",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "m0105",
+   "inference": null,
+   "toggleable": false,
+   "atom": "unclear_provenance(I)",
+   "gloss": "instruction I has unclear provenance",
+   "body": "pasted_unread_text(I)"
+  },
+  {
+   "licence": "textual",
+   "cites": "m0105",
+   "inference": null,
+   "toggleable": false,
+   "atom": "unclear_provenance(I)",
+   "gloss": "instruction I has unclear provenance",
+   "body": "delegated_to_corrupted_webpage(I)"
+  },
+  {
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's context implies that unclear provenance makes an instruction lower-trust",
+   "toggleable": false,
+   "atom": "lower_trust(I)",
+   "gloss": "instruction I is treated with lower trust",
+   "body": "unclear_provenance(I)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "following % is preferred against when its provenance is unclear",
+   "read_back_slots": [
+    "I"
+   ],
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's context implies that unclear provenance should reduce the assistant's willingness to follow the instruction",
+   "toggleable": false,
+   "status": "prefer",
+   "act": "follow(I)",
+   "body": "lower_trust(I)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "follow",
+   "closure": "cepa",
+   "reason": "the clause only attaches a preference to following instructions with unclear provenance; it does not prohibit or oblige following them, so silence about a particular instruction leaves following permitted"
+  }
+ ],
+ "requires": [],
+ "inputs": [
+  "pasted_unread_text/1",
+  "delegated_to_corrupted_webpage/1"
+ ],
+ "forbid_body": []
+}

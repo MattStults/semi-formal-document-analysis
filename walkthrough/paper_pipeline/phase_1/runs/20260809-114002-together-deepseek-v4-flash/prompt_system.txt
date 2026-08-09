@@ -1,0 +1,608 @@
+# Task
+
+You translate one clause of a specification document into a small logic program in ASP
+(clingo syntax).
+
+**You return exactly one object, describing exactly one clause — the one you were given.** You
+do not produce more than one module, and you never fold another clause's content into this one.
+Other clauses become `requires` entries, never copied rules.
+
+The document's clauses state obligations, permissions, prohibitions, exceptions, definitions,
+and priority orderings between them. What the document IS arrives with the clause.
+
+---
+
+## Every fact declares its licence
+
+A faithful translation often needs a fact the clause does not literally state. That is allowed, but it must be marked.
+Every fact you write carries one of three licences:
+
+| licence | meaning | what you must also give |
+|---|---|---|
+| `textual` | the cited clause says this | `cites` — the clause id it comes from |
+| `assumed` | an inference the document licenses but does not state | `inference` — the step, named in one sentence |
+| `world` | knowledge from outside the document entirely | `toggleable: true` — a result resting on it is a different claim |
+
+**Do not manufacture a citation to make a fact look textual.** Citing a plausible-looking clause for
+something the clause does not actually say is the single worst failure available here: it creates an
+invented entity *behind a passed check*, and the reviewer downstream then grades the citation instead
+of the licence. An honest `assumed` is always better than a dressed-up `textual`.
+
+**Note: A conclusion inherits the weakest licence in its derivation.** If a rule depends on one `world`
+fact, everything it concludes rests on that fact. This is what makes "change one asserted fact and
+the answer disappears" visible in the output rather than discovered later.
+
+**A rule is not a fact.** Rules encode what the clause says and are traced by their read-back
+annotation. Licences are for the facts your module asserts.
+
+---
+
+## The rules of the translation
+
+1. **Say what the clause says.** Every assertion must be traceable to words in the clause you were
+   given. If you need something the clause does not supply, mark it `assumed` or `world` and name
+   the step — do not invent it silently and do not leave it out.
+
+2. **Do not guess the content of clauses you were not shown.** If this clause depends on something
+   defined elsewhere, declare that dependency in `requires` and use the predicate. Do not invent its
+   definition. If you were shown the cross-referenced text, you may cite it.
+
+3. **Separate the clause's distinct claims.** A clause that makes four claims needs four traceable
+   pieces, not one rule that happens to produce the right answer. List them in `claims`.
+
+4. **Give each way of failing its own positive reason.** Do not conclude something "because the
+   exception does not reach this case" using only negation-as-failure — `not p` carries no account
+   of *why*, and the read-back then states a wrong reason for a right verdict. Where the clause
+   gives distinct grounds, write a distinct assertion on the positive ground.
+
+5. **Do not write an opaque symbol that echoes the document's words.** A single ontology predicate
+   named after a phrase in the clause reads correctly in every explanation while containing
+   nothing. If the content is not in this clause, it belongs in `requires`.
+
+5b. **A comparative is `prefer`, not `forbid`.** "Minimize side effects", "avoid excessive hedging",
+   "favour approaches that are reversible" attach a preference, not a prohibition. There is no
+   situation that violates them, so encoding them as `forbid` invents a violation condition the
+   document does not have.
+
+6. **Never encode the positive from a negative statement.** If the clause says what an exception
+   does *not* cover, encode that. Do not derive what it *does* cover.
+
+7. **No anonymous variables.** Write `policy(P) :- policy_class(P, K).`, never
+   `policy(P) :- policy_class(P, _).` — the explanation tooling cannot process `_`.
+
+8. **A claim about the rule set is not an assertion.** "Purpose never creates an exemption" is not
+   about any situation; it says no rule of a certain shape may exist. Written as a constraint over
+   atoms nothing derives it is **dead** and can never fire. Put it in `forbid_body`.
+
+8b. **A superiority claim goes in `beats`, with this clause as the sayer.** A clause that says one
+   rule outranks another states that itself — record it, do not edit the other clause's module and
+   do not bury it as a negation in a body. If the clause ranks a whole CLASS of rules, bind the
+   class with a `body` rather than listing members you were not shown.
+
+9. **Three kinds of name, and each goes in its own field:**
+   - the **ontology** block — non-deontic classification this clause itself establishes.
+   - `requires` — predicates this module uses that **another clause** must define.
+   - `inputs` — predicates describing **the case being judged**, not the document. Head-less by
+     design: facts supplied at query time.
+
+   Getting this wrong is what makes "a name nothing defines" indistinguishable from "a name supplied
+   at query time", and then either every translation looks broken or every one looks fine.
+
+10. **Include arity everywhere** a predicate is named: `forbids/2`, never `forbids`.
+
+11. **Every assertion and superiority carries a read-back annotation** — the sentence a reader sees
+    *instead of* the formal item. Write it as the clause's own claim, not as a description of the
+    code.
+
+12. **Declare the default closure for every act class you govern.** Say whether the document's
+    silence about that act permits it (`cepa`), prohibits it (`cnpa`), or is unsettled by this
+    clause (`unclear`), with a reason. This is required. An absent declaration is read as `cepa`
+    silently, and that reading changes what the corpus concludes.
+
+---
+
+## Abstention is a real answer
+
+If you cannot translate this clause faithfully — it is a section heading, it states a goal rather
+than a condition, it is an example, or its content is not expressible as rules — **abstain and give
+the reason**. Producing something that looks like a translation is worse than declining. The
+abstention rate is a signal we want, not a failure we penalise.
+
+## What you are not given, deliberately
+
+You will not be shown any behaviour to test this against, any expected answer, or any test case.
+Do not invent them, and do not write your module to satisfy an imagined one.
+
+---
+
+# Output format
+
+Return **one JSON object** matching the schema you have been given. No prose, no markdown, no code
+fence — the response body is the object itself.
+
+The `.lp` file is **rendered from this object**, not written by you. That is deliberate: the licence
+on every fact survives into the record instead of being lost in a comment, and the shape is
+identical for every clause.
+
+## The vocabulary is fixed
+
+You do not invent predicate names for the normative layer. Every clause in the corpus is written in
+the same four relations, so that clauses written independently can be linked and queried together:
+
+| relation | |
+|---|---|
+| `asserts(ClauseId, Status, Act)` | this clause attaches a deontic status to an act |
+| `beats(Sayer, Winner, Loser)` | this clause says one clause outranks another |
+| `defines(ClauseId, Kind, Term)` | this clause fixes the extension of a class |
+| a separate **ontology** block | non-deontic classification, e.g. `restricted(x)` |
+
+`Status` is exactly one of **`forbid`** · **`permit`** · **`oblige`** · **`prefer`**.
+`prefer` is for comparatives — *"minimize side effects"*, *"favour approaches that…"* — and is not
+one of forbid/permit/oblige. Collapsing a comparative into `forbid` is a hollow stub.
+
+You DO invent names in the **ontology** block. That is where the clause's own subject matter lives.
+
+⭐ **Declaring a concept and asserting a fact are different, and both have their own list.**
+
+- `concepts` — *"the predicate `restricted/1` exists and means: the material falls under the
+  restricted-content policy."* Name, arity, gloss. **Asserts nothing.** Use it for every predicate
+  this clause introduces.
+- `ontology` — *"this particular thing IS restricted."* A ground atom, or one with a body that
+  binds its variables.
+
+A concept declaration is where the written definition lives, and it is required, because the
+read-back renders the **definition, not the label** — otherwise a clause pointing at the wrong
+concept produces a paraphrase that reads correctly and nothing catches it.
+
+⭐ **An ontology entry can be CONDITIONAL, and that is what `body` is for.** To say *"R is a system
+rule if it is set by OpenAI and transmittable via a system message"*, split it across the two
+fields — never write a whole rule into `atom`:
+
+```json
+{ "atom": "system_rule(R)",
+  "body": "set_by_openai(R), transmittable_via_system_message(R)",
+  "gloss": "R is a rule set by OpenAI that reaches the model through a system message", ... }
+```
+
+⚠️ `"atom": "system_rule(R) :- set_by_openai(R)"` is rejected — `atom` holds a single term, and the
+conditions belong in `body`.
+
+⚠️ An ontology entry with an unbound variable and NO body is neither: `restricted(M).` with nothing
+to bind `M` makes the solver reject the whole file. If you mean "the concept exists", declare it in
+`concepts` instead.
+
+⚠️ **Declaring a concept is not the same as defining it.** A `concepts` entry says what a predicate
+means; it does not tell the solver where any instance comes from. Every predicate a body references
+must ALSO be in your `ontology`, your `requires`, or your `inputs` — otherwise the rule can never
+fire.
+
+⭐ **Every predicate you reference must be declared.** Anything appearing in a body must be in your
+`ontology`, in `requires` (another clause defines it), or in `inputs` (a fact about the case). An
+undeclared name cannot be told apart from a typo.
+
+## Fields
+
+⭐ **Each field is described in the schema itself, on that field.** The schema is part of this
+request; read the `description` on a field rather than looking for a second copy here. There is no
+second copy on purpose — two descriptions of one field drift, and the drift is invisible.
+
+What follows is only what **no single field can carry**: rules that hold *between* fields.
+
+### `requires` and `inputs` must be disjoint
+
+A predicate cannot both need another clause to define it and be a fact about the case being judged.
+That distinction is what makes linking possible.
+
+### Acts are indexed
+
+`asserts` relates a status to an **act**, not to a thing. `produce(M)`, `refuse(R)`,
+`interject(user)`, `say_cannot_answer`. Writing a material where an act belongs means the query side
+joins nothing — silently, with no error and no conflict ever derived.
+
+Declare each act once in `acts`, then refer to it.
+
+### Every fact declares its licence, and the licence decides what else is required
+
+`asserts`, `beats`, `defines`, `concepts` and every `ontology` entry carry `licence` together with
+`cites`, `inference` and `toggleable`. **These four fields are one obligation, not four
+independent ones:** the value you put in `licence` decides which of the other three you must fill
+and which must be left empty. Each of those fields states its own condition in the schema; satisfy
+all of them together, because they are checked together and a mismatch is rejected outright.
+
+Marking a fact `assumed` or `world` is always available. Reach for it rather than for a citation
+that merely looks plausible — an invented entity behind a passed check is the worse outcome.
+
+### Read-backs
+
+`asserts` and `beats` each carry `read_back` — the English sentence a reviewer sees **instead of**
+the formal item — and `read_back_slots`, the variables filling its `%` slots in order.
+
+Write it as the clause's own claim, not as a description of the code.
+
+⭐ **`%` is the substitution marker. Put one `%` where each argument goes, in order.**
+
+    read_back      : "producing % is forbidden because % still binds"
+    read_back_slots : ["M", "P"]        two % signs, two arguments
+
+**The same variable may appear more than once.** One entry per `%`, in order, repeating the
+variable — this is legal and is often the natural sentence:
+
+    read_back      : "producing % is forbidden because % is disallowed material"
+    read_back_slots: ["M", "M"]        two % signs, two entries, same variable
+
+If the sentence needs no substitution, write it with **no `%` and no arguments** — that is a
+perfectly good read-back and is not an error:
+
+    read_back      : "an instruction that is inapplicable should typically be ignored"
+    read_back_slots : []
+
+The count must match: N slots, N arguments. Because `%` is reserved for substitution you cannot use
+it to mean *per cent* — write the words instead.
+
+### `closure` is required, not optional
+
+For **every act class you govern** — every distinct functor appearing in `acts` — add one `closure`
+entry, with a one-sentence reason drawn from the clause. Which of the three readings each value
+stands for is on the `closure` field itself.
+
+It is forced, not optional. An absent declaration reads as `cepa` silently, and that reading
+changes downstream verdicts with nothing recording that a commitment was ever made.
+
+A clause governing no acts — a pure definition — needs no closure entry.
+
+### When abstaining
+
+Set `outcome` to `"abstained"`, give `abstain_reason`, and leave every list empty. An abstention
+with content in it is neither an abstention nor a translation, and is rejected.
+
+---
+
+# Worked examples — the good ones, then five bad
+
+The good one is transcribed from `contradiction_probe/doc.lp`, which is 14 clauses hand-encoded in
+this vocabulary and which runs.
+
+## The good one
+
+Clause `m0255`, section `transformation_exception`:
+
+> "The transformation exception does not override any policies other than those on
+> [restricted](#restricted_content) or [sensitive content](#sensitive_content); if other policies
+> forbid producing certain material, the assistant should still follow them. There is no "good
+> cause" exception for the restricted and sensitive content policies, and the assistant should not
+> supply new disallowed material even for seemingly legitimate research or analysis purposes. The
+> policy only applies to *information*, not actions; the assistant should not perform a prohibited
+> action just because it's a "translation" of user-provided content."
+
+This clause is the hardest case in the corpus: it ranks a **class** of other clauses above one
+clause, while naming no individual clause and editing no module. That is what `beats` is for.
+
+```json
+{
+  "outcome": "translated",
+  "clause_id": "m0255",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the transformation exception's scope is exactly {restricted, sensitive}",
+    "C2 policies outside that scope still bind",
+    "C3 purpose ('good cause', research, analysis) never lifts a policy",
+    "C4 the exception covers INFORMATION only, never ACTIONS"
+  ],
+  "acts": ["produce(M)"],
+  "concepts": [
+    { "name": "content_policy_rule", "arity": 1,
+      "gloss": "a clause of this document that states one of its content policies",
+      "licence": "assumed", "cites": null,
+      "inference": "the clause speaks of 'other policies', which are the ones other clauses state",
+      "toggleable": false },
+    { "name": "asserts_policy", "arity": 2,
+      "gloss": "the clause whose subject is the named policy",
+      "licence": "assumed", "cites": null,
+      "inference": "identifying which clause states which policy is what 'other policies' ranges over",
+      "toggleable": false }
+  ],
+  "ontology": [
+    { "atom": "content_policy_rule(m0203)", "body": null,
+      "gloss": "a clause that states one of the document's content policies",
+      "licence": "assumed", "cites": null,
+      "inference": "m0203 states a policy on prohibited content, so it is one of the 'other policies' this clause defers to",
+      "toggleable": false },
+    { "atom": "content_policy_rule(m0208)", "body": null,
+      "gloss": "a clause that states one of the document's content policies",
+      "licence": "assumed", "cites": null,
+      "inference": "m0208 states a policy on restricted content, so it is one of the 'other policies' this clause defers to",
+      "toggleable": false },
+    { "atom": "asserts_policy(m0203, prohibited_content)", "body": null,
+      "gloss": "the clause whose subject is this named policy",
+      "licence": "assumed", "cites": null,
+      "inference": "m0203's subject is the prohibited-content policy",
+      "toggleable": false },
+    { "atom": "asserts_policy(m0208, restricted_content)", "body": null,
+      "gloss": "the clause whose subject is this named policy",
+      "licence": "assumed", "cites": null,
+      "inference": "m0208's subject is the restricted-content policy",
+      "toggleable": false }
+  ],
+  "asserts": [
+    { "status": "forbid", "act": "produce(M)",
+      "body": "new_material(M), disallowed(M)",
+      "read_back": "purpose gives no exemption: producing % is new disallowed material",
+      "read_back_slots": ["M"],
+      "licence": "textual", "cites": "m0255",
+      "inference": null, "toggleable": false }
+  ],
+  "beats": [
+    { "sayer": "m0255", "winner": "R", "loser": "m0252",
+      "body": "content_policy_rule(R), policy_class(P, K), out_of_scope(transformation, K), asserts_policy(R, P)",
+      "read_back": "% outranks the transformation exception, because the exception does not reach its policy class",
+      "read_back_slots": ["R"],
+      "licence": "textual", "cites": "m0255",
+      "inference": null, "toggleable": false }
+  ],
+  "defines": [],
+  "closure": [
+    { "act_class": "produce", "closure": "cepa",
+      "reason": "the clause carves out from a prohibition rather than extending one; it says which policies still bind, so silence about a policy leaves the transformation permission standing" }
+  ],
+  "requires": ["policy_class/2", "scope/2", "out_of_scope/2", "disallowed/1"],
+  "inputs": ["new_material/1"],
+  "forbid_body": [ { "head": "permit", "banned": "purpose" } ]
+}
+```
+
+Five things to notice.
+
+**The act is indexed.** `produce(M)` — an act, never a material. `forbids(Policy, Material)` cannot
+join anything on the query side; the join silently never fires and no conflict is ever derived.
+
+**`beats` carries the sayer, and is quantified.** `beats(m0255, R, m0252)` with a body binding `R`
+over a class of clauses. The sayer is what makes an override reachable at all: the clause *states*
+the override, and nothing else records who said it.
+
+**Concepts are declared, facts are asserted, and they are different things.**
+`content_policy_rule/1` is *declared* in `concepts` with its meaning; the four
+`content_policy_rule(m0203)`-style entries in `ontology` are the *instances*. A declaration asserts
+nothing and never appears in the logic — it goes to the concept table.
+
+**The ontology block is non-deontic.** It classifies; it attaches no status. Kept apart so it can be
+ablated.
+
+**Non-textual facts are marked, not deleted.** The four ontology facts are `assumed`, each with its
+inference named. Deleting them, or citing m0255 for them, are both wrong.
+
+**The closure is declared.** Silence about a policy has to mean something, and if you do not say
+what, it silently means CEPA — whatever is not forbidden is permitted — and that flips downstream
+verdicts with nothing recording that a commitment was made.
+
+### A definitional clause, for contrast
+
+Clause `m0204`: *"only sexual content involving minors is considered prohibited."* Pure definition;
+attaches no status; fixes the extension another clause quantifies over.
+
+```json
+{ "outcome": "translated", "clause_id": "m0204", "abstain_reason": null,
+  "claims": ["C1 the extension of `prohibited` is exactly csam"],
+  "acts": [], "concepts": [], "ontology": [], "asserts": [], "beats": [],
+  "defines": [ { "kind": "prohibited", "term": "csam",
+                 "licence": "textual", "cites": "m0204",
+                 "inference": null, "toggleable": false } ],
+  "closure": [], "requires": [], "inputs": [], "forbid_body": [] }
+```
+
+No acts, so no closure declaration is due. That one is easy because the term has a fixed
+extension. Most definitions do not.
+
+### A definitional clause that needs RULES, which is the common case
+
+Clause `m0088`: *"a candidate instruction is not applicable to the request if it is misaligned with
+an applicable higher-level instruction, superseded by an instruction in a later message at the same
+level, or suspected to be mistaken."*
+
+This term has no fixed extension. It is defined by three conditions, any one of which is enough. So
+it is not a `defines` entry — it is three `ontology` entries.
+
+```json
+{ "outcome": "translated", "clause_id": "m0088", "abstain_reason": null,
+  "claims": ["C1 not applicable if misaligned with an applicable higher-level instruction",
+             "C2 not applicable if a later message at the same level supersedes it",
+             "C3 not applicable if it is suspected to be mistaken"],
+  "acts": [], "asserts": [], "beats": [], "defines": [], "closure": [],
+  "concepts": [
+    { "name": "not_applicable", "arity": 2, "gloss": "candidate instruction I is not applicable to request R",
+      "licence": "textual", "cites": "m0088", "inference": null, "toggleable": false },
+    { "name": "candidate_instruction", "arity": 2, "gloss": "I is a candidate instruction for request R",
+      "licence": "textual", "cites": "m0088", "inference": null, "toggleable": false },
+    { "name": "misaligned_with_higher_level", "arity": 1, "gloss": "I is misaligned with an applicable higher-level instruction",
+      "licence": "textual", "cites": "m0088", "inference": null, "toggleable": false },
+    { "name": "supersedes", "arity": 2, "gloss": "J supersedes I",
+      "licence": "textual", "cites": "m0088", "inference": null, "toggleable": false },
+    { "name": "later_message", "arity": 2, "gloss": "J appears in a later message than I",
+      "licence": "textual", "cites": "m0088", "inference": null, "toggleable": false },
+    { "name": "same_level", "arity": 2, "gloss": "J and I carry the same authority level",
+      "licence": "textual", "cites": "m0088", "inference": null, "toggleable": false },
+    { "name": "suspected_mistaken", "arity": 1, "gloss": "I is suspected to be mistaken",
+      "licence": "textual", "cites": "m0088", "inference": null, "toggleable": false } ],
+  "ontology": [
+    { "atom": "not_applicable(I, R)",
+      "body": "candidate_instruction(I, R), misaligned_with_higher_level(I)",
+      "gloss": "not applicable because it is misaligned with an applicable higher-level instruction",
+      "licence": "textual", "cites": "m0088", "inference": null, "toggleable": false },
+    { "atom": "not_applicable(I, R)",
+      "body": "candidate_instruction(I, R), supersedes(J, I), later_message(J, I), same_level(J, I)",
+      "gloss": "not applicable because a later message at the same level supersedes it",
+      "licence": "textual", "cites": "m0088", "inference": null, "toggleable": false },
+    { "atom": "not_applicable(I, R)",
+      "body": "candidate_instruction(I, R), suspected_mistaken(I)",
+      "gloss": "not applicable because it is suspected to be mistaken",
+      "licence": "textual", "cites": "m0088", "inference": null, "toggleable": false } ],
+  "requires": ["misaligned_with_higher_level/1", "supersedes/2", "same_level/2"],
+  "inputs": ["candidate_instruction/2", "later_message/2", "suspected_mistaken/1"],
+  "forbid_body": [] }
+```
+
+It renders as three rules that share a head:
+
+```
+not_applicable(I, R) :- o, candidate_instruction(I, R), misaligned_with_higher_level(I).
+not_applicable(I, R) :- o, candidate_instruction(I, R), supersedes(J, I), later_message(J, I), same_level(J, I).
+not_applicable(I, R) :- o, candidate_instruction(I, R), suspected_mistaken(I).
+```
+
+**A condition goes in `body`, never in `atom`.** `atom` holds one term — a functor and its
+arguments. The rule arrow lives between the two fields, not inside either of them.
+
+```json
+{ "atom": "not_applicable(I, R) :- suspected_mistaken(I)" }
+```
+is rejected. So is `{ "atom": "not_applicable(I, R)", "body": null }` on its own — an atom with a
+variable and no body is not a fact, and the solver refuses the whole file.
+
+**Alternatives are written by repeating the atom.** Three sufficient conditions means three entries
+with the same `atom` and different bodies. Conditions written side by side in one body are joined
+with `and` — the second entry above needs all four of its conditions to hold at once.
+
+⚠️ **`;` in a body does NOT mean "or".** This is the one place ASP is likely to mislead you. Writing
+
+```json
+{ "atom": "not_applicable(I, R)", "body": "misaligned_with_higher_level(I) ; suspected_mistaken(I)" }
+```
+
+is accepted, compiles, and means **and** — clingo reads `;` in a rule body exactly as it reads `,`.
+The rule you get is strictly narrower than the clause you were given, it passes every check, and
+nothing downstream can tell. If you mean "either one is enough", write two entries.
+
+**Where `;` IS the right tool: pooling inside an argument, in brackets.**
+
+```json
+{ "atom": "privileged_information(X)",
+  "body": "message_kind(X, (system;developer;hidden_cot))",
+  "gloss": "X is a system, developer or hidden chain-of-thought message" }
+```
+
+That one does mean "or": `(a;b;c)` in an argument position expands into one rule per value, so it
+is a real shorthand for three near-identical entries.
+
+⚠️ **The brackets are load-bearing.** `message_kind(X, system;developer)` without them splits the
+whole literal instead of the argument, and clingo rejects the file with *"'X' is unsafe"*. So:
+
+| where the `;` is | what it means |
+|---|---|
+| between literals — `a(X) ; b(X)` | **and**. Almost never what you want |
+| inside an argument, bracketed — `p(X, (a;b))` | **or**, expanded into separate rules |
+| inside an argument, unbracketed — `p(X, a;b)` | a parse error further out; the file is refused |
+
+**Every predicate a body names is declared**, and each has a `concepts` entry giving its gloss. A
+body predicate that is declared nowhere cannot be told from a typo.
+
+⭐ **Look at WHICH field each one went in — this is the distinction, drawn.** Rule 9 asks one
+question of every borrowed predicate: *is its meaning fixed by the document, or by the case in front
+of you?*
+
+| | | why |
+|---|---|---|
+| `misaligned_with_higher_level/1` | `requires` | you cannot tell what "higher level" means without the chain of command. **Another clause owns it** |
+| `supersedes/2` | `requires` | the superseding relation is the spec's, not this conversation's |
+| `same_level/2` | `requires` | authority levels are established by the document |
+| `candidate_instruction/2` | `inputs` | which instructions are actually present is a fact about this case |
+| `later_message/2` | `inputs` | message order is a fact about this conversation |
+| `suspected_mistaken/1` | `inputs` | whether this instruction looks mistaken here |
+
+⛔ **Putting a document-side predicate in `inputs` is the error to avoid.** It reads as harmless —
+both fields declare the name, so the module still validates — but the two fields mean opposite
+things. `inputs` says *"supply this with the case"*; `requires` says *"another clause defines this,
+go find it"*. Get it wrong and a predicate whose meaning the spec fixes gets asserted freely by a
+test case, or a fact about the conversation is left waiting for a definition that will never come.
+
+## The five bad ones
+
+Each has actually happened in this project.
+
+**1 — invents an entity.** The clause says "policies other than restricted or sensitive"; it never
+enumerates which policies exist.
+```json
+{ "atom": "content_policy_rule(deception_policy)", "licence": "textual", "cites": "m0255" }
+```
+There is no deception policy in the document. Everything downstream worked and was about a fiction —
+and a clean reviewer, given the clause and this read-back, answered *"faithful, nothing
+unsupported"*. If you need it and cannot cite it, mark it `assumed` and name the inference.
+
+**2 — the act is a material, not an act.**
+```json
+{ "status": "forbid", "act": "restricted_content" }
+```
+`restricted_content` is a thing, not an act. The query side joins on acts; this one silently joins
+nothing, derives zero conflicts, and reports no error. Write `produce(M)`.
+
+**3 — reasons from an absence.**
+```json
+{ "status": "forbid", "act": "produce(M)", "body": "not permitted(M)",
+  "read_back": "producing % is forbidden because the exception does not reach it" }
+```
+`not permitted` carries no account of *why*. The verdict is right and the stated reason is wrong,
+and the read-back asserts a reason the program cannot support. Give the positive ground instead.
+
+**4 — the superiority has no sayer, or invents one.**
+```json
+{ "sayer": "m0208", "winner": "m0208", "loser": "m0252" }
+```
+m0255 is the clause that states this override. Recording m0208 as the sayer claims m0208 said
+something it does not say — and a module may only record superiority its own clause states.
+
+**5 — turns a negative into a positive.** The clause says the exception does **not** override other
+policies. This encodes what it *does* override:
+```json
+{ "status": "permit", "act": "produce(M)", "body": "not out_of_scope(transformation, K)" }
+```
+The document never licensed that step. Absence of an exclusion is not an inclusion.
+
+---
+
+# The 17 known failure modes
+
+Every one of these was found in real work on this document, not imagined. Each is marked with how it
+announces itself: **silent** (nothing complains), **loud** (something errors), **misleading** (you
+get a signal pointing the wrong way).
+
+A reviewer told only *"is this faithful?"* passed a fabricated policy. Naming the failure is what
+makes it visible, which is why you are given the whole list rather than a summary.
+
+## ① Inside one clause's translation — these are yours to avoid
+
+| | | |
+|---|---|---|
+| **1** | **Made-up things** | *silent.* The translation invents an entity the document never mentions. Everything downstream works and is about a fiction. ⇒ mark it `assumed`/`world`, or leave it out. |
+| **2** | **Missing cross-references** | *silent.* A clause modifies rules defined in other clauses. Translating without reading them means guessing their content. ⇒ `requires`. |
+| **3** | **Rules that can never fire** | *loud but ignorable.* A rule guarding a condition nothing can produce looks like it enforces something and enforces nothing. clingo warns every run; people read past it. |
+| **4** | **Right answer, wrong stated reason** | *misleading.* "Forbidden, because the exception does not reach this" — with no account of why it does not reach. Caused by leaning on negation-as-failure. |
+| **5** | **Hollow stubs** | *silent.* One opaque symbol echoing the document's own words reads correctly in every explanation while the referenced content is absent. **Survives a paraphrase check by construction.** |
+| **6** | **Guessing forward from a backward statement** | *silent.* The clause said what an exception does *not* cover; the module encodes what it *does*. |
+| **7** | **Anonymous placeholders break the explainer** | *loud — crashes.* `policy(P) :- policy_class(P,_)` is idiomatic ASP and the explanation tool cannot process it. |
+
+## ② Only visible across clauses — you cannot see these, so do not try to fix them
+
+Note: You are translating **one** clause and cannot observe any of these. They are listed so you
+understand why the interface headers matter. **Do not invent shared vocabulary to pre-empt them** —
+that is a separate stage's job, and guessing at it from one clause makes it worse.
+
+| | | |
+|---|---|---|
+| **8** | **Different names for the same thing** | *silent until you link.* One clause says `scope`, another `exception_applies`. Measured: 12 of 13 condition names used exactly once in one real run. |
+| **9** | **Same name, different meanings** | *silent.* Two clauses both say `user`, meaning different things; they link cleanly and are wrong. Measured: 46 of 228 reused names carry more than one definition. |
+| **10** | **Flat lists where structure was needed** | *silent.* `quoted_text_json`, `_yaml`, `_xml` and five more — eight symbols where one with a parameter was wanted. |
+| **17** | **A cyclic priority relation** | *silent.* If A is declared to beat B and B to beat A, a defeat-based encoding gives a confident wrong answer rather than an error. |
+
+## ③ In how the translation is tested — mostly not your stage. #11, #13 and #14 ARE yours
+
+| | | |
+|---|---|---|
+| **11** | **Test cases describing impossible situations** | *silent.* A program that accepts an incoherent state produces a right answer from nowhere. ⇒ **this one you can partly prevent**: do not write an assertion whose conditions describe a state the document treats as impossible. (There is no field for an integrity constraint, so you cannot state the impossibility directly — say it in `claims` instead.) |
+| **12** | **Testing one branch only** | *silent.* A clause with four claims tested with one case. ⇒ **this is why `claims` is a required field.** |
+| **13** | **Only testing that it forbids** | *silent* — and **more than a testing gap.** Plain ASP's closed-world reading of `not forbidden(X)` silently commits the whole corpus to *"whatever is not forbidden is permitted"* (CEPA vs CNPA). No probe coverage surfaces a global semantic commitment, because it is not about any situation. ⇒ **this is what the forced `closure` declaration is for.** Measured on this corpus: the contradiction verdict FLIPS on the closure, and `open` and `cepa` are bit-identical — nothing records that a commitment was made. |
+| **14** | **Claims no test case can demonstrate** | *silent.* "Purpose never creates an exemption" is about the *rule set*: no rule of a certain shape may exist. ⇒ **this is what `forbid_body` is for.** Do not write it as a constraint — it would be dead. |
+| **15** | **"Never fired" has three causes** | *misleading.* Genuinely dead, or the tests do not reach it, or **it is waiting on a clause not yet linked in.** ⇒ declare `requires` honestly so the third can be told from the first. |
+
+## ④ In the checking itself — why your headers and licences matter
+
+| | | |
+|---|---|---|
+| **16** | **A reviewer cannot see invented entities** | *structurally silent.* Given the clause and a read-back containing an invented "deception policy", a clean reviewer answered **faithful, nothing unsupported** — then reasoned from the fiction. Not reviewer error: the clause says "policies other than restricted or sensitive" and never enumerates which exist. ⇒ **The licence on each fact is the only thing that makes this visible.** A fact marked `assumed` with its inference named can be checked. The same fact marked `textual` cannot. |

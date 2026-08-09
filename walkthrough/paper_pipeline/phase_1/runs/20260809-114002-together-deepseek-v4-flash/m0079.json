@@ -1,0 +1,121 @@
+{
+ "outcome": "translated",
+ "clause_id": "m0079",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant must strive to follow all applicable instructions when producing a response",
+  "C2 applicable instructions include system, developer and user instructions",
+  "C3 an instruction that conflicts with a higher-authority instruction is excepted from the obligation",
+  "C4 an instruction that conflicts with a later instruction at the same authority is excepted from the obligation"
+ ],
+ "acts": [
+  "follow(I)",
+  "produce(R)"
+ ],
+ "concepts": [
+  {
+   "name": "applicable_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction that applies to the assistant when producing a response",
+   "licence": "textual",
+   "cites": "m0079",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "instruction",
+   "arity": 1,
+   "gloss": "I is an instruction of any kind",
+   "licence": "textual",
+   "cites": "m0079",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "instruction_kind",
+   "arity": 2,
+   "gloss": "I is an instruction of kind K, where K is system, developer or user",
+   "licence": "textual",
+   "cites": "m0079",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "conflicts_with_higher_authority",
+   "arity": 1,
+   "gloss": "I conflicts with an instruction of higher authority",
+   "licence": "textual",
+   "cites": "m0079",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "conflicts_with_later_same_authority",
+   "arity": 1,
+   "gloss": "I conflicts with a later instruction at the same authority",
+   "licence": "textual",
+   "cites": "m0079",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "m0079",
+   "inference": null,
+   "toggleable": false,
+   "atom": "applicable_instruction(I)",
+   "gloss": "I is an applicable instruction because it is a system, developer or user instruction",
+   "body": "instruction(I), instruction_kind(I, (system;developer;user))"
+  },
+  {
+   "licence": "textual",
+   "cites": "m0079",
+   "inference": null,
+   "toggleable": false,
+   "atom": "applicable_instruction(I)",
+   "gloss": "I is an applicable instruction because it is an instruction that does not conflict with a higher-authority instruction or a later instruction at the same authority",
+   "body": "instruction(I), not conflicts_with_higher_authority(I), not conflicts_with_later_same_authority(I)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "the assistant must strive to follow % when producing a response",
+   "read_back_slots": [
+    "I"
+   ],
+   "licence": "textual",
+   "cites": "m0079",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "follow(I)",
+   "body": "applicable_instruction(I), producing_response(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "follow",
+   "closure": "cnpa",
+   "reason": "the clause states an obligation to follow all applicable instructions, so instructions not covered by the obligation are not thereby permitted to be ignored; silence about a particular instruction leaves the obligation's scope unsettled rather than permitting non-following"
+  },
+  {
+   "act_class": "produce",
+   "closure": "cepa",
+   "reason": "the clause does not restrict producing a response; it only imposes an obligation on how to follow instructions when producing one"
+  }
+ ],
+ "requires": [
+  "instruction/1",
+  "instruction_kind/2",
+  "conflicts_with_higher_authority/1",
+  "conflicts_with_later_same_authority/1"
+ ],
+ "inputs": [
+  "producing_response/1"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,129 @@
+{
+ "outcome": "translated",
+ "clause_id": "m0150",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should evaluate the trustworthiness of the tool itself when considering a tool call",
+  "C2 the assistant should evaluate the trustworthiness of any specific endpoint or counterparty involved in a tool call",
+  "C3 even calls through reputable tools can be risky if the destination seems unreliable",
+  "C4 even calls through reputable tools can be risky if the destination requests information unnecessary for the user's task"
+ ],
+ "acts": [
+  "evaluate_trustworthiness(Tool, Endpoint)",
+  "make_tool_call(Tool, Endpoint)"
+ ],
+ "concepts": [
+  {
+   "name": "tool_call",
+   "arity": 2,
+   "gloss": "a proposed call by the assistant to tool T involving endpoint or counterparty E",
+   "licence": "textual",
+   "cites": "m0150",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "reputable_tool",
+   "arity": 1,
+   "gloss": "T is a tool generally considered reputable",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of 'reputable tools' as a category, so the predicate classifies tools that are reputable",
+   "toggleable": false
+  },
+  {
+   "name": "unreliable_destination",
+   "arity": 1,
+   "gloss": "E is an endpoint or counterparty that seems unreliable",
+   "licence": "textual",
+   "cites": "m0150",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "requests_unnecessary_information",
+   "arity": 2,
+   "gloss": "E requests information that is unnecessary for the user's task in the context of tool call (T,E)",
+   "licence": "textual",
+   "cites": "m0150",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "risky",
+   "arity": 1,
+   "gloss": "the tool call (T,E) is risky",
+   "licence": "textual",
+   "cites": "m0150",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "m0150",
+   "inference": null,
+   "toggleable": false,
+   "atom": "risky(T,E)",
+   "gloss": "a tool call through a reputable tool is risky if the destination seems unreliable",
+   "body": "tool_call(T,E), reputable_tool(T), unreliable_destination(E)"
+  },
+  {
+   "licence": "textual",
+   "cites": "m0150",
+   "inference": null,
+   "toggleable": false,
+   "atom": "risky(T,E)",
+   "gloss": "a tool call through a reputable tool is risky if the destination requests information unnecessary for the user's task",
+   "body": "tool_call(T,E), reputable_tool(T), requests_unnecessary_information(E,T)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "the assistant should evaluate the trustworthiness of both the tool and the endpoint or counterparty when considering a tool call",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "m0150",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "evaluate_trustworthiness(Tool, Endpoint)",
+   "body": "tool_call(Tool, Endpoint)"
+  },
+  {
+   "read_back": "the assistant should consider a tool call risky when the destination seems unreliable, even if the tool is reputable",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "m0150",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "make_tool_call(Tool, Endpoint)",
+   "body": "risky(Tool, Endpoint)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "evaluate_trustworthiness",
+   "closure": "cepa",
+   "reason": "the clause imposes an obligation to evaluate trustworthiness when considering tool calls; silence about other acts leaves them permitted"
+  },
+  {
+   "act_class": "make_tool_call",
+   "closure": "cepa",
+   "reason": "the clause only attaches a preference against risky calls, not a prohibition; silence about a call leaves it permitted"
+  }
+ ],
+ "requires": [
+  "reputable_tool/1"
+ ],
+ "inputs": [
+  "tool_call/2",
+  "unreliable_destination/1",
+  "requests_unnecessary_information/2"
+ ],
+ "forbid_body": []
+}
