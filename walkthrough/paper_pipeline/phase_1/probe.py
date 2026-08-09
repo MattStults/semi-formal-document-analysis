@@ -218,13 +218,45 @@ def _is_const(t):
 # ==========================================================================
 
 def situation_signature(target_text, link_texts, concepts):
-    """`inputs ∪ (head-less predicates declared in the concept table)`.
+    """Every predicate a situation must be free to set, from four sources.
+
+    `inputs` ∪ (head-less ∧ declared-in-concepts) ∪ UNSATISFIED `requires`
+    ∪ the LINKED modules' own `inputs`.
 
     ⛔ NOT `inputs` alone. On the committed `m0217` that gives the EMPTY SET,
     stage 3 enumerates ONE situation, finds nothing, and reports green — and
     the guard revision 2 wrote for this (`|enumeration| == 0`) never fires,
     because 2^0 is one, not zero. `signature_findings` fires on the empty
     SIGNATURE instead.
+
+    ⛔ AND NOT THAT EITHER — Q-22, found 2026-08-09. The first two terms miss
+    `requires` completely, because a borrowed predicate is head-less and the
+    concept table covers only names a clause INTRODUCES. `[RAN]` 6 of 19
+    stored modules carried one. On `m0079` the dropped predicate sat under a
+    negation, so `not higher_authority_conflict(I)` was permanently true and
+    the module collapsed to "every instruction is applicable" — the clause's
+    entire content inert, and the probe GREEN because no enumerated situation
+    could reach the dead branch.
+
+    ⭐ WHY THE FIX IS NOT "ADD `requires`", and this is the whole subtlety.
+    `requires` means *another clause defines it*. When a linked module DOES
+    define it, the predicate is DERIVED, and putting a derived predicate in
+    the signature lets a situation assert it independently of the rule that
+    produces it — asserting a conclusion its own premises deny. That is a
+    worse bug than the one being fixed. So an unsatisfied `requires` joins the
+    signature and a satisfied one does not, which is what
+    `test_q22_control_a_requires_THE_LINK_DEFINES_stays_out` pins.
+
+    ⚠️ THE FOURTH TERM IS THE SAME DEFECT ONE LEVEL DOWN. `[RAN]` linking a
+    provider in moved the required predicate out of the signature (correctly)
+    while the provider's OWN `inputs` never entered it — so the defining rule
+    could not fire either, and linking made the module MORE inert, not less.
+    A linked module's inputs are facts about the same case and belong here.
+
+    ⚠️ This grows signatures, and `max_signature` bounds ground atoms at 10.
+    That is intended: the cap already refuses loudly with `signature-too-large`
+    rather than sampling, so growth surfaces as a refusal to measure and never
+    as a quiet partial enumeration.
     """
     texts = [target_text] + list(link_texts)
     declared = {str(r.get("concept") or "").strip() for r in (concepts or [])}
@@ -232,11 +264,30 @@ def situation_signature(target_text, link_texts, concepts):
     for t in texts:
         defined |= link.defined_predicates(t)
     sig = set(header_of(target_text)["inputs"])
+    for t in link_texts:
+        sig |= header_of(t)["inputs"]
+    sig |= unsatisfied_requires(target_text, link_texts)
     for name, args in _referenced(texts):
         s = f"{name}/{len(args)}"
         if s not in defined and s in declared:
             sig.add(s)
     return tuple(sorted(sig))
+
+
+def unsatisfied_requires(target_text, link_texts):
+    """`requires` entries that NOTHING in scope defines — the unkept promises.
+
+    ⭐ Reported as well as enumerated. Widening the signature makes the module
+    testable, which is necessary and not sufficient: `requires` asserts that
+    another clause defines the predicate, and at `[RAN]` 13 of 593 clauses
+    translated that assertion is usually false. Repairing it silently would
+    leave "nothing in the corpus defines this" indistinguishable from "linked
+    fine", which is the class of failure this repo exists to make impossible.
+    """
+    defined = set()
+    for t in [target_text] + list(link_texts):
+        defined |= link.defined_predicates(t)
+    return {s for s in header_of(target_text)["requires"] if s not in defined}
 
 
 def _referenced(texts):
@@ -1138,6 +1189,25 @@ def probe_clause(target_path, link_paths, concepts, cfg=None, claims_map=None):
             **common)
 
     findings = []
+    # ⭐ Q-22. The signature now enumerates these (see `situation_signature`),
+    # so the module is testable — but `requires` claimed another clause would
+    # define them and nothing does. Enumerating an unkept promise is the right
+    # repair AND a different statement from keeping it, so it is reported.
+    unmet = unsatisfied_requires(text, link_texts)
+    if unmet:
+        findings.append(structural_finding(
+            "requires-unsatisfied", where,
+            f"{', '.join(sorted(unmet))} declared in `requires` — another "
+            f"clause was supposed to define these and nothing in scope does. "
+            f"They are enumerated as situation inputs so the rules resting on "
+            f"them can be tested, but the link they assert does not exist",
+            # ⚠️ `note`, deliberately, and NOT `error`. Only `error` drives the
+            # stage-2 repair loop, and no rewrite of THIS module can conjure
+            # the clause that was supposed to define the predicate — it is a
+            # fact about corpus coverage. `DEBUGGING_TIPS` §7: a repair loop
+            # that chases notes does not converge. It must still be SEEN,
+            # which is the census's job, not the repairer's.
+            severity="note"))
     if not atoms:
         # ⛔ The guard revision 2 got wrong. `|enumeration| == 0` never fires
         # here: an empty signature yields 2^0 = ONE all-false situation.

@@ -262,11 +262,48 @@ def load_specs(path, cfg=None):
 #  Building one seat prompt — free, and the fence runs here
 # ==========================================================================
 
+class UnglossedSignature(LiveProbeError):
+    """A signature predicate no concept table glosses, so no seat can see it.
+
+    ⭐ THIS CLASS EXISTS BECAUSE OF Q-22's FIX, and the sequence is the point.
+    Before the fix an unsatisfied `requires` was dropped from the signature:
+    the module rendered cleanly and was **inert**, its rules unable to fire.
+    After the fix it is enumerated — and now `render_situation` refuses it,
+    because Q-6 means a BORROWED predicate carries no gloss anywhere.
+
+    ⚠️ Both states are wrong; this one is at least LOUD. The gloss refusal is
+    the anti-hollow-stub fence and must not be relaxed to make a run pass — a
+    seat shown `task/1` instead of a sentence is exactly failure mode #5. So
+    the module is BLOCKED, by name, with the predicate named, until borrows
+    carry glosses (Q-23). Blocked is a reported state, never a silent skip.
+    """
+
+
+def blocking_gaps(rep, rows):
+    """Signature predicates with no gloss — empty means the spec can build.
+
+    ⛔ Returned rather than raised so a caller can PARTITION and report. A
+    blocked module that vanishes from a list is indistinguishable from one
+    that was never there, which is the shape this repo refuses everywhere
+    else.
+    """
+    gloss = {str(r.get("concept") or "").strip() for r in (rows or [])
+             if str(r.get("gloss") or "").strip()}
+    return tuple(s for s in (rep.signature or ()) if s not in gloss)
+
+
 def build(spec):
     """`(report, concepts, rendered situations, prompt)`. No model call."""
     rows, _loaded, _missing = link.discover_concept_table(
         [spec.module] + list(spec.links))
     rep = probe.probe_clause(spec.module, list(spec.links), rows or [])
+    gaps = blocking_gaps(rep, rows)
+    if gaps:
+        raise UnglossedSignature(
+            f"{spec.clause_id}: {', '.join(gaps)} are in the situation "
+            f"signature and nothing glosses them, so no situation can be "
+            f"described to a seat. These are `requires` entries — Q-22 made "
+            f"them enumerable, Q-23 has not yet given them glosses")
     if not rep.covering:
         raise LiveProbeError(
             f"{spec.clause_id}: the covering set is empty, so there is nothing "

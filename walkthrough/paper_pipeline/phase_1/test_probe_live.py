@@ -22,6 +22,7 @@ for _p in (HERE, WALKTHROUGH):
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
+import link                                                    # noqa: E402
 import probe                                                   # noqa: E402
 import probe_live                                              # noqa: E402
 import translate                                               # noqa: E402
@@ -187,14 +188,26 @@ def test_4_every_shipped_spec_builds_a_prompt_that_passes_the_fence():
     cfg = translate.load_config(os.path.join(HERE, "config.json"))
     specs = probe_live.load_specs(SPECS, cfg)
     assert specs, "the clause-spec file selects nothing"
+    built = 0
     for spec in specs:
         assert os.path.exists(spec.module), spec.module
-        _rep, _rows, _rendered, prompt = probe_live.build(spec)
+        # ⚠️ A spec BLOCKED on an unglossed borrow is not a pass and not a
+        # skip. `test_q22_blocked_specs_are_blocked_for_a_REAL_reason` proves
+        # each block is genuine; this test asserts the rest still build, and
+        # that the set is not empty — otherwise "every spec builds" would be
+        # vacuously true the moment everything blocked.
+        try:
+            _rep, _rows, _rendered, prompt = probe_live.build(spec)
+        except probe_live.UnglossedSignature:
+            continue
+        built += 1
         body = prompt[len(probe.SEAT_BRIEF):]
         # `build_seat_prompt` already refused the module; this re-checks the
         # ASSEMBLED text, which is what actually goes on the wire.
         probe._refuse_disclosure(body, "the assembled seat prompt")
         assert spec.clause_text.strip()[:40] in prompt
+    assert built, ("every shipped spec is blocked, so this test asserted "
+                   "nothing — see DEBUGGING_TIPS §8")
 
 
 def test_4_control_a_prompt_carrying_a_coined_name_is_refused():
@@ -414,6 +427,67 @@ def test_9_an_empty_covering_set_is_refused_before_any_call(tmp_path):
 
 def test_9_control_every_shipped_spec_has_a_non_empty_covering_set():
     cfg = translate.load_config(os.path.join(HERE, "config.json"))
+    seen = 0
     for spec in probe_live.load_specs(SPECS, cfg):
-        rep, _rows, _r, _p = probe_live.build(spec)
+        try:
+            rep, _rows, _r, _p = probe_live.build(spec)
+        except probe_live.UnglossedSignature:
+            continue
+        seen += 1
         assert rep.covering, spec.tag
+
+
+# ==========================================================================
+#  Q-22/Q-23 — "blocked" must be a REPORTED state, never a silent skip
+# ==========================================================================
+#
+# ⛔ THE RISK THIS GUARDS. Q-22's fix put unsatisfied `requires` predicates
+# into the situation signature, which is correct — without them the module's
+# rules cannot fire and the probe reports green on inert content. But a
+# borrowed predicate has no gloss (Q-6), so `render_situation` now refuses,
+# and two shipped-spec tests began to fail.
+#
+# ⚠️ The tempting repair is to let those tests skip the spec. That is how a
+# floor gets lowered: with every spec blocked, "every shipped spec builds"
+# is vacuously true. So blocking is allowed ONLY where it is provably real —
+# the predicate must actually be in `requires`, and actually unglossed
+# everywhere in scope. A block for any other reason fails here.
+#
+# ⭐ NO COUNT IS PINNED (anti-rule: never pin an exact count of a live
+# artifact). Q-23 landing will legitimately empty this set, and that must not
+# fail the suite.
+
+def test_q22_blocked_specs_are_blocked_for_a_REAL_reason():
+    cfg = translate.load_config(os.path.join(HERE, "config.json"))
+    for spec in probe_live.load_specs(SPECS, cfg):
+        rows, _l, _m = link.discover_concept_table(
+            [spec.module] + list(spec.links))
+        rep = probe.probe_clause(spec.module, list(spec.links), rows or [])
+        gaps = probe_live.blocking_gaps(rep, rows)
+        if not gaps:
+            continue
+        declared = probe.header_of(
+            open(spec.module, encoding="utf-8").read())["requires"]
+        glossed = {str(r.get("concept") or "").strip() for r in (rows or [])
+                   if str(r.get("gloss") or "").strip()}
+        for g in gaps:
+            assert g in declared, (
+                f"{spec.clause_id} is blocked on {g!r}, which is NOT a "
+                f"`requires` entry. Blocking is only legitimate for an "
+                f"unglossed borrow; anything else is a bug being skipped")
+            assert g not in glossed, (
+                f"{spec.clause_id} is blocked on {g!r} but it IS glossed — "
+                f"the gap detector is wrong and a buildable spec is being "
+                f"dropped")
+
+
+def test_q22_a_blocked_spec_carries_the_PREDICATE_in_its_error():
+    """A count cannot be acted on; the name can."""
+    cfg = translate.load_config(os.path.join(HERE, "config.json"))
+    for spec in probe_live.load_specs(SPECS, cfg):
+        try:
+            probe_live.build(spec)
+        except probe_live.UnglossedSignature as exc:
+            assert "/" in str(exc), (
+                "the refusal must name the predicate/arity that blocked it")
+            assert spec.clause_id in str(exc)

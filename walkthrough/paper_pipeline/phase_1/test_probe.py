@@ -766,3 +766,91 @@ def test_no_labelling_path_can_reach_a_live_client(tmp_path):
     with pytest.raises(probe.ProbeError, match="client_factory"):
         probe.label_situations(rep, CLAUSE_TEXT, (), "produce this material",
                                M0217_CONCEPTS, client_factory=None)
+
+
+# ==========================================================================
+#  Q-22 — an UNDISCHARGED `requires` must reach the signature, not vanish
+# ==========================================================================
+#
+# ⛔ THE BUG. `situation_signature` was `inputs ∪ (head-less ∧ declared-in-
+# concepts)`. A predicate in `requires` matched neither term, so it was
+# silently dropped: nothing derived it, no situation set it, and nothing said
+# it had gone. `[RAN]` 6 of 19 stored modules had one. On `m0079` the orphan
+# sat under a negation, so `not higher_authority_conflict(I)` was ALWAYS true
+# and the module collapsed to "every instruction is applicable" — the clause's
+# whole content inert, and the probe green because no situation could test it.
+#
+# ⭐ THE FIX IS NOT "add `requires` to the signature". `requires` means
+# "another clause defines it", and when a LINKED module does define it the
+# predicate is DERIVED — putting it in the signature would let the enumeration
+# assert it independently of the rule that produces it, which is a different
+# and worse bug. The rule is: a `requires` predicate joins the signature only
+# when NOTHING IN SCOPE DEFINES IT. Test 2 is the control for that.
+
+_REQ_UNSATISFIED = """\
+%% clause: m0900   section: fixture   kind: conditional
+%% acts: produce(M)
+%% concepts: blocked/1
+%% requires: conflicts_with_higher/1
+%% inputs: instruction/1
+%% closure: produce = cepa
+blocked(I) :- instruction(I), conflicts_with_higher(I).
+asserts(m0900, forbid, produce(I)) :- blocked(I).
+"""
+
+#: The same module, plus a link that DOES define the required predicate.
+_REQ_PROVIDER = """\
+%% clause: m0901   section: fixture   kind: definitional
+%% acts:
+%% concepts: conflicts_with_higher/1
+%% requires:
+%% inputs: outranked/1
+conflicts_with_higher(I) :- outranked(I).
+"""
+
+
+def test_q22_an_UNSATISFIED_requires_reaches_the_signature():
+    """⭐ FIRES on the bug: nothing defines it, so it must be enumerable."""
+    sig = probe.situation_signature(_REQ_UNSATISFIED, [], concepts=[])
+    assert "conflicts_with_higher/1" in sig, (
+        "a `requires` predicate that NOTHING defines was dropped from the "
+        "signature; the rule resting on it can never fire and no situation "
+        "can test that it doesn't")
+    assert "instruction/1" in sig, "the `inputs` term must still be honoured"
+
+
+def test_q22_control_a_requires_THE_LINK_DEFINES_stays_out():
+    """⛔ The over-correction guard. A derived predicate is not an input.
+
+    Without this test, "add `requires` to the signature" passes the test above
+    while letting the enumeration assert a predicate independently of the rule
+    that derives it — asserting a conclusion its own premises deny.
+    """
+    sig = probe.situation_signature(_REQ_UNSATISFIED, [_REQ_PROVIDER],
+                                    concepts=[])
+    assert "conflicts_with_higher/1" not in sig, (
+        "the linked module DEFINES this predicate, so it is derived, not "
+        "supplied; putting it in the signature lets a situation assert it "
+        "regardless of whether its defining rule fires")
+    assert "outranked/1" in sig, "the provider's own input must be enumerable"
+
+
+def test_q22_an_unsatisfied_requires_is_REPORTED_not_merely_fixed(tmp_path):
+    """A silent repair is the failure this repo exists to prevent.
+
+    Widening the signature makes the module testable, which is necessary and
+    not sufficient: `requires` asserts that another clause defines it, and at
+    `[RAN]` 13 of 593 clauses translated that claim is usually false. An
+    unkept promise must be VISIBLE, or "nothing defines this" stays
+    indistinguishable from "linked fine".
+    """
+    tgt = tmp_path / "m0900.lp"
+    tgt.write_text(_REQ_UNSATISFIED, encoding="utf-8")
+    rep = probe.probe_clause(str(tgt), [], concepts=[], cfg={"probe": {}})
+    ids = {f.check_id for f in rep.findings}
+    assert "requires-unsatisfied" in ids, (
+        f"no finding names the unkept `requires`; got {sorted(ids)}")
+    msg = [f.message for f in rep.findings
+           if f.check_id == "requires-unsatisfied"][0]
+    assert "conflicts_with_higher/1" in msg, (
+        "the finding must name the predicate; a count cannot be acted on")
