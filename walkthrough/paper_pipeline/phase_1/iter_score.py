@@ -233,6 +233,58 @@ def score(run_paths, doc_path):
     else:
         print("  no concept-run ended with more open than it started")
 
+    # ---- B2. churn --------------------------------------------------------
+    # ⛔ THE SIZE OF THE OPEN SET IS NOT ENOUGH, and reading only B nearly
+    # shipped a wrong conclusion. `task/1` in run 5 went
+    #   round 1  task(G) :- complex_or_multistep(G).
+    #   round 2  task(G) :- user_request_for(G).
+    #   round 3  task(G) :- requested_goal(G).
+    # — three unrelated one-predicate paraphrases, each REPLACING the last
+    # rather than defining what it opened. Open counts [2, 2, 1], which B
+    # reports as converging. It is not converging, it is walking sideways.
+    #
+    # CARRIED = an open predicate that survives into the next round, i.e. the
+    # round actually engaged with it. REPLACED = one that vanishes without
+    # being given a definition. A run whose open set churns completely every
+    # round is renaming, not resolving, and no number of extra rounds helps.
+    print("\nB2 · ⭐ IS IT RESOLVING, OR RENAMING?")
+    print("     carried = open predicate the NEXT round still owes")
+    print("     replaced = dropped without ever being defined")
+    carried = replaced = 0
+    spinners = []
+    for name, data in runs:
+        for c in data.get("concepts", []):
+            rds = c.get("rounds", [])
+            defined_later = set()
+            for r in rds:
+                for x in r.get("rules", []) or []:
+                    sg = rule_signature(x.get("asp", ""))
+                    if isinstance(sg, dict) and sg.get("ok") and sg.get("head"):
+                        defined_later.add(sg["head"])
+            spin = 0
+            for i in range(len(rds) - 1):
+                a_ = {u.get("predicate") for u in rds[i].get("still_undefined", []) or []}
+                b_ = {u.get("predicate") for u in rds[i + 1].get("still_undefined", []) or []}
+                for p in a_:
+                    if p in b_:
+                        carried += 1
+                    elif p in defined_later:
+                        carried += 1
+                    else:
+                        replaced += 1
+                        spin += 1
+            if spin and len(rds) > 1:
+                spinners.append((name, c.get("predicate"), spin, len(rds)))
+    tot2 = carried + replaced
+    if tot2:
+        print(f"  n={tot2}   carried (engaged) {carried} ({carried/tot2:.0%})   "
+              f"⛔ replaced without ever being defined {replaced} "
+              f"({replaced/tot2:.0%})")
+    print(f"  concept-runs that dropped an undefined predicate rather than "
+          f"define it: {len(spinners)}")
+    for n, p, s, r in sorted(spinners, key=lambda t: -t[2])[:8]:
+        print(f"     {n:16} {str(p):38} {s} dropped over {r} rounds")
+
     # ---- C. verbatim ------------------------------------------------------
     print("\nC · ARE THE PASSAGES REAL?  (verbatim, after normalising)")
     ok = bad = wrong_sec = 0

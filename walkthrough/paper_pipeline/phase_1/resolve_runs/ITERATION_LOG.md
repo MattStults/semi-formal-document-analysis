@@ -186,3 +186,62 @@ true — `DEBUGGING_TIPS` §17, third time this instrument has been the broken p
 open-set agreement table scored a concept 0.00 when four of five runs closed it cleanly, because
 Jaccard over empty sets reads as total disagreement. The `runs w/ 0 open` column exists so the
 figure can be read at all.
+
+### ⛔ Reading the transcripts changed the conclusion — 62% of it was RENAMING
+
+Matt asked why the non-closing concepts did not close. Reading them found that **the open-set SIZE
+metric above cannot distinguish resolving from spinning**, and that most of the runs were spinning.
+
+`task/1`, run 5, all three rounds:
+
+```
+round 1   task(G) :- complex_or_multistep(G).
+round 2   task(G) :- user_request_for(G).
+round 3   task(G) :- requested_goal(G).
+```
+
+Three unrelated one-predicate paraphrases, each **replacing** the last rather than defining what the
+last opened. Open counts `[2, 2, 1]` — which the size metric reports as **converging**.
+
+⇒ New measure, `B2`: an open predicate is **carried** if the next round still owes it or later
+defines it, and **replaced** if it vanishes having never been defined.
+
+| | `[RAN]` n=159 |
+|---|---|
+| carried — the round engaged with it | **61 (38%)** |
+| ⛔ **replaced, never defined** | **98 (62%)** |
+| concept-runs that dropped an undefined predicate rather than define it | **27 of 40** |
+
+⭐ **So the headline result is measuring two things at once, and they have different remedies.**
+
+### Three reasons a definition did not close, and only one is about the document
+
+Classifying every open predicate in the transcripts:
+
+**(1) Genuinely underdetermined by the document — the real finding.** The spec says an instruction is
+superseded if a later one at the same level *"either contradicts it, overrides it, or otherwise makes
+it irrelevant"*. It **names three relations and defines none**. `contradicts/2`, `overrides/2`,
+`makes_irrelevant/2` are carried by every run that reaches them and closed by none. ⭐ This is
+correct behaviour finding a correct gap, and it is the output worth having.
+
+**(2) ⚠️ MISSING PIPELINE METADATA, not a document gap.** Run 3 opened `in_spec/1`,
+`root_section/1`, `system_section/1`, `developer_section/1`, `user_section/1`, `guideline_section/1`,
+`in_section/2` — and quoted the document saying *"Each section of the spec, and message role in the
+input conversation, is assigned an authority level."* The document **states** that every section has
+an authority level; the corpus does not **carry** it. Seven open predicates that are an artifact gap
+on our side and would close as ground facts if a section's authority were a corpus field.
+
+**(3) ⚠️ SITUATION VOCABULARY THE PROMPT FAILED TO FIX — my defect.** `message/1`, `role/2`,
+`message_order/2`, `in_message/2`, `message_content/2` are exactly the *"plain facts about the
+situation being judged"* the prompt named as primitive. **Run 2 declared them primitive; run 3 left
+them open.** Same predicates, same document, opposite classification — because the prompt gave a
+**criterion** for primitive and no **list**. The runs disagree about where the bottom of the
+formalization is, not about what the document says.
+
+⇒ **A meaningful part of the 0.00 agreement is (2) and (3), which are ours to fix, not the
+document's.** What a fair re-run needs: the situation vocabulary supplied as a fixed primitive list,
+section authority carried on the corpus, and a driver that **pins the open set** so a round cannot
+discharge a predicate by paraphrasing the head. Only what survives that is evidence about the
+document.
+
+⛔ **The one thing not rescued by any of that is (1)**, and it is also the thing five runs agreed on.
