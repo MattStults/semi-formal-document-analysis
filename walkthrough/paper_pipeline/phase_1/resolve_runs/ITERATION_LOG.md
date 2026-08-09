@@ -493,3 +493,79 @@ supports:**
 agreement at **0.00**, the coined name is not carrying information at all, and a pipeline that
 resolves names is resolving noise. The stable things are the **clause+slot** (ours, free) and the
 **gloss** (0.30–1.00, and its disagreements are paraphrase).
+
+## 9 · Matt's two routes — normalize the naming, or falsify it. Assessment, nothing built.
+
+> *"I suspect there may not be a generic way of determining linkage across an arbitrary document...
+> provide all of the terms used in each section and just ask the model to figure out how to normalize
+> the naming... the other generic route might be to try to give test cases that could falsify whether
+> the names are consistent and iterate."*
+
+### The suspicion is supported, but the sharper statement is stronger
+
+⭐ **Linkage is not a property of the document. It is a property of our translation.** Two modules
+link because they use the same symbol, and whether they do is entirely under our control. The
+document has text, not join keys — and every experiment in §1–7 was trying to read a join key out of
+prose that never contained one. That is why they returned 0.06, then 0.00.
+
+⛔ **BUT THE MEASUREMENT THAT WOULD TEST "IS THERE A GENERIC WAY" IS CURRENTLY UNRUNNABLE.**
+`[RAN]` **0 of 12** orphan predicates have an exact head match anywhere in the corpus — and
+`[RAN]` **13 of 593 clauses (2.2%) are translated**. The clauses that would *define* those symbols
+mostly do not exist yet. **0/12 is a corpus-size artifact, not a finding about naming**, and reading
+it as evidence against linkage would be the same mistake as §3's name-level key.
+
+### Route A — "give all the terms and ask the model to normalize"
+
+Right shape — a **closed-world partition** over a finite given set, not open retrieval over 78
+sections. That is a much better-posed task than anything tried so far. Two concrete blockers:
+
+⛔ **The borrows have no glosses.** `[RAN]` all 12 orphan predicates carry gloss `-`. The concept
+table covers only the names a clause **introduces**, which is Q-6 exactly, so a normalizer would be
+matching **bare identifier strings** — and strings are the thing measured at **0.00**. What *is*
+available and stable: the clause text, the borrowing module's own rule structure, the **heads'**
+glosses (heads are glossed), and the clause-blind spans (**97%**).
+
+⚠️ Cross-module matches cannot exist yet at 2.2% corpus coverage.
+
+### ⛔ A correction to my own earlier framing, before it gets built on
+
+I said normalization would collapse `m0079`'s pair and clear the orphan. **It would not, and merging
+them would be wrong:**
+
+```
+higher_authority_conflict(I) :- o, instruction(I), conflicts_with_higher_authority(I).
+```
+
+That is a legitimate two-step definition — a **derived** concept built from a **primitive** one. The
+primitive genuinely *is* a situation input; merging head and body gives `p :- p`.
+
+⇒ **Most orphans are route 1 (declare), not route 2 (link).** Normalization's prize is **smaller
+than the orphan count suggests**, and Q-22's fix does not depend on it.
+
+### ⭐ Route B is the stronger of the two, and better than it looks
+
+Because **the test already exists and it is objective: the orphan count.** Q-22 gives a mechanical,
+judgment-free score for any naming normalization — *did the referenced head-less predicates go
+down?* This is the first closed loop with a real score anywhere in this line of work.
+
+Falsifiers available today, all free:
+
+| | test | source |
+|---|---|---|
+| 1 | ⭐ **orphan count falls** | Q-22, mechanical |
+| 2 | **span-disagreement** — two names normalized together whose clause-blind spans do not overlap | `blind_run1..3`, 97% stable |
+| 3 | **merge-too-much control** — `unnecessary_request`/`unreliable_destination` must NOT merge | attested by 2 of 3 blind runs |
+| 4 | gloss-conflict on a merged canonical name | problem #9; `[RAN]` 20% of reused names already conflict |
+| 5 | partition stability across repeats | the precondition — naming itself is 0.00 |
+
+⚠️ **The risk, and it is this repo's own rule.** *"Iterate until all the tests pass"* is fitting, and
+`DEBUGGING_TIPS` §3 is explicit: **never measure a fix on the clauses that motivated it.** With 13
+translated clauses there is **no held-out set to draw**.
+
+### ⇒ The blocker is corpus size, not method
+
+Fix Q-22's route 1 so new modules are sound, translate a few dozen more clauses, and **both** routes
+become testable at once — 0/12 cross-module matches turns into a real measurement, route A gets
+candidate heads to match against, and route B gets a held-out set.
+
+⛔ Nothing decided, nothing built. Q-6, Q-22.
