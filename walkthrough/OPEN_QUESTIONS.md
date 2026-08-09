@@ -370,14 +370,36 @@ be generated; it cannot, and that was the only unmeasured premise in arm C.
 
 ---
 
-## Q-22 ⛔ DEFECT, not a question — a borrowed predicate can vanish from the signature
+## Q-22 ⛔ DEFECT — an UNSATISFIED `requires` is silently false, not an error
+
+⚠️ **CORRECTED 2026-08-09, same day, after reading the modules instead of the signature rule.** The
+first version of this entry said the stage-1 contract had a hole and that borrowed predicates were
+undeclared. **That was wrong and the correction matters, because it moves the fix.**
+
+`[RAN]` **Every orphan IS declared**, in `requires`:
+
+```
+m0079  requires: ['conflicts_with_higher_authority/1', 'conflicts_with_later_same_authority/1']
+m0255  requires: ['policy_class/2', 'scope/2', 'out_of_scope/2']
+m0105  requires: ['pasted_text/1', 'not_read_carefully/1', 'includes_malicious_instructions/1', ...]
+```
+
+`schema.py`'s D4b check — *"body references `X` but nothing declares it"* — passed **correctly**. The
+model did its job. `requires` means *"another clause must define it"*, `inputs` means *"supplied with
+the case"*, and the model separated them sensibly.
+
+⛔ **The defect is that `probe.situation_signature` reads `inputs` and ignores `requires` entirely.**
+A `requires` predicate is therefore: correctly declared, not in the signature, and — at `[RAN]` **13
+of 593 clauses translated** — not defined by any link either. So it is **silently false in every
+enumerated situation**.
 
 **Found 2026-08-09, while answering Matt's "are we off track?".** It is the answer.
 
-`probe.situation_signature` is `inputs ∪ (head-less predicates DECLARED IN THE CONCEPT TABLE)`.
-A **borrowed** predicate is head-less and, per Q-6, is exactly the thing the concept table does not
-cover. So it matches neither term and is **silently dropped**: no module derives it, no situation
-sets it, and nothing reports that it went missing.
+⭐ **AND THE DESIGN DEFERRED THIS ON PURPOSE.** `schema.py` says so in the check itself: *"Only
+whether the declaration finds a PROVIDER corpus-wide is link scope. Whether it also finds a
+DEFINITION somewhere in the corpus is a question for link time, once enough clauses exist to answer
+it."* ⇒ **The hole is a deferred check that was never implemented at link time.** An unsatisfiable
+promise is currently indistinguishable from a kept one.
 
 ### What it does, on a real committed module `[RAN]`
 
@@ -587,3 +609,57 @@ the file itself.
 
 **What a decision costs:** "delete it" means first moving that one finding somewhere live. I can do
 that unprompted if you want it gone — say so and it is a ten-minute job.
+
+---
+
+## Q-23 · Why can't a BORROW carry a gloss? (Matt, 2026-08-09)
+
+`requires` is `list[str]` — bare `name/arity`. `concepts` carries a gloss and a licence. The
+question is why the borrow side does not.
+
+**The recorded objection (Q-6):** a clause that glosses what it borrows *"invents a meaning for a
+term another clause owns"*, manufacturing problem #9 at source.
+
+### ⭐ The objection assumes gloss divergence, and the measurement says the opposite
+
+| `[RAN]` across repeat translations of one clause | |
+|---|---|
+| borrowed **names** | **0.00** agreement (0 of 22) |
+| concept **names** | 0.30 |
+| ⭐ concept **glosses** | **39 of 45 identical**; all 6 differences are pure paraphrase |
+
+⇒ **The model agrees about meaning and disagrees about labels, every time.** A gloss is the stable
+channel; a name is the noise channel. Requiring a gloss on a borrow puts the join key in the medium
+that reproduces.
+
+### ⭐ And a borrow gloss is a DIFFERENT SPEECH ACT from a definition
+
+| field | says | authority |
+|---|---|---|
+| `concepts[].gloss` | *"X means this"* | **authoritative** — the clause owns it |
+| a gloss on `requires` | *"I need an X that means this"* | an **expectation**, owned by nobody |
+
+Two clauses may hold different *expectations* of one symbol without contradicting each other. Where
+their expectations diverge, that is **problem #9 DETECTED** — the symbol is overloaded — and today it
+is undetectable because there is nothing to compare. ⇒ **Problem #9 is manufactured only if a borrow
+gloss is typed as a definition. Typed as a requirement, divergence is a detector.**
+
+### ⚠️ The independent argument: `requires` is currently an UNVERIFIABLE promise
+
+`requires: ['policy_class/2']` asserts another clause defines it. Nothing checks the claim (Q-22),
+and even once a clause *does* define something, **nothing can tell whether it is the same thing**,
+because names agree at 0.00. A gloss is the only artifact that could make the link checkable. Without
+one, `requires` is a promise with no way to be kept **or broken**.
+
+### What it costs, honestly
+
+- ⛔ `schema.py` is **WATCHED**: guard acceptance, and a `contract_hash` change re-translates the
+  corpus per Q-20's ruling. ⭐ At **13 of 593 clauses** that cost is near its lifetime minimum — it
+  will only ever get more expensive.
+- ⚠️ A borrower may write a confident wrong gloss. That is the *point*: it becomes checkable against
+  the owner's gloss. Today it fails silently instead.
+- It does **not** fix Q-22 — an unsatisfied `requires` still needs to become an error. Orthogonal.
+
+⛔ **Not decided.** The alternative worth rejecting by name if this is adopted: *"resolve borrows
+from the document instead"* — six experiments, ending at **0.00** vocabulary agreement and 0 shared
+rule shapes for 6 of 8 concepts (`resolve_runs/ITERATION_LOG.md`).
