@@ -392,6 +392,53 @@ def score(run_paths, doc_path):
         print(f"  {str(pred):38} "
               f"{('n/a' if a is None else f'{a:.2f}'):>10} {i:>7} {u:>6}")
 
+    # ---- F2. where does section agreement actually go? --------------------
+    # ⭐ THE SHARPEST RESULT IN THIS FILE, and it is invisible in F's totals.
+    # Retrieval agreement is a ROUND-1 phenomenon. Round 1 asks every run the
+    # same question -- "what defines this concept?" -- and they answer it
+    # together. Rounds 2+ ask "what defines the predicates YOU opened", and
+    # those predicates agree at 0.00, so each run is retrieving for a different
+    # question. The retrieval is not degrading; it is being aimed at divergent
+    # targets by the loop itself.
+    print("\nF2 · ⭐ SECTION AGREEMENT, BY ROUND")
+    by_round = {}
+    for name, data in runs:
+        for c in data.get("concepts", []):
+            for r in c.get("rounds", []):
+                s = {x.get("section_id")
+                     for x in (r.get("passages") or [])} - {None}
+                by_round.setdefault(r.get("round"), {}).setdefault(
+                    c.get("predicate"), []).append(s)
+    for rd in sorted(k for k in by_round if k):
+        rows = [v for v in by_round[rd].values() if len(v) == len(runs)
+                and all(v)]
+        if not rows:
+            print(f"  round {rd:<2} — fewer than {len(runs)} runs reached it")
+            continue
+        ta = sum(len(set.intersection(*v)) for v in rows)
+        tu = sum(len(set().union(*v)) for v in rows)
+        print(f"  round {rd:<2} alone ({len(rows)} concepts): "
+              f"in all {len(runs)}: {ta:>3}   union: {tu:>3}   "
+              f"agreement {ta/tu if tu else 0:.2f}")
+    print("  cumulative:")
+    for N in sorted(k for k in by_round if k):
+        acc = {}
+        for name, data in runs:
+            for c in data.get("concepts", []):
+                s = set()
+                for r in c.get("rounds", []):
+                    if (r.get("round") or 99) <= N:
+                        s |= {x.get("section_id")
+                              for x in (r.get("passages") or [])} - {None}
+                acc.setdefault(c.get("predicate"), []).append(s)
+        rows = [v for v in acc.values() if len(v) == len(runs) and all(v)]
+        ta = sum(len(set.intersection(*v)) for v in rows)
+        tu = sum(len(set().union(*v)) for v in rows)
+        print(f"     through round {N}: in all {len(runs)}: {ta:>3}   "
+              f"union: {tu:>3}   agreement {ta/tu if tu else 0:.2f}")
+    print("  ⛔ if the 'in all' column is FLAT while 'union' climbs, every "
+          "section\n     the later rounds found is one some run found alone.")
+
     # ---- G. consolidation -------------------------------------------------
     print("\nG · CONSOLIDATION — which rules do the runs actually share?")
     print("     matched on (head, body-predicate set), NOT on text")

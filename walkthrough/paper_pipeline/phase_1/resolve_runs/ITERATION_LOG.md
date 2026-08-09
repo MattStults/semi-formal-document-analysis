@@ -245,3 +245,39 @@ discharge a predicate by paraphrasing the head. Only what survives that is evide
 document.
 
 ⛔ **The one thing not rescued by any of that is (1)**, and it is also the thing five runs agreed on.
+
+### ⭐ Do the runs find the SAME SECTIONS? Yes — in round 1, and only in round 1
+
+Matt asked this directly. Sections cited per concept, five runs, same 8 concepts:
+
+| | all-5 | union | agreement | cited by exactly ONE run |
+|---|---|---|---|---|
+| **single-turn retrieval** (`subset_run1..5`) | 9 | 14 | **0.64** | 3 of 14 (21%) |
+| **multi-turn iterative** (`iter_run1..5`) | 7 | 24 | **0.29** | 8 of 24 (33%) |
+
+Single-turn: **5 of 8 concepts unanimous at 1.00**, and 7 of 8 share at least one section. So the
+answer to *"do they typically find the same supporting sections"* is **yes** — retrieval was never
+the weak link.
+
+⛔ **Multi-turn made it worse, and the by-round split says exactly how:**
+
+| | in all 5 | union | agreement |
+|---|---|---|---|
+| round 1 alone (8 concepts) | 7 | 9 | **0.78** |
+| round 2 alone (4 concepts) | 3 | 10 | 0.30 |
+| round 3 alone (1 concept) | **0** | 3 | **0.00** |
+| cumulative through 1 / 2 / 3 / 4 | 7 / **7 / 7 / 7** | 9 / 19 / 24 / 24 | 0.78 / 0.37 / 0.29 / 0.29 |
+
+⭐ **The all-5 column never moves after round 1.** Fifteen sections are added across rounds 2–4 and
+**not one of them is found by all five runs.** Every section the iteration discovered is a section
+some single run found alone.
+
+⇒ **The mechanism, and it is not a retrieval defect.** Round 1 asks all five runs the *same*
+question — *"what defines this concept?"* — and they converge on it at 0.78. Rounds 2+ ask *"what
+defines the predicates YOU just opened"*, and those predicates agree at **0.00**. The later rounds
+are retrieving competently against five different questions. **The loop manufactures the divergence
+it then propagates.**
+
+⚠️ **This is the strongest argument yet that the resolution target should be the CONCEPT, not the
+predicate** — which is the same shape as experiment 4's 4/4, arrived at from the opposite direction.
+Recorded, not ruled: see `OPEN_QUESTIONS.md` Q-6.
