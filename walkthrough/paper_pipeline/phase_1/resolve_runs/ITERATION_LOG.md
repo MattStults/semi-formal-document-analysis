@@ -281,3 +281,73 @@ it then propagates.**
 ⚠️ **This is the strongest argument yet that the resolution target should be the CONCEPT, not the
 predicate** — which is the same shape as experiment 4's 4/4, arrived at from the opposite direction.
 Recorded, not ruled: see `OPEN_QUESTIONS.md` Q-6.
+
+## 7 · EXTENSIONAL identity — the concept IS the text it points at
+
+**Matt's proposal, 2026-08-08, and it inverts the whole line of attack.** Stop trying to say what a
+borrowed predicate *means*. Let its identity be **the region of the document it is grounded in**.
+Names that point at the same text are the same concept; a name is then just a label drawn from the
+set and any member will do. Relations fall out of set algebra — containment is specialisation,
+intersection a shared component, disjointness independence.
+
+⭐ **The measurements favour this over anything tried in §1–6.** It builds identity out of section
+retrieval, the *only* signal that survived repetition (0.78 across five runs, 5 of 8 concepts
+unanimous), and discards predicate vocabulary, which never did (0.06 → 0.00). It is also **statically
+checkable**, which no definition ever was: a span is in the document or it is not.
+
+### ⛔ But the stored data cannot test it — the extension encodes the CLAUSE, not the concept
+
+`extension_id.py` over `solver_v4.json`, 41 predicates with locatable verbatim excerpts:
+
+| character-Jaccard band | pairs | **share a borrowing clause** |
+|---|---|---|
+| 1.00 | 5 | **5 (100%)** |
+| 0.8+ | 1 | 1 (100%) |
+| 0.5+ | 8 | 8 (100%) |
+| any overlap at all | 31 | 26 (84%) |
+| **baseline, all 820 pairs** | | **104 (13%)** |
+
+⇒ **Similarity is measuring provenance.** The resolver was told which clause wanted each predicate,
+so it cited that clause's home passage — **the same passage for every predicate that clause
+borrows.** `includes_malicious_instructions` and `not_read_carefully` score **1.00** because both are
+`m0105`'s, not because they mean the same thing.
+
+Two more results that indict the instrument rather than the idea:
+
+- ⛔ **`interactable_entity/1` and `interaction_entity/1` have no locatable extension at all.**
+  `m0053`'s twins are the exact defect Q-6 names, and the method is **silent** on them.
+- ⚠️ **The only genuine cross-clause synonym pair — `transformation_of_user_content` (`m0255`) and
+  `translation_of_user_content` (`m0150`) — merges at SECTION granularity and separates at SPAN
+  granularity.** The granularity that removes the confound also destroys the signal.
+- The 29 "cross-clause" section-level merges are a single `m0091 × m0079` cross-product: two clauses
+  that share a section.
+
+⚠️ **Two instrument defects found and fixed here too**, both of which had already produced output I
+was about to read: any-overlap identity is dominated by how much text a model chose to quote (one
+long excerpt overlaps everything), and union-find takes the *transitive closure* of overlap, so
+A–B and B–C chained unrelated names into one 8-member blob. Together they manufactured a containment
+table whose 16 pairs had the **same right-hand side 15 times**. Replaced with character-Jaccard and
+no chaining.
+
+### ⭐ PRE-REGISTERED: the clause-blind retrieval experiment
+
+The confound has one cause — the resolver knew the borrowing clause. Remove it: hand the model the
+whole document and a **shuffled list of predicate names with no clause id, no section of origin, and
+no grouping**, and ask where each is grounded. The extension then cannot encode provenance.
+
+⭐ **The confound becomes the control.** Predicates borrowed by the SAME clause that are plainly
+different conditions are a ready-made negative key — nothing about clause-blind retrieval should put
+them on the same text.
+
+**Written before the run, per `REPRODUCIBILITY.md`'s sandwich rule:**
+
+| | prediction | what it decides |
+|---|---|---|
+| P1 | same-clause pairs drop from **100%** of the high-similarity band toward the **13%** baseline | if it stays high, extension identity is provenance and the idea fails on this corpus |
+| P2 | `interactable_entity/1` and `interaction_entity/1` land on **overlapping text** | the case the whole proposal is for |
+| P3 | `transformation_of_user_content/1` and `translation_of_user_content/1` land on overlapping text **despite different clauses** | cross-clause synonymy is detectable at all |
+| P4 | `unnecessary_request/1` and `unreliable_destination/1` (both `m0150`, different conditions) **separate** | the negative control; if these still merge, granularity is too coarse regardless of the confound |
+| P5 | the 6 known coinages resolve to **no span** | a name with no grounding must get an empty extension, not a guessed one |
+
+⛔ **P1 and P4 are the falsifiers.** Either alone sinks the extensional design as stated; P2/P3
+failing would mean it works but not for the case that motivated it.
