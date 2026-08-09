@@ -370,6 +370,76 @@ be generated; it cannot, and that was the only unmeasured premise in arm C.
 
 ---
 
+## Q-22 ⛔ DEFECT, not a question — a borrowed predicate can vanish from the signature
+
+**Found 2026-08-09, while answering Matt's "are we off track?".** It is the answer.
+
+`probe.situation_signature` is `inputs ∪ (head-less predicates DECLARED IN THE CONCEPT TABLE)`.
+A **borrowed** predicate is head-less and, per Q-6, is exactly the thing the concept table does not
+cover. So it matches neither term and is **silently dropped**: no module derives it, no situation
+sets it, and nothing reports that it went missing.
+
+### What it does, on a real committed module `[RAN]`
+
+`m0079` references `conflicts_with_higher_authority/1` in a rule body. It is head-less, absent from
+`inputs`, and absent from the concept table — which declares the *differently named*
+`higher_authority_conflict/1`.
+
+```
+applicable_instruction(I) :- o, instruction(I), not higher_authority_conflict(I),
+                                                not later_same_authority_conflict(I).
+higher_authority_conflict(I) :- o, instruction(I), conflicts_with_higher_authority(I).
+```
+
+⇒ `conflicts_with_higher_authority(I)` can never be true
+⇒ `higher_authority_conflict(I)` can never be true
+⇒ `not higher_authority_conflict(I)` is **always** true
+⇒ ⛔ **the module collapses to "every instruction is applicable"**, and the clause's entire content
+— instructions being superseded by higher authority — is **inert**.
+
+**The probe reads green**, because the predicate is not in the signature, so no enumerated situation
+ever toggles it and nothing can test the dead branch.
+
+### Scale `[RAN]`
+
+| | n |
+|---|---|
+| modules examined | 19 |
+| ⛔ with a referenced, head-less predicate **missing from the signature** | **6 (32%)** |
+| of those, the orphan gates a **negated** literal — always-true branch, WRONG output | 1 |
+| the rest are positive-only — the rule **never fires**, MISSING output | 5 |
+
+Both are silent. `m0255` loses `out_of_scope/2`, `policy_class/2`, `scope/2`; `m0105` loses four;
+`m0134` loses `task/1`; `m0150` loses `translation_of_user_content/1`.
+
+### ⭐ Why this reframes the whole resolution line
+
+Satisfying a required input has **three** discharge routes, and every experiment in
+`resolve_runs/` pursued only the second:
+
+| | route | what it needs | status |
+|---|---|---|---|
+| 1 | **declare it as a situation input** — stage 3 toggles it true and false | nothing. Mechanical. **No document, no model** | ⛔ **THE MISSING ONE. 32% of modules fail here** |
+| 2 | another module derives it | cross-module symbol identity | `[RAN]` names cannot do it (**0.00** across repeat translations); extension is the only stable key (**97%**) |
+| 3 | genuinely undischargeable — `contradicts/2`, `makes_irrelevant/2` | must become an **explicit open input**, never silence | the one thing 5 of 5 iterative runs agreed on |
+
+⇒ **A predicate does not need a meaning to be satisfied. It needs to be DECLARED.** The resolution
+work was not wrong, it was **premature** — it answers route 2, which only matters once route 1 holds.
+
+### Two candidate fixes, neither chosen
+
+- **(i) widen the signature rule** — include every referenced head-less predicate, declared or not.
+  ⚠️ `max_signature` is 10 (2^10 candidates ≈ 0.8 s); `m0105` alone would add four, so this needs a
+  measured look at signature growth before it is safe.
+- **(ii) widen the stage-1 contract** — require a clause to declare every symbol it borrows. This is
+  Q-6's original question, and it manufactures problem #9 at source.
+
+⛔ **Independent of which:** a referenced head-less predicate reaching neither route must be a **hard
+error**, not a silent drop. That is the anti-cheat perimeter shape used everywhere else in this
+repo, and its absence here is why a module can delete its own clause and pass.
+
+---
+
 ## Q-7 · `STEP_stage4.md` §2.3's `act/1` template cannot be implemented as written
 
 It renders `produce(M)` as *"producing the material"*. But `[RAN]` **no module in the corpus
