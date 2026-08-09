@@ -337,6 +337,37 @@ document-derived, statically-checked vocabulary is a materially different artifa
 **lookup arm C requires and lacks**, so building it makes the A/B/C comparison possible rather than
 pre-empting it. A one-off experiment is being run before any design is written.
 
+### ⛔ THE EXPERIMENTS ARE DONE, AND THEY CONSTRAIN THE ANSWER — 2026-08-08
+
+Six experiments in `resolve_runs/ITERATION_LOG.md`. The ones that bear on the decision:
+
+| | `[RAN]` |
+|---|---|
+| can a concept map **predict** the names a translator will coin? | **1 of 32**, then **0 of 32** with 268 candidates on the table |
+| asked **concept-level** instead of name-level, can a model say where a borrowed concept is established? | **4 of 4** — the framing was the problem, not the model |
+| do five runs **formalizing** the same concept agree on vocabulary? | agreement **0.06**; 27 of 51 borrowed names appear in exactly **one** run |
+| ⭐ does **iterating to self-sufficiency** fix that? | agreement **0.00** on all 8 concepts; **0** rule shapes shared by ≥3 of 5 runs for 6 of 8 concepts |
+
+⚠️ **The runs are individually good** — 89% of passages verbatim, clingo accepts 94%, only 1 of 40
+faked closure. Five careful, document-grounded definitions that do not overlap. This is not a
+capability result and cannot be fixed by a better model or a longer prompt.
+
+⭐ **The one thing that DOES converge is the document's own `**Term**:` inventory.** Every name five
+independent runs agree on is either a name we handed them or a term the document names outright.
+
+⇒ **What is now decidable, and it is Matt's call:**
+
+- **arm C is buildable only over the document's own named terms**, and must then *refuse* rather
+  than guess for everything else. That is a much smaller lookup than the design assumes, and it
+  leaves the 6 symbols that appear nowhere in the document permanently unresolvable — which is a
+  true statement about those symbols, not a gap in the lookup.
+- **or arm C is abandoned** and stage 1 changes its contract so a clause must gloss what it
+  borrows — accepting problem #9 at source, now with a measured price: **20%** of reused names
+  already carry conflicting definitions.
+
+⛔ **Neither is chosen here.** What the experiments remove is the option of assuming the lookup can
+be generated; it cannot, and that was the only unmeasured premise in arm C.
+
 ---
 
 ## Q-7 · `STEP_stage4.md` §2.3's `act/1` template cannot be implemented as written

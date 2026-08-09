@@ -549,3 +549,43 @@ in the fourth column — **and every guard whose message names one of our own to
 candidate. For each: write the transform, run both programs, compare answer sets. If the transform
 exists, the guard goes and the transform lives in the render path. If it does not, say *why* in the
 guard, with the failed candidate readings **named**, so the next reader does not re-derive it.
+
+---
+
+## 17 ⛔ The VERBATIM CHECKER has now been the broken instrument three times
+
+Every experiment in `resolve_runs/` asks the same mechanical question — *did the model
+quote the document, or paraphrase it?* — and the check is a substring test after
+normalisation. **Three times the first reported number was wrong, and every time it was
+the NORMALISER, not the model.**
+
+| reported | true | what the normaliser was missing |
+|---|---|---|
+| 80% | 100% | `[^footnote]` markers, curly quotes |
+| 76% | — | (carried forward, believed settled) |
+| 76% | **88%** | `**markdown emphasis**` — one model stripped it, another kept it |
+
+⭐ **The tell is a SPLIT within one run.** In `iter_run1` the same model emitted
+`Assistant: the entity…` (stars stripped) and `**Root**: Fundamental root rules…`
+(stars kept), and only the first failed. A model is not that inconsistent about how it
+quotes; a *checker* is exactly that inconsistent about what it tolerates. **A failure
+mode that splits within a single run is nearly always the instrument.**
+
+⚠️ **What is and is not a legitimate normalisation.** Strip things that are *formatting
+carried by the file* — footnote markers, emphasis markers, quote-glyph variants,
+whitespace runs. Do NOT strip content words, punctuation that changes meaning, or
+bracketed text like `[restricted]` that the document uses as a term of art. The test for a
+proposed transform: *if the document were rendered to plain prose, would this disappear?*
+Stars and footnote markers would; `[restricted]` would not.
+
+⛔ **Do not trust a verbatim rate until you have looked at the failures.** Run the
+per-excerpt probe and read the first half-dozen. In all three cases above, six excerpts
+were enough to see the pattern, and in all three cases the number had already been
+reported to Matt before anyone looked.
+
+**The check to run** (`iter_score.py` has it as `normalise`): for each miss, test the raw
+fragment against (a) the named section, (b) the whole document, (c) the section under each
+candidate extra transform. A fragment that passes (b) but not (a) is a *model* error —
+right words, wrong section. A fragment that only passes under a new transform is a
+*checker* error, and the transform belongs in `normalise` with a comment saying which
+measured number it changed.

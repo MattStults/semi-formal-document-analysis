@@ -1,0 +1,763 @@
+{
+  "concepts": [
+    {
+      "predicate": "agreed_scope/1",
+      "used_by": {
+        "clause_id": "m0134",
+        "section_id": "scope_of_autonomy"
+      },
+      "contributing": [
+        {
+          "section_id": "scope_of_autonomy",
+          "excerpt": "clear, mutually understood **scope of autonomy** shared between the assistant and the user. This scope defines:",
+          "how_it_contributes": "Defines what the agreed scope is and what it encompasses."
+        },
+        {
+          "section_id": "scope_of_autonomy",
+          "excerpt": "The assistant must adhere strictly to the agreed scope (subject to the chain of command) unless explicitly updated and approved by the original user or developer",
+          "how_it_contributes": "Establishes the binding nature of the agreed scope."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "applicable/1",
+      "used_by": {
+        "clause_id": "m0091",
+        "section_id": "follow_all_applicable_instructions"
+      },
+      "contributing": [
+        {
+          "section_id": "follow_all_applicable_instructions",
+          "excerpt": "The assistant must strive to follow all *applicable instructions* when producing a response.",
+          "how_it_contributes": "Core definition of applicable instructions as those the assistant should follow."
+        },
+        {
+          "section_id": "follow_all_applicable_instructions",
+          "excerpt": "a candidate instruction is *not applicable* to the request if it is misaligned with an applicable higher-level instruction, superseded by an instruction in a later message at the same level, or suspected to be mistaken",
+          "how_it_contributes": "Defines conditions under which an instruction is NOT applicable."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "broader_scope_substantially_improves/1",
+      "used_by": {
+        "clause_id": "m0134",
+        "section_id": "scope_of_autonomy"
+      },
+      "contributing": [
+        {
+          "section_id": "scope_of_autonomy",
+          "excerpt": "If a task cannot be completed within the existing scope, or a broader scope would substantially improve results, the assistant should notify the user and seek approval.",
+          "how_it_contributes": "Defines the condition for when a broader scope substantially improves results."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "can_proceed/1",
+      "used_by": {
+        "clause_id": "m0091",
+        "section_id": "follow_all_applicable_instructions"
+      },
+      "contributing": [
+        {
+          "section_id": "follow_all_applicable_instructions",
+          "excerpt": "If an instruction cannot be fulfilled, the assistant should be explicit about this (while following the correct [style](#refusal_style); see also [?](#protect_privileged_information) for caveats) and then attempt to follow the remaining instructions; or simply refuse to comply if there is no way to proceed.",
+          "how_it_contributes": "Defines when the assistant can proceed vs when it must refuse."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "capable/1",
+      "used_by": {
+        "clause_id": "m0091",
+        "section_id": "follow_all_applicable_instructions"
+      },
+      "contributing": [
+        {
+          "section_id": "follow_all_applicable_instructions",
+          "excerpt": "Inapplicable instructions should typically be ignored. The **only** other reason an instruction should be ignored is if it is beyond the assistant's capabilities",
+          "how_it_contributes": "Defines capability as a condition for following instructions."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "conflicts_with_higher_authority/1",
+      "used_by": {
+        "clause_id": "m0079",
+        "section_id": "follow_all_applicable_instructions"
+      },
+      "contributing": [
+        {
+          "section_id": "follow_all_applicable_instructions",
+          "excerpt": "The assistant must strive to follow all *applicable instructions* when producing a response. This includes all system, developer and user instructions except for those that conflict with a higher-authority instruction",
+          "how_it_contributes": "Defines that instructions conflicting with higher authority are not applicable."
+        },
+        {
+          "section_id": "follow_all_applicable_instructions",
+          "excerpt": "An instruction is *misaligned* if it is in conflict with either the letter or the implied intent behind some higher-level instruction.",
+          "how_it_contributes": "Clarifies what conflict with higher authority means."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "conflicts_with_later_same_authority/1",
+      "used_by": {
+        "clause_id": "m0079",
+        "section_id": "follow_all_applicable_instructions"
+      },
+      "contributing": [
+        {
+          "section_id": "follow_all_applicable_instructions",
+          "excerpt": "The assistant must strive to follow all *applicable instructions* when producing a response. This includes all system, developer and user instructions except for those that conflict with a higher-authority instruction or a later instruction at the same authority",
+          "how_it_contributes": "Defines that later instructions at the same authority level override earlier ones."
+        },
+        {
+          "section_id": "follow_all_applicable_instructions",
+          "excerpt": "An instruction is *superseded* if an instruction in a later message at the same level either contradicts it, overrides it, or otherwise makes it irrelevant",
+          "how_it_contributes": "Explains what it means for a same-authority instruction to be superseded."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "corrupted_webpage/1",
+      "used_by": {
+        "clause_id": "m0105",
+        "section_id": "letter_and_spirit"
+      },
+      "contributing": [
+        {
+          "section_id": "letter_and_spirit",
+          "excerpt": "If the provenance of instructions is unclear. For example, the user might paste (without quotes) some text that they haven't read carefully and includes malicious instructions, or delegate authority to a webpage which has been corrupted by an adversary since the last time the user checked it",
+          "how_it_contributes": "Defines a corrupted webpage as one that has been corrupted by an adversary."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "critical_high_severity_harm/1",
+      "used_by": {
+        "clause_id": "m0014",
+        "section_id": "red_line_principles"
+      },
+      "contributing": [
+        {
+          "section_id": "red_line_principles",
+          "excerpt": "Our models should never be used to facilitate critical and high severity harms, such as acts of violence (e.g., crimes against humanity, war crimes, genocide, torture, human trafficking or forced labor), creation of cyber, biological or nuclear weapons (e.g., weapons of mass destruction), terrorism, child abuse (e.g., creation of CSAM), persecution or mass surveillance.",
+          "how_it_contributes": "Defines what constitutes critical and high severity harms with specific examples."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "delegated_authority_to_webpage/1",
+      "used_by": {
+        "clause_id": "m0105",
+        "section_id": "letter_and_spirit"
+      },
+      "contributing": [
+        {
+          "section_id": "letter_and_spirit",
+          "excerpt": "the user might paste (without quotes) some text that they haven't read carefully and includes malicious instructions, or delegate authority to a webpage which has been corrupted by an adversary since the last time the user checked it",
+          "how_it_contributes": "Defines delegation of authority to a webpage as a form of instruction sourcing."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "delegated_corrupted_webpage/1",
+      "used_by": {
+        "clause_id": "m0105",
+        "section_id": "letter_and_spirit"
+      },
+      "contributing": [
+        {
+          "section_id": "letter_and_spirit",
+          "excerpt": "delegate authority to a webpage which has been corrupted by an adversary since the last time the user checked it",
+          "how_it_contributes": "Defines the case where delegated authority points to a corrupted webpage."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "disallowed/1",
+      "used_by": {
+        "clause_id": "m0079",
+        "section_id": "follow_all_applicable_instructions"
+      },
+      "contributing": [
+        {
+          "section_id": "follow_all_applicable_instructions",
+          "excerpt": "Inapplicable instructions should typically be ignored.",
+          "how_it_contributes": "Instructions that are not applicable are disallowed from being followed."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "medium"
+    },
+    {
+      "predicate": "evidence_to_contrary/1",
+      "used_by": {
+        "clause_id": "m0165",
+        "section_id": "assume_best_intentions"
+      },
+      "contributing": [
+        {
+          "section_id": "assume_best_intentions",
+          "excerpt": "Unless given evidence to the contrary, it should assume that users have a weak preference towards self-actualization, kindness, the pursuit of truth, and the general flourishing of humanity",
+          "how_it_contributes": "Defines evidence to the contrary as factual indicators contradicting an assumption."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "explicitly_updated_and_approved/1",
+      "used_by": {
+        "clause_id": "m0134",
+        "section_id": "scope_of_autonomy"
+      },
+      "contributing": [
+        {
+          "section_id": "scope_of_autonomy",
+          "excerpt": "The assistant must adhere strictly to the agreed scope (subject to the chain of command) unless explicitly updated and approved by the original user or developer",
+          "how_it_contributes": "Defines the condition for updating an agreed scope."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "forbids/2",
+      "used_by": {
+        "clause_id": "m0255",
+        "section_id": "transformation_exception"
+      },
+      "contributing": [
+        {
+          "section_id": "transformation_exception",
+          "excerpt": "The transformation exception does not override any policies other than those on [restricted](#restricted_content) or [sensitive content](#sensitive_content); if other policies forbid producing certain material, the assistant should still follow them",
+          "how_it_contributes": "Defines that policies can forbid producing certain material."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "fulfillable/1",
+      "used_by": {
+        "clause_id": "m0091",
+        "section_id": "follow_all_applicable_instructions"
+      },
+      "contributing": [
+        {
+          "section_id": "follow_all_applicable_instructions",
+          "excerpt": "If an instruction cannot be fulfilled, the assistant should be explicit about this",
+          "how_it_contributes": "Defines what it means for an instruction to be fulfillable."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "includes_malicious_instructions/1",
+      "used_by": {
+        "clause_id": "m0105",
+        "section_id": "letter_and_spirit"
+      },
+      "contributing": [
+        {
+          "section_id": "letter_and_spirit",
+          "excerpt": "the user might paste (without quotes) some text that they haven't read carefully and includes malicious instructions",
+          "how_it_contributes": "Defines text that includes malicious instructions as a problematic case."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "instruction/1",
+      "used_by": {
+        "clause_id": "m0091",
+        "section_id": "follow_all_applicable_instructions"
+      },
+      "contributing": [
+        {
+          "section_id": "follow_all_applicable_instructions",
+          "excerpt": "Candidate instructions include all instructions in the Model Spec, as well as all instructions in unquoted plain text in system, developer, and user messages in the input conversation. Each instruction is assigned the authority level of the containing spec section or message (respectively).",
+          "how_it_contributes": "Defines what counts as an instruction and how they are sourced."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "interactable_entity/1",
+      "used_by": {
+        "clause_id": "m0053",
+        "section_id": "definitions"
+      },
+      "contributing": [],
+      "if_undefined": "well-understood",
+      "undefined_reason": "The concept of an entity that can be interacted with is a basic logical/semantic notion that doesn't require formal definition in this policy document. Readers understand entities and interactions as fundamental concepts.",
+      "confidence": "high"
+    },
+    {
+      "predicate": "interaction_entity/1",
+      "used_by": {
+        "clause_id": "m0053",
+        "section_id": "definitions"
+      },
+      "contributing": [],
+      "if_undefined": "well-understood",
+      "undefined_reason": "The concept of an entity involved in an interaction is a basic semantic notion. Readers understand this as a natural component of any interaction context.",
+      "confidence": "high"
+    },
+    {
+      "predicate": "material_type/2",
+      "used_by": {
+        "clause_id": "m0255",
+        "section_id": "transformation_exception"
+      },
+      "contributing": [
+        {
+          "section_id": "transformation_exception",
+          "excerpt": "The transformation exception does not override any policies other than those on [restricted](#restricted_content) or [sensitive content](#sensitive_content); if other policies forbid producing certain material, the assistant should still follow them",
+          "how_it_contributes": "Defines material types implicitly as restricted, sensitive, or other policy-governed categories."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "medium"
+    },
+    {
+      "predicate": "new_material/1",
+      "used_by": {
+        "clause_id": "m0255",
+        "section_id": "transformation_exception"
+      },
+      "contributing": [
+        {
+          "section_id": "transformation_exception",
+          "excerpt": "The key principle is that the assistant should only output material drawn from the user's own input, without adding new disallowed content or refining dangerous details.",
+          "how_it_contributes": "Defines new material as content added beyond what the user provided."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "not_read_carefully/1",
+      "used_by": {
+        "clause_id": "m0105",
+        "section_id": "letter_and_spirit"
+      },
+      "contributing": [
+        {
+          "section_id": "letter_and_spirit",
+          "excerpt": "the user might paste (without quotes) some text that they haven't read carefully and includes malicious instructions",
+          "how_it_contributes": "Defines text that has not been read carefully by the user as a problematic source."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "out_of_scope/2",
+      "used_by": {
+        "clause_id": "m0255",
+        "section_id": "transformation_exception"
+      },
+      "contributing": [
+        {
+          "section_id": "transformation_exception",
+          "excerpt": "The transformation exception does not override any policies other than those on [restricted](#restricted_content) or [sensitive content](#sensitive_content); if other policies forbid producing certain material, the assistant should still follow them. There is no \"good cause\" exception for the restricted and sensitive content policies, and the assistant should not supply new disallowed material even for seemingly legitimate research or analysis purposes. The policy only applies to *information*, not actions; the assistant should not perform a prohibited action just because it's a \"translation\" of user-provided content.",
+          "how_it_contributes": "Defines scope limitations on the transformation exception."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "out_of_scope_action/1",
+      "used_by": {
+        "clause_id": "m0134",
+        "section_id": "scope_of_autonomy"
+      },
+      "contributing": [
+        {
+          "section_id": "scope_of_autonomy",
+          "excerpt": "No exceptions apply, even if an out-of-scope action seems to be in the user's best interest.",
+          "how_it_contributes": "Defines out-of-scope actions as those not permitted within the agreed scope."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "pasted_text/1",
+      "used_by": {
+        "clause_id": "m0105",
+        "section_id": "letter_and_spirit"
+      },
+      "contributing": [
+        {
+          "section_id": "letter_and_spirit",
+          "excerpt": "For example, a user might just paste an error message (hoping for an explanation); a piece of code and test failures (hoping for a fix); or an image (hoping for a description).",
+          "how_it_contributes": "Defines pasted text as content directly provided by the user without framing."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "pasted_unread_text/1",
+      "used_by": {
+        "clause_id": "m0105",
+        "section_id": "letter_and_spirit"
+      },
+      "contributing": [
+        {
+          "section_id": "letter_and_spirit",
+          "excerpt": "the user might paste (without quotes) some text that they haven't read carefully and includes malicious instructions, or delegate authority to a webpage which has been corrupted by an adversary since the last time the user checked it",
+          "how_it_contributes": "Defines pasted unread text as content pasted without careful review by the user."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "policy_class/2",
+      "used_by": {
+        "clause_id": "m0255",
+        "section_id": "transformation_exception"
+      },
+      "contributing": [
+        {
+          "section_id": "transformation_exception",
+          "excerpt": "The transformation exception does not override any policies other than those on [restricted](#restricted_content) or [sensitive content](#sensitive_content)",
+          "how_it_contributes": "Defines policy classes as restricted and sensitive content categories."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "produced/1",
+      "used_by": {
+        "clause_id": "m0255",
+        "section_id": "transformation_exception"
+      },
+      "contributing": [
+        {
+          "section_id": "transformation_exception",
+          "excerpt": "The key principle is that the assistant should only output material drawn from the user's own input, without adding new disallowed content or refining dangerous details.",
+          "how_it_contributes": "Defines produced material as assistant output."
+        },
+        {
+          "section_id": "transformation_exception",
+          "excerpt": "if other policies forbid producing certain material, the assistant should still follow them",
+          "how_it_contributes": "Clarifies that policies can forbid producing specific types of material."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "prohibited_action/1",
+      "used_by": {
+        "clause_id": "m0150",
+        "section_id": "control_side_effects"
+      },
+      "contributing": [
+        {
+          "section_id": "scope_of_autonomy",
+          "excerpt": "High-risk activities (e.g., hacking, deception, resource acquisition, spawning sub-agents, self-modification) are always prohibited unless explicitly authorized by applicable instructions",
+          "how_it_contributes": "Defines prohibited actions as high-risk activities that require explicit authorization."
+        },
+        {
+          "section_id": "transformation_exception",
+          "excerpt": "the assistant should not perform a prohibited action just because it's a \"translation\" of user-provided content",
+          "how_it_contributes": "Clarifies that prohibited actions remain prohibited even in transformation contexts."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "refusal_style/1",
+      "used_by": {
+        "clause_id": "m0091",
+        "section_id": "follow_all_applicable_instructions"
+      },
+      "contributing": [
+        {
+          "section_id": "follow_all_applicable_instructions",
+          "excerpt": "If an instruction cannot be fulfilled, the assistant should be explicit about this (while following the correct [style](#refusal_style)",
+          "how_it_contributes": "References a specific refusal style that should be followed when refusing."
+        }
+      ],
+      "if_undefined": "ambiguous-and-undefined",
+      "undefined_reason": "The document references a specific refusal style by link but does not define what that style entails in this section. The actual definition appears in a separate section (refusal_style) that would need to be consulted. Readers could disagree about what tone, length, or approach constitutes proper refusal style without seeing the full definition.",
+      "confidence": "medium"
+    },
+    {
+      "predicate": "remaining_instructions/2",
+      "used_by": {
+        "clause_id": "m0091",
+        "section_id": "follow_all_applicable_instructions"
+      },
+      "contributing": [
+        {
+          "section_id": "follow_all_applicable_instructions",
+          "excerpt": "then attempt to follow the remaining instructions; or simply refuse to comply if there is no way to proceed.",
+          "how_it_contributes": "Defines remaining instructions as those that can still be followed after some are deemed unfulfillable."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "reputable_tool/1",
+      "used_by": {
+        "clause_id": "m0150",
+        "section_id": "control_side_effects"
+      },
+      "contributing": [
+        {
+          "section_id": "control_side_effects",
+          "excerpt": "When considering tool calls, the assistant should evaluate the trustworthiness of both the tool itself and any specific endpoint or counterparty involved. Even calls through reputable tools can be risky if the destination seems unreliable or requests information that is unnecessary for the user's task.",
+          "how_it_contributes": "Defines reputable tools as those with established trustworthiness, while noting that reputation alone doesn't eliminate risk."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "rule_set_by_openai_transmittable_or_overridable_via_system_message_not_overridable_by_developer_or_user/1",
+      "used_by": {
+        "clause_id": "m0037",
+        "section_id": "levels_of_authority"
+      },
+      "contributing": [
+        {
+          "section_id": "levels_of_authority",
+          "excerpt": "**System**: Rules set by OpenAI that can be transmitted or overridden through system messages, but cannot be overridden by developers or users.",
+          "how_it_contributes": "Directly defines the system authority level and its transmission/override properties."
+        },
+        {
+          "section_id": "levels_of_authority",
+          "excerpt": "System-level instructions can only be supplied by OpenAI, either through this Model Spec or detailed policies, or via a system message.",
+          "how_it_contributes": "Clarifies the source and delivery mechanisms for system-level rules."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "scope/2",
+      "used_by": {
+        "clause_id": "m0255",
+        "section_id": "transformation_exception"
+      },
+      "contributing": [
+        {
+          "section_id": "transformation_exception",
+          "excerpt": "The transformation exception does not override any policies other than those on [restricted](#restricted_content) or [sensitive content](#sensitive_content); if other policies forbid producing certain material, the assistant should still follow them. There is no \"good cause\" exception for the restricted and sensitive content policies, and the assistant should not supply new disallowed material even for seemingly legitimate research or analysis purposes. The policy only applies to *information*, not actions",
+          "how_it_contributes": "Defines the scope of the transformation exception policy."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "task/1",
+      "used_by": {
+        "clause_id": "m0134",
+        "section_id": "scope_of_autonomy"
+      },
+      "contributing": [
+        {
+          "section_id": "scope_of_autonomy",
+          "excerpt": "The assistant may be tasked with complex or multi-step goals (e.g., booking a trip, drafting a business plan, coordinating a software rollout) that involve real-world actions, sequential decisions, and filling in missing details.",
+          "how_it_contributes": "Defines tasks as complex, multi-step goals with real-world implications."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "tool_call/1",
+      "used_by": {
+        "clause_id": "m0150",
+        "section_id": "control_side_effects"
+      },
+      "contributing": [
+        {
+          "section_id": "control_side_effects",
+          "excerpt": "When considering tool calls, the assistant should evaluate the trustworthiness of both the tool itself and any specific endpoint or counterparty involved.",
+          "how_it_contributes": "Defines tool calls as invocations of tools with potential trustworthiness concerns."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "transformation_of_user_content/1",
+      "used_by": {
+        "clause_id": "m0255",
+        "section_id": "transformation_exception"
+      },
+      "contributing": [
+        {
+          "section_id": "transformation_exception",
+          "excerpt": "The assistant should comply with limited requests to transform or analyze content that the user has directly provided, even if the resulting output would ordinarily be disallowed as [restricted](#restricted_content) or [sensitive content](#sensitive_content). This includes tasks such as translating, paraphrasing, summarizing, classifying, encoding, formatting, or improving the grammar of user-provided text.",
+          "how_it_contributes": "Defines transformation of user content as tasks like translating, paraphrasing, summarizing, and similar operations."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "translation_of_user_content/1",
+      "used_by": {
+        "clause_id": "m0150",
+        "section_id": "control_side_effects"
+      },
+      "contributing": [
+        {
+          "section_id": "transformation_exception",
+          "excerpt": "This includes tasks such as translating, paraphrasing, summarizing, classifying, encoding, formatting, or improving the grammar of user-provided text.",
+          "how_it_contributes": "Identifies translation as a specific type of transformation covered by the exception."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "unnecessary_request/1",
+      "used_by": {
+        "clause_id": "m0150",
+        "section_id": "control_side_effects"
+      },
+      "contributing": [
+        {
+          "section_id": "control_side_effects",
+          "excerpt": "Even calls through reputable tools can be risky if the destination seems unreliable or requests information that is unnecessary for the user's task.",
+          "how_it_contributes": "Defines unnecessary requests as information requests not needed for the user's task."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "unreliable_destination/1",
+      "used_by": {
+        "clause_id": "m0150",
+        "section_id": "control_side_effects"
+      },
+      "contributing": [
+        {
+          "section_id": "control_side_effects",
+          "excerpt": "Even calls through reputable tools can be risky if the destination seems unreliable or requests information that is unnecessary for the user's task.",
+          "how_it_contributes": "Defines unreliable destinations as those where tool calls could pose risks."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "user/1",
+      "used_by": {
+        "clause_id": "m0165",
+        "section_id": "assume_best_intentions"
+      },
+      "contributing": [
+        {
+          "section_id": "assume_best_intentions",
+          "excerpt": "It should generally assume users have goals and preferences similar to an average, reasonable human being, avoiding unnecessary or trivial clarifying questions. It should interpret user requests helpfully and respectfully, assuming positive intent. Unless given evidence to the contrary, it should assume that users have a weak preference towards self-actualization, kindness, the pursuit of truth, and the general flourishing of humanity",
+          "how_it_contributes": "Defines user assumptions about goals, preferences, and positive intent."
+        },
+        {
+          "section_id": "definitions",
+          "excerpt": "**User**: a user of a product made by OpenAI (e.g., ChatGPT) or a third-party application built on the OpenAI API (e.g., a customer service chatbot for an e-commerce site).",
+          "how_it_contributes": "Defines what a user is in the context of this spec."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    },
+    {
+      "predicate": "cannot_complete_within_scope/1",
+      "used_by": {
+        "clause_id": "m0134",
+        "section_id": "scope_of_autonomy"
+      },
+      "contributing": [
+        {
+          "section_id": "scope_of_autonomy",
+          "excerpt": "If a task cannot be completed within the existing scope, or a broader scope would substantially improve results, the assistant should notify the user and seek approval.",
+          "how_it_contributes": "Defines the condition when a task cannot be completed within scope."
+        }
+      ],
+      "if_undefined": null,
+      "undefined_reason": null,
+      "confidence": "high"
+    }
+  ]
+}

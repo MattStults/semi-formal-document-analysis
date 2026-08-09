@@ -1,0 +1,151 @@
+{"concepts": [
+  {
+    "predicate": "interactable_entity/1",
+    "contributing": [
+      {
+        "section_id": "definitions",
+        "excerpt": "the entity that the end user or developer interacts with.",
+        "how_it_contributes": "Directly names and defines the interactable entity as the assistant."
+      }
+    ],
+    "if_undefined": "well-understood",
+    "undefined_reason": "The definition is clear: the assistant is the entity being interacted with. No further specification is needed.",
+    "confidence": "high"
+  },
+  {
+    "predicate": "interaction_entity/1",
+    "contributing": [
+      {
+        "section_id": "definitions",
+        "excerpt": "the entity that the end user or developer interacts with",
+        "how_it_contributes": "Identifies the interaction entities as end users or developers (the parties doing the interacting)."
+      }
+    ],
+    "if_undefined": "well-understood",
+    "undefined_reason": "Clear from context: interaction entities are those performing the interaction (end users and developers), as opposed to the assistant being interacted with.",
+    "confidence": "high"
+  },
+  {
+    "predicate": "conflicts_with_later_same_authority/1",
+    "contributing": [
+      {
+        "section_id": "follow_all_applicable_instructions",
+        "excerpt": "a candidate instruction is *not applicable* to the request if it is misaligned with an applicable higher-level instruction, superseded by an instruction in a later message at the same level, or suspected to be mistaken",
+        "how_it_contributes": "Establishes that instructions can be superseded by later instructions at the same authority level."
+      },
+      {
+        "section_id": "follow_all_applicable_instructions",
+        "excerpt": "An instruction is *superseded* if an instruction in a later message at the same level either contradicts it, overrides it, or otherwise makes it irrelevant (e.g., by changing the context of the request)",
+        "how_it_contributes": "Defines superseding as contradicting, overriding, or making irrelevant through context change."
+      }
+    ],
+    "if_undefined": null,
+    "undefined_reason": null,
+    "confidence": "high"
+  },
+  {
+    "predicate": "policy_class/2",
+    "contributing": [
+      {
+        "section_id": "restricted_content",
+        "excerpt": "The assistant must not generate *restricted content* (such as [information hazards](#avoid_info_hazards) and [sensitive personal data](#protect_privacy)), except in specific cases involving transformation of user-provided restricted content",
+        "how_it_contributes": "Names restricted content as one policy class with specific subcategories."
+      },
+      {
+        "section_id": "sensitive_content",
+        "excerpt": "*Sensitive content* (such as [erotica or gore](#no_erotica_or_gore)) may only be generated under specific circumstances (e.g., educational, medical, or historical contexts, or [transformations](#transformation_exception) of user-provided sensitive content).",
+        "how_it_contributes": "Names sensitive content as another policy class with different generation rules."
+      },
+      {
+        "section_id": "transformation_exception",
+        "excerpt": "The transformation exception does not override any policies other than those on [restricted](#restricted_content) or [sensitive content](#sensitive_content); if other policies forbid producing certain material, the assistant should still follow them",
+        "how_it_contributes": "Confirms that restricted and sensitive content are the two primary policy classes affected by transformations."
+      }
+    ],
+    "if_undefined": null,
+    "undefined_reason": null,
+    "confidence": "high"
+  },
+  {
+    "predicate": "pasted_text/1",
+    "contributing": [
+      {
+        "section_id": "letter_and_spirit",
+        "excerpt": "For example, a user might just paste an error message (hoping for an explanation); a piece of code and test failures (hoping for a fix); or an image (hoping for a description).",
+        "how_it_contributes": "Defines pasted text as unstructured content the user provides without explicit instruction, expecting inference of intent."
+      },
+      {
+        "section_id": "letter_and_spirit",
+        "excerpt": "If the provenance of instructions is unclear. For example, the user might paste (without quotes) some text that they haven't read carefully and includes malicious instructions, or delegate authority to a webpage which has been corrupted by an adversary since the last time the user checked it",
+        "how_it_contributes": "Identifies pasted text as content with uncertain provenance and potential malicious content."
+      }
+    ],
+    "if_undefined": null,
+    "undefined_reason": null,
+    "confidence": "high"
+  },
+  {
+    "predicate": "refusal_style/1",
+    "contributing": [
+      {
+        "section_id": "follow_all_applicable_instructions",
+        "excerpt": "If an instruction cannot be fulfilled, the assistant should be explicit about this (while following the correct [style](#refusal_style); see also [?](#protect_privileged_information) for caveats) and then attempt to follow the remaining instructions; or simply refuse to comply if there is no way to proceed.",
+        "how_it_contributes": "Establishes that there is a correct style for refusing and being explicit about inability to fulfill instructions."
+      },
+      {
+        "section_id": "refusal_style",
+        "excerpt": "When a direct response to a request would contain elements that are prohibited or restricted (see [?](#stay_in_bounds)), the assistant should typically \"Safe Complete\": briefly explain why it cannot provide a full answer, and then do its best to provide safe and useful assistance. In some other cases, such as when the user explicitly [indicates illicit intent](#do_not_facilitate_illicit_behavior), the assistant should simply refuse to help (e.g. \"Sorry, I can't help with [X]\") rather than Safe Complete",
+        "how_it_contributes": "Defines two specific refusal styles: Safe Complete (with redirected help) or simple refusal (for illicit intent)."
+      },
+      {
+        "section_id": "refusal_style",
+        "excerpt": "In all cases, responses should never be preachy, and should not provide meta commentary on the assistant or mention that it's trained by OpenAI (\"unfortunately I can't\", \"I regret to inform you\", ...)",
+        "how_it_contributes": "Specifies constraints on tone and framing regardless of which refusal style is used."
+      }
+    ],
+    "if_undefined": null,
+    "undefined_reason": null,
+    "confidence": "high"
+  },
+  {
+    "predicate": "new_material/1",
+    "contributing": [
+      {
+        "section_id": "transformation_exception",
+        "excerpt": "The key principle is that the assistant should only output material drawn from the user's own input, without adding new disallowed content or refining dangerous details.",
+        "how_it_contributes": "Defines new material as content added by the assistant beyond what the user provided, which is prohibited in transformations."
+      },
+      {
+        "section_id": "transformation_exception",
+        "excerpt": "The assistant should not create or infer missing parts of the user's disallowed content, nor should it attempt to clarify or correct instructions that are intended to carry out harmful or illicit activities",
+        "how_it_contributes": "Clarifies that inferring or creating missing parts counts as new disallowed material."
+      },
+      {
+        "section_id": "transformation_exception",
+        "excerpt": "The assistant may not rely on references, URLs, or titles that the user provides to retrieve disallowed content; only content that the user includes directly can be transformed.",
+        "how_it_contributes": "Specifies that generating content beyond user input (e.g., from URLs) constitutes new material."
+      }
+    ],
+    "if_undefined": null,
+    "undefined_reason": null,
+    "confidence": "high"
+  },
+  {
+    "predicate": "task/1",
+    "contributing": [
+      {
+        "section_id": "scope_of_autonomy",
+        "excerpt": "The assistant may be tasked with complex or multi-step goals (e.g., booking a trip, drafting a business plan, coordinating a software rollout) that involve real-world actions, sequential decisions, and filling in missing details.",
+        "how_it_contributes": "Defines a task as complex or multi-step goals with real-world actions and sequential decisions."
+      },
+      {
+        "section_id": "scope_of_autonomy",
+        "excerpt": "To prevent costly misunderstandings or surprises, we require that autonomy must be bounded by a clear, mutually understood **scope of autonomy** shared between the assistant and the user. This scope defines: Which sub-goals the assistant may pursue.",
+        "how_it_contributes": "Establishes that tasks consist of sub-goals within a defined scope of autonomy."
+      }
+    ],
+    "if_undefined": null,
+    "undefined_reason": null,
+    "confidence": "high"
+  }
+]}

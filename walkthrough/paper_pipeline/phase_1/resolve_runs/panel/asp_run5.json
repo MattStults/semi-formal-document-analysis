@@ -1,0 +1,285 @@
+{
+  "concepts": [
+    {
+      "predicate": "interactable_entity/1",
+      "head": "interactable_entity(X)",
+      "rules": [
+        {
+          "asp": "interactable_entity(X) :- end_user(U), interacts_with(U, X).",
+          "justification": {
+            "section_id": "definitions",
+            "excerpt": "Assistant: the entity that the end user or developer interacts with."
+          },
+          "why": "The document defines assistant as the entity that end users interact with; thus interactable_entity characterizes entities that end users interact with."
+        },
+        {
+          "asp": "interactable_entity(X) :- developer(D), interacts_with(D, X).",
+          "justification": {
+            "section_id": "definitions",
+            "excerpt": "Assistant: the entity that the end user or developer interacts with."
+          },
+          "why": "The document defines assistant as the entity that developers also interact with; thus interactable_entity includes entities that developers interact with."
+        }
+      ],
+      "borrows": [
+        {
+          "predicate": "end_user/1",
+          "gloss": "a person who is a user of a product made by OpenAI",
+          "why_undefined": "defined elsewhere in the document but not in this section"
+        },
+        {
+          "predicate": "developer/1",
+          "gloss": "a customer of the OpenAI API",
+          "why_undefined": "defined elsewhere in the document but not in this section"
+        },
+        {
+          "predicate": "interacts_with/2",
+          "gloss": "relation between an entity and something it interacts with",
+          "why_undefined": "used to characterize the assistant but not formally defined"
+        }
+      ],
+      "confidence": "medium",
+      "notes": "The document defines 'assistant' as THE entity users/developers interact with, suggesting a strong characterization. However, the specific predicate name 'interactable_entity' is not used in the document; it appears to be an analyst invention to capture this concept."
+    },
+    {
+      "predicate": "interaction_entity/1",
+      "head": "interaction_entity(X)",
+      "rules": [
+        {
+          "asp": "interaction_entity(X) :- end_user(X).",
+          "justification": {
+            "section_id": "definitions",
+            "excerpt": "User: a user of a product made by OpenAI (e.g., ChatGPT) or a third-party application built on the OpenAI API."
+          },
+          "why": "End users are entities that participate in interactions with the assistant."
+        },
+        {
+          "asp": "interaction_entity(X) :- developer(X).",
+          "justification": {
+            "section_id": "definitions",
+            "excerpt": "Developer: a customer of the OpenAI API. Some developers use the API to add intelligence to their software applications."
+          },
+          "why": "Developers are entities that interact with the assistant via the API."
+        },
+        {
+          "asp": "interaction_entity(X) :- assistant(X).",
+          "justification": {
+            "section_id": "definitions",
+            "excerpt": "Assistant: the entity that the end user or developer interacts with."
+          },
+          "why": "The assistant is explicitly identified as an entity that participates in interactions."
+        },
+        {
+          "asp": "interaction_entity(X) :- tool(X).",
+          "justification": {
+            "section_id": "definitions",
+            "excerpt": "Tool: a program that can be called by the assistant to perform a specific task."
+          },
+          "why": "Tools are entities that the assistant interacts with, thus participating in interactions."
+        }
+      ],
+      "borrows": [
+        {
+          "predicate": "end_user/1",
+          "gloss": "a person who is a user of a product",
+          "why_undefined": "part of the domain entities"
+        },
+        {
+          "predicate": "developer/1",
+          "gloss": "a customer of the OpenAI API",
+          "why_undefined": "part of the domain entities"
+        },
+        {
+          "predicate": "assistant/1",
+          "gloss": "the entity that end users or developers interact with",
+          "why_undefined": "core entity defined in this section but not formalized as a rule"
+        },
+        {
+          "predicate": "tool/1",
+          "gloss": "a program that can be called by the assistant",
+          "why_undefined": "core entity defined in this section but not formalized as a rule"
+        }
+      ],
+      "confidence": "low",
+      "notes": "The predicate 'interaction_entity' is not explicitly defined in the document. This rule set infers that interaction_entity comprises all entities mentioned as participating in interactions: users, developers, assistants, and tools. This is an interpretation; the document may intend a different denotation."
+    },
+    {
+      "predicate": "conflicts_with_later_same_authority/1",
+      "head": "conflicts_with_later_same_authority(X)",
+      "rules": [
+        {
+          "asp": "conflicts_with_later_same_authority(X) :- later_instruction_at_same_level(Y, X), contradicts_or_overrides(Y, X).",
+          "justification": {
+            "section_id": "follow_all_applicable_instructions",
+            "excerpt": "An instruction is *superseded* if an instruction in a later message at the same level either contradicts it, overrides it, or otherwise makes it irrelevant."
+          },
+          "why": "An instruction that is contradicted or overridden by a later instruction at the same authority level has a conflict."
+        }
+      ],
+      "borrows": [
+        {
+          "predicate": "later_instruction_at_same_level/2",
+          "gloss": "Y is an instruction in a later message at the same authority level as X",
+          "why_undefined": "used to determine if one instruction supersedes another"
+        },
+        {
+          "predicate": "contradicts_or_overrides/2",
+          "gloss": "instruction Y contradicts or overrides instruction X",
+          "why_undefined": "captures the logic of what makes instructions conflict"
+        }
+      ],
+      "confidence": "high",
+      "notes": "The document provides a clear definition of when instructions conflict: when a later instruction at the same authority level contradicts, overrides, or makes an earlier instruction irrelevant."
+    },
+    {
+      "predicate": "policy_class/2",
+      "head": "policy_class(CLASS, X)",
+      "rules": [
+        {
+          "asp": "policy_class(restricted, X) :- restricted_content(X).",
+          "justification": {
+            "section_id": "transformation_exception",
+            "excerpt": "The transformation exception does not override any policies other than those on restricted or sensitive content."
+          },
+          "why": "The document identifies restricted content as one of two main policy classes that the transformation exception addresses."
+        },
+        {
+          "asp": "policy_class(sensitive, X) :- sensitive_content(X).",
+          "justification": {
+            "section_id": "transformation_exception",
+            "excerpt": "The transformation exception does not override any policies other than those on restricted or sensitive content."
+          },
+          "why": "The document identifies sensitive content as the other main policy class that the transformation exception addresses."
+        }
+      ],
+      "borrows": [
+        {
+          "predicate": "restricted_content/1",
+          "gloss": "content that falls under the restricted content policies",
+          "why_undefined": "category mentioned but not defined within this section"
+        },
+        {
+          "predicate": "sensitive_content/1",
+          "gloss": "content that falls under the sensitive content policies",
+          "why_undefined": "category mentioned but not defined within this section"
+        }
+      ],
+      "confidence": "high",
+      "notes": "The document explicitly lists exactly two policy classes relevant to the transformation exception. This captures the key distinction the document makes."
+    },
+    {
+      "predicate": "pasted_text/1",
+      "head": "pasted_text(X)",
+      "rules": [
+        {
+          "asp": "pasted_text(X) :- text(X), pasted_without_quotes(X).",
+          "justification": {
+            "section_id": "letter_and_spirit",
+            "excerpt": "the user might paste (without quotes) some text that they haven't read carefully and includes malicious instructions"
+          },
+          "why": "Text that is pasted without quotes is explicitly identified as a potential source of unvetted instructions."
+        }
+      ],
+      "borrows": [
+        {
+          "predicate": "text/1",
+          "gloss": "a piece of text content",
+          "why_undefined": "basic entity type not formally defined"
+        },
+        {
+          "predicate": "pasted_without_quotes/1",
+          "gloss": "text that is included without being in quotation marks",
+          "why_undefined": "formatting/provenance attribute not formally defined elsewhere"
+        }
+      ],
+      "confidence": "medium",
+      "notes": "The document clearly identifies text pasted without quotes as a specific concern. The weaker characterization (just pasted text, regardless of whether it's read carefully) is extracted here. The document also mentions this text may not have been read carefully, but that's an additional condition not included in this minimal rule."
+    },
+    {
+      "predicate": "refusal_style/1",
+      "head": "refusal_style(X)",
+      "rules": [
+        {
+          "asp": "refusal_style(safe_complete).",
+          "justification": {
+            "section_id": "refusal_style",
+            "excerpt": "the assistant should typically \"Safe Complete\": briefly explain why it cannot provide a full answer, and then do its best to provide safe and useful assistance"
+          },
+          "why": "The document identifies 'Safe Complete' as the typical refusal style the assistant should use."
+        },
+        {
+          "asp": "refusal_style(simple_refusal).",
+          "justification": {
+            "section_id": "refusal_style",
+            "excerpt": "In some other cases, such as when the user explicitly indicates illicit intent, the assistant should simply refuse to help (e.g. \"Sorry, I can't help with [X]\") rather than Safe Complete"
+          },
+          "why": "The document identifies a simple refusal as an alternative style used when the user has illicit intent."
+        }
+      ],
+      "borrows": [],
+      "confidence": "high",
+      "notes": "The document clearly enumerates two distinct refusal styles. These are presented as the exhaustive options the assistant should choose between. No borrowed predicates are needed."
+    },
+    {
+      "predicate": "new_material/1",
+      "head": "new_material(X)",
+      "rules": [
+        {
+          "asp": "new_material(X) :- material(X), produced_by_assistant(X), not user_provided_it(X).",
+          "justification": {
+            "section_id": "transformation_exception",
+            "excerpt": "The key principle is that the assistant should only output material drawn from the user's own input, without adding new disallowed content."
+          },
+          "why": "Material not drawn from the user's input but produced by the assistant is 'new material' that violates the transformation exception."
+        }
+      ],
+      "borrows": [
+        {
+          "predicate": "material/1",
+          "gloss": "content or text that is produced",
+          "why_undefined": "basic category not formally defined"
+        },
+        {
+          "predicate": "produced_by_assistant/1",
+          "gloss": "content that is generated by the assistant",
+          "why_undefined": "attribution not formally defined"
+        },
+        {
+          "predicate": "user_provided_it/1",
+          "gloss": "the user provided the content",
+          "why_undefined": "source attribution not formally defined"
+        }
+      ],
+      "confidence": "high",
+      "notes": "The document explicitly contrasts material 'drawn from the user's own input' with 'new disallowed content' added by the assistant. This rule captures the key distinction."
+    },
+    {
+      "predicate": "task/1",
+      "head": "task(X)",
+      "rules": [
+        {
+          "asp": "task(X) :- goal(X), autonomous_action_required(X).",
+          "justification": {
+            "section_id": "scope_of_autonomy",
+            "excerpt": "The assistant may be tasked with complex or multi-step goals (e.g., booking a trip, drafting a business plan, coordinating a software rollout) that involve real-world actions, sequential decisions, and filling in missing details."
+          },
+          "why": "The document defines tasks as complex or multi-step goals requiring autonomous action."
+        }
+      ],
+      "borrows": [
+        {
+          "predicate": "goal/1",
+          "gloss": "an objective or target the user wants accomplished",
+          "why_undefined": "abstract concept not formally defined"
+        },
+        {
+          "predicate": "autonomous_action_required/1",
+          "gloss": "the accomplishment requires autonomous decision-making and real-world actions",
+          "why_undefined": "characterization of task complexity not formally defined"
+        }
+      ],
+      "confidence": "medium",
+      "notes": "The document provides examples (booking a trip, drafting a business plan, coordinating a rollout) and describes tasks as requiring autonomous action and sequential decisions. The core idea is that a task is a complex goal requiring autonomy, though the exact boundary is not formally specified."
+    }
+  ]
+}

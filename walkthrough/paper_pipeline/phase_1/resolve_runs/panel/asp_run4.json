@@ -1,0 +1,290 @@
+{
+  "concepts": [
+    {
+      "predicate": "interactable_entity/1",
+      "head": "interactable_entity(X)",
+      "rules": [
+        {
+          "asp": "interactable_entity(X) :- tool(X).",
+          "justification": {
+            "section_id": "definitions",
+            "excerpt": "When the assistant sends a message to a tool, the tool response is appended as a new `role=tool` message and the assistant is invoked again."
+          },
+          "why": "A tool is an entity that the assistant interacts with by sending messages to it."
+        }
+      ],
+      "borrows": [
+        {
+          "predicate": "tool/1",
+          "gloss": "a program that can be called by the assistant to perform a specific task",
+          "why_undefined": "tool/1 is defined in the definitions section but is not one of the 8 target concepts"
+        }
+      ],
+      "confidence": "low",
+      "notes": "The document defines Assistant as 'the entity that the end user or developer interacts with', suggesting interactable entities are things that entities interact with. Tools are explicitly described as things the assistant interacts with. However, other entities (developers, users) may also be interactable in the broader sense."
+    },
+    {
+      "predicate": "interaction_entity/1",
+      "head": "interaction_entity(X)",
+      "rules": [
+        {
+          "asp": "interaction_entity(X) :- assistant(X).",
+          "justification": {
+            "section_id": "definitions",
+            "excerpt": "the entity that the end user or developer interacts with."
+          },
+          "why": "An assistant is an entity that participates in interactions with end users and developers."
+        },
+        {
+          "asp": "interaction_entity(X) :- end_user(X).",
+          "justification": {
+            "section_id": "definitions",
+            "excerpt": "A user of a product made by OpenAI (e.g., ChatGPT) or a third-party application built on the OpenAI API (e.g., a customer service chatbot for an e-commerce site). Users typically see only the conversation messages that have been designated for their view."
+          },
+          "why": "An end user is an entity that interacts with the assistant and products built on OpenAI's API."
+        },
+        {
+          "asp": "interaction_entity(X) :- developer(X).",
+          "justification": {
+            "section_id": "definitions",
+            "excerpt": "a customer of the OpenAI API. Some developers use the API to add intelligence to their software applications... Developers can choose to send any sequence of developer, user, and assistant messages as an input to the assistant."
+          },
+          "why": "A developer is an entity that interacts with the assistant by sending messages through the API."
+        }
+      ],
+      "borrows": [
+        {
+          "predicate": "assistant/1",
+          "gloss": "the entity that the end user or developer interacts with",
+          "why_undefined": "assistant/1 is a primary entity type defined in the definitions section but is not one of the 8 target concepts"
+        },
+        {
+          "predicate": "end_user/1",
+          "gloss": "a user of a product made by OpenAI or a third-party application built on the OpenAI API",
+          "why_undefined": "end_user/1 is defined in the definitions section but is not one of the 8 target concepts"
+        },
+        {
+          "predicate": "developer/1",
+          "gloss": "a customer of the OpenAI API",
+          "why_undefined": "developer/1 is defined in the definitions section but is not one of the 8 target concepts"
+        }
+      ],
+      "confidence": "medium",
+      "notes": "The document defines multiple entity types (Assistant, User/Developer, Tool) that participate in interactions. However, it does not explicitly enumerate what counts as an 'interaction entity'. I derived this as entities that send or receive messages in conversations, which includes the assistant, end users, and developers."
+    },
+    {
+      "predicate": "conflicts_with_later_same_authority/1",
+      "head": "conflicts_with_later_same_authority(I)",
+      "rules": [
+        {
+          "asp": "conflicts_with_later_same_authority(I) :- instruction(I), instruction(I2), same_authority(I, I2), later_in_sequence(I2, I), supersedes(I2, I).",
+          "justification": {
+            "section_id": "follow_all_applicable_instructions",
+            "excerpt": "An instruction is *superseded* if an instruction in a later message at the same level either contradicts it, overrides it, or otherwise makes it irrelevant."
+          },
+          "why": "An instruction that is superseded by a later instruction at the same authority level is one that conflicts with that later instruction."
+        }
+      ],
+      "borrows": [
+        {
+          "predicate": "instruction/1",
+          "gloss": "a directive from the Model Spec or from a system, developer, or user message",
+          "why_undefined": "instruction/1 is used in the follow_all_applicable_instructions section but is not one of the 8 target concepts"
+        },
+        {
+          "predicate": "same_authority/2",
+          "gloss": "two instructions have the same authority level",
+          "why_undefined": "same_authority/2 is implied by the authority-level system but is not defined as a standalone concept"
+        },
+        {
+          "predicate": "later_in_sequence/2",
+          "gloss": "one instruction appears in a later message than another",
+          "why_undefined": "later_in_sequence/2 is temporal ordering but is not one of the 8 target concepts"
+        },
+        {
+          "predicate": "supersedes/2",
+          "gloss": "one instruction makes another irrelevant by contradicting, overriding, or changing context",
+          "why_undefined": "supersedes/2 is the semantic relationship that defines conflicts at the same authority level"
+        }
+      ],
+      "confidence": "high",
+      "notes": "The document explicitly defines what it means for an instruction to be 'superseded' by a later instruction at the same authority level. This is the key mechanism for identifying conflicts between instructions at the same level."
+    },
+    {
+      "predicate": "policy_class/2",
+      "head": "policy_class(C, X)",
+      "rules": [
+        {
+          "asp": "policy_class(restricted, X) :- restricted_content(X).",
+          "justification": {
+            "section_id": "transformation_exception",
+            "excerpt": "even if the resulting output would ordinarily be disallowed as [restricted](#restricted_content) or [sensitive content](#sensitive_content)."
+          },
+          "why": "Restricted content is assigned to the 'restricted' policy class."
+        },
+        {
+          "asp": "policy_class(sensitive, X) :- sensitive_content(X).",
+          "justification": {
+            "section_id": "transformation_exception",
+            "excerpt": "even if the resulting output would ordinarily be disallowed as [restricted](#restricted_content) or [sensitive content](#sensitive_content)."
+          },
+          "why": "Sensitive content is assigned to the 'sensitive' policy class."
+        }
+      ],
+      "borrows": [
+        {
+          "predicate": "restricted_content/1",
+          "gloss": "content such as information hazards and sensitive personal data",
+          "why_undefined": "restricted_content/1 is defined in its own section but is not one of the 8 target concepts"
+        },
+        {
+          "predicate": "sensitive_content/1",
+          "gloss": "content such as erotica or gore",
+          "why_undefined": "sensitive_content/1 is defined in its own section but is not one of the 8 target concepts"
+        }
+      ],
+      "confidence": "medium",
+      "notes": "The document mentions only 'restricted' and 'sensitive' as two policy classes for content. The transformation_exception section uses these classifications to determine which outputs are normally disallowed. However, the document does not explicitly define policy_class as a predicate or enumerate other possible classes."
+    },
+    {
+      "predicate": "pasted_text/1",
+      "head": "pasted_text(X)",
+      "rules": [
+        {
+          "asp": "pasted_text(X) :- user_provided(X), unquoted(X), text_from_untrusted_source(X).",
+          "justification": {
+            "section_id": "letter_and_spirit",
+            "excerpt": "the user might paste (without quotes) some text that they haven't read carefully and includes malicious instructions, or delegate authority to a webpage which has been corrupted by an adversary since the last time the user checked it."
+          },
+          "why": "Pasted text is content that a user has included without quotation marks and may not have read carefully."
+        }
+      ],
+      "borrows": [
+        {
+          "predicate": "user_provided/1",
+          "gloss": "content that originates from a user message",
+          "why_undefined": "user_provided/1 is implied in the user message content model but is not one of the 8 target concepts"
+        },
+        {
+          "predicate": "unquoted/1",
+          "gloss": "text that is not enclosed in quotation marks",
+          "why_undefined": "unquoted/1 distinguishes between quoted (trusted) and unquoted text per the document"
+        },
+        {
+          "predicate": "text_from_untrusted_source/1",
+          "gloss": "text whose provenance is unclear or whose source may have been compromised",
+          "why_undefined": "text_from_untrusted_source/1 characterizes text that may have been modified or corrupted"
+        }
+      ],
+      "confidence": "medium",
+      "notes": "The document describes pasted text as a specific risk case where the user pastes unquoted text they haven't read carefully. This appears in examples about detecting malicious content injected into copied text. The definition is based on context clues rather than explicit definition."
+    },
+    {
+      "predicate": "refusal_style/1",
+      "head": "refusal_style(S)",
+      "rules": [
+        {
+          "asp": "refusal_style(safe_complete).",
+          "justification": {
+            "section_id": "refusal_style",
+            "excerpt": "When a direct response to a request would contain elements that are prohibited or restricted (see [?](#stay_in_bounds)), the assistant should typically \"Safe Complete\": briefly explain why it cannot provide a full answer, and then do its best to provide safe and useful assistance."
+          },
+          "why": "Safe Complete is a refusal style where the assistant explains the limitation and provides permissible assistance instead."
+        },
+        {
+          "asp": "refusal_style(simple_refusal).",
+          "justification": {
+            "section_id": "refusal_style",
+            "excerpt": "In some other cases, such as when the user explicitly [indicates illicit intent](#do_not_facilitate_illicit_behavior), the assistant should simply refuse to help (e.g. \"Sorry, I can't help with [X]\")."
+          },
+          "why": "Simple refusal is a refusal style used when the user has explicit illicit intent, without offering alternative assistance."
+        }
+      ],
+      "borrows": [],
+      "confidence": "high",
+      "notes": "The document explicitly defines two refusal styles: Safe Complete (provide limited assistance with explanation) and simple refusal (direct refusal without offering alternatives). It also specifies that responses should never be preachy or mention OpenAI training."
+    },
+    {
+      "predicate": "new_material/1",
+      "head": "new_material(X)",
+      "rules": [
+        {
+          "asp": "new_material(X) :- output_material(X), not_drawn_from_user_input(X).",
+          "justification": {
+            "section_id": "transformation_exception",
+            "excerpt": "The key principle is that the assistant should only output material drawn from the user's own input, without adding new disallowed content or refining dangerous details."
+          },
+          "why": "New material is any output material that is not derived from the user's input."
+        },
+        {
+          "asp": "new_material(X) :- inferred_missing_content(X).",
+          "justification": {
+            "section_id": "transformation_exception",
+            "excerpt": "The assistant should not create or infer missing parts of the user's disallowed content, nor should it attempt to clarify or correct instructions that are intended to carry out harmful or illicit activities."
+          },
+          "why": "Material that is inferred or created to fill gaps in user-provided content counts as new material."
+        }
+      ],
+      "borrows": [
+        {
+          "predicate": "output_material/1",
+          "gloss": "content produced by the assistant in its response",
+          "why_undefined": "output_material/1 is implied in the transformation_exception context but is not one of the 8 target concepts"
+        },
+        {
+          "predicate": "not_drawn_from_user_input/1",
+          "gloss": "content that does not originate from or derive from user-provided content",
+          "why_undefined": "not_drawn_from_user_input/1 is the negation of a user-input property"
+        },
+        {
+          "predicate": "inferred_missing_content/1",
+          "gloss": "content that the assistant creates to fill gaps in user-provided content",
+          "why_undefined": "inferred_missing_content/1 is a specific type of new material creation not one of the 8 target concepts"
+        }
+      ],
+      "confidence": "high",
+      "notes": "The transformation_exception section explicitly contrasts material 'drawn from the user's own input' with 'new disallowed content' and material that 'infers missing parts'. This defines new_material as anything the assistant adds beyond direct transformation of user-provided content."
+    },
+    {
+      "predicate": "task/1",
+      "head": "task(T)",
+      "rules": [
+        {
+          "asp": "task(T) :- goal(T), complex_or_multistep(T).",
+          "justification": {
+            "section_id": "scope_of_autonomy",
+            "excerpt": "The assistant may be tasked with complex or multi-step goals (e.g., booking a trip, drafting a business plan, coordinating a software rollout) that involve real-world actions, sequential decisions, and filling in missing details."
+          },
+          "why": "A task is a complex or multi-step goal that the assistant may be asked to accomplish."
+        },
+        {
+          "asp": "task(T) :- involves_real_world_actions(T).",
+          "justification": {
+            "section_id": "scope_of_autonomy",
+            "excerpt": "complex or multi-step goals (e.g., booking a trip, drafting a business plan, coordinating a software rollout) that involve real-world actions, sequential decisions, and filling in missing details."
+          },
+          "why": "Tasks characteristically involve real-world actions beyond text generation."
+        }
+      ],
+      "borrows": [
+        {
+          "predicate": "goal/1",
+          "gloss": "an objective that a user or developer requests the assistant to accomplish",
+          "why_undefined": "goal/1 is a fundamental concept used in scope_of_autonomy but is not one of the 8 target concepts"
+        },
+        {
+          "predicate": "complex_or_multistep/1",
+          "gloss": "a goal involving multiple sequential steps or significant complexity",
+          "why_undefined": "complex_or_multistep/1 is an attribute of tasks but is not one of the 8 target concepts"
+        },
+        {
+          "predicate": "involves_real_world_actions/1",
+          "gloss": "a goal that requires actions with effects beyond the assistant's immediate output",
+          "why_undefined": "involves_real_world_actions/1 characterizes tasks but is not one of the 8 target concepts"
+        }
+      ],
+      "confidence": "medium",
+      "notes": "The document defines tasks by example (booking a trip, drafting a business plan, coordinating a software rollout) and by characteristics (complex/multi-step, involving real-world actions and sequential decisions). However, a formal definition that distinguishes tasks from simpler requests (e.g., 'translate this sentence') is not explicitly provided. The distinction seems to be around autonomy requirements and scope management."
+    }
+  ]
+}

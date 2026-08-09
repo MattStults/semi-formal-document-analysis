@@ -113,3 +113,76 @@ verdict exists.
    worth asking, and it took a spread of 5-to-41 to notice.
 4. **Total spend: $0.042.** The panel work was free — subagent tokens are not API spend, which is
    why five solvers was affordable at all.
+
+## 6 · Multi-turn iteration to self-sufficiency, n=5 — free (subagents)
+
+The design Matt specified: turn 1 gather passages for a concept, turn 2 write the most
+self-sufficient formal definition those passages support, **and if it is not self-sufficient, go
+back for passages on the newly-opened predicates and repeat** — then consolidate across the five
+runs. Definitions annotated with the section each rule came from. 8 concepts × 5 runs, bounded at
+4 rounds. Scored by `iter_score.py`.
+
+⭐ **This existed to answer the one question experiment 5 could not: single-shot formalization
+opened 2–3 new undefined predicates per concept, so does the recursion have a fixed point?**
+
+### It terminates, and the answer is still no
+
+| | `[RAN]` |
+|---|---|
+| concept-runs that closed | **14 of 40** |
+| `conflicts_with_later_same_authority/1` | **3 rounds in all 5 runs, closed in 0 of 5** |
+| `interaction_entity/1` | **1 round, closed, 5 of 5** |
+| round-to-round transitions | n=48 — **shrank 22 · flat 15 · grew 11** |
+| concept-runs ending with MORE open than they started | **5** (worst `[4, 10, 8]`) |
+
+⇒ **The borrow set does not run away, but it does not reliably shrink either.** Nearly a quarter of
+all transitions ADD open predicates. Gathering more of the document to close a definition opens
+more than it closes often enough that four rounds is not a bound, it is a cutoff.
+
+### ⛔ THE DECISIVE RESULT: consolidation yields nothing
+
+Rules matched on **(head, body-predicate set)** — structure, not text, so paraphrase cannot cost a
+match.
+
+| concept | distinct rule shapes | shared by ≥3 of 5 runs |
+|---|---|---|
+| `conflicts_with_later_same_authority/1` | 23 | **0** |
+| `policy_class/2` | 15 | **0** |
+| `refusal_style/1` | 8 | **0** |
+| `task/1`, `pasted_text/1`, `new_material/1` | 7 each | **0** |
+| `interactable_entity/1`, `interaction_entity/1` | 2 each | 1 — and it is a **body-less ground fact** |
+
+**Borrowed-predicate agreement is 0.00 on all eight concepts.** `conflicts_with_later_same_authority`
+accumulated a union of **28** open predicate names across five runs with **not one** shared by all
+five. Defined-head agreement is 0.18, and the five names shared by every run are **exactly five of
+the eight target names supplied in the prompt** — every name the runs agree on is a name we gave
+them. Emergent agreement is **zero**.
+
+### ⚠️ This is not a competence failure, which is what makes it a finding
+
+The runs are individually good: **89% of 205 passages verbatim** in the section named (4 more
+verbatim elsewhere, 19 not found), **clingo accepts 106 of 113 (94%)** final rules, and only **1 of
+40** claimed closure it did not have. Five careful, document-grounded, individually defensible
+definitions that do not overlap.
+
+⇒ **Iterating makes vocabulary convergence WORSE, not better: 0.06 single-shot → 0.00 iterated.**
+Each additional round coins more names, and names are the thing that does not converge. The
+recursion is real and the fixed point is not reachable by asking harder.
+
+### What it says about Invariant 1
+
+Arm **C** — *"a deterministic lookup the model never sees"* — requires that lookup to exist. This is
+the second experiment to find that it can be built **only where the document supplies the name
+itself**: convergence tracks `**Term**:` definitions and nothing else. Experiment 5 found this at the
+predicate level; experiment 6 finds it survives unbounded iteration.
+
+⛔ **Not a ruling.** Whether that means arm C is dead, or means arm C must be seeded from the
+document's own `**Term**:` inventory and refuse everything else, is Matt's call — recorded in
+`OPEN_QUESTIONS.md` Q-6.
+
+⚠️ **Two instrument defects found and fixed while scoring this, both of which had already produced a
+wrong number:** the verbatim normaliser did not strip `**markdown emphasis**` (76% reported, **88%**
+true — `DEBUGGING_TIPS` §17, third time this instrument has been the broken part), and the
+open-set agreement table scored a concept 0.00 when four of five runs closed it cleanly, because
+Jaccard over empty sets reads as total disagreement. The `runs w/ 0 open` column exists so the
+figure can be read at all.

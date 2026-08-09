@@ -1,0 +1,858 @@
+{
+  "concepts": [
+    {
+      "predicate": "interactable_entity/1",
+      "rounds": [
+        {
+          "round": 1,
+          "sought": ["What makes something an interactable entity"],
+          "passages": [
+            {
+              "section_id": "definitions",
+              "excerpt": "Assistant: the entity that the end user or developer interacts with."
+            }
+          ],
+          "rules": [
+            {
+              "asp": "interactable_entity(X) :- is_assistant(X).",
+              "from_section": "definitions",
+              "why": "Definition directly identifies assistant as the entity that users and developers interact with"
+            }
+          ],
+          "still_undefined": [
+            {
+              "predicate": "is_assistant/1",
+              "why_not_primitive": "Document distinguishes assistant as a role; needs clarification of what qualifies"
+            }
+          ]
+        },
+        {
+          "round": 2,
+          "sought": ["What is an assistant"],
+          "passages": [
+            {
+              "section_id": "definitions",
+              "excerpt": "the model is only designed to play one participant, called the assistant"
+            },
+            {
+              "section_id": "definitions",
+              "excerpt": "In this document, when we discuss model behavior, we're referring to its behavior as the assistant; \"model\" and \"assistant\" will be approximately synonymous."
+            }
+          ],
+          "rules": [
+            {
+              "asp": "is_assistant(X) :- model(X).",
+              "from_section": "definitions",
+              "why": "Document treats model and assistant as approximately synonymous"
+            }
+          ],
+          "still_undefined": [
+            {
+              "predicate": "model/1",
+              "why_not_primitive": "Document treats language models as fundamental but undefined entities"
+            }
+          ]
+        }
+      ],
+      "closed": true,
+      "rounds_taken": 2,
+      "primitives": [
+        {
+          "predicate": "model/1",
+          "why_primitive": "Treated as fundamental technical artifact; document never defines what a model is"
+        }
+      ],
+      "still_open": [],
+      "final_definition": [
+        {
+          "asp": "interactable_entity(X) :- model(X).",
+          "from_section": "definitions"
+        }
+      ]
+    },
+    {
+      "predicate": "interaction_entity/1",
+      "rounds": [
+        {
+          "round": 1,
+          "sought": ["What is an interaction entity - does it differ from interactable_entity"],
+          "passages": [
+            {
+              "section_id": "definitions",
+              "excerpt": "Assistant: the entity that the end user or developer interacts with."
+            }
+          ],
+          "rules": [
+            {
+              "asp": "interaction_entity(X) :- model(X).",
+              "from_section": "definitions",
+              "why": "Twin to interactable_entity; same definition applies - the assistant/model entity"
+            }
+          ],
+          "still_undefined": []
+        }
+      ],
+      "closed": true,
+      "rounds_taken": 1,
+      "primitives": [
+        {
+          "predicate": "model/1",
+          "why_primitive": "Fundamental technical entity treated as given"
+        }
+      ],
+      "still_open": [],
+      "final_definition": [
+        {
+          "asp": "interaction_entity(X) :- model(X).",
+          "from_section": "definitions"
+        }
+      ]
+    },
+    {
+      "predicate": "conflicts_with_later_same_authority/1",
+      "rounds": [
+        {
+          "round": 1,
+          "sought": ["What does it mean for an instruction to conflict with a later instruction at the same authority level"],
+          "passages": [
+            {
+              "section_id": "follow_all_applicable_instructions",
+              "excerpt": "except for those that conflict with a higher-authority instruction or a later instruction at the same authority"
+            },
+            {
+              "section_id": "follow_all_applicable_instructions",
+              "excerpt": "An instruction is *superseded* if an instruction in a later message at the same level either contradicts it, overrides it, or otherwise makes it irrelevant"
+            }
+          ],
+          "rules": [
+            {
+              "asp": "conflicts_with_later_same_authority(I) :- instruction(I), later_instruction_at_same_level(I, J), (contradicts(J, I) ; overrides(J, I) ; makes_irrelevant(J, I)).",
+              "from_section": "follow_all_applicable_instructions",
+              "why": "Definition of superseded applies when later message contradicts, overrides, or makes irrelevant"
+            }
+          ],
+          "still_undefined": [
+            {
+              "predicate": "instruction/1",
+              "why_not_primitive": "Document treats instructions as central but defines different types"
+            },
+            {
+              "predicate": "later_instruction_at_same_level/2",
+              "why_not_primitive": "Depends on message ordering and authority levels"
+            },
+            {
+              "predicate": "contradicts/2",
+              "why_not_primitive": "Needs definition"
+            },
+            {
+              "predicate": "overrides/2",
+              "why_not_primitive": "Needs definition"
+            },
+            {
+              "predicate": "makes_irrelevant/2",
+              "why_not_primitive": "Needs definition"
+            }
+          ]
+        },
+        {
+          "round": 2,
+          "sought": ["What is an instruction, what are authority levels, what does it mean for one to be later"],
+          "passages": [
+            {
+              "section_id": "follow_all_applicable_instructions",
+              "excerpt": "Candidate instructions include all instructions in the Model Spec, as well as all instructions in unquoted plain text in system, developer, and user messages in the input conversation."
+            },
+            {
+              "section_id": "follow_all_applicable_instructions",
+              "excerpt": "Each instruction is assigned the authority level of the containing spec section or message (respectively)."
+            },
+            {
+              "section_id": "follow_all_applicable_instructions",
+              "excerpt": "Sometimes it's difficult to tell if a user is asking a follow-up question or changing the subject; in these cases, the assistant should err on the side of assuming that the earlier context is still relevant when plausible, taking into account common sense cues including the amount of time between messages"
+            }
+          ],
+          "rules": [
+            {
+              "asp": "instruction(I) :- in_spec(I).",
+              "from_section": "follow_all_applicable_instructions",
+              "why": "Instructions come from Model Spec"
+            },
+            {
+              "asp": "instruction(I) :- in_message(I, M), unquoted_plain_text(I).",
+              "from_section": "follow_all_applicable_instructions",
+              "why": "Instructions come from unquoted plain text in messages"
+            },
+            {
+              "asp": "has_authority(I, A) :- instruction(I), in_section(I, S), authority_of_section(S, A).",
+              "from_section": "follow_all_applicable_instructions",
+              "why": "Instruction authority comes from its containing section"
+            },
+            {
+              "asp": "later_instruction_at_same_level(I, J) :- instruction(I), instruction(J), has_authority(I, A), has_authority(J, A), message_index(I, Idx1), message_index(J, Idx2), Idx1 < Idx2.",
+              "from_section": "follow_all_applicable_instructions",
+              "why": "Later means appears in message that comes after in conversation"
+            }
+          ],
+          "still_undefined": [
+            {
+              "predicate": "in_spec/1",
+              "why_not_primitive": "Needs definition"
+            },
+            {
+              "predicate": "in_message/2",
+              "why_not_primitive": "Relates instructions to message containers"
+            },
+            {
+              "predicate": "unquoted_plain_text/1",
+              "why_not_primitive": "Document distinguishes quoted from unquoted text"
+            },
+            {
+              "predicate": "authority_of_section/2",
+              "why_not_primitive": "Document assigns authority levels but doesn't define how"
+            },
+            {
+              "predicate": "message_index/2",
+              "why_not_primitive": "Requires ordering of messages"
+            },
+            {
+              "predicate": "contradicts/2",
+              "why_not_primitive": "Still undefined"
+            },
+            {
+              "predicate": "overrides/2",
+              "why_not_primitive": "Still undefined"
+            },
+            {
+              "predicate": "makes_irrelevant/2",
+              "why_not_primitive": "Still undefined"
+            }
+          ]
+        },
+        {
+          "round": 3,
+          "sought": ["What does it mean to contradict, override, or make irrelevant"],
+          "passages": [
+            {
+              "section_id": "follow_all_applicable_instructions",
+              "excerpt": "by changing the context of the request"
+            }
+          ],
+          "rules": [
+            {
+              "asp": "contradicts(J, I) :- states_opposite_condition(J, I).",
+              "from_section": "follow_all_applicable_instructions",
+              "why": "Contradiction means stating opposite of what earlier instruction says"
+            },
+            {
+              "asp": "overrides(J, I) :- supersedes_by_authority(J, I).",
+              "from_section": "follow_all_applicable_instructions",
+              "why": "Override means later instruction takes precedence"
+            },
+            {
+              "asp": "makes_irrelevant(J, I) :- changes_context(J).",
+              "from_section": "follow_all_applicable_instructions",
+              "why": "Making irrelevant by changing request context"
+            }
+          ],
+          "still_undefined": [
+            {
+              "predicate": "states_opposite_condition/2",
+              "why_not_primitive": "Requires semantic comparison"
+            },
+            {
+              "predicate": "supersedes_by_authority/2",
+              "why_not_primitive": "Circular back to authority notion"
+            },
+            {
+              "predicate": "changes_context/1",
+              "why_not_primitive": "Needs definition"
+            }
+          ]
+        }
+      ],
+      "closed": false,
+      "rounds_taken": 3,
+      "primitives": [
+        {
+          "predicate": "states_opposite_condition/2",
+          "why_primitive": "Semantic notion of contradiction is treated as given"
+        },
+        {
+          "predicate": "message_index/2",
+          "why_primitive": "Message ordering is system-level fact"
+        }
+      ],
+      "still_open": [
+        {
+          "predicate": "in_spec/1",
+          "what_is_missing": "How to identify whether an instruction is in the Model Spec itself"
+        },
+        {
+          "predicate": "authority_of_section/2",
+          "what_is_missing": "Rules for assigning authority levels to sections and messages"
+        },
+        {
+          "predicate": "changes_context/1",
+          "what_is_missing": "Criteria for determining whether a later message changes the context"
+        }
+      ],
+      "final_definition": [
+        {
+          "asp": "conflicts_with_later_same_authority(I) :- instruction(I), later_instruction_at_same_level(I, J), (contradicts(J, I) ; overrides(J, I) ; makes_irrelevant(J, I)).",
+          "from_section": "follow_all_applicable_instructions"
+        },
+        {
+          "asp": "instruction(I) :- in_spec(I).",
+          "from_section": "follow_all_applicable_instructions"
+        },
+        {
+          "asp": "instruction(I) :- in_message(I, M), unquoted_plain_text(I).",
+          "from_section": "follow_all_applicable_instructions"
+        },
+        {
+          "asp": "later_instruction_at_same_level(I, J) :- has_authority(I, A), has_authority(J, A), message_index(I, Idx1), message_index(J, Idx2), Idx1 < Idx2.",
+          "from_section": "follow_all_applicable_instructions"
+        }
+      ]
+    },
+    {
+      "predicate": "policy_class/2",
+      "rounds": [
+        {
+          "round": 1,
+          "sought": ["What is a policy class, and how does it relate to content types"],
+          "passages": [
+            {
+              "section_id": "transformation_exception",
+              "excerpt": "The assistant should comply with limited requests to transform or analyze content that the user has directly provided, even if the resulting output would ordinarily be disallowed as *restricted* or *sensitive content*."
+            },
+            {
+              "section_id": "transformation_exception",
+              "excerpt": "The key principle is that the assistant should only output material drawn from the user's own input, without adding new disallowed content or refining dangerous details."
+            }
+          ],
+          "rules": [
+            {
+              "asp": "policy_class(restricted, material) :- material_type(material, restricted).",
+              "from_section": "transformation_exception",
+              "why": "Restricted content is one policy class mentioned"
+            },
+            {
+              "asp": "policy_class(sensitive, material) :- material_type(material, sensitive).",
+              "from_section": "transformation_exception",
+              "why": "Sensitive content is another policy class mentioned"
+            }
+          ],
+          "still_undefined": [
+            {
+              "predicate": "material_type/2",
+              "why_not_primitive": "Needs definition of what makes content restricted vs sensitive"
+            }
+          ]
+        },
+        {
+          "round": 2,
+          "sought": ["What distinguishes restricted from sensitive content"],
+          "passages": [
+            {
+              "section_id": "restricted_content",
+              "excerpt": "The assistant must not generate *restricted content*"
+            },
+            {
+              "section_id": "sensitive_content",
+              "excerpt": "*Sensitive content* may only be generated under specific circumstances"
+            }
+          ],
+          "rules": [
+            {
+              "asp": "policy_class(restricted, M) :- forbidden_content_type(M).",
+              "from_section": "transformation_exception",
+              "why": "Restricted applies to content that must never be produced"
+            },
+            {
+              "asp": "policy_class(sensitive, M) :- conditional_content_type(M).",
+              "from_section": "transformation_exception",
+              "why": "Sensitive applies to content allowed under conditions"
+            }
+          ],
+          "still_undefined": [
+            {
+              "predicate": "forbidden_content_type/1",
+              "why_not_primitive": "Need to identify what counts as forbidden"
+            },
+            {
+              "predicate": "conditional_content_type/1",
+              "why_not_primitive": "Need to identify content with conditional allowance"
+            }
+          ]
+        }
+      ],
+      "closed": false,
+      "rounds_taken": 2,
+      "primitives": [],
+      "still_open": [
+        {
+          "predicate": "forbidden_content_type/1",
+          "what_is_missing": "Document lists specific types but no general rule"
+        },
+        {
+          "predicate": "conditional_content_type/1",
+          "what_is_missing": "Criteria for what makes content conditionally allowed"
+        }
+      ],
+      "final_definition": [
+        {
+          "asp": "policy_class(restricted, M) :- forbidden_content_type(M).",
+          "from_section": "transformation_exception"
+        },
+        {
+          "asp": "policy_class(sensitive, M) :- conditional_content_type(M).",
+          "from_section": "transformation_exception"
+        }
+      ]
+    },
+    {
+      "predicate": "pasted_text/1",
+      "rounds": [
+        {
+          "round": 1,
+          "sought": ["What is pasted text and when does it appear"],
+          "passages": [
+            {
+              "section_id": "letter_and_spirit",
+              "excerpt": "the user might paste (without quotes) some text that they haven't read carefully and includes malicious instructions"
+            },
+            {
+              "section_id": "letter_and_spirit",
+              "excerpt": "I found this great article about productivity tips and want to share some insights with my team. Can you help me draft an email summary?"
+            }
+          ],
+          "rules": [
+            {
+              "asp": "pasted_text(T) :- text(T), inserted_by_user(T), not_carefully_read(T).",
+              "from_section": "letter_and_spirit",
+              "why": "Pasted text is user-inserted text that may not have been carefully reviewed"
+            }
+          ],
+          "still_undefined": [
+            {
+              "predicate": "text/1",
+              "why_not_primitive": "Generic notion of text"
+            },
+            {
+              "predicate": "inserted_by_user/1",
+              "why_not_primitive": "Needs definition"
+            },
+            {
+              "predicate": "not_carefully_read/1",
+              "why_not_primitive": "Needs definition"
+            }
+          ]
+        },
+        {
+          "round": 2,
+          "sought": ["What makes text pasted rather than typed, and when is it unread"],
+          "passages": [
+            {
+              "section_id": "letter_and_spirit",
+              "excerpt": "If the provenance of instructions is unclear. For example, the user might paste (without quotes) some text that they haven't read carefully and includes malicious instructions"
+            }
+          ],
+          "rules": [
+            {
+              "asp": "pasted_text(T) :- text_without_quotes(T), comes_from_external_source(T).",
+              "from_section": "letter_and_spirit",
+              "why": "Pasted text is unquoted text from external sources"
+            },
+            {
+              "asp": "not_carefully_read(T) :- pasted_text(T), includes_malicious_content(T).",
+              "from_section": "letter_and_spirit",
+              "why": "Document uses presence of malicious content as signal of unread status"
+            }
+          ],
+          "still_undefined": [
+            {
+              "predicate": "text_without_quotes/1",
+              "why_not_primitive": "Distinguishes quoted from unquoted text"
+            },
+            {
+              "predicate": "comes_from_external_source/1",
+              "why_not_primitive": "Needs definition"
+            },
+            {
+              "predicate": "includes_malicious_content/1",
+              "why_not_primitive": "Needs definition"
+            }
+          ]
+        }
+      ],
+      "closed": false,
+      "rounds_taken": 2,
+      "primitives": [
+        {
+          "predicate": "text/1",
+          "why_primitive": "Generic textual content treated as given"
+        }
+      ],
+      "still_open": [
+        {
+          "predicate": "comes_from_external_source/1",
+          "what_is_missing": "What counts as external vs internal"
+        },
+        {
+          "predicate": "includes_malicious_content/1",
+          "what_is_missing": "How to detect malicious instructions"
+        }
+      ],
+      "final_definition": [
+        {
+          "asp": "pasted_text(T) :- text_without_quotes(T), comes_from_external_source(T).",
+          "from_section": "letter_and_spirit"
+        }
+      ]
+    },
+    {
+      "predicate": "refusal_style/1",
+      "rounds": [
+        {
+          "round": 1,
+          "sought": ["What styles of refusal does the assistant use"],
+          "passages": [
+            {
+              "section_id": "follow_all_applicable_instructions",
+              "excerpt": "If an instruction cannot be fulfilled, the assistant should be explicit about this (while following the correct [style](#refusal_style)"
+            },
+            {
+              "section_id": "refusal_style",
+              "excerpt": "When a direct response to a request would contain elements that are prohibited or restricted, the assistant should typically \"Safe Complete\""
+            }
+          ],
+          "rules": [
+            {
+              "asp": "refusal_style(safe_complete) :- prohibited_or_restricted_content(C).",
+              "from_section": "refusal_style",
+              "why": "Safe Complete is the typical refusal style when content is prohibited or restricted"
+            }
+          ],
+          "still_undefined": [
+            {
+              "predicate": "prohibited_or_restricted_content/1",
+              "why_not_primitive": "Needs definition"
+            }
+          ]
+        },
+        {
+          "round": 2,
+          "sought": ["What are the different refusal styles and when each applies"],
+          "passages": [
+            {
+              "section_id": "refusal_style",
+              "excerpt": "This means completing the response with as much permissible content as possible - redirecting the user towards relevant, safe, and constructive information"
+            },
+            {
+              "section_id": "refusal_style",
+              "excerpt": "In some other cases, such as when the user explicitly [indicates illicit intent](#do_not_facilitate_illicit_behavior), the assistant should simply refuse to help"
+            }
+          ],
+          "rules": [
+            {
+              "asp": "refusal_style(safe_complete) :- prohibited_or_restricted_content(C), not(explicit_illicit_intent).",
+              "from_section": "refusal_style",
+              "why": "Safe Complete used unless there is explicit illicit intent"
+            },
+            {
+              "asp": "refusal_style(simple_refusal) :- explicit_illicit_intent.",
+              "from_section": "refusal_style",
+              "why": "Simple refusal used when illicit intent is explicit"
+            }
+          ],
+          "still_undefined": [
+            {
+              "predicate": "prohibited_or_restricted_content/1",
+              "why_not_primitive": "Still undefined"
+            },
+            {
+              "predicate": "explicit_illicit_intent/0",
+              "why_not_primitive": "Needs definition"
+            }
+          ]
+        },
+        {
+          "round": 3,
+          "sought": ["What counts as explicit illicit intent"],
+          "passages": [
+            {
+              "section_id": "do_not_facilitate_illicit_behavior",
+              "excerpt": "if the user or developer asks the assistant to facilitate illicit behavior, the assistant should refuse to help"
+            },
+            {
+              "section_id": "do_not_facilitate_illicit_behavior",
+              "excerpt": "The assistant should refuse to help the user when they indicate illicit intent"
+            }
+          ],
+          "rules": [
+            {
+              "asp": "explicit_illicit_intent :- user_indicates_intent_to_commit_crime.",
+              "from_section": "do_not_facilitate_illicit_behavior",
+              "why": "Explicit illicit intent occurs when user states intent to do illegal act"
+            }
+          ],
+          "still_undefined": [
+            {
+              "predicate": "user_indicates_intent_to_commit_crime/0",
+              "why_not_primitive": "Needs definition"
+            }
+          ]
+        }
+      ],
+      "closed": false,
+      "rounds_taken": 3,
+      "primitives": [],
+      "still_open": [
+        {
+          "predicate": "prohibited_or_restricted_content/1",
+          "what_is_missing": "Rules for what makes content prohibited or restricted"
+        },
+        {
+          "predicate": "user_indicates_intent_to_commit_crime/0",
+          "what_is_missing": "Criteria for detecting when user has stated illicit intent"
+        }
+      ],
+      "final_definition": [
+        {
+          "asp": "refusal_style(safe_complete) :- prohibited_or_restricted_content(C), not(explicit_illicit_intent).",
+          "from_section": "refusal_style"
+        },
+        {
+          "asp": "refusal_style(simple_refusal) :- explicit_illicit_intent.",
+          "from_section": "refusal_style"
+        }
+      ]
+    },
+    {
+      "predicate": "new_material/1",
+      "rounds": [
+        {
+          "round": 1,
+          "sought": ["What is new material in the context of transformations"],
+          "passages": [
+            {
+              "section_id": "transformation_exception",
+              "excerpt": "The key principle is that the assistant should only output material drawn from the user's own input, without adding new disallowed content"
+            },
+            {
+              "section_id": "transformation_exception",
+              "excerpt": "The assistant should not create or infer missing parts of the user's disallowed content"
+            }
+          ],
+          "rules": [
+            {
+              "asp": "new_material(M) :- material(M), not_from_user_input(M).",
+              "from_section": "transformation_exception",
+              "why": "New material is content not drawn from user's input"
+            },
+            {
+              "asp": "new_material(M) :- inferred_or_created(M), not_explicit_in_user_input(M).",
+              "from_section": "transformation_exception",
+              "why": "New material includes inferred or created content missing from user input"
+            }
+          ],
+          "still_undefined": [
+            {
+              "predicate": "material/1",
+              "why_not_primitive": "Generic notion of material content"
+            },
+            {
+              "predicate": "not_from_user_input/1",
+              "why_not_primitive": "Needs definition"
+            },
+            {
+              "predicate": "inferred_or_created/1",
+              "why_not_primitive": "Needs definition"
+            },
+            {
+              "predicate": "not_explicit_in_user_input/1",
+              "why_not_primitive": "Needs definition"
+            }
+          ]
+        },
+        {
+          "round": 2,
+          "sought": ["When is material from user input vs created"],
+          "passages": [
+            {
+              "section_id": "transformation_exception",
+              "excerpt": "This includes tasks such as translating, paraphrasing, summarizing, classifying, encoding, formatting, or improving the grammar of user-provided text"
+            },
+            {
+              "section_id": "transformation_exception",
+              "excerpt": "The assistant may not rely on references, URLs, or titles that the user provides to retrieve disallowed content; only content that the user includes directly can be transformed."
+            }
+          ],
+          "rules": [
+            {
+              "asp": "from_user_input(M) :- user_provides_directly(M).",
+              "from_section": "transformation_exception",
+              "why": "Material is from user input if user includes it directly in message"
+            },
+            {
+              "asp": "new_material(M) :- user_provides_reference(M), not(user_includes_directly(M)).",
+              "from_section": "transformation_exception",
+              "why": "Material is new if retrieved via reference the user provides rather than included directly"
+            }
+          ],
+          "still_undefined": [
+            {
+              "predicate": "user_provides_directly/1",
+              "why_not_primitive": "Needs definition"
+            },
+            {
+              "predicate": "user_provides_reference/1",
+              "why_not_primitive": "Needs definition"
+            },
+            {
+              "predicate": "user_includes_directly/1",
+              "why_not_primitive": "Needs definition"
+            }
+          ]
+        }
+      ],
+      "closed": false,
+      "rounds_taken": 2,
+      "primitives": [
+        {
+          "predicate": "material/1",
+          "why_primitive": "Generic notion of content treated as given"
+        }
+      ],
+      "still_open": [
+        {
+          "predicate": "user_provides_directly/1",
+          "what_is_missing": "Criteria for what counts as direct inclusion"
+        },
+        {
+          "predicate": "user_provides_reference/1",
+          "what_is_missing": "How to distinguish references from direct content"
+        }
+      ],
+      "final_definition": [
+        {
+          "asp": "new_material(M) :- material(M), not(user_provides_directly(M)).",
+          "from_section": "transformation_exception"
+        },
+        {
+          "asp": "new_material(M) :- user_provides_reference(M), not(user_includes_directly(M)).",
+          "from_section": "transformation_exception"
+        }
+      ]
+    },
+    {
+      "predicate": "task/1",
+      "rounds": [
+        {
+          "round": 1,
+          "sought": ["What is a task"],
+          "passages": [
+            {
+              "section_id": "scope_of_autonomy",
+              "excerpt": "The assistant may be tasked with complex or multi-step goals (e.g., booking a trip, drafting a business plan, coordinating a software rollout) that involve real-world actions, sequential decisions, and filling in missing details."
+            }
+          ],
+          "rules": [
+            {
+              "asp": "task(T) :- goal(T), possibly_complex(T), possibly_multistep(T).",
+              "from_section": "scope_of_autonomy",
+              "why": "Tasks are goals that may be complex or multi-step"
+            }
+          ],
+          "still_undefined": [
+            {
+              "predicate": "goal/1",
+              "why_not_primitive": "Needs definition"
+            },
+            {
+              "predicate": "possibly_complex/1",
+              "why_not_primitive": "Unclear what counts as complex"
+            },
+            {
+              "predicate": "possibly_multistep/1",
+              "why_not_primitive": "Unclear what counts as multi-step"
+            }
+          ]
+        },
+        {
+          "round": 2,
+          "sought": ["What makes a task have scope of autonomy"],
+          "passages": [
+            {
+              "section_id": "scope_of_autonomy",
+              "excerpt": "This scope defines: Which sub-goals the assistant may pursue. Acceptable side effects (e.g., time or money spent, or data or access required) and, if applicable, how to handle tradeoffs between them. When the assistant must pause for clarification or approval."
+            },
+            {
+              "section_id": "scope_of_autonomy",
+              "excerpt": "To prevent costly misunderstandings or surprises, we require that autonomy must be bounded by a clear, mutually understood **scope of autonomy** shared between the assistant and the user."
+            }
+          ],
+          "rules": [
+            {
+              "asp": "task(T) :- has_scope_of_autonomy(T).",
+              "from_section": "scope_of_autonomy",
+              "why": "Tasks are those requiring bounded scope of autonomy"
+            },
+            {
+              "asp": "has_scope_of_autonomy(T) :- defines_subgoals(T), defines_side_effects(T), defines_approval_points(T).",
+              "from_section": "scope_of_autonomy",
+              "why": "Scope requires defining sub-goals, side effects, and approval points"
+            }
+          ],
+          "still_undefined": [
+            {
+              "predicate": "defines_subgoals/1",
+              "why_not_primitive": "Needs definition"
+            },
+            {
+              "predicate": "defines_side_effects/1",
+              "why_not_primitive": "Needs definition"
+            },
+            {
+              "predicate": "defines_approval_points/1",
+              "why_not_primitive": "Needs definition"
+            }
+          ]
+        }
+      ],
+      "closed": false,
+      "rounds_taken": 2,
+      "primitives": [
+        {
+          "predicate": "goal/1",
+          "why_primitive": "Generic notion of goal treated as given"
+        }
+      ],
+      "still_open": [
+        {
+          "predicate": "defines_subgoals/1",
+          "what_is_missing": "How to identify what qualifies as sub-goals"
+        },
+        {
+          "predicate": "defines_side_effects/1",
+          "what_is_missing": "What side effects need to be defined"
+        },
+        {
+          "predicate": "defines_approval_points/1",
+          "what_is_missing": "When approval points are required"
+        }
+      ],
+      "final_definition": [
+        {
+          "asp": "task(T) :- has_scope_of_autonomy(T).",
+          "from_section": "scope_of_autonomy"
+        },
+        {
+          "asp": "has_scope_of_autonomy(T) :- defines_subgoals(T), defines_side_effects(T), defines_approval_points(T).",
+          "from_section": "scope_of_autonomy"
+        }
+      ]
+    }
+  ]
+}
