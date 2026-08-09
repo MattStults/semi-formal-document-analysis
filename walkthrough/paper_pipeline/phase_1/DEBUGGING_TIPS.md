@@ -589,3 +589,48 @@ candidate extra transform. A fragment that passes (b) but not (a) is a *model* e
 right words, wrong section. A fragment that only passes under a new transform is a
 *checker* error, and the transform belongs in `normalise` with a comment saying which
 measured number it changed.
+
+---
+
+## 18 ⛔ The CORPUS FILE handed to a blind run had the answer key printed in it
+
+An experiment was designed to remove one confound: a resolver that is told which clause borrowed a
+predicate cites that clause's home passage, so "same extension" silently means "same clause". The fix
+was to hand the model the document and a shuffled list of names with **no clause information at
+all**. Three runs were dispatched. All three were void before they started.
+
+⛔ **`DOCUMENT.txt` is not the document.** It is the document with a `needs_block` injected under
+every section marker — **78 of them** — each reading *"[BORROWED PREDICATES — the rules written from
+this section test these...]"* followed by the predicate names. The file being handed out as the
+blind corpus was a **complete name → section answer key**, printed above the text it was supposed to
+hide.
+
+⚠️ **How it was caught, and it was luck.** Not by a check — by a subagent's prose report saying it
+had found a name *"listed in the BORROWED PREDICATES section of `follow_all_applicable_instructions`"*.
+Nothing in the JSON output would have shown it. The results would have looked like a **strong
+positive**: near-perfect grounding, high agreement, exactly the answer the experiment wanted.
+
+⭐ **THE GENERALISABLE FORM: an artifact built for one experiment carries that experiment's framing,
+and the framing is often the next experiment's answer.** `DOCUMENT.txt` was correct and well-designed
+for `resolve_probe.py`, whose entire question was *"given that this section borrows these names,
+where are they established?"* The annotation was the point. Reusing the file for a question that must
+not know the borrower inverted its meaning without changing a byte.
+
+**The check to run — mechanical, and it must run BEFORE dispatch, not after:**
+
+```
+grep -icF "$MARKER"  corpus.txt          # the annotation's own header
+grep -cE '^\s*[-*]\s*[a-z_]+/[0-9]'      # bullet lists of predicate/arity
+for each name in the task:  grep -qF "$name" corpus.txt  &&  fail
+```
+
+⛔ **The last line is the one that matters and is the easiest to skip.** If the corpus contains any
+string the model is being asked to locate, the task is a lookup and not a search. A **clean-corpus
+assertion belongs in the dispatch path**, not in a reviewer's memory — `⚠️ still to be built as a
+guard; today it is a documented manual step`, which is exactly the transcript-only procedure
+`REPRODUCIBILITY.md` calls a review finding.
+
+⚠️ **Also: the leaked runs must be DELETED, not kept and labelled.** Both leaked and clean runs write
+`blind_run<N>.json`, and a stale leaked file that a later scorer globs up is indistinguishable from a
+real result. Delete, then confirm every leaked agent has finished before relaunching, or the old
+agent's write can land on top of the new one's.
