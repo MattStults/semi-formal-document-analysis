@@ -1123,6 +1123,11 @@ class Driver:
                              or "unavailable" in detail
                              or "urlopen error" in detail   # DNS/route loss
                              or "Errno" in detail)          # (sleep/wake)
+                # 402 short ladder -- mirrored in dispatch_core._ladder
+                # (steps-1-4 audit 2026-08-12, BUG 2): ride out a credit
+                # propagation flap, fail fast on real exhaustion
+                if "HTTP 402" in detail and attempt >= 2:
+                    transient = False
                 if transient and attempt < 6:
                     wait = min(30 * (attempt + 1), 180)
                     print(f"    (transient [{detail[:50]}], retry "

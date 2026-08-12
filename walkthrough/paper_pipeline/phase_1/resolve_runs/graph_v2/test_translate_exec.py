@@ -426,9 +426,14 @@ def _run_pair_with_raising(tmp_path, scripts_fn):
     return codes, [_rows(d) for d in dirs]
 
 
-def test_provider_error_on_attempt_1_writes_the_serial_error_row(tmp_path):
+def test_provider_error_on_attempt_1_writes_the_serial_error_row(
+        tmp_path, monkeypatch):
     """Review F2: exec mode wrote 'ProviderError: ProviderError: ...' where
-    serial wrote 'ProviderError: ...'. Pin exec == serial, byte for byte."""
+    serial wrote 'ProviderError: ...'. Pin exec == serial, byte for byte.
+    (sleep patched: 402 rides the short retry ladder since the 2026-08-12
+    audit -- without the patch this pin sleeps ~90s per run)"""
+    monkeypatch.setattr(dc.time, "sleep", lambda s: None)
+
     def scripts():
         s = {cid: [good(cid)] for cid in CIDS}
         s["m0003"] = [T.ProviderError("HTTP 402: Credit limit exceeded")]
@@ -445,9 +450,13 @@ def test_provider_error_on_attempt_1_writes_the_serial_error_row(tmp_path):
         assert a == b, f"run.json row for {cid} differs: {a} != {b}"
 
 
-def test_provider_error_mid_repair_writes_the_serial_error_row(tmp_path):
+def test_provider_error_mid_repair_writes_the_serial_error_row(
+        tmp_path, monkeypatch):
     """Review F2, mid-repair variant (probe P4): the failure arrives on the
-    repair round's request, a path no prior test exercised."""
+    repair round's request, a path no prior test exercised.
+    (sleep patched: see the attempt-1 pin above)"""
+    monkeypatch.setattr(dc.time, "sleep", lambda s: None)
+
     def scripts():
         s = {cid: [good(cid)] for cid in CIDS}
         s["m0003"] = ["still not JSON",

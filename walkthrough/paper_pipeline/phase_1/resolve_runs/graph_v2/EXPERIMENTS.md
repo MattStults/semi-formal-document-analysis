@@ -1289,3 +1289,33 @@ build time. Observation only; the add-the-missing-provides alternative
 stays rejected by name. Pinned
 (test_broken_promises_names_undelivered_cross_links); 98 driver+core green.
 Budget note: Matt extended the campaign authorization to $10.00 (2026-08-12).
+
+## 2026-08-12: steps-1-4 latent-path audit -- 2 bugs, both validated and fixed
+
+Clean-context agent ran branch coverage over translate/schema/checks/
+readback/readback_r3/seats (+35 offline tests, test_latent_paths_steps14.py
+adopted into the tree). Both findings REPRODUCED before fixing:
+
+* **BUG 1 FIXED: the two truncation validators disagreed.**
+  `response_envelope` flags finish_reason "max_output_tokens" as truncated;
+  `_check_envelope` raised only on "length"/"max_tokens" -- the same reply
+  was truncated to the batch collector and complete to the serial guard,
+  failing later as a parse error blaming response_format. The guard now
+  trusts the envelope's own `truncated` flag (authority when present;
+  finish-reason list kept as fallback for envelopes built without it).
+* **BUG 2 FIXED: HTTP 402 rode the full transient ladder** (6 retries,
+  630s of sleep) on terminal credit exhaustion, and hung the two F2 pins
+  in test_translate_exec ~10.5 min each (the 22-minute graph_v2 suite was
+  ~21 min of these two hangs). Ruling: 402 stays retryable -- rejected
+  alternative, by name: terminal 402 -- because together.ai 402s flapped
+  for ~minutes after mid-campaign credit top-ups (measured); it now rides
+  a SHORT ladder (2 retries, ~90s) in BOTH paths (dispatch_core._ladder +
+  Driver._complete). The F2 pins patch sleep and run in seconds.
+
+Also adopted from the audit, recorded not fixed: `complete_messages`
+bypasses `_retrying`, so repair-round truncations are never resampled even
+with resample_truncation set (pinned as documented behavior); the
+merged_gloss provider-first fix depends on gloss_from_rows staying
+first-wins (`setdefault`) -- a refactor to plain assignment would silently
+invert F3. Suites: 98 driver+core, 800+1 phase_1, 12 translate_exec (3.6s,
+was 21 min), 35 audit tests -- all green.

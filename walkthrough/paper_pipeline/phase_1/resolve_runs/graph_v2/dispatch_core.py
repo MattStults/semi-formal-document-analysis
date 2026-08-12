@@ -541,6 +541,15 @@ class SerialExecutor:
                     # the budget diagnosis, not another paid retry
                     raise T.Phase1Error(state.error)
                 transient = any(m in detail for m in _TRANSIENT_MARKS)
+                # HTTP 402 rides a SHORT ladder (steps-1-4 audit 2026-08-12,
+                # BUG 2): as a full transient it burned 630s of backoff on a
+                # terminal credit exhaustion. It stays retryable at all --
+                # rejected alternative, by name: terminal 402 -- because
+                # together.ai 402s flapped for ~minutes after mid-campaign
+                # credit top-ups; two retries (~90s) ride out a flap and
+                # fail fast on real exhaustion.
+                if "HTTP 402" in detail and attempt >= 2:
+                    transient = False
                 if transient and attempt < 6:
                     wait = min(30 * (attempt + 1), 180)
                     print(f"    (transient [{detail[:50]}], retry "

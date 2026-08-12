@@ -774,7 +774,15 @@ def _check_envelope(env):
     rediscovered.
     """
     finish = (env.get("finish_reason") or "").lower()
-    if finish in ("length", "max_tokens"):
+    # the envelope's own `truncated` flag is the AUTHORITY when present --
+    # steps-1-4 audit 2026-08-12 (BUG 1): this guard raised only on
+    # "length"/"max_tokens" while response_envelope also flags
+    # "max_output_tokens", so the same reply was truncated to the batch
+    # collector and complete here, failing later as a parse error that
+    # blamed response_format. The finish-reason list stays as the fallback
+    # for envelopes built elsewhere without the flag.
+    if env.get("truncated") or finish in ("length", "max_tokens",
+                                          "max_output_tokens"):
         raise ProviderError(
             "completion was TRUNCATED (finish_reason=length). A cut-off module "
             "can be syntactically fine and semantically half a clause. Raise "
