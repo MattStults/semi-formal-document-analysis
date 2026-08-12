@@ -1023,3 +1023,113 @@ def test_dense_leaf_recurses_via_phase_d_core(tmp_path):
     assert len(g["nodes"]) == 10
     assert (open(os.path.join(a, "graph.json"), "rb").read()
             == open(os.path.join(b, "graph.json"), "rb").read())
+
+
+def test_enum_forcing_flag_off_is_byte_identical():
+    """ds3+ flag discipline: enum_decisions off (or pools omitted) must be
+    the EXACT schema every prior run used."""
+    import json as J
+    assert (J.dumps(R.unwind_schema(3, 10)[1], sort_keys=True)
+            == J.dumps(R.unwind_schema(3, 10, **R.enum_pools(
+                {}, [], {}, []))[1], sort_keys=True))
+
+
+def test_enum_forcing_offers_only_valid_options():
+    """Matt's plan 2026-08-12: rename_to draws ONLY from provided names,
+    needer/survivor/retired ONLY from node ids, name ONLY from the actual
+    danglings. The ds3-era failure (renaming a dangling to a name nothing
+    provides, four repair rounds) is now unspeakable in the grammar."""
+    nodes = [{"id": "a"}, {"id": "b"}]
+    provides = {"x": ["a"], "y": ["b"]}
+    dangling = [{"needer": "b", "name": "x_alias"}]
+    pools = R.enum_pools({"enum_decisions": True}, nodes, provides, dangling)
+    _, sch = R.unwind_schema(1, 2, **pools)
+    res = sch["properties"]["resolutions"]["items"]["properties"]
+    mrg = sch["properties"]["merges"]["items"]["properties"]
+    assert res["rename_to"]["enum"] == ["x", "y"]
+    assert "phantom_name" not in res["rename_to"]["enum"]
+    assert res["needer"]["enum"] == ["a", "b"]
+    assert res["name"]["enum"] == ["x_alias"]
+    assert mrg["survivor"]["enum"] == ["a", "b"]
+    assert mrg["retired"]["enum"] == ["a", "b"]
+    # resolution pass rides the same pools with merges/structure closed
+    _, rsch = R.resolution_schema(1, 2, **pools)
+    assert rsch["properties"]["merges"]["maxItems"] == 0
+    assert (rsch["properties"]["resolutions"]["items"]["properties"]
+            ["rename_to"]["enum"] == ["x", "y"])
+
+
+# ---------------- rename seat (Matt's option-c ruling, 2026-08-12) --------
+def test_rename_seat_prompt_is_blind_on_names():
+    """The seat judges MEANING; predicate names are the documented failure
+    mode and must never appear in its prompt."""
+    import rename_seat as RS
+    needer = {"id": "L1-9_n001", "establishes": "the reliant claim",
+              "spans": [{"lines": [1, 1]}]}
+    prov = {"id": "L1-9_n002", "establishes": "the defining claim",
+            "spans": [{"lines": [2, 2]}]}
+    p = RS.build_prompt("what A means", needer, "what B means", prov,
+                        ["alpha", "beta"])
+    for forbidden in ("L1-9_n001", "L1-9_n002", "chain_of_command",
+                      "rename_to"):
+        assert forbidden not in p
+    assert "what A means" in p and "what B means" in p
+    assert "alpha" in p and "beta" in p
+
+
+def test_rename_seat_fail_closed_on_garbage():
+    import rename_seat as RS
+    v = RS.judge(lambda s, u: {"text": "not json at all"}, "prompt")
+    assert v["verdict"] == "different_concept"
+    assert "fail-closed" in v["grounds"]
+    v2 = RS.judge(lambda s, u: {"text": '{"verdict": "same_concept", '
+                                        '"grounds": "identical wording"}'},
+                  "prompt")
+    assert v2["verdict"] == "same_concept"
+
+
+def test_rename_seat_verdicts_route_gated_proposals(tmp_path):
+    """Wiring pin: with rename_seat on, a below-gate proposal the seat
+    confirms is APPLIED; one it rejects stays dangling; every verdict is
+    recorded on the graph."""
+    g = {"nodes": [
+        {"id": "a", "establishes": "defines the visibility principle",
+         "needs": [], "provides": [{"name": "visibility",
+                                    "prose": "what the user can see"}],
+         "spans": [{"lines": [1, 1]}]},
+        {"id": "b", "establishes": "relies on it",
+         "needs": [{"name": "shown_to_user",
+                    "prose": "whether content is displayed"}],
+         "provides": [], "spans": [{"lines": [2, 2]}]}],
+        "uncovered": []}
+    R.write_json(os.path.join(str(tmp_path), "root_graph.json"), g)
+
+    class SeatMock:
+        spent_usd, calls = 0.0, 0
+        reply_schema = None
+
+        def complete(self, system, user):
+            if "adjudicate" in system:             # the seat brief
+                SeatMock.calls += 1
+                return {"text": '{"verdict": "same_concept", '
+                                '"grounds": "same display concept"}',
+                        "usage": {}}
+            # otherwise: the resolution pass's own proposal call
+            return {"text": json.dumps({
+                "resolutions": [{"needer": "b", "name": "shown_to_user",
+                                 "rename_to": "visibility"}],
+                "merges": [], "structure_nodes": [],
+                "cross_link_report": [], "judgment_calls": []}),
+                "usage": {}}
+
+        def complete_messages(self, system, messages):
+            return self.complete(system, "")
+
+    drv = R.Driver({"rename_seat": True}, SeatMock(), ["alpha", "beta"],
+                   str(tmp_path))
+    out = R.run_resolution_pass(drv, g, str(tmp_path))
+    provs = {R.nm(p) for n in out["nodes"] for p in n.get("provides", [])}
+    needs = [R.nm(d) for n in out["nodes"] for d in n.get("needs", [])]
+    assert needs == ["visibility"], "the confirmed rename must be applied"
+    assert out["rename_seat_verdicts"][0]["verdict"] == "same_concept"
+    assert SeatMock.calls == 1

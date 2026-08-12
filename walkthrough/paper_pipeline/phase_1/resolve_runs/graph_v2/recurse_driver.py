@@ -833,13 +833,23 @@ def leaf_schema(lo, hi):
     return ("leaf_graph", sch)
 
 
-def unwind_schema(n_dangling, n_nodes):
+def unwind_schema(n_dangling, n_nodes, provided_names=None, node_ids=None,
+                  dangling_names=None):
     """UNWIND_SCHEMA with dynamic maxItems (2026-08-11: the unwind was the
     one reply shape left grammar-unbounded -- Matt's catch during the long
     root draw). Bounds are protocol-derived: resolutions cannot exceed the
     dangling count the driver itself computed; judgment_calls economy is
     ~10 by the brief. Strings stay uncappable; the validator remains the
-    semantic authority."""
+    semantic authority.
+
+    ENUM FORCING (Matt's plan, 2026-08-12): when the option pools are
+    supplied, the decision fields become per-dispatch ENUMS of only the
+    valid options -- rename_to from the names actually provided, needer /
+    survivor / retired from the actual node ids, name from the actual
+    dangling names. Measured pools are small (<=123 names graph-wide,
+    median seed pool 34.5), so the grammar itself now rules out the
+    rename-to-nothing class that burned four repair rounds on ds5. Pools
+    omitted -> byte-identical to the ungated schema (flag-off parity)."""
     import copy
     sch = copy.deepcopy(UNWIND_SCHEMA)
     p = sch["properties"]
@@ -848,6 +858,17 @@ def unwind_schema(n_dangling, n_nodes):
     p["structure_nodes"]["maxItems"] = 8
     p["cross_link_report"]["maxItems"] = max(n_dangling + 10, 20)
     p["judgment_calls"]["maxItems"] = 12
+    res = p["resolutions"]["items"]["properties"]
+    mrg = p["merges"]["items"]["properties"]
+    if provided_names:
+        res["rename_to"]["enum"] = sorted(set(provided_names))
+    if node_ids:
+        ids = sorted(set(node_ids))
+        res["needer"]["enum"] = ids
+        mrg["survivor"]["enum"] = ids
+        mrg["retired"]["enum"] = ids
+    if dangling_names:
+        res["name"]["enum"] = sorted(set(dangling_names))
     return ("unwind_decisions", sch)
 
 
@@ -884,7 +905,7 @@ def leaf_dispatch(lo, hi, cfg):
     return extra, (name, sch), derive
 
 
-def resolution_schema(n_dangling, n_nodes):
+def resolution_schema(n_dangling, n_nodes, **pools):
     """The unwind grammar with merges/structure_nodes CLOSED
     (delta_review_driver.md D3): the resolution pass's ONLY job is
     resolutions. A structure node admitted here would be appended with
@@ -892,7 +913,7 @@ def resolution_schema(n_dangling, n_nodes):
     ghost-node hole, probe P6) -- and a merge would run with no unwind
     context. Keeps the 'unwind_decisions' schema name so the per-phase
     output cap still keys on it."""
-    name, sch = unwind_schema(n_dangling, n_nodes)
+    name, sch = unwind_schema(n_dangling, n_nodes, **pools)
     p = sch["properties"]
     p["merges"]["maxItems"] = 0
     p["structure_nodes"]["maxItems"] = 0
@@ -918,6 +939,19 @@ def classify_cap_overflow(partial_text):
     if top > max(3, len(est) * 0.2):
         return "malfunction"          # establishes repetition (the 969 class)
     return "dense"
+
+
+def enum_pools(cfg, nodes, provides, dangling):
+    """The per-dispatch option pools for unwind_schema's enum forcing --
+    single source for Driver.unwind, the core's _want_unwind and the
+    resolution pass. `enum_decisions` off -> {} -> byte-identical schema
+    (flag-off parity, same discipline as every other ds3+ flag)."""
+    if not cfg.get("enum_decisions"):
+        return {}
+    return {"provided_names": list(provides),
+            "node_ids": [n["id"] for n in nodes],
+            "dangling_names": [d.get("name") for d in dangling
+                               if d.get("name")]}
 
 
 def broken_promises(division, children_graphs):
@@ -1341,7 +1375,9 @@ class Driver:
         dec = self.call(user, lambda o: apply_decisions(
             json.loads(json.dumps(nodes)), o, provides, lo, hi,
             self.lines)[1],
-            schema=unwind_schema(len(dangling), len(nodes)))
+            schema=unwind_schema(len(dangling), len(nodes),
+                                 **enum_pools(self.cfg, nodes, provides,
+                                              dangling)))
         log, errs = apply_decisions(nodes, dec, provides, lo, hi, self.lines)
         if errs:
             raise T.Phase1Error("unwind decision application failed: "
@@ -1577,7 +1613,9 @@ def run_resolution_pass(drv, g, out_dir):
 
     dec = drv.call(user, lambda o: apply_decisions(
         json.loads(json.dumps(nodes)), _resolutions_only(o), provides)[1],
-        schema=resolution_schema(len(dangling), len(nodes)))
+        schema=resolution_schema(len(dangling), len(nodes),
+                                 **enum_pools(drv.cfg, nodes, provides,
+                                              dangling)))
     # ds4_divergence_analysis.md 2026-08-12: ungated, this pass renamed
     # stay_in_bounds_content_categories -> content_definition and attached
     # 38 edges to the WRONG concept (message-format `content`). A rename
@@ -1602,6 +1640,34 @@ def run_resolution_pass(drv, g, out_dir):
         np = prose_by_need.get((r.get("needer"), r.get("name")), "")
         pp = prov_prose.get(r.get("rename_to") or r.get("name"), "")
         (kept if _sim(np, pp) >= 0.25 else gated).append(r)
+    # Matt's ruling 2026-08-12 (option c): the gate is a PREFILTER, not the
+    # verdict. Below-gate proposals go to the rename seat -- one-shot,
+    # order-blind, names never shown (rename_seat.py) -- instead of being
+    # auto-rejected. Seat off -> the ds5 behavior, byte-identical.
+    if gated and drv.cfg.get("rename_seat"):
+        import rename_seat as RS
+        by_id = {n["id"]: n for n in nodes}
+        prov_node = {}
+        for n in nodes:
+            for p in n.get("provides", []):
+                if isinstance(p, dict):
+                    prov_node.setdefault(p["name"], n)
+        still_gated = []
+        for r in gated:
+            name = r.get("rename_to") or r.get("name")
+            prompt = RS.build_prompt(
+                prose_by_need.get((r.get("needer"), r.get("name")), ""),
+                by_id.get(r.get("needer")),
+                prov_prose.get(name, ""), prov_node.get(name), drv.lines)
+            slot = (lambda sch: setattr(drv.client, "reply_schema", sch)) \
+                if hasattr(drv.client, "reply_schema") else None
+            v = RS.judge(drv.client.complete, prompt, schema_slot=slot)
+            g.setdefault("rename_seat_verdicts", []).append(
+                {"proposal": r, "verdict": v["verdict"],
+                 "grounds": v["grounds"]})
+            (kept if v["verdict"] == "same_concept"
+             else still_gated).append(r)
+        gated = still_gated
     dec["resolutions"] = kept
     if gated:
         g.setdefault("driver_autofixes", []).append(

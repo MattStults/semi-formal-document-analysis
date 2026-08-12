@@ -1,0 +1,181 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3384_3501_n007",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the worked example shows a developer instruction that requires function-call-only responses",
+  "C2 the example shows that the function-call interface still permits clarifying questions",
+  "C3 the example shows that asking a clarifying question via the function-call interface is preferred over a plaintext response in a programmatic-format context"
+ ],
+ "acts": [
+  "respond_via_function_call(R)",
+  "respond_plaintext(R)",
+  "ask_clarifying_question_via_function_call(Q)"
+ ],
+ "concepts": [
+  {
+   "name": "interactive_vs_programmatic_context",
+   "arity": 1,
+   "gloss": "the context in which the assistant operates: interactive chat with a real-time user versus producing output intended to be consumed programmatically",
+   "licence": "textual",
+   "cites": "l3384_3501_n007",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "interactive_behaviors",
+   "arity": 1,
+   "gloss": "behaviors such as clarifying questions, follow-ups, and code blocks that are encouraged specifically in interactive settings",
+   "licence": "textual",
+   "cites": "l3384_3501_n007",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "programmatic_format_context",
+   "arity": 1,
+   "gloss": "a context in which the assistant's output is intended to be consumed programmatically, such as inserted into a file or processed by code",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's developer instruction requires function-call-only responses, which is a programmatic-format context; the node's claim refers to 'programmatic-format context'",
+   "toggleable": false
+  },
+  {
+   "name": "function_call_interface",
+   "arity": 1,
+   "gloss": "the interface by which the assistant responds through function calls rather than plaintext messages",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example uses a function-call interface; the node's claim refers to it",
+   "toggleable": false
+  },
+  {
+   "name": "clarifying_question",
+   "arity": 1,
+   "gloss": "a question the assistant asks to resolve ambiguity in the user's request",
+   "licence": "textual",
+   "cites": "l3384_3501_n007",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "developer_instruction",
+   "arity": 1,
+   "gloss": "an instruction from the developer message that sets requirements for assistant behavior",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example is a developer message with instructions; the node's claim refers to 'developer instructions'",
+   "toggleable": false
+  },
+  {
+   "name": "requires_function_call_only",
+   "arity": 1,
+   "gloss": "the developer instruction requires the assistant to respond only via function calls and never with a standard plaintext message",
+   "licence": "textual",
+   "cites": "l3384_3501_n007",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "clarifying_question_via_function_call",
+   "arity": 1,
+   "gloss": "a clarifying question asked through the function-call interface, such as via the ask_clarifying_question tool",
+   "licence": "textual",
+   "cites": "l3384_3501_n007",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "respond_plaintext",
+   "arity": 1,
+   "gloss": "a response that is a standard plaintext message to the user, as opposed to a function call",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example contrasts a plaintext response with a function-call response; the module needs this predicate to express the prohibition",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l3384_3501_n007",
+   "inference": null,
+   "toggleable": false,
+   "atom": "programmatic_format_context(C)",
+   "gloss": "C is a programmatic-format context, as in the example where the developer requires function-call-only responses",
+   "body": "interactive_vs_programmatic_context(C)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l3384_3501_n007",
+   "inference": null,
+   "toggleable": false,
+   "atom": "requires_function_call_only(I)",
+   "gloss": "I is a developer instruction requiring function-call-only responses",
+   "body": "developer_instruction(I)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l3384_3501_n007",
+   "inference": null,
+   "toggleable": false,
+   "atom": "clarifying_question_via_function_call(Q)",
+   "gloss": "Q is a clarifying question asked through the function-call interface",
+   "body": "clarifying_question(Q), function_call_interface(F)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "responding with a plaintext message is forbidden in a programmatic-format context when the developer instruction requires function-call-only responses",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l3384_3501_n007",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "respond_plaintext(R)",
+   "body": "programmatic_format_context(C), requires_function_call_only(I), respond_plaintext(R)"
+  },
+  {
+   "read_back": "asking a clarifying question via the function-call interface is preferred over a plaintext response in a programmatic-format context",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l3384_3501_n007",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "ask_clarifying_question_via_function_call(Q)",
+   "body": "programmatic_format_context(C), clarifying_question_via_function_call(Q)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_plaintext",
+   "closure": "cnpa",
+   "reason": "the example's developer instruction explicitly forbids plaintext responses in the programmatic-format context, so silence about plaintext responses in that context is not permissive"
+  },
+  {
+   "act_class": "respond_via_function_call",
+   "closure": "cepa",
+   "reason": "the example shows function-call responses as the required mode; the clause does not forbid them, so they remain permitted"
+  },
+  {
+   "act_class": "ask_clarifying_question_via_function_call",
+   "closure": "cepa",
+   "reason": "the example explicitly shows a clarifying question via function call as the good response, so it is permitted"
+  }
+ ],
+ "requires": [
+  "interactive_vs_programmatic_context/1",
+  "interactive_behaviors/1"
+ ],
+ "inputs": [
+  "developer_instruction/1",
+  "clarifying_question/1",
+  "function_call_interface/1",
+  "respond_plaintext/1"
+ ],
+ "forbid_body": []
+}

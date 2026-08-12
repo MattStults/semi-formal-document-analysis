@@ -1,0 +1,161 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1_170_n028",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the authority hierarchy has six tiers, ranked highest to lowest: Root, System, Developer, User, Guideline, No Authority",
+  "C2 No Authority is the lowest tier, covering assistant and tool messages, and quoted/untrusted text and multimodal data in other messages",
+  "C3 an instruction at a higher tier overrides an instruction at a lower tier when the two conflict"
+ ],
+ "acts": [
+  "override_instruction(I1, I2)"
+ ],
+ "concepts": [
+  {
+   "name": "authority_levels_hierarchy",
+   "arity": 2,
+   "gloss": "level A is ranked higher than level B in the six-tier authority hierarchy",
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "instruction_authority_level",
+   "arity": 2,
+   "gloss": "instruction I is designated with authority level L",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the ordering of authority levels applies to instructions, so each instruction must carry the level it is designated with",
+   "toggleable": false
+  },
+  {
+   "name": "conflicting_instructions",
+   "arity": 2,
+   "gloss": "instruction I1 and instruction I2 direct conflicting behavior in the same situation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the override rule applies when instructions conflict, so a relation marking conflicting pairs is needed",
+   "toggleable": false
+  },
+  {
+   "name": "assistant_or_tool_message",
+   "arity": 1,
+   "gloss": "M is a message produced by the assistant or by a tool, which the document assigns No Authority",
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "quoted_or_untrusted_text",
+   "arity": 1,
+   "gloss": "M is text that is quoted or otherwise untrusted, which the document assigns No Authority",
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "multimodal_data",
+   "arity": 1,
+   "gloss": "M is multimodal data (e.g., images, audio) in a message, which the document assigns No Authority",
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false,
+   "atom": "authority_levels_hierarchy(root, system)",
+   "gloss": "Root is ranked above System",
+   "body": null
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false,
+   "atom": "authority_levels_hierarchy(system, developer)",
+   "gloss": "System is ranked above Developer",
+   "body": null
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false,
+   "atom": "authority_levels_hierarchy(developer, user)",
+   "gloss": "Developer is ranked above User",
+   "body": null
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false,
+   "atom": "authority_levels_hierarchy(user, guideline)",
+   "gloss": "User is ranked above Guideline",
+   "body": null
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false,
+   "atom": "authority_levels_hierarchy(guideline, no_authority)",
+   "gloss": "Guideline is ranked above No Authority",
+   "body": null
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false,
+   "atom": "no_authority_message(M)",
+   "gloss": "M is an assistant or tool message, or quoted/untrusted text or multimodal data in another message, and therefore carries No Authority",
+   "body": "assistant_or_tool_message(M); quoted_or_untrusted_text(M); multimodal_data(M)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "instruction % overrides instruction % because % is at a higher authority level than %",
+   "read_back_slots": [
+    "I1",
+    "I2",
+    "I1",
+    "I2"
+   ],
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "override_instruction(I1, I2)",
+   "body": "instruction_authority_level(I1, L1), instruction_authority_level(I2, L2), authority_levels_hierarchy(L1, L2), conflicting_instructions(I1, I2)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "override_instruction",
+   "closure": "cepa",
+   "reason": "the clause states a preference for higher-level instructions to override lower-level ones in conflicts; it does not forbid any act, so silence leaves override acts permitted"
+  }
+ ],
+ "requires": [],
+ "inputs": [
+  "assistant_or_tool_message/1",
+  "quoted_or_untrusted_text/1",
+  "multimodal_data/1",
+  "instruction_authority_level/2",
+  "conflicting_instructions/2"
+ ],
+ "forbid_body": []
+}

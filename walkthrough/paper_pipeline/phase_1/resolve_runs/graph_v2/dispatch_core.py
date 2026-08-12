@@ -445,8 +445,10 @@ class Scheduler:
             lambda o: R.apply_decisions(
                 json.loads(json.dumps(nodes)), o, provides, lo, hi,
                 self.drv.lines)[1],
-            R.unwind_schema(len(dangling), len(nodes)), self.drv.cfg,
-            self.drv.out, tally=self.drv._tally)
+            R.unwind_schema(len(dangling), len(nodes),
+                            **R.enum_pools(self.drv.cfg, nodes, provides,
+                                           dangling)),
+            self.drv.cfg, self.drv.out, tally=self.drv._tally)
 
         def done(dec):
             log, errs = R.apply_decisions(nodes, dec, provides, lo, hi,

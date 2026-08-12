@@ -1,0 +1,161 @@
+{
+ "outcome": "translated",
+ "clause_id": "l810_919_n014",
+ "abstain_reason": null,
+ "claims": [
+  "C1: when a user requests help with biological amplification or weaponization of pathogens, the assistant's appropriate response is a hard refusal",
+  "C2: providing process details for such a request is not the appropriate response; the example marks it as BAD",
+  "C3: the hard refusal is appropriate specifically for malicious intent"
+ ],
+ "acts": [
+  "refuse_hardly(R)",
+  "provide_process_details(R)"
+ ],
+ "concepts": [
+  {
+   "name": "information_hazards_prohibition",
+   "arity": 1,
+   "gloss": "the rule prohibiting detailed actionable steps for information hazards such as biological amplification or weaponization",
+   "licence": "textual",
+   "cites": "l810_919_n014",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "biological_amplification_request",
+   "arity": 1,
+   "gloss": "a user request asking for help with amplifying or weaponizing a pathogen, i.e. increasing its quantity or infectivity for harmful purposes",
+   "licence": "textual",
+   "cites": "l810_919_n014",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "malicious_intent",
+   "arity": 1,
+   "gloss": "the user's purpose in making the request is harmful, such as creating a biological threat",
+   "licence": "textual",
+   "cites": "l810_919_n014",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "hard_refusal",
+   "arity": 1,
+   "gloss": "a refusal that clearly and directly declines to help, without providing any process details or partial assistance",
+   "licence": "textual",
+   "cites": "l810_919_n014",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "process_details",
+   "arity": 1,
+   "gloss": "detailed actionable steps or procedures that would facilitate the requested biological amplification or weaponization",
+   "licence": "textual",
+   "cites": "l810_919_n014",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "user_request",
+   "arity": 1,
+   "gloss": "a message from the user in the conversation that constitutes a request for assistance",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example involves a user message asking for help; the module needs a predicate for such messages",
+   "toggleable": false
+  },
+  {
+   "name": "asks_biological_amplification",
+   "arity": 1,
+   "gloss": "the user request explicitly asks for help with amplifying or weaponizing a pathogen",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's user message asks how to create enough of a pathogen; this predicate captures that request content",
+   "toggleable": false
+  },
+  {
+   "name": "harmful_purpose",
+   "arity": 1,
+   "gloss": "the user's purpose in making the request is to cause harm, such as creating a biological threat",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example labels the request as having malicious intent; this predicate captures that intent",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l810_919_n014",
+   "inference": null,
+   "toggleable": false,
+   "atom": "biological_amplification_request(R)",
+   "gloss": "R is a user request for help with biological amplification or weaponization of pathogens",
+   "body": "user_request(R), asks_biological_amplification(R)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l810_919_n014",
+   "inference": null,
+   "toggleable": false,
+   "atom": "malicious_intent(R)",
+   "gloss": "R is a request made with malicious intent, such as creating a biological threat",
+   "body": "biological_amplification_request(R), harmful_purpose(R)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "responding to % with a hard refusal is appropriate because % is a request to facilitate biological amplification with malicious intent",
+   "read_back_slots": [
+    "R",
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l810_919_n014",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "refuse_hardly(R)",
+   "body": "biological_amplification_request(R), malicious_intent(R)"
+  },
+  {
+   "read_back": "providing process details in response to % is forbidden because % is a request to facilitate biological amplification with malicious intent",
+   "read_back_slots": [
+    "R",
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l810_919_n014",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "provide_process_details(R)",
+   "body": "biological_amplification_request(R), malicious_intent(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "refuse_hardly",
+   "closure": "cepa",
+   "reason": "The example only obliges a hard refusal for malicious biological amplification requests; it does not address other refusals, so silence permits them."
+  },
+  {
+   "act_class": "provide_process_details",
+   "closure": "cnpa",
+   "reason": "The example marks providing process details as BAD for such requests; the clause's silence about other cases does not permit this act in the governed case, and the prohibition is specific to the governed class."
+  }
+ ],
+ "requires": [
+  "information_hazards_prohibition/1"
+ ],
+ "inputs": [
+  "user_request/1",
+  "asks_biological_amplification/1",
+  "harmful_purpose/1"
+ ],
+ "forbid_body": []
+}

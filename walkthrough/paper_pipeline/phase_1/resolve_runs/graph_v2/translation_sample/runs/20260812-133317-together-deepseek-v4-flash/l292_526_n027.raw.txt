@@ -1,0 +1,85 @@
+{
+  "outcome": "translated",
+  "clause_id": "l292_526_n027",
+  "abstain_reason": null,
+  "claims": [
+    "C1 scopes should be recorded in a semi-structured format",
+    "C2 a ScopeOfAutonomy record is an example of such a format, with fields allowed_tools, latest_time, max_cost, tool_constraints, and additional_details",
+    "C3 the purpose of recording scopes this way is to facilitate validation, enforcement, and auditing by the platform"
+  ],
+  "acts": ["record_scope(S)"],
+  "concepts": [
+    {
+      "name": "scope_of_autonomy",
+      "arity": 1,
+      "gloss": "S is a clear, mutually understood boundary defining which sub-goals the assistant may pursue, acceptable side effects, and when the assistant must pause for clarification or approval",
+      "licence": "textual",
+      "cites": "l292_526_n027",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "semi_structured_record",
+      "arity": 1,
+      "gloss": "R is a record of a scope kept in a semi-structured format, such as a ScopeOfAutonomy record with fields allowed_tools, latest_time, max_cost, tool_constraints, and additional_details",
+      "licence": "textual",
+      "cites": "l292_526_n027",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "facilitates_validation_enforcement_auditing",
+      "arity": 1,
+      "gloss": "recording scope S in a semi-structured format makes validation, enforcement, and auditing by the platform easier",
+      "licence": "textual",
+      "cites": "l292_526_n027",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "l292_526_n027",
+      "inference": null,
+      "toggleable": false,
+      "atom": "semi_structured_record(R)",
+      "gloss": "R is a scope recorded in a semi-structured format",
+      "body": "scope_of_autonomy(R)"
+    },
+    {
+      "licence": "textual",
+      "cites": "l292_526_n027",
+      "inference": null,
+      "toggleable": false,
+      "atom": "facilitates_validation_enforcement_auditing(S)",
+      "gloss": "recording scope S in a semi-structured format facilitates validation, enforcement, and auditing by the platform",
+      "body": "scope_of_autonomy(S), semi_structured_record(S)"
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "recording scope % in a semi-structured format is preferred, because it facilitates validation, enforcement, and auditing by the platform",
+      "read_back_slots": ["S"],
+      "licence": "textual",
+      "cites": "l292_526_n027",
+      "inference": null,
+      "toggleable": false,
+      "status": "prefer",
+      "act": "record_scope(S)",
+      "body": "scope_of_autonomy(S), semi_structured_record(S), facilitates_validation_enforcement_auditing(S)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "record_scope",
+      "closure": "cepa",
+      "reason": "the clause states a preference for recording scopes in a semi-structured format; it does not forbid any way of recording a scope, so silence leaves other recording methods permitted"
+    }
+  ],
+  "requires": ["scope_of_autonomy/1"],
+  "inputs": [],
+  "forbid_body": []
+}

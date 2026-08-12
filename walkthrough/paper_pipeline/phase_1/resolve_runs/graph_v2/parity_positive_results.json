@@ -1,0 +1,56 @@
+[
+ {
+  "needer": "L171-292_n002",
+  "from": "authority_levels_hierarchy",
+  "to": "authority_levels_hierarchy",
+  "prose": "which of two authority levels outranks the other (root > system > developer > user > guideline > no authority)",
+  "seat": "same_concept",
+  "grounds": "Description A refers to the ordering of authority levels (root > system > developer > user > guideline > no authority), and Description B explicitly establishes that exact full ordering. Both denote the same hierarchy of authority levels.",
+  "prompt": "DESCRIPTION A (a concept the first passage RELIES ON):\nwhich of two authority levels outranks the other (root > system > developer > user > guideline > no authority)\n\nTHE PASSAGE THAT RELIES ON IT:\nclaim: Much of the Model Spec consists of default (user- or guideline-level) instructions that can be overridden by users or developers.\ntext:\nAbove all else, the assistant must adhere to this Model Spec[^8ep1]. Note, however, that much of the Model Spec consists of default (user- or guideline-level) instructions that can be overridden by users or developers.\n\nDESCRIPTION B (a concept the second passage ESTABLISHES):\nthe full ordering of authority levels from root down to no authority\n\nTHE PASSAGE THAT ESTABLISHES IT:\nclaim: The ordering of authority levels is: Root (Model Spec root sections), System (Model Spec system sections and system messages), Developer (Model Spec developer sections and developer messages), User (Model Spec user sections and user messages), Guideline (Model Spec guideline sections), No Authority (assistant and tool messages; quoted/untrusted text and multimodal data in other messages).\ntext:\nHere is the ordering of authority levels. Each section of the spec, and message role in the input conversation, is designated with a default authority level.\n---\n1. **Root**: Model Spec \"root\" sections\n2. **System**: Model Spec \"system\" sections and system messages\n3. **Developer**: Model Spec \"developer\" sections and developer messages\n4. **User**: Model Spec \"user\" sections and user messages\n5. **Guideline**: Model Spec \"guideline\" sections\n6. *No Authority*: assistant and tool messages; quoted/untrusted text and multimodal data in other messages\n\nIs the proposal that A and B are the same concept correct? Reply with the JSON object only."
+ },
+ {
+  "needer": "L171-292_n002",
+  "from": "user_authority",
+  "to": "user_authority",
+  "prose": "an instruction from end users, which models should honor unless they conflict with developer-, system-, or root-level instructions",
+  "seat": "different_concept",
+  "grounds": "A describes the content of an instruction (what end users instruct and its override conditions), while B describes an authority level (a rank in a hierarchy). They are related but distinct: one is the instruction itself, the other is the level at which it sits.",
+  "prompt": "DESCRIPTION A (a concept the first passage RELIES ON):\nan instruction from end users, which models should honor unless they conflict with developer-, system-, or root-level instructions\n\nTHE PASSAGE THAT RELIES ON IT:\nclaim: Much of the Model Spec consists of default (user- or guideline-level) instructions that can be overridden by users or developers.\ntext:\nAbove all else, the assistant must adhere to this Model Spec[^8ep1]. Note, however, that much of the Model Spec consists of default (user- or guideline-level) instructions that can be overridden by users or developers.\n\nDESCRIPTION B (a concept the second passage ESTABLISHES):\nthe authority level of Model Spec user sections and user messages\n\nTHE PASSAGE THAT ESTABLISHES IT:\nclaim: User is the fourth authority level, comprising Model Spec user sections and user messages.\ntext:\n4. **User**: Model Spec \"user\" sections and user messages\n\nIs the proposal that A and B are the same concept correct? Reply with the JSON object only."
+ },
+ {
+  "needer": "L171-292_n002",
+  "from": "guideline_authority",
+  "to": "guideline_authority",
+  "prose": "an instruction that can be implicitly overridden (e.g., from contextual cues, background knowledge, or user history)",
+  "seat": "different_concept",
+  "grounds": "Description A refers to the property of being overridable (default instructions that can be overridden), while Description B refers to a specific authority level (the fifth level) assigned to guideline sections. These are distinct concepts: one is about override capability, the other about a hierarchical classification.",
+  "prompt": "DESCRIPTION A (a concept the first passage RELIES ON):\nan instruction that can be implicitly overridden (e.g., from contextual cues, background knowledge, or user history)\n\nTHE PASSAGE THAT RELIES ON IT:\nclaim: Much of the Model Spec consists of default (user- or guideline-level) instructions that can be overridden by users or developers.\ntext:\nAbove all else, the assistant must adhere to this Model Spec[^8ep1]. Note, however, that much of the Model Spec consists of default (user- or guideline-level) instructions that can be overridden by users or developers.\n\nDESCRIPTION B (a concept the second passage ESTABLISHES):\nthe authority level of Model Spec guideline sections\n\nTHE PASSAGE THAT ESTABLISHES IT:\nclaim: Guideline is the fifth authority level, comprising Model Spec guideline sections.\ntext:\n5. **Guideline**: Model Spec \"guideline\" sections\n\nIs the proposal that A and B are the same concept correct? Reply with the JSON object only."
+ },
+ {
+  "needer": "L171-292_n003",
+  "from": "root_authority",
+  "to": "root_authority",
+  "prose": "a fundamental root rule that cannot be overridden by system messages, developers or users",
+  "seat": "different_concept",
+  "grounds": "Description A refers to a specific rule that cannot be overridden, while Description B refers to the authority level of root sections. The passages show A is a property of root instructions, not the authority level itself.",
+  "prompt": "DESCRIPTION A (a concept the first passage RELIES ON):\na fundamental root rule that cannot be overridden by system messages, developers or users\n\nTHE PASSAGE THAT RELIES ON IT:\nclaim: Subject to its root-level instructions, the Model Spec explicitly delegates all remaining power to the system, developer (for API use cases) and end user.\ntext:\nSubject to its root-level instructions, the Model Spec explicitly delegates all remaining power to the system, developer (for API use cases) and end user.\n\nDESCRIPTION B (a concept the second passage ESTABLISHES):\nthe authority level of root sections of the Model Spec\n\nTHE PASSAGE THAT ESTABLISHES IT:\nclaim: Root is the highest authority level, comprising Model Spec root sections.\ntext:\n1. **Root**: Model Spec \"root\" sections\n\nIs the proposal that A and B are the same concept correct? Reply with the JSON object only."
+ },
+ {
+  "needer": "L171-292_n003",
+  "from": "system_authority",
+  "to": "system_authority",
+  "prose": "a rule set by OpenAI that can be transmitted or overridden through system messages, but cannot be overridden by developers or users",
+  "seat": "different_concept",
+  "grounds": "A describes a rule set by OpenAI that can be transmitted/overridden via system messages but not by developers/users, while B describes the authority level of Model Spec system sections and system messages. A is about the nature of a rule (its source and override constraints), B is about a hierarchical level in the spec. They are related but not the same concept.",
+  "prompt": "DESCRIPTION A (a concept the first passage RELIES ON):\na rule set by OpenAI that can be transmitted or overridden through system messages, but cannot be overridden by developers or users\n\nTHE PASSAGE THAT RELIES ON IT:\nclaim: Subject to its root-level instructions, the Model Spec explicitly delegates all remaining power to the system, developer (for API use cases) and end user.\ntext:\nSubject to its root-level instructions, the Model Spec explicitly delegates all remaining power to the system, developer (for API use cases) and end user.\n\nDESCRIPTION B (a concept the second passage ESTABLISHES):\nthe authority level of Model Spec system sections and system messages\n\nTHE PASSAGE THAT ESTABLISHES IT:\nclaim: System is the second authority level, comprising Model Spec system sections and system messages.\ntext:\n2. **System**: Model Spec \"system\" sections and system messages\n\nIs the proposal that A and B are the same concept correct? Reply with the JSON object only."
+ },
+ {
+  "needer": "L171-292_n003",
+  "from": "developer_authority",
+  "to": "developer_authority",
+  "prose": "an instruction given by developers using the API, which models should obey unless overridden by root or system instructions",
+  "seat": "different_concept",
+  "grounds": "Description A refers to the specific instruction content given by developers (what the model should obey), while Description B refers to the authority level or category of developer sections/messages. They are related but distinct: one is the instruction itself, the other is the hierarchical level.",
+  "prompt": "DESCRIPTION A (a concept the first passage RELIES ON):\nan instruction given by developers using the API, which models should obey unless overridden by root or system instructions\n\nTHE PASSAGE THAT RELIES ON IT:\nclaim: Subject to its root-level instructions, the Model Spec explicitly delegates all remaining power to the system, developer (for API use cases) and end user.\ntext:\nSubject to its root-level instructions, the Model Spec explicitly delegates all remaining power to the system, developer (for API use cases) and end user.\n\nDESCRIPTION B (a concept the second passage ESTABLISHES):\nthe authority level of Model Spec developer sections and developer messages\n\nTHE PASSAGE THAT ESTABLISHES IT:\nclaim: Developer is the third authority level, comprising Model Spec developer sections and developer messages.\ntext:\n3. **Developer**: Model Spec \"developer\" sections and developer messages\n\nIs the proposal that A and B are the same concept correct? Reply with the JSON object only."
+ }
+]

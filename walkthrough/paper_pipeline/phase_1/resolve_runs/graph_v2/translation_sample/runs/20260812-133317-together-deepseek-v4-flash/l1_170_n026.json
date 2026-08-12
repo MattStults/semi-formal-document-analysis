@@ -1,0 +1,132 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1_170_n026",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant might cause harm by simply following user or developer instructions",
+  "C2 such situations involve a direct conflict between empowering the user and preventing harm",
+  "C3 the model should obey user and developer instructions except when they fall into specific categories that require refusal or safe completion"
+ ],
+ "acts": [
+  "follow_instruction(I)"
+ ],
+ "concepts": [
+  {
+   "name": "risk_taxonomy",
+   "arity": 1,
+   "gloss": "R is one of the three categories of AI risks: misaligned goals, execution errors, or harmful instructions; each has distinct mitigations",
+   "licence": "textual",
+   "cites": "l1_170_n026",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "harmful_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction whose content risks causing harm, such as providing self-harm advice or advice that helps the user carry out a violent act",
+   "licence": "textual",
+   "cites": "l1_170_n026",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "user_or_developer_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction given by a user or a developer",
+   "licence": "textual",
+   "cites": "l1_170_n026",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "empowers_user",
+   "arity": 1,
+   "gloss": "following instruction I empowers the user",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause says harmful-instruction situations involve a direct conflict between empowering the user and preventing harm, so following such an instruction must be capable of empowering the user",
+   "toggleable": false
+  },
+  {
+   "name": "prevents_harm",
+   "arity": 1,
+   "gloss": "following instruction I would prevent harm",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause contrasts empowering the user with preventing harm, so the two sides of the conflict need predicates",
+   "toggleable": false
+  },
+  {
+   "name": "conflicts_with_harm_prevention",
+   "arity": 1,
+   "gloss": "following instruction I directly conflicts with preventing harm",
+   "licence": "textual",
+   "cites": "l1_170_n026",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "specific_category_requiring_refusal_or_safe_completion",
+   "arity": 1,
+   "gloss": "I falls into one of the specific categories that require refusal or safe completion",
+   "licence": "textual",
+   "cites": "l1_170_n026",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1_170_n026",
+   "inference": null,
+   "toggleable": false,
+   "atom": "harmful_instruction(I)",
+   "gloss": "I is a harmful instruction",
+   "body": "user_or_developer_instruction(I), risk_taxonomy(harmful_instructions)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n026",
+   "inference": null,
+   "toggleable": false,
+   "atom": "conflicts_with_harm_prevention(I)",
+   "gloss": "following I directly conflicts with preventing harm",
+   "body": "harmful_instruction(I), empowers_user(I), prevents_harm(I)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "following instruction % is forbidden when it is a harmful instruction that falls into a specific category requiring refusal or safe completion",
+   "read_back_slots": [
+    "I"
+   ],
+   "licence": "textual",
+   "cites": "l1_170_n026",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "follow_instruction(I)",
+   "body": "harmful_instruction(I), specific_category_requiring_refusal_or_safe_completion(I)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "follow_instruction",
+   "closure": "cepa",
+   "reason": "the clause says the model should obey user and developer instructions except when they fall into specific categories requiring refusal or safe completion; instructions outside those categories remain permitted"
+  }
+ ],
+ "requires": [
+  "risk_taxonomy/1"
+ ],
+ "inputs": [
+  "user_or_developer_instruction/1",
+  "empowers_user/1",
+  "prevents_harm/1",
+  "specific_category_requiring_refusal_or_safe_completion/1"
+ ],
+ "forbid_body": []
+}

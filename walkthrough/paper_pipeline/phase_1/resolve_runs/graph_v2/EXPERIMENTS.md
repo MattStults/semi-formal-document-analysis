@@ -1366,3 +1366,42 @@ needer/survivor/retired from actual node ids) -- grammar-level "only
 valid options", per-node and cheap at these pool sizes. To be tested
 against stored unwind transcripts first. F4 comparator-side collapse
 remains the fallback if enum-forcing underperforms.
+
+## 2026-08-12 (late): rename seat built + validated; enum forcing in; graveyard dispositioned; small-set rerun
+
+**Rename seat (`rename_seat.py`, wired into run_resolution_pass behind
+`rename_seat: true`):** one-shot, order-blind, BLIND ON NAMES by
+construction (prose + span text only -- name similarity is the documented
+failure mode and never enters the prompt); fail-closed to
+different_concept. Validation, 22 live judgments, $0.002 total:
+- 10 ds4 ungated renames (incl. the content_definition known-bad): seat
+  rejected all 10; frontier (this driver, same evidence) rejected all 10.
+- 6 ds5 gate-ACCEPTED renames: seat rejected all -- and frontier review
+  agrees these were wrong (chain_of_command -> one rule inside it;
+  avoid_sycophancy -> forthrightness). The 0.25 gate's accepts were
+  themselves plumbing-grade, consistent with its near-chance ROC.
+- 6 constructed true positives (same mechanically-resolved name,
+  independently-written prose): accepted the clear paraphrase pair,
+  rejected 5 borderline facet-mixes (instruction-class vs authority-level
+  prose under one name). RECORDED BIAS: the seat is stricter than the
+  frontier on facet-mixing pairs; per the pre-registered principle
+  (absence > wrong) this errs honest. Revisit if ds6 danglings stay high.
+
+**Enum forcing** (`enum_decisions: true`): unwind + resolution grammars
+now enumerate rename_to from provided names, needer/survivor/retired from
+node ids, name from actual danglings. Flag-off byte parity pinned.
+
+**Graveyard dispositioned:** all 41 open entries got per-entry VERDICT.md
+diagnoses (craft-slip class -> run-5..8 prompt fixes; translated-with-
+notes -> benign; abstentions -> honest; one clause-identity slip -> new
+candidate lever: enum-force clause_id). 0 open.
+
+**Small-set rerun (steps 1-3), $0.045:** 13 translated / 1 abstained
+(l1799_1974_n009) / 1 unrepaired (l797_809_n001) -- run-8 parity under
+the full fix stack; link scope gathers 28 modules, requires-resolution 7,
+merged gloss 132 names, no errors. Steps-4 live seats not run this pass.
+
+**ds6 PRECONDITIONS:** clean-context adversarial review of all post-PR-#1
+work (Matt's order), then launch with enum_decisions + rename_seat +
+promise check + dense-recursion in driver_config. Budget $10.00, ~$6.20
+spent.

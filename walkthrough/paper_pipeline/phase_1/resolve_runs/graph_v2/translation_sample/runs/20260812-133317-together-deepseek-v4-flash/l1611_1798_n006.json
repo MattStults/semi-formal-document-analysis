@@ -1,0 +1,160 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1611_1798_n006",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should affirm a user's emotional experience",
+  "C2 the assistant should not affirm or escalate an ungrounded belief that might lead to mental or emotional distress",
+  "C3 the assistant should attempt to recognize potential signs of delusions or mania",
+  "C4 when signs of delusions or mania are recognized, the assistant should respond safely and empathetically"
+ ],
+ "acts": [
+  "affirm_emotional_experience(U)",
+  "affirm_ungrounded_belief(B)",
+  "escalate_ungrounded_belief(B)",
+  "recognize_signs(S)",
+  "respond_safely_empathetically(S)"
+ ],
+ "concepts": [
+  {
+   "name": "delusion_mania_response_approach",
+   "arity": 1,
+   "gloss": "the approach for responding to signs of delusions or mania: affirm emotional experience, gently challenge ungrounded beliefs without affirming them, and respond safely and empathetically",
+   "licence": "textual",
+   "cites": "l1611_1798_n006",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "user_emotional_experience",
+   "arity": 1,
+   "gloss": "the emotional experience of a user, as expressed in the conversation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of affirming a user's emotional experience, so a predicate for that experience is needed",
+   "toggleable": false
+  },
+  {
+   "name": "ungrounded_belief",
+   "arity": 1,
+   "gloss": "a belief held by the user that is not grounded in evidence and that might lead to mental or emotional distress",
+   "licence": "textual",
+   "cites": "l1611_1798_n006",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "signs_of_delusions_or_mania",
+   "arity": 1,
+   "gloss": "potential signs of delusions or mania exhibited by the user",
+   "licence": "textual",
+   "cites": "l1611_1798_n006",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "recognized_signs",
+   "arity": 1,
+   "gloss": "signs of delusions or mania that the assistant has recognized",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause says the assistant should attempt to recognize signs; recognition is a precondition for responding to them",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "affirming a user's emotional experience is obligatory",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1611_1798_n006",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "affirm_emotional_experience(U)",
+   "body": "user_emotional_experience(U)"
+  },
+  {
+   "read_back": "affirming an ungrounded belief that might lead to mental or emotional distress is forbidden",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1611_1798_n006",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "affirm_ungrounded_belief(B)",
+   "body": "ungrounded_belief(B)"
+  },
+  {
+   "read_back": "escalating an ungrounded belief that might lead to mental or emotional distress is forbidden",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1611_1798_n006",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "escalate_ungrounded_belief(B)",
+   "body": "ungrounded_belief(B)"
+  },
+  {
+   "read_back": "attempting to recognize potential signs of delusions or mania is obligatory",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1611_1798_n006",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "recognize_signs(S)",
+   "body": "signs_of_delusions_or_mania(S)"
+  },
+  {
+   "read_back": "responding safely and empathetically to recognized signs of delusions or mania is obligatory",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1611_1798_n006",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "respond_safely_empathetically(S)",
+   "body": "recognized_signs(S)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "affirm_emotional_experience",
+   "closure": "cepa",
+   "reason": "the clause obliges affirming the user's emotional experience; it does not forbid any other affirmation, so silence permits"
+  },
+  {
+   "act_class": "affirm_ungrounded_belief",
+   "closure": "cnpa",
+   "reason": "the clause explicitly forbids affirming an ungrounded belief that might lead to distress; the act class is governed by a prohibition"
+  },
+  {
+   "act_class": "escalate_ungrounded_belief",
+   "closure": "cnpa",
+   "reason": "the clause explicitly forbids escalating an ungrounded belief that might lead to distress; the act class is governed by a prohibition"
+  },
+  {
+   "act_class": "recognize_signs",
+   "closure": "cepa",
+   "reason": "the clause obliges attempting to recognize signs; it does not forbid other recognition acts, so silence permits"
+  },
+  {
+   "act_class": "respond_safely_empathetically",
+   "closure": "cepa",
+   "reason": "the clause obliges responding safely and empathetically to recognized signs; it does not forbid other responses, so silence permits"
+  }
+ ],
+ "requires": [],
+ "inputs": [
+  "user_emotional_experience/1",
+  "ungrounded_belief/1",
+  "signs_of_delusions_or_mania/1",
+  "recognized_signs/1"
+ ],
+ "forbid_body": []
+}
