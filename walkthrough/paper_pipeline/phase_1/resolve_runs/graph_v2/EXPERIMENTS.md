@@ -1319,3 +1319,50 @@ merged_gloss provider-first fix depends on gloss_from_rows staying
 first-wins (`setdefault`) -- a refactor to plain assignment would silently
 invert F3. Suites: 98 driver+core, 800+1 phase_1, 12 translate_exec (3.6s,
 was 21 min), 35 audit tests -- all green.
+
+## 2026-08-12: Matt's rulings -- repair process, dense-leaf recursion, gate, enum plan
+
+**Process ruling (budget): graph construction gets the translation
+pipeline's error discipline.** `repair_census.py` (new, offline) mines a
+run's failed/ + health into a category taxonomy with a named fix lever per
+category, and compares runs side by side. Baseline measured: ds4 buried 72
+failures, ds5 buried 25; ds5's residue is quote-not-verbatim 9,
+merge-loses-content 4, cross-link-provider 4 (the coherence bug, now
+fixed), uncovered-content 2. STANDING RULE: before the next paid run,
+every category with a repeat offender gets an underlying-cause fix
+(prompt / example / format forcing) tested against the stored failing
+transcript, and the census must show the per-category count falling
+run-over-run. The estimator lesson from ds5 stands beside it: repair
+rounds near the root cost ~$0.03/draw (221k-token prompts), so lowering
+error counts IS the cost model.
+
+**Dense-leaf ruling (risk #1): the normal recursion absorbs it.** Matt:
+"why can't the existing process just continue to break it down?" -- it
+now does. Serial: build() catches the dense failure and falls through to
+the ordinary Phase D on the same span. Core: the leaf state MORPHS in
+place into the division dispatch (`_division_state` + `DispatchState._morph`,
+executor holds the same object). A dense-morphed division answering
+decision="leaf" fails loudly (no loop). Pinned both paths e2e
+(byte-identical artifacts). REJECTED BY NAME: D6 stages 2-3 mechanical
+boundary bisect -- a second splitting mechanism to test and trust, when
+the one we already trust suffices. D6 stage 1 (the classifier) stays: it
+routes malfunction->resample vs dense->divide.
+
+**0.25 gate ruling: option (c) approved by Matt** -- resolution renames
+are proposed mechanically and adjudicated by a seat on prose-vs-prose
+meaning; the similarity gate survives as prefilter only. Seat calls are
+independent ONE-SHOTS (no transcript continuity: the seat has no prior
+transcript -- continuity is a build-model concern; each judgment must
+stand alone and order-blind, like every stage-4 seat). To design next:
+brief + 10-item frontier-parity validation sample before any live use.
+
+**Naming/reference plan (Matt, to test before the F4 comparator
+collapse):** measured on ds5, needs draw from small pools -- inherited
+seed vocabularies median 34.5 names (max 77), 123 distinct provided names
+graph-wide, 374/1100 need-instances name a seed. Plan: format-force the
+unwind's decision fields to per-dispatch ENUMS of valid options
+(resolutions[].rename_to from the actually-provided names,
+needer/survivor/retired from actual node ids) -- grammar-level "only
+valid options", per-node and cheap at these pool sizes. To be tested
+against stored unwind transcripts first. F4 comparator-side collapse
+remains the fallback if enum-forcing underperforms.

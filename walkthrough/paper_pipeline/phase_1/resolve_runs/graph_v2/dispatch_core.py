@@ -82,6 +82,7 @@ class DispatchState:
                            else [{"role": "user", "content": user}])
         self.repair_round = 0
         self.restarted = False          # one fresh restart, like call()'s flag
+        self.on_dense = None            # dense leaf -> division morph (below)
         self.spent = 0.0
         self.status = PENDING
         self.result = None
@@ -131,6 +132,14 @@ class DispatchState:
                 self.restarted = True   # once, sharing feed_failure's flag
                 self.spent = 0.0        # budget re-bases, as feed_failure
                 return                  # transcript still fresh: resample
+            if self.on_dense is not None:
+                # Matt's ruling 2026-08-12: MORPH into the division dispatch
+                # for the same span -- the normal recursion absorbs a dense
+                # leaf (and a post-resample malfunction: dividing shrinks
+                # the span that triggered it). Rejected by name: the D6
+                # stages 2-3 mechanical boundary bisect.
+                self._morph(self.on_dense())
+                return
             return self._fail(
                 "oversize first draw (dense span, or malfunction resample "
                 "already spent) at max_tokens; reduce leaf_max_lines "
@@ -187,6 +196,20 @@ class DispatchState:
                 f"Repeated expensive draws mean this dispatch needs a "
                 f"DIAGNOSIS, not more retries -- see health.jsonl and "
                 f"the failed/ dir")
+
+    def _morph(self, other):
+        """Become `other` (the division dispatch for this span) in place --
+        the executor holds a reference to THIS object, so the replacement
+        must happen by mutation. Fresh dispatch semantics: repair state,
+        restart flag and spent all reset."""
+        for a in ("key", "kind", "wdir", "user", "validate", "schema",
+                  "on_success"):
+            setattr(self, a, getattr(other, a))
+        self.transcript = list(other.transcript)
+        self.repair_round, self.errs = 0, []
+        self.restarted = False
+        self.spent = 0.0
+        self.on_dense = None
 
     def feed_failure(self, kind, detail):
         """Transport failure as data (review F5). `truncated` from a laden
@@ -295,11 +318,11 @@ class Scheduler:
         rel = os.path.relpath(task["wdir"], self.drv.out)
         return f"{kind}:{'' if rel == '.' else rel}"
 
-    def _want_division(self, task):
+    def _division_state(self, task):
+        """The division DispatchState for `task` -- built here so a dense
+        leaf can MORPH into it (Matt's ruling 2026-08-12: a dense leaf
+        re-enters the normal division path, no bespoke bisect)."""
         art = os.path.join(task["wdir"], "division.json")
-        if os.path.exists(art):
-            self._division_done(task, json.load(open(art)))
-            return
         lo, hi, seeds = task["lo"], task["hi"], task["seeds"]
         # extra / _fix / validator: SHARED with Driver.divide (delta review
         # D1/D7 -- the third copy of the D-extra string lived here)
@@ -322,10 +345,24 @@ class Scheduler:
             R.write_json(art, d)
             self._division_done(task, d)
         st.on_success = done
-        self.ready.append(st)
+        return st
+
+    def _want_division(self, task):
+        art = os.path.join(task["wdir"], "division.json")
+        if os.path.exists(art):
+            self._division_done(task, json.load(open(art)))
+            return
+        self.ready.append(self._division_state(task))
 
     def _division_done(self, task, d):
         if d.get("decision") == "leaf":
+            if task.get("dense"):
+                # a dense-morphed task answered decision="leaf": redrawing
+                # the leaf would overflow the same cap forever
+                raise T.Phase1Error(
+                    f"dense span {task['lo']}-{task['hi']} was re-dispatched "
+                    f"as Phase D and the model answered decision='leaf'; "
+                    f"reduce leaf_max_lines for this region")
             self._want_leaf(task)
             return
         task["division"] = d
@@ -364,6 +401,14 @@ class Scheduler:
             self.drv._health(g, lo, hi, "leaf", wdir)
             self._task_done(task, g)
         st.on_success = done
+
+        def dense():
+            # Matt's ruling 2026-08-12: the dense leaf re-enters the normal
+            # division path (Driver.build's fallback, core-side)
+            task["dense"] = True
+            print(f"    (dense leaf {lo}-{hi}: recursing via Phase D)")
+            return self._division_state(task)
+        st.on_dense = dense
         self.ready.append(st)
 
     def _task_done(self, task, g):

@@ -973,3 +973,53 @@ def test_broken_promises_names_undelivered_cross_links(tmp_path):
     row = json.loads(open(os.path.join(str(tmp_path),
                                        "health.jsonl")).read())
     assert row["broken_promises"] == ["chain_of_command"]
+
+
+def _dense_reply():
+    # oversize under a tiny cap, classifier verdict "dense": distinct ids,
+    # distinct establishes -- and it fails leaf validation (no coverage)
+    return {"nodes": [
+        {"id": f"L1-9_n{i:03d}",
+         "establishes": f"distinct claim number {i} about an obligation",
+         "needs": [], "provides": [], "spans": [{"lines": [1, 1]}]}
+        for i in range(20)], "uncovered": []}
+
+
+def test_dense_leaf_recurses_via_phase_d_serial(tmp_path):
+    """Matt's ruling 2026-08-12: a leaf whose content overflows the cap
+    re-enters the NORMAL division path -- same machinery, connectivity by
+    the ordinary unwind. (Rejected by name: D6 stages 2-3 mechanical
+    bisect.) Toy doc with leaf_max >= doc so the root goes straight to
+    leaf; the dense draw falls back to the stored D/L/L/U flow."""
+    toy = os.path.join(HERE, "toy_doc.md")
+    lines = R.load_doc(toy)
+    replies = [_dense_reply()] + json.load(
+        open(os.path.join(HERE, "mock_replies.json")))
+    drv = R.Driver({"leaf_max_lines": 100, "model": {"max_tokens": 4}},
+                   R.MockClient(replies), lines, str(tmp_path))
+    g = drv.build(1, len(lines), [], str(tmp_path))
+    assert len(g["nodes"]) == 10            # the normal toy result
+    assert os.path.exists(os.path.join(str(tmp_path), "division.json"))
+    assert drv.client.calls == 5            # dense draw + D + L + L + U
+
+
+def test_dense_leaf_recurses_via_phase_d_core(tmp_path):
+    """The dispatch_core twin: the leaf state MORPHS into the division
+    dispatch in place; the scheduler then runs children and unwind as
+    usual. Byte-identical artifacts to the serial fallback."""
+    import dispatch_core as DC
+    toy = os.path.join(HERE, "toy_doc.md")
+    lines = R.load_doc(toy)
+    replies = [_dense_reply()] + json.load(
+        open(os.path.join(HERE, "mock_replies.json")))
+    a, b = os.path.join(str(tmp_path), "ser"), os.path.join(str(tmp_path),
+                                                            "core")
+    os.makedirs(a), os.makedirs(b)
+    cfg = {"leaf_max_lines": 100, "model": {"max_tokens": 4}}
+    R.Driver(cfg, R.MockClient(list(replies)), lines, a).build(
+        1, len(lines), [], a)
+    drv = R.Driver(cfg, R.MockClient(list(replies)), lines, b)
+    g = DC.run_build(drv, 1, len(lines), [], b, "serial")
+    assert len(g["nodes"]) == 10
+    assert (open(os.path.join(a, "graph.json"), "rb").read()
+            == open(os.path.join(b, "graph.json"), "rb").read())

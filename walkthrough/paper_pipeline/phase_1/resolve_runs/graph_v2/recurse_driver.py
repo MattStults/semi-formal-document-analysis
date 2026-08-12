@@ -1363,7 +1363,20 @@ class Driver:
                 f"depth {depth} exceeds DEPTH_MAX at {lo}-{hi}; the divisions "
                 f"leading here are cached -- delete {wdir} to re-divide")
         if (hi - lo + 1) <= self.leaf_max:
-            return self.leaf(lo, hi, seeds, wdir)   # no Phase D call needed
+            try:
+                return self.leaf(lo, hi, seeds, wdir)  # no Phase D needed
+            except T.Phase1Error as exc:
+                if "dense span" not in str(exc):
+                    raise
+                # Matt's ruling 2026-08-12: a leaf whose content overflows
+                # the cap re-enters the NORMAL division path -- the same
+                # machinery that handles every other big span, connectivity
+                # covered by the ordinary unwind. Rejected by name: the D6
+                # stages 2-3 mechanical boundary bisect (a second splitting
+                # mechanism to test and trust, replaced by one we already
+                # trust). A model that answers decision="leaf" here fails
+                # loudly on the leaf redraw rather than looping.
+                print(f"    (dense leaf {lo}-{hi}: recursing via Phase D)")
         d = self.divide(lo, hi, seeds, wdir)
         if d.get("decision") == "leaf":
             return self.leaf(lo, hi, seeds, wdir)
