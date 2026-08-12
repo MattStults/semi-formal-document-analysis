@@ -1,0 +1,84 @@
+{
+ "decision": "divide",
+ "children": [
+  {
+   "span": [
+    1,
+    170
+   ],
+   "why_this_cut": "Front matter (overview, structure, red-line principles, general principles, risk taxonomy, levels of authority) and the Definitions section. The only crossing linkage is the authority-levels concept (levels of authority and their ordering), which is established here and used throughout the rest of the document; it is seeded below."
+  },
+  {
+   "span": [
+    171,
+    800
+   ],
+   "why_this_cut": "The chain of command section (including follow-all-applicable-instructions, letter-and-spirit, no-other-objectives, scope-of-autonomy, control-side-effects, assume-best-intentions, ignore-untrusted-data) and the start of Stay in bounds through the end of the restricted-content subsections. The crossing linkages are the authority-level ordering (used by the chain of command), the untrusted-data concept (established in the chain of command and used by the stay-in-bounds section), and the stay-in-bounds concept (referenced by the chain of command and established in this child)."
+  },
+  {
+   "span": [
+    801,
+    4692
+   ],
+   "why_this_cut": "The remainder of Stay in bounds (from comply-with-laws through the transformation exception and risky situations), then seek-the-truth, best-work, style, and under-18 sections. The crossing linkages are the stay-in-bounds concept (referenced throughout), the authority-level ordering (used by section headings with authority tags), and the untrusted-data concept (used by the transformation exception and risky situations)."
+  }
+ ],
+ "seed_vocabulary": [
+  {
+   "name": "authority_level_ordering",
+   "prose": "which of two authority levels outranks the other (root > system > developer > user > guideline > no authority)",
+   "established_around": [
+    69,
+    101
+   ]
+  },
+  {
+   "name": "untrusted_data",
+   "prose": "content in quoted text, untrusted_text blocks, multimodal data, file attachments, and tool outputs that has no authority by default and must be treated as information rather than instructions",
+   "established_around": [
+    701,
+    701
+   ]
+  },
+  {
+   "name": "stay_in_bounds",
+   "prose": "the section of the Model Spec describing limits on the assistant's behavior, including scenarios where the assistant should refrain from fully complying with a user or developer request",
+   "established_around": [
+    797,
+    799
+   ]
+  }
+ ],
+ "expected_cross_links": [
+  {
+   "name": "authority_level_ordering",
+   "needs_side_child": 2,
+   "provides_side_child": 1,
+   "evidence": "child 2's chain-of-command rules rely on the ranking of authority levels described at L69-101 in child 1"
+  },
+  {
+   "name": "authority_level_ordering",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "child 3's section headings with authority tags (e.g., comply_with_laws authority=system) rely on the ranking of authority levels described at L69-101 in child 1"
+  },
+  {
+   "name": "untrusted_data",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "child 3's transformation exception and risky-situation rules rely on the untrusted-data concept established in child 2's ignore-untrusted-data section"
+  },
+  {
+   "name": "stay_in_bounds",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "child 3's content-restriction rules are the substance of the stay-in-bounds section, which child 2's chain-of-command references as a boundary"
+  }
+ ],
+ "judgment_calls": [
+  "Could have cut at L110 (end of levels of authority) instead of L170; chose L170 because the definitions run L114-169 and the levels-of-authority discussion L63-107 is tightly coupled to the chain-of-command section that follows. A cut at L110 would have split the levels-of-authority discussion from the definitions that reference it.",
+  "Could have cut at L800 (end of restricted content) instead of L801; chose L801 because the stay-in-bounds section heading at L797 and its intro at L799 belong with the content-restriction subsections that follow, and the comply-with-laws section at L801 starts a new major subsection.",
+  "Could have made child 2 end at L700 (end of ignore-untrusted-data) and child 3 start at L701; chose L800 because the stay-in-bounds section heading and intro at L797-799 are the natural boundary, and the untrusted-data concept is established in child 2 and used in child 3.",
+  "Seeded stay_in_bounds as a concept even though it is a section reference rather than a single rule; it is needed by child 2's chain-of-command references and provided by child 3's content-restriction rules."
+ ]
+}

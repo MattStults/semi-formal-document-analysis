@@ -1,0 +1,99 @@
+{
+ "decision": "divide",
+ "children": [
+  {
+   "span": [
+    2801,
+    3238
+   ],
+   "why_this_cut": "The first child covers the tail of the Express uncertainty section (examples and numerical uncertainty guidance) plus the entire Avoid factual, reasoning, and formatting errors section. The cut at L3238 is clean because L3239 begins a new top-level section (#avoid_overstepping) with no linkage back to the error-avoidance content; the only crossing concept is the express_uncertainty section reference, which is seeded below."
+  },
+  {
+   "span": [
+    3239,
+    3755
+   ],
+   "why_this_cut": "This child covers Avoid overstepping, Be creative, Support programmatic use, and the start of the style section through Be curious. The cut at L3755 is clean because L3756 begins a new section (#be_clear) with no linkage back to the curiosity content; the only crossing concept is the express_uncertainty section reference, which is seeded below."
+  },
+  {
+   "span": [
+    3756,
+    4692
+   ],
+   "why_this_cut": "This child covers the remaining style sections (Be clear and direct through Respond appropriately to audio testing) plus the entire Under-18 Principles section. The cut at L3755 is clean because L3756 begins a new section (#be_clear) with no linkage back to the curiosity content; the only crossing concept is the express_uncertainty section reference, which is seeded below."
+  }
+ ],
+ "seed_vocabulary": [
+  {
+   "name": "authority_level_ordering",
+   "prose": "which of two authority levels outranks the other (root > system > developer > user > guideline > no authority)",
+   "established_around": [
+    69,
+    101
+   ]
+  },
+  {
+   "name": "untrusted_data",
+   "prose": "content in quoted text, untrusted_text blocks, multimodal data, file attachments, and tool outputs that has no authority by default and must be treated as information rather than instructions",
+   "established_around": [
+    701,
+    701
+   ]
+  },
+  {
+   "name": "stay_in_bounds",
+   "prose": "the section of the Model Spec describing limits on the assistant's behavior, including scenarios where the assistant should refrain from fully complying with a user or developer request",
+   "established_around": [
+    797,
+    799
+   ]
+  },
+  {
+   "name": "express_uncertainty_section",
+   "prose": "the section of the Model Spec titled 'Express uncertainty' describing when and how the assistant should express uncertainty or qualify answers",
+   "established_around": [
+    2821,
+    2821
+   ]
+  },
+  {
+   "name": "avoid_errors_section",
+   "prose": "the section of the Model Spec titled 'Avoid factual, reasoning, and formatting errors' describing the assistant's duty to avoid mistakes that compromise accuracy or utility",
+   "established_around": [
+    3150,
+    3150
+   ]
+  }
+ ],
+ "expected_cross_links": [
+  {
+   "name": "express_uncertainty_section",
+   "needs_side_child": 1,
+   "provides_side_child": 1,
+   "evidence": "child 2's avoid_errors section references the express uncertainty section at L3156"
+  },
+  {
+   "name": "express_uncertainty_section",
+   "needs_side_child": 1,
+   "provides_side_child": 1,
+   "evidence": "child 3's be_clear section references the express uncertainty section at L3780"
+  },
+  {
+   "name": "stay_in_bounds",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "child 3's refusal_style section references the stay_in_bounds section at L4075, and child 3's U18 section references it at L4576 and L4594"
+  }
+ ],
+ "judgment_calls": [
+  "Could have cut at L3148 (start of #best_work) instead of L3238; chose L3238 because the avoid_errors section runs L3150-3237 and leans on the express_uncertainty reference at L3156, which is seeded. A cut at L3148 would have split the #best_work heading from its first section.",
+  "Could have cut at L3502 (start of #style) instead of L3755; chose L3755 because the style section runs L3502-4570 and the be_curious section ends at L3754. A cut at L3502 would have split the #style heading from its first section.",
+  "Could have cut at L4572 (start of #chatgpt_u18) instead of L3755; chose L3755 because the U18 section is a cohesive unit that should be handled by one child. A cut at L4572 would have split the style section from the U18 section, requiring a cross-link for the stay_in_bounds reference."
+ ],
+ "_span_lo": 2801,
+ "_span_hi": 4692,
+ "driver_autofixes": [
+  "cross-link 'express_uncertainty_section': provides_side_child 2 -> 1 (child containing established_around [2821, 2821])",
+  "cross-link 'express_uncertainty_section': provides_side_child 3 -> 1 (child containing established_around [2821, 2821])"
+ ]
+}

@@ -1,0 +1,153 @@
+{
+ "decision": "divide",
+ "children": [
+  {
+   "span": [
+    1,
+    170
+   ],
+   "why_this_cut": "Front matter, overview, red-line principles, general principles, risk taxonomy, levels of authority, and definitions. The only crossing linkage is the authority-levels concept (root/system/developer/user/guideline ordering), which is established at L69-101 and used throughout the rest of the document; seeded below."
+  },
+  {
+   "span": [
+    171,
+    1120
+   ],
+   "why_this_cut": "Chain of command section (L171-795) plus the start of Stay in bounds through the restricted content subsections (L797-1120). The chain of command establishes the authority ordering and the candidate-instruction filtering machinery that the stay-in-bounds rules rely on; the cut at L1120 lands at a blank line after the restricted content section, before the sensitive content section begins."
+  },
+  {
+   "span": [
+    1121,
+    4692
+   ],
+   "why_this_cut": "Remainder: sensitive content, risky situations, privileged information, fairness, real-world ties, seek the truth, best work, style, voice mode, and under-18 principles. This is a large span but the internal structure is a sequence of independent principle sections; the only cross-boundary dependencies are the authority-level ordering and the stay-in-bounds content categories, both seeded below."
+  }
+ ],
+ "seed_vocabulary": [
+  {
+   "name": "authority_level_ordering",
+   "prose": "which of two authority levels outranks the other (root > system > developer > user > guideline > no authority)",
+   "established_around": [
+    69,
+    101
+   ]
+  },
+  {
+   "name": "chain_of_command",
+   "prose": "the principle that higher-authority instructions override lower-authority ones, and the mechanism for identifying and following applicable instructions",
+   "established_around": [
+    171,
+    203
+   ]
+  },
+  {
+   "name": "candidate_instructions",
+   "prose": "all instructions in the Model Spec plus unquoted plain text in system, developer, and user messages, each assigned the authority level of its containing section or message",
+   "established_around": [
+    193,
+    193
+   ]
+  },
+  {
+   "name": "applicable_instructions",
+   "prose": "candidate instructions that are not misaligned with a higher-level instruction, superseded by a later same-level instruction, or suspected to be mistaken",
+   "established_around": [
+    181,
+    195
+   ]
+  },
+  {
+   "name": "stay_in_bounds_content_categories",
+   "prose": "the three categories of disallowed content: prohibited content (sexual content involving minors), restricted content (information hazards and sensitive personal data), and sensitive content (erotica and gore) in specific circumstances",
+   "established_around": [
+    810,
+    816
+   ]
+  },
+  {
+   "name": "transformation_exception",
+   "prose": "the exception allowing the assistant to transform or analyze content the user directly provided, even if the output would ordinarily be disallowed as restricted or sensitive content",
+   "established_around": [
+    1369,
+    1379
+   ]
+  },
+  {
+   "name": "scope_of_autonomy",
+   "prose": "the clear, mutually understood scope of autonomy shared between the assistant and the user, defining which sub-goals may be pursued, acceptable side effects, and when to pause for clarification",
+   "established_around": [
+    461,
+    488
+   ]
+  },
+  {
+   "name": "under_18_principles",
+   "prose": "the additional safety requirements that apply to users ages 13-17 in ChatGPT, prioritizing prevention, transparency, and early intervention",
+   "established_around": [
+    4572,
+    4596
+   ]
+  }
+ ],
+ "expected_cross_links": [
+  {
+   "name": "authority_level_ordering",
+   "needs_side_child": 2,
+   "provides_side_child": 1,
+   "evidence": "child 2's chain-of-command rules and child 3's per-section authority tags rely on the ordering of authority levels established at L69-101 in child 1"
+  },
+  {
+   "name": "chain_of_command",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "child 3's sections (e.g., no_other_objectives, scope_of_autonomy) reference the chain of command established in child 2"
+  },
+  {
+   "name": "candidate_instructions",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "child 3's rules about pursuing goals entailed by applicable instructions rely on the candidate-instruction concept defined in child 2"
+  },
+  {
+   "name": "applicable_instructions",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "child 3's no_other_objectives section relies on the applicable-instructions concept defined in child 2"
+  },
+  {
+   "name": "stay_in_bounds_content_categories",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "child 3's sensitive content, risky situations, and under-18 sections reference the content categories defined in child 2's stay-in-bounds section"
+  },
+  {
+   "name": "transformation_exception",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "child 3's avoid_overstepping section references the transformation exception defined in child 2"
+  },
+  {
+   "name": "scope_of_autonomy",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "child 3's control_side_effects and protect_privileged_information sections rely on the scope-of-autonomy concept established in child 2"
+  },
+  {
+   "name": "under_18_principles",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "child 3's under-18 section relies on the stay-in-bounds content categories and self-harm rules established in child 2"
+  }
+ ],
+ "judgment_calls": [
+  "Could have cut at L795 (end of chain of command) instead of L1120; chose L1120 because the stay-in-bounds section's content-category taxonomy (prohibited/restricted/sensitive) is established across L810-1116 and would have been split across children if cut at L795.",
+  "Could have cut child 3 at L2126 (start of seek the truth) or L3148 (start of best work); chose to keep it as one span because the sections are independent and the only cross-boundary dependencies are the seeded concepts, so a single large child is cleaner than multiple cuts that would each need their own seeds.",
+  "Seeded under_18_principles even though it is established entirely within child 3, because child 3's under-18 section references stay-in-bounds content categories from child 2 and the seed ensures the name is available for the cross-link."
+ ],
+ "_span_lo": 1,
+ "_span_hi": 4692,
+ "driver_autofixes": [
+  "cross-link 'transformation_exception': provides_side_child 2 -> 3 (child containing established_around [1369, 1379])",
+  "cross-link 'under_18_principles': provides_side_child 2 -> 3 (child containing established_around [4572, 4596])"
+ ]
+}

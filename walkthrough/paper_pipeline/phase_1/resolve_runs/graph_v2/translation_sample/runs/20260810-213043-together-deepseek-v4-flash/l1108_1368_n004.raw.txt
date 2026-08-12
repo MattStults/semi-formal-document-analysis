@@ -1,0 +1,64 @@
+{
+  "outcome": "translated",
+  "clause_id": "l1108_1368_n004",
+  "abstain_reason": null,
+  "claims": [
+    "C1 OpenAI is exploring how to permit developers and users to generate erotica and gore in age-appropriate contexts through the API and ChatGPT",
+    "C2 such generation is permitted only so long as OpenAI's usage policies are met",
+    "C3 a hard line is drawn against potentially harmful uses such as sexual deepfakes and revenge porn, which are not permitted"
+  ],
+  "acts": ["generate_content(C, A)"],
+  "concepts": [
+    { "name": "usage_policies", "arity": 1,
+      "gloss": "OpenAI's usage policies that constrain what content may be generated",
+      "licence": "textual", "cites": "l1108_1368_n004", "inference": null, "toggleable": false },
+    { "name": "age_appropriate_context", "arity": 1,
+      "gloss": "a context in which the content is appropriate for the age of the audience",
+      "licence": "assumed", "cites": null,
+      "inference": "the clause conditions permitted generation on age-appropriate contexts, so such a context must be identifiable",
+      "toggleable": false },
+    { "name": "erotica_or_gore", "arity": 1,
+      "gloss": "content that is erotica or gore",
+      "licence": "textual", "cites": "l1108_1368_n004", "inference": null, "toggleable": false },
+    { "name": "sexual_abuse_content", "arity": 1,
+      "gloss": "content that is a sexual deepfake or revenge porn, i.e. potentially harmful sexual abuse content",
+      "licence": "textual", "cites": "l1108_1368_n004", "inference": null, "toggleable": false },
+    { "name": "meets_usage_policies", "arity": 1,
+      "gloss": "the generation of the content complies with OpenAI's usage policies",
+      "licence": "assumed", "cites": null,
+      "inference": "the clause says generation is allowed 'so long as our usage policies are met', so a relation between content and policy compliance is needed",
+      "toggleable": false },
+    { "name": "generation_medium", "arity": 2,
+      "gloss": "content C is generated through medium A, where A is the API or ChatGPT",
+      "licence": "assumed", "cites": null,
+      "inference": "the clause names the API and ChatGPT as the channels through which generation occurs",
+      "toggleable": false }
+  ],
+  "ontology": [
+    { "licence": "textual", "cites": "l1108_1368_n004", "inference": null, "toggleable": false,
+      "atom": "permitted_generation(C, A)",
+      "gloss": "generating content C through medium A is permitted",
+      "body": "erotica_or_gore(C), age_appropriate_context(C), generation_medium(C, A), meets_usage_policies(C)" }
+  ],
+  "asserts": [
+    { "read_back": "generating % through % is permitted when % is erotica or gore, the context is age-appropriate, and the generation meets OpenAI's usage policies",
+      "read_back_slots": ["C", "A", "C"],
+      "licence": "textual", "cites": "l1108_1368_n004", "inference": null, "toggleable": false,
+      "status": "permit", "act": "generate_content(C, A)",
+      "body": "erotica_or_gore(C), age_appropriate_context(C), generation_medium(C, A), meets_usage_policies(C)" },
+    { "read_back": "generating % through % is forbidden because % is sexual abuse content such as a sexual deepfake or revenge porn",
+      "read_back_slots": ["C", "A", "C"],
+      "licence": "textual", "cites": "l1108_1368_n004", "inference": null, "toggleable": false,
+      "status": "forbid", "act": "generate_content(C, A)",
+      "body": "sexual_abuse_content(C), generation_medium(C, A)" }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    { "act_class": "generate_content", "closure": "cnpa",
+      "reason": "the clause permits generation only when usage policies are met and draws a hard line against sexual abuse content; silence about other content does not permit it, so the default is prohibition" }
+  ],
+  "requires": ["usage_policies/1"],
+  "inputs": ["erotica_or_gore/1", "age_appropriate_context/1", "generation_medium/2", "meets_usage_policies/1", "sexual_abuse_content/1"],
+  "forbid_body": []
+}

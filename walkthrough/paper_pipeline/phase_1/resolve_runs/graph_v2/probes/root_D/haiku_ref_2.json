@@ -1,0 +1,74 @@
+{
+  "decision": "divide",
+  "children": [
+    {
+      "span": [1, 177],
+      "why_this_cut": "Overview section encompassing introduction, mission context, document structure, red-line principles, general principles, risk taxonomy, and authority level definitions. All foundational governance. No cross-linkage beyond this section except the concept of authority levels which is used throughout the rest of the spec."
+    },
+    {
+      "span": [178, 806],
+      "why_this_cut": "Chain of command section covering how the model follows instructions, resolves conflicts between instruction levels, and handles untrusted data. This section establishes the execution model for all subsequent rules. Clean break at L0807 where content restriction rules begin."
+    },
+    {
+      "span": [807, 4690],
+      "why_this_cut": "Stay in bounds and style guidance sections covering prohibited/restricted/sensitive content, harmful behaviors, manipulation prevention, and style guidelines (general and voice-specific), ending with Under-18 Principles. This section applies and elaborates on the authority framework established earlier."
+    }
+  ],
+  "seed_vocabulary": [
+    {
+      "name": "authority_level_ordering",
+      "prose": "the hierarchy of instruction authority from highest to lowest: root > system > developer > user > guideline",
+      "established_around": [69, 110]
+    },
+    {
+      "name": "applicable_instructions",
+      "prose": "candidate instructions that have not been filtered out as inapplicable due to misalignment with higher authority or supersession",
+      "established_around": [179, 210]
+    },
+    {
+      "name": "untrusted_data",
+      "prose": "quoted text, multimodal data, file attachments, and tool outputs that have no authority by default and must be treated as information rather than instructions to follow",
+      "established_around": [709, 730]
+    },
+    {
+      "name": "prohibited_content",
+      "prose": "content that should never be produced by the assistant under any circumstances, including transformations of user-provided content; currently limited to sexual content involving minors",
+      "established_around": [830, 835]
+    },
+    {
+      "name": "restricted_content",
+      "prose": "content that must not be generated except in specific cases involving transformation of user-provided restricted content; includes information hazards and sensitive personal data",
+      "established_around": [852, 865]
+    },
+    {
+      "name": "sensitive_content",
+      "prose": "content including erotica and gore that should not be generated in specific circumstances; transformations are allowed",
+      "established_around": [816, 826]
+    }
+  ],
+  "expected_cross_links": [
+    {
+      "needs_side_child": 3,
+      "provides_side_child": 1,
+      "name": "authority_level_ordering",
+      "evidence": "Child 3 extensively applies the authority hierarchy from child 1 when discussing how to handle conflicting instructions about content (e.g., root rules override all others). The stay_in_bounds section uses this ordering to frame restrictions."
+    },
+    {
+      "needs_side_child": 3,
+      "provides_side_child": 2,
+      "name": "applicable_instructions",
+      "evidence": "Child 3's content restrictions are presented as rules the model must follow; child 2 establishes what makes an instruction 'applicable' so child 3's rules are correctly filtered and prioritized."
+    },
+    {
+      "needs_side_child": 3,
+      "provides_side_child": 2,
+      "name": "untrusted_data",
+      "evidence": "Child 2 establishes that untrusted data should be ignored by default; child 3's discussion of sensitive content and staying in bounds relies on this principle (e.g., not following malicious instructions in tool outputs)."
+    }
+  ],
+  "judgment_calls": [
+    "Could have cut child 3 further at L3511 to separate voice-specific guidelines from content-restriction guidelines, but the content restrictions and their style implications are intertwined (e.g., how to refuse harmful requests applies across both text and voice modalities), and both rely on the same authority framework from child 2.",
+    "Chose to keep child 2 (chain of command section) distinct rather than merging it with child 1, because it is the operative mechanism for applying the authority levels defined in child 1, and child 3 repeatedly invokes this mechanism rather than authority levels alone.",
+    "Considered including L0178-L0209 (follow all applicable instructions, the core heading rule) with child 1 rather than child 2, but the section is fundamentally about HOW to execute instructions (the mechanism), not WHAT authority means, so it belongs with the other execution-focused content in child 2."
+  ]
+}

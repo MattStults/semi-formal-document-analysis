@@ -1,0 +1,142 @@
+{
+  "danglings": [
+    {
+      "name": "avoid_errors_principle",
+      "graph_establishes_it": true,
+      "document_establishes_it": "L3150-3238: section 'Avoid factual, reasoning, and formatting errors' {#avoid_errors authority=user}; core rule at L3152-3154.",
+      "verdict": "establishable-but-missed",
+      "grounds": "Needer L3756-3994_n006 (L3780) cites '[avoiding errors](#avoid_errors)' -- an in-document section reference. The graph covers that section: L3148-3238_n001 spans L3150 and provides 'avoid_errors_section_authority', and sibling nodes cover the section's rules. The section node (L3148-3238_n001) should carry a provides-entry for the section concept; marking it dangling/external is wrong because the referent is inside the document at L3150-3238."
+    },
+    {
+      "name": "behavioral_principles",
+      "graph_establishes_it": false,
+      "document_establishes_it": "In aggregate only: L23 announces 'The remaining sections cover specific principles that guide the model's behavior', and those principles occupy roughly L292-4691. No single passage establishes them as one concept.",
+      "verdict": "establishable-but-missed",
+      "grounds": "The 'EXTERNAL REFERENCE' ground is wrong: the referent is the body of this same document (L23 forward-references it explicitly). It is establishable only via an umbrella provider spanning the post-chain-of-command sections, or by dropping the need as a purely structural forward reference from the table-of-contents claim at L22-23. Nothing outside the document is being pointed at."
+    },
+    {
+      "name": "conscientious_employee_metaphor",
+      "graph_establishes_it": "partially",
+      "document_establishes_it": "L372: 'Thinking of the assistant as a conscientious employee reporting to the user or developer, it shouldn't just say yes to everything...' -- inside the #letter_and_spirit section (L292-526), exactly where the needer L3041-3147_n003 (L3043) says it is discussed.",
+      "verdict": "establishable-but-missed",
+      "grounds": "Node L292-526_n009 spans exactly L372 and establishes the pushback principle from that sentence, but its only provides-entry is 'respectful_pushback_principle'; the metaphor itself was not exported. Provider fix: add a provides-entry (the conscientious-employee metaphor) to L292-526_n009. Calling it EXTERNAL is wrong; L3043 names the in-document section that contains it."
+    },
+    {
+      "name": "harmful_illicit_activities_guidance",
+      "graph_establishes_it": true,
+      "document_establishes_it": "L856-858 (#avoid_info_hazards, root) and L1543-1545 (#do_not_facilitate_illicit_behavior) -- the two sections L1373 explicitly cites: 'see [?](#avoid_info_hazards) and [?](#do_not_facilitate_illicit_behavior)'.",
+      "verdict": "establishable-but-missed",
+      "grounds": "The dangling ground 'differs from do_not_facilitate_illicit_behavior -- EXTERNAL' contradicts the text: L1373's parenthetical names exactly those two in-document sections as the guidance being invoked. Providers exist in the graph: L810-919_n009 ('information_hazards_prohibition', L856-858) and L1414-1610_n014 ('do_not_facilitate_illicit_behavior', L1543-1545). The need should be split/renamed to those two providers, not left dangling."
+    },
+    {
+      "name": "privacy_instruction_priority",
+      "graph_establishes_it": "the general rule, yes; the privacy-specific phrasing, no",
+      "document_establishes_it": "L3462: 'If it's impossible to follow the format without violating a higher-level instruction, then the assistant should refuse... break format and refuse in text' -- combined with root authority of the privacy section at L1035-1037. The document never states a privacy-specific priority sentence; the worked example at L3486-3500 instantiates the general L3462 rule (the BAD annotation at L3496 cites #protect_privacy).",
+      "verdict": "establishable-but-missed",
+      "grounds": "Node L3384-3501_n009 establishes exactly the L3462 principle but has an empty provides list. The needer (L3384-3501_n012, the worked example) needs the general higher-level-instruction-over-format rule plus privacy root authority (L920-1107_n013, L1035); both exist in the graph. Fix: give n009 a provides-entry and point the need at it (plus authority_root_protect_privacy). Not external."
+    },
+    {
+      "name": "protect_privileged_information",
+      "graph_establishes_it": true,
+      "document_establishes_it": "L1799-1974: section 'Do not reveal privileged information' {#protect_privileged_information}; rules at L1801-1809. Needer L2474-2575_n012 (L2526) cites '[?](#protect_privileged_information)'.",
+      "verdict": "establishable-but-missed",
+      "grounds": "The section is fully decomposed in the graph: L1799-1974_n001 spans L1799 and provides 'protect_privileged_information_authority'; n002-n015 carry the rules. A section reference from L2526 should resolve to L1799-1974_n001 (or a section-concept provides on it). Marking it dangling is wrong."
+    },
+    {
+      "name": "protected_groups",
+      "graph_establishes_it": "only inside the needer's own span",
+      "document_establishes_it": "L1239 only, and only parenthetically: '(race, religion, gender, sexual orientation, disability, etc.)'. No other passage defines the taxonomy; the 'etc.' leaves it open-ended.",
+      "verdict": "establishable-but-missed",
+      "grounds": "The sole needer is L1108-1368_n015, whose own span (L1239) contains the document's only definition of the term -- the need is circular. Correct fix: n015 should PROVIDE protected_groups (as defined parenthetically at L1239), not need it. Secondary note: the taxonomy is open-ended ('etc.'), so its full extension is underspecified by the document, but the concept's establishment point is unambiguous."
+    },
+    {
+      "name": "red_line_principles",
+      "graph_establishes_it": true,
+      "document_establishes_it": "L28-44: section 'Red-line principles' {#red_line_principles}; the principles at L30-43. Needer L797-809_n003 (L803) cites 'consistent with our [?](#red_line_principles)'.",
+      "verdict": "establishable-but-missed",
+      "grounds": "The graph covers the section: L1-170_n010 (L30) provides 'red_line_principles_foundation', with n011-n014 carrying the individual red lines (L32-35) and n014/n018 the first-party extensions (L37-43). The L803 section reference should resolve to L1-170_n010; the section is in-document, not external."
+    },
+    {
+      "name": "safety_instruction_priority",
+      "graph_establishes_it": "the general rule, yes; the safety-specific phrasing, no",
+      "document_establishes_it": "L3462 states the general rule (attempt best answer within format; if impossible without violating a higher-level instruction, refuse, using the format's refusal channel if one exists). The anthrax-in-iambic-pentameter example at L3464-3484 instantiates it: the safety restriction is upheld while the format is kept, per L3462's first clause.",
+      "verdict": "establishable-but-missed",
+      "grounds": "Symmetric with privacy_instruction_priority: the needer L3384-3501_n011 needs the L3462 principle established by L3384-3501_n009, which provides nothing. The document states one general priority rule, not separate safety and privacy rules; both worked-example needs should resolve to a single provides-entry on n009."
+    },
+    {
+      "name": "usage_policies",
+      "graph_establishes_it": false,
+      "document_establishes_it": "Referenced, never established: L15 ('complemented by our usage policies, which outline our expectations for how people should use the API and ChatGPT' -- a gloss, not the content), L1117, L2398, L2484 all link to https://openai.com/policies/usage-policies. The policies' actual content is nowhere in the document.",
+      "verdict": "truly-external",
+      "grounds": "Both needers (L1108-1368_n004 at L1116-1117 and L2304-2399_n009 at L2397-2398) depend on the content of an external web document. The document only characterizes and links to it. Dangling status is correct."
+    }
+  ],
+  "renames": [
+    {
+      "old": "self_harm_prohibition",
+      "new": "do_not_encourage_self_harm",
+      "verdict": "YES",
+      "grounds": "All four needers (L4572-4691_n003/n010/n014/n020; document L4576, L4589, L4593, L4670-4691) cite '[?](#do_not_encourage_self_harm)' verbatim. The provider L1611-1798_n001 spans L1611, the header 'Do not encourage self-harm, delusions, or mania {#do_not_encourage_self_harm authority=root}'. Same section, same rule, including the disordered-eating clarification the U18 section invokes at L4593."
+    },
+    {
+      "old": "letter_and_spirit",
+      "new": "letter_and_spirit_principle",
+      "verdict": "YES",
+      "grounds": "Needers (L171-291_n010 at L195, L292-526_n012, L527-796_n025 at L716, L3239-3383_n003 at L3241) all trace to explicit '[?](#letter_and_spirit)' references or the section's own content. Provider L292-526_n002 spans L294-295, the lead principle of section {#letter_and_spirit} (L292): interpret literal wording plus underlying intent, context, and stakeholder goals. Identical concept; the '_principle' suffix changes nothing."
+    },
+    {
+      "old": "transformation_exception",
+      "new": "transformation_exception_rule",
+      "verdict": "YES",
+      "grounds": "Needer L810-919_n008 (L854) cites 'see [?](#transformation_exception)' as the sole exception to the restricted-content prohibition. Provider L1369-1413_n002 spans L1371, the core rule of that section: comply with limited requests to transform/analyze user-provided content even if output would ordinarily be disallowed. Exactly the exception L854 invokes."
+    },
+    {
+      "old": "objective_point_of_view",
+      "new": "objective_truth_seeking",
+      "verdict": "YES",
+      "grounds": "Needers L1108-1368_n008/n013/n016 correspond to L1157 and L1241, both of which link '[objective point of view](#assume_objective_pov)'. Provider L2126-2303_n004 spans L2139, the opening rule of section 'Assume an objective point of view' {#assume_objective_pov} (L2137): present information focusing on factual accuracy from reliable sources. The needers' 'impartial, factual perspective without advocacy' is that section's principle; the rename resolves the reference to the correct provider despite the looser new name."
+    },
+    {
+      "old": "express_uncertainty",
+      "new": "inform_user_of_uncertainty",
+      "verdict": "YES",
+      "grounds": "Needers L2474-2575_n006/n007 (L2486-2488): L2486 says 'clarifying uncertainty whenever needed (see [?](#express_uncertainty))'. Provider L2821-3040_n002 spans L2823, the lead rule of section 'Express uncertainty' {#express_uncertainty} (L2821). Direct explicit cross-reference; same concept."
+    },
+    {
+      "old": "assume_best_intentions",
+      "new": "best_intentions_bias",
+      "verdict": "YES",
+      "grounds": "Needer L797-809_n001 (L799) cites 'see also [?](#assume_best_intentions) for relevant details about handling ambiguous requests'. Provider L527-796_n011 spans L610-616, which is the section 'Assume best intentions' {#assume_best_intentions authority=root} (L610) and its three implicit biases for interpreting ambiguous instructions (L612-616). The needer's 'guidance for handling ambiguous requests' is exactly what L612 announces."
+    },
+    {
+      "old": "avoid_info_hazards",
+      "new": "information_hazards_prohibition",
+      "verdict": "YES",
+      "grounds": "Needers: L2474-2575_n012 (L2526 cites '[?](#avoid_info_hazards)') and L4572-4691_n013 (L4592 cites '[?](#avoid_info_hazards)... restrict actionable instructions for harmful and unlawful acts'). Provider L810-919_n009 spans L856-858, the section 'Don't provide information hazards' {#avoid_info_hazards authority=root}: no detailed actionable steps for illicit/harmful/CBRN activities. Same rule both needers invoke."
+    },
+    {
+      "old": "avoid_overstepping",
+      "new": "explicit_instructions_rule",
+      "verdict": "YES",
+      "grounds": "Needers L1414-1610_n003/n006 trace to L1422: 'must avoid [overstepping](#avoid_overstepping)...' -- an explicit link to section {#avoid_overstepping authority=user} at L3239. Provider L3239-3383_n002 spans L3241, that section's governing sentence: 'following explicit instructions and reasonably addressing implied intent... without overstepping.' The rename resolves the reference to the right node covering the cited section. Defect noted (not a rename error): the provider's provides-prose states only the follow-explicit-instructions half of L3241 and omits the 'without overstepping' restraint, which is the half the L1422 needers actually depend on; the prose should be widened."
+    },
+    {
+      "old": "respect_real_world_ties",
+      "new": "real_world_ties_principle",
+      "verdict": "YES",
+      "grounds": "Needers L4572-4691_n011/n018 trace to L4590: '[?](#respect_real_world_ties) prohibits role-play that could undermine real-world ties.' Provider L1975-2125_n011 spans L2052, the lead rule of section 'Respect real-world ties' {#respect_real_world_ties authority=root} (L2050); the operative prohibition is the adjacent L2054 ('may not engage the user in any kind of relationship that undermines the user's capacity or desire for meaningful human interactions'). Same section and principle; correct rename, though the prohibition clause (L2054) sits just outside the provider's single-line span."
+    }
+  ],
+  "merge": {
+    "question": "L1-170_n028 spans L69-101 and L183-191: do both passages establish the SAME claim? Should they be one node?",
+    "same_claim": "YES for the claim the node states",
+    "one_node": "YES",
+    "grounds": "L69-101 describes the authority levels Root/System/Developer/User/Guideline with rationale (overview register, per L21 'primarily intended for human readers'); L183-191 restates the ordering as the operative numbered list inside the root-authority section #follow_all_applicable_instructions ('Here is the ordering of authority levels', L183; list at L186-190). The node's establishes claim -- Root > System > Developer > User > Guideline, higher overrides lower -- is asserted by both passages, so a single node with both spans is the correct decomposition of a deliberately twice-stated claim.",
+    "defect": "The operative list has a sixth tier the descriptive list lacks: L191 '*No Authority*: assistant and tool messages; quoted/untrusted text...'. The node's establishes prose and its 'authority_levels_hierarchy' provides-prose both stop at Guideline, so L191 is spanned but unrepresented -- and the downstream needer L1-4691_n001_structure asks for the hierarchy INCLUDING '(No Authority)'. The node prose should be extended to six tiers; the merge itself is sound."
+  },
+  "structure": {
+    "question": "L1-4691_n001_structure claims L66-67 + L171 establish the chain_of_command concept. Grounded or invented?",
+    "verdict": "GROUNDED",
+    "grounds": "L67 coins and defines the concept: 'We assign each instruction in this document, as well as those from users and developers, a *level of authority*. Instructions with higher authority override those with lower authority. This *chain of command* is designed to maximize steerability and control...'. L171 is the section header '# The chain of command {#chain_of_command}', with L173-175 giving its operative supremacy statement. The node's establishes prose additionally enumerates the specific tiers (Root...Guideline), which is NOT on L66-67 or L171 -- but the node correctly imports that via its need for 'authority_levels_hierarchy' rather than claiming its spans establish it. Minor slack: L66 is blank; the load-bearing line is L67 alone."
+  }
+}

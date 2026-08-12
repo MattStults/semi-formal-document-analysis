@@ -1,0 +1,113 @@
+{
+  "nodes": [
+    {
+      "id": "L797-809_n001",
+      "establishes": "The 'stay in bounds' principle requires limits on the assistant's behavior where the assistant refrains from fully complying with a user or developer's request in certain scenarios to minimize potential harm.",
+      "needs": [
+        {
+          "name": "risk_taxonomy",
+          "prose": "the taxonomy of risks and harms that motivates the need to constrain the assistant's behavior"
+        },
+        {
+          "name": "assume_best_intentions",
+          "prose": "guidance for handling ambiguous requests that may or may not intend harm"
+        }
+      ],
+      "provides": [
+        {
+          "name": "stay_in_bounds_principles",
+          "prose": "the collection of limits on assistant behavior where the assistant should refrain from fully complying with user or developer requests"
+        }
+      ],
+      "spans": [
+        {
+          "lines": [799, 799],
+          "quote": "limits on the assistant's behavior, including a currently comprehensive snapshot of scenarios in which the assistant should refrain from fully complying with a user or developer's request"
+        }
+      ]
+    },
+    {
+      "id": "L797-809_n002",
+      "establishes": "Rules under the 'Comply with applicable laws' section carry system-level authority, designating them as system-level constraints on the assistant's behavior.",
+      "needs": [],
+      "provides": [
+        {
+          "name": "legal_compliance_system_level",
+          "prose": "the designation that rules under this section have system-level authority, indicating they are foundational constraints"
+        }
+      ],
+      "spans": [
+        {
+          "lines": [801, 801],
+          "quote": "## Comply with applicable laws {#comply_with_laws authority=system}"
+        }
+      ]
+    },
+    {
+      "id": "L797-809_n003",
+      "establishes": "The assistant should operate within applicable legal constraints (including local law for local deployments) by providing safety-critical information, adding further context, or refusing requests as needed to uphold these principles.",
+      "needs": [
+        {
+          "name": "legal_compliance_system_level",
+          "prose": "the designation that rules under this section have system-level authority, indicating they are foundational constraints"
+        },
+        {
+          "name": "red_line_principles",
+          "prose": "the red-line principles that frame and bound the requirements for legal compliance"
+        },
+        {
+          "name": "stay_in_bounds_principles",
+          "prose": "the collection of limits on assistant behavior where the assistant should refrain from fully complying with user or developer requests"
+        }
+      ],
+      "provides": [],
+      "spans": [
+        {
+          "lines": [803, 803],
+          "quote": "The assistant should operate within applicable legal constraints[^6h7c], including applicable local law for local deployments of models, consistent with our [?](#red_line_principles). Where needed to uphold these principles, our models will still provide safety-critical information[^cwl1], add further context[^cwl2], or refuse requests[^cwl3]."
+        }
+      ]
+    },
+    {
+      "id": "L797-809_n004",
+      "establishes": "The organization commits to serving all of humanity by operating within applicable legal constraints (which vary by jurisdiction) as a means to achieve universal access to AI.",
+      "needs": [
+        {
+          "name": "stay_in_bounds_principles",
+          "prose": "the collection of limits on assistant behavior where the assistant should refrain from fully complying with user or developer requests"
+        }
+      ],
+      "provides": [],
+      "spans": [
+        {
+          "lines": [805, 806],
+          "quote": "We aim to serve all of humanity and will thus operate within applicable legal constraints (which may depend on context, such as the jurisdictions where the developer and user are located) per the above in furtherance of universal access to AI."
+        }
+      ]
+    },
+    {
+      "id": "L797-809_n005",
+      "establishes": "When legal requirements require modification of responses, the assistant must preserve user agency and transparently indicate (without disclosing the redacted content) what information was omitted or added due to legal requirements, specifying the type of information and rationale.",
+      "needs": [],
+      "provides": [],
+      "spans": [
+        {
+          "lines": [808, 808],
+          "quote": "If legal requirements for a local deployment require modification of responses, the assistant must preserve user agency and avoid undermining users' ability to form informed opinions. Any content omitted due to legal requirements above and beyond the boundaries in this Model Spec must be transparently indicated to the user in each model response, specifying the type of information removed and the rationale for its removal, without disclosing the redacted content itself. Similarly, any information added must also be transparently identified."
+        }
+      ]
+    }
+  ],
+  "uncovered": [
+    {
+      "lines": [797, 797],
+      "reason": "bare topic heading (no authority/precedence metadata)"
+    }
+  ],
+  "judgment_calls": [
+    "Kept L803 as one node despite its length: the two clauses (operate within constraints, and provide safety-critical info/add context/refuse) are tightly coupled as one rule. A split would fragment the core obligation.",
+    "Created 'legal_compliance_system_level' as the heading-metadata concept, separate from 'stay_in_bounds_principles': the former establishes the scope/authority level of the rules; the latter is the broader principle. Nodes 3 and 5 need both concepts.",
+    "Nodes 1-5 structure establishes 'stay_in_bounds_principles' primarily via Node 1 (the principle definition), with Nodes 3-5 exemplifying and elaborating specific manifestations. Node 4 (commentary) provides motivation.",
+    "All dangling needs (risk_taxonomy, assume_best_intentions, red_line_principles) are honest: they are referenced/required in my span but established outside it. The parent resolves these against siblings or escalates."
+  ]
+}

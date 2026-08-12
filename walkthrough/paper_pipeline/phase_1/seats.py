@@ -349,9 +349,19 @@ def _refuse(text, where, patterns):
 #  the briefs (seat-contract elements 1–3)
 # ==========================================================================
 
+#: ⭐ THE LIVE SHAPE (READBACK_SMOKE.md, gap 1). The prompt is the ONLY thing a
+#: seat sees, so the brief must name the id `validate_judgements` will demand —
+#: the first live call failed on exactly this: the prompt numbered the
+#: sentences `0.`, `1.`, the brief said `"item": "..."`, and the seat echoed
+#: the sentence text while the denominator held `concepts[0]`-style ids. Every
+#: mock passed because mocks are written with the internal ids the live seat
+#: is never shown. Each brief now SAYS what `item` is, and each prompt SHOWS
+#: it (`build_4a_prompt`/`build_4b_prompt` print `[<id>]` beside each entry;
+#: 4c already printed its ids; 4d's ids ARE the claim sentences).
 _ANSWER = ('Answer with JSON: {{"judgements": [{{"item": "...", "verdict": '
            '"...", "reason": "..."}}]}} — EVERY item you were shown, exactly '
-           'once, each with a non-empty reason. Verdicts: {verdicts}.')
+           'once, each with a non-empty reason. "item" is {item_rule} — copy '
+           'it EXACTLY as shown. Verdicts: {verdicts}.')
 
 BRIEFS = {
     "4a": """\
@@ -369,7 +379,9 @@ For each rendering, say whether it is what you meant:
 evidence that the translation is faithful, so answer honestly rather than
 defensively; agreeing with yourself buys nothing here.
 
-""" + _ANSWER.format(verdicts="as-meant, not-as-meant, unclear"),
+""" + _ANSWER.format(verdicts="as-meant, not-as-meant, unclear",
+                     item_rule="the id shown in [brackets] beside each "
+                               "rendering"),
 
     "4b": """\
 You are shown ONE clause of a written specification and a set of English
@@ -389,7 +401,9 @@ not a faithful one, and saying so is more useful than a guess.
 ⚠️ The sentences are composed mechanically and read awkwardly. Awkward is not
 unfaithful. Judge the content.
 
-""" + _ANSWER.format(verdicts="faithful, unfaithful, unclear"),
+""" + _ANSWER.format(verdicts="faithful, unfaithful, unclear",
+                     item_rule="the id shown in [brackets] beside each "
+                               "sentence"),
 
     "4c": """\
 You are shown items taken from a formal translation of a written
@@ -411,7 +425,8 @@ Two kinds of item are asked about differently, and each says which it is:
 introduces is `unlicensed`, however reasonable it sounds. That is the whole
 question you are here for.
 
-""" + _ANSWER.format(verdicts="licensed, unlicensed, unclear"),
+""" + _ANSWER.format(verdicts="licensed, unlicensed, unclear",
+                     item_rule='the id printed after "item " in each entry'),
 
     "4d": """\
 You are shown ONE clause of a written specification, a list of the distinct
@@ -428,7 +443,8 @@ For each claim, ask ONLY: do the sentences convey it?
 A sentence can restate a claim without the underlying program ever depending on
 it, and you have no way to see that from here; it is checked elsewhere.
 
-""" + _ANSWER.format(verdicts="covered, not-conveyed, unclear"),
+""" + _ANSWER.format(verdicts="covered, not-conveyed, unclear",
+                     item_rule="the claim sentence itself, as listed"),
 }
 
 
@@ -694,8 +710,30 @@ def source_items(mod, denominator, corpus_texts, judgeable_only=True):
     return tuple(out)
 
 
+def _entry_lines(renderings, ids, seat):
+    """⭐ THE ID THE SEAT ANSWERS WITH, PRINTED BESIDE THE ENTRY IT NAMES.
+
+    `ids`, when supplied, are the DENOMINATOR ids for these entries, in order —
+    the live path (`plan_clause`) always supplies them, so what the prompt
+    displays is exactly what `validate_judgements` accepts. Without them the
+    entries are numbered `0.`, `1.` (the pre-fix shape, kept for direct
+    callers) and `judge` maps a numeric reply back positionally.
+    """
+    renderings = tuple(renderings)
+    if ids is None:
+        return [f"  {i}. {t}" for i, t in enumerate(renderings)]
+    ids = tuple(ids)
+    if len(ids) != len(renderings):
+        raise SeatRefused(
+            f"{seat}: {len(ids)} item id(s) supplied for "
+            f"{len(renderings)} entr(ies); a prompt whose displayed ids do "
+            f"not pair one-to-one with its entries teaches the seat a "
+            f"denominator that does not exist")
+    return [f"  [{i}] {t}" for i, t in zip(ids, renderings)]
+
+
 def build_4a_prompt(clause_text, module_json, renderings,
-                    cross_reference_texts=()):
+                    cross_reference_texts=(), ids=None):
     """The author, shown its own module and the mechanical rendering.
 
     ⚠️ The module fence deliberately does NOT run here. 4a IS the author; a
@@ -716,13 +754,18 @@ def build_4a_prompt(clause_text, module_json, renderings,
         out += [t.strip() + "\n" for t in cross_reference_texts]
     out += ["YOUR MODULE", "", module_json, "",
             "THE MECHANICAL RENDERING", ""]
-    out += [f"  {i}. {t}" for i, t in enumerate(renderings)]
+    out += _entry_lines(renderings, ids, "4a")
     return "\n".join(out)
 
 
-def build_4b_prompt(clause_text, renderings, cross_reference_texts=()):
+def build_4b_prompt(clause_text, renderings, cross_reference_texts=(),
+                    ids=None):
     """⛔ 4b MUST NEVER SEE THE LOGIC. A reviewer shown the code grades the
     code, and 4b's whole value is that it has only the clause to judge against.
+
+    ⚠️ An item id (`concepts[0]`) is NOT the logic: it names a slot, never a
+    predicate, a rule or a gloss, and every `_MODULE_PATTERNS` shape needs the
+    content the id deliberately omits. 4c has always shown its ids.
     """
     parts = [("the clause", clause_text)]
     parts += [("a rendering", t) for t in renderings]
@@ -737,7 +780,7 @@ def build_4b_prompt(clause_text, renderings, cross_reference_texts=()):
         out += ["CLAUSES IT CROSS-REFERENCES", ""]
         out += [t.strip() + "\n" for t in cross_reference_texts]
     out += ["THE SENTENCES", ""]
-    out += [f"  {i}. {t}" for i, t in enumerate(renderings)]
+    out += _entry_lines(renderings, ids, "4b")
     return "\n".join(out)
 
 
@@ -1424,6 +1467,43 @@ def proceeds_to_a_seat(rb):
     return rb.outcome == "rendered"
 
 
+def _reply_item(raw, ids, seat=None):
+    """The denominator id a reply names — in any shape the prompt displays.
+
+    ⭐ THE LIVE SHAPE, second half (READBACK_SMOKE.md gap 1). The prompt is the
+    only thing a seat sees, so anything it legitimately displays as an id must
+    adjudicate: the id itself (what every mock speaks), the id wrapped in the
+    `[brackets]` the prompt prints it in, or — FOR 4a/4b ONLY — the 0-based
+    index of the entry, the shape their pre-fix prompts taught, kept so a
+    stored reply replayed through `judge` still adjudicates.
+
+    ⛔ The digit fallback is SCOPED BY SEAT (consolidated_fix_review.md F1,
+    2026-08-12): 4d's prompt numbers the SENTENCES, not the claims — a digit
+    reply mapped positionally onto the claims denominator silently
+    re-attributes every verdict to the wrong claim; 4c's prompt displays real
+    item ids and never numbers anything, so a digit there is the seat
+    inventing a shape it was never taught. For both, the digit is returned
+    unchanged and `validate_judgements` refuses it BY NAME.
+    """
+    s = str(raw).strip()
+    if s in ids:
+        return s
+    # a denominator id with edge whitespace (a `claims` sentence ending in a
+    # space) can never round-trip: this function strips the reply, so the
+    # exact match above misses FOREVER (consolidated_fix_review.md F4,
+    # 2026-08-12). Stripped-to-stripped matching closes it, guarded to fire
+    # only while stripping keeps the denominator unambiguous.
+    stripped = {i.strip(): i for i in ids}
+    if len(stripped) == len(ids) and s in stripped:
+        return stripped[s]
+    if len(s) >= 2 and s[0] == "[" and s[-1] == "]" and s[1:-1].strip() in ids:
+        return s[1:-1].strip()
+    if (seat in ("4a", "4b")
+            and s.isdigit() and int(s) < len(ids) and s not in ids):
+        return ids[int(s)]
+    return s
+
+
 def judge(seat, prompt, denominator_ids, client_factory=None):
     """One seat, one batched call. ⛔ `client_factory` is REQUIRED."""
     if seat not in SEATS:
@@ -1436,10 +1516,12 @@ def judge(seat, prompt, denominator_ids, client_factory=None):
     raw = client.complete_messages(BRIEFS[seat],
                                    [{"role": "user", "content": prompt}])
     data = json.loads(raw) if isinstance(raw, str) else raw
-    js = tuple(Judgement(seat, str(r["item"]), str(r["verdict"]),
+    ids = tuple(denominator_ids)
+    js = tuple(Judgement(seat, _reply_item(r["item"], ids, seat),
+                         str(r["verdict"]),
                          str(r.get("reason", "")))
                for r in data["judgements"])
-    return validate_judgements(seat, denominator_ids, js)
+    return validate_judgements(seat, ids, js)
 
 
 @dataclasses.dataclass(frozen=True)
@@ -1472,10 +1554,10 @@ def plan_clause(mod, rb, clause_text, corpus_texts, forbid_body_claims=(),
                               json.dumps(json.loads(mod.model_dump_json()),
                                          indent=1, ensure_ascii=False),
                               tuple(text_by_item[i] for i in d4a.ids),
-                              cross_reference_texts),
+                              cross_reference_texts, ids=d4a.ids),
         "4b": build_4b_prompt(clause_text,
                               tuple(text_by_item[i] for i in d4b.ids),
-                              cross_reference_texts),
+                              cross_reference_texts, ids=d4b.ids),
         "4c": build_4c_prompt(items,
                               allow_missing_citations=allow_missing_citations),
         "4d": build_4d_prompt(clause_text,
@@ -1570,8 +1652,11 @@ def estimate_clause_usd(plan, price_per_mtok, chars_per_token,
 # ==========================================================================
 
 def _load_corpus_quotes():
+    """`{clause_id: judgeable clause text}` — through `readback.clause_text`,
+    so a node-corpus row yields its narrowed span text and never the packed
+    translator prompt (READBACK_SMOKE.md gap 3). Verbatim for plain rows."""
     import link
-    return {cid: row["quote"] for cid, row in link.load_clauses().items()}
+    return readback.clause_texts(link.load_clauses())
 
 
 #: Where `config.json` says the price table lives, resolved from HERE.

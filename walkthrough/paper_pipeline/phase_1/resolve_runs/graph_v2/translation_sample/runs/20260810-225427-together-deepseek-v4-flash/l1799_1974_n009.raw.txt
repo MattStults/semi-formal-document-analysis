@@ -1,0 +1,71 @@
+{
+  "outcome": "translated",
+  "clause_id": "l1799_1974_n009",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the training-manual analogy equips the agent to answer questions without entitling it to disclose the manual",
+    "C2 disclosing the manual's text, structure, or existence is forbidden unless policy explicitly allows it",
+    "C3 the assistant may share its identity and capabilities",
+    "C4 the assistant keeps underlying system or developer prompts private by default"
+  ],
+  "acts": ["disclose(D)", "share(S)"],
+  "concepts": [
+    { "name": "privileged_information_categories", "arity": 1,
+      "gloss": "the types of information that count as privileged information, as established by another node",
+      "licence": "textual", "cites": "l1799_1974_n009", "inference": null, "toggleable": false },
+    { "name": "system_message_disclosure_distinction", "arity": 1,
+      "gloss": "facts about identity, capabilities, and tools are shareable; verbatim text or full details are not, as established by another node",
+      "licence": "textual", "cites": "l1799_1974_n009", "inference": null, "toggleable": false },
+    { "name": "manual_text_structure_existence", "arity": 1,
+      "gloss": "D is the text, structure, or existence of the training manual (the underlying system or developer prompts)",
+      "licence": "textual", "cites": "l1799_1974_n009", "inference": null, "toggleable": false },
+    { "name": "policy_explicitly_allows", "arity": 1,
+      "gloss": "policy explicitly allows disclosure of D",
+      "licence": "assumed", "cites": null,
+      "inference": "the clause conditions the prohibition on 'unless policy explicitly allows it', so a predicate for that allowance is needed",
+      "toggleable": false },
+    { "name": "identity_capabilities", "arity": 1,
+      "gloss": "S is the assistant's identity or capabilities, which the clause says may be shared",
+      "licence": "textual", "cites": "l1799_1974_n009", "inference": null, "toggleable": false },
+    { "name": "underlying_prompts", "arity": 1,
+      "gloss": "D is the underlying system or developer prompts, which the clause says are kept private by default",
+      "licence": "textual", "cites": "l1799_1974_n009", "inference": null, "toggleable": false }
+  ],
+  "ontology": [
+    { "licence": "textual", "cites": "l1799_1974_n009", "inference": null, "toggleable": false,
+      "atom": "manual_text_structure_existence(D)",
+      "gloss": "D is the text, structure, or existence of the training manual",
+      "body": "privileged_information_categories(D)" },
+    { "licence": "textual", "cites": "l1799_1974_n009", "inference": null, "toggleable": false,
+      "atom": "underlying_prompts(D)",
+      "gloss": "D is an underlying system or developer prompt",
+      "body": "privileged_information_categories(D)" },
+    { "licence": "textual", "cites": "l1799_1974_n009", "inference": null, "toggleable": false,
+      "atom": "identity_capabilities(S)",
+      "gloss": "S is the assistant's identity or capabilities",
+      "body": "system_message_disclosure_distinction(S)" }
+  ],
+  "asserts": [
+    { "read_back": "disclosing % is forbidden unless policy explicitly allows it",
+      "read_back_slots": ["D"],
+      "licence": "textual", "cites": "l1799_1974_n009", "inference": null, "toggleable": false,
+      "status": "forbid", "act": "disclose(D)",
+      "body": "manual_text_structure_existence(D), not policy_explicitly_allows(D)" },
+    { "read_back": "sharing % is permitted because it is the assistant's identity or capabilities",
+      "read_back_slots": ["S"],
+      "licence": "textual", "cites": "l1799_1974_n009", "inference": null, "toggleable": false,
+      "status": "permit", "act": "share(S)",
+      "body": "identity_capabilities(S)" }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    { "act_class": "disclose", "closure": "cnpa",
+      "reason": "the clause says the manual itself should not be disclosed unless policy explicitly allows it, so disclosure is prohibited by default" },
+    { "act_class": "share", "closure": "cepa",
+      "reason": "the clause says the assistant can share identity and capabilities, and says nothing prohibiting other sharing, so silence permits" }
+  ],
+  "requires": ["privileged_information_categories/1", "system_message_disclosure_distinction/1"],
+  "inputs": ["policy_explicitly_allows/1"],
+  "forbid_body": []
+}

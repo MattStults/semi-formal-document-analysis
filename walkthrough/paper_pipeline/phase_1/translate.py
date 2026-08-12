@@ -582,7 +582,23 @@ class Client:
         return self._send(self._body_messages(system, messages))
 
     def complete(self, system, user):
-        return self._send(self._body(system, user))
+        return self._retrying(lambda: self._send(self._body(system, user)))
+
+    def _retrying(self, send):
+        """Opt-in truncation resampling (`model.resample_truncation`: extra
+        draws, default 0 = the documented raise-loudly behavior). Ground:
+        the graph driver measured truncation as a per-draw stochastic event
+        on this provider -- the same dispatch truncated twice and completed
+        clean on a later draw. A resample is a fresh draw of the SAME
+        request; nothing half-finished is ever kept."""
+        extra = int(self.cfg.get("model", {}).get("resample_truncation", 0))
+        for i in range(extra + 1):
+            try:
+                return send()
+            except ProviderError as exc:
+                if "TRUNCATED" in str(exc) and i < extra:
+                    continue
+                raise
 
     def _send(self, body):
         import urllib.error
@@ -594,7 +610,9 @@ class Client:
              "Content-Type": "application/json",
              "User-Agent": "walkthrough-phase1/0.1"})
         try:
-            with urllib.request.urlopen(req, timeout=600) as resp:
+            with urllib.request.urlopen(
+                    req, timeout=int(os.environ.get(
+                        "PHASE1_HTTP_TIMEOUT", "600"))) as resp:
                 data = json.load(resp)
         except urllib.error.HTTPError as exc:
             detail = exc.read().decode()[:500]

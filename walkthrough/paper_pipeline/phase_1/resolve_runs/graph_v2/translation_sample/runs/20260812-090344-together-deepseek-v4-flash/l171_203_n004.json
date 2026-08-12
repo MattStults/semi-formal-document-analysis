@@ -1,0 +1,90 @@
+{
+ "outcome": "translated",
+ "clause_id": "l171_203_n004",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the Model Spec delegates all remaining power to the system, developer (for API use cases) and end user",
+  "C2 that delegation is subject to the Model Spec's root-level instructions",
+  "C3 the delegation is explicit"
+ ],
+ "acts": [],
+ "concepts": [
+  {
+   "name": "authority_level_ordering",
+   "arity": 2,
+   "gloss": "which of two authority levels outranks the other, with root above system above developer above user above guideline above no authority",
+   "licence": "textual",
+   "cites": "l171_203_n004",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "root_level_instruction",
+   "arity": 1,
+   "gloss": "an instruction at the root level of the Model Spec's authority hierarchy, to which all delegated power is subject",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause says delegation is subject to root-level instructions, so such instructions must exist as a class",
+   "toggleable": false
+  },
+  {
+   "name": "delegated_power",
+   "arity": 2,
+   "gloss": "power over a matter is delegated to the named authority level by the Model Spec",
+   "licence": "textual",
+   "cites": "l171_203_n004",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "api_use_case",
+   "arity": 1,
+   "gloss": "a use of the model through the API rather than another interface",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause distinguishes developer delegation for API use cases, so the class of API use cases must exist",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l171_203_n004",
+   "inference": null,
+   "toggleable": false,
+   "atom": "delegated_power(system, M)",
+   "gloss": "the Model Spec delegates power over matter M to the system level",
+   "body": "matter(M)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l171_203_n004",
+   "inference": null,
+   "toggleable": false,
+   "atom": "delegated_power(developer, M)",
+   "gloss": "the Model Spec delegates power over matter M to the developer level for API use cases",
+   "body": "matter(M), api_use_case(M)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l171_203_n004",
+   "inference": null,
+   "toggleable": false,
+   "atom": "delegated_power(end_user, M)",
+   "gloss": "the Model Spec delegates power over matter M to the end user level",
+   "body": "matter(M)"
+  }
+ ],
+ "asserts": [],
+ "beats": [],
+ "defines": [],
+ "closure": [],
+ "requires": [
+  "authority_level_ordering/2"
+ ],
+ "inputs": [
+  "matter/1",
+  "api_use_case/1"
+ ],
+ "forbid_body": []
+}

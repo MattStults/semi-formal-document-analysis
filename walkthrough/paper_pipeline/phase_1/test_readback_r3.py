@@ -286,8 +286,11 @@ def test_the_ONTOLOGY_ABLATION_GUARD_never_becomes_a_leaf():
     mod = schema.validate(fixtures.module())
     s = situation("S1", ["restricted(x)"],
                   ["disallowed(x)", "asserts(m0001,forbid,produce(x))"])
-    out = r3.render_r3(mod, [s],
-                       extra_gloss={"restricted": "the material is restricted"})
+    # ⚠️ `extra_gloss` was needed when `restricted/1` was borrowed with no
+    # written meaning. D4b level 2 now makes the module carry one, so the leaf
+    # renders from the module's own gloss and the override is redundant HERE.
+    # `extra_gloss` is still exercised by the two other tests that use it.
+    out = r3.render_r3(mod, [s])
     assert "onto" not in out.program and "o :- " not in out.program
     assert out.outcome == "rendered", out.report()
     raws = [n.raw for d in out.situations[0].derivations for n in r3.walk(d)]
@@ -301,14 +304,17 @@ def test_an_ontology_step_becomes_an_INTERIOR_node_with_its_own_sentence():
     mod = schema.validate(fixtures.module())
     s = situation("S1", ["restricted(x)"],
                   ["disallowed(x)", "asserts(m0001,forbid,produce(x))"])
-    out = r3.render_r3(mod, [s],
-                       extra_gloss={"restricted": "the material is restricted"})
+    # ⚠️ `extra_gloss` was needed when `restricted/1` was borrowed with no
+    # written meaning. D4b level 2 now makes the module carry one, so the leaf
+    # renders from the module's own gloss and the override is redundant HERE.
+    # `extra_gloss` is still exercised by the two other tests that use it.
+    out = r3.render_r3(mod, [s])
     nodes = [n for d in out.situations[0].derivations for n in r3.walk(d)]
     assert max(n.depth for n in nodes) >= 3
     assert any(n.kind == "rule" and "the material is disallowed" in n.text
                for n in nodes)
     leaves = [n for n in nodes if n.is_leaf]
-    assert leaves and all("the material is restricted" in n.text
+    assert leaves and all("falls under a restricted policy" in n.text
                           for n in leaves)
 
 
@@ -699,6 +705,14 @@ def test_xclingo_renders_a_NOT_LITERAL_underscore_unaided():
                       read_back="producing % is permitted",
                       read_back_slots=["M"], licence="textual", cites="m0217",
                       inference=None, toggleable=False)],
+        # every borrow carries a gloss — required for `inputs` too since
+        # 2026-08-12 (READBACK_SMOKE.md); the override replaces the variant's
+        # concept table, so all three are written out here.
+        concepts=[dict(**fixtures.textual("m0217"), **fixtures.CONC_POL),
+                  dict(**fixtures.textual("m0217"), **fixtures.CONC_AUD),
+                  dict(**fixtures.textual("m0217"), name="forbidden", arity=2,
+                       gloss="pairing this material with this context is "
+                             "barred by another clause")],
         inputs=["political_content/1", "broad_audience/1", "forbidden/2"]))
     out = r3.render_r3(mod, [POL_FIRES])
     assert out.outcome == "rendered", out.findings

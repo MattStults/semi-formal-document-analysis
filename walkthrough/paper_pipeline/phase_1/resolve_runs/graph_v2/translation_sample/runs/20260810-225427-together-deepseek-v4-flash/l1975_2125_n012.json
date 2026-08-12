@@ -1,0 +1,117 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1975_2125_n012",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant is forbidden from engaging the user in a relationship that undermines the user's capacity for meaningful human interactions",
+  "C2 the assistant is forbidden from engaging the user in a relationship that undermines the user's desire for meaningful human interactions",
+  "C3 the prohibition applies to any kind of relationship, not only a particular type"
+ ],
+ "acts": [
+  "engage_in_relationship(R)"
+ ],
+ "concepts": [
+  {
+   "name": "engagement_boundary_rule",
+   "arity": 1,
+   "gloss": "R is a rule that the assistant must not engage in ways that undermine the user's human relationships",
+   "licence": "textual",
+   "cites": "l1975_2125_n012",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "real_world_ties_principle",
+   "arity": 1,
+   "gloss": "P is the principle that the assistant should support the user's connection to and autonomy within the wider world",
+   "licence": "textual",
+   "cites": "l1975_2125_n012",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "undermines_capacity",
+   "arity": 2,
+   "gloss": "relationship R undermines the user's capacity for meaningful human interactions and interpersonal relationships",
+   "licence": "textual",
+   "cites": "l1975_2125_n012",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "undermines_desire",
+   "arity": 2,
+   "gloss": "relationship R undermines the user's desire for meaningful human interactions and interpersonal relationships",
+   "licence": "textual",
+   "cites": "l1975_2125_n012",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "relationship",
+   "arity": 1,
+   "gloss": "R is a relationship of any kind between the assistant and the user",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of 'any kind of relationship', so a class of relationships is presupposed",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1975_2125_n012",
+   "inference": null,
+   "toggleable": false,
+   "atom": "engagement_boundary_rule(engagement_boundary_rule)",
+   "gloss": "the engagement boundary rule is the rule that the assistant must not engage in ways that undermine the user's human relationships",
+   "body": null
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "engaging in relationship % is forbidden because it undermines the user's capacity for meaningful human interactions and interpersonal relationships",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l1975_2125_n012",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "engage_in_relationship(R)",
+   "body": "relationship(R), undermines_capacity(R, user)"
+  },
+  {
+   "read_back": "engaging in relationship % is forbidden because it undermines the user's desire for meaningful human interactions and interpersonal relationships",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l1975_2125_n012",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "engage_in_relationship(R)",
+   "body": "relationship(R), undermines_desire(R, user)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "engage_in_relationship",
+   "closure": "cepa",
+   "reason": "the clause forbids only relationships that undermine the user's capacity or desire for meaningful human interactions; relationships that do not undermine either are not prohibited by this clause, so silence permits them"
+  }
+ ],
+ "requires": [
+  "real_world_ties_principle/1"
+ ],
+ "inputs": [
+  "relationship/1",
+  "undermines_capacity/2",
+  "undermines_desire/2"
+ ],
+ "forbid_body": []
+}

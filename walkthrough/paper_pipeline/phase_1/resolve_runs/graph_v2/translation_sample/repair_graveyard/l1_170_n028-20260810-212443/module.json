@@ -1,0 +1,150 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1_170_n028",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the document establishes a six-tier authority hierarchy: Root, System, Developer, User, Guideline, and No Authority",
+  "C2 instructions from a higher tier override those from a lower tier when they conflict",
+  "C3 Root rules are mostly prohibitive and cannot be overridden by System, Developer, User, or Guideline instructions",
+  "C4 System instructions sit below Root but above Developer, User, and Guideline",
+  "C5 Developer instructions sit below System but above User and Guideline",
+  "C6 User instructions sit below Developer but above Guideline",
+  "C7 Guideline instructions sit below User and can be overridden implicitly",
+  "C8 assistant and tool messages, quoted/untrusted text, and multimodal data carry no authority"
+ ],
+ "acts": [
+  "override(I1, I2)"
+ ],
+ "concepts": [
+  {
+   "name": "authority_level",
+   "arity": 1,
+   "gloss": "one of the six tiers of the authority hierarchy: root, system, developer, user, guideline, or none",
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "authority_rank",
+   "arity": 2,
+   "gloss": "the numeric rank of an authority level in the hierarchy, with lower numbers meaning higher authority",
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "conflicting_instructions",
+   "arity": 2,
+   "gloss": "two instructions that cannot both be satisfied",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of conflicts between instructions; this names the relation between two instructions that cannot both be followed",
+   "toggleable": false
+  },
+  {
+   "name": "overrides",
+   "arity": 2,
+   "gloss": "an instruction from a higher authority tier overrides an instruction from a lower tier when the two conflict",
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false,
+   "atom": "authority_rank(root, 1)",
+   "gloss": "the Root tier is the highest authority tier",
+   "body": null
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false,
+   "atom": "authority_rank(system, 2)",
+   "gloss": "the System tier is the second-highest authority tier",
+   "body": null
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false,
+   "atom": "authority_rank(developer, 3)",
+   "gloss": "the Developer tier is the third-highest authority tier",
+   "body": null
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false,
+   "atom": "authority_rank(user, 4)",
+   "gloss": "the User tier is the fourth-highest authority tier",
+   "body": null
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false,
+   "atom": "authority_rank(guideline, 5)",
+   "gloss": "the Guideline tier is the fifth-highest authority tier",
+   "body": null
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false,
+   "atom": "authority_rank(none, 6)",
+   "gloss": "the sixth tier is the absence of authority: assistant output, quoted/untrusted text, and multimodal data carry no authority",
+   "body": null
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false,
+   "atom": "higher_authority(A, B)",
+   "gloss": "tier A outranks tier B in the authority hierarchy",
+   "body": "authority_rank(A, RA), authority_rank(B, RB), RA < RB"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "an instruction from a higher authority tier overrides a conflicting instruction from a lower tier",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "override(I1, I2)",
+   "body": "conflicting_instructions(I1, I2), instruction_tier(I1, T1), instruction_tier(I2, T2), authority_rank(T1, R1), authority_rank(T2, R2), R1 < R2"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "override",
+   "closure": "cnpa",
+   "reason": "The clause states a preference for higher-tier instructions over lower-tier ones when they conflict, but does not state what happens when instructions do not conflict or when tiers are equal; the corpus leaves those cases unsettled."
+  }
+ ],
+ "requires": [],
+ "inputs": [
+  "authority_rank/2",
+  "conflicting_instructions/2",
+  "instruction_tier/2"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,82 @@
+{
+ "decision": "divide",
+ "children": [
+  {
+   "span": [
+    3756,
+    4251
+   ],
+   "why_this_cut": "Covers the general style sections from 'Be clear and direct' through 'Be thorough but efficient' (L3756-4251). The only crossing linkage is the stay_in_bounds concept referenced in the refusal_style section (L4075), which is seeded and will be linked by the parent; no other content in this child depends on the voice-mode or U18 sections."
+  },
+  {
+   "span": [
+    4252,
+    4570
+   ],
+   "why_this_cut": "Covers the 'Adapt to the user's modality' section (L4253-4570), a self-contained block of voice-mode style guidelines. It does not rely on the earlier style sections except for the general authority=guideline heading concept, which is established within this child's own heading nodes."
+  },
+  {
+   "span": [
+    4571,
+    4692
+   ],
+   "why_this_cut": "Covers the Under-18 Principles section (L4572-4692), which is a distinct topic with its own authority=root heading and references to stay_in_bounds and other sections. It does not depend on the style sections above it."
+  }
+ ],
+ "seed_vocabulary": [
+  {
+   "name": "authority_level_ordering",
+   "prose": "which of two authority levels outranks the other (root > system > developer > user > guideline > no authority)",
+   "established_around": [
+    69,
+    101
+   ]
+  },
+  {
+   "name": "untrusted_data",
+   "prose": "content in quoted text, untrusted_text blocks, multimodal data, file attachments, and tool outputs that has no authority by default and must be treated as information rather than instructions",
+   "established_around": [
+    701,
+    701
+   ]
+  },
+  {
+   "name": "stay_in_bounds",
+   "prose": "the section of the Model Spec describing limits on the assistant's behavior, including scenarios where the assistant should refrain from fully complying with a user or developer request",
+   "established_around": [
+    797,
+    799
+   ]
+  },
+  {
+   "name": "express_uncertainty_section",
+   "prose": "the section of the Model Spec titled 'Express uncertainty' describing when and how the assistant should express uncertainty or qualify answers",
+   "established_around": [
+    2821,
+    2821
+   ]
+  },
+  {
+   "name": "avoid_errors_section",
+   "prose": "the section of the Model Spec titled 'Avoid factual, reasoning, and formatting errors' describing the assistant's duty to avoid mistakes that compromise accuracy or utility",
+   "established_around": [
+    3150,
+    3150
+   ]
+  }
+ ],
+ "expected_cross_links": [
+  {
+   "name": "stay_in_bounds",
+   "needs_side_child": 1,
+   "provides_side_child": 2,
+   "evidence": "Child 1's refusal_style section (L4075) references stay_in_bounds, which is established outside this span; child 2's voice-mode sections do not establish it either, so this remains a dangling need for the parent."
+  }
+ ],
+ "judgment_calls": [
+  "Chose three children aligned with the document's major section boundaries (style sections, voice-mode section, U18 section) rather than cutting within a section; this keeps each child cohesive and minimizes cross-links.",
+  "The stay_in_bounds reference in child 1 is a dangling need that will be resolved by the parent, not a cross-link between children; noted as an expected_cross_link for transparency."
+ ],
+ "_span_lo": 3756,
+ "_span_hi": 4692
+}

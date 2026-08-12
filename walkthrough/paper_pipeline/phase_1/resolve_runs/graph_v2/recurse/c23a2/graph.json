@@ -1,0 +1,82 @@
+{
+  "nodes": [
+    {
+      "id": "L2304-2399_n001",
+      "establishes": "The 'Present perspectives from any point of an opinion spectrum' section has authority=user, establishing that these are user-level permissions and customizations rather than mandatory behavior.",
+      "needs": [],
+      "provides": [{"name": "section_user_authority", "prose": "the designation that this section contains user-level permissions and customizations rather than mandatory behavior"}],
+      "spans": [{"lines": [2304, 2304]}]
+    },
+    {
+      "id": "L2304-2399_n002",
+      "establishes": "The assistant should generally fulfill user requests to present perspectives from any point of an opinion spectrum, overriding its default objective point of view when explicitly requested.",
+      "needs": [
+        {"name": "objective_truth_seeking", "prose": "The principle that the assistant should present information focusing on factual accuracy from reliable sources, avoid steering users toward predetermined conclusions, and respect users' autonomy to form their own opinions — applying especially on factual, controversial, or moral topics, with contextual exceptions for creative/roleplay contexts."},
+        {"name": "section_user_authority", "prose": "the designation that this section contains user-level permissions and customizations rather than mandatory behavior"}
+      ],
+      "provides": [{"name": "user_perspective_spectrum_permission", "prose": "the permission for the assistant to present arguments, viewpoints, or perspectives from any point on an opinion spectrum when the user explicitly requests it"}],
+      "spans": [{"lines": [2306, 2306], "quote": "While by default the assistant should provide a balanced response from an [objective point of view](#assume_objective_pov), it should generally fulfill requests to present perspectives from any point of an opinion spectrum"}]
+    },
+    {
+      "id": "L2304-2399_n003",
+      "establishes": "Worked example demonstrating that the assistant should present arguments from a requested viewpoint (urban areas should limit building heights to three stories).",
+      "needs": [{"name": "user_perspective_spectrum_permission", "prose": "the permission for the assistant to present arguments, viewpoints, or perspectives from any point on an opinion spectrum when the user explicitly requests it"}],
+      "provides": [],
+      "spans": [{"lines": [2308, 2322], "quote": "Example: asked to argue in favor of a specific side"}]
+    },
+    {
+      "id": "L2304-2399_n004",
+      "establishes": "Worked example demonstrating that the assistant should present arguments from requested viewpoints even for controversial figures (Stalin), while contextualizing the response with factual corrections.",
+      "needs": [{"name": "user_perspective_spectrum_permission", "prose": "the permission for the assistant to present arguments, viewpoints, or perspectives from any point on an opinion spectrum when the user explicitly requests it"}],
+      "provides": [],
+      "spans": [{"lines": [2324, 2342], "quote": "Example: asked to argue in favor of a violent extremist"}]
+    },
+    {
+      "id": "L2304-2399_n005",
+      "establishes": "Worked example demonstrating that the assistant should present counter-arguments to user-stated positions (against tax opposition) when requested.",
+      "needs": [{"name": "user_perspective_spectrum_permission", "prose": "the permission for the assistant to present arguments, viewpoints, or perspectives from any point on an opinion spectrum when the user explicitly requests it"}],
+      "provides": [],
+      "spans": [{"lines": [2344, 2360], "quote": "Example: asked to argue against a stated opinion"}]
+    },
+    {
+      "id": "L2304-2399_n006",
+      "establishes": "Worked example demonstrating that the assistant should provide requested criticism even of the organization that created it (OpenAI), despite this being a perspective different from neutrality.",
+      "needs": [{"name": "user_perspective_spectrum_permission", "prose": "the permission for the assistant to present arguments, viewpoints, or perspectives from any point on an opinion spectrum when the user explicitly requests it"}],
+      "provides": [],
+      "spans": [{"lines": [2362, 2376], "quote": "Example: asked to criticize OpenAI"}]
+    },
+    {
+      "id": "L2304-2399_n007",
+      "establishes": "Worked example demonstrating that developers can customize the assistant's perspective stance (opposing affirmative action), and the assistant should follow this customization in user interactions.",
+      "needs": [{"name": "user_perspective_spectrum_permission", "prose": "the permission for the assistant to present arguments, viewpoints, or perspectives from any point on an opinion spectrum when the user explicitly requests it"}],
+      "provides": [],
+      "spans": [{"lines": [2378, 2395], "quote": "Example: customization by a developer"}]
+    },
+    {
+      "id": "L2304-2399_n008",
+      "establishes": "Developers are generally allowed broad latitude to customize the assistant's behavior, including overriding default stances toward objectivity.",
+      "needs": [{"name": "user_perspective_spectrum_permission", "prose": "the permission for the assistant to present arguments, viewpoints, or perspectives from any point on an opinion spectrum when the user explicitly requests it"}],
+      "provides": [{"name": "developer_customization_scope", "prose": "the scope and latitude developers have to customize the assistant's perspective, stance, and opinions in ways that override default behavior"}],
+      "spans": [{"lines": [2397, 2398], "quote": "We generally allow developers broad latitude to customize behavior in this way."}]
+    },
+    {
+      "id": "L2304-2399_n009",
+      "establishes": "Some forms of intentional deception violate usage policies, and violations may result in account actions against the developer.",
+      "needs": [
+        {"name": "developer_customization_scope", "prose": "the scope and latitude developers have to customize the assistant's perspective, stance, and opinions in ways that override default behavior"},
+        {"name": "usage_policies", "prose": "external policies prohibiting certain forms of intentional deception, referenced at https://openai.com/policies/usage-policies"}
+      ],
+      "provides": [],
+      "spans": [{"lines": [2397, 2398], "quote": "some forms of intentional deception are against our [usage policies](https://openai.com/policies/usage-policies), and violations may result in actions against the developer's account"}]
+    }
+  ],
+  "uncovered": [],
+  "judgment_calls": [
+    "Split the meta commentary (L2397-2398) into two nodes (n008, n009) based on the split test: 'developers can customize broadly' and 'some forms of deception violate policies' are independently true/false claims. Could have kept as one meta-commentary node for simpler structure.",
+    "Included n001 (heading metadata with authority=user) as a content node, establishing the permission-level scope of the section. This is similar to the n010 pattern in the worked example (charter rules). Alternative: mark as uncovered and treat authority=user as implicit.",
+    "n002 needs both objective_truth_seeking (inherited from parent's prior child) and section_user_authority (from n001), showing how user permissions override default objective behavior. Could have omitted section_user_authority since the rule is semantically clear without it.",
+    "All five examples (n003-n007) need user_perspective_spectrum_permission from n002, demonstrating different scenarios: specific side, violent extremist, counter-argument, creator criticism, and developer override. Each is a worked example per the brief. Considered grouping conceptually but example-by-example decomposition better follows the guidance.",
+    "n008 needs user_perspective_spectrum_permission to establish that developer customization extends the same capability granted to users. The commentary text 'in this way' explicitly links developer behavior to the user-requested permission. Could have made developer customization independent.",
+    "usage_policies is left as a dangling need in n009 (external reference). This is honest about scope: the section references but does not establish the deception policies. Parent or sibling span must provide this concept or escalate."
+  ]
+}

@@ -1,0 +1,80 @@
+{
+ "outcome": "translated",
+ "clause_id": "l4251_4571_n029",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example contrasts a brief, question-asking response with one that dumps a full detail list",
+  "C2 the brief response is presented as the good one",
+  "C3 the overloaded response is presented as the bad one",
+  "C4 the clause's normative content is a preference for the brief response, not a prohibition on the long one"
+ ],
+ "acts": [
+  "respond_briefly(R)",
+  "respond_with_detail_dump(R)"
+ ],
+ "concepts": [
+  {
+   "name": "voice_turn_taking",
+   "arity": 1,
+   "gloss": "the response follows the iterative turn-taking structure of the conversation, not dumping everything at once",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example contrasts a brief turn-taking response with a detail-dumping one; the good response is the one that keeps the turn-taking structure",
+   "toggleable": false
+  },
+  {
+   "name": "overloads_with_detail",
+   "arity": 1,
+   "gloss": "the response overwhelms the user by listing all details at once instead of offering to elaborate",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the bad example in the node text is exactly this: a long list of considerations delivered in one turn",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example marks the brief response as good and the overloaded one as bad; the node's claim is a preference, not a prohibition",
+   "toggleable": false,
+   "atom": "brief_response(R)",
+   "gloss": "R is a response that asks what to focus on rather than listing everything at once",
+   "body": "voice_turn_taking(R)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "responding with % is preferred because it keeps the conversation in a turn-taking structure rather than overloading the user",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example marks the brief response as good and the overloaded one as bad; the node's claim is a preference, not a prohibition",
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_briefly(R)",
+   "body": "brief_response(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_briefly",
+   "closure": "cepa",
+   "reason": "the example contrasts a brief response with an overloaded one and marks the brief one good; it does not forbid the overloaded one, so the corpus leaves the overloaded response permitted"
+  },
+  {
+   "act_class": "respond_with_detail_dump",
+   "closure": "cepa",
+   "reason": "the example marks the detail-dumping response as bad but does not forbid it; the clause states a preference, so silence leaves the act permitted"
+  }
+ ],
+ "requires": [
+  "voice_turn_taking/1"
+ ],
+ "inputs": [],
+ "forbid_body": []
+}

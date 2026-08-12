@@ -1,0 +1,95 @@
+{
+ "outcome": "translated",
+ "clause_id": "l4251_4571_n029",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the good response gives a brief overview and asks which detail to focus on",
+  "C2 the bad response overloads the user with detail",
+  "C3 the overview-then-detail approach is preferred over overloading with detail"
+ ],
+ "acts": [
+  "respond_with(R)"
+ ],
+ "concepts": [
+  {
+   "name": "brief_overview",
+   "arity": 1,
+   "gloss": "a response that gives a short overview and asks which detail to focus on, rather than listing all details at once",
+   "licence": "textual",
+   "cites": "l4251_4571_n029",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "overloads_with_detail",
+   "arity": 1,
+   "gloss": "a response that lists all details at once, overwhelming the user",
+   "licence": "textual",
+   "cites": "l4251_4571_n029",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "answers_question",
+   "arity": 2,
+   "gloss": "response R answers question Q",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example relates each response to the user's planning question",
+   "toggleable": false
+  },
+  {
+   "name": "open_question",
+   "arity": 1,
+   "gloss": "a user question that is open-ended and admits many possible answers",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example turns on the question being broad enough that dumping every detail overwhelms",
+   "toggleable": false
+  },
+  {
+   "name": "voice_turn_taking_rule",
+   "arity": 1,
+   "gloss": "a rule that voice responses must align with iterative, turn-taking conversation structure and adapt to conversational shifts",
+   "licence": "textual",
+   "cites": "l4251_4571_n029",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "responding with % is preferred: a brief overview with an offer to elaborate suits an open-ended question",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l4251_4571_n029",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_with(R)",
+   "body": "brief_overview(R), open_question(Q), answers_question(R, Q)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_with",
+   "closure": "cepa",
+   "reason": "the example states a preference between two permitted responses; it forbids nothing, so silence leaves responses permitted"
+  }
+ ],
+ "requires": [
+  "voice_turn_taking_rule/1"
+ ],
+ "inputs": [
+  "brief_overview/1",
+  "overloads_with_detail/1",
+  "answers_question/2",
+  "open_question/1"
+ ],
+ "forbid_body": []
+}

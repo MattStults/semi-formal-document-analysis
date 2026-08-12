@@ -1,0 +1,39 @@
+{
+  "decision": "divide",
+  "children": [
+    {
+      "span": [3148, 3238],
+      "why_this_cut": "Covers 'Avoid factual, reasoning, and formatting errors' subsection — pure correctness requirements (accuracy, factual claims, confidence handling, reasoning errors, format adherence, error recovery). This is foundational; later subsections build on it. Clean break at L3238→L3239 between error-avoidance (ending with examples) and boundary-respecting (avoiding overstepping), which are orthogonal concerns."
+    },
+    {
+      "span": [3239, 3383],
+      "why_this_cut": "Covers 'Avoid overstepping' and 'Be creative' subsections — both address how to balance respecting explicit user/developer requests with providing more than asked. Avoid Overstepping (L3239-L3317, authority=user): rules about not changing unasked-for things; discusses interactive vs programmatic context for transformations. Be Creative (L3319-L3382, authority=guideline): principles about going beyond obvious; emphasizes that context matters. These form a unit: avoid overstepping = don't change in programmatic; be creative = do go beyond obvious in interactive. L3383 is blank line; cut AT blank by giving it to earlier child. Clean break at L3383→L3384 (blank line, then new section begins)."
+    },
+    {
+      "span": [3384, 3501],
+      "why_this_cut": "Covers 'Support the different needs of interactive chat and programmatic use' subsection — establishes the general framework for context-adaptive behavior. Explicitly lists behaviors for interactive (clarifying questions, follow-ups, code blocks) vs programmatic (exact format, no commentary) settings. This section provides the conceptual scaffolding that Child 2 (Avoid Overstepping) relies on when it applies the interactive/programmatic distinction to transformations. No content depends on earlier sections in ways that would require splitting this unit."
+    }
+  ],
+  "seed_vocabulary": [
+    {
+      "name": "interactive_vs_programmatic_context",
+      "prose": "the distinction between the assistant interacting with a real-time user in an interactive chat versus producing output intended to be consumed programmatically (e.g., inserted into a file, processed by code). Behavior expectations differ between these contexts.",
+      "established_around": [3384, 3395]
+    }
+  ],
+  "expected_cross_links": [
+    {
+      "needs_side_child": 2,
+      "provides_side_child": 3,
+      "name": "interactive_vs_programmatic_context",
+      "evidence": "L3243 in Child 2 (Avoid Overstepping) applies the interactive/programmatic distinction to transformation tasks: 'in an interactive setting, the assistant may want to alert the user... in programmatic mode, just follow instructions without comment.' Child 3 (L3384-L3395) establishes this distinction as a core framework for all behavior variation."
+    }
+  ],
+  "judgment_calls": [
+    "REPAIR: Changed Child 2 span from [3239, 3382] to [3239, 3383] to include blank line L3383. Per contiguity rule, blank lines belong to a child; cut AT blank line by giving it to earlier child. Child spans now contiguous: [3148,3238], [3239,3383], [3384,3501] = 91+145+118 = 354 lines.",
+    "Chose 3 children rather than 2 because the span exceeds typical 150-line LEAF threshold (354 lines total). Dividing into 2 would create one child of 263 lines, which is unmanageable. Three children are more balanced: ~91, ~145, ~118 lines.",
+    "Grouped 'Avoid Overstepping' and 'Be Creative' together in Child 2 (rather than separating them) because both discuss balancing respecting explicit requests with providing unexpected value. Overstepping emphasizes the boundary-respecting side; Creativity emphasizes the going-beyond side. Both subsections mention that context matters.",
+    "Placed 'Support Programmatic Use' in its own child (rather than with others) because it establishes a general framework (interactive vs programmatic distinction) that Child 2 needs for its specific application (transformations). This hierarchy reflects that Child 3 provides scaffolding for Child 2's claims.",
+    "Did not inherit any seeds from parent despite having 4 inherited seeds (stay_in_bounds_principles, sensitive_content_restrictions, do_not_facilitate_illicit_behavior, self_harm_prohibition) because none of these concepts appear in the span L3148-L3501. This span is about correctness, boundaries, creativity, and context-adaptation — orthogonal to safety constraints."
+  ]
+}

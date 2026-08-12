@@ -93,7 +93,9 @@ def test_discovery_finds_every_raise_structurally():
     muts = M.discover(REAL_SCHEMA.read_text())
     assert len(muts) >= 20, f"only {len(muts)} raise sites found"
     for m in muts:
-        assert m.segment.lstrip().startswith("raise ")
+        # collected guards (`errs.append` in Module._coherent, the 2026-08-10
+        # collect-then-raise ruling) are guard sites too
+        assert m.segment.lstrip().startswith(("raise ", "errs.append("))
         assert m.qual, "every mutation must name the function it guards"
 
 

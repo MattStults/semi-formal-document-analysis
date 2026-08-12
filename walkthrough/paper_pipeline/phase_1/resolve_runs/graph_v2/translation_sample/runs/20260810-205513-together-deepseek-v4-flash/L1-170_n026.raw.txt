@@ -1,0 +1,151 @@
+{
+  "outcome": "translated",
+  "clause_id": "L1-170_n026",
+  "abstain_reason": null,
+  "claims": [
+    "C1: The assistant may cause harm by following user or developer instructions.",
+    "C2: The risk category is 'harmful instructions'.",
+    "C3: The risk category 'harmful instructions' is one of the AI risk categories.",
+    "C4: The risk category 'harmful instructions' is distinct from other risk categories.",
+    "C5: The risk category 'harmful instructions' is a risk category of the assistant's behavior.",
+    "C6: The risk category 'harmful instructions' is a risk category of the assistant's behavior when following user or developer instructions."
+  ],
+  "acts": [
+    "follows(A, I)"
+  ],
+  "concepts": [
+    {
+      "name": "risk_category",
+      "arity": 1,
+      "gloss": "a category of AI risk that the assistant's behavior can fall into",
+      "licence": "textual",
+      "cites": "L61",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "harmful_instructions",
+      "arity": 1,
+      "gloss": "the risk category covering harm that arises from the assistant following user or developer instructions",
+      "licence": "textual",
+      "cites": "L61",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "follows",
+      "arity": 2,
+      "gloss": "the assistant follows an instruction given by a user or developer",
+      "licence": "textual",
+      "cites": "L61",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "instruction",
+      "arity": 1,
+      "gloss": "an instruction given by a user or developer",
+      "licence": "textual",
+      "cites": "L61",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "harmful_instruction",
+      "arity": 1,
+      "gloss": "an instruction whose following would cause harm, e.g. self-harm advice or advice to carry out a violent act",
+      "licence": "textual",
+      "cites": "L61",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "assistant",
+      "arity": 1,
+      "gloss": "the assistant is the agent whose behaviour is governed by this clause",
+      "licence": "world",
+      "cites": null,
+      "inference": "the clause speaks of the assistant as the subject of the risk; this is the entity the document governs",
+      "toggleable": false
+    },
+    {
+      "name": "user_or_developer_instruction",
+      "arity": 1,
+      "gloss": "an instruction that comes from a user or a developer",
+      "licence": "textual",
+      "cites": "L61",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "L61",
+      "inference": null,
+      "toggleable": false,
+      "atom": "risk_category(harmful_instructions)",
+      "gloss": "the category of risk where the assistant follows user or developer instructions that cause harm",
+      "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "L61",
+      "inference": null,
+      "toggleable": false,
+      "atom": "risk_category(harmful_instructions)",
+      "gloss": "harmful instructions are one of the risk categories in the taxonomy",
+      "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "L61",
+      "inference": null,
+      "toggleable": false,
+      "atom": "assistant_risk(A, harmful_instructions)",
+      "gloss": "the assistant is at risk of harm from following instructions",
+      "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "L61",
+      "inference": null,
+      "toggleable": false,
+      "atom": "harmful_instruction(I)",
+      "gloss": "an instruction whose following would cause harm",
+      "body": null
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "The assistant follows an instruction that is harmful",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "L61",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "follows(A, I)",
+      "body": "harmful_instruction(I)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "follows(A, I)",
+      "closure": "cepa",
+      "reason": "The clause identifies a risk category but does not state that following instructions is generally permitted; silence about other instructions leaves them permitted by default."
+    }
+  ],
+  "requires": [
+    "chain_of_command/2",
+    "developer_instruction/1",
+    "user_instruction/1"
+  ],
+  "inputs": [
+    "assistant/1",
+    "follows/2"
+  ],
+  "forbid_body": []
+}

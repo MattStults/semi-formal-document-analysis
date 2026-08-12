@@ -40,6 +40,31 @@ clause, while naming no individual clause and editing no module. That is what `b
       "gloss": "the clause whose subject is the named policy",
       "licence": "assumed", "cites": null,
       "inference": "identifying which clause states which policy is what 'other policies' ranges over",
+      "toggleable": false },
+    { "name": "policy_class", "arity": 2,
+      "gloss": "the category a named policy belongs to, as this document groups them",
+      "licence": "assumed", "cites": null,
+      "inference": "the clause speaks of policies by category, so the grouping must exist",
+      "toggleable": false },
+    { "name": "scope", "arity": 2,
+      "gloss": "what a stated exception reaches",
+      "licence": "assumed", "cites": null,
+      "inference": "an exception that 'does not apply' to something must have a reach",
+      "toggleable": false },
+    { "name": "out_of_scope", "arity": 2,
+      "gloss": "the named exception does not reach the category given",
+      "licence": "assumed", "cites": null,
+      "inference": "the clause's whole point is that the exception stops somewhere",
+      "toggleable": false },
+    { "name": "disallowed", "arity": 1,
+      "gloss": "the material may not be produced under some policy of this document",
+      "licence": "assumed", "cites": null,
+      "inference": "the clause says the other policies still bind, which is what being barred means",
+      "toggleable": false },
+    { "name": "new_material", "arity": 1,
+      "gloss": "content the assistant originates rather than reworks from what it was given",
+      "licence": "textual", "cites": "m0255",
+      "inference": null,
       "toggleable": false }
   ],
   "ontology": [
@@ -147,7 +172,7 @@ it is not a `defines` entry — it is three `ontology` entries.
   "claims": ["C1 not applicable if misaligned with an applicable higher-level instruction",
              "C2 not applicable if a later message at the same level supersedes it",
              "C3 not applicable if it is suspected to be mistaken"],
-  "acts": [], "asserts": [], "beats": [], "defines": [], "closure": [], "requires": [],
+  "acts": [], "asserts": [], "beats": [], "defines": [], "closure": [],
   "concepts": [
     { "name": "not_applicable", "arity": 2, "gloss": "candidate instruction I is not applicable to request R",
       "licence": "textual", "cites": "m0088", "inference": null, "toggleable": false },
@@ -155,13 +180,13 @@ it is not a `defines` entry — it is three `ontology` entries.
       "licence": "textual", "cites": "m0088", "inference": null, "toggleable": false },
     { "name": "misaligned_with_higher_level", "arity": 1, "gloss": "I is misaligned with an applicable higher-level instruction",
       "licence": "textual", "cites": "m0088", "inference": null, "toggleable": false },
-    { "name": "supersedes", "arity": 2, "gloss": "J supersedes I",
+    { "name": "supersedes", "arity": 2, "gloss": "the later instruction displaces the earlier one, so the earlier stops applying",
       "licence": "textual", "cites": "m0088", "inference": null, "toggleable": false },
     { "name": "later_message", "arity": 2, "gloss": "J appears in a later message than I",
       "licence": "textual", "cites": "m0088", "inference": null, "toggleable": false },
     { "name": "same_level", "arity": 2, "gloss": "J and I carry the same authority level",
       "licence": "textual", "cites": "m0088", "inference": null, "toggleable": false },
-    { "name": "suspected_mistaken", "arity": 1, "gloss": "I is suspected to be mistaken",
+    { "name": "suspected_mistaken", "arity": 1, "gloss": "I looks like it was written in error rather than intended",
       "licence": "textual", "cites": "m0088", "inference": null, "toggleable": false } ],
   "ontology": [
     { "atom": "not_applicable(I, R)",
@@ -176,8 +201,8 @@ it is not a `defines` entry — it is three `ontology` entries.
       "body": "candidate_instruction(I, R), suspected_mistaken(I)",
       "gloss": "not applicable because it is suspected to be mistaken",
       "licence": "textual", "cites": "m0088", "inference": null, "toggleable": false } ],
-  "inputs": ["candidate_instruction/2", "misaligned_with_higher_level/1", "supersedes/2",
-             "later_message/2", "same_level/2", "suspected_mistaken/1"],
+  "requires": ["misaligned_with_higher_level/1", "supersedes/2", "same_level/2"],
+  "inputs": ["candidate_instruction/2", "later_message/2", "suspected_mistaken/1"],
   "forbid_body": [] }
 ```
 
@@ -232,8 +257,27 @@ whole literal instead of the argument, and clingo rejects the file with *"'X' is
 | inside an argument, bracketed — `p(X, (a;b))` | **or**, expanded into separate rules |
 | inside an argument, unbracketed — `p(X, a;b)` | a parse error further out; the file is refused |
 
-**Every predicate a body names is declared.** All six appear in `inputs`, and each has a `concepts`
-entry giving its gloss. A body predicate that is declared nowhere cannot be told from a typo.
+**Every predicate a body names is declared**, and each has a `concepts` entry giving its gloss. A
+body predicate that is declared nowhere cannot be told from a typo.
+
+⭐ **Look at WHICH field each one went in — this is the distinction, drawn.** Rule 9 asks one
+question of every borrowed predicate: *is its meaning fixed by the document, or by the case in front
+of you?*
+
+| | | why |
+|---|---|---|
+| `misaligned_with_higher_level/1` | `requires` | you cannot tell what "higher level" means without the chain of command. **Another clause owns it** |
+| `supersedes/2` | `requires` | the superseding relation is the spec's, not this conversation's |
+| `same_level/2` | `requires` | authority levels are established by the document |
+| `candidate_instruction/2` | `inputs` | which instructions are actually present is a fact about this case |
+| `later_message/2` | `inputs` | message order is a fact about this conversation |
+| `suspected_mistaken/1` | `inputs` | whether this instruction looks mistaken here |
+
+⛔ **Putting a document-side predicate in `inputs` is the error to avoid.** It reads as harmless —
+both fields declare the name, so the module still validates — but the two fields mean opposite
+things. `inputs` says *"supply this with the case"*; `requires` says *"another clause defines this,
+go find it"*. Get it wrong and a predicate whose meaning the spec fixes gets asserted freely by a
+test case, or a fact about the conversation is left waiting for a definition that will never come.
 
 ## The five bad ones
 

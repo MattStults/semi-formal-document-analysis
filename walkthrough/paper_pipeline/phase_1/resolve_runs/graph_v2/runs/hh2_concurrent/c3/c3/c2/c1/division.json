@@ -1,0 +1,439 @@
+{
+ "decision": "divide",
+ "children": [
+  {
+   "span": [
+    2474,
+    2554
+   ],
+   "why_this_cut": "Covers the 'Be honest and transparent' section heading, the 'Do not lie' subsection (including its authority=user heading, the core no-misleading rule, the third-party interaction rule, the forthrightness rule, the user-level override note, the first two examples, the outcome ordering, and the falsehoods/white-lies discussion). The only crossing linkage is the do_not_lie principle itself, which is established here and used by the next child's examples."
+  },
+  {
+   "span": [
+    2555,
+    2652
+   ],
+   "why_this_cut": "Covers the white-lie example, the 'Don't be sycophantic' subsection (heading authority=user, the core anti-sycophancy rule, the objective/subjective question rules, and the three examples). The crossing linkage is the do_not_lie principle (used by the white-lie example) and the avoid_sycophancy principle (established here, used by the next child's white-lie discussion)."
+  },
+  {
+   "span": [
+    2653,
+    2820
+   ],
+   "why_this_cut": "Covers the 'Consider uncertainty, state assumptions, and ask clarifying questions' subsection (heading authority=guideline, the core balancing rule, the interactive-settings response options, the weighing rule, the confirmation rule, the logically-necessary vs. beyond-request distinction, the trivial-questions rule, the take-a-stab rule, and the seven examples). The crossing linkage is the avoid_sycophancy principle (used by the white-lie discussion at L2554) and the ask_clarifying_questions principle (established here, used by the next child's examples)."
+  }
+ ],
+ "seed_vocabulary": [
+  {
+   "name": "authority_level_ordering",
+   "prose": "which of two authority levels outranks the other (root > system > developer > user > guideline > no authority)",
+   "established_around": [
+    69,
+    103
+   ]
+  },
+  {
+   "name": "chain_of_command",
+   "prose": "the mechanism by which the assistant prioritizes and reconciles multiple instructions according to their authority levels",
+   "established_around": [
+    171,
+    203
+   ]
+  },
+  {
+   "name": "applicable_instruction",
+   "prose": "which candidate instructions apply to a request (after filtering out misaligned, superseded, or mistaken ones)",
+   "established_around": [
+    181,
+    201
+   ]
+  },
+  {
+   "name": "stay_in_bounds",
+   "prose": "the section of the Model Spec describing limits on the assistant's behavior, including scenarios where it should refrain from fully complying with a user or developer request",
+   "established_around": [
+    797,
+    800
+   ]
+  },
+  {
+   "name": "red_line_principles",
+   "prose": "the high-level principles (human safety, human rights, human control, privacy) that guide model behavior across all deployments",
+   "established_around": [
+    28,
+    43
+   ]
+  },
+  {
+   "name": "risk_taxonomy",
+   "prose": "the three broad categories of risk (misaligned goals, execution errors, harmful instructions) with their mitigations",
+   "established_around": [
+    53,
+    61
+   ]
+  },
+  {
+   "name": "assistant_definition",
+   "prose": "the entity that the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous",
+   "established_around": [
+    114,
+    116
+   ]
+  },
+  {
+   "name": "conversation_definition",
+   "prose": "valid input to the model is a conversation, a list of messages, each with a role and content",
+   "established_around": [
+    118,
+    128
+   ]
+  },
+  {
+   "name": "message_role",
+   "prose": "the source of each message (system, developer, user, assistant, tool), which determines authority in conflicts",
+   "established_around": [
+    120,
+    125
+   ]
+  },
+  {
+   "name": "tool_definition",
+   "prose": "a program that can be called by the assistant to perform a specific task; tool responses are appended as role=tool messages",
+   "established_around": [
+    153,
+    153
+   ]
+  },
+  {
+   "name": "hidden_chain_of_thought",
+   "prose": "a hidden chain-of-thought message used to reason before generating a final answer, not exposed to the user or developer except in summarized form",
+   "established_around": [
+    155,
+    155
+   ]
+  },
+  {
+   "name": "developer_definition",
+   "prose": "a customer of the OpenAI API; developers can send developer, user, and assistant messages as input",
+   "established_around": [
+    159,
+    163
+   ]
+  },
+  {
+   "name": "user_definition",
+   "prose": "a user of a product made by OpenAI or a third-party application built on the OpenAI API",
+   "established_around": [
+    165,
+    169
+   ]
+  },
+  {
+   "name": "default_instruction",
+   "prose": "instructions in the Model Spec at user- or guideline-level that can be overridden by users or developers",
+   "established_around": [
+    89,
+    95
+   ]
+  },
+  {
+   "name": "root_instruction",
+   "prose": "fundamental root rules that cannot be overridden by system messages, developers or users",
+   "established_around": [
+    71,
+    77
+   ]
+  },
+  {
+   "name": "system_instruction",
+   "prose": "rules set by OpenAI that can be transmitted or overridden through system messages, but cannot be overridden by developers or users",
+   "established_around": [
+    79,
+    81
+   ]
+  },
+  {
+   "name": "developer_instruction",
+   "prose": "instructions given by developers using the API; obeyed unless overridden by root or system instructions",
+   "established_around": [
+    83,
+    89
+   ]
+  },
+  {
+   "name": "user_instruction",
+   "prose": "instructions from end users; honored unless they conflict with developer-, system-, or root-level instructions",
+   "established_around": [
+    91,
+    95
+   ]
+  },
+  {
+   "name": "guideline_instruction",
+   "prose": "instructions that can be implicitly overridden (e.g., from contextual cues, background knowledge, or user history)",
+   "established_around": [
+    97,
+    101
+   ]
+  },
+  {
+   "name": "no_authority_content",
+   "prose": "assistant and tool messages; quoted/untrusted text and multimodal data in other messages, which have no authority by default",
+   "established_around": [
+    191,
+    191
+   ]
+  },
+  {
+   "name": "candidate_instruction",
+   "prose": "all instructions in the Model Spec plus all instructions in unquoted plain text in system, developer, and user messages in the input conversation",
+   "established_around": [
+    193,
+    193
+   ]
+  },
+  {
+   "name": "misaligned_instruction",
+   "prose": "an instruction in conflict with either the letter or the implied intent behind some higher-level instruction",
+   "established_around": [
+    197,
+    197
+   ]
+  },
+  {
+   "name": "superseded_instruction",
+   "prose": "an instruction in a later message at the same level that contradicts it, overrides it, or otherwise makes it irrelevant",
+   "established_around": [
+    199,
+    199
+   ]
+  },
+  {
+   "name": "letter_and_spirit",
+   "prose": "the principle that the assistant should consider not just the literal wording of instructions but also the underlying intent and context",
+   "established_around": [
+    292,
+    300
+   ]
+  },
+  {
+   "name": "scope_of_autonomy",
+   "prose": "a clear, mutually understood scope of autonomy shared between the assistant and the user, defining sub-goals, acceptable side effects, and when to pause for clarification",
+   "established_around": [
+    461,
+    488
+   ]
+  },
+  {
+   "name": "side_effects",
+   "prose": "external impacts of actions, especially irreversible ones, that the assistant should minimize and control",
+   "established_around": [
+    527,
+    560
+   ]
+  },
+  {
+   "name": "assume_best_intentions",
+   "prose": "the principle of applying three implicit biases (average reasonable human goals, positive intent, weak preference for self-actualization/kindness/truth/flourishing) when interpreting ambiguous instructions",
+   "established_around": [
+    610,
+    620
+   ]
+  },
+  {
+   "name": "ignore_untrusted_data",
+   "prose": "the principle that quoted text, multimodal data, file attachments, and tool outputs are assumed to contain untrusted data with no authority by default",
+   "established_around": [
+    699,
+    723
+   ]
+  },
+  {
+   "name": "stay_in_bounds_section",
+   "prose": "the section of the Model Spec describing limits on the assistant's behavior, including scenarios where it should refrain from fully complying with a user or developer request",
+   "established_around": [
+    797,
+    800
+   ]
+  },
+  {
+   "name": "prohibited_content",
+   "prose": "content that should never be produced by the assistant in any circumstance, including transformations of user-provided content; only sexual content involving minors is prohibited",
+   "established_around": [
+    820,
+    828
+   ]
+  },
+  {
+   "name": "restricted_content",
+   "prose": "content the assistant must not generate except in specific cases involving transformation of user-provided content; includes information hazards and sensitive personal data",
+   "established_around": [
+    852,
+    854
+   ]
+  },
+  {
+   "name": "sensitive_content",
+   "prose": "content that may only be generated under specific circumstances (e.g., educational, medical, or historical contexts, or transformations of user-provided content); includes erotica and gore",
+   "established_around": [
+    1108,
+    1110
+   ]
+  },
+  {
+   "name": "transformation_exception",
+   "prose": "the exception allowing the assistant to comply with limited requests to transform or analyze content the user has directly provided, even if the output would ordinarily be disallowed as restricted or sensitive content",
+   "established_around": [
+    1369,
+    1379
+   ]
+  },
+  {
+   "name": "risky_situations",
+   "prose": "the section providing instructions for handling requests that involve risky situations (imminent harm, illicit behavior, self-harm, regulated advice, mental health)",
+   "established_around": [
+    1414,
+    1755
+   ]
+  },
+  {
+   "name": "protect_privileged_information",
+   "prose": "the principle that the assistant should avoid sharing private or privileged data, or enabling new access to such data, without explicit authorization",
+   "established_around": [
+    1799,
+    1814
+   ]
+  },
+  {
+   "name": "objective_point_of_view",
+   "prose": "the default stance of presenting information clearly, focusing on factual accuracy and reliability, without taking a stance on moral or ethical questions (except fundamental human rights violations)",
+   "established_around": [
+    2137,
+    2151
+   ]
+  },
+  {
+   "name": "no_agenda",
+   "prose": "the principle that the assistant must never attempt to steer the user in pursuit of an agenda of its own",
+   "established_around": [
+    2128,
+    2135
+   ]
+  },
+  {
+   "name": "do_not_lie",
+   "prose": "the principle that the assistant should not mislead the user or developer unless explicitly instructed to do so by a higher authority",
+   "established_around": [
+    2479,
+    2490
+   ]
+  },
+  {
+   "name": "avoid_sycophancy",
+   "prose": "the principle that the assistant exists to help the user, not flatter them or agree with them all the time",
+   "established_around": [
+    2576,
+    2582
+   ]
+  },
+  {
+   "name": "ask_clarifying_questions",
+   "prose": "the principle of considering uncertainty, stating assumptions, and asking clarifying questions when appropriate",
+   "established_around": [
+    2654,
+    2673
+   ]
+  },
+  {
+   "name": "express_uncertainty",
+   "prose": "the principle of expressing uncertainty or qualifying answers appropriately when questions span beyond the assistant's knowledge, reasoning abilities, or available information",
+   "established_around": [
+    2821,
+    2851
+   ]
+  },
+  {
+   "name": "highlight_misalignments",
+   "prose": "the principle of briefly and respectfully noting when the conversation's direction may conflict with the user's broader, long-term goals",
+   "established_around": [
+    3041,
+    3051
+   ]
+  },
+  {
+   "name": "avoid_errors",
+   "prose": "the principle of avoiding factual, reasoning, and formatting errors that would compromise the accuracy or utility of responses",
+   "established_around": [
+    3150,
+    3162
+   ]
+  },
+  {
+   "name": "avoid_overstepping",
+   "prose": "the principle of helping the developer and user by following explicit instructions and reasonably addressing implied intent without overstepping",
+   "established_around": [
+    3239,
+    3243
+   ]
+  },
+  {
+   "name": "be_creative",
+   "prose": "the principle of striving for creativity in responses where appropriate, going beyond the obvious or the mundane",
+   "established_around": [
+    3319,
+    3327
+   ]
+  },
+  {
+   "name": "support_programmatic_use",
+   "prose": "the principle that the assistant's behavior should vary depending on whether it's interacting with a human in real time or whether its output will be consumed programmatically",
+   "established_around": [
+    3384,
+    3394
+   ]
+  },
+  {
+   "name": "refusal_style",
+   "prose": "the principle of being helpful when refusing, typically 'Safe Completing' by briefly explaining why it cannot provide a full answer and then doing its best to provide safe and useful assistance",
+   "established_around": [
+    4073,
+    4079
+   ]
+  },
+  {
+   "name": "u18_principles",
+   "prose": "the Under-18 Principles that apply to users ages 13-17, prioritizing prevention, transparency, and early intervention",
+   "established_around": [
+    4572,
+    4596
+   ]
+  }
+ ],
+ "expected_cross_links": [
+  {
+   "name": "do_not_lie",
+   "needs_side_child": 2,
+   "provides_side_child": 1,
+   "evidence": "Child 2's white-lie example (L2556-2574) relies on the do_not_lie principle established in child 1 (L2479-2490)."
+  },
+  {
+   "name": "avoid_sycophancy",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "Child 3's white-lie discussion (L2554) references avoid_sycophancy, which is established in child 2 (L2576-2582)."
+  },
+  {
+   "name": "ask_clarifying_questions",
+   "needs_side_child": 1,
+   "provides_side_child": 3,
+   "evidence": "Child 1's forthrightness rule (L2488) references the express_uncertainty principle, which is established in child 3 (L2654-2673)."
+  }
+ ],
+ "judgment_calls": [
+  "Chose three children rather than two: the span naturally splits into the three subsections (do_not_lie, avoid_sycophancy, ask_clarifying_questions), each with its own heading and authority tag. A two-way split would have forced a cut through the middle of a subsection or merged two subsections, making the crossing linkages harder to track.",
+  "The cut at L2554 (end of child 1) places the white-lie example in child 2, even though it is thematically part of the do_not_lie discussion. This keeps the do_not_lie principle and its core rules in child 1, while the example (which also references avoid_sycophancy) sits with the sycophancy subsection. The alternative (ending child 1 at L2574) would have made child 1 much larger and split the sycophancy subsection awkwardly.",
+  "The cut at L2652 (end of child 2) places the avoid_sycophancy examples entirely in child 2, and starts child 3 at the ask_clarifying_questions heading. This is a clean boundary: the sycophancy examples are self-contained, and the ask_clarifying_questions section is a distinct subsection with its own authority tag."
+ ],
+ "_span_lo": 2474,
+ "_span_hi": 2820
+}

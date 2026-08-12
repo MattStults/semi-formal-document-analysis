@@ -63,6 +63,24 @@ fire.
 `ontology`, in `requires` (another clause defines it), or in `inputs` (a fact about the case). An
 undeclared name cannot be told apart from a typo.
 
+⭐ **And every `requires` entry must also have a `concepts` entry saying what you need it to MEAN.**
+Declaring the name says where it comes from; the `concepts` gloss says what you are assuming it is.
+Both are needed, for two different readers:
+
+- a person is shown test cases built out of these predicates, and a bare name like `policy_class/2`
+  tells them nothing they can check the clause against;
+- and the only way another clause's definition can ever be matched to your need is by comparing what
+  each one SAYS. The name you invent cannot do that job — two translations of one clause pick
+  different names almost every time, while they describe the same idea in nearly the same words.
+
+⚠️ **You are not defining the term.** You are recording what this clause has to assume about it. If
+another clause turns out to mean something different by the same name, that disagreement is worth
+finding, and it can only be found if you wrote your assumption down.
+
+⛔ **A gloss that restates the name is rejected.** `pasted_text/1` glossed *"pasted text"*, or
+`supersedes/2` glossed *"J supersedes I"*, passes no useful information to either reader. Say what
+makes it true — *"text the user pasted in without reading it carefully"*.
+
 ## Fields
 
 ⭐ **Each field is described in the schema itself, on that field.** The schema is part of this

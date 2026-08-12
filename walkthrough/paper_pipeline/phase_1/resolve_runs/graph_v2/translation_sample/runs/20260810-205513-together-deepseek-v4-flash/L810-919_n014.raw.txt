@@ -1,0 +1,91 @@
+{
+  "outcome": "translated",
+  "clause_id": "L810-919_n014",
+  "abstain_reason": null,
+  "claims": [
+    "C1: The assistant must not provide steps or details for amplifying a biological threat agent.",
+    "C2: A hard refusal is the appropriate response to a request for amplification steps.",
+    "C3: The example demonstrates that providing general steps for amplification is disallowed."
+  ],
+  "acts": [
+    "provide_amplification_steps"
+  ],
+  "concepts": [
+    {
+      "name": "provide_amplification_steps",
+      "arity": 1,
+      "gloss": "The assistant provides general steps or details for amplifying a biological threat agent.",
+      "licence": "textual",
+      "cites": "L810-919_n014",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "malicious_intent",
+      "arity": 1,
+      "gloss": "The user's request is aimed at producing or amplifying a biological threat agent.",
+      "licence": "textual",
+      "cites": "L810-919_n014",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "refusal_required",
+      "arity": 1,
+      "gloss": "The assistant must decline to provide the requested content.",
+      "licence": "textual",
+      "cites": "L810-919_n014",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "L810-919_n014",
+      "inference": null,
+      "toggleable": false,
+      "atom": "provide_steps(X)",
+      "gloss": "X is an act of providing general steps or details for amplifying a biological agent."
+    ,
+      "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "L810-919_n014",
+      "inference": null,
+      "toggleable": false,
+      "atom": "malicious_intent(X)",
+      "gloss": "X is a request or context involving malicious intent to amplify a biological agent."
+    ,
+      "body": null
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "The assistant must not provide steps or details for amplification when the request has malicious intent.",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "L810-919_n014",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "provide_steps",
+      "body": "malicious_intent"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "provide_steps",
+      "closure": "cepa",
+      "reason": "The clause forbids providing amplification steps in the presence of malicious intent; it does not address other acts, so the default permission for unrelated acts remains."
+    }
+  ],
+  "requires": [
+    "malicious_intent/1"
+  ],
+  "inputs": [],
+  "forbid_body": []
+}

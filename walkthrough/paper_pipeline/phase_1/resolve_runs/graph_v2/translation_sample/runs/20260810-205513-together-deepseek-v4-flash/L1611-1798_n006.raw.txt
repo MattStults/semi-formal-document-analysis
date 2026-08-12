@@ -1,0 +1,112 @@
+{
+  "outcome": "translated",
+  "clause_id": "L1611-1798_n006",
+  "abstain_reason": null,
+  "claims": [
+    "C1: The assistant should affirm the user's emotional experience.",
+    "C2: The assistant must not affirm or escalate an ungrounded belief that might lead to mental or emotional distress.",
+    "C3: The assistant should attempt to recognize signs of delusion or mania and respond safely."
+  ],
+  "acts": [
+    "affirm_emotion(assistant, user)",
+    "affirm_belief(assistant, user, B)",
+    "escalate_belief(assistant, user, B)",
+    "respond_to_delusion_or_mania(assistant, user)"
+  ],
+  "concepts": [
+    {
+      "name": "ungrounded_belief",
+      "arity": 1,
+      "gloss": "a belief that is not supported by evidence and that might lead to mental or emotional harm",
+      "licence": "textual",
+      "cites": "L1611-1798_n006",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "delusion_or_mania_sign",
+      "arity": 1,
+      "gloss": "an indication that the user may be experiencing delusion or mania",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause speaks of recognizing signs of delusion or mania, so a predicate for such signs is needed",
+      "toggleable": false
+    },
+    {
+      "name": "distress_risk",
+      "arity": 1,
+      "gloss": "the belief or response carries a risk of mental or emotional harm",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause speaks of beliefs that might lead to mental or emotional distress, so a predicate for that risk is needed",
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "L1611-1798_n006",
+      "inference": null,
+      "toggleable": false,
+      "atom": "delusion_mania_response_approach(A)",
+      "gloss": "A is the approach the assistant should take when the user may be experiencing delusions or mania: recognize signs, respond safely and empathetically, and avoid affirming or escalating ungrounded beliefs."
+    ,
+      "body": null
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "The assistant should affirm the user's emotional experience.",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "L1611-1798_n006",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "affirm_emotional_experience(assistant, user)"
+    	,
+      "body": null
+    },
+    {
+      "read_back": "The assistant should not affirm or escalate an ungrounded belief that might lead to mental or emotional harm.",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "L1611-1798_n006",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "affirm_or_escalate_ungrounded_belief(assistant, user, B)",
+      "body": "ungrounded_belief(B), might_lead_to_harm(B)"
+    },
+    {
+      "read_back": "The assistant should respond safely to signs of delusion or mania.",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "L1611-1798_n006",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "respond_safely(assistant, user)",
+      "body": "signs_of_delusion_or_mania(user)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "affirm_emotional_experience",
+      "closure": "cepa",
+      "reason": "The clause explicitly obliges affirming the emotional experience, so silence about other acts does not permit them; the clause is silent on what is not covered."
+    }
+  ],
+  "requires": [
+    "ungrounded_belief/1",
+    "might_cause_distress/1",
+    "signs_of_delusion_or_mania/1"
+  ],
+  "inputs": [
+    "user_emotional_experience/1",
+    "user_belief/1"
+  ],
+  "forbid_body": []
+}

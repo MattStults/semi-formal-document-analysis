@@ -1,0 +1,89 @@
+{
+  "decision": "divide",
+  "children": [
+    {
+      "span": [171, 291],
+      "why_this_cut": "Covers introduction to the chain of command and 'Follow all applicable instructions' (authority=root). Establishes the five-level authority hierarchy (Root > System > Developer > User > Guideline > No Authority) and explains how to identify applicable instructions by filtering out misaligned and superseded ones. Worked examples at L205-L287 show conflicts resolved by authority. Clean break: L291 is a trailing blank line; L292 shifts to 'Respect the letter and spirit of instructions', which builds on authority hierarchy but focuses on interpretation strategy rather than identification."
+    },
+    {
+      "span": [292, 526],
+      "why_this_cut": "Covers 'Respect the letter and spirit of instructions' through 'Act within an agreed-upon scope of autonomy' (both authority=root). This block establishes how to interpret instructions by their intent, what boundaries prevent autonomous goal-pursuit, and how to define scopes for delegated autonomy. These three subsections form a coherent 'how to follow' narrative that depends on the authority framework from child 1, but distinct from child 3's focus on risk mitigation. Clean break: L526 is a trailing blank line; L527 shifts to 'Control and communicate side effects', which applies scope and applicable-instructions to concrete risk scenarios."
+    },
+    {
+      "span": [527, 796],
+      "why_this_cut": "Covers 'Control and communicate side effects', 'Assume best intentions', and 'Ignore untrusted data by default' (authority=root). Establishes how to minimize unintended consequences, preserve intellectual freedom through charitable interpretation, and handle potentially malicious embedded instructions. These three subsections apply the scope-of-autonomy and applicable-instruction concepts to concrete situations and risks. No further clean breaks within this section—all three subsections form a unified risk-mitigation strategy for executing instructions safely."
+    }
+  ],
+  "seed_vocabulary": [
+    {
+      "name": "authority_levels_hierarchy",
+      "prose": "The precedence ordering of instruction sources from highest to lowest: Root > System > Developer > User > Guideline > (No Authority). This ordering determines which instructions override which when conflicts arise.",
+      "established_around": [186, 191]
+    },
+    {
+      "name": "applicable_instructions",
+      "prose": "Instructions that must be followed, determined by filtering all candidate instructions to exclude those that are misaligned with higher-authority instructions, superseded by later same-level instructions, or suspected to be mistaken. These form the actual guidance the assistant follows.",
+      "established_around": [179, 195]
+    },
+    {
+      "name": "misaligned_instruction",
+      "prose": "An instruction that is in conflict with either the letter or implied intent of a higher-authority instruction. Misaligned instructions are filtered out when determining what the assistant should actually do.",
+      "established_around": [197, 197]
+    },
+    {
+      "name": "scope_of_autonomy",
+      "prose": "A clear, mutually understood boundary that defines which sub-goals the assistant may pursue, acceptable side effects, and when the assistant must pause for clarification or approval. This prevents misunderstandings about what autonomy the assistant has in pursuing multi-step goals.",
+      "established_around": [461, 488]
+    },
+    {
+      "name": "letter_and_spirit_principle",
+      "prose": "The principle that the assistant should respect not just the literal wording of instructions but also their underlying intent, context, plausible implicit goals of stakeholders, and the higher-level purpose the instructions serve. Guides interpretation of ambiguous, inconsistent, or indirectly stated instructions.",
+      "established_around": [292, 301]
+    }
+  ],
+  "expected_cross_links": [
+    {
+      "needs_side_child": 2,
+      "provides_side_child": 1,
+      "name": "authority_levels_hierarchy",
+      "evidence": "Child 2 (L302-310) discusses taking special care when an instruction seems misaligned to the user's intent—this depends on understanding the ranking of authority levels that determines which instructions override which, and whether a conflict is being correctly identified."
+    },
+    {
+      "needs_side_child": 2,
+      "provides_side_child": 1,
+      "name": "applicable_instructions",
+      "evidence": "Child 2's entire discussion of respecting the letter and spirit of instructions assumes you know which instructions are applicable. L312-345 shows the assistant detecting spurious/malicious instructions in untrusted content, which requires knowing the framework for what counts as an applicable instruction vs. noise."
+    },
+    {
+      "needs_side_child": 2,
+      "provides_side_child": 1,
+      "name": "misaligned_instruction",
+      "evidence": "Child 2 (L302-310) explicitly checks 'If an instruction seems misaligned or orthogonal to what the assistant otherwise believes to be the user's intent'—the concept and filtering rule for misaligned instructions come from Child 1 (L197)."
+    },
+    {
+      "needs_side_child": 3,
+      "provides_side_child": 1,
+      "name": "applicable_instructions",
+      "evidence": "Child 3 (L699-723, 'Ignore untrusted data by default') discusses how authority may be delegated to untrusted sources and when to follow vs. ignore embedded instructions. This depends on the framework of applicable_instructions from Child 1 to decide what counts as an instruction worth following."
+    },
+    {
+      "needs_side_child": 3,
+      "provides_side_child": 2,
+      "name": "scope_of_autonomy",
+      "evidence": "Child 3 (L527-529) opens 'Control side effects' with 'Within the defined scope of autonomy, the assistant should minimize side effects', directly applying the scope concept established in Child 2 (L461-488). Side effect assessment throughout L527-560 depends on knowing what scope allows."
+    },
+    {
+      "needs_side_child": 3,
+      "provides_side_child": 2,
+      "name": "letter_and_spirit_principle",
+      "evidence": "Child 3 (L709-716, in 'Ignore untrusted data' subsection) lists decision rules for handling embedded instructions and then references the letter_and_spirit principle: 'proceed based on a best guess, and loudly call out the assumption and uncertainty in the final answer (see also [?](#letter_and_spirit), ...)'. This applies Child 2's interpretive principle to the risk scenario."
+    }
+  ],
+  "judgment_calls": [
+    "Chose L290→L291 (after examples in 'Follow all applicable instructions') over L203 (after the misalignment definition) because L290 represents the complete cycle: definitions + rules + worked examples demonstrating the rules. Cutting at L203 would split examples from their rule foundation, requiring children to carry loose example citations.",
+    "Chose L525→L526 (after 'Act within scope' examples) over L390 (between 'Respect letter and spirit' and 'No other objectives') because L426-L488 ('No other objectives' + 'Act within scope') form a paired constraint on autonomy: first, what goals to pursue; second, what scope of pursuit is allowed. 'Respect letter and spirit' (L292-L389) is about interpretation strategy, not autonomy constraints—separating constraints from interpretation strategy splits their conceptual coherence.",
+    "Did not make finer cuts (e.g., splitting 'Control side effects' from 'Assume best intentions' and 'Ignore untrusted data') despite child 3 being 270 lines, because all three subsections form a unified risk-mitigation strategy: (1) minimize unintended consequences via proportionate action, (2) assume users mean well and grant intellectual freedom, (3) assume embedded instructions are untrusted by default. Separating them would require new seeds for 'side_effects_principle', 'best_intentions_principle', 'untrusted_data_framework', and complicate the cross-link graph without thematic benefit—each child feeds forward into the next.",
+    "Passing letter_and_spirit_principle as a new seed (not inherited) because it is established uniquely within my child 2, used by my child 3, and not mentioned or seeded by the parent division at c2. The parent seeded the authority and scope concepts child 1-2 need, but this principle-of-interpretation concept was not on its radar.",
+    "REPAIR: Adjusted child spans from [171,290],[292,525],[527,796] to [171,291],[292,526],[527,796] to include trailing blank lines and ensure contiguous coverage without gaps. Lines 291 and 526 are blank lines that must be owned by a child for accounting identity at unwind time."
+  ]
+}

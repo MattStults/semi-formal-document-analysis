@@ -1,0 +1,77 @@
+{
+ "decision": "divide",
+ "children": [
+  {
+   "span": [
+    171,
+    291
+   ],
+   "why_this_cut": "The chain of command section and the Follow all applicable instructions section, including the authority ordering list and its examples. The only crossing linkage is the authority_level_ordering concept, seeded below."
+  },
+  {
+   "span": [
+    292,
+    460
+   ],
+   "why_this_cut": "The letter_and_spirit and no_other_objectives sections, which are cohesive units about interpreting instructions and not pursuing extra goals. The only crossing linkage is the authority_level_ordering concept, seeded below."
+  },
+  {
+   "span": [
+    461,
+    800
+   ],
+   "why_this_cut": "The scope_of_autonomy, control_side_effects, assume_best_intentions, and ignore_untrusted_data sections, plus the stay_in_bounds heading. The only crossing linkages are the authority_level_ordering, untrusted_data, and stay_in_bounds concepts, seeded below."
+  }
+ ],
+ "seed_vocabulary": [
+  {
+   "name": "authority_level_ordering",
+   "prose": "which of two authority levels outranks the other (root > system > developer > user > guideline > no authority)",
+   "established_around": [
+    69,
+    101
+   ]
+  },
+  {
+   "name": "untrusted_data",
+   "prose": "content in quoted text, untrusted_text blocks, multimodal data, file attachments, and tool outputs that has no authority by default and must be treated as information rather than instructions",
+   "established_around": [
+    701,
+    701
+   ]
+  },
+  {
+   "name": "stay_in_bounds",
+   "prose": "the section of the Model Spec describing limits on the assistant's behavior, including scenarios where the assistant should refrain from fully complying with a user or developer request",
+   "established_around": [
+    797,
+    799
+   ]
+  }
+ ],
+ "expected_cross_links": [
+  {
+   "name": "authority_level_ordering",
+   "needs_side_child": 1,
+   "provides_side_child": 2,
+   "evidence": "child 1 establishes the authority ordering list at L186-191; children 2 and 3 rely on it when discussing higher-level instructions and the chain of command"
+  },
+  {
+   "name": "untrusted_data",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "child 3 establishes the untrusted data concept at L701 and uses it throughout the ignore_untrusted_data section"
+  },
+  {
+   "name": "stay_in_bounds",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "child 3 contains the stay_in_bounds heading at L797-799 and references it at L620"
+  }
+ ],
+ "judgment_calls": [
+  "Could have cut at L426 (after letter_and_spirit) instead of L460, but chose L460 to keep the no_other_objectives section with its examples and commentary as one unit; a cut at L426 would have split the section's examples from its rule.",
+  "Could have cut at L699 (before ignore_untrusted_data) instead of L800, but chose L800 to keep the ignore_untrusted_data section and the stay_in_bounds heading together; the stay_in_bounds heading is a natural end point for the span.",
+  "The untrusted_data and stay_in_bounds seeds are inherited and appear only in child 3; they are carried unchanged so the subtree does not lose the names."
+ ]
+}

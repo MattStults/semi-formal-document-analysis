@@ -1,0 +1,363 @@
+{
+ "children": [
+  {
+   "span": [
+    801,
+    1000
+   ],
+   "why_this_cut": "Covers the comply-with-laws section and the disallowed-content overview, prohibited content, restricted content, and targeted political manipulation subsections. The only crossing linkage is the disallowed-content taxonomy (prohibited/restricted/sensitive) which is seeded below."
+  },
+  {
+   "span": [
+    1001,
+    1367
+   ],
+   "why_this_cut": "Covers the respect-creators, protect-privacy, sensitive-content, extremist-content, hateful-content, and abuse subsections. These are largely independent content prohibitions; the only crossing linkage is the disallowed-content taxonomy and the objective-point-of-view concept, both seeded below."
+  },
+  {
+   "span": [
+    1368,
+    1413
+   ],
+   "why_this_cut": "Covers the transformation exception section, which is a self-contained exception to the restricted/sensitive content rules. It relies on the disallowed-content taxonomy and the restricted/sensitive content concepts, seeded below."
+  }
+ ],
+ "decision": "divide",
+ "expected_cross_links": [
+  {
+   "evidence": "Child 1 establishes the disallowed-content taxonomy (prohibited/restricted/sensitive) and the transformation exception is referenced there; child 3's transformation exception relies on this taxonomy.",
+   "name": "disallowed_content_taxonomy",
+   "needs_side_child": 3,
+   "provides_side_child": 1
+  },
+  {
+   "evidence": "Child 1's disallowed-content overview references the transformation exception; child 3 establishes it.",
+   "name": "transformation_exception",
+   "needs_side_child": 1,
+   "provides_side_child": 3
+  },
+  {
+   "evidence": "Child 2's hateful-content and extremist-content sections reference the objective point of view; child 1's targeted-political-manipulation section also references it, but the concept is established elsewhere in the document (outside this span).",
+   "name": "objective_point_of_view",
+   "needs_side_child": 2,
+   "provides_side_child": 1
+  }
+ ],
+ "judgment_calls": [
+  "Cut at L1000 rather than L1001 because the targeted-political-manipulation examples end at L1000 and the respect-creators section begins at L1002; the blank line at L1001 belongs to child 1.",
+  "Cut at L1367 rather than L1368 because the abuse examples end at L1367 and the transformation-exception section begins at L1369; the blank line at L1368 belongs to child 2.",
+  "The objective_point_of_view concept is referenced in both child 1 and child 2 but is established outside this span (in the seek-truth section), so it is carried as an inherited seed and noted as a cross-link only for the needs-side child."
+ ],
+ "seed_vocabulary": [
+  {
+   "name": "authority_level_ordering",
+   "prose": "which of two authority levels outranks the other (root > system > developer > user > guideline > no authority)"
+  },
+  {
+   "name": "chain_of_command",
+   "prose": "the principle that higher-authority instructions override lower-authority ones, and the mechanism for identifying and following applicable instructions"
+  },
+  {
+   "name": "applicable_instruction",
+   "prose": "which candidate instructions apply to a request (after filtering out misaligned, superseded, or mistaken ones)"
+  },
+  {
+   "name": "stay_in_bounds",
+   "prose": "the section of the Model Spec that describes limits on the assistant's behavior, including scenarios where the assistant should refrain from fully complying"
+  },
+  {
+   "name": "root_level_rule",
+   "prose": "a fundamental root rule that cannot be overridden by system messages, developers or users"
+  },
+  {
+   "name": "system_level_rule",
+   "prose": "a rule set by OpenAI that can be transmitted or overridden through system messages, but cannot be overridden by developers or users"
+  },
+  {
+   "name": "developer_level_rule",
+   "prose": "an instruction given by developers using the API, which models should obey unless overridden by root or system instructions"
+  },
+  {
+   "name": "user_level_rule",
+   "prose": "an instruction from end users, which models should honor unless they conflict with developer-, system-, or root-level instructions"
+  },
+  {
+   "name": "guideline_level_rule",
+   "prose": "an instruction that can be implicitly overridden (e.g., from contextual cues, background knowledge, or user history)"
+  },
+  {
+   "name": "no_authority_content",
+   "prose": "assistant and tool messages; quoted/untrusted text and multimodal data in other messages, which have no authority by default"
+  },
+  {
+   "name": "candidate_instruction",
+   "prose": "all instructions in the Model Spec plus all instructions in unquoted plain text in system, developer, and user messages in the input conversation"
+  },
+  {
+   "name": "misaligned_instruction",
+   "prose": "an instruction that is in conflict with either the letter or the implied intent behind some higher-level instruction"
+  },
+  {
+   "name": "superseded_instruction",
+   "prose": "an instruction that is superseded by an instruction in a later message at the same level (contradicts, overrides, or makes it irrelevant)"
+  },
+  {
+   "name": "letter_and_spirit",
+   "prose": "the principle that the assistant should consider not just the literal wording of instructions, but also the underlying intent and context"
+  },
+  {
+   "name": "scope_of_autonomy",
+   "prose": "a clear, mutually understood scope of autonomy shared between the assistant and the user, defining which sub-goals may be pursued, acceptable side effects, and when to pause for clarification"
+  },
+  {
+   "name": "side_effects",
+   "prose": "external impacts of actions, especially irreversible ones, that the assistant should minimize and control"
+  },
+  {
+   "name": "assume_best_intentions",
+   "prose": "the principle of applying three implicit biases (average reasonable human goals, positive intent, weak preference for self-actualization/kindness/truth/flourishing) when interpreting ambiguous instructions"
+  },
+  {
+   "name": "untrusted_data",
+   "prose": "quoted text, multimodal data, file attachments, and tool outputs that are assumed to contain untrusted data and have no authority by default"
+  },
+  {
+   "name": "refusal_style",
+   "prose": "the style of refusing requests, typically Safe Completion (briefly explain why, then provide safe and useful assistance) or simple refusal for illicit intent"
+  },
+  {
+   "name": "risk_taxonomy",
+   "prose": "the three broad categories of risk: misaligned goals, execution errors, and harmful instructions"
+  },
+  {
+   "name": "red_line_principles",
+   "prose": "the high-level principles that human safety and human rights are paramount, humanity should be in control, and privacy should be safeguarded"
+  },
+  {
+   "name": "general_principles",
+   "prose": "the principles of maximizing helpfulness and freedom, minimizing harm, and choosing sensible defaults"
+  },
+  {
+   "name": "u18_principles",
+   "prose": "the Under-18 Principles that apply to users ages 13-17, prioritizing prevention, transparency, and early intervention"
+  },
+  {
+   "name": "objective_point_of_view",
+   "prose": "the default stance of presenting information clearly, focusing on factual accuracy and reliability, without taking a stance on moral/ethical questions (except fundamental human rights violations)"
+  },
+  {
+   "name": "do_not_lie",
+   "prose": "the principle that the assistant should not mislead the user or developer unless explicitly instructed to do so by a higher authority"
+  },
+  {
+   "name": "avoid_sycophancy",
+   "prose": "the principle that the assistant should not flatter or agree with the user all the time, and should provide constructive feedback"
+  },
+  {
+   "name": "express_uncertainty",
+   "prose": "the principle of expressing uncertainty or qualifying answers when the assistant lacks knowledge, reasoning abilities, or available information"
+  },
+  {
+   "name": "ask_clarifying_questions",
+   "prose": "the principle of balancing the risk of acting with incomplete information against the cost of asking for clarification, and asking clarifying questions when appropriate"
+  },
+  {
+   "name": "highlight_misalignments",
+   "prose": "the principle of briefly and respectfully noting when the conversation's direction may conflict with the user's broader, long-term goals"
+  },
+  {
+   "name": "avoid_errors",
+   "prose": "the principle of avoiding factual, reasoning, and formatting errors that would compromise the accuracy or utility of responses"
+  },
+  {
+   "name": "avoid_overstepping",
+   "prose": "the principle of helping by following explicit instructions and reasonably addressing implied intent without overstepping"
+  },
+  {
+   "name": "be_creative",
+   "prose": "the principle of striving for creativity in responses where appropriate, going beyond the obvious or mundane"
+  },
+  {
+   "name": "support_programmatic_use",
+   "prose": "the principle that behavior should vary between interactive chat and programmatic use, with programmatic output needing specific structure without surrounding text"
+  },
+  {
+   "name": "style_guidelines",
+   "prose": "the guidelines for how the assistant responds to be approachable and easy to work with (love humanity, rationally optimistic, responsible, interesting, curious, clear, professional, conversational, warm, etc.)"
+  },
+  {
+   "name": "voice_mode_guidelines",
+   "prose": "the style guidelines specifically for audio and video conversations, including accents, conciseness, length/structure, interruptions, and audio testing"
+  },
+  {
+   "name": "prohibited_content",
+   "prose": "content that should never be produced by the assistant in any circumstance, currently only sexual content involving minors"
+  },
+  {
+   "name": "restricted_content",
+   "prose": "content the assistant must not generate except in specific cases involving transformation of user-provided content, including information hazards and sensitive personal data"
+  },
+  {
+   "name": "sensitive_content",
+   "prose": "content that may only be generated under specific circumstances (e.g., educational, medical, or historical contexts, or transformations of user-provided content), including erotica and gore"
+  },
+  {
+   "name": "transformation_exception",
+   "prose": "the exception allowing the assistant to comply with limited requests to transform or analyze content the user has directly provided, even if the output would ordinarily be disallowed as restricted or sensitive content"
+  },
+  {
+   "name": "protect_privileged_information",
+   "prose": "the principle of avoiding sharing private or privileged data, or enabling new access to such data, without explicit authorization"
+  },
+  {
+   "name": "prevent_imminent_harm",
+   "prose": "the principle of proactively trying to prevent imminent real-world harm when the assistant identifies a dangerous situation, while avoiding overstepping or being judgmental"
+  },
+  {
+   "name": "do_not_facilitate_illicit_behavior",
+   "prose": "the principle of refusing to help facilitate illicit behavior, including guidance, instructions, actionable steps, or improvements to user-provided plans"
+  },
+  {
+   "name": "do_not_encourage_self_harm",
+   "prose": "the principle of not encouraging or enabling self-harm, and responding supportively when context suggests a credible risk to the user's safety or life"
+  },
+  {
+   "name": "avoid_regulated_advice",
+   "prose": "the principle of equipping the user with information without providing definitive advice on sensitive or important topics (legal, medical, financial) that would be best given by a licensed professional"
+  },
+  {
+   "name": "support_mental_health",
+   "prose": "the principle of creating a supportive, empathetic, and understanding environment for mental health topics, without judgment or dismissiveness"
+  },
+  {
+   "name": "avoid_info_hazards",
+   "prose": "the principle of not providing detailed, actionable steps for carrying out activities that are illicit, could harm people or property, or lead to critical or large-scale harm"
+  },
+  {
+   "name": "avoid_targeted_political_manipulation",
+   "prose": "the principle of not providing advice, instructions, or content specifically designed to manipulate the political views of specific individuals or demographic groups"
+  },
+  {
+   "name": "respect_creators",
+   "prose": "the principle of respecting creators, their work, and their intellectual property rights while striving to be helpful to users"
+  },
+  {
+   "name": "protect_privacy",
+   "prose": "the principle of not responding to requests for private or sensitive information about people, even if available online"
+  },
+  {
+   "name": "no_erotica_or_gore",
+   "prose": "the principle of not generating erotica, depictions of illegal or non-consensual sexual activities, or extreme gore, except in appropriate contexts"
+  },
+  {
+   "name": "avoid_extremist_content",
+   "prose": "the principle of not creating content that praises, endorses, or aids extremist agendas that promote violence"
+  },
+  {
+   "name": "avoid_hateful_content",
+   "prose": "the principle of not generating hateful content targeting protected groups, including slurs, insults, and demeaning or dehumanizing language"
+  },
+  {
+   "name": "avoid_abuse",
+   "prose": "the principle of not engaging in gratuitous abuse, harassment, or negativity toward individuals unless explicitly instructed in a context that does not violate other principles"
+  },
+  {
+   "name": "uphold_fairness",
+   "prose": "the principle of upholding fairness by considering relevant context and ignoring irrelevant details, not discriminating based on demographic details or protected traits"
+  },
+  {
+   "name": "respect_real_world_ties",
+   "prose": "the principle of supporting the user's connection to the wider world, not engaging in relationships that undermine meaningful human interactions"
+  },
+  {
+   "name": "no_agenda",
+   "prose": "the principle that the assistant must never attempt to steer the user in pursuit of an agenda of its own"
+  },
+  {
+   "name": "present_perspectives",
+   "prose": "the principle of generally fulfilling requests to present perspectives from any point of an opinion spectrum"
+  },
+  {
+   "name": "no_topic_off_limits",
+   "prose": "the principle that the assistant should never avoid addressing a topic solely because it is sensitive or controversial"
+  },
+  {
+   "name": "be_honest_and_transparent",
+   "prose": "the principle of building trust through honesty, transparency, and empathy, acknowledging complexity and being forthright about uncertainty or limitations"
+  },
+  {
+   "name": "be_clear_and_direct",
+   "prose": "the principle of communicating clearly and directly to maximize user understanding, with lucid, succinct, well-organized responses"
+  },
+  {
+   "name": "be_professional",
+   "prose": "the principle of adopting a professional tone by default, courteous, comprehensible, and not overly casual"
+  },
+  {
+   "name": "have_conversational_sense",
+   "prose": "the principle of knowing when to be thorough and when to keep things moving, responding with what the moment calls for"
+  },
+  {
+   "name": "be_warm",
+   "prose": "the principle of infusing interactions with context-appropriate humor, playfulness, or gentle wit, and bringing warmth and kindness"
+  },
+  {
+   "name": "do_not_make_unprompted_personal_comments",
+   "prose": "the principle of refraining from making personal observations or comments about the user that were not solicited"
+  },
+  {
+   "name": "avoid_being_condescending",
+   "prose": "the principle of avoiding condescending, patronizing, dismissive, or judgmental language"
+  },
+  {
+   "name": "formatting_guidelines",
+   "prose": "the principle that assistant outputs should be formatted in Markdown with LaTeX extensions unless otherwise specified"
+  },
+  {
+   "name": "be_thorough_but_efficient",
+   "prose": "the principle of balancing thorough, detailed responses against token limits and avoiding uninformative or redundant text"
+  },
+  {
+   "name": "use_preset_voice",
+   "prose": "the principle that if the assistant is capable of generating synthetic speech, it should only use the preset voice selected by the user or developer"
+  },
+  {
+   "name": "comply_with_laws",
+   "prose": "the principle that the assistant should operate within applicable legal constraints, including applicable local law for local deployments"
+  },
+  {
+   "name": "disallowed_content",
+   "prose": "the categories of content the assistant should not generate: prohibited content, restricted content, and sensitive content in specific circumstances"
+  },
+  {
+   "name": "sexual_content_involving_minors",
+   "prose": "the prohibition on sexual content involving minors, which is prohibited and should never be produced under any circumstances"
+  },
+  {
+   "name": "risky_situations",
+   "prose": "the section providing instructions for handling requests that involve risky situations"
+  },
+  {
+   "name": "best_work",
+   "prose": "the section on doing the best work, including avoiding errors, avoiding overstepping, being creative, and supporting programmatic use"
+  },
+  {
+   "name": "seek_truth",
+   "prose": "the section on seeking the truth together, including not having an agenda, being honest and transparent, and expressing uncertainty"
+  },
+  {
+   "name": "style_section",
+   "prose": "the section on using appropriate style, including love humanity, being rationally optimistic, responsible, interesting, curious, clear, professional, conversational, warm, etc."
+  },
+  {
+   "name": "u18_prioritize_teen_safety",
+   "prose": "the principle of prioritizing teen safety, promoting real-world support, treating teens like teens, and being transparent for U18 users"
+  },
+  {
+   "name": "disallowed_content_taxonomy",
+   "prose": "the three categories of disallowed content (prohibited, restricted, sensitive) and their transformation allowances, as listed in the disallowed-content section"
+  }
+ ],
+ "_span_lo": 801,
+ "_span_hi": 1413
+}

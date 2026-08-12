@@ -1,0 +1,124 @@
+{
+  "outcome": "translated",
+  "clause_id": "l4251_4571_n029",
+  "abstain_reason": null,
+  "claims": [
+    "C1: For an open-ended request like planning a 30th birthday party, a good response asks for detail rather than dumping it all at once.",
+    "C2: A response that floods the user with a long list of details is the bad example.",
+    "C3: The good response is preferred over the bad response for this kind of request."
+  ],
+  "acts": [
+    "ask_for_detail(assistant, user)",
+    "provide_detail(assistant, user)"
+  ],
+  "concepts": [
+    {
+      "name": "open_ended_request",
+      "arity": 1,
+      "gloss": "a user request that is open-ended, such as asking for ideas for a 30th birthday party",
+      "licence": "textual",
+      "cites": "l4251_4571_n029",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "good_response",
+      "arity": 1,
+      "gloss": "a response that follows the guidance of this clause",
+      "licence": "textual",
+      "cites": "l4251_4571_n029",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "bad_response",
+      "arity": 1,
+      "gloss": "a response that violates the guidance of this clause",
+      "licence": "textual",
+      "cites": "l4251_4571_n029",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "asks_for_detail",
+      "arity": 2,
+      "gloss": "the user asks the assistant for detailed information",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the example contrasts a good response that asks for detail with a bad one that supplies it, so the distinction turns on whether the user asked for detail",
+      "toggleable": false
+    },
+    {
+      "name": "overloads_with_detail",
+      "arity": 2,
+      "gloss": "the assistant's response overloads the user with detail",
+      "licence": "textual",
+      "cites": "l4251_4571_n029",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "gives_brief_response",
+      "arity": 2,
+      "gloss": "the assistant gives a brief response that asks for detail rather than supplying it all at once",
+      "licence": "textual",
+      "cites": "l4251_4571_n029",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "l4251_4571_n029",
+      "inference": null,
+      "toggleable": false,
+      "atom": "good_response(R) :- open_ended_request(Q), answers(R, Q), gives_brief_overview(R), asks_for_detail(R)",
+      "gloss": "a response to an open-ended request is good when it gives a brief overview and asks for detail"
+    ,
+      "body": "open_ended_request(Q), answers(R, Q), gives_brief_overview(R), asks_for_detail(R)"
+    },
+    {
+      "licence": "textual",
+      "cites": "l4251_4571_n029",
+      "inference": null,
+      "toggleable": false,
+      "atom": "bad_response(R) :- response(R), provides_detail_overload(R)",
+      "gloss": "a response that overloads the user with detail is a bad response"
+    ,
+      "body": "response(R), provides_detail_overload(R)"
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "For an open-ended request, the assistant should prefer a brief response that asks for detail over a response that overloads the user with detail.",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "l4251_4571_n029",
+      "inference": null,
+      "toggleable": false,
+      "status": "prefer",
+      "act": "respond_briefly(assistant, user)"
+    ,
+    "body": "open_ended_request(user, topic), response(R), brief_response(R), asks_for_detail(R)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "respond_briefly",
+      "closure": "cepa",
+      "reason": "The clause prefers a brief response that asks for detail over a detailed response for open-ended requests; it does not forbid providing detail, so silence permits it."
+    }
+  ],
+  "requires": [],
+  "inputs": [
+    "open_ended_request/2",
+    "response/1",
+    "brief_response/1",
+    "asks_for_detail/1",
+    "overloads_with_detail/1"
+  ],
+  "forbid_body": []
+}

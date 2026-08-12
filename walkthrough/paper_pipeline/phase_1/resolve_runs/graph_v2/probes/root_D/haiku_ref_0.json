@@ -1,0 +1,43 @@
+{
+  "decision": "divide",
+  "children": [
+    {
+      "span": [1, 2125],
+      "why_this_cut": "Foundational framework and universal safety boundaries. Covers Overview (model goals and approach), Definitions (key terminology), Chain of Command (authority hierarchy for navigating conflicts), and Stay in Bounds (comprehensive safety restrictions and content policies). This section establishes the foundational rules that all subsequent principles must respect."
+    },
+    {
+      "span": [2126, 3147],
+      "why_this_cut": "Truth-seeking and information presentation principles. The 'Seek the Truth Together' section covering objectivity, multiple perspectives, avoiding user steering, and supporting user autonomy in forming opinions. These are information-gathering principles that depend on the safety framework from Child 1 but operate in a distinct domain from the execution guidance in Child 3."
+    },
+    {
+      "span": [3148, 4692],
+      "why_this_cut": "Execution, communication style, and age-specific guidance. Covers Do the Best Work (error avoidance, quality, expertise), Use Appropriate Style (tone, communication manner, connection), and Under-18 Principles (age-specific safety and behavioral guidance). These sections are unified by focusing on how to execute, deliver, and communicate within established boundaries."
+    }
+  ],
+  "seed_vocabulary": [
+    {
+      "name": "safety_boundaries",
+      "prose": "the set of prohibited or restricted behaviors and content, including restrictions on facilitating serious harm, violating laws, sexual content involving minors, encouraging self-harm, and deceptive practices",
+      "established_around": [797, 900]
+    }
+  ],
+  "expected_cross_links": [
+    {
+      "needs_side_child": 2,
+      "provides_side_child": 1,
+      "name": "safety_boundaries",
+      "evidence": "Child 2 (Seek the Truth, L2126-L3147) discusses presenting multiple perspectives and avoiding steering users toward conclusions. However, these principles operate within constraints: presenting both sides of a controversial topic does not include presenting content that violates safety_boundaries like facilitating illegal activity, generating sexual content involving minors, or encouraging self-harm."
+    },
+    {
+      "needs_side_child": 3,
+      "provides_side_child": 1,
+      "name": "safety_boundaries",
+      "evidence": "Child 3's Under-18 Principles section (L4572+) explicitly extends safety_boundaries from Child 1 specifically for minors, referencing 'All of the principles in the [?](#stay_in_bounds) section' that continue to apply. Restrictions on romantic roleplay, graphic content, dangerous activities, and appearance-focused guidance are extensions of safety_boundaries. Additionally, Do the Best Work and Use Appropriate Style execution must all remain within established safety_boundaries."
+    }
+  ],
+  "judgment_calls": [
+    "Could have cut at L1500 to separate foundational material (Overview+Definitions+Chain of Command) from safety policy (Stay in Bounds), then split the remaining ~3200 lines differently. Chose L2125 because Stay in Bounds is thematically cohesive as a safety policy section, and separating it from its immediate foundation (Chain of Command) would complicate understanding how authority levels interact with safety rules.",
+    "Could have cut at L3500 instead, merging all policy guidance (Stay in Bounds + Seek Truth) into one large child (~2750 lines) with execution separated. Chose L3148 because Do the Best Work represents a clear shift from policy-level principles to execution-focused guidance about quality and error avoidance; the natural topic boundary is stronger here.",
+    "Did not seed 'objectivity_principle' or 'no_steering_agenda' from Child 2 despite these being established principles, because Child 3's content (error avoidance, communication style, age-appropriate guidance) does not strongly reference or depend on these concepts. If Phase U discovers that Child 3 nodes need to reference these, they can be handled as dangling needs during unwind."
+  ]
+}

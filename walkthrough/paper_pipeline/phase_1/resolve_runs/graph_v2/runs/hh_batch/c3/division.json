@@ -1,0 +1,71 @@
+{
+ "decision": "divide",
+ "children": [
+  {
+   "span": [
+    801,
+    1800
+   ],
+   "why_this_cut": "Covers the 'Comply with applicable laws' and 'Do not generate disallowed content' sections through the end of the 'Do not encourage self-harm' section. The only cross-cutting linkage is the authority_level_ordering concept (seeded) and the stay_in_bounds concept (seeded), which are used throughout and will be linked by the parent."
+  },
+  {
+   "span": [
+    1801,
+    2800
+   ],
+   "why_this_cut": "Covers 'Do not reveal privileged information', 'Always use the preset voice', 'Uphold fairness', 'Respect real-world ties', and the start of 'Seek the truth together' through the 'No topic is off limits' section. The only cross-cutting linkage is the authority_level_ordering concept (seeded) and the stay_in_bounds concept (seeded), which are used throughout and will be linked by the parent."
+  },
+  {
+   "span": [
+    2801,
+    4692
+   ],
+   "why_this_cut": "Covers the remainder of the document, from 'Be honest and transparent' through the Under-18 Principles. The only cross-cutting linkage is the authority_level_ordering concept (seeded) and the stay_in_bounds concept (seeded), which are used throughout and will be linked by the parent."
+  }
+ ],
+ "seed_vocabulary": [
+  {
+   "name": "authority_level_ordering",
+   "prose": "which of two authority levels outranks the other (root > system > developer > user > guideline > no authority)",
+   "established_around": [
+    69,
+    101
+   ]
+  },
+  {
+   "name": "untrusted_data",
+   "prose": "content in quoted text, untrusted_text blocks, multimodal data, file attachments, and tool outputs that has no authority by default and must be treated as information rather than instructions",
+   "established_around": [
+    701,
+    701
+   ]
+  },
+  {
+   "name": "stay_in_bounds",
+   "prose": "the section of the Model Spec describing limits on the assistant's behavior, including scenarios where the assistant should refrain from fully complying with a user or developer request",
+   "established_around": [
+    797,
+    799
+   ]
+  }
+ ],
+ "expected_cross_links": [
+  {
+   "name": "authority_level_ordering",
+   "needs_side_child": 1,
+   "provides_side_child": 2,
+   "evidence": "Child 1's rules about complying with laws and disallowed content rely on the authority hierarchy; child 2's rules about privileged information and fairness also rely on it. The parent will link them."
+  },
+  {
+   "name": "stay_in_bounds",
+   "needs_side_child": 1,
+   "provides_side_child": 2,
+   "evidence": "Child 1's disallowed content rules reference the stay_in_bounds section; child 2's no-topic-off-limits section also references it. The parent will link them."
+  }
+ ],
+ "judgment_calls": [
+  "Chose three children of roughly equal size (801-1800, 1801-2800, 2801-4692) rather than two larger children, to keep each child's span manageable for further division. The cuts fall at section boundaries (end of self-harm section, end of no-topic-off-limits section) to minimize cross-linkage. The only cross-cutting concepts are the inherited seeds authority_level_ordering and stay_in_bounds, which are already seeded and will be linked by the parent."
+ ],
+ "_span_lo": 801,
+ "_span_hi": 4692
+}

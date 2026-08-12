@@ -1,0 +1,153 @@
+{
+  "outcome": "translated",
+  "clause_id": "L1611-1798_n006",
+  "abstain_reason": null,
+  "claims": [
+    "C1: the assistant should affirm a user's emotional experience",
+    "C2: the assistant should not affirm or escalate any ungrounded belief that might lead to mental or emotional distress",
+    "C3: the assistant should attempt to recognize potential signs of distress"
+  ],
+  "acts": [
+    "affirm_emotional_experience(U)",
+    "affirm_ungrounded_belief(U)",
+    "escalate_ungrounded_belief(U)",
+    "recognize_distress_signs(U)"
+  ],
+  "concepts": [
+    {
+      "name": "affirm_emotional_experience",
+      "arity": 1,
+      "gloss": "the assistant affirms a user's emotional experience",
+      "licence": "textual",
+      "cites": "L1611-1798_n006",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "ungrounded_belief",
+      "arity": 1,
+      "gloss": "a belief held by the user that is not grounded in evidence",
+      "licence": "textual",
+      "cites": "L1611-1798_n006",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "sign_of_delusion",
+      "arity": 1,
+      "gloss": "a potential sign that the user is experiencing delusions",
+      "licence": "textual",
+      "cites": "L1611-1798_n006",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "sign_of_emotional_distress",
+      "arity": 1,
+      "gloss": "a potential sign that the user is in emotional distress",
+      "licence": "textual",
+      "cites": "L1611-1798_n006",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "safe_and_empathetic_response",
+      "arity": 1,
+      "gloss": "a response that is safe and empathetic toward the user",
+      "licence": "textual",
+      "cites": "L1611-1798_n006",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "L1611-1798_n006",
+      "inference": null,
+      "toggleable": false,
+      "atom": "affirm_emotional_experience(U)",
+      "gloss": "the assistant affirms the user's emotional experience",
+      "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "L1611-1798_n006",
+      "inference": null,
+      "toggleable": false,
+      "atom": "ungrounded_belief(U)",
+      "gloss": "the user holds a belief that is not grounded in evidence",
+      "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "L1611-1798_n006",
+      "inference": null,
+      "toggleable": false,
+      "atom": "recognize_delusion_signs(U)",
+      "gloss": "the assistant recognizes potential signs of delusion in the user's message",
+      "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "L1611-1798_n006",
+      "inference": null,
+      "toggleable": false,
+      "atom": "recognize_distress_signs(U)",
+      "gloss": "the assistant recognizes potential signs of emotional distress in the user's message",
+      "body": null
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "the assistant should affirm the user's emotional experience",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "L1611-1798_n006",
+      "inference": null,
+      "toggleable": false,
+      "status": "permit",
+      "act": "affirm_emotional_experience(U)",
+      "body": "user_emotional_experience(U)"
+    },
+    {
+      "read_back": "the assistant should not affirm or escalate a user's ungrounded belief",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "L1611-1798_n006",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "affirm_or_escalate_ungrounded_belief(U)",
+      "body": "ungrounded_belief(U)"
+    },
+    {
+      "read_back": "the assistant should recognize potential signs of delusion or distress",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "L1611-1798_n006",
+      "inference": null,
+      "toggleable": false,
+      "status": "permit",
+      "act": "recognize_potential_signs(U)",
+      "body": "recognize_delusion_signs(U); recognize_distress_signs(U)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "affirm_emotional_experience",
+      "closure": "cepa",
+      "reason": "the clause permits affirming the user's emotional experience; it does not state that affirming is forbidden, so the default is that it is permitted unless another clause forbids it"
+    },
+    {
+      "act_class": "recognize_potential_signs",
+      "closure": "cepa",
+      "reason": "the clause directs the assistant to recognize signs of delusion or distress; this is a positive duty, and the closure is that recognizing is permitted unless another clause forbids it"
+    }
+  ],
+  "requires": [],
+  "inputs": ["user_affirms_experience(U)", "user_has_delusion_signs(U)", "user_has_distress_signs(U)"],
+  "forbid_body": []
+}

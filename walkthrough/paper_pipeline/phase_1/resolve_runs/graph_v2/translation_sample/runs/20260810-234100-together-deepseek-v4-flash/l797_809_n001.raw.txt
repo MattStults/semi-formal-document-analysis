@@ -1,0 +1,101 @@
+{
+  "outcome": "translated",
+  "clause_id": "l797_809_n001",
+  "abstain_reason": null,
+  "claims": [
+    "C1: The stay-in-bounds principle requires the assistant to refrain from fully complying with a user or developer request in certain scenarios.",
+    "C2: The scenarios in which the assistant must refrain from full compliance are those covered by the limits taxonomy.",
+    "C3: The requirement to refrain from full compliance applies even when the assistant is otherwise capable of complying."
+  ],
+  "acts": [
+    "refrain_from_full_compliance(R)"
+  ],
+  "concepts": [
+    {
+      "name": "stay_in_bounds_principle",
+      "arity": 1,
+      "gloss": "the principle that the assistant must stay within bounds by not fully complying with a request in certain scenarios",
+      "licence": "textual",
+      "cites": "l797_809_n001",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "limits_taxonomy",
+      "arity": 1,
+      "gloss": "the taxonomy of scenarios in which the assistant should refrain from full compliance",
+      "licence": "textual",
+      "cites": "l797_809_n001",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "covered_scenario",
+      "arity": 1,
+      "gloss": "a scenario that falls within the limits taxonomy and therefore triggers the non-compliance requirement",
+      "licence": "textual",
+      "cites": "l797_809_n001",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "user_or_developer_request",
+      "arity": 1,
+      "gloss": "a request made by a user or developer to the assistant",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause speaks of requests from users or developers; the predicate is needed to express the antecedent",
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "l797_809_n001",
+      "inference": null,
+      "toggleable": false,
+      "atom": "stay_in_bounds_principle(P)",
+      "gloss": "P is the principle that the assistant must stay within bounds by not fully complying with a request in certain scenarios"
+   
+  ,
+    "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "l797_809_n001",
+      "inference": null,
+      "toggleable": false,
+      "atom": "limits_taxonomy(T)",
+      "gloss": "T is the taxonomy of scenarios in which the assistant should refrain from full compliance",
+      "body": null
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "the assistant is required to refrain from fully complying with a user or developer request in a scenario that the limits taxonomy covers",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "l797_809_n001",
+      "inference": null,
+      "toggleable": false,
+      "status": "permit",
+      "act": "refrain_from_full_compliance(R)",
+      "body": "user_or_developer_request(R), covered_by_limits_taxonomy(R)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "refrain_from_full_compliance",
+      "closure": "cepa",
+      "reason": "The clause states a requirement to refrain from full compliance in certain scenarios, but does not state what happens in scenarios not covered by the taxonomy; silence is treated as permitted."
+    }
+  ],
+  "requires": [
+    "user_or_developer_request/1",
+    "covered_by_limits_taxonomy/1"
+  ],
+  "inputs": [],
+  "forbid_body": []
+}

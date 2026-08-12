@@ -1,0 +1,39 @@
+{
+  "decision": "divide",
+  "children": [
+    {
+      "span": [3502, 3755],
+      "why_this_cut": "Core value principles: love humanity, rational optimism, responsibility, being interesting/interested, and being curious. These five sections establish the underlying values and philosophical stance that inform all communication. Clean break at L3755 (blank line after 'Be curious' example closes with ~~~), L3756 starts 'Be clear and direct' section which shifts to communication methodology."
+    },
+    {
+      "span": [3756, 3994],
+      "why_this_cut": "Communication style principles: be clear and direct, be suitably professional, have conversational sense, and be warm. These four sections establish HOW to communicate effectively given the values established in Child 1. Clean break at L3994 (blank line after 'Be warm' example closes with ~~~), L3995 starts 'Don't make unprompted personal comments' which shifts to communication boundaries."
+    },
+    {
+      "span": [3995, 4164],
+      "why_this_cut": "Communication boundaries and technical formatting: don't make unprompted personal comments, avoid being condescending, when appropriate be helpful when refusing (uses stay_in_bounds_principles and do_not_facilitate_illicit_behavior), and use Markdown with LaTeX. These sections establish constraints on communication and technical requirements. Final child ends at L4164 (blank line after 'Be thorough but efficient' heading, which starts a new section outside this span)."
+    }
+  ],
+  "seed_vocabulary": [
+    {
+      "name": "stay_in_bounds_principles",
+      "prose": "The collection of limits on assistant behavior where the assistant should refrain from fully complying with user or developer requests, including: prohibited content (sexual content involving minors), restricted content (information hazards, sensitive personal data), sensitive content (erotica/gore), compliance with laws, prevention of illicit behavior, prevention of imminent harm, and refusal to encourage self-harm. Section introduced at L0797-L0799.",
+      "established_around": [797, 799]
+    },
+    {
+      "name": "do_not_facilitate_illicit_behavior",
+      "prose": "Root-level requirement that if the user or developer asks the assistant to facilitate illicit behavior, the assistant must refuse to help with guidance, instructions, actionable steps, or improvements to user-provided plans, and should not encourage or promote such behaviors. Established at L1543-L1548.",
+      "established_around": [1543, 1548]
+    }
+  ],
+  "expected_cross_links": [],
+  "judgment_calls": [
+    "Chose to divide into three children rather than treat as a leaf because the span is 663 lines (well above the ~150-line leaf threshold) and covers multiple distinct semantic domains: underlying values (Child 1), communication methodology (Child 2), and communication boundaries/formatting (Child 3).",
+    "Chose cuts at L3755→L3756 and L3994→L3995 because they mark clear section boundaries (blank lines separating distinct topic groups). Each cut separates a semantic domain with no explicit textual cross-linkages requiring resolution by the parent.",
+    "Child 1 (254 lines) is larger than typical but justified: the five value sections form a cohesive philosophical unit, with examples running 95+ lines. Splitting here would fragment the value-setting foundation.",
+    "Child 2 (239 lines) contains four communication-style sections. Each establishes a principle independently (clarity, professionalism, conversational sense, warmth). While related, no section explicitly references another within this grouping.",
+    "Child 3 (170 lines) contains boundary/constraint sections plus technical formatting. The 'When appropriate, be helpful when refusing' section (L4072-4120) references inherited seeds stay_in_bounds_principles (L4075) and do_not_facilitate_illicit_behavior (L4077), but these are dangling needs resolved by the parent span, not cross-child linkages.",
+    "No expected_cross_links created: while implicit relationships exist (e.g., Child 2's 'be warm' principle may inform how Child 3's refusals are written), the text contains no explicit cross-references between children. Each child can be understood independently; linkages exist at the logical/design level, not the textual level.",
+    "Carried forward both inherited seeds (stay_in_bounds_principles, do_not_facilitate_illicit_behavior) because they are explicitly referenced in Child 3 (L4075, L4077). Dropping them would create a dangling need in a child's node that the child cannot resolve."
+  ]
+}

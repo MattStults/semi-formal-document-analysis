@@ -147,6 +147,37 @@ def _check_term(term, where, allow_vars=True):
             f"this would take every linked clause down with it — give it a "
             f"body, or write a term with no variables")
     return term
+
+
+def _check_head_bound(term, body, where):
+    """A body only saves a head variable if it actually BINDS it.
+
+    Adversarial review 2026-08-10 (translation-failure debug): a head variable
+    the body never mentions passed here on `allow_vars=bool(body)` alone and
+    died later as a clingo refusal whose message reaches the repair loop
+    truncated. The good unsafe-variable message existed and the one failure it
+    was written for slipped past it. Token-level containment is deliberately
+    approximate in ONE direction only: a head variable that appears anywhere in
+    the body may still be unsafe for clingo (e.g. bound only inside `not ...`),
+    but a head variable appearing NOWHERE in the body is unsafe for certain.
+    """
+    if not body or not body.strip():
+        return          # absent OR blank: the empty-body guard owns blank
+    # ⚠️ Scope honors `test_no_construct_is_refused_at_module_level`: on a
+    # body with aggregates, intervals, assignments or string constants the
+    # module level must not play solver — clingo owns the judgment there.
+    # Plain-literal bodies (the only shape the live failures had) stay ours.
+    if re.search(r'[#"=]|\.\.', body):
+        return
+    unbound = [v for v in set(_VAR.findall(term))
+               if not re.search(rf"(?<![A-Za-z0-9_]){re.escape(v)}"
+                                rf"(?![A-Za-z0-9_])", body)]
+    if unbound:
+        raise ValueError(
+            f"{where}: {term!r} carries the variable {sorted(unbound)[0]!r} "
+            f"but the body never mentions it, so nothing binds it. The solver "
+            f"refuses the WHOLE FILE for an unsafe variable — bind it in the "
+            f"body, or drop it from the head")
 #: Characters that would break the quoted English annotation a rule carries, or
 #: the line structure of the generated file. Rejected rather than escaped,
 #: because these are prose fields and none of these characters belongs in a
@@ -382,8 +413,11 @@ class ReadBack(Strict):
             raise ValueError(
                 f"read_back has {self.read_back.count('%')} `%` slot(s) but "
                 f"{len(self.read_back_slots)} slot entr(ies) — the rendered "
-                f"sentence would silently be wrong. A literal percent sign "
-                f"cannot be written; say 'per cent'")
+                f"sentence would silently be wrong. Make the counts match: "
+                f"add one `%` in the sentence per slot entry (in order), or "
+                f"remove the extra entries; a sentence with no substitution "
+                f"takes [] and no `%`. (`%` is reserved for substitution — "
+                f"for a percentage, say 'per cent')")
         return self
 
 
@@ -410,6 +444,7 @@ class Assertion(Licensed, ReadBack):
     def _assertion_ok(self):
         where = f"assertion {self.status}/{self.act!r}"
         self.act = _check_term(self.act, where, allow_vars=bool(self.body))
+        _check_head_bound(self.act, self.body, where)
         _check_body(self.body, where)
         return self
 
@@ -502,6 +537,7 @@ class OntologyFact(Licensed):
     def _onto_ok(self):
         atom = self.atom = _check_term(self.atom, "ontology atom",
                            allow_vars=bool(self.body))
+        _check_head_bound(atom, self.body, "ontology atom")
         if not self.gloss.strip():
             raise ValueError(
                 f"ontology atom {atom!r} has no gloss. A symbol must resolve "
@@ -639,8 +675,12 @@ class ForbidBody(Strict):
     inspecting the program rather than by running it.
     """
 
-    head: str = Field(description="the derived relation, e.g. permit")
-    banned: str = Field(description="what may not appear in its body")
+    head: str = Field(
+        description="the derived relation as a BARE predicate name, e.g. "
+                    "permit — never a term with arguments, never name/arity")
+    banned: str = Field(
+        description="the predicate that may not appear in its body, as a "
+                    "bare name, e.g. purpose — never a term, never name/arity")
 
     @model_validator(mode="after")
     def _fb_ok(self):
@@ -649,6 +689,12 @@ class ForbidBody(Strict):
                 raise ValueError(f"forbid_body `{slot}` {val!r} is not a bare "
                                  f"predicate name")
         return self
+
+
+#: Joins multiple collected breaches inside ONE raised ValueError; validate()
+#: and validate_all() split on it so each reaches the repair prompt as its own
+#: finding. Chosen to never occur in natural message text.
+MULTI_SEP = "\n[[AND]]\n"
 
 
 class Module(Strict):
@@ -700,9 +746,32 @@ class Module(Strict):
 
     @model_validator(mode="after")
     def _coherent(self):
+        # ⭐ COLLECT-THEN-RAISE (2026-08-10, Matt's ruling). History: repair
+        # feedback was deliberately drip-fed one finding per round because an
+        # earlier test found the model struggled to fix everything in one
+        # pass. The adversarial translation-failure review then measured the
+        # other side of that trade: six planted defects surfaced as two
+        # findings, and stubborn nodes re-broke fixed defects across five
+        # paid rounds. Decision: INDEPENDENT checks in this validator are now
+        # collected and raised together (split into separate findings by
+        # MULTI_SEP); DEPENDENT chains stay fail-fast -- the acts
+        # normalisation failure still suppresses the assert-declared and
+        # closure checks that read its output, because findings computed from
+        # values a prior defect corrupted are fabrications, and a fabricated
+        # finding spends a paid round chasing a defect that is not there.
+        # ⚠️ WHAT WOULD CHANGE OUR MINDS: if multi-finding feedback measurably
+        # lowers the repair convergence rate on the translation sample
+        # (models thrashing on long finding lists), revert to fail-fast here;
+        # if it raises convergence, extend collection into the sub-model
+        # validators (Assertion/Ontology chains) the same bounded way.
+        errs = []
+
+        def _flush():
+            if errs:
+                raise ValueError(MULTI_SEP.join(errs))
         if self.outcome == "abstained":
             if not (self.abstain_reason or "").strip():
-                raise ValueError(
+                errs.append(
                     "abstained with no reason — an abstention with no reason "
                     "is a skip in disguise, and the RATE of abstention is a "
                     "signal that only means something if each one is accounted")
@@ -710,19 +779,20 @@ class Module(Strict):
                          "defines", "closure", "requires", "inputs",
                          "forbid_body"):
                 if getattr(self, name):
-                    raise ValueError(
+                    errs.append(
                         f"abstained but `{name}` is non-empty — an abstention "
                         f"with content in it is neither an abstention nor a "
                         f"translation")
+            _flush()
             return self
 
         if not (self.asserts or self.defines or self.ontology or self.beats
                 or self.concepts):
-            raise ValueError(
+            errs.append(
                 "translated but emitted no assertion, definition, superiority "
                 "or ontology fact — that is an abstention that did not say so")
         if not self.claims:
-            raise ValueError(
+            errs.append(
                 "translated with no `claims` — a clause making four separate "
                 "claims and tested against one case looks fully covered. "
                 "Listing the claims is what makes that visible")
@@ -730,36 +800,42 @@ class Module(Strict):
         for field in ("requires", "inputs"):
             for p in getattr(self, field):
                 if not _PRED.match(p):
-                    raise ValueError(
+                    errs.append(
                         f"{field} entry {p!r} is not name/arity. Two "
                         f"predicates sharing a name but taking different "
                         f"numbers of arguments are different predicates; "
                         f"without the arity they link to each other silently")
         overlap = set(self.requires) & set(self.inputs)
         if overlap:
-            raise ValueError(
+            errs.append(
                 f"{sorted(overlap)} appear in BOTH `requires` and `inputs`. "
                 f"`requires` means another clause must define it; `inputs` "
                 f"means it is supplied with the case being judged. A predicate "
                 f"cannot be both, and without the distinction 'a name nothing "
                 f"defines' cannot be told from 'a name supplied at query time'")
 
-        self.acts = [_check_term(a, "acts entry", allow_vars=True)
-                     for a in self.acts]
-        declared = set(self.acts)
-        for asn in self.asserts:
+        acts_ok = True
+        try:
+            self.acts = [_check_term(a, "acts entry", allow_vars=True)
+                         for a in self.acts]
+        except ValueError as exc:
+            # dependent group: report the root defect, skip checks reading acts
+            errs.append(str(exc))
+            acts_ok = False
+        declared = set(self.acts) if acts_ok else set()
+        for asn in self.asserts if acts_ok else ():
             if asn.act.strip() not in declared:
-                raise ValueError(
+                errs.append(
                     f"assertion names act {asn.act!r}, which is not in `acts`. "
                     f"Every act must be declared once so the closure "
                     f"declaration can be checked against it")
 
         # THE FORCED CLOSURE — every act class governed must carry one
-        governed = {a.split("(")[0] for a in declared}
+        governed = {a.split("(")[0] for a in declared} if acts_ok             else {c.act_class for c in self.closure}   # skip closure checks
         covered = {c.act_class.strip() for c in self.closure}
         missing = sorted(governed - covered)
         if missing:
-            raise ValueError(
+            errs.append(
                 f"no default-closure declaration for act class(es) {missing}. "
                 f"It is FORCED, not optional: an absent declaration reads as "
                 f"'whatever is not forbidden is permitted', silently. That "
@@ -767,12 +843,12 @@ class Module(Strict):
                 f"indistinguishable in the output from having decided nothing")
         extra = sorted(covered - governed)
         if extra:
-            raise ValueError(
+            errs.append(
                 f"closure declared for act class(es) {extra} the module does "
                 f"not govern — a commitment about acts this clause is not "
                 f"about")
         if len({c.act_class for c in self.closure}) != len(self.closure):
-            raise ValueError("two closure declarations for one act class")
+            errs.append("two closure declarations for one act class")
 
         # D4b level 1: every concept a body references must be DECLARED
         # somewhere in this module — its own ontology, `requires` (another
@@ -793,12 +869,82 @@ class Module(Strict):
             for name in re.findall(
                     r"(?<![A-Za-z0-9_])([a-z][A-Za-z0-9_]*)\s*\(", body):
                 if name not in known and name not in RESERVED:
-                    raise ValueError(
+                    errs.append(
                         f"body references `{name}` but nothing declares it. "
                         f"Put it in this module's `ontology`, in `requires` "
                         f"(another clause defines it), or in `inputs` (a fact "
-                        f"about the case). An undeclared name cannot be told "
+                        f"about the case). ⚠️ A `concepts` entry alone does "
+                        f"NOT declare it — concepts carry meaning, not "
+                        f"provenance; `{name}/N` must ALSO appear in one of "
+                        f"those three. An undeclared name cannot be told "
                         f"apart from a typo")
+
+        # ---- D4b level 2: a BORROW must carry a MEANING --------------------
+        #
+        # ⭐ `requires` and `inputs` name predicates this module does not
+        # define. Until Q-22 the `requires` ones were dropped from the
+        # situation signature and never reached a human, so having no written
+        # meaning cost nothing. They are now enumerated, a seat is shown
+        # situations built out of them, and `render_situation` refuses a bare
+        # predicate name (#5, hollow stubs) — so a borrow with no meaning
+        # BLOCKS stage 4 rather than degrading it.
+        #
+        # ⚠️ AND IT IS THE ONLY CHANNEL THAT COULD EVER LINK THEM. `[RAN]`
+        # across repeat translations of one clause the invented NAMES agreed
+        # 0 of 22 times, while concept descriptions were near-identical. The
+        # name is noise; the description is signal. A borrow with no
+        # description carries nothing that could match it to whatever clause
+        # defines it.
+        #
+        # ⛔ THIS IS NOT THE THING Q-6 WARNS ABOUT. Q-6 objects that a borrower
+        # writing a meaning for a term another clause OWNS manufactures problem
+        # #9. That holds only if the entry is read as a DEFINITION. It is not:
+        # `concepts` says what a name means TO THIS MODULE, while
+        # `ontology`/`requires`/`inputs` say where it comes from — the two are
+        # already kept apart above ("Concepts are NOT a declaration site"). Two
+        # modules describing one borrowed name differently is then a DETECTOR
+        # for that overload, in the only medium where it is visible at all.
+        #
+        # `[RAN]` 60 of 108 borrowed entries in the stored corpus already carry
+        # a gloss in their own concept table with nothing asking them to.
+        glossed = {f"{c.name}/{c.arity}": (c.gloss or "").strip()
+                   for c in self.concepts}
+        for p in self.requires + self.inputs:
+            # `inputs` included since 2026-08-12 (Matt's ruling, from the
+            # first live R3 render on node modules: inputs predicates with
+            # no gloss reached stage 4 and R3 refused -- READBACK_SMOKE.md.
+            # The Q-22 grounds apply identically: a seat is shown
+            # situations BUILT from inputs, and render_situation refuses a
+            # bare name; the meaning has to be written at creation).
+            # ⛔ A RESERVED name can be borrowed but can NEVER be glossed — the
+            # concept validator refuses to declare one. Requiring a gloss for
+            # it would be a rule no module could satisfy, which is a bug in the
+            # rule and not in the module. Found by running it: the rendering
+            # tests borrow `a/1` and `b/1` as placeholders.
+            if p.split("/")[0] in RESERVED:
+                continue
+            g = glossed.get(p)
+            if not g:
+                errs.append(
+                    f"`{p}` is borrowed but has no gloss. Add a `concepts` "
+                    f"entry saying what this module needs it to MEAN — not "
+                    f"what defines it, which stays in `requires`/`inputs`. "
+                    f"Without it a seat is shown a bare predicate name, and "
+                    f"nothing can match this to the clause that defines it")
+                continue    # the restates-name check below needs a gloss
+            # ⛔ The cheapest way to satisfy a description rule is to spell the
+            # name out. `pasted_text/1` glossed "pasted text" passes a
+            # non-empty check while carrying nothing a matcher or a reader
+            # could use. The field is worth having only when it says something
+            # the name does not.
+            words = {w for w in re.findall(r"[a-z]+", g.lower()) if len(w) > 2}
+            from_name = {w for w in re.findall(r"[a-z]+", p.split("/")[0])
+                         if len(w) > 2}
+            if words and words <= from_name:
+                errs.append(
+                    f"the gloss for `{p}` restates its own name ({g!r}). A "
+                    f"gloss has to say something the name does not, or it "
+                    f"carries no information for a reader or a matcher")
 
         # Note there is deliberately NO check that a declared concept is used
         # somewhere in its own module. Introducing vocabulary it does not itself
@@ -809,10 +955,11 @@ class Module(Strict):
 
         for b in self.beats:
             if b.sayer != self.clause_id and not b.body:
-                raise ValueError(
+                errs.append(
                     f"beats sayer {b.sayer!r} is not this clause and no body "
                     f"binds it — a module may only record superiority its own "
                     f"clause states")
+        _flush()
         return self
 
 
@@ -899,7 +1046,8 @@ def validate(obj, clause_id=None, known_clause_ids=None):
         parts = []
         for err in exc.errors():
             loc = ".".join(str(x) for x in err["loc"]) or "<root>"
-            parts.append(f"{loc}: {err['msg']}")
+            for piece in _msg(err).split(MULTI_SEP):
+                parts.append(f"{loc}: {piece}")
         raise ModuleValidationError("; ".join(parts)) from exc
 
     if clause_id is not None and mod.clause_id != clause_id:
@@ -1012,8 +1160,20 @@ def validate_all(obj, clause_id=None, known_clause_ids=None):
     try:
         mod = Module.model_validate(obj)
     except ValidationError as exc:
-        return None, [Breach(_where(err["loc"]), _msg(err))
-                      for err in exc.errors()]
+        early = [Breach(_where(err["loc"]), part)
+                 for err in exc.errors()
+                 for part in _msg(err).split(MULTI_SEP)]
+        # identity is checkable on the RAW dict; withholding it until every
+        # field validates let a module keep a fabricated clause_id through
+        # five repair rounds unchallenged (adversarial review 2026-08-10)
+        raw_cid = obj.get("clause_id") if isinstance(obj, dict) else None
+        if clause_id is not None and raw_cid != clause_id:
+            early.append(Breach(
+                "<root>",
+                f"module says clause_id {raw_cid!r} but it was asked to "
+                f"translate {clause_id!r}. The artifact would carry two "
+                f"identities"))
+        return None, early
 
     breaches = []
     if clause_id is not None and mod.clause_id != clause_id:
@@ -1022,7 +1182,10 @@ def validate_all(obj, clause_id=None, known_clause_ids=None):
             f"module says clause_id {mod.clause_id!r} but it was asked to "
             f"translate {clause_id!r}. The artifact would carry two identities"))
     if known_clause_ids is not None:
-        for field in ("asserts", "beats", "defines", "ontology"):
+        # `concepts` included since 2026-08-10: its cites were never
+        # corpus-checked, and a live module citing the line-marker "L-72"
+        # passed every check (adversarial review, translation-failure debug)
+        for field in ("asserts", "beats", "defines", "ontology", "concepts"):
             for i, item in enumerate(getattr(mod, field)):
                 if item.licence == "textual" and item.cites not in known_clause_ids:
                     breaches.append(Breach(

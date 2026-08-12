@@ -1,0 +1,130 @@
+{
+  "outcome": "translated",
+  "clause_id": "l292_526_n027",
+  "abstain_reason": null,
+  "claims": [
+    "C1: Scopes should be recorded in a semi-structured format.",
+    "C2: A ScopeOfAutonomy record has fields allowed_tools, latest_time, max_cost, tool_constraints, and additional_details.",
+    "C3: Recording scopes in this format facilitates validation, enforcement, and auditing."
+  ],
+  "acts": ["record_scope(S)"],
+  "concepts": [
+    {
+      "name": "scope_of_autonomy",
+      "arity": 1,
+      "gloss": "a boundary on what the assistant may pursue, including allowed tools, a latest time, a cost cap, tool constraints, and additional details",
+      "licence": "textual",
+      "cites": "l527_292_n485",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "semi_structured_record",
+      "arity": 1,
+      "gloss": "a record of a scope of autonomy in a semi-structured format, such as a ScopeOfAutonomy record with the named fields",
+      "licence": "textual",
+      "cites": "l527_292_n485",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "facilitates_auditing",
+      "arity": 2,
+      "gloss": "recording a scope in a semi-structured format facilitates the auditing of that scope",
+      "licence": "textual",
+      "cites": "l527_292_n485",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "l527_292_n485",
+      "inference": null,
+      "toggleable": false,
+      "atom": "semi_structured_record(R)",
+      "gloss": "R is a semi-structured record of a scope of autonomy",
+      "body": "scope_record(R)"
+    },
+    {
+      "licence": "textual",
+      "cites": "l527_292_n485",
+      "inference": null,
+      "toggleable": false,
+      "atom": "scope_record(R)",
+      "gloss": "R is a record of a scope of autonomy",
+      "body": "scope_of_autonomy(S), recorded_as(R, S)"
+    },
+    {
+      "licence": "textual",
+      "cites": "l527_292_n485",
+      "inference": null,
+      "toggleable": false,
+      "atom": "has_field(R, allowed_tools)",
+      "gloss": "R has an allowed_tools field",
+      "body": "scope_record(R)"
+    },
+    {
+      "licence": "textual",
+      "cites": "l527_292_n485",
+      "inference": null,
+      "toggleable": false,
+      "atom": "has_field(R, latest_time)",
+      "gloss": "R has a latest_time field",
+      "body": "scope_record(R)"
+    },
+    {
+      "licence": "textual",
+      "cites": "l527_292_n485",
+      "inference": null,
+      "toggleable": false,
+      "atom": "has_field(R, max_cost)",
+      "gloss": "R has a max_cost field",
+      "body": "scope_record(R)"
+    },
+    {
+      "licence": "textual",
+      "cites": "l527_292_n485",
+      "inference": null,
+      "toggleable": false,
+      "atom": "has_field(R, tool_constraints)",
+      "gloss": "R has a tool_constraints field",
+      "body": "scope_record(R)"
+    },
+    {
+      "licence": "textual",
+      "cites": "l527_292_n485",
+      "inference": null,
+      "toggleable": false,
+      "atom": "has_field(R, additional_details)",
+      "gloss": "R has an additional_details field",
+      "body": "scope_record(R)"
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "Recording a scope of autonomy in a semi-structured record is preferred, because it facilitates auditing and enforcement.",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "l527_292_n485",
+      "inference": null,
+      "toggleable": false,
+      "status": "prefer",
+      "act": "record_scope(S)",
+      "body": "scope_of_autonomy(S)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "record_scope/1",
+      "closure": "cepa",
+      "reason": "The clause recommends recording a scope in a semi-structured format; it does not forbid recording it in any other way, so silence permits other recording methods."
+    }
+  ],
+  "requires": ["scope_of_autonomy/1"],
+  "inputs": ["recorded_as/2"],
+  "forbid_body": []
+}

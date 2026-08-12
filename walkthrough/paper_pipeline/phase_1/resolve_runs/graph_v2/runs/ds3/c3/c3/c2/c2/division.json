@@ -1,0 +1,93 @@
+{
+ "decision": "divide",
+ "children": [
+  {
+   "span": [
+    2821,
+    3040
+   ],
+   "why_this_cut": "The Express uncertainty section (L2821-3040) is a self-contained unit: it establishes the principle, its types, ranking, expression guidance, and worked examples. The only crossing linkage is the section heading metadata (authority=guideline) and the inherited express_uncertainty seed, which the child will carry. The cut at L3040 (blank line before the next heading) is clean: nothing in the uncertainty section relies on the highlight_misalignments section."
+  },
+  {
+   "span": [
+    3041,
+    3147
+   ],
+   "why_this_cut": "The Highlight possible misalignments section (L3041-3147) is a self-contained unit: it establishes the principle, its rationale, and worked examples. The only crossing linkage is the section heading metadata (authority=guideline) and the inherited highlight_misalignments seed. The cut at L3040 is clean: nothing in this section relies on the uncertainty section."
+  }
+ ],
+ "seed_vocabulary": [
+  {
+   "name": "express_uncertainty",
+   "prose": "the principle of expressing uncertainty or qualifying answers appropriately when questions span beyond the assistant's knowledge, reasoning abilities, or available information",
+   "established_around": [
+    2821,
+    2851
+   ]
+  },
+  {
+   "name": "highlight_misalignments",
+   "prose": "the principle of briefly and respectfully noting when the conversation's direction may conflict with the user's broader, long-term goals",
+   "established_around": [
+    3041,
+    3051
+   ]
+  },
+  {
+   "name": "letter_and_spirit",
+   "prose": "the principle that the assistant should consider not just the literal wording of instructions but also the underlying intent and context",
+   "established_around": [
+    292,
+    300
+   ]
+  },
+  {
+   "name": "assume_best_intentions",
+   "prose": "the principle of applying three implicit biases (average reasonable human goals, positive intent, weak preference for self-actualization/kindness/truth/flourishing) when interpreting ambiguous instructions",
+   "established_around": [
+    610,
+    620
+   ]
+  },
+  {
+   "name": "chain_of_command",
+   "prose": "the mechanism by which the assistant prioritizes and reconciles multiple instructions according to their authority levels",
+   "established_around": [
+    171,
+    203
+   ]
+  },
+  {
+   "name": "authority_level_ordering",
+   "prose": "which of two authority levels outranks the other (root > system > developer > user > guideline > no authority)",
+   "established_around": [
+    69,
+    103
+   ]
+  }
+ ],
+ "expected_cross_links": [
+  {
+   "name": "express_uncertainty",
+   "needs_side_child": 1,
+   "provides_side_child": 1,
+   "evidence": "Child 1 establishes the express_uncertainty principle; child 2's highlight_misalignments section does not need it, but the seed must be carried so the parent can link it to the broader principle graph."
+  },
+  {
+   "name": "highlight_misalignments",
+   "needs_side_child": 2,
+   "provides_side_child": 2,
+   "evidence": "Child 2 establishes the highlight_misalignments principle; child 1 does not need it, but the seed must be carried for the parent's linking."
+  }
+ ],
+ "judgment_calls": [
+  "Chose a 2-way split at the section boundary L3040 (blank line between the two sections) rather than a 3-way split; the two sections are each cohesive units and a 3-way split would have required cutting inside a section, risking cross-linkage complexity.",
+  "Carried inherited seeds express_uncertainty and highlight_misalignments (both established in this span) plus letter_and_spirit, assume_best_intentions, chain_of_command, and authority_level_ordering because they appear in the span's text (L3043 references letter_and_spirit and assume_best_intentions; L2898 and L3035 reference chain_of_command)."
+ ],
+ "_span_lo": 2821,
+ "_span_hi": 3147,
+ "driver_autofixes": [
+  "cross-link 'express_uncertainty': provides_side_child 2 -> 1 (child containing established_around [2821, 2851])",
+  "cross-link 'highlight_misalignments': provides_side_child 1 -> 2 (child containing established_around [3041, 3051])"
+ ]
+}

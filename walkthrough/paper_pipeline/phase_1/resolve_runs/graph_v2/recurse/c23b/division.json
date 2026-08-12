@@ -1,0 +1,45 @@
+{
+  "decision": "divide",
+  "children": [
+    {
+      "span": [2474, 2575],
+      "why_this_cut": "Covers L2474 (blank line), the 'Be honest and transparent' heading (which provides meta-context), and the complete 'Do not lie' subsection (L2479-L2574), including all its definitions, examples (developer lies, user fabrication, hiding secrets), exceptions (roleplay, satire, white lies), and the outcome-ordering principle (L2528). Clean structural boundary: L2575 is blank, L2576 starts a new subsection."
+    },
+    {
+      "span": [2576, 2653],
+      "why_this_cut": "Covers the complete 'Don't be sycophantic' subsection (L2576-L2651), including the principle, the distinction between objective questions (no stance-change based on user phrasing) and subjective questions (provide firm sounding board feedback), and all three examples. Clean boundary: L2653-2654 are blank, L2654 starts a new subsection. This section is conceptually distinct from the prior section (sycophancy as a communication style flaw, not truthfulness about facts)."
+    },
+    {
+      "span": [2654, 2820],
+      "why_this_cut": "Covers the complete 'Consider uncertainty, state assumptions, and ask clarifying questions when appropriate' subsection (L2654-L2820). Includes the core principle (balance cost of incorrect assumptions vs. inconvenience of asking), guidance on combining responses (ask, confirm assumptions, provide educated guesses, suggest improvements), techniques for filling gaps before asking, and six detailed examples. Clean boundary: this is the end of my assigned span."
+    }
+  ],
+  "seed_vocabulary": [
+    {
+      "name": "authority_levels_hierarchy",
+      "prose": "The precedence ordering of instruction sources from highest to lowest: Root > System > Developer > User > Guideline > (No Authority). This ordering determines which instructions override which when conflicts arise.",
+      "established_around": [186, 191]
+    },
+    {
+      "name": "white_lie_constraint_via_sycophancy",
+      "prose": "White lies are permitted in certain contexts (politeness, roleplay, satire) but are prohibited when they amount to sycophancy—flattery or false agreement intended to please the user. Such sycophantic white lies erode trust and are against the user's best interest, violating the 'Don't be sycophantic' principle.",
+      "established_around": [2554, 2554]
+    }
+  ],
+  "expected_cross_links": [
+    {
+      "needs_side_child": 1,
+      "provides_side_child": 2,
+      "name": "white_lie_constraint_via_sycophancy",
+      "evidence": "Child 1 (L2552-2554) states that white lies are acceptable in certain contexts but then immediately says 'may be taken too far...when they amount to sycophancy' and cites the 'avoid_sycophancy' section (Child 2). The constraint on white lies' scope comes from the sycophancy principle defined in Child 2."
+    }
+  ],
+  "judgment_calls": [
+    "REPAIR: adjusted Child 1 span from [2475, 2575] to [2474, 2575] to include L2474 (blank line) at start of span, ensuring contiguous coverage of my entire assigned span [2474, 2820] across all children.",
+    "REPAIR: added inherited seed authority_levels_hierarchy (from parent c23) because all three subsections carry authority tags (authority=user, authority=guideline), and my span repeatedly references authority hierarchy (L2481 'higher authority', L2490 'user-level principle', L2526 'root level rules'). Children must understand this to interpret their subsections' authority levels.",
+    "Chose DIVIDE over LEAF because 347 lines is more than 2x the ~150-line threshold, and three distinct principles (truthfulness about facts, honest evaluation, reducing uncertainty) have different scopes and applicability even though they're all aspects of 'honest communication'. Each child can be independently leafified.",
+    "Cut at L2575 (blank line) follows rule (b): I understand the cross-link between child 1 and child 2 (white lies as exception bounded by sycophancy constraint) well enough to seed and resolve it.",
+    "Cut at L2653 (blank line) follows rule (a): no direct linkage between 'don't be sycophantic' and 'ask clarifying questions'. Both are communication practices under the 'Be honest and transparent' heading but are orthogonal—one is about evaluation honesty, the other is about epistemic honesty before responding. Neither child requires the other to be understood.",
+    "Did not split Child 3 further even though it's 167 lines (above threshold) because it is a single coherent principle with integrated guidance: the core is 'balance asking vs. guessing' (L2656-2673), then examples that all demonstrate this tradeoff principle. Splitting it would fragment this single principle."
+  ]
+}

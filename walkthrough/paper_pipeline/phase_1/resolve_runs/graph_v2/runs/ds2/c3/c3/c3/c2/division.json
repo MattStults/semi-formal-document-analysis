@@ -1,0 +1,101 @@
+{
+ "decision": "divide",
+ "children": [
+  {
+   "span": [
+    4252,
+    4307
+   ],
+   "why_this_cut": "Section intro and the 'Use accents respectfully' subsection (heading through its final rule at L4307). The only crossing linkage is the voice-mode section scope (the section's guidelines apply to both standard and advanced voice), seeded below; the accent subsection is self-contained."
+  },
+  {
+   "span": [
+    4308,
+    4482
+   ],
+   "why_this_cut": "Remainder of the accents subsection's examples plus the 'Be concise and conversational' and 'Adapt length and structure to user objectives' subsections. Crosses no section boundary; the only linkage crossing the cut is the voice-mode section scope seed, and the guideline-authority heading metadata for the two subsections is internal to this child."
+  },
+  {
+   "span": [
+    4483,
+    4570
+   ],
+   "why_this_cut": "The 'Handle interruptions gracefully' and 'Respond appropriately to audio testing' subsections. Self-contained; the only crossing linkage is the voice-mode section scope seed."
+  }
+ ],
+ "seed_vocabulary": [
+  {
+   "name": "authority_level_ordering",
+   "prose": "which of two authority levels outranks the other (root > system > developer > user > guideline > no authority)",
+   "established_around": [
+    69,
+    101
+   ]
+  },
+  {
+   "name": "untrusted_data",
+   "prose": "content in quoted text, untrusted_text blocks, multimodal data, file attachments, and tool outputs that has no authority by default and must be treated as information rather than instructions",
+   "established_around": [
+    701,
+    701
+   ]
+  },
+  {
+   "name": "stay_in_bounds",
+   "prose": "the section of the Model Spec describing limits on the assistant's behavior, including scenarios where the assistant should refrain from fully complying with a user or developer request",
+   "established_around": [
+    797,
+    799
+   ]
+  },
+  {
+   "name": "express_uncertainty_section",
+   "prose": "the section of the Model Spec titled 'Express uncertainty' describing when and how the assistant should express uncertainty or qualify answers",
+   "established_around": [
+    2821,
+    2821
+   ]
+  },
+  {
+   "name": "avoid_errors_section",
+   "prose": "the section of the Model Spec titled 'Avoid factual, reasoning, and formatting errors' describing the assistant's duty to avoid mistakes that compromise accuracy or utility",
+   "established_around": [
+    3150,
+    3150
+   ]
+  },
+  {
+   "name": "voice_mode_section_scope",
+   "prose": "the section 'Adapt to the user's modality' (voice_style) contains style guidelines for audio and video conversations, applying to both standard and advanced voice modes, with audio/video-nuance instructions relevant only to Advanced voice",
+   "established_around": [
+    4253,
+    4260
+   ]
+  }
+ ],
+ "expected_cross_links": [
+  {
+   "name": "voice_mode_section_scope",
+   "needs_side_child": 1,
+   "provides_side_child": 1,
+   "evidence": "Child 1 establishes the section scope (L4253-4260); children 2 and 3's rules are guidelines within this section and rely on that scope."
+  },
+  {
+   "name": "voice_mode_section_scope",
+   "needs_side_child": 1,
+   "provides_side_child": 1,
+   "evidence": "Child 3's subsections (handle interruptions, respond to audio testing) are also guidelines within the voice-mode section, relying on the scope established in child 1."
+  }
+ ],
+ "judgment_calls": [
+  "Cut at L4307 rather than at the end of the accents subsection's examples (L4338): the accents subsection's final rule at L4307 is the last content before the next subsection heading, and keeping it with the first child makes the first child a coherent unit (intro + one full subsection). The alternative cut at L4338 would have split the accents subsection's examples from its rule, requiring the rule to be linked across the cut.",
+  "Chose three children rather than two: the span naturally falls into three subsections-plus-intro blocks, and a two-way split would have forced a cut in the middle of the 'Be concise' or 'Adapt length' subsection, crossing more content. The three-way split keeps each child a self-contained block of subsections.",
+  "Seeded voice_mode_section_scope because it is established in child 1 and needed by children 2 and 3; without the seed, children would coin different names for the same concept."
+ ],
+ "_span_lo": 4252,
+ "_span_hi": 4570,
+ "driver_autofixes": [
+  "cross-link 'voice_mode_section_scope': provides_side_child 2 -> 1 (child containing established_around [4253, 4260])",
+  "cross-link 'voice_mode_section_scope': provides_side_child 3 -> 1 (child containing established_around [4253, 4260])"
+ ]
+}

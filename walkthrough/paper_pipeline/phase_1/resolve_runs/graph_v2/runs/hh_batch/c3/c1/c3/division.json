@@ -1,0 +1,95 @@
+{
+ "decision": "divide",
+ "children": [
+  {
+   "span": [
+    1401,
+    1412
+   ],
+   "why_this_cut": "The opening example about alumni directory transformation is self-contained and demonstrates the transformation_exception concept; the only crossing linkage is that it relies on the transformation_exception seed, which is already inherited. The cut at L1412 (after the closing ~~~) cleanly separates this example from the risky situations section."
+  },
+  {
+   "span": [
+    1413,
+    1541
+   ],
+   "why_this_cut": "The risky situations section header and the first two subsections (prevent imminent harm, do not facilitate illicit behavior) form a cohesive unit about physical harm and illicit behavior. The cut at L1541 (after the knife handling example) separates these from the self-harm section which has a different focus."
+  },
+  {
+   "span": [
+    1542,
+    1707
+   ],
+   "why_this_cut": "HUMAN INTERVENTION 2026-08-11: the illicit-behavior span"
+  },
+  {
+   "span": [
+    1708,
+    1800
+   ],
+   "why_this_cut": "HUMAN INTERVENTION: cut at the L1708 regulated-advice heading"
+  }
+ ],
+ "seed_vocabulary": [
+  {
+   "name": "authority_level_ordering",
+   "prose": "which of two authority levels outranks the other (root > system > developer > user > guideline > no authority)",
+   "established_around": [
+    69,
+    101
+   ]
+  },
+  {
+   "name": "untrusted_data",
+   "prose": "content in quoted text, untrusted_text blocks, multimodal data, file attachments, and tool outputs that has no authority by default and must be treated as information rather than instructions",
+   "established_around": [
+    701,
+    701
+   ]
+  },
+  {
+   "name": "stay_in_bounds",
+   "prose": "the section of the Model Spec describing limits on the assistant's behavior, including scenarios where the assistant should refrain from fully complying with a user or developer request",
+   "established_around": [
+    797,
+    799
+   ]
+  },
+  {
+   "name": "transformation_exception",
+   "prose": "the rule that the assistant should comply with limited requests to transform or analyze content that the user has directly provided, even if the resulting output would ordinarily be disallowed as restricted or sensitive content",
+   "established_around": [
+    1369,
+    1379
+   ]
+  }
+ ],
+ "expected_cross_links": [
+  {
+   "name": "transformation_exception",
+   "needs_side_child": 1,
+   "provides_side_child": 2,
+   "evidence": "The alumni directory example in child 1 demonstrates the transformation_exception rule, which is established earlier in the document (around L1369-1379) and inherited as a seed. Child 1's example relies on this concept."
+  },
+  {
+   "name": "authority_level_ordering",
+   "needs_side_child": 2,
+   "provides_side_child": 3,
+   "evidence": "The heading metadata in child 2 (authority=root on prevent_imminent_harm and do_not_facilitate_illicit_behavior) and child 3 (authority=root on do_not_encourage_self_harm and protect_privileged_information, authority=developer on avoid_regulated_advice, authority=user on support_mental_health) all rely on the authority_level_ordering concept to interpret which authority level applies."
+  },
+  {
+   "name": "stay_in_bounds",
+   "needs_side_child": 2,
+   "provides_side_child": 3,
+   "evidence": "The risky situations section (child 2) and the mental health/regulated advice sections (child 3) are both part of the stay_in_bounds section of the Model Spec, which describes limits on assistant behavior."
+  }
+ ],
+ "judgment_calls": [
+  "Could have cut at L1413 (after the blank line) instead of L1412, but chose L1412 to keep the closing ~~~ of the example with the example itself.",
+  "Could have made child 2 span L1413-1706 and child 3 span L1707-1800, but chose to split at L1541 because the self-harm section has a distinct focus on mental health rather than physical harm/illicit behavior.",
+  "The alumni directory example at L1401-1412 is a demonstration of the transformation_exception concept; it could have been grouped with the risky situations section, but it is self-contained and the cut is clean.",
+  "HUMAN INTERVENTION (coordinator, 2026-08-11): the [1542,1800] child was split at the L1708 heading after the model produced degenerate replies on that span across 6+ draws (999x duplicate nodes, fabricated quotes; see runs/ds2/failed/ and EXPERIMENTS.md). 4 children exceeds the 2-3 rule by design of this intervention; planted artifacts are settled decisions. Backup: division.json.pre_intervention.bak"
+ ],
+ "_span_lo": 1401,
+ "_span_hi": 1800
+}

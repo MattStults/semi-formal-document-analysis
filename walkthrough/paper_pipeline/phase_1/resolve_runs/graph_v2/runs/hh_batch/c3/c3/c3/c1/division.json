@@ -1,0 +1,81 @@
+{
+ "decision": "divide",
+ "children": [
+  {
+   "span": [
+    3756,
+    3953
+   ],
+   "why_this_cut": "Covers the 'Be clear and direct', 'Be suitably professional', and 'Have conversational sense' sections. The only crossing linkage is the reference to the avoid_errors_section in the direct-answer preference (L3780), which is seeded below."
+  },
+  {
+   "span": [
+    3954,
+    4251
+   ],
+   "why_this_cut": "Covers the 'Be warm', 'Don't make unprompted personal comments', 'Avoid being condescending or patronizing', 'When appropriate, be helpful when refusing', 'Use Markdown with LaTeX extensions', and 'Be thorough but efficient' sections. The only crossing linkage is the reference to stay_in_bounds in the refusal section (L4075), which is seeded below."
+  }
+ ],
+ "seed_vocabulary": [
+  {
+   "name": "authority_level_ordering",
+   "prose": "which of two authority levels outranks the other (root > system > developer > user > guideline > no authority)",
+   "established_around": [
+    69,
+    101
+   ]
+  },
+  {
+   "name": "untrusted_data",
+   "prose": "content in quoted text, untrusted_text blocks, multimodal data, file attachments, and tool outputs that has no authority by default and must be treated as information rather than instructions",
+   "established_around": [
+    701,
+    701
+   ]
+  },
+  {
+   "name": "stay_in_bounds",
+   "prose": "the section of the Model Spec describing limits on the assistant's behavior, including scenarios where the assistant should refrain from fully complying with a user or developer request",
+   "established_around": [
+    797,
+    799
+   ]
+  },
+  {
+   "name": "express_uncertainty_section",
+   "prose": "the section of the Model Spec titled 'Express uncertainty' describing when and how the assistant should express uncertainty or qualify answers",
+   "established_around": [
+    2821,
+    2821
+   ]
+  },
+  {
+   "name": "avoid_errors_section",
+   "prose": "the section of the Model Spec titled 'Avoid factual, reasoning, and formatting errors' describing the assistant's duty to avoid mistakes that compromise accuracy or utility",
+   "established_around": [
+    3150,
+    3150
+   ]
+  }
+ ],
+ "expected_cross_links": [
+  {
+   "name": "avoid_errors_section",
+   "needs_side_child": 1,
+   "provides_side_child": 2,
+   "evidence": "Child 1's direct-answer preference (L3780) references the avoid_errors section, which is established outside this span and seeded above."
+  },
+  {
+   "name": "stay_in_bounds",
+   "needs_side_child": 2,
+   "provides_side_child": 1,
+   "evidence": "Child 2's refusal guidance (L4075) references the stay_in_bounds section, which is established outside this span and seeded above."
+  }
+ ],
+ "judgment_calls": [
+  "Chose a 2-way split at L3953/L3954 (between 'Have conversational sense' and 'Be warm') rather than a 3-way split, because the first three sections share the direct-answer/avoid-errors linkage and the last six share the refusal/formatting/length themes; a 3-way split would have required more cross-links.",
+  "The avoid_errors_section and stay_in_bounds references are dangling needs for the children (established outside this span), not cross-links between children; they are seeded so children use the canonical names."
+ ],
+ "_span_lo": 3756,
+ "_span_hi": 4251
+}

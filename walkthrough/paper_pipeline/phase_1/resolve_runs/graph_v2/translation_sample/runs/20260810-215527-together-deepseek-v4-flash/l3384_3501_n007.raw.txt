@@ -1,0 +1,129 @@
+{
+  "outcome": "translated",
+  "clause_id": "l3384_3501_n007",
+  "abstain_reason": null,
+  "claims": [
+    "C1: a programmatic response is preferred over a plain-text response when the developer instruction requires programmatic output",
+    "C2: asking a clarifying question is permitted in an interactive context even when the instruction demands programmatic output",
+    "C3: the clarifying question must be delivered through the programmatic interface, not as a standard plain-text reply"
+  ],
+  "acts": [
+    "respond_with(R)",
+    "ask_clarifying_question(Q)"
+  ],
+  "concepts": [
+    {
+      "name": "programmatic_instruction",
+      "arity": 1,
+      "gloss": "an instruction from the developer that requires the assistant's response to be delivered through a programmatic interface rather than as plain text",
+      "licence": "textual",
+      "cites": "l3384_3507_n012",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "programmatic_response",
+      "arity": 1,
+      "gloss": "a response delivered through the programmatic interface, e.g. a function call",
+      "licence": "textual",
+      "cites": "l3384_3507_n012",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "plain_text_response",
+      "arity": 1,
+      "gloss": "a response delivered as standard plain text rather than through the programmatic interface",
+      "licence": "textual",
+      "cites": "l3384_3507_n012",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "clarifying_question",
+      "arity": 1,
+      "gloss": "a question the assistant asks to clarify the user's intent before answering",
+      "licence": "textual",
+      "cites": "l3384_3507_n012",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "programmatic_interface",
+      "arity": 1,
+      "gloss": "the interface through which programmatic responses are delivered, distinct from plain text",
+      "licence": "textual",
+      "cites": "l3384_3507_n012",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "l3384_3507_n012",
+      "inference": null,
+      "toggleable": false,
+      "atom": "programmatic_interface(ask_clarifying_question)",
+      "gloss": "the clarifying-question function is part of the programmatic interface",
+      "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "l3384_3507_n012",
+      "inference": null,
+      "toggleable": false,
+      "atom": "programmatic_interface(respond)",
+      "gloss": "the response function is part of the programmatic interface",
+      "body": null
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "responding with % is forbidden when the developer has required programmatic output and the response is plain text",
+      "read_back_slots": ["R"],
+      "licence": "textual",
+      "cites": "l3384_3507_n012",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "respond_with(R)",
+      "body": "programmatic_instruction(I), plain_text_response(R), response_violates_programmatic_requirement(R, I)"
+    },
+    {
+      "read_back": "responding with % is permitted when the developer has required programmatic output and the response is a clarifying question",
+      "read_back_slots": ["R"],
+      "licence": "textual",
+      "cites": "l3384_3507_n012",
+      "inference": null,
+      "toggleable": false,
+      "status": "permit",
+      "act": "respond_with(R)",
+      "body": "programmatic_instruction(I), clarifying_question(R), answers_via_programmatic_interface(R)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "respond_with",
+      "closure": "cepa",
+      "reason": "The document's silence about responses that are neither plain text nor clarifying questions leaves them permitted by default; only the two named response types are constrained."
+    }
+  ],
+  "requires": [
+    "programmatic_instruction/1",
+    "clarifying_question/1",
+    "answers_via_programmatic_interface/2"
+  ],
+  "inputs": [
+    "plaintext_response/1",
+    "programmatic_response/1"
+  ],
+  "forbid_body": [
+    {
+      "head": "forbid(respond_with(R))",
+      "banned": "plaintext_response(R), programmatic_instruction(I), requires_programmatic(I, R)"
+    }
+  ]
+}

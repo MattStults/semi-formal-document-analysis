@@ -46,6 +46,14 @@ through this builder.
 
 import json
 
+#: Mirrors `schema.RESERVED`. ⚠️ NOT imported — this file imports nothing from
+#: the pipeline so `mutate_schema.py` can swap a mutated schema in before
+#: collection without a fixture racing it. Kept short and checked by
+#: `test_every_shared_fixture_is_a_module_the_contract_ACCEPTS`.
+_RESERVED_NAMES = {"asserts", "beats", "defines", "closure", "silent",
+                   "because", "status", "violation", "fulfils", "live",
+                   "passage", "deontic", "opposite", "beats_tc", "a", "b"}
+
 # ==========================================================================
 #  Licence blocks — Invariant 2's four arms, in one place each
 # ==========================================================================
@@ -86,9 +94,19 @@ def module(**over):
     Keep it minimal. A fixture that satisfies more checks than it has to is how
     a guard stops being exercised without any test going red.
     """
+    # ⚠️ `concepts` CARRIES THE BORROW'S MEANING, and it is not optional
+    # padding. D4b level 2 requires every `requires`/`inputs` entry to have a
+    # gloss: the borrow is enumerated into the situation signature, a seat is
+    # shown situations built from it, and `render_situation` refuses a bare
+    # predicate name. The minimal VALID module therefore includes this — the
+    # minimum moved when the rule landed, and leaving it out would make every
+    # test in the suite exercise a module that cannot be translated.
     base = dict(
         outcome="translated", clause_id="m0001", abstain_reason=None,
-        claims=["C1 something"], acts=["produce(M)"], concepts=[],
+        claims=["C1 something"], acts=["produce(M)"],
+        concepts=[dict(name="restricted", arity=1,
+                       gloss="the material falls under a restricted policy",
+                       **TEXTUAL)],
         ontology=[dict(atom="disallowed(M)", gloss="the material is disallowed",
                        body="restricted(M)", **ASSUMED)],
         asserts=[dict(status="forbid", act="produce(M)", body="disallowed(M)",
@@ -99,7 +117,54 @@ def module(**over):
                       reason="the clause carves out from a prohibition")],
         requires=["restricted/1"], inputs=[], forbid_body=[])
     base.update(over)
-    return base
+    return _gloss_the_borrows(base)
+
+
+def _gloss_the_borrows(mod):
+    """Give every `requires`/`inputs` entry a gloss, if it lacks one.
+
+    ⭐ WHY THIS IS A FIXTURE CONVENIENCE AND NOT A HOLE. D4b level 2 requires a
+    gloss for every borrow. Without this helper the rule's arrival broke **54
+    tests**, none of them about glosses — they override `concepts` or
+    `requires` for their own reasons and thereby drop a description they never
+    meant to carry. Editing all 54 would have been 54 chances to quietly weaken
+    an unrelated assertion.
+
+    ⚠️ THE ESCAPE HATCH, AND IT IS LOAD-BEARING. A test that wants to exercise
+    the rule must be able to build a module that BREAKS it, so it passes
+    `_no_auto_gloss=True` and this helper stands aside.
+    `test_a_borrowed_predicate_must_carry_a_gloss` depends on that, and
+    `mutate_schema.py` proves the branch is still killed without it.
+    """
+    if mod.pop("_no_auto_gloss", False):
+        return mod
+    have = {f"{c['name']}/{c['arity']}" for c in mod.get("concepts") or []}
+    # ⛔ MUST NOT CONTAIN THE PREDICATE'S OWN NAME. Two separate rules bite
+    # here: D4b level 2 rejects a gloss that merely restates the name, and
+    # RB1 (Invariant 1) rejects a rendering in which the label survives into
+    # its own definition. A generated gloss built FROM the name fails the
+    # second even when it passes the first — found by running it.
+    # The two borrow fields get DIFFERENT sentences because they mean
+    # different things: `requires` points at another clause, `inputs` at the
+    # case being judged.
+    generic = {
+        "requires": "a condition the surrounding clause treats as given "
+                    "and does not itself establish",
+        # `inputs` covered since 2026-08-12 (Matt's ruling, from the first
+        # live R3 render on node modules — READBACK_SMOKE.md): the schema now
+        # requires a gloss for every borrow, both fields alike.
+        "inputs": "a fact supplied with the case being judged, not "
+                  "established by any clause of the corpus",
+    }
+    for field, gloss in generic.items():
+        for p in list(mod.get(field) or []):
+            if p in have or "/" not in p or p.split("/")[0] in _RESERVED_NAMES:
+                continue
+            name, _, ar = p.partition("/")
+            have.add(p)
+            mod.setdefault("concepts", []).append(
+                dict(name=name, arity=int(ar), gloss=gloss, **TEXTUAL))
+    return mod
 
 
 def module_json(**over):
@@ -138,6 +203,10 @@ def situation_module(**over):
     return _variant(dict(
         claims=["C1 producing new material of this kind is forbidden"],
         ontology=[],
+        # The input's gloss is written here, not auto-generated: D4b level 2
+        # requires every borrow — `inputs` included since the 2026-08-12
+        # ruling (READBACK_SMOKE.md) — to say what the module needs it to MEAN.
+        concepts=[material_concept()],
         asserts=[dict(status="forbid", act="produce(M)",
                       body="new_material(M)",
                       read_back="producing % is forbidden",
@@ -157,6 +226,12 @@ def m0255_module(**over):
         clause_id="m0255",
         claims=["C1 the exception's scope is exactly restricted and sensitive"],
         ontology=[],
+        # Both inputs carry real glosses — required for every borrow since the
+        # 2026-08-12 ruling (READBACK_SMOKE.md).
+        concepts=[material_concept(**textual("m0255")),
+                  dict(**textual("m0255"), name="disallowed", arity=1,
+                       gloss="the material falls under a policy that bars "
+                             "its production")],
         asserts=[dict(**textual("m0255"), status="forbid", act="produce(M)",
                       body="new_material(M), disallowed(M)",
                       read_back="producing % is still forbidden",

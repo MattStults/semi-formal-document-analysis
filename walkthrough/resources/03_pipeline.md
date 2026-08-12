@@ -288,6 +288,16 @@ flowchart TD
 
 ## Part 4 — Stage Details
 
+> **Link-scope tolerance (ruling recorded 2026-08-11, Matt; full-doc review
+> pending):** Link-scope checks judge cross-module consistency over whatever
+> artifacts exist; per-module completeness — concept tables, glosses,
+> licences — is stage-2's contract, enforced at creation and never re-policed
+> at link. This is load-bearing, not leniency: the three-way diagnosis (§2)
+> requires link to run over partial corpora where absence is a diagnosis
+> state, and over hand-encoded corpora that predate the concepts machinery.
+> A link check that errors on a missing table destroys the not-yet-translated
+> diagnosis and fails every legacy module.
+
 Most stages do what their name says. These do not.
 
 ### 0 — Competency questions

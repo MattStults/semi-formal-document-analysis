@@ -1,0 +1,125 @@
+{
+ "outcome": "translated",
+ "clause_id": "l4251_4571_n029",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example contrasts a good response that gives an overview and asks what to focus on with a bad response that overloads the user with detail",
+  "C2 the good response is preferred for an open-ended planning question",
+  "C3 the bad response is dispreferred because it overloads the user with detail instead of taking turns"
+ ],
+ "acts": [
+  "respond_with(R)"
+ ],
+ "concepts": [
+  {
+   "name": "voice_turn_taking_rule",
+   "arity": 1,
+   "gloss": "R is a voice response that aligns with the iterative, turn-taking conversation structure and adapts to conversational shifts",
+   "licence": "textual",
+   "cites": "l4251_4571_n029",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "overview_then_detail_response",
+   "arity": 1,
+   "gloss": "R is a response that first gives a brief overview and then asks the user what detail to focus on, rather than dumping all detail at once",
+   "licence": "textual",
+   "cites": "l4251_4571_n029",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "overloads_with_detail",
+   "arity": 1,
+   "gloss": "R is a response that presents a large amount of detail all at once, overwhelming the user",
+   "licence": "textual",
+   "cites": "l4251_4571_n029",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "open_planning_question",
+   "arity": 1,
+   "gloss": "Q is an open-ended question about planning an event, such as what to consider while planning a birthday party",
+   "licence": "textual",
+   "cites": "l4251_4571_n029",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "answers_question",
+   "arity": 2,
+   "gloss": "response R answers question Q",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example relates each response to the user's planning question, so a relation between a response and the question it answers is needed",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l4251_4571_n029",
+   "inference": null,
+   "toggleable": false,
+   "atom": "overview_then_detail_response(R)",
+   "gloss": "R is a response that gives an overview and asks what to focus on",
+   "body": "answers_question(R, Q), open_planning_question(Q)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l4251_4571_n029",
+   "inference": null,
+   "toggleable": false,
+   "atom": "overloads_with_detail(R)",
+   "gloss": "R is a response that overloads the user with detail",
+   "body": "answers_question(R, Q), open_planning_question(Q)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "responding with % is preferred: it gives an overview and asks what to focus on, fitting the turn-taking structure of an open planning question",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l4251_4571_n029",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_with(R)",
+   "body": "overview_then_detail_response(R)"
+  },
+  {
+   "read_back": "responding with % is dispreferred: it overloads the user with detail instead of taking turns",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l4251_4571_n029",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_with(R)",
+   "body": "overloads_with_detail(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_with",
+   "closure": "cepa",
+   "reason": "the example states a preference between two permitted responses; it forbids nothing, so silence leaves responses permitted"
+  }
+ ],
+ "requires": [
+  "voice_turn_taking_rule/1"
+ ],
+ "inputs": [
+  "open_planning_question/1",
+  "answers_question/2"
+ ],
+ "forbid_body": []
+}

@@ -266,3 +266,98 @@ def test_every_json_block_in_the_prompt_is_valid_json():
             except json.JSONDecodeError as exc:
                 bad.append(f"{os.path.basename(path)} block {i + 1}: {exc}")
     assert not bad, "\n".join(bad)
+
+
+# ==========================================================================
+#  `requires` vs `inputs` — the placement must be DEMONSTRATED, not just stated
+# ==========================================================================
+#
+# ⛔ WHY THIS EXISTS. `[RAN]` 2 of 2 repeat-translated clauses with borrows
+# flipped the two fields WHOLESALE — one run put everything in `inputs`, the
+# other everything in `requires`. Because `inputs` reaches the situation
+# signature and `requires` did not (Q-22), the same clause was testable or
+# inert on a coin toss, and `m0150`'s test space differed 8× between runs.
+#
+# ⚠️ THE PROSE IS FINE. `00_task.md` rule 9 states a locally decidable
+# criterion: `requires` is what another clause must define, `inputs` describes
+# the case being judged. THE WORKED EXAMPLE CONTRADICTS IT — `m0088` emits
+# `"requires": []` and puts all six body predicates in `inputs`, then says
+# approvingly "All six appear in `inputs`", among them `same_level/2` (authority
+# levels are established by `levels_of_authority`) and
+# `misaligned_with_higher_level/1` (needs the chain of command). Both are
+# document-side by the prompt's own rule.
+#
+# ⭐ §1 of DEBUGGING_TIPS is the governing lesson: an example is an instruction
+# with a picture attached, and it OUTRANKS the prose. Two translations put the
+# same concept in different fields, both following the prompt.
+#
+# ⚠️ This file already counts demonstrated SHAPES. It did not count field
+# PLACEMENT, which is why this survived to be found in the run data instead.
+
+#: Predicates whose meaning is fixed by the DOCUMENT, so a clause that uses one
+#: is depending on another clause and belongs in `requires`. Kept small and
+#: specific: each is a term the spec itself establishes in a named section.
+#: ⛔ Not a blocklist of words — a list of concepts with a documented owner.
+_DOCUMENT_SIDE = {
+    "same_level": "authority levels are established by `levels_of_authority`",
+    "misaligned_with_higher_level": "requires the chain of command",
+    "supersedes": "the superseding relation is the spec's, not the case's",
+    "higher_authority": "authority ordering is established by the document",
+}
+
+
+def test_both_fields_are_DEMONSTRATED_somewhere_in_the_good_examples():
+    """Neither field may be taught only in prose.
+
+    ⭐ The failure §1 describes exactly: `ontology`-with-a-body had five ground
+    facts demonstrated and one conditional, and the model learned the majority
+    picture. A field shown only as `[]` is being taught as "leave this empty".
+    """
+    mods = _good_modules()
+    assert mods, "no good worked modules found"
+    with_requires = [m for m in mods if m.get("requires")]
+    with_inputs = [m for m in mods if m.get("inputs")]
+    assert with_requires, (
+        "no worked example DEMONSTRATES a non-empty `requires`. The prose "
+        "defines it; the pictures all show it empty, and the picture wins")
+    assert with_inputs, (
+        "no worked example demonstrates a non-empty `inputs`")
+
+
+def test_no_good_example_puts_a_DOCUMENT_SIDE_predicate_in_inputs():
+    """⛔ FIRES on the defect. `inputs` means a fact about the CASE.
+
+    A predicate whose meaning is fixed by another clause of the spec is not a
+    fact about the case being judged, and demonstrating it as one teaches the
+    model to put borrowed document vocabulary in `inputs` — where, before
+    Q-22's fix, it was the only field that reached the signature at all.
+    """
+    offenders = []
+    for m in _good_modules():
+        for p in m.get("inputs") or []:
+            name = p.split("/")[0]
+            if name in _DOCUMENT_SIDE:
+                offenders.append(
+                    f"{m['clause_id']}: `{p}` is in `inputs` but "
+                    f"{_DOCUMENT_SIDE[name]} — by the prompt's own rule 9 it "
+                    f"belongs in `requires`")
+    assert not offenders, (
+        "the worked example demonstrates the opposite of what the prose "
+        "states:\n  " + "\n  ".join(offenders))
+
+
+def test_one_example_shows_BOTH_fields_populated_together():
+    """⭐ The discriminating picture, and the one that was missing.
+
+    Showing `requires` in one module and `inputs` in another leaves the
+    CHOICE undemonstrated — a model sees each field used alone and never sees
+    the line between them drawn. One module with both populated is what
+    teaches the distinction, and its absence is the likeliest single cause of
+    the measured wholesale flip.
+    """
+    both = [m for m in _good_modules()
+            if m.get("requires") and m.get("inputs")]
+    assert both, (
+        "no worked example populates `requires` AND `inputs` together, so the "
+        "boundary between them is never drawn in the channel that outranks "
+        "prose")

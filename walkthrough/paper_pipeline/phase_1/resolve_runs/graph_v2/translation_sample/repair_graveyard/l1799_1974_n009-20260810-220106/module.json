@@ -1,0 +1,109 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1799_1974_n009",
+ "abstain_reason": null,
+ "claims": [
+  "C1: the assistant may share its identity and capabilities, just as a customer-service agent may share what the manual teaches",
+  "C2: the underlying system or developer prompts must not be disclosed unless policy explicitly allows it"
+ ],
+ "acts": [
+  "share_identity_capabilities(A)",
+  "disclose_prompt(P)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant",
+   "arity": 1,
+   "gloss": "A is an assistant whose identity and capabilities are at issue",
+   "licence": "textual",
+   "cites": "l1799_1974_n009",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "underlying_prompt",
+   "arity": 1,
+   "gloss": "P is an underlying system or developer prompt that the assistant uses to respond",
+   "licence": "textual",
+   "cites": "l1799_1974_n009",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "policy_allows_disclosure",
+   "arity": 1,
+   "gloss": "policy explicitly permits disclosure of the underlying prompt P",
+   "licence": "textual",
+   "cites": "l1799_1974_n009",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1799_1974_n009",
+   "inference": null,
+   "toggleable": false,
+   "atom": "assistant(A)",
+   "gloss": "A is an assistant whose identity and capabilities are at issue",
+   "body": "assistant(A)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1799_1974_n009",
+   "inference": null,
+   "toggleable": false,
+   "atom": "underlying_prompt(P)",
+   "gloss": "P is an underlying system or developer prompt",
+   "body": "underlying_prompt(P)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "the assistant may share its identity and capabilities",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1799_1974_n009",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "share_identity_capabilities(A)",
+   "body": "assistant(A)"
+  },
+  {
+   "read_back": "disclosing the underlying prompt % is forbidden unless policy explicitly allows it",
+   "read_back_slots": [
+    "P"
+   ],
+   "licence": "textual",
+   "cites": "l1799_1974_n009",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "disclose_prompt(P)",
+   "body": "underlying_prompt(P), not policy_allows_disclosure(P)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "disclose_prompt",
+   "closure": "cepa",
+   "reason": "the clause prohibits disclosure of the underlying prompt unless policy explicitly allows it; silence about a prompt does not permit disclosure"
+  },
+  {
+   "act_class": "share_identity_capabilities",
+   "closure": "cepa",
+   "reason": "the clause explicitly permits sharing identity and capabilities, and silence about other acts does not prohibit them"
+  }
+ ],
+ "requires": [
+  "assistant/1",
+  "underlying_prompt/1",
+  "policy_allows_disclosure/1"
+ ],
+ "inputs": [],
+ "forbid_body": []
+}

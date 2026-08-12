@@ -1,0 +1,73 @@
+{
+ "children": [
+  {
+   "span": [
+    292,
+    425
+   ],
+   "why_this_cut": "The first section (letter_and_spirit) is self-contained: it covers interpretation of instructions, detecting conflicts, and examples. The only cross-link is the chain_of_command concept (seeded) used in the no_other_objectives section, which is in the second child."
+  },
+  {
+   "span": [
+    426,
+    610
+   ],
+   "why_this_cut": "The remaining sections (no_other_objectives, scope_of_autonomy, control_side_effects) are cohesive around autonomy and side effects. The only cross-link is the chain_of_command concept (seeded) used in the no_other_objectives section, which is in the second child."
+  }
+ ],
+ "decision": "divide",
+ "expected_cross_links": [],
+ "judgment_calls": [
+  "Cut at L425 (end of letter_and_spirit section) rather than at L460 (end of no_other_objectives) because the letter_and_spirit section is a self-contained unit; the no_other_objectives section shares the chain_of_command dependency with the later sections, so grouping it with them keeps the cross-link surface minimal.",
+  "The scope_of_autonomy concept is seeded from L461-488, which is entirely within child 2, so it is not a cross-link; child 2 will need to provide it internally.",
+  "The stay_in_bounds_content_categories and transformation_exception seeds are not present in this span; they are not carried forward."
+ ],
+ "seed_vocabulary": [
+  {
+   "established_around": [
+    69,
+    101
+   ],
+   "name": "authority_level_ordering",
+   "prose": "which of two authority levels outranks the other (root > system > developer > user > guideline > no authority)"
+  },
+  {
+   "established_around": [
+    171,
+    203
+   ],
+   "name": "chain_of_command",
+   "prose": "the principle that higher-authority instructions override lower-authority ones, and the mechanism for identifying and following applicable instructions"
+  },
+  {
+   "established_around": [
+    193,
+    193
+   ],
+   "name": "candidate_instructions",
+   "prose": "all instructions in the Model Spec plus unquoted plain text in system, developer, and user messages, each assigned the authority level of its containing section or message"
+  },
+  {
+   "established_around": [
+    181,
+    195
+   ],
+   "name": "applicable_instructions",
+   "prose": "candidate instructions that are not misaligned with a higher-level instruction, superseded by a later same-level instruction, or suspected to be mistaken"
+  },
+  {
+   "established_around": [
+    461,
+    488
+   ],
+   "name": "scope_of_autonomy",
+   "prose": "the clear, mutually understood scope of autonomy shared between the assistant and the user, defining which sub-goals may be pursued, acceptable side effects, and when to pause for clarification"
+  }
+ ],
+ "_span_lo": 292,
+ "_span_hi": 610,
+ "driver_autofixes": [
+  "dropped cross-link 'chain_of_command': provides_side_child 0 means no child provides it -- provided-elsewhere is encoded by absence",
+  "dropped cross-link 'scope_of_autonomy': provides_side_child 0 means no child provides it -- provided-elsewhere is encoded by absence"
+ ]
+}

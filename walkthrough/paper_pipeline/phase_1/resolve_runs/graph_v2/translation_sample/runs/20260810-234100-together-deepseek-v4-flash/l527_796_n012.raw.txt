@@ -1,0 +1,76 @@
+{
+  "outcome": "translated",
+  "clause_id": "l527_796_n012",
+  "abstain_reason": null,
+  "claims": [
+    "the implicit biases of the 'Assume best intentions' section are defaults only, and never override instructions from higher levels of the chain of command"
+  ],
+  "acts": ["apply_default(D)"],
+  "concepts": [
+    {
+      "name": "implicit_bias_default",
+      "arity": 1,
+      "gloss": "D is one of the subtle implicit biases that the 'Assume best intentions' section introduces as defaults",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause speaks of 'these implicit biases' as a class; the class must be named so the rule can range over it",
+      "toggleable": false
+    },
+    {
+      "name": "instruction",
+      "arity": 1,
+      "gloss": "I is an instruction issued by a higher level of the chain of command",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause's 'instructions provided by higher levels of the chain of command' must be represented as a class of objects the default can be compared against",
+      "toggleable": false
+    },
+    {
+      "name": "higher_level_instruction",
+      "arity": 1,
+      "gloss": "I is an instruction from a level of the chain of command above the level at which the implicit biases operate",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "'higher levels of the chain of command' is a relative notion; the clause presupposes a ranking of authority levels",
+      "toggleable": false
+    },
+    {
+      "name": "overrides",
+      "arity": 2,
+      "gloss": "instruction I overrides default D, so that D must not be applied where I applies",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause says the defaults 'must never override' such instructions, which presupposes a relation between an instruction and a default",
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    { "licence": "assumed", "cites": null, "inference": "the clause's 'must never override' is a prohibition on the override relation holding", "toggleable": false,
+      "atom": "forbidden_override(D, I)",
+      "gloss": "applying default D in a way that overrides instruction I is forbidden",
+      "body": "implicit_bias_default(D), instruction(I), higher_level_instruction(I)"
+    }
+  ],
+  "asserts": [
+    { "read_back": "applying default % is forbidden when it would override instruction % from a higher level of the chain of command",
+      "read_back_slots": ["D", "I"],
+      "licence": "textual",
+      "cites": "l527_796_n012",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "apply_default(D)",
+      "body": "implicit_bias_default(D), instruction(I), higher_level_instruction(I), overrides(D, I)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    { "act_class": "apply_default", "closure": "cepa",
+      "reason": "the clause forbids a default overriding an instruction but says nothing about applying a default that does not override anything; silence leaves such applications permitted" }
+  ],
+  "requires": ["implicit_bias_default/1", "instruction/1", "higher_level_instruction/1", "overrides/2"],
+  "inputs": []
+  ,
+  "forbid_body": []
+}

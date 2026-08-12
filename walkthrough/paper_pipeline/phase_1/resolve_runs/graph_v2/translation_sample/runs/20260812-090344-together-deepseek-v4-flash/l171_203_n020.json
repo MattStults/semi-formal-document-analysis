@@ -1,0 +1,118 @@
+{
+ "outcome": "translated",
+ "clause_id": "l171_203_n020",
+ "abstain_reason": null,
+ "claims": [
+  "C1 an instruction is misaligned when it conflicts with the letter of a higher-level instruction",
+  "C2 an instruction is misaligned when it conflicts with the implied intent behind a higher-level instruction"
+ ],
+ "acts": [],
+ "concepts": [
+  {
+   "name": "misaligned_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction that conflicts with either the letter or the implied intent behind some higher-level instruction",
+   "licence": "textual",
+   "cites": "l171_203_n020",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "instruction",
+   "arity": 1,
+   "gloss": "I is an instruction directed at the model",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of instructions being misaligned, so the class of instructions is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "higher_level_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction issued at an authority level that outranks the level of the instruction being evaluated",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's 'higher-level' is defined by the authority_level_ordering relation, which is provided by another node",
+   "toggleable": false
+  },
+  {
+   "name": "conflicts_with_letter",
+   "arity": 2,
+   "gloss": "instruction I conflicts with the literal wording of instruction J",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause distinguishes conflict with the letter from conflict with implied intent; each needs its own relation",
+   "toggleable": false
+  },
+  {
+   "name": "conflicts_with_implied_intent",
+   "arity": 2,
+   "gloss": "instruction I conflicts with the implied intent behind instruction J",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause distinguishes conflict with implied intent from conflict with the letter; each needs its own relation",
+   "toggleable": false
+  },
+  {
+   "name": "authority_level_ordering",
+   "arity": 2,
+   "gloss": "authority level A outranks authority level B in the chain of command",
+   "licence": "textual",
+   "cites": "l171_203_n020",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "instruction_authority_level",
+   "arity": 2,
+   "gloss": "instruction I is issued at authority level L",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "comparing whether one instruction is higher-level than another requires each instruction to carry an authority level",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l171_203_n020",
+   "inference": null,
+   "toggleable": false,
+   "atom": "higher_level_instruction(J)",
+   "gloss": "J is a higher-level instruction because it is issued at an authority level that outranks the level of the instruction being evaluated",
+   "body": "instruction(J), instruction_authority_level(J, LJ), instruction_authority_level(I, LI), authority_level_ordering(LJ, LI)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l171_203_n020",
+   "inference": null,
+   "toggleable": false,
+   "atom": "misaligned_instruction(I)",
+   "gloss": "I is misaligned because it conflicts with the letter of a higher-level instruction",
+   "body": "instruction(I), instruction(J), higher_level_instruction(J), conflicts_with_letter(I, J)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l171_203_n020",
+   "inference": null,
+   "toggleable": false,
+   "atom": "misaligned_instruction(I)",
+   "gloss": "I is misaligned because it conflicts with the implied intent behind a higher-level instruction",
+   "body": "instruction(I), instruction(J), higher_level_instruction(J), conflicts_with_implied_intent(I, J)"
+  }
+ ],
+ "asserts": [],
+ "beats": [],
+ "defines": [],
+ "closure": [],
+ "requires": [
+  "authority_level_ordering/2"
+ ],
+ "inputs": [
+  "instruction/1",
+  "instruction_authority_level/2",
+  "conflicts_with_letter/2",
+  "conflicts_with_implied_intent/2"
+ ],
+ "forbid_body": []
+}

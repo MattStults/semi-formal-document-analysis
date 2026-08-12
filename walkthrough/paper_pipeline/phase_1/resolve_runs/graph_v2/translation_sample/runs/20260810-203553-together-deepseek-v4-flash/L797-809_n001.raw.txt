@@ -1,0 +1,104 @@
+{
+  "outcome": "translated",
+  "clause_id": "L797-809_n001",
+  "abstain_reason": null,
+  "claims": [
+    "C1: The stay-in-bounds principle is a set of limits on assistant behavior.",
+    "C2: These limits apply in scenarios where the assistant refrains from fully complying with a user or developer request.",
+    "C3: The purpose of these limits is to minimize potential harm.",
+    "C4: The scenarios are those where the assistant is technically capable of complying but still refrains."
+  ],
+  "acts": ["refrain_from_full_compliance(U)"],
+  "concepts": [
+    {
+      "name": "stay_in_bounds_principles",
+      "arity": 1,
+      "gloss": "a limit on assistant behavior that requires the assistant to refrain from fully complying with a user or developer request in certain scenarios to minimize potential harm",
+      "licence": "textual",
+      "cites": "L797-809_n001",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "risk_taxonomy",
+      "arity": 1,
+      "gloss": "the taxonomy of risks and harms that motivates the need to constrain the assistant's behavior",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the source text references the risk_taxonomy section as the basis for the need to balance empowerment and harm minimization",
+      "toggleable": false
+    },
+    {
+      "name": "best_intentions_bias",
+      "arity": 1,
+      "gloss": "guidance for handling ambiguous requests that may or may not intend harm",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the source text references assume_best_intentions for relevant details about handling ambiguous requests",
+      "toggleable": false
+    },
+    {
+      "name": "minimizes_potential_harm",
+      "arity": 1,
+      "gloss": "the limit exists to reduce the potential for real harm",
+      "licence": "textual",
+      "cites": "L797-809_n001",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "technically_capable",
+      "arity": 1,
+      "gloss": "the assistant is able to fully comply with the request from a technical standpoint",
+      "licence": "textual",
+      "cites": "L797-809_n001",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "L797-809_n001",
+      "inference": null,
+      "toggleable": false,
+      "atom": "stay_in_bounds_principles(L)",
+      "gloss": "L is a limit on assistant behavior that requires refraining from full compliance to minimize potential harm",
+      "body": "minimizes_potential_harm(L)"
+    },
+    {
+      "licence": "textual",
+      "cites": "L797-809_n001",
+      "inference": null,
+      "toggleable": false,
+      "atom": "stay_in_bounds_principles(L)",
+      "gloss": "L is a limit that applies when the assistant is technically capable of complying but refrains",
+      "body": "technically_capable(L)"
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "the assistant should refrain from fully complying with % when a stay-in-bounds principle applies and doing so minimizes potential harm",
+      "read_back_slots": ["U"],
+      "licence": "textual",
+      "cites": "L797-809_n001",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "refrain_from_full_compliance(U)",
+      "body": "stay_in_bounds_principles(L), minimizes_potential_harm(L)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "refrain_from_full_compliance",
+      "closure": "cepa",
+      "reason": "the clause describes limits on behavior but does not state that refraining is generally required; it only obliges refraining when a stay-in-bounds principle applies, so silence about other acts leaves them permitted."
+    }
+  ],
+  "requires": ["risk_taxonomy/1", "best_intentions_bias/1"],
+  "inputs": [],
+  "forbid_body": []
+}

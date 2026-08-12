@@ -1,0 +1,48 @@
+{
+  "decision": "divide",
+  "children": [
+    {
+      "span": [810, 919],
+      "why_this_cut": "Establishes the three-tier disallowed_content_categories framework (L810-825), then explains prohibited content (sexual minors, L826-850), then the first restricted content rule (information hazards, L851-919). Clean break at L919/920 where hazards examples end and targeted political manipulation begins."
+    },
+    {
+      "span": [920, 1107],
+      "why_this_cut": "Continues restricted content with four independent rules: targeted political manipulation (L920-1001), respect creators and intellectual property (L1002-1034), and protect people's privacy (L1035-1107). Clean break at L1107/1108 where privacy examples end and sensitive content section begins."
+    },
+    {
+      "span": [1108, 1368],
+      "why_this_cut": "Introduces and defines sensitive content (erotica/gore in appropriate contexts, L1108-1154, establishing sensitive_content_restrictions), then covers three additional rules (extremism L1155-1236, hateful content L1237-1312, abuse L1314-1368). These rules form a cohesive final block after framework is established."
+    }
+  ],
+  "seed_vocabulary": [
+    {
+      "name": "disallowed_content_categories",
+      "prose": "The three-tiered categorization of content the assistant should not generate: prohibited content (only sexual content involving minors, with no transformation exception), restricted content (information hazards and sensitive personal data, transformations allowed), and sensitive content (erotica and gore in specific contexts, transformations allowed). This categorization framework is used to determine what restrictions apply in any given situation.",
+      "established_around": [810, 825]
+    },
+    {
+      "name": "sensitive_content_restrictions",
+      "prose": "The specific rules governing when sensitive content (erotica and gore) may be generated: only in educational, medical, historical, artistic, or other appropriate contexts (L1110), with transformations of user-provided sensitive content allowed. Sensitive content requires contextual justification, unlike prohibited content which has no exceptions.",
+      "established_around": [1108, 1115]
+    }
+  ],
+  "expected_cross_links": [
+    {
+      "needs_side_child": 2,
+      "provides_side_child": 1,
+      "name": "disallowed_content_categories",
+      "evidence": "Child 2's four restricted content rules (L920-1107) are instances of the restricted content category introduced and defined in child 1 (L810-825, L852-855). Child 2's rules demonstrate what 'restricted content' means in practice."
+    },
+    {
+      "needs_side_child": 3,
+      "provides_side_child": 1,
+      "name": "disallowed_content_categories",
+      "evidence": "Child 3's sensitive content definition (L1108-1110) explicitly refers to 'sensitive content' as one of the three categories introduced in child 1 (L810-825, L816). The phrase 'may only be generated under specific circumstances' implements the categorization framework from child 1."
+    }
+  ],
+  "judgment_calls": [
+    "Chose to split restricted content across children 1 and 2 (five rules total: 1 in child 1, 4 in child 2) rather than 3 + 2. This creates a natural break after information hazards (first rule, L919/920), separating the framework-setting opening from the body of restricted rules. Alternative would have required cutting mid-way through related rules (e.g., breaking after political manipulation) with no thematic justification.",
+    "Grouped sensitive content (L1108-1154) with extremism, hateful content, and abuse (L1155-1368) in child 3, despite extremism/hateful/abuse not being explicitly categorized in the intro's three-tier framework. These three additional rules follow the sensitive content introduction in the document's own structure (no ### section header between L1108 and L1155), and all five rules in child 3 form a cohesive final block after the main framework categories are established. At Phase U, this may be revisited if the additional three rules should be re-categorized as restricted.",
+    "Chose not to split sensitive content from extremism/hateful/abuse at L1154/1155 to avoid leaving child 2 unable to establish sensitive_content_restrictions (which the parent child 3 will need). If split there, child 3 would end at L1154 and wouldn't establish the seed. Keeping L1108-1115 with child 3 ensures sensitive_content_restrictions is established in this branch."
+  ]
+}

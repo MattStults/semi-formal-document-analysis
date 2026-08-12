@@ -1,0 +1,75 @@
+{
+  "decision": "divide",
+  "children": [
+    {
+      "span": [1, 2125],
+      "why_this_cut": "Foundational material: Overview, Definitions, Chain of Command (including authority levels and conflict resolution framework), Stay in Bounds safety principles, and related guardrails on privacy, creators' rights, hateful content. These establish the foundational architecture on which all later principles depend."
+    },
+    {
+      "span": [2126, 3147],
+      "why_this_cut": "Behavioral principles for truth-seeking: 'Seek the truth together' section covering no hidden agenda, objective point of view, conscientiousness, and highlighting misalignments. These principles are applied within and depend on the authority hierarchy established in Child 1."
+    },
+    {
+      "span": [3148, 4692],
+      "why_this_cut": "Behavioral execution and special contexts: 'Do the best work' (avoiding errors, overstepping, responding with creativity), Voice Mode specific principles, and Under-18 Principles. These apply the authority framework and safety boundaries from Child 1 to specific execution contexts."
+    }
+  ],
+  "seed_vocabulary": [
+    {
+      "name": "authority_levels",
+      "prose": "The hierarchy of instruction authority ranging from highest to lowest: Root (cannot be overridden), System, Developer, User, and Guideline (can be implicitly overridden). Instructions at higher authority levels override those at lower levels when they conflict.",
+      "established_around": [69, 107]
+    },
+    {
+      "name": "chain_of_command",
+      "prose": "The procedure the assistant uses to identify which instructions are applicable to a request, filter out those that are not applicable (due to conflict with higher-authority instructions or supersession), and then follow all applicable instructions. This is the mechanism that operationalizes the authority hierarchy.",
+      "established_around": [171, 211]
+    },
+    {
+      "name": "applicable_instructions",
+      "prose": "Instructions that are relevant to a request and have not been made inapplicable by conflict with a higher-authority instruction, supersession by a later instruction at the same level, or suspicion of being mistaken. The assistant must strive to follow all applicable instructions.",
+      "established_around": [179, 205]
+    },
+    {
+      "name": "root_level_safety_boundaries",
+      "prose": "The fundamental prohibitions that cannot be overridden by any lower-authority instruction, covering critical safety constraints such as prohibitions on facilitating violence, harm, sexual content involving minors, hateful content toward protected groups, and violations of privacy.",
+      "established_around": [445, 1050]
+    },
+    {
+      "name": "system_level_rules",
+      "prose": "Rules set by OpenAI that can be transmitted or overridden through system messages but cannot be overridden by developers or users. These include restrictions on erotica, gore, and dangerous content, and apply to all model deployments with possible variation based on user characteristics or product surface.",
+      "established_around": [78, 91]
+    }
+  ],
+  "expected_cross_links": [
+    {
+      "needs_side_child": 2,
+      "provides_side_child": 1,
+      "name": "authority_levels",
+      "evidence": "Child 2's principles on objective point of view (L2137-2154) explicitly vary depending on instruction authority level: 'This principle has user authority, allowing user- and developer-level customization' (L2151). The distinction between explicit and implicit overriding (e.g., guideline-level vs user-level defaults) depends on understanding authority levels from Child 1."
+    },
+    {
+      "needs_side_child": 2,
+      "provides_side_child": 1,
+      "name": "chain_of_command",
+      "evidence": "Child 2's section on highlighting possible misalignments (L3041-3061) advises the assistant to gently note discrepancies between user's apparent goals and long-term goals. This presupposes the assistant understands the chain of command for evaluating what instructions the user genuinely intends and what they truly want."
+    },
+    {
+      "needs_side_child": 3,
+      "provides_side_child": 1,
+      "name": "authority_levels",
+      "evidence": "Child 3's Voice Mode sections and creativity guidelines are positioned at guideline level (L4375 'authority=guideline'), meaning they can be implicitly overridden. This classification only makes sense against the authority hierarchy framework from Child 1."
+    },
+    {
+      "needs_side_child": 3,
+      "provides_side_child": 1,
+      "name": "root_level_safety_boundaries",
+      "evidence": "Child 3's Under-18 Principles (L4572-4692) explicitly state 'All of the principles in the #stay_in_bounds section of the Model Spec continue to apply for U18 users, including [?](#do_not_encourage_self_harm) and [?](#sexual_content_involving_minors)' (L4576). The Under-18 modifications only add to and reinforce root-level boundaries, they cannot weaken them."
+    }
+  ],
+  "judgment_calls": [
+    "Could have cut at L1108 (before the 'Sensitive content in appropriate contexts' subsection) to separate early prohibitions from behavioral guidance; chose L2125 to keep all foundational principles and safety boundaries consolidated in one child, as they logically form a single coherent framework.",
+    "Could have cut at L4572 (immediately before 'Under-18 Principles') to isolate age-specific rules into their own child; chose to include them in Child 3 because they are modifications and applications of execution rules ('Do the best work') rather than independent architectural rules.",
+    "Child 1 is substantially larger (2125 lines) than Children 2 (1022 lines) and 3 (1545 lines) by count, but this reflects the document's structure: foundational definitions, authority framework, and safety guardrails are inherently dense, while behavioral principles and applications build more gradually."
+  ]
+}

@@ -236,21 +236,36 @@ def discover(src):
     quals = _qualnames(tree)
     lines = src.splitlines()
     muts, seen = [], Counter()
+    def _is_guard(node):
+        """A `raise`, or an `errs.append(...)` — the collected-guard form
+        `Module._coherent` uses since the 2026-08-10 collect-then-raise
+        ruling. Deleting either removes exactly one guard."""
+        if isinstance(node, ast.Raise):
+            return "raise "
+        if (isinstance(node, ast.Expr) and isinstance(node.value, ast.Call)
+                and isinstance(node.value.func, ast.Attribute)
+                and node.value.func.attr == "append"
+                and isinstance(node.value.func.value, ast.Name)
+                and node.value.func.value.id == "errs"):
+            return "errs.append("
+        return None
+
     for node in ast.walk(tree):
-        if not isinstance(node, ast.Raise):
+        kind = _is_guard(node)
+        if kind is None:
             continue
         lo, hi = node.lineno, node.end_lineno
         head, tail = lines[lo - 1], lines[hi - 1]
         if head[:node.col_offset].strip():
             raise MutationError(
-                f"line {lo}: `raise` shares its line with other code; "
+                f"line {lo}: guard shares its line with other code; "
                 f"deleting it would remove more than the guard")
         if tail[node.end_col_offset:].strip():
             raise MutationError(
-                f"line {hi}: code follows the `raise` on its last line")
+                f"line {hi}: code follows the guard on its last line")
         segment = "\n".join(lines[lo - 1:hi])
-        if not segment.lstrip().startswith("raise "):
-            raise MutationError(f"line {lo}: segment is not a raise: {segment!r}")
+        if not segment.lstrip().startswith(kind):
+            raise MutationError(f"line {lo}: segment is not a guard: {segment!r}")
         qual = quals.get(id(node), "") or "<module>"
         seen[qual] += 1
         muts.append(Mutation(name=f"{qual}#{seen[qual]}", qual=qual,

@@ -174,6 +174,13 @@ def test_both_origins_appear_in_ONE_result():
                       read_back="producing % is forbidden",
                       read_back_slots=["M"], licence="textual", cites="m9999",
                       inference=None, toggleable=False)],
+        # Both inputs glossed — a borrow with no gloss is its own schema
+        # breach (2026-08-12 ruling, READBACK_SMOKE.md) and this test needs
+        # the FABRICATED-CITATION breach to be the schema finding.
+        concepts=[concept(),
+                  dict(name="lifted_by_purpose", arity=1,
+                       gloss="a stated aim the user offers as taking the "
+                             "material outside the prohibition", **TEXTUAL)],
         inputs=["new_material/1", "lifted_by_purpose/1"],
         forbid_body=[dict(head="forbid", banned="lifted_by_purpose")]))
     schema_f = one(r, "schema-breach", "m9999")
@@ -291,6 +298,13 @@ def test_a_note_is_REPORTED_but_does_not_drive_a_repair():
     teaching the model to make every translation look fine.
     """
     r = run(module(requires=["restricted/1"], inputs=["new_material/1"],
+                   # every borrow glossed (2026-08-12 ruling): this test is
+                   # about the note/error split, not the gloss rule.
+                   concepts=[concept(),
+                             dict(name="restricted", arity=1,
+                                  gloss="the material falls under a policy "
+                                        "class another clause defines",
+                                  **TEXTUAL)],
                    asserts=[dict(status="forbid", act="produce(M)",
                                  body="new_material(M), restricted(M)",
                                  read_back="producing % is forbidden",
@@ -312,7 +326,8 @@ def test_an_error_DOES_drive_a_repair():
     # `requires` is head-less by design at single-module scope, exactly like
     # the old concept-only shape this test used to exercise.
     r = run(module(requires=["restricted/1"], inputs=["new_material/1"],
-                   concepts=[concept(name="restricted", arity=1,
+                   concepts=[concept(),   # the input's own gloss stays present
+                             concept(name="restricted", arity=1,
                                      gloss="falls under the restricted-content "
                                            "policy")],
                    asserts=[dict(status="forbid", act="produce(M)",
@@ -326,6 +341,12 @@ def test_an_error_DOES_drive_a_repair():
     assert r.repair_needed is False
     # ... and now the erroring twin: nothing declares it anywhere.
     r2 = run(module(requires=["restricted/1"], inputs=["new_material/1"],
+                    # glossed like its twin above, so the ONLY breach is the
+                    # self-beating `beats` entry this test is about.
+                    concepts=[concept(),
+                              concept(name="restricted", arity=1,
+                                      gloss="falls under the restricted-content "
+                                            "policy")],
                     asserts=[dict(status="forbid", act="produce(M)",
                                   body="new_material(M), restricted(M)",
                                   read_back="producing % is forbidden",

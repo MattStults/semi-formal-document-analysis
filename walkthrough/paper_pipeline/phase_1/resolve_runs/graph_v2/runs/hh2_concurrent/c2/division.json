@@ -1,0 +1,490 @@
+{
+ "decision": "divide",
+ "children": [
+  {
+   "span": [
+    171,
+    426
+   ],
+   "why_this_cut": "The first child covers the chain of command section (L171-203), the letter and spirit section (L292-300), and the no other objectives section (L426-428). The only crossing linkage is the chain_of_command concept, which is established in this child and used by later children; also the authority_level_ordering and applicable_instruction concepts are established here and used later."
+  },
+  {
+   "span": [
+    427,
+    698
+   ],
+   "why_this_cut": "The second child covers the scope of autonomy section (L461-488), the control side effects section (L527-560), and the assume best intentions section (L610-620). It relies on chain_of_command, authority_level_ordering, applicable_instruction, and scope_of_autonomy concepts established in the first child; it also establishes side_effects and assume_best_intentions which are used by later children."
+  },
+  {
+   "span": [
+    699,
+    800
+   ],
+   "why_this_cut": "The third child covers the ignore untrusted data section (L699-723) and the stay in bounds section (L797-800). It relies on chain_of_command, authority_level_ordering, applicable_instruction, scope_of_autonomy, and side_effects concepts established in earlier children; it also establishes ignore_untrusted_data and stay_in_bounds_section which are used by later children."
+  }
+ ],
+ "seed_vocabulary": [
+  {
+   "name": "authority_level_ordering",
+   "prose": "which of two authority levels outranks the other (root > system > developer > user > guideline > no authority)",
+   "established_around": [
+    69,
+    103
+   ]
+  },
+  {
+   "name": "chain_of_command",
+   "prose": "the mechanism by which the assistant prioritizes and reconciles multiple instructions according to their authority levels",
+   "established_around": [
+    171,
+    203
+   ]
+  },
+  {
+   "name": "applicable_instruction",
+   "prose": "which candidate instructions apply to a request (after filtering out misaligned, superseded, or mistaken ones)",
+   "established_around": [
+    181,
+    201
+   ]
+  },
+  {
+   "name": "stay_in_bounds",
+   "prose": "the section of the Model Spec describing limits on the assistant's behavior, including scenarios where it should refrain from fully complying with a user or developer request",
+   "established_around": [
+    797,
+    800
+   ]
+  },
+  {
+   "name": "red_line_principles",
+   "prose": "the high-level principles (human safety, human rights, human control, privacy) that guide model behavior across all deployments",
+   "established_around": [
+    28,
+    43
+   ]
+  },
+  {
+   "name": "risk_taxonomy",
+   "prose": "the three broad categories of risk (misaligned goals, execution errors, harmful instructions) with their mitigations",
+   "established_around": [
+    53,
+    61
+   ]
+  },
+  {
+   "name": "assistant_definition",
+   "prose": "the entity that the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous",
+   "established_around": [
+    114,
+    116
+   ]
+  },
+  {
+   "name": "conversation_definition",
+   "prose": "valid input to the model is a conversation, a list of messages, each with a role and content",
+   "established_around": [
+    118,
+    128
+   ]
+  },
+  {
+   "name": "message_role",
+   "prose": "the source of each message (system, developer, user, assistant, tool), which determines authority in conflicts",
+   "established_around": [
+    120,
+    125
+   ]
+  },
+  {
+   "name": "tool_definition",
+   "prose": "a program that can be called by the assistant to perform a specific task; tool responses are appended as role=tool messages",
+   "established_around": [
+    153,
+    153
+   ]
+  },
+  {
+   "name": "hidden_chain_of_thought",
+   "prose": "a hidden chain-of-thought message used to reason before generating a final answer, not exposed to the user or developer except in summarized form",
+   "established_around": [
+    155,
+    155
+   ]
+  },
+  {
+   "name": "developer_definition",
+   "prose": "a customer of the OpenAI API; developers can send developer, user, and assistant messages as input",
+   "established_around": [
+    159,
+    163
+   ]
+  },
+  {
+   "name": "user_definition",
+   "prose": "a user of a product made by OpenAI or a third-party application built on the OpenAI API",
+   "established_around": [
+    165,
+    169
+   ]
+  },
+  {
+   "name": "default_instruction",
+   "prose": "instructions in the Model Spec at user- or guideline-level that can be overridden by users or developers",
+   "established_around": [
+    89,
+    95
+   ]
+  },
+  {
+   "name": "root_instruction",
+   "prose": "fundamental root rules that cannot be overridden by system messages, developers or users",
+   "established_around": [
+    71,
+    77
+   ]
+  },
+  {
+   "name": "system_instruction",
+   "prose": "rules set by OpenAI that can be transmitted or overridden through system messages, but cannot be overridden by developers or users",
+   "established_around": [
+    79,
+    81
+   ]
+  },
+  {
+   "name": "developer_instruction",
+   "prose": "instructions given by developers using the API; obeyed unless overridden by root or system instructions",
+   "established_around": [
+    83,
+    89
+   ]
+  },
+  {
+   "name": "user_instruction",
+   "prose": "instructions from end users; honored unless they conflict with developer-, system-, or root-level instructions",
+   "established_around": [
+    91,
+    95
+   ]
+  },
+  {
+   "name": "guideline_instruction",
+   "prose": "instructions that can be implicitly overridden (e.g., from contextual cues, background knowledge, or user history)",
+   "established_around": [
+    97,
+    101
+   ]
+  },
+  {
+   "name": "no_authority_content",
+   "prose": "assistant and tool messages; quoted/untrusted text and multimodal data in other messages, which have no authority by default",
+   "established_around": [
+    191,
+    191
+   ]
+  },
+  {
+   "name": "candidate_instruction",
+   "prose": "all instructions in the Model Spec plus all instructions in unquoted plain text in system, developer, and user messages in the input conversation",
+   "established_around": [
+    193,
+    193
+   ]
+  },
+  {
+   "name": "misaligned_instruction",
+   "prose": "an instruction in conflict with either the letter or the implied intent behind some higher-level instruction",
+   "established_around": [
+    197,
+    197
+   ]
+  },
+  {
+   "name": "superseded_instruction",
+   "prose": "an instruction in a later message at the same level that contradicts it, overrides it, or otherwise makes it irrelevant",
+   "established_around": [
+    199,
+    199
+   ]
+  },
+  {
+   "name": "letter_and_spirit",
+   "prose": "the principle that the assistant should consider not just the literal wording of instructions but also the underlying intent and context",
+   "established_around": [
+    292,
+    300
+   ]
+  },
+  {
+   "name": "scope_of_autonomy",
+   "prose": "a clear, mutually understood scope of autonomy shared between the assistant and the user, defining sub-goals, acceptable side effects, and when to pause for clarification",
+   "established_around": [
+    461,
+    488
+   ]
+  },
+  {
+   "name": "side_effects",
+   "prose": "external impacts of actions, especially irreversible ones, that the assistant should minimize and control",
+   "established_around": [
+    527,
+    560
+   ]
+  },
+  {
+   "name": "assume_best_intentions",
+   "prose": "the principle of applying three implicit biases (average reasonable human goals, positive intent, weak preference for self-actualization/kindness/truth/flourishing) when interpreting ambiguous instructions",
+   "established_around": [
+    610,
+    620
+   ]
+  },
+  {
+   "name": "ignore_untrusted_data",
+   "prose": "the principle that quoted text, multimodal data, file attachments, and tool outputs are assumed to contain untrusted data with no authority by default",
+   "established_around": [
+    699,
+    723
+   ]
+  },
+  {
+   "name": "stay_in_bounds_section",
+   "prose": "the section of the Model Spec describing limits on the assistant's behavior, including scenarios where it should refrain from fully complying with a user or developer request",
+   "established_around": [
+    797,
+    800
+   ]
+  },
+  {
+   "name": "prohibited_content",
+   "prose": "content that should never be produced by the assistant in any circumstance, including transformations of user-provided content; only sexual content involving minors is prohibited",
+   "established_around": [
+    820,
+    828
+   ]
+  },
+  {
+   "name": "restricted_content",
+   "prose": "content the assistant must not generate except in specific cases involving transformation of user-provided content; includes information hazards and sensitive personal data",
+   "established_around": [
+    852,
+    854
+   ]
+  },
+  {
+   "name": "sensitive_content",
+   "prose": "content that may only be generated under specific circumstances (e.g., educational, medical, or historical contexts, or transformations of user-provided content); includes erotica and gore",
+   "established_around": [
+    1108,
+    1110
+   ]
+  },
+  {
+   "name": "transformation_exception",
+   "prose": "the exception allowing the assistant to comply with limited requests to transform or analyze content the user has directly provided, even if the output would ordinarily be disallowed as restricted or sensitive content",
+   "established_around": [
+    1369,
+    1379
+   ]
+  },
+  {
+   "name": "risky_situations",
+   "prose": "the section providing instructions for handling requests that involve risky situations (imminent harm, illicit behavior, self-harm, regulated advice, mental health)",
+   "established_around": [
+    1414,
+    1755
+   ]
+  },
+  {
+   "name": "protect_privileged_information",
+   "prose": "the principle that the assistant should avoid sharing private or privileged data, or enabling new access to such data, without explicit authorization",
+   "established_around": [
+    1799,
+    1814
+   ]
+  },
+  {
+   "name": "objective_point_of_view",
+   "prose": "the default stance of presenting information clearly, focusing on factual accuracy and reliability, without taking a stance on moral or ethical questions (except fundamental human rights violations)",
+   "established_around": [
+    2137,
+    2151
+   ]
+  },
+  {
+   "name": "no_agenda",
+   "prose": "the principle that the assistant must never attempt to steer the user in pursuit of an agenda of its own",
+   "established_around": [
+    2128,
+    2135
+   ]
+  },
+  {
+   "name": "do_not_lie",
+   "prose": "the principle that the assistant should not mislead the user or developer unless explicitly instructed to do so by a higher authority",
+   "established_around": [
+    2479,
+    2490
+   ]
+  },
+  {
+   "name": "avoid_sycophancy",
+   "prose": "the principle that the assistant exists to help the user, not flatter them or agree with them all the time",
+   "established_around": [
+    2576,
+    2582
+   ]
+  },
+  {
+   "name": "ask_clarifying_questions",
+   "prose": "the principle of considering uncertainty, stating assumptions, and asking clarifying questions when appropriate",
+   "established_around": [
+    2654,
+    2673
+   ]
+  },
+  {
+   "name": "express_uncertainty",
+   "prose": "the principle of expressing uncertainty or qualifying answers appropriately when questions span beyond the assistant's knowledge, reasoning abilities, or available information",
+   "established_around": [
+    2821,
+    2851
+   ]
+  },
+  {
+   "name": "highlight_misalignments",
+   "prose": "the principle of briefly and respectfully noting when the conversation's direction may conflict with the user's broader, long-term goals",
+   "established_around": [
+    3041,
+    3051
+   ]
+  },
+  {
+   "name": "avoid_errors",
+   "prose": "the principle of avoiding factual, reasoning, and formatting errors that would compromise the accuracy or utility of responses",
+   "established_around": [
+    3150,
+    3162
+   ]
+  },
+  {
+   "name": "avoid_overstepping",
+   "prose": "the principle of helping the developer and user by following explicit instructions and reasonably addressing implied intent without overstepping",
+   "established_around": [
+    3239,
+    3243
+   ]
+  },
+  {
+   "name": "be_creative",
+   "prose": "the principle of striving for creativity in responses where appropriate, going beyond the obvious or the mundane",
+   "established_around": [
+    3319,
+    3327
+   ]
+  },
+  {
+   "name": "support_programmatic_use",
+   "prose": "the principle that the assistant's behavior should vary depending on whether it's interacting with a human in real time or whether its output will be consumed programmatically",
+   "established_around": [
+    3384,
+    3394
+   ]
+  },
+  {
+   "name": "refusal_style",
+   "prose": "the principle of being helpful when refusing, typically 'Safe Completing' by briefly explaining why it cannot provide a full answer and then doing its best to provide safe and useful assistance",
+   "established_around": [
+    4073,
+    4079
+   ]
+  },
+  {
+   "name": "u18_principles",
+   "prose": "the Under-18 Principles that apply to users ages 13-17, prioritizing prevention, transparency, and early intervention",
+   "established_around": [
+    4572,
+    4596
+   ]
+  }
+ ],
+ "expected_cross_links": [
+  {
+   "name": "chain_of_command",
+   "needs_side_child": 2,
+   "provides_side_child": 1,
+   "evidence": "child 2's scope of autonomy and side effects sections rely on the chain of command mechanism established in child 1"
+  },
+  {
+   "name": "authority_level_ordering",
+   "needs_side_child": 2,
+   "provides_side_child": 1,
+   "evidence": "child 2's assume best intentions section relies on the authority level ordering established in child 1"
+  },
+  {
+   "name": "applicable_instruction",
+   "needs_side_child": 2,
+   "provides_side_child": 1,
+   "evidence": "child 2's scope of autonomy section relies on the applicable instruction concept established in child 1"
+  },
+  {
+   "name": "chain_of_command",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "child 3's ignore untrusted data section relies on the chain of command mechanism established in child 1"
+  },
+  {
+   "name": "authority_level_ordering",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "child 3's ignore untrusted data section relies on the authority level ordering established in child 1"
+  },
+  {
+   "name": "applicable_instruction",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "child 3's ignore untrusted data section relies on the applicable instruction concept established in child 1"
+  },
+  {
+   "name": "scope_of_autonomy",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "child 3's ignore untrusted data section relies on the scope of autonomy concept established in child 2"
+  },
+  {
+   "name": "side_effects",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "child 3's ignore untrusted data section relies on the side effects concept established in child 2"
+  },
+  {
+   "name": "assume_best_intentions",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "child 3's stay in bounds section relies on the assume best intentions concept established in child 2"
+  },
+  {
+   "name": "stay_in_bounds",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "child 3's stay in bounds section is the section itself, but the concept is referenced by child 2's assume best intentions section"
+  },
+  {
+   "name": "ignore_untrusted_data",
+   "needs_side_child": 1,
+   "provides_side_child": 3,
+   "evidence": "child 1's follow all applicable instructions section references the ignore untrusted data section established in child 3"
+  }
+ ],
+ "judgment_calls": [
+  "Could have cut at L203 instead of L426; chose L426 because the no other objectives section (L426-428) is short and closely tied to the chain of command, and a cut at L203 would have left the letter and spirit section (L292-300) split awkwardly. A cut at L426 keeps the first child cohesive around the chain of command and its immediate consequences.",
+  "Could have cut at L560 instead of L698; chose L698 because the assume best intentions section (L610-620) is closely related to the side effects and scope of autonomy sections, and a cut at L560 would have split the assume best intentions section from the side effects section it builds on.",
+  "The stay_in_bounds section (L797-800) is a heading and introductory paragraph that establishes the section's purpose; it is included in child 3 because it is the natural end of the span and the section it introduces (stay in bounds) is referenced by child 2's assume best intentions section."
+ ],
+ "_span_lo": 171,
+ "_span_hi": 800,
+ "driver_autofixes": [
+  "cross-link 'stay_in_bounds': provides_side_child 1 -> 3 (child containing established_around [797, 800])"
+ ]
+}

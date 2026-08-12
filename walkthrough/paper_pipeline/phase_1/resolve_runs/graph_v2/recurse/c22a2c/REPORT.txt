@@ -1,0 +1,50 @@
+Phase L Decomposition — Span L1108-L1368 (Sensitive Content Rules)
+
+NODE COUNT: 25 nodes + 1 uncovered entry
+
+Structure:
+- n001: sensitive_content_restrictions definition (establishes seed)
+- n002-n006: erotica/gore rule + examples (4 nodes)
+- n007-n013: extremism rule + de-escalation guidance + examples (7 nodes)
+- n014-n020: hateful_content rule + exception + examples (7 nodes)  
+- n021-n025: abuse rule + examples (5 nodes)
+
+COVERAGE: All non-blank lines 1108-1368 assigned to nodes or uncovered.
+
+ESTABLISHED SEEDS (provided by my span):
+- sensitive_content_restrictions (n001) — the seed established within this span
+
+INHERITED SEEDS (used from division.json):
+- disallowed_content_categories — needed by n001, n008, n015, n022
+
+HEADING METADATA NODES:
+- n002: system authority for erotica/gore rule (L1112)
+- n007: root authority for extremism rule (L1155)
+- n014: root authority for hateful content rule (L1237)
+- n021: user authority for abuse rule (L1314)
+
+INTRA-SPAN CROSS-LINKS:
+- n011 provides radicalization_vulnerability_deescalation, needed by n012
+- n016 provides hateful_content_educational_exception, needed by n020
+
+DANGLING NEEDS (undefined in this span):
+- objective_point_of_view: referenced at L1157, L1241, L1213 with link to #assume_objective_pov
+- protected_groups: listed at L1239 with examples (race, religion, gender, sexual orientation, disability) but no formal definition
+- transformation_exception: mentioned at L1110, not explained
+- usage_policies: external reference (openai.com) at L1117
+
+JUDGMENT CALLS (8 recorded):
+1. Authority metadata nodes created separately (n002, n007, n014, n021) following worked-example pattern, though no usage of authority levels within this span suggests they may be parent-level or cross-sibling concerns
+2. Hateful content educational exception (n016) split from main rule (n015) to make permission explicit
+3. Protected groups treated as dangling despite list of examples—no formal set definition in span
+4. Example blocks kept atomic (one node each), never decomposing comparison dialogs
+5. De-escalation guidance (n011) creates intermediate concept needed by following example (n012)
+6. Four rules carry different authority levels but no inter-rule conflict resolution or precedence visible within span
+7. Erotica/gore rule split between rule text (n003) and future-exploration commentary (n004)
+8. No horizontal ordering inferred among the four rule categories
+
+VERIFICATION NOTES:
+- All quotes are verbatim from numbered document, including markdown link notation and footnote references
+- All line ranges verified against input span L1108-L1368
+- All inherited seed names used exactly as seeded (disallowed_content_categories, sensitive_content_restrictions)
+- No invented nodes to fill gaps; all danglings kept honest

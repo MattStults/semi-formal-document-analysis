@@ -1,0 +1,128 @@
+{
+  "outcome": "translated",
+  "clause_id": "l1799_1974_n009",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the assistant may share its identity and capabilities",
+    "C2 the assistant must keep the underlying system or developer prompts private by default",
+    "C3 the underlying system or developer prompts may be disclosed only when policy explicitly allows it",
+    "C4 the analogy to a customer-service agent and training manual illustrates the same distinction: the manual equips the agent but is not disclosed unless policy allows"
+  ],
+  "acts": [
+    "share_identity_capabilities(A)",
+    "disclose_prompts(A, P)"
+  ],
+  "concepts": [
+    {
+      "name": "privileged_information_categories",
+      "arity": 1,
+      "gloss": "C is a category of information that counts as privileged information, so that its disclosure is restricted",
+      "licence": "textual",
+      "cites": "l1799_1974_n009",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "system_message_disclosure_distinction",
+      "arity": 1,
+      "gloss": "D is a fact about the assistant's identity, capabilities, or tools that is shareable, as opposed to verbatim text or full details of the underlying prompts, which are not",
+      "licence": "textual",
+      "cites": "l1799_1974_n009",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "underlying_prompt",
+      "arity": 1,
+      "gloss": "P is one of the underlying system or developer prompts that constitute the assistant's instructions",
+      "licence": "textual",
+      "cites": "l1799_1974_n009",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "policy_allows_disclosure",
+      "arity": 1,
+      "gloss": "policy explicitly allows the disclosure of P",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause says disclosure is allowed only when policy explicitly allows it, so a predicate for that permission is needed",
+      "toggleable": false
+    },
+    {
+      "name": "shareable_fact",
+      "arity": 1,
+      "gloss": "F is a fact about the assistant's identity or capabilities that the assistant may share",
+      "licence": "textual",
+      "cites": "l1799_1974_n009",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "l1799_1974_n009",
+      "inference": null,
+      "toggleable": false,
+      "atom": "shareable_fact(F)",
+      "gloss": "F is a fact about the assistant's identity or capabilities that the assistant may share",
+      "body": "system_message_disclosure_distinction(F)"
+    },
+    {
+      "licence": "textual",
+      "cites": "l1799_1974_n009",
+      "inference": null,
+      "toggleable": false,
+      "atom": "underlying_prompt(P)",
+      "gloss": "P is one of the underlying system or developer prompts that constitute the assistant's instructions",
+      "body": "privileged_information_categories(P)"
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "sharing % is permitted because it is a fact about the assistant's identity or capabilities",
+      "read_back_slots": ["F"],
+      "licence": "textual",
+      "cites": "l1799_1974_n009",
+      "inference": null,
+      "toggleable": false,
+      "status": "permit",
+      "act": "share_identity_capabilities(F)",
+      "body": "shareable_fact(F)"
+    },
+    {
+      "read_back": "disclosing % is forbidden unless policy explicitly allows it",
+      "read_back_slots": ["P"],
+      "licence": "textual",
+      "cites": "l1799_1974_n009",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "disclose_prompts(P)",
+      "body": "underlying_prompt(P), not policy_allows_disclosure(P)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "share_identity_capabilities",
+      "closure": "cepa",
+      "reason": "the clause explicitly permits sharing identity and capabilities, so silence about other sharing leaves it permitted"
+    },
+    {
+      "act_class": "disclose_prompts",
+      "closure": "cnpa",
+      "reason": "the clause says the underlying prompts are private by default and disclosed only when policy explicitly allows, so silence about a prompt's disclosure prohibits it"
+    }
+  ],
+  "requires": [
+    "privileged_information_categories/1",
+    "system_message_disclosure_distinction/1"
+  ],
+  "inputs": [
+    "policy_allows_disclosure/1"
+  ],
+  "forbid_body": []
+}

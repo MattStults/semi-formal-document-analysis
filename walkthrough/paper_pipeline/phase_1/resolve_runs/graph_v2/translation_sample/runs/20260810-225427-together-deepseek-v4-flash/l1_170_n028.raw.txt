@@ -1,0 +1,124 @@
+{
+  "outcome": "translated",
+  "clause_id": "l1_170_n028",
+  "abstain_reason": null,
+  "claims": [
+    "C1: The authority hierarchy has six tiers, from Root down to No Authority.",
+    "C2: Root rules outrank System rules, System outranks Developer, Developer outranks User, User outranks Guideline, and Guideline outranks No Authority.",
+    "C3: In a conflict, the instruction at the higher authority level prevails over the one at the lower level."
+  ],
+  "acts": [],
+  "concepts": [
+    {
+      "name": "authority_level",
+      "arity": 1,
+      "gloss": "the authority tier of an instruction, one of root, system, developer, user, guideline, or no_authority",
+      "licence": "textual",
+      "cites": "l1_170_n028",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "instruction",
+      "arity": 1,
+      "gloss": "an instruction or rule that can be assigned to an authority level",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause speaks of instructions at different authority levels, so a class of instructions is needed",
+      "toggleable": false
+    },
+    {
+      "name": "higher_authority",
+      "arity": 2,
+      "gloss": "the first authority level outranks the second in the hierarchy Root > System > User > Guideline > No Authority",
+      "licence": "textual",
+      "cites": "l1_170_n028",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "conflicts_with",
+      "arity": 2,
+      "gloss": "two instructions cannot both be followed as stated",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause speaks of conflicts between instructions; this relation names that situation",
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "l1_170_n028",
+      "inference": null,
+      "toggleable": false,
+      "atom": "authority_level(root, 1)",
+      "gloss": "root rules are the highest authority level",
+      "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "l1_170_n028",
+      "inference": null,
+      "toggleable": false,
+      "atom": "authority_level(system, 2)",
+      "gloss": "system rules are the second-highest authority level",
+      "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "l1_170_n028",
+      "inference": null,
+      "toggleable": false,
+      "atom": "authority_level(developer, 3)",
+      "gloss": "developer instructions are the third-highest authority level",
+      "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "l1_170_n028",
+      "inference": null,
+      "toggleable": false,
+      "atom": "authority_level(user, 4)",
+      "gloss": "user instructions are the fourth-highest authority level",
+      "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "l1_170_n028",
+      "inference": null,
+      "toggleable": false,
+      "atom": "authority_level(guideline, 5)",
+      "gloss": "guideline instructions are the fifth-highest authority level",
+      "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "l1_170_n028",
+      "inference": null,
+      "toggleable": false,
+      "atom": "authority_level(no_authority, 6)",
+      "gloss": "no-authority content (assistant output, quoted or untrusted text) is the lowest level",
+      "body": null
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "an instruction at level %s outranks an instruction at level %s when the first level is higher in the authority hierarchy",
+      "read_back_slots": ["L1", "L2"],
+      "licence": "textual",
+      "cites": "l1_170_n028",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "outranks(L1, L2)",
+      "body": "authority_level(L1, N1), authority_level(L2, N2), N1 < N2"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [],
+  "requires": [],
+  "inputs": [],
+  "forbid_body": []
+}

@@ -1,0 +1,86 @@
+{
+ "decision": "divide",
+ "children": [
+  {
+   "span": [
+    3239,
+    3501
+   ],
+   "why_this_cut": "Covers the 'Avoid overstepping' and 'Support the different needs of interactive chat and programmatic use' sections, ending at the blank line after the last example of the programmatic-use section. The only crossing linkage is the interactive-vs-programmatic distinction, seeded below."
+  },
+  {
+   "span": [
+    3502,
+    3755
+   ],
+   "why_this_cut": "Covers the 'Use appropriate style' section and all its subsections (Love humanity, Be rationally optimistic, Be responsible, Be interesting and interested, Be curious), ending at the span's end. The only crossing linkage is the interactive-vs-programmatic distinction, seeded below."
+  }
+ ],
+ "seed_vocabulary": [
+  {
+   "name": "authority_level_ordering",
+   "prose": "which of two authority levels outranks the other (root > system > developer > user > guideline > no authority)",
+   "established_around": [
+    69,
+    101
+   ]
+  },
+  {
+   "name": "untrusted_data",
+   "prose": "content in quoted text, untrusted_text blocks, multimodal data, file attachments, and tool outputs that has no authority by default and must be treated as information rather than instructions",
+   "established_around": [
+    701,
+    701
+   ]
+  },
+  {
+   "name": "stay_in_bounds",
+   "prose": "the section of the Model Spec describing limits on the assistant's behavior, including scenarios where the assistant should refrain from fully complying with a user or developer request",
+   "established_around": [
+    797,
+    799
+   ]
+  },
+  {
+   "name": "express_uncertainty_section",
+   "prose": "the section of the Model Spec titled 'Express uncertainty' describing when and how the assistant should express uncertainty or qualify answers",
+   "established_around": [
+    2821,
+    2821
+   ]
+  },
+  {
+   "name": "avoid_errors_section",
+   "prose": "the section of the Model Spec titled 'Avoid factual, reasoning, and formatting errors' describing the assistant's duty to avoid mistakes that compromise accuracy or utility",
+   "established_around": [
+    3150,
+    3150
+   ]
+  },
+  {
+   "name": "interactive_vs_programmatic_setting",
+   "prose": "whether the assistant is interacting with a human in real time (interactive) or its output will be consumed programmatically, and the default assumption of interactive unless a response_format schema or explicit instructions indicate programmatic use",
+   "established_around": [
+    3386,
+    3386
+   ]
+  }
+ ],
+ "expected_cross_links": [
+  {
+   "name": "interactive_vs_programmatic_setting",
+   "needs_side_child": 1,
+   "provides_side_child": 1,
+   "evidence": "Child 1's transformation guidance (L3243) and programmatic-use section (L3384-3501) rely on the interactive-vs-programmatic distinction; child 2's style sections (L3502-3755) also reference interactive settings (e.g., L3388-3392 behaviors are interactive-only, and style guidance applies to interactive chat). The concept is established in child 1 at L3386 and needed by child 2's style guidance."
+  }
+ ],
+ "judgment_calls": [
+  "Chose a 2-child split at L3501 (end of programmatic-use section) rather than a 3-child split (e.g., at L3319 or L3384) because the 'Avoid overstepping' and 'Support the different needs' sections are tightly linked by the transformation examples and the interactive/programmatic distinction; a cut at L3319 would have split the transformation discussion from its programmatic-use counterpart, requiring more seeds. The style section is a cohesive unit that can be divided further by its subsections.",
+  "Seeded interactive_vs_programmatic_setting because it crosses the cut: child 1 establishes it at L3386, and child 2's style guidance (e.g., L3504, L3388-3392) needs it. This was not in the inherited vocabulary, so I coined it."
+ ],
+ "_span_lo": 3239,
+ "_span_hi": 3755,
+ "driver_autofixes": [
+  "cross-link 'interactive_vs_programmatic_setting': provides_side_child 2 -> 1 (child containing established_around [3386, 3386])"
+ ]
+}

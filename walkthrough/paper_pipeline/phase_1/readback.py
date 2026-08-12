@@ -455,6 +455,81 @@ def count_not(body: Optional[str]) -> int:
 
 
 # ==========================================================================
+#  clause text — what RB4 and the seats compare against
+# ==========================================================================
+
+#: The `section_id` `node_corpus.py` stamps on every graph-node corpus row.
+NODE_SECTION_ID = "graph_node"
+
+#: The packed-prompt marker a node row's `quote` opens with. The quote is the
+#: TRANSLATOR'S prompt (assigned names, needs, citation rules) and must never
+#: reach RB4 or a seat as "the clause".
+_NODE_PACKED_MARK = "GRAPH NODE (from the document-decomposition graph"
+_NODE_NARROW = re.compile(r'\[node narrows this span to: "(.*?)"\]', re.S)
+_NODE_SOURCE_HEAD = re.compile(r"^SOURCE TEXT[^\n]*:\n", re.M)
+_NODE_SPAN_HEAD = re.compile(r"^L\d{4,}-L\d{4,}:\n", re.M)
+
+
+def clause_text(row):
+    """The judgeable clause text for ONE corpus row — node rows included.
+
+    ⭐ PROMOTED FROM THE FIRST NODE SMOKE (READBACK_SMOKE.md, synthesis 1 /
+    gap 3): a plain `modelspec_clauses.json` row's `quote` IS the clause and
+    is returned verbatim. A `node_corpus.py` row's `quote` is the PACKED
+    TRANSLATOR PROMPT — assigned predicate names, `requires` instructions, a
+    citation rule — and handing that to RB4 or a seat as "the clause" shows a
+    reviewer the answer sheet. For node rows this returns, in order of
+    preference:
+
+      1. the narrowed span quote(s) — the `[node narrows this span to: "…"]`
+         bracket(s) the packer embeds, which are the node's own claim text;
+      2. otherwise the verbatim SOURCE TEXT span(s), with the packer's
+         instruction preamble, `Lxxxx-Lyyyy:` locators and span separators
+         stripped — locators locate text, they are not clause text.
+
+    ⛔ Never the packed prompt itself. A node row with no recoverable source
+    text returns "" so RB4 reports `echo-not-measured` rather than measuring
+    the rendering against an instruction sheet.
+    """
+    if not isinstance(row, dict):
+        return str(row)
+    quote = str(row.get("quote") or "")
+    is_node = (row.get("section_id") == NODE_SECTION_ID
+               or quote.startswith(_NODE_PACKED_MARK))
+    if not is_node:
+        return quote
+    m = _NODE_SOURCE_HEAD.search(quote)
+    if m is None:
+        # no recoverable source block: only embedded narrows can be trusted
+        narrowed = [t.strip() for t in _NODE_NARROW.findall(quote)
+                    if t.strip()]
+        return "\n\n".join(narrowed)
+    # PER SPAN, not globally (consolidated_fix_review.md F2, 2026-08-12): a
+    # partially-narrowed multi-span node used to lose its un-narrowed
+    # spans' text entirely -- each span contributes its own narrow if it
+    # has one, its stripped source text otherwise
+    out = []
+    for span in quote[m.end():].split("\n---\n"):
+        narrowed = [t.strip() for t in _NODE_NARROW.findall(span)
+                    if t.strip()]
+        if narrowed:
+            out.extend(narrowed)
+            continue
+        s = _NODE_SPAN_HEAD.sub("", _NODE_NARROW.sub("", span)).strip()
+        if s:
+            out.append(s)
+    return "\n\n".join(out)
+
+
+def clause_texts(rows) -> dict:
+    """`{clause_id: clause_text(row)}` over an iterable of corpus rows, or
+    over a `{clause_id: row}` mapping such as `link.load_clauses()`."""
+    items = rows.items() if isinstance(rows, dict) else \
+        ((r.get("id"), r) for r in rows)
+    return {cid: clause_text(row) for cid, row in items}
+
+
+# ==========================================================================
 #  glosses
 # ==========================================================================
 

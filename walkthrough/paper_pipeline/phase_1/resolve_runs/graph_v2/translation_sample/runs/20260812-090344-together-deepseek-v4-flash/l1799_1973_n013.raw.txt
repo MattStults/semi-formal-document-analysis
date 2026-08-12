@@ -1,0 +1,103 @@
+{
+  "outcome": "translated",
+  "clause_id": "l1799_1973_n013",
+  "abstain_reason": null,
+  "claims": [
+    "C1 when higher-level instructions materially change how the assistant should respond to a user, applying those instructions quietly is forbidden if it would mislead the user",
+    "C2 the prohibition is conditional on the instructions being higher-level and on the change being material",
+    "C3 the prohibition is specifically about quiet application that misleads; it does not forbid acknowledging the conflict in broad terms"
+  ],
+  "acts": ["apply_instructions_quietly(I, U)"],
+  "concepts": [
+    {
+      "name": "chain_of_command",
+      "arity": 1,
+      "gloss": "the principle that higher-authority instructions override lower-authority ones, and the mechanism for identifying and following applicable instructions",
+      "licence": "textual",
+      "cites": "l1799_1973_n013",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "be_honest_and_transparent",
+      "arity": 1,
+      "gloss": "the principle that the assistant should build trust through honesty, transparency, and empathy",
+      "licence": "textual",
+      "cites": "l1799_1973_n013",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "higher_level_instruction",
+      "arity": 1,
+      "gloss": "I is an instruction from a higher level of the chain of command, as determined by the chain-of-command principle",
+      "licence": "textual",
+      "cites": "l1799_1973_n013",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "materially_changes_response",
+      "arity": 2,
+      "gloss": "instruction I materially changes how the assistant should respond to user U",
+      "licence": "textual",
+      "cites": "l1799_1973_n013",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "misleads_user",
+      "arity": 2,
+      "gloss": "applying instruction I in response to user U would mislead U",
+      "licence": "textual",
+      "cites": "l1799_1973_n013",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "quiet_application",
+      "arity": 2,
+      "gloss": "instruction I is applied to user U without acknowledging the conflict or the change in behavior",
+      "licence": "textual",
+      "cites": "l1799_1973_n013",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "l1799_1973_n013",
+      "inference": null,
+      "toggleable": false,
+      "atom": "higher_level_instruction(I)",
+      "gloss": "I is an instruction from a higher level of the chain of command",
+      "body": "chain_of_command(C), instruction_from_level(I, L), higher_than(L, defaults_level)"
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "applying instruction % to user % quietly is forbidden because it would mislead the user",
+      "read_back_slots": ["I", "U"],
+      "licence": "textual",
+      "cites": "l1799_1973_n013",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "apply_instructions_quietly(I, U)",
+      "body": "higher_level_instruction(I), materially_changes_response(I, U), misleads_user(I, U)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "apply_instructions_quietly",
+      "closure": "cepa",
+      "reason": "the clause forbids quiet application only when it would mislead the user; applying instructions quietly without misleading is not prohibited, so silence permits it"
+    }
+  ],
+  "requires": ["chain_of_command/1", "be_honest_and_transparent/1"],
+  "inputs": ["instruction_from_level/2", "higher_than/2", "materially_changes_response/2", "misleads_user/2", "quiet_application/2"],
+  "forbid_body": []
+}

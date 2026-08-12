@@ -154,8 +154,27 @@ SIG = re.compile(r"[a-z][A-Za-z0-9_]*/\d+")
 #: clingo's own refusals. `python -m clingo` ALWAYS exits 0 -- pyclingo's
 #: __main__ catches the RuntimeError and prints `*** ERROR:` -- so the return
 #: code alone cannot be trusted and the text has to be read as well.
-CLINGO_ERR = re.compile(r"^.*\berror\b\s*:.*$", re.M)
+#: `note:` lines carry the diagnosis ("'A' is unsafe") that the error
+#: line only points at; dropping them fed the repair loop a message with
+#: the location but not the cause (adversarial review 2026-08-10).
+CLINGO_ERR = re.compile(r"^.*\b(?:error|note)\b\s*:.*$", re.M)
 CLINGO_OK_RC = (0, 10, 20, 30)
+#: ⭐ THE SHARED PREAMBLE, and every line of it. `phase_1/schema.py`'s
+#: `render_lp` emits exactly these two lines into EVERY module that carries an
+#: ontology fact (the ablation guard for deontic_probe/FINDINGS.md §4.6). At
+#: single-module scope they are inert; at CORPUS scope clingo refuses the
+#: second `#const onto = on.` as a constant REDEFINITION and analyses NOTHING
+#: — first measured on the 14-module graph-node corpus, 2026-08-11
+#: (`resolve_runs/graph_v2/STEPS34_READINESS.md` gap 1). Both lines are
+#: idempotent by construction — N identical copies mean exactly what one
+#: means — so a corpus link keeps the first copy and drops the repeats.
+#: ⛔ ONLY these exact lines. A `#const` collision that is NOT this preamble
+#: is a genuine cross-module redefinition and must still surface as the
+#: clingo error it is; dedupe_shared_preamble() never touches it.
+#: ⚠️ Kept in step with `render_lp` by TEXT, not by import — link.py must not
+#: import the phase_1 tree (see CONCEPT_TABLE above). `test_link.py` pins the
+#: correspondence by rendering real modules through the contract.
+SHARED_PREAMBLE = ("#const onto = on.", "o :- onto = on.")
 
 
 # ==========================================================================
@@ -725,6 +744,41 @@ def _check_concepts(paths, headers, concepts):
     return out, where
 
 
+def dedupe_shared_preamble(paths, tmpdir):
+    """Copies of `paths` keeping only the FIRST copy of each SHARED_PREAMBLE
+    line across the whole set. Returns `(new_paths, lines_removed)`.
+
+    This is the corpus-assembly half of the emission contract: `render_lp`
+    serves the single-module path (checks.py stage 2, per-module run
+    artifacts, byte-identical), and the link layer owns making N modules
+    loadable as ONE program. Basenames are preserved so findings still name
+    the module; each copy sits in its own numbered subdir so equal basenames
+    from different run directories cannot collide.
+
+    ⛔ Nothing else is touched. A non-preamble `#const` redefinition — real
+    cross-module link glue can write one; stage 1 cannot — passes through
+    unchanged and still errors in clingo.
+    """
+    out, removed, seen = [], 0, set()
+    for i, p in enumerate(paths):
+        kept = []
+        for ln in open(p, encoding="utf-8").read().splitlines(True):
+            s = ln.strip()
+            if s in SHARED_PREAMBLE:
+                if s in seen:
+                    removed += 1
+                    continue
+                seen.add(s)
+            kept.append(ln)
+        d = os.path.join(tmpdir, str(i))
+        os.makedirs(d, exist_ok=True)
+        q = os.path.join(d, os.path.basename(p))
+        with open(q, "w", encoding="utf-8") as f:
+            f.writelines(kept)
+        out.append(q)
+    return out, removed
+
+
 def _check_clingo(paths):
     """Does the program COMPILE?
 
@@ -821,7 +875,20 @@ def collect(paths, concepts=None):
     findings += _check_closure(paths)
     findings += _check_beats_cycle(paths, texts)
 
-    clingo_findings, blob = _check_clingo(paths)
+    # ---- 2. corpus assembly: one program from N modules ----------------
+    # At corpus scope the SHARED_PREAMBLE (see its comment) is deduped to one
+    # copy before clingo sees the set; at single-module scope the file is
+    # passed exactly as rendered. Only the clingo subprocess reads the deduped
+    # copies — every static check above reads the artifacts as emitted.
+    if len(paths) > 1:
+        tmp = tempfile.mkdtemp(prefix="link_corpus_")
+        try:
+            clingo_paths, _removed = dedupe_shared_preamble(paths, tmp)
+            clingo_findings, blob = _check_clingo(clingo_paths)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+    else:
+        clingo_findings, blob = _check_clingo(paths)
     findings += clingo_findings
 
     headless = {_atom_id(name, parens) for name, parens in NO_HEAD.findall(blob)}
@@ -1221,6 +1288,40 @@ def self_test():
               "error -- 46 of 228 reused names (20%) carry more than one "
               "definition, so this is the ORDINARY rate. The control is the "
               "same name declared identically, which is reuse working")
+
+        # (k) THE SHARED-PREAMBLE COLLISION, measured on the graph-node
+        # corpus (STEPS34_READINESS.md gap 1). render_lp emits
+        # `#const onto = on.` into every module carrying ontology facts, so
+        # at corpus scope clingo refused the redefinition and analysed
+        # NOTHING. collect() now dedupes exactly the SHARED_PREAMBLE lines
+        # at multi-file scope — and nothing else.
+        preamble = "\n".join(SHARED_PREAMBLE) + "\n"
+        a = write("k_onto_a.lp", _module(
+            "t090", inputs="raw/1",
+            body=preamble + "cls_a(M) :- o, raw(M).   % [T] t090\n"))
+        b = write("k_onto_b.lp", _module(
+            "t091", inputs="raw/1",
+            body=preamble + "cls_b(M) :- o, raw(M).   % [T] t091\n"))
+        check("(k1) two modules sharing render_lp's ontology preamble link "
+              "cleanly at corpus scope",
+              not hit([a, b], "clingo-error"),
+              "every ontology-bearing module carries `#const onto = on.`; "
+              "without corpus-scope dedup clingo refuses the redefinition "
+              "and the whole link analyses nothing")
+        c = write("k_const_a.lp", _module(
+            "t092", body=preamble + "#const depth = 1.\n"
+            "defines(t092, term, x).   % [T] t092\n"))
+        d = write("k_const_b.lp", _module(
+            "t093", body=preamble + "#const depth = 2.\n"
+            "defines(t093, term, y).   % [T] t093\n"))
+        f = hit([c, d], "clingo-error")
+        check("(k2) ... and a GENUINE non-preamble `#const` collision still "
+              "errors",
+              len(f) == 1 and "redefinition" in f[0].message,
+              "the guard that must kill (k1): only the exact SHARED_PREAMBLE "
+              "lines are idempotent by construction; deduping any other "
+              "`#const` would silently paper over a real cross-module "
+              "contradiction")
 
         # (h) DEFECT 7. collect() / report() split.
         fields = set(getattr(Finding, "__dataclass_fields__", {}))

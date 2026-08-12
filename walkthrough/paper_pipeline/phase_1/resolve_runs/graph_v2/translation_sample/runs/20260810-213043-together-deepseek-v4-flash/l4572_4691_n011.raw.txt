@@ -1,0 +1,147 @@
+{
+  "outcome": "translated",
+  "clause_id": "l4572_4691_n011",
+  "abstain_reason": null,
+  "claims": [
+    "C1: For U18 users, the assistant is forbidden from engaging in immersive romantic roleplay.",
+    "C2: For U18 users, the assistant is forbidden from engaging in first-person romantic roleplay.",
+    "C3: For U18 users, the assistant is forbidden from engaging in sexual roleplay.",
+    "C4: The prohibition on romantic roleplay for U18 users applies even if the roleplay would be permitted for adults.",
+    "C5: The prohibition on romantic roleplay for U18 users is grounded in the principle that roleplay must not undermine real-world ties."
+  ],
+  "acts": [
+    "engage_in_romantic_roleplay(A, U)",
+    "engage_in_first_person_romantic_roleplay(A, U)",
+    "engage_in_sexual_roleplay(A, U)"
+  ],
+  "concepts": [
+    {
+      "name": "u18_user/1",
+      "arity": 1,
+      "gloss": "U is a user known to be under 18 years of age",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause is explicitly scoped to U18 users, so a predicate identifying such users is needed",
+      "toggleable": false
+    },
+    {
+      "name": "roleplay_undermines_real_world_ties/1",
+      "arity": 1,
+      "gloss": "R is a roleplay that could undermine the user's real-world relationships or obligations",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause refers to the principle that roleplay must not undermine real-world ties, so a predicate for that condition is needed",
+      "toggleable": false
+    },
+    {
+      "name": "adult_user/1",
+      "arity": 1,
+      "gloss": "U is a user who is not a minor",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause contrasts the U18 case with what would be allowed for adults, so a predicate for adult users is needed",
+      "toggleable": false
+    },
+    {
+      "name": "permitted_for_adults/1",
+      "arity": 1,
+      "gloss": "the act is permitted when the user is an adult",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause says the prohibition applies even where the act would be allowed for adults, so a predicate for the adult-permitted baseline is needed",
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "l4572_4691_n011",
+      "inference": null,
+      "toggleable": false,
+      "atom": "u18_user(U)",
+      "gloss": "U is a user known to be under 18 years of age"
+    ,
+      "body": "user(U), user_age_under_18(U)"
+    },
+    {
+      "licence": "textual",
+      "cites": "l4572_4691_n011",
+      "inference": null,
+      "toggleable": false,
+      "atom": "romantic_roleplay(R)",
+      "gloss": "R is a roleplay that is romantic in nature",
+      "body": "roleplay(R), romantic_nature(R)"
+    },
+    {
+      "licence": "textual",
+      "cites": "l4572_4691_n011",
+      "inference": null,
+      "toggleable": false,
+      "atom": "undermines_real_world_ties(R)",
+      "gloss": "R is a roleplay that undermines real-world ties",
+      "body": "roleplay(R), undermines_real_world_ties(R)"
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "engaging in immersive romantic roleplay with a user known to be under 18 is forbidden",
+      "read_back_slots": ["R", "U"],
+      "licence": "textual",
+      "cites": "l4572_4691_n011",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "engage_in_romantic_roleplay(R, U)",
+      "body": "romantic_roleplay(R), u18_user(U), would_engage(R, U)"
+    },
+    {
+      "read_back": "engaging in first-person romantic roleplay with a user known to be under 18 is forbidden",
+      "read_back_slots": ["R", "U"],
+      "licence": "textual",
+      "cites": "l4572_4691_n011",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "engage_in_first_person_romantic_roleplay(R, U)",
+      "body": "romantic_roleplay(R), first_person(R), u18_user(U), would_engage(R, U)"
+    },
+    {
+      "read_back": "engaging in sexual roleplay with a user known to be under 18 is forbidden",
+      "read_back_slots": ["R", "U"],
+      "licence": "textual",
+      "cites": "l4572_4691_n011",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "sexual_roleplay(R, U)",
+      "body": "sexual_roleplay(R), u18_user(U), would_engage(R, U)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "roleplay_act",
+      "closure": "cnpa",
+      "reason": "The clause forbids specific romantic/sexual roleplay acts with U18 users but does not state that all roleplay is permitted; the default for unlisted roleplay acts is unsettled by this clause."
+    }
+  ],
+  "requires": [
+    "real_world_ties/1",
+    "u18_user/1",
+    "roleplay/1",
+    "romantic_roleplay/1",
+    "sexual_roleplay/1",
+    "first_person_roleplay/1",
+    "would_engage/2"
+  ],
+  "inputs": [
+    "u18_user/1",
+    "roleplay/1",
+    "romantic_roleplay/1",
+    "sexual_roleplay/1",
+    "first_person_roleplay/1",
+    "would_engage/2"
+  ],
+  "forbid_body": []
+}

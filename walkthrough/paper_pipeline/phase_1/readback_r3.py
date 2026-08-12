@@ -831,6 +831,50 @@ def verdict_atoms(situation):
                         if _VERDICT.match(a.replace(" ", ""))))
 
 
+#: A link module's own xclingo directive. `schema.render_lp` ends EVERY stored
+#: `.lp` with `%!show_trace {asserts(P,D,A)}. %!show_trace {beats(S,W,L)}.`,
+#: and R3 appends exactly ONE directive per verdict atom under review — a
+#: surviving stored directive would root trees at every verdict in the whole
+#: link scope, handing a seat derivations of verdicts nobody asked about.
+_SHOW_TRACE_LINE = re.compile(r"^[ \t]*%!show_trace\b.*$", re.MULTILINE)
+
+
+def hygienic_link_texts(link_texts):
+    """`[(name, text)]` made safe to concatenate under ONE xclingo run.
+
+    ⭐ Link-scope hygiene at readback scope (READBACK_SMOKE.md gap 5 /
+    STEPS34_READINESS gap 1), the same two rewrites `link.collect` applies at
+    stage-3 corpus scope, applied here because R3 concatenates the texts
+    itself rather than handing files to `link`:
+
+      1. `link.SHARED_PREAMBLE` (`#const onto = on.` / `o :- onto = on.`) is
+         deduped to the FIRST copy across the whole link scope — a second
+         `#const onto` is a clingo redefinition error that kills every file in
+         the scope. ⛔ ONLY those exact lines: any OTHER `#const` collision
+         still errors, on purpose, exactly as `link.collect` rules.
+      2. every stored `%!show_trace` directive is stripped (see
+         `_SHOW_TRACE_LINE`). `%!trace_rule` annotations are KEPT — they are
+         what lets a link-side rule appear, labelled, inside a tree.
+
+    ⚠️ The module program R3 composes carries neither shape (`module_program`
+    drops the `o` guard and emits no directive), so nothing here touches it.
+    """
+    import link  # walkthrough/link.py — SHARED_PREAMBLE is its ruling
+    seen = set()
+    out = []
+    for name, text in link_texts:
+        kept = []
+        for line in str(text).splitlines():
+            s = line.strip()
+            if s in link.SHARED_PREAMBLE:
+                if s in seen:
+                    continue
+                seen.add(s)
+            kept.append(line)
+        out.append((name, _SHOW_TRACE_LINE.sub("", "\n".join(kept))))
+    return tuple(out)
+
+
 def render_r3(mod, situations, *, extra_gloss=None, gloss=None, link_texts=(),
               placeholder=None, xclingo=None):
     """R3 over one module and its stage-3 covering set.
@@ -862,7 +906,8 @@ def render_r3(mod, situations, *, extra_gloss=None, gloss=None, link_texts=(),
     # Keyed on the trace-safe form, which is what xclingo prints back.
     layers = {trace_safe(r.text)[0]: r.layer for r in renderings}
     program = module_program(mod, renderings, notes)
-    sources = [(f"{mod.clause_id} (module)", program)] + list(link_texts)
+    sources = ([(f"{mod.clause_id} (module)", program)]
+               + list(hygienic_link_texts(link_texts)))
     _refuse_anonymous(sources)
     # ⭐ The pre-render transform, and this is the ONLY place it happens: the
     # stored `program` below keeps the author's `_`, and `deanonymise(program)`

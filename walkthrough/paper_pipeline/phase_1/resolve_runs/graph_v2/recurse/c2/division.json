@@ -1,0 +1,99 @@
+{
+  "decision": "divide",
+  "children": [
+    {
+      "span": [171, 796],
+      "why_this_cut": "Ends 'The chain of command' section (meta-rules about how to follow instructions). L0171-L0796 covers: (1) Follow all applicable instructions with authority hierarchy ordering; (2) Respect letter and spirit of instructions; (3) No other objectives; (4) Act within scope of autonomy; (5) Control side effects; (6) Assume best intentions; (7) Ignore untrusted data by default. Clean break: L0796 ends with delegated authority example, L0797 starts new major section 'Stay in bounds' with a different focus (content restrictions, not instruction-following). No rule-specific content crosses backward into this child from below."
+    },
+    {
+      "span": [797, 2125],
+      "why_this_cut": "Covers 'Stay in bounds' (L0797-L1413) and 'Take extra care in risky situations' (L1414-L2125), which together establish all content restrictions and safety guardrails. Includes: (1) Comply with applicable laws; (2) Do not generate disallowed content (prohibited, restricted, sensitive); (3) Transform restricted/sensitive content; (4) Prevent imminent harm; (5) Do not facilitate illicit behavior; (6) Do not encourage self-harm/delusions/mania; (7) Provide information without regulated advice; (8) Support mental health discussions; (9) Do not reveal privileged information; (10) Use preset voice. These form a cohesive block on what the assistant should NOT do or should do with great care. Clean break: L2125 ends section on 'Respect real-world ties', L2126 starts new section 'Seek the truth together' which shifts focus to honesty principles and meta-rules about objective thinking."
+    },
+    {
+      "span": [2126, 3147],
+      "why_this_cut": "Covers 'Seek the truth together' section (L2126-L3147) which establishes meta-rules about honesty, objectivity, and helping users think clearly. Includes: (1) Don't have an agenda; (2) Assume objective point of view; (3) Present perspectives from any point of opinion spectrum; (4) No topic is off limits; (5) Be honest and transparent / Do not lie; (6) Ask clarifying questions; (7) Express uncertainty; (8) Highlight possible misalignments. This section is thematically distinct from the instruction-following and content-restriction sections, focusing instead on epistemic integrity and truth-seeking. Clean break: L3147 ends with 'Highlight possible misalignments' example (a worked example about a resignation letter scenario), L3148 starts new major section 'Do the best work' which transitions from meta-principles to practical execution guidance."
+    }
+  ],
+  "seed_vocabulary": [
+    {
+      "name": "authority_levels_hierarchy",
+      "prose": "The precedence ordering of instruction sources from highest to lowest: Root > System > Developer > User > Guideline > (No Authority). This ordering determines which instructions override which when conflicts arise.",
+      "established_around": [186, 191]
+    },
+    {
+      "name": "applicable_instructions",
+      "prose": "Instructions that must be followed, determined by filtering all candidate instructions to exclude those that are misaligned with higher-authority instructions, superseded by later same-level instructions, or suspected to be mistaken. These form the actual guidance the assistant follows.",
+      "established_around": [179, 195]
+    },
+    {
+      "name": "stay_in_bounds_principles",
+      "prose": "The collection of limits on assistant behavior where the assistant should refrain from fully complying with user or developer requests, including: prohibited content (sexual content involving minors), restricted content (information hazards, sensitive personal data), sensitive content (erotica/gore), compliance with laws, prevention of illicit behavior, prevention of imminent harm, and refusal to encourage self-harm. These establish hard boundaries across the assistant's behavior.",
+      "established_around": [797, 799]
+    },
+    {
+      "name": "misaligned_instruction",
+      "prose": "An instruction that is in conflict with either the letter or implied intent of a higher-authority instruction. Misaligned instructions are filtered out when determining what the assistant should actually do.",
+      "established_around": [197, 197]
+    },
+    {
+      "name": "scope_of_autonomy",
+      "prose": "A clear, mutually understood boundary that defines which sub-goals the assistant may pursue, acceptable side effects, and when the assistant must pause for clarification or approval. This prevents misunderstandings about what autonomy the assistant has in pursuing multi-step goals.",
+      "established_around": [461, 488]
+    },
+    {
+      "name": "do_not_encourage_self_harm",
+      "prose": "Root-level requirement that the assistant must not encourage or enable self-harm (including suicide and self-injury), must convey supportive messaging that the user is not alone and there are resources to help, and must respond to signs of delusions or mania with a safety-oriented and empathetic approach.",
+      "established_around": [1611, 1690]
+    },
+    {
+      "name": "inform_user_of_uncertainty",
+      "prose": "The principle that the assistant should express uncertainty naturally and conversationally when it lacks confidence, is reasoning through difficult problems, or when incorrect information could have serious consequences. This builds trust by being honest about limitations.",
+      "established_around": [2821, 2943]
+    },
+    {
+      "name": "objective_truth_seeking",
+      "prose": "The principle that the assistant should present information focusing on factual accuracy from reliable sources, avoid steering users toward predetermined conclusions, and respect users' autonomy to form their own opinions. This applies especially on factual, controversial, or moral topics.",
+      "established_around": [2126, 2150]
+    }
+  ],
+  "expected_cross_links": [
+    {
+      "needs_side_child": 2,
+      "provides_side_child": 1,
+      "name": "authority_levels_hierarchy",
+      "evidence": "Child 2 (especially sections on comply with laws, do not reveal privileged information) applies the authority ordering from Child 1 to determine which restrictions override which instructions from different sources. For instance, a root-level prohibition on sexual content involving minors cannot be overridden by system or developer instructions."
+    },
+    {
+      "needs_side_child": 2,
+      "provides_side_child": 1,
+      "name": "applicable_instructions",
+      "evidence": "Child 2 (prevent imminent harm, do not facilitate illicit behavior sections) must understand which instructions are applicable (from Child 1) before deciding whether to comply with a request. A harmful instruction from a user is not necessarily applicable if it conflicts with higher authority."
+    },
+    {
+      "needs_side_child": 3,
+      "provides_side_child": 2,
+      "name": "stay_in_bounds_principles",
+      "evidence": "Child 3 (Seek the truth together section, especially 'No topic is off limits') references and must contextualize the existence of content restrictions from Child 2, explaining that the assistant can discuss restricted topics from an objective, educational perspective without actually producing the restricted content."
+    },
+    {
+      "needs_side_child": 3,
+      "provides_side_child": 1,
+      "name": "authority_levels_hierarchy",
+      "evidence": "Child 3 (especially 'Highlight possible misalignments' and 'Assume objective point of view') must reference the authority hierarchy from Child 1 when explaining how to handle conflicts between truth-seeking and explicit instructions that might come from different authority levels."
+    },
+    {
+      "needs_side_child": 3,
+      "provides_side_child": 2,
+      "name": "do_not_encourage_self_harm",
+      "evidence": "Child 3 ('Do not lie' and 'Be honest and transparent' sections) must reference the self-harm prohibition from Child 2 when discussing how to be forthright without actively encouraging harmful behavior, especially in mental health contexts where honesty and care both matter."
+    }
+  ],
+  "judgment_calls": [
+    "Chose L796→L797 (end of 'Ignore untrusted data' / start of 'Stay in bounds') over alternative cuts because the boundary marks a fundamental shift in focus: from HOW to follow instructions (what applies, how to interpret, how to act autonomously) to WHAT restrictions apply regardless of instructions. The earlier cut at L461 (between 'Act within scope' and 'Control side effects') would split cohesive meta-rules about autonomy and self-effects.",
+    "Chose L2125→L2126 (end of 'Respect real-world ties' / start of 'Seek the truth together') over L2049 (end of 'Fairness') because 'Respect real-world ties' is thematically paired with the earlier behavioral rules (Fairness, Uphold fairness) as principles about how the assistant relates to the world. 'Seek the truth together' is epistemically distinct: it's about the assistant's stance toward truth and objectivity, not about respect or fairness in behavior.",
+    "Did not cut within 'Stay in bounds' (despite it being ~1300 lines) because its internal structure (prohibited → restricted → sensitive, then subdomains of laws/info hazards/targeted manipulation/creators/privacy/content types, then risky situations subsection) would require many cross-links to stitch back together. The section is thematically unified: all about what the assistant should refuse or carefully gate.",
+    "Could have cut at L1413→L1414 (between 'Comply with requests to transform' and 'Take extra care in risky situations') but chose not to because 'Take extra care' is not an independent section with its own rules—it's a subsection of 'Stay in bounds' that applies existing restrictions (self-harm, illicit behavior, harm prevention) in risky conversation contexts. Separating it would break the conceptual unity of content policy.",
+    "Chose balanced child sizes (~626, ~1329, ~1022 lines) over perfectly equal splits because thematic coherence takes precedence. Child 2 is larger but forms a single policy domain (content restrictions and safety); forcing a cut within it would require extensive cross-link machinery to clarify what restrictions apply in which contexts.",
+    "REPAIR: Added seed_vocabulary entry for 'do_not_encourage_self_harm' (established_around L1611-L1690) to support expected_cross_links entry referencing this concept from Child 3 to Child 2. Every cross-link concept must be seeded so children converge on identical names."
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "decision": "divide",
+  "children": [
+    {
+      "span": [2126, 2473],
+      "why_this_cut": "Covers 'Don't have an agenda' through 'No topic is off limits' — principles establishing what topics can be discussed and how to approach them without steering users toward predetermined conclusions. Establishes the inherited 'objective_truth_seeking' principle through extensive examples showing objective POV on factual questions, balanced perspectives on moral/ethical questions, and willingness to discuss any topic objectively. Clean break: L2473 ends with erotica/restriction discussion example, L2474 is blank, L2475 starts 'Be honest and transparent' which pivots to truthfulness principles (independent axis from topic scope)."
+    },
+    {
+      "span": [2474, 2820],
+      "why_this_cut": "Covers 'Be honest and transparent' section including 'Do not lie', 'Don't be sycophantic', and 'Consider uncertainty/ask clarifying questions' — cohesive principles about honest, truthful communication and reducing misunderstandings before responding. These establish the meta-rules for how communication should happen (truthfully, without flattery, with clarity-seeking). Clean break: L2820 ends medication/glare example for clarifying questions principle, L2821 starts 'Express uncertainty' which shifts from the *act* of reducing uncertainty (via questions) to the *principle* of expressing what uncertainty remains (via explicit transparency)."
+    },
+    {
+      "span": [2821, 3147],
+      "why_this_cut": "Covers 'Express uncertainty' and 'Highlight possible misalignments' — principles about explicit transparency regarding the assistant's limitations and potential conflicts between the user's current goals and their long-term interests. Establishes the inherited 'inform_user_of_uncertainty' principle through detailed guidance on when, how, and what kinds of uncertainty to communicate conversationally. This section is epistemically distinct (about admitting unknowns and misalignments) from the prior sections (about topic scope and truthfulness). Clean break: L3147 ends 'Highlight possible misalignments' example (resignation letter), L3148 starts 'Do the best work' (new major section shifting from epistemic/meta-principles to execution quality)."
+    }
+  ],
+  "seed_vocabulary": [
+    {
+      "name": "authority_levels_hierarchy",
+      "prose": "The precedence ordering of instruction sources from highest to lowest: Root > System > Developer > User > Guideline > (No Authority). This ordering determines which instructions override which when conflicts arise.",
+      "established_around": [186, 191]
+    },
+    {
+      "name": "applicable_instructions",
+      "prose": "Instructions that must be followed, determined by filtering all candidate instructions to exclude those that are misaligned with higher-authority instructions, superseded by later same-level instructions, or suspected to be mistaken. These form the actual guidance the assistant follows.",
+      "established_around": [179, 195]
+    },
+    {
+      "name": "stay_in_bounds_principles",
+      "prose": "The collection of limits on assistant behavior where the assistant should refrain from fully complying with user or developer requests, including: prohibited content (sexual content involving minors), restricted content (information hazards, sensitive personal data), sensitive content (erotica/gore), compliance with laws, prevention of illicit behavior, prevention of imminent harm, and refusal to encourage self-harm. These establish hard boundaries across the assistant's behavior.",
+      "established_around": [797, 799]
+    },
+    {
+      "name": "misaligned_instruction",
+      "prose": "An instruction that is in conflict with either the letter or implied intent of a higher-authority instruction. Misaligned instructions are filtered out when determining what the assistant should actually do.",
+      "established_around": [197, 197]
+    },
+    {
+      "name": "scope_of_autonomy",
+      "prose": "A clear, mutually understood boundary that defines which sub-goals the assistant may pursue, acceptable side effects, and when the assistant must pause for clarification or approval. This prevents misunderstandings about what autonomy the assistant has in pursuing multi-step goals.",
+      "established_around": [461, 488]
+    },
+    {
+      "name": "do_not_encourage_self_harm",
+      "prose": "Root-level requirement that the assistant must not encourage or enable self-harm (including suicide and self-injury), must convey supportive messaging that the user is not alone and there are resources to help, and must respond to signs of delusions or mania with a safety-oriented and empathetic approach.",
+      "established_around": [1611, 1690]
+    },
+    {
+      "name": "inform_user_of_uncertainty",
+      "prose": "The principle that the assistant should express uncertainty naturally and conversationally when it lacks confidence, is reasoning through difficult problems, or when incorrect information could have serious consequences. This builds trust by being honest about limitations.",
+      "established_around": [2821, 2943]
+    },
+    {
+      "name": "objective_truth_seeking",
+      "prose": "The principle that the assistant should present information focusing on factual accuracy from reliable sources, avoid steering users toward predetermined conclusions, and respect users' autonomy to form their own opinions. This applies especially on factual, controversial, or moral topics.",
+      "established_around": [2126, 2150]
+    }
+  ],
+  "expected_cross_links": [],
+  "judgment_calls": [
+    "Both cuts follow rule (a) — no linkage crosses the boundaries. 'No topic is off limits' (end of Child 1) and 'Be honest and transparent' (start of Child 2) are orthogonal principles: one governs which topics can be discussed, the other governs how truthfully they are discussed. A child can understand one without the other. 'Ask clarifying questions' (end of Child 2) and 'Express uncertainty' (start of Child 3) are complementary sequential practices (reduce uncertainty first, then express what remains) but not logically dependent — expressing uncertainty stands alone as a principle.",
+    "Child 1 (2126-2473, 348 lines) establishes objective_truth_seeking through extensive examples demonstrating: factual questions require evidence-based answers; moral/ethical questions require context and multiple perspectives without author advocacy; creative/roleplay contexts allow suspension of objectivity; and no topic is off-limits if discussed objectively within content restrictions.",
+    "Child 2 (2474-2820, 347 lines) establishes the honesty-and-clarity axis of communication: don't lie or mislead (by commission or omission), avoid sycophantic flattery even when it might comfort the user, and ask clarifying questions to reduce uncertainty before responding — these are prerequisites for the transparency that Child 3 articulates.",
+    "Child 3 (2821-3147, 327 lines) establishes inform_user_of_uncertainty through detailed taxonomy of uncertainty sources (knowledge gaps, reasoning limits, outdated info, user intent ambiguity, future unpredictability) and guidance on expressing uncertainty conversationally, proportionally, and contextually. Also establishes that transparency includes flagging potential goal misalignments even when the user's stated intent is clear.",
+    "Considered alternative cuts at subsection boundaries (e.g., L2589→2590 within 'Do not lie', or L2652→2654 within 'Be honest and transparent') but rejected them because splitting within a principle's examples and commentary would create cross-dependency on interpretation; principle-level cuts are cleaner because children inherit complete, self-contained articulations of their core concepts.",
+    "No new seed concepts identified crossing these cuts, so expected_cross_links is empty. All seed_vocabulary entries are inherited from parent (c2) and passed down unchanged; objective_truth_seeking and inform_user_of_uncertainty are confirmed as established and extensively exemplified within this span (Child 1 and Child 3 respectively)."
+  ]
+}

@@ -1,0 +1,176 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1_170_n028",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the authority hierarchy has six tiers, ranked highest to lowest: Root, System, Developer, User, Guideline, No Authority",
+  "C2 No Authority is the sixth tier, below all others, and covers assistant and tool messages, quoted/untrusted text, and multimodal data in other messages",
+  "C3 when instructions at different authority levels conflict, the instruction at the higher level overrides the one at the lower level"
+ ],
+ "acts": [
+  "override_instruction(I, J)"
+ ],
+ "concepts": [
+  {
+   "name": "authority_levels_hierarchy",
+   "arity": 2,
+   "gloss": "authority level L1 is higher in the six-tier hierarchy than level L2",
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "root_level",
+   "arity": 0,
+   "gloss": "the Root tier: fundamental root rules that cannot be overridden by system messages, developers or users",
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "system_level",
+   "arity": 0,
+   "gloss": "the System tier: rules set by OpenAI that can be transmitted or overridden through system messages but not by developers or users",
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "developer_level",
+   "arity": 0,
+   "gloss": "the Developer tier: instructions given by developers using the API",
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "user_level",
+   "arity": 0,
+   "gloss": "the User tier: instructions from end users",
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "guideline_level",
+   "arity": 0,
+   "gloss": "the Guideline tier: instructions that can be implicitly overridden",
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "no_authority_level",
+   "arity": 0,
+   "gloss": "the No Authority tier, below all others: assistant and tool messages, quoted/untrusted text, and multimodal data in other messages",
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "instruction_level",
+   "arity": 2,
+   "gloss": "instruction I is designated with authority level L",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the ordering of authority levels applies to instructions, so each instruction must carry the level it is designated with",
+   "toggleable": false
+  },
+  {
+   "name": "conflicting_instructions",
+   "arity": 2,
+   "gloss": "instructions I and J conflict with each other",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the override rule is stated for the case of conflict, so a relation marking two instructions as conflicting must exist",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false,
+   "atom": "authority_levels_hierarchy(root_level, system_level)",
+   "gloss": "Root is higher than System",
+   "body": null
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false,
+   "atom": "authority_levels_hierarchy(system_level, developer_level)",
+   "gloss": "System is higher than Developer",
+   "body": null
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false,
+   "atom": "authority_levels_hierarchy(developer_level, user_level)",
+   "gloss": "Developer is higher than User",
+   "body": null
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false,
+   "atom": "authority_levels_hierarchy(user_level, guideline_level)",
+   "gloss": "User is higher than Guideline",
+   "body": null
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false,
+   "atom": "authority_levels_hierarchy(guideline_level, no_authority_level)",
+   "gloss": "Guideline is higher than No Authority",
+   "body": null
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "instruction % overrides instruction % because % is at a higher authority level than % and the two conflict",
+   "read_back_slots": [
+    "I",
+    "J",
+    "I",
+    "J"
+   ],
+   "licence": "textual",
+   "cites": "l1_170_n028",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "override_instruction(I, J)",
+   "body": "instruction_level(I, L1), instruction_level(J, L2), authority_levels_hierarchy(L1, L2), conflicting_instructions(I, J)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "override_instruction",
+   "closure": "cepa",
+   "reason": "the clause states when a higher-level instruction overrides a lower-level one; it does not prohibit overriding in other cases, so silence leaves overriding permitted"
+  }
+ ],
+ "requires": [],
+ "inputs": [
+  "instruction_level/2",
+  "conflicting_instructions/2"
+ ],
+ "forbid_body": []
+}

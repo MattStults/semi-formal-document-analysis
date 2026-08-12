@@ -1,0 +1,38 @@
+{
+ "_": "recurse_driver.py config. Provider block mirrors phase_1/config.json's inline DeepSeek definition (same model, same endpoint, same ledger) so graph builds and translations spend from one accounted place. Prices: together.ai model page, fetched 2026-08-07 \u2014 the estimate bills every input token at the full rate (no cache credit claimed; conservative, per the ledger philosophy).",
+ "doc_path": "specs/openai-model-spec/model_spec.md",
+ "model": {
+  "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+  "base_url": "https://api.together.xyz/v1",
+  "api_key_env": "TOGETHER_API_KEY",
+  "temperature": 0.2,
+  "max_tokens": 32768,
+  "usage_log": "DEFAULT",
+  "_max_tokens": "32768 fallback only (2026-08-11): every phase call carries its own cap (division 8K / leaf 24K / unwind 8K, driver PHASE_MAX_TOKENS). Forensics showed no hidden reasoning channel on this model; the old 131K headroom only slowed failure diagnosis. fail-and-fix > burn-and-wait (Matt's ruling)."
+ },
+ "price_per_mtok": [
+  0.14,
+  0.28
+ ],
+ "root_seeds": [],
+ "_root_seeds": "Empty for a from-scratch build (the root divider coins its own seeds). For a REPLAY comparison against the 2026-08-10 Haiku tree, paste recurse/root/division.json's seed_vocabulary here.",
+ "cost": {
+  "_": "Hard per-run ceiling on MEASURED spend (review F10); the run raises CostGateError mid-flight if exceeded, keeping artifacts for resume.",
+  "max_cost_usd": 2.0
+ },
+ "derive_uncovered": true,
+ "_derive_uncovered": "ds3 queued determinization (RULINGS 2026-08-11): code derives `uncovered` as the coverage complement, auto-labels formatting runs, errors only on uncovered content lines. OFF for ds2 -- flip only on a fresh --out.",
+ "rename_candidates": false,
+ "_rename_candidates": "OFF for ds3 (Matt 2026-08-11): test transcript continuity ALONE first; the lexical top-3 misses the true provider ~1 in 10 on the golden and may anchor away from semantic matches. Re-enable only with the measured warning text, after ds3 isolates continuity's effect.",
+ "max_repairs": 4,
+ "_max_repairs": "4 since 2026-08-11: the quote-verbatim class needed 3-5 rounds in the translation sample and 2 was not enough for the L292-460 leaf; each round costs ~$0.003-0.01 vs aborting a whole build",
+ "_derive_uncovered_note": "Flipped ON mid-ds2 (2026-08-11): the L1542-1800 leaf failed coverage identity after the quote-honesty rule (model under-reports uncovered); derivation removes that failure class by construction. Earlier ds2 leaves carry model-emitted uncovered; artifact shape identical. Logged in EXPERIMENTS.md.",
+ "execution": {
+  "mode": "batch",
+  "concurrent_n": 4,
+  "batch_min_pending": 3,
+  "_mode": "batch default per Matt 2026-08-11: the 50% batch discount confirmed for DeepSeek on together's pricing -- true batch cost ~$0.047 vs concurrent $0.071 on the head-to-head fixture. Switch to concurrent when in a hurry (1.4x faster wall-clock)."
+ },
+ "transcript_continuity": true,
+ "_transcript_continuity": "ds3: Matt's original architecture -- the divider instance itself performs the unwind (transcript reconstructed deterministically; prefix cache covers brief+D-user from the divide call). The driver had silently dropped this; restored 2026-08-11."
+}

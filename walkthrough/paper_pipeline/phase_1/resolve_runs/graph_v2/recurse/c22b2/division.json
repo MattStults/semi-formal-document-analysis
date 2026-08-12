@@ -1,0 +1,42 @@
+{
+  "decision": "divide",
+  "children": [
+    {
+      "span": [1799, 1974],
+      "why_this_cut": "Covers 'Do not reveal privileged information' (L1799-L1973) as a single, unified topic: core concept and rules (L1799-L1809), agentic-systems guidance (L1811-L1818), and six detailed XML examples (L1819-L1973) demonstrating specific scenarios. This large section (~175 lines) stays cohesive because all examples illustrate and apply the central rule about privileged-information protection. The section ends cleanly at L1973 (end of final example); L1974 is a blank line that transitions to the next section. No concepts from this child appear in the following section."
+    },
+    {
+      "span": [1975, 2125],
+      "why_this_cut": "Covers three distinct, independent behavioral guidelines: 'Always use preset voice' (L1975-L1978, ~4 lines on synthetic speech), 'Uphold fairness' (L1979-L2048, ~70 lines on non-discrimination and consistency), and 'Respect real-world ties' (L2050-L2125, ~76 lines on supporting real-world connections). These three sections share no dependencies or cross-references; each is self-contained with its own rule and examples. Combined into one child (~151 lines) because individually they are too small to justify separate trees, and their independence makes grouping safe. No linkages to child 1; no linkages among the three sub-sections."
+    }
+  ],
+  "seed_vocabulary": [
+    {
+      "name": "authority_levels_hierarchy",
+      "prose": "The precedence ordering of instruction sources from highest to lowest: Root > System > Developer > User > Guideline > (No Authority). This ordering determines which instructions override which when conflicts arise.",
+      "established_around": [186, 191]
+    },
+    {
+      "name": "scope_of_autonomy",
+      "prose": "A clear, mutually understood boundary that defines which sub-goals the assistant may pursue, acceptable side effects, and when the assistant must pause for clarification or approval. This prevents misunderstandings about what autonomy the assistant has in pursuing multi-step goals.",
+      "established_around": [461, 488]
+    },
+    {
+      "name": "stay_in_bounds_principles",
+      "prose": "The collection of limits on assistant behavior where the assistant should refrain from fully complying with user or developer requests, including: prohibited content (sexual content involving minors), restricted content (information hazards, sensitive personal data), sensitive content (erotica/gore), compliance with laws, prevention of illicit behavior, prevention of imminent harm, and refusal to encourage self-harm. These establish hard boundaries across the assistant's behavior.",
+      "established_around": [797, 799]
+    },
+    {
+      "name": "disallowed_content_categories",
+      "prose": "The three-tiered categorization of content the assistant should not generate: prohibited content (only sexual content involving minors, with no transformation exception), restricted content (information hazards and sensitive personal data, transformations allowed), and sensitive content (erotica and gore in specific contexts, transformations allowed). This categorization framework is used to determine what restrictions apply in any given situation.",
+      "established_around": [810, 825]
+    }
+  ],
+  "expected_cross_links": [],
+  "judgment_calls": [
+    "Divided at L1974/L1975 (blank-line boundary) rather than splitting the large privileged-information section. Although child 1 (~175 lines) is above the typical ~150-line leaf guidance, it is a single, unified topic (privileged-information protection) with all six examples serving the central rule. Splitting it would require establishing multiple cross-links between the rule and its examples. Keeping it together keeps the child cohesive.",
+    "Grouped three independent sections into child 2 (voice, fairness, real-world ties) rather than creating separate children. Each is small (<100 lines) and self-contained; no section needs concepts from the others. This avoids creating children too small to justify division.",
+    "Dropped three inherited harm-prevention seeds (prevent_imminent_real_world_harm est. L1418-L1505, do_not_facilitate_illicit_behavior est. L1543-L1548, do_not_encourage_self_harm est. L1611-L1690) because all three are established entirely outside my span (in L1414-L1690, the prior child's domain) and do not reappear in L1799-L2125. Dropping is correct because these concepts are absent from my span.",
+    "Carried forward authority_levels_hierarchy because heading authority= tags (L1799, L1975, L1979, L2050) throughout my span invoke this hierarchy; scope_of_autonomy because it is explicitly referenced at L1809; stay_in_bounds_principles because it is the overarching framework of behavioral boundaries that all four sections (privileged-info, voice, fairness, real-world-ties) exemplify; disallowed_content_categories to retain framework context from parent, even though not explicitly invoked."
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "decision": "divide",
+  "children": [
+    {
+      "span": [797, 1413],
+      "why_this_cut": "Ends 'Comply with requests to transform restricted or sensitive content' section, which completes the entire 'Stay in bounds' section on content policy (L797-L1413). Clean thematic break: L1413 resolves the transformation exception to content restrictions, L1414 shifts focus to 'Take extra care in risky situations' which applies and interprets those restrictions in specific conversation contexts. The restriction categories (prohibited, restricted, sensitive) are defined entirely in child 1; child 2 applies them when handling risky conversations."
+    },
+    {
+      "span": [1414, 2125],
+      "why_this_cut": "Covers 'Take extra care in risky situations' (L1414-L2125) which includes: (1) Prevent imminent real-world harm; (2) Do not facilitate illicit behavior; (3) Do not encourage self-harm, delusions, or mania; (4) Provide information without regulated advice; (5) Support mental health discussions; (6) Do not reveal privileged information; (7) Always use preset voice; (8) Uphold fairness; (9) Respect real-world ties. These are cohesive application guidelines for safety principles in risky conversation contexts, where the content restrictions from child 1 must be applied with care and judgment. Clean break: L1413 ends transformation exception, L1414 starts new subsection with distinct focus on conversation handling."
+    }
+  ],
+  "seed_vocabulary": [
+    {
+      "name": "authority_levels_hierarchy",
+      "prose": "The precedence ordering of instruction sources from highest to lowest: Root > System > Developer > User > Guideline > (No Authority). This ordering determines which instructions override which when conflicts arise.",
+      "established_around": [186, 191]
+    },
+    {
+      "name": "applicable_instructions",
+      "prose": "Instructions that must be followed, determined by filtering all candidate instructions to exclude those that are misaligned with higher-authority instructions, superseded by later same-level instructions, or suspected to be mistaken. These form the actual guidance the assistant follows.",
+      "established_around": [179, 195]
+    },
+    {
+      "name": "stay_in_bounds_principles",
+      "prose": "The collection of limits on assistant behavior where the assistant should refrain from fully complying with user or developer requests, including: prohibited content (sexual content involving minors), restricted content (information hazards, sensitive personal data), sensitive content (erotica/gore), compliance with laws, prevention of illicit behavior, prevention of imminent harm, and refusal to encourage self-harm. These establish hard boundaries across the assistant's behavior.",
+      "established_around": [797, 799]
+    },
+    {
+      "name": "disallowed_content_categories",
+      "prose": "The three-tiered categorization of content the assistant should not generate: prohibited content (only sexual content involving minors, with no transformation exception), restricted content (information hazards and sensitive personal data, transformations allowed), and sensitive content (erotica and gore in specific contexts, transformations allowed). This categorization framework is used to determine what restrictions apply in any given situation.",
+      "established_around": [810, 825]
+    },
+    {
+      "name": "misaligned_instruction",
+      "prose": "An instruction that is in conflict with either the letter or implied intent of a higher-authority instruction. Misaligned instructions are filtered out when determining what the assistant should actually do.",
+      "established_around": [197, 197]
+    },
+    {
+      "name": "scope_of_autonomy",
+      "prose": "A clear, mutually understood boundary that defines which sub-goals the assistant may pursue, acceptable side effects, and when the assistant must pause for clarification or approval. This prevents misunderstandings about what autonomy the assistant has in pursuing multi-step goals.",
+      "established_around": [461, 488]
+    },
+    {
+      "name": "do_not_encourage_self_harm",
+      "prose": "Root-level requirement that the assistant must not encourage or enable self-harm (including suicide and self-injury), must convey supportive messaging that the user is not alone and there are resources to help, and must respond to signs of delusions or mania with a safety-oriented and empathetic approach.",
+      "established_around": [1611, 1690]
+    },
+    {
+      "name": "inform_user_of_uncertainty",
+      "prose": "The principle that the assistant should express uncertainty naturally and conversationally when it lacks confidence, is reasoning through difficult problems, or when incorrect information could have serious consequences. This builds trust by being honest about limitations.",
+      "established_around": [2821, 2943]
+    },
+    {
+      "name": "objective_truth_seeking",
+      "prose": "The principle that the assistant should present information focusing on factual accuracy from reliable sources, avoid steering users toward predetermined conclusions, and respect users' autonomy to form their own opinions. This applies especially on factual, controversial, or moral topics.",
+      "established_around": [2126, 2150]
+    }
+  ],
+  "expected_cross_links": [
+    {
+      "needs_side_child": 2,
+      "provides_side_child": 1,
+      "name": "disallowed_content_categories",
+      "evidence": "Child 2's rules about preventing harm, not encouraging self-harm, not facilitating illicit behavior, and supporting mental health all reference the content restrictions from Child 1. For instance, 'do not encourage self-harm' and 'support mental health' must understand which content is prohibited vs. restricted vs. sensitive to know how to apply restrictions in these risky contexts."
+    },
+    {
+      "needs_side_child": 2,
+      "provides_side_child": 1,
+      "name": "stay_in_bounds_principles",
+      "evidence": "Child 2 applies and contextualizes the safety guardrails established in Child 1 when handling risky conversations. For example, mental health support requires understanding both 'do not encourage self-harm' (from Child 2) and the broader 'stay in bounds' framework (from Child 1) about what content/behavior is off-limits."
+    },
+    {
+      "needs_side_child": 2,
+      "provides_side_child": 1,
+      "name": "authority_levels_hierarchy",
+      "evidence": "Child 2's sections on preventing harm and facilitating illicit behavior must respect the authority hierarchy from Child 1. For example, a root-level prohibition on encouraging self-harm cannot be overridden by system or developer instructions to the contrary."
+    }
+  ],
+  "judgment_calls": [
+    "Chose L1413→L1414 (between transformation exception and risky situations) over alternative cuts because the boundary marks a fundamental shift in frame: from defining WHICH content is restricted to defining HOW to apply restrictions in risky conversation contexts. An alternative cut within L1414-L2125 (e.g., after 'Support mental health' at L1798) would split the cohesive 'Take extra care' section and break the unity of how these principles work together.",
+    "Declined to split 'Take extra care in risky situations' into separate children despite its length (~712 lines) because the section's internal structure (prevent harm → don't facilitate illicit behavior → don't encourage self-harm → provide info safely → support mental health → protect privileged info → fairness → respect ties) represents a unified application of safety principles to risky contexts. Separating sections like 'Do not reveal privileged information' (L1799-L1973) from 'Do not encourage self-harm' (L1611-L1690) would require extensive cross-links to show how they inform each other in risky situations.",
+    "Created new seed 'disallowed_content_categories' (not inherited from parent) because although 'stay_in_bounds_principles' was seeded at a high level, the specific three-tier categorization (prohibited/restricted/sensitive with different transformation rules) is a detailed concept established locally in Child 1 that Child 2 must reference precisely to apply restrictions correctly.",
+    "Passed inherited seeds 'do_not_encourage_self_harm' unchanged because although it is established in Child 2 (L1611-L1690), the parent's expected_cross_links already reference this seed from Child 2 to Child 3 ('Seek the truth together'). Child 2 must provide this seed for both upward linkage to parent and potential downward linkage to sibling Child 3."
+  ]
+}

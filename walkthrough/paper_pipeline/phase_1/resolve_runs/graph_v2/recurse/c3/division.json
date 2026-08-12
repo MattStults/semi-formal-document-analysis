@@ -1,0 +1,48 @@
+{
+  "decision": "divide",
+  "children": [
+    {
+      "span": [3148, 3501],
+      "why_this_cut": "Covers the 'Do the best work' section (#best_work): error avoidance, avoiding overstepping, creativity, and adapting to programmatic vs. interactive use. These establish core principles for correct response generation. Clean break: L3501 ends with ~~~ (closing an example for programmatic use), L3502 starts a major section 'Use appropriate style'. No rules-specific content crosses backward from this section."
+    },
+    {
+      "span": [3502, 4571],
+      "why_this_cut": "Covers the 'Use appropriate style' section (#style) and subsection 'Adapt to the user's modality' (#voice_style): general style principles (love humanity, rational optimism, responsibility, interesting, curious, clear, professional, conversational sense, warmth, avoiding personal comments and condescension, refusal style, formatting, efficiency) plus voice/video-specific guidance (accents, conciseness, length adaptation, interruption handling, audio testing). These establish how to communicate once the rules from Child 1 are satisfied. Clean break: L4571 ends voice guidance (~~~ closing the audio testing example); L4572 starts 'Under-18 Principles' heading. No content crosses backward."
+    },
+    {
+      "span": [4572, 4691],
+      "why_this_cut": "Covers the 'Under-18 Principles' section (#chatgpt_u18): age-appropriate safety for users 13–17, including specialized constraints on self-harm, romantic roleplay, graphic detail, dangerous activities, body image, and secret-keeping. This section explicitly layers on top of earlier principles (stay_in_bounds, sensitive content, illicit behavior, self-harm protections) with more restrictive requirements for minors. No content crosses backward; this is an application/specialization of rules established in prior sections."
+    }
+  ],
+  "seed_vocabulary": [
+    {
+      "name": "stay_in_bounds_principles",
+      "prose": "The collection of limits on assistant behavior where the assistant should refrain from fully complying with user or developer requests, including: prohibited content (sexual content involving minors), restricted content (information hazards, sensitive personal data), sensitive content (erotica/gore), compliance with laws, prevention of illicit behavior, prevention of imminent harm, and refusal to encourage self-harm. Section introduced at L0797-L0799.",
+      "established_around": [797, 799]
+    },
+    {
+      "name": "sensitive_content_restrictions",
+      "prose": "Limitations on generating sensitive content (such as erotica or gore), which may only be generated under specific circumstances (educational, medical, historical contexts, or transformations of user-provided content). Established at L1108-L1110, with specific rules at L1112+ for erotica and gore.",
+      "established_around": [1108, 1114]
+    },
+    {
+      "name": "do_not_facilitate_illicit_behavior",
+      "prose": "Root-level requirement that if the user or developer asks the assistant to facilitate illicit behavior, the assistant must refuse to help with guidance, instructions, actionable steps, or improvements to user-provided plans, and should not encourage or promote such behaviors. Established at L1543-L1548.",
+      "established_around": [1543, 1548]
+    },
+    {
+      "name": "self_harm_prohibition",
+      "prose": "Root-level requirement that the assistant must not encourage or enable self-harm, including refusal to provide suicide methods, and must convey supportive messaging that the user is not alone and resources can help. Also covers responses to delusions and mania with safety-oriented approach. Established at L1611-L1690.",
+      "established_around": [1611, 1690]
+    }
+  ],
+  "expected_cross_links": [],
+  "judgment_calls": [
+    "Chose cut between Child 1 and Child 2 at L3501→L3502 because 'Do the best work' (error avoidance, overstepping, creativity, programmatic adaptation) is conceptually distinct from 'Use appropriate style' (communication warmth, clarity, professionalism). Child 1 establishes WHAT correctness means, Child 2 establishes HOW to communicate correctly.",
+    "Chose cut between Child 2 and Child 3 at L4571→L4572 because 'Under-18 Principles' is a specialized application section that layers additional constraints on top of earlier principles (stay_in_bounds, sensitive content, self-harm, illicit behavior restrictions). It does not establish new core principles but constrains existing ones more strictly for minors. Section headings are metadata for their section, so L4572's heading belongs to Child 3.",
+    "Chose three children rather than two because Under-18 is sufficiently distinct in purpose (age-specific safety specialization) and length (~120 lines) to warrant its own node, preventing a single large leaf of 1500+ lines.",
+    "Did not cut within 'Use appropriate style' section despite its size (~1070 lines) because: (1) all subsections are instances of the same principle—how to communicate effectively; (2) voice/video guidance at the end depends on earlier style principles (warmth, clarity, professionalism, conversational sense); (3) creating four children would make the division unnecessarily complex without semantic benefit.",
+    "All expected_cross_links array is empty because Child 3 relies solely on inherited seeds (stay_in_bounds_principles, sensitive_content_restrictions, do_not_facilitate_illicit_behavior, self_harm_prohibition) established outside the span. Children 1 and 2 are foundational and establish no cross-dependencies—Child 2 simply applies the rules from Child 1 in the context of communication style.",
+    "REPAIR: Fixed child spans from [3502,4572]/[4573,4691] to [3502,4571]/[4572,4691]. Section heading L4572 ('# Under-18 Principles') is metadata for Child 3, not trailing content of Child 2."
+  ]
+}

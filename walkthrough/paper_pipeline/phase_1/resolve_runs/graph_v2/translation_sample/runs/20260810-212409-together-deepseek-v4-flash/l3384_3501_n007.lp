@@ -1,0 +1,3 @@
+%% clause: l3384_3501_n007   section: graph_node   kind: meta
+%% ABSTAIN: This node is a worked example illustrating that a programmatic-format context can still support clarifying questions through the function-call interface. It does not itself establish a normative rule: it shows one permitted configuration of an instruction and a response, and the surrounding document's normative force (if any) is carried by the instruction it exemplifies, not by this node. Encoding it as a rule would invent a permission the node does not state.
+% version: contract=1c4af8f0f3feaf14 provenance=014a654e6d7cb708   (the record is .version.json; this line is a courtesy)

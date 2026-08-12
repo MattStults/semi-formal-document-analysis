@@ -1,0 +1,1160 @@
+{
+ "decision": "divide",
+ "children": [
+  {
+   "span": [
+    1,
+    170
+   ],
+   "why_this_cut": "Front matter (Overview, Structure, Red-line principles, General principles, Specific risks, Levels of authority) and the Definitions section. The only crossing linkage is the authority-levels concept (levels of authority and their ordering), which is established at L63-103 and used throughout the rest of the document; seeded below. Also the chain-of-command concept is introduced here and used later."
+  },
+  {
+   "span": [
+    171,
+    800
+   ],
+   "why_this_cut": "The chain of command section (L171-795) and the start of Stay in bounds (L797-800). This block establishes the authority ordering, applicable-instruction filtering, letter-and-spirit, no-other-objectives, scope-of-autonomy, side-effects, best-intentions, and untrusted-data rules. The only crossing linkage is the authority-levels concept (used here, established in child 1) and the stay-in-bounds section header which begins here."
+  },
+  {
+   "span": [
+    801,
+    4692
+   ],
+   "why_this_cut": "The remainder of Stay in bounds (L801-1413), risky situations (L1414-1797), privileged information (L1799-1973), preset voice (L1975-1977), fairness (L1979-2048), real-world ties (L2050-2124), Seek the truth (L2126-3146), Do the best work (L3148-3500), Use appropriate style (L3502-4570), and Under-18 Principles (L4572-4692). This is a large block of content rules that rely on the authority-levels concept and the chain-of-command concept from earlier children, but are otherwise self-contained per-section."
+  }
+ ],
+ "seed_vocabulary": [
+  {
+   "name": "authority_level_ordering",
+   "prose": "which of two authority levels outranks the other (root > system > developer > user > guideline > no authority)",
+   "established_around": [
+    69,
+    103
+   ]
+  },
+  {
+   "name": "chain_of_command",
+   "prose": "the principle that higher-authority instructions override lower-authority ones, and the mechanism for identifying and following applicable instructions",
+   "established_around": [
+    11,
+    67
+   ]
+  },
+  {
+   "name": "applicable_instruction",
+   "prose": "which candidate instructions apply to a request (after filtering out misaligned, superseded, or mistaken ones)",
+   "established_around": [
+    181,
+    201
+   ]
+  },
+  {
+   "name": "stay_in_bounds",
+   "prose": "the section of the Model Spec that describes limits on the assistant's behavior, including scenarios where the assistant should refrain from fully complying",
+   "established_around": [
+    797,
+    799
+   ]
+  },
+  {
+   "name": "root_level_rule",
+   "prose": "a fundamental root rule that cannot be overridden by system messages, developers or users",
+   "established_around": [
+    71,
+    77
+   ]
+  },
+  {
+   "name": "system_level_rule",
+   "prose": "a rule set by OpenAI that can be transmitted or overridden through system messages, but cannot be overridden by developers or users",
+   "established_around": [
+    79,
+    81
+   ]
+  },
+  {
+   "name": "developer_level_rule",
+   "prose": "an instruction given by developers using the API, which models should obey unless overridden by root or system instructions",
+   "established_around": [
+    83,
+    89
+   ]
+  },
+  {
+   "name": "user_level_rule",
+   "prose": "an instruction from end users, which models should honor unless they conflict with developer-, system-, or root-level instructions",
+   "established_around": [
+    91,
+    95
+   ]
+  },
+  {
+   "name": "guideline_level_rule",
+   "prose": "an instruction that can be implicitly overridden (e.g., from contextual cues, background knowledge, or user history)",
+   "established_around": [
+    97,
+    101
+   ]
+  },
+  {
+   "name": "no_authority_content",
+   "prose": "assistant and tool messages; quoted/untrusted text and multimodal data in other messages, which have no authority by default",
+   "established_around": [
+    191,
+    191
+   ]
+  },
+  {
+   "name": "candidate_instruction",
+   "prose": "all instructions in the Model Spec plus all instructions in unquoted plain text in system, developer, and user messages in the input conversation",
+   "established_around": [
+    193,
+    193
+   ]
+  },
+  {
+   "name": "misaligned_instruction",
+   "prose": "an instruction that is in conflict with either the letter or the implied intent behind some higher-level instruction",
+   "established_around": [
+    195,
+    197
+   ]
+  },
+  {
+   "name": "superseded_instruction",
+   "prose": "an instruction that is superseded by an instruction in a later message at the same level (contradicts, overrides, or makes it irrelevant)",
+   "established_around": [
+    195,
+    199
+   ]
+  },
+  {
+   "name": "letter_and_spirit",
+   "prose": "the principle that the assistant should consider not just the literal wording of instructions, but also the underlying intent and context",
+   "established_around": [
+    292,
+    294
+   ]
+  },
+  {
+   "name": "scope_of_autonomy",
+   "prose": "a clear, mutually understood scope of autonomy shared between the assistant and the user, defining which sub-goals may be pursued, acceptable side effects, and when to pause for clarification",
+   "established_around": [
+    461,
+    488
+   ]
+  },
+  {
+   "name": "side_effects",
+   "prose": "external impacts of actions, especially irreversible ones, that the assistant should minimize and control",
+   "established_around": [
+    527,
+    560
+   ]
+  },
+  {
+   "name": "assume_best_intentions",
+   "prose": "the principle of applying three implicit biases (average reasonable human goals, positive intent, weak preference for self-actualization/kindness/truth/flourishing) when interpreting ambiguous instructions",
+   "established_around": [
+    610,
+    618
+   ]
+  },
+  {
+   "name": "untrusted_data",
+   "prose": "quoted text, multimodal data, file attachments, and tool outputs that are assumed to contain untrusted data and have no authority by default",
+   "established_around": [
+    699,
+    701
+   ]
+  },
+  {
+   "name": "refusal_style",
+   "prose": "the style of refusing requests, typically Safe Completion (briefly explain why, then provide safe and useful assistance) or simple refusal for illicit intent",
+   "established_around": [
+    4073,
+    4079
+   ]
+  },
+  {
+   "name": "risk_taxonomy",
+   "prose": "the three broad categories of risk: misaligned goals, execution errors, and harmful instructions",
+   "established_around": [
+    53,
+    61
+   ]
+  },
+  {
+   "name": "red_line_principles",
+   "prose": "the high-level principles that human safety and human rights are paramount, humanity should be in control, and privacy should be safeguarded",
+   "established_around": [
+    28,
+    43
+   ]
+  },
+  {
+   "name": "general_principles",
+   "prose": "the principles of maximizing helpfulness and freedom, minimizing harm, and choosing sensible defaults",
+   "established_around": [
+    45,
+    51
+   ]
+  },
+  {
+   "name": "u18_principles",
+   "prose": "the Under-18 Principles that apply to users ages 13-17, prioritizing prevention, transparency, and early intervention",
+   "established_around": [
+    4572,
+    4596
+   ]
+  },
+  {
+   "name": "objective_point_of_view",
+   "prose": "the default stance of presenting information clearly, focusing on factual accuracy and reliability, without taking a stance on moral/ethical questions (except fundamental human rights violations)",
+   "established_around": [
+    2137,
+    2148
+   ]
+  },
+  {
+   "name": "do_not_lie",
+   "prose": "the principle that the assistant should not mislead the user or developer unless explicitly instructed to do so by a higher authority",
+   "established_around": [
+    2479,
+    2490
+   ]
+  },
+  {
+   "name": "avoid_sycophancy",
+   "prose": "the principle that the assistant should not flatter or agree with the user all the time, and should provide constructive feedback",
+   "established_around": [
+    2576,
+    2582
+   ]
+  },
+  {
+   "name": "express_uncertainty",
+   "prose": "the principle of expressing uncertainty or qualifying answers when the assistant lacks knowledge, reasoning abilities, or available information",
+   "established_around": [
+    2821,
+    2851
+   ]
+  },
+  {
+   "name": "ask_clarifying_questions",
+   "prose": "the principle of balancing the risk of acting with incomplete information against the cost of asking for clarification, and asking clarifying questions when appropriate",
+   "established_around": [
+    2654,
+    2673
+   ]
+  },
+  {
+   "name": "highlight_misalignments",
+   "prose": "the principle of briefly and respectfully noting when the conversation's direction may conflict with the user's broader, long-term goals",
+   "established_around": [
+    3041,
+    3043
+   ]
+  },
+  {
+   "name": "avoid_errors",
+   "prose": "the principle of avoiding factual, reasoning, and formatting errors that would compromise the accuracy or utility of responses",
+   "established_around": [
+    3150,
+    3162
+   ]
+  },
+  {
+   "name": "avoid_overstepping",
+   "prose": "the principle of helping by following explicit instructions and reasonably addressing implied intent without overstepping",
+   "established_around": [
+    3239,
+    3243
+   ]
+  },
+  {
+   "name": "be_creative",
+   "prose": "the principle of striving for creativity in responses where appropriate, going beyond the obvious or mundane",
+   "established_around": [
+    3319,
+    3327
+   ]
+  },
+  {
+   "name": "support_programmatic_use",
+   "prose": "the principle that behavior should vary between interactive chat and programmatic use, with programmatic output needing specific structure without surrounding text",
+   "established_around": [
+    3384,
+    3394
+   ]
+  },
+  {
+   "name": "style_guidelines",
+   "prose": "the guidelines for how the assistant responds to be approachable and easy to work with (love humanity, rationally optimistic, responsible, interesting, curious, clear, professional, conversational, warm, etc.)",
+   "established_around": [
+    3502,
+    3504
+   ]
+  },
+  {
+   "name": "voice_mode_guidelines",
+   "prose": "the style guidelines specifically for audio and video conversations, including accents, conciseness, length/structure, interruptions, and audio testing",
+   "established_around": [
+    4253,
+    4569
+   ]
+  },
+  {
+   "name": "prohibited_content",
+   "prose": "content that should never be produced by the assistant in any circumstance, currently only sexual content involving minors",
+   "established_around": [
+    820,
+    824
+   ]
+  },
+  {
+   "name": "restricted_content",
+   "prose": "content the assistant must not generate except in specific cases involving transformation of user-provided content, including information hazards and sensitive personal data",
+   "established_around": [
+    852,
+    854
+   ]
+  },
+  {
+   "name": "sensitive_content",
+   "prose": "content that may only be generated under specific circumstances (e.g., educational, medical, or historical contexts, or transformations of user-provided content), including erotica and gore",
+   "established_around": [
+    1108,
+    1110
+   ]
+  },
+  {
+   "name": "transformation_exception",
+   "prose": "the exception allowing the assistant to comply with limited requests to transform or analyze content the user has directly provided, even if the output would ordinarily be disallowed as restricted or sensitive content",
+   "established_around": [
+    1369,
+    1379
+   ]
+  },
+  {
+   "name": "protect_privileged_information",
+   "prose": "the principle of avoiding sharing private or privileged data, or enabling new access to such data, without explicit authorization",
+   "established_around": [
+    1799,
+    1809
+   ]
+  },
+  {
+   "name": "prevent_imminent_harm",
+   "prose": "the principle of proactively trying to prevent imminent real-world harm when the assistant identifies a dangerous situation, while avoiding overstepping or being judgmental",
+   "established_around": [
+    1418,
+    1422
+   ]
+  },
+  {
+   "name": "do_not_facilitate_illicit_behavior",
+   "prose": "the principle of refusing to help facilitate illicit behavior, including guidance, instructions, actionable steps, or improvements to user-provided plans",
+   "established_around": [
+    1543,
+    1547
+   ]
+  },
+  {
+   "name": "do_not_encourage_self_harm",
+   "prose": "the principle of not encouraging or enabling self-harm, and responding supportively when context suggests a credible risk to the user's safety or life",
+   "established_around": [
+    1611,
+    1615
+   ]
+  },
+  {
+   "name": "avoid_regulated_advice",
+   "prose": "the principle of equipping the user with information without providing definitive advice on sensitive or important topics (legal, medical, financial) that would be best given by a licensed professional",
+   "established_around": [
+    1708,
+    1710
+   ]
+  },
+  {
+   "name": "support_mental_health",
+   "prose": "the principle of creating a supportive, empathetic, and understanding environment for mental health topics, without judgment or dismissiveness",
+   "established_around": [
+    1751,
+    1755
+   ]
+  },
+  {
+   "name": "avoid_info_hazards",
+   "prose": "the principle of not providing detailed, actionable steps for carrying out activities that are illicit, could harm people or property, or lead to critical or large-scale harm",
+   "established_around": [
+    856,
+    858
+   ]
+  },
+  {
+   "name": "avoid_targeted_political_manipulation",
+   "prose": "the principle of not providing advice, instructions, or content specifically designed to manipulate the political views of specific individuals or demographic groups",
+   "established_around": [
+    920,
+    922
+   ]
+  },
+  {
+   "name": "respect_creators",
+   "prose": "the principle of respecting creators, their work, and their intellectual property rights while striving to be helpful to users",
+   "established_around": [
+    1002,
+    1004
+   ]
+  },
+  {
+   "name": "protect_privacy",
+   "prose": "the principle of not responding to requests for private or sensitive information about people, even if available online",
+   "established_around": [
+    1035,
+    1037
+   ]
+  },
+  {
+   "name": "no_erotica_or_gore",
+   "prose": "the principle of not generating erotica, depictions of illegal or non-consensual sexual activities, or extreme gore, except in appropriate contexts",
+   "established_around": [
+    1112,
+    1114
+   ]
+  },
+  {
+   "name": "avoid_extremist_content",
+   "prose": "the principle of not creating content that praises, endorses, or aids extremist agendas that promote violence",
+   "established_around": [
+    1155,
+    1157
+   ]
+  },
+  {
+   "name": "avoid_hateful_content",
+   "prose": "the principle of not generating hateful content targeting protected groups, including slurs, insults, and demeaning or dehumanizing language",
+   "established_around": [
+    1237,
+    1239
+   ]
+  },
+  {
+   "name": "avoid_abuse",
+   "prose": "the principle of not engaging in gratuitous abuse, harassment, or negativity toward individuals unless explicitly instructed in a context that does not violate other principles",
+   "established_around": [
+    1314,
+    1316
+   ]
+  },
+  {
+   "name": "uphold_fairness",
+   "prose": "the principle of upholding fairness by considering relevant context and ignoring irrelevant details, not discriminating based on demographic details or protected traits",
+   "established_around": [
+    1979,
+    1983
+   ]
+  },
+  {
+   "name": "respect_real_world_ties",
+   "prose": "the principle of supporting the user's connection to the wider world, not engaging in relationships that undermine meaningful human interactions",
+   "established_around": [
+    2050,
+    2054
+   ]
+  },
+  {
+   "name": "no_agenda",
+   "prose": "the principle that the assistant must never attempt to steer the user in pursuit of an agenda of its own",
+   "established_around": [
+    2128,
+    2132
+   ]
+  },
+  {
+   "name": "present_perspectives",
+   "prose": "the principle of generally fulfilling requests to present perspectives from any point of an opinion spectrum",
+   "established_around": [
+    2304,
+    2306
+   ]
+  },
+  {
+   "name": "no_topic_off_limits",
+   "prose": "the principle that the assistant should never avoid addressing a topic solely because it is sensitive or controversial",
+   "established_around": [
+    2400,
+    2402
+   ]
+  },
+  {
+   "name": "be_honest_and_transparent",
+   "prose": "the principle of building trust through honesty, transparency, and empathy, acknowledging complexity and being forthright about uncertainty or limitations",
+   "established_around": [
+    2475,
+    2477
+   ]
+  },
+  {
+   "name": "be_clear_and_direct",
+   "prose": "the principle of communicating clearly and directly to maximize user understanding, with lucid, succinct, well-organized responses",
+   "established_around": [
+    3756,
+    3758
+   ]
+  },
+  {
+   "name": "be_professional",
+   "prose": "the principle of adopting a professional tone by default, courteous, comprehensible, and not overly casual",
+   "established_around": [
+    3818,
+    3822
+   ]
+  },
+  {
+   "name": "have_conversational_sense",
+   "prose": "the principle of knowing when to be thorough and when to keep things moving, responding with what the moment calls for",
+   "established_around": [
+    3878,
+    3880
+   ]
+  },
+  {
+   "name": "be_warm",
+   "prose": "the principle of infusing interactions with context-appropriate humor, playfulness, or gentle wit, and bringing warmth and kindness",
+   "established_around": [
+    3955,
+    3957
+   ]
+  },
+  {
+   "name": "do_not_make_unprompted_personal_comments",
+   "prose": "the principle of refraining from making personal observations or comments about the user that were not solicited",
+   "established_around": [
+    3997,
+    3999
+   ]
+  },
+  {
+   "name": "avoid_being_condescending",
+   "prose": "the principle of avoiding condescending, patronizing, dismissive, or judgmental language",
+   "established_around": [
+    4050,
+    4052
+   ]
+  },
+  {
+   "name": "formatting_guidelines",
+   "prose": "the principle that assistant outputs should be formatted in Markdown with LaTeX extensions unless otherwise specified",
+   "established_around": [
+    4138,
+    4144
+   ]
+  },
+  {
+   "name": "be_thorough_but_efficient",
+   "prose": "the principle of balancing thorough, detailed responses against token limits and avoiding uninformative or redundant text",
+   "established_around": [
+    4163,
+    4178
+   ]
+  },
+  {
+   "name": "use_preset_voice",
+   "prose": "the principle that if the assistant is capable of generating synthetic speech, it should only use the preset voice selected by the user or developer",
+   "established_around": [
+    1975,
+    1977
+   ]
+  },
+  {
+   "name": "comply_with_laws",
+   "prose": "the principle that the assistant should operate within applicable legal constraints, including applicable local law for local deployments",
+   "established_around": [
+    801,
+    808
+   ]
+  },
+  {
+   "name": "disallowed_content",
+   "prose": "the categories of content the assistant should not generate: prohibited content, restricted content, and sensitive content in specific circumstances",
+   "established_around": [
+    810,
+    818
+   ]
+  },
+  {
+   "name": "sexual_content_involving_minors",
+   "prose": "the prohibition on sexual content involving minors, which is prohibited and should never be produced under any circumstances",
+   "established_around": [
+    826,
+    830
+   ]
+  },
+  {
+   "name": "risky_situations",
+   "prose": "the section providing instructions for handling requests that involve risky situations",
+   "established_around": [
+    1414,
+    1416
+   ]
+  },
+  {
+   "name": "best_work",
+   "prose": "the section on doing the best work, including avoiding errors, avoiding overstepping, being creative, and supporting programmatic use",
+   "established_around": [
+    3148,
+    3150
+   ]
+  },
+  {
+   "name": "seek_truth",
+   "prose": "the section on seeking the truth together, including not having an agenda, being honest and transparent, and expressing uncertainty",
+   "established_around": [
+    2126,
+    2128
+   ]
+  },
+  {
+   "name": "style_section",
+   "prose": "the section on using appropriate style, including love humanity, being rationally optimistic, responsible, interesting, curious, clear, professional, conversational, warm, etc.",
+   "established_around": [
+    3502,
+    3504
+   ]
+  },
+  {
+   "name": "u18_prioritize_teen_safety",
+   "prose": "the principle of prioritizing teen safety, promoting real-world support, treating teens like teens, and being transparent for U18 users",
+   "established_around": [
+    4578,
+    4596
+   ]
+  }
+ ],
+ "expected_cross_links": [
+  {
+   "name": "authority_level_ordering",
+   "needs_side_child": 2,
+   "provides_side_child": 1,
+   "evidence": "Child 2's chain-of-command rules (L183-191) rely on the authority-level ordering established in child 1 (L69-103)."
+  },
+  {
+   "name": "chain_of_command",
+   "needs_side_child": 2,
+   "provides_side_child": 1,
+   "evidence": "Child 2's follow-all-applicable-instructions and other rules rely on the chain-of-command concept introduced in child 1 (L11, L67)."
+  },
+  {
+   "name": "applicable_instruction",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "Child 3's stay-in-bounds and other rules rely on the applicable-instruction concept established in child 2 (L181-201)."
+  },
+  {
+   "name": "stay_in_bounds",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "Child 3's content rules (e.g., disallowed content, risky situations) rely on the stay-in-bounds section concept that begins in child 2 (L797-799)."
+  },
+  {
+   "name": "root_level_rule",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "Child 3's many root-level rules (e.g., avoid_info_hazards, protect_privacy) rely on the root-level concept established in child 1 (L71-77)."
+  },
+  {
+   "name": "system_level_rule",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "Child 3's system-level rules (e.g., comply_with_laws, no_erotica_or_gore) rely on the system-level concept established in child 1 (L79-81)."
+  },
+  {
+   "name": "developer_level_rule",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "Child 3's developer-level rules (e.g., avoid_regulated_advice) rely on the developer-level concept established in child 1 (L83-89)."
+  },
+  {
+   "name": "user_level_rule",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "Child 3's user-level rules (e.g., avoid_abuse, support_mental_health) rely on the user-level concept established in child 1 (L91-95)."
+  },
+  {
+   "name": "guideline_level_rule",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "Child 3's guideline-level rules (e.g., no_topic_off_limits, ask_clarifying_questions) rely on the guideline-level concept established in child 1 (L97-101)."
+  },
+  {
+   "name": "no_authority_content",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "Child 3's untrusted-data rules rely on the no-authority concept established in child 2 (L191)."
+  },
+  {
+   "name": "candidate_instruction",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "Child 3's rules about following instructions rely on the candidate-instruction concept established in child 2 (L193)."
+  },
+  {
+   "name": "misaligned_instruction",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "Child 3's rules about ignoring instructions rely on the misaligned-instruction concept established in child 2 (L195-197)."
+  },
+  {
+   "name": "superseded_instruction",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "Child 3's rules about ignoring instructions rely on the superseded-instruction concept established in child 2 (L195-199)."
+  },
+  {
+   "name": "letter_and_spirit",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "Child 3's rules (e.g., avoid_overstepping, highlight_misalignments) rely on the letter-and-spirit concept established in child 2 (L292-294)."
+  },
+  {
+   "name": "scope_of_autonomy",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "Child 3's rules (e.g., protect_privileged_information, control_side_effects) rely on the scope-of-autonomy concept established in child 2 (L461-488)."
+  },
+  {
+   "name": "side_effects",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "Child 3's rules (e.g., ask_clarifying_questions, control_side_effects) rely on the side-effects concept established in child 2 (L527-560)."
+  },
+  {
+   "name": "assume_best_intentions",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "Child 3's rules (e.g., do_not_facilitate_illicit_behavior, refusal_style) rely on the assume-best-intentions concept established in child 2 (L610-618)."
+  },
+  {
+   "name": "untrusted_data",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "Child 3's rules (e.g., protect_privileged_information) rely on the untrusted-data concept established in child 2 (L699-701)."
+  },
+  {
+   "name": "refusal_style",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's refusal-style rules (L4073-4079) rely on the refusal-style concept established in child 2 (L201, L4073-4079)."
+  },
+  {
+   "name": "risk_taxonomy",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "Child 3's stay-in-bounds section relies on the risk-taxonomy concept established in child 1 (L53-61)."
+  },
+  {
+   "name": "red_line_principles",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "Child 3's comply-with-laws rule relies on the red-line-principles concept established in child 1 (L28-43)."
+  },
+  {
+   "name": "general_principles",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "Child 3's rules about maximizing helpfulness and minimizing harm rely on the general-principles concept established in child 1 (L45-51)."
+  },
+  {
+   "name": "u18_principles",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's Under-18 Principles section relies on the u18-principles concept established in child 1 (L4572-4596)."
+  },
+  {
+   "name": "objective_point_of_view",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's present-perspectives and no-topic-off-limits rules rely on the objective-point-of-view concept established in child 1 (L2137-2148)."
+  },
+  {
+   "name": "do_not_lie",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's be-honest-and-transparent section relies on the do-not-lie concept established in child 1 (L2479-2490)."
+  },
+  {
+   "name": "avoid_sycophancy",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's be-honest-and-transparent section relies on the avoid-sycophancy concept established in child 1 (L2576-2582)."
+  },
+  {
+   "name": "express_uncertainty",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's avoid-errors rule relies on the express-uncertainty concept established in child 1 (L2821-2851)."
+  },
+  {
+   "name": "ask_clarifying_questions",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's rules (e.g., avoid_errors, control_side_effects) rely on the ask-clarifying-questions concept established in child 1 (L2654-2673)."
+  },
+  {
+   "name": "highlight_misalignments",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's assume-best-intentions rule relies on the highlight-misalignments concept established in child 1 (L3041-3043)."
+  },
+  {
+   "name": "avoid_errors",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's best-work section relies on the avoid-errors concept established in child 1 (L3150-3162)."
+  },
+  {
+   "name": "avoid_overstepping",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's best-work section relies on the avoid-overstepping concept established in child 1 (L3239-3243)."
+  },
+  {
+   "name": "be_creative",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's best-work section relies on the be-creative concept established in child 1 (L3319-3327)."
+  },
+  {
+   "name": "support_programmatic_use",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's best-work section relies on the support-programmatic-use concept established in child 1 (L3384-3394)."
+  },
+  {
+   "name": "style_guidelines",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's style section relies on the style-guidelines concept established in child 1 (L3502-3504)."
+  },
+  {
+   "name": "voice_mode_guidelines",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's voice-mode section relies on the voice-mode-guidelines concept established in child 1 (L4253-4569)."
+  },
+  {
+   "name": "prohibited_content",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's disallowed-content rules rely on the prohibited-content concept established in child 1 (L820-824)."
+  },
+  {
+   "name": "restricted_content",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's disallowed-content rules rely on the restricted-content concept established in child 1 (L852-854)."
+  },
+  {
+   "name": "sensitive_content",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's disallowed-content rules rely on the sensitive-content concept established in child 1 (L1108-1110)."
+  },
+  {
+   "name": "transformation_exception",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's disallowed-content rules rely on the transformation-exception concept established in child 1 (L1369-1379)."
+  },
+  {
+   "name": "protect_privileged_information",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's privileged-information section relies on the protect-privileged-information concept established in child 1 (L1799-1809)."
+  },
+  {
+   "name": "prevent_imminent_harm",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's risky-situations section relies on the prevent-imminent-harm concept established in child 1 (L1418-1422)."
+  },
+  {
+   "name": "do_not_facilitate_illicit_behavior",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's risky-situations section relies on the do-not-facilitate-illicit-behavior concept established in child 1 (L1543-1547)."
+  },
+  {
+   "name": "do_not_encourage_self_harm",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's risky-situations section relies on the do-not-encourage-self-harm concept established in child 1 (L1611-1615)."
+  },
+  {
+   "name": "avoid_regulated_advice",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's risky-situations section relies on the avoid-regulated-advice concept established in child 1 (L1708-1710)."
+  },
+  {
+   "name": "support_mental_health",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's risky-situations section relies on the support-mental-health concept established in child 1 (L1751-1755)."
+  },
+  {
+   "name": "avoid_info_hazards",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's disallowed-content rules rely on the avoid-info-hazards concept established in child 1 (L856-858)."
+  },
+  {
+   "name": "avoid_targeted_political_manipulation",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's disallowed-content rules rely on the avoid-targeted-political-manipulation concept established in child 1 (L920-922)."
+  },
+  {
+   "name": "respect_creators",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's disallowed-content rules rely on the respect-creators concept established in child 1 (L1002-1004)."
+  },
+  {
+   "name": "protect_privacy",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's disallowed-content rules rely on the protect-privacy concept established in child 1 (L1035-1037)."
+  },
+  {
+   "name": "no_erotica_or_gore",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's disallowed-content rules rely on the no-erotica-or-gore concept established in child 1 (L1112-1114)."
+  },
+  {
+   "name": "avoid_extremist_content",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's disallowed-content rules rely on the avoid-extremist-content concept established in child 1 (L1155-1157)."
+  },
+  {
+   "name": "avoid_hateful_content",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's disallowed-content rules rely on the avoid-hateful-content concept established in child 1 (L1237-1239)."
+  },
+  {
+   "name": "avoid_abuse",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's disallowed-content rules rely on the avoid-abuse concept established in child 1 (L1314-1316)."
+  },
+  {
+   "name": "uphold_fairness",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's fairness rule relies on the uphold-fairness concept established in child 1 (L1979-1983)."
+  },
+  {
+   "name": "respect_real_world_ties",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's real-world-ties rule relies on the respect-real-world-ties concept established in child 1 (L2050-2054)."
+  },
+  {
+   "name": "no_agenda",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's seek-truth section relies on the no-agenda concept established in child 1 (L2128-2132)."
+  },
+  {
+   "name": "present_perspectives",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's seek-truth section relies on the present-perspectives concept established in child 1 (L2304-2306)."
+  },
+  {
+   "name": "no_topic_off_limits",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's seek-truth section relies on the no-topic-off-limits concept established in child 1 (L2400-2402)."
+  },
+  {
+   "name": "be_honest_and_transparent",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's seek-truth section relies on the be-honest-and-transparent concept established in child 1 (L2475-2477)."
+  },
+  {
+   "name": "be_clear_and_direct",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's style section relies on the be-clear-and-direct concept established in child 1 (L3756-3758)."
+  },
+  {
+   "name": "be_professional",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's style section relies on the be-professional concept established in child 1 (L3818-3822)."
+  },
+  {
+   "name": "have_conversational_sense",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's style section relies on the have-conversational-sense concept established in child 1 (L3878-3880)."
+  },
+  {
+   "name": "be_warm",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's style section relies on the be-warm concept established in child 1 (L3955-3957)."
+  },
+  {
+   "name": "do_not_make_unprompted_personal_comments",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's style section relies on the do-not-make-unprompted-personal-comments concept established in child 1 (L3997-3999)."
+  },
+  {
+   "name": "avoid_being_condescending",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's style section relies on the avoid-being-condescending concept established in child 1 (L4050-4052)."
+  },
+  {
+   "name": "formatting_guidelines",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's style section relies on the formatting-guidelines concept established in child 1 (L4138-4144)."
+  },
+  {
+   "name": "be_thorough_but_efficient",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's style section relies on the be-thorough-but-efficient concept established in child 1 (L4163-4178)."
+  },
+  {
+   "name": "use_preset_voice",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's preset-voice rule relies on the use-preset-voice concept established in child 1 (L1975-1977)."
+  },
+  {
+   "name": "comply_with_laws",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's comply-with-laws rule relies on the comply-with-laws concept established in child 1 (L801-808)."
+  },
+  {
+   "name": "disallowed_content",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's disallowed-content rules rely on the disallowed-content concept established in child 1 (L810-818)."
+  },
+  {
+   "name": "sexual_content_involving_minors",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's disallowed-content rules rely on the sexual-content-involving-minors concept established in child 1 (L826-830)."
+  },
+  {
+   "name": "risky_situations",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's risky-situations section relies on the risky-situations concept established in child 1 (L1414-1416)."
+  },
+  {
+   "name": "best_work",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's best-work section relies on the best-work concept established in child 1 (L3148-3150)."
+  },
+  {
+   "name": "seek_truth",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's seek-truth section relies on the seek-truth concept established in child 1 (L2126-2128)."
+  },
+  {
+   "name": "style_section",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's style section relies on the style-section concept established in child 1 (L3502-3504)."
+  },
+  {
+   "name": "u18_prioritize_teen_safety",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "Child 3's Under-18 Principles section relies on the u18-prioritize-teen-safety concept established in child 1 (L4578-4596)."
+  }
+ ],
+ "judgment_calls": [
+  "Could have cut at L110 instead of L170; chose L170 because the definitions run L114-169 and lean on terms from L1-113. A cut at L110 would have needed more seeds.",
+  "Could have cut at L800 instead of L801; chose L801 because the stay-in-bounds section header at L797-799 belongs with the chain-of-command block that precedes it, and the content rules begin at L801.",
+  "Could have made child 2 span L171-1413 (including the start of stay-in-bounds content); chose to end at L800 because the stay-in-bounds content rules are a large, self-contained block that belongs with the rest of the content rules in child 3.",
+  "The seed vocabulary is large because the document is large and many concepts cross the cuts; each seed is a concept that appears in multiple children and needs a canonical name.",
+  "Some seeds (e.g., refusal_style) are established in child 2 but also appear in child 3; the seed is carried so both children use the same name."
+ ],
+ "_span_lo": 1,
+ "_span_hi": 4692,
+ "driver_autofixes": [
+  "cross-link 'refusal_style': provides_side_child 2 -> 3 (child containing established_around [4073, 4079])",
+  "cross-link 'u18_principles': provides_side_child 1 -> 3 (child containing established_around [4572, 4596])",
+  "cross-link 'objective_point_of_view': provides_side_child 1 -> 3 (child containing established_around [2137, 2148])",
+  "cross-link 'do_not_lie': provides_side_child 1 -> 3 (child containing established_around [2479, 2490])",
+  "cross-link 'avoid_sycophancy': provides_side_child 1 -> 3 (child containing established_around [2576, 2582])",
+  "cross-link 'express_uncertainty': provides_side_child 1 -> 3 (child containing established_around [2821, 2851])",
+  "cross-link 'ask_clarifying_questions': provides_side_child 1 -> 3 (child containing established_around [2654, 2673])",
+  "cross-link 'highlight_misalignments': provides_side_child 1 -> 3 (child containing established_around [3041, 3043])",
+  "cross-link 'avoid_errors': provides_side_child 1 -> 3 (child containing established_around [3150, 3162])",
+  "cross-link 'avoid_overstepping': provides_side_child 1 -> 3 (child containing established_around [3239, 3243])",
+  "cross-link 'be_creative': provides_side_child 1 -> 3 (child containing established_around [3319, 3327])",
+  "cross-link 'support_programmatic_use': provides_side_child 1 -> 3 (child containing established_around [3384, 3394])",
+  "cross-link 'style_guidelines': provides_side_child 1 -> 3 (child containing established_around [3502, 3504])",
+  "cross-link 'voice_mode_guidelines': provides_side_child 1 -> 3 (child containing established_around [4253, 4569])",
+  "cross-link 'prohibited_content': provides_side_child 1 -> 3 (child containing established_around [820, 824])",
+  "cross-link 'restricted_content': provides_side_child 1 -> 3 (child containing established_around [852, 854])",
+  "cross-link 'sensitive_content': provides_side_child 1 -> 3 (child containing established_around [1108, 1110])",
+  "cross-link 'transformation_exception': provides_side_child 1 -> 3 (child containing established_around [1369, 1379])",
+  "cross-link 'protect_privileged_information': provides_side_child 1 -> 3 (child containing established_around [1799, 1809])",
+  "cross-link 'prevent_imminent_harm': provides_side_child 1 -> 3 (child containing established_around [1418, 1422])",
+  "cross-link 'do_not_facilitate_illicit_behavior': provides_side_child 1 -> 3 (child containing established_around [1543, 1547])",
+  "cross-link 'do_not_encourage_self_harm': provides_side_child 1 -> 3 (child containing established_around [1611, 1615])",
+  "cross-link 'avoid_regulated_advice': provides_side_child 1 -> 3 (child containing established_around [1708, 1710])",
+  "cross-link 'support_mental_health': provides_side_child 1 -> 3 (child containing established_around [1751, 1755])",
+  "cross-link 'avoid_info_hazards': provides_side_child 1 -> 3 (child containing established_around [856, 858])",
+  "cross-link 'avoid_targeted_political_manipulation': provides_side_child 1 -> 3 (child containing established_around [920, 922])",
+  "cross-link 'respect_creators': provides_side_child 1 -> 3 (child containing established_around [1002, 1004])",
+  "cross-link 'protect_privacy': provides_side_child 1 -> 3 (child containing established_around [1035, 1037])",
+  "cross-link 'no_erotica_or_gore': provides_side_child 1 -> 3 (child containing established_around [1112, 1114])",
+  "cross-link 'avoid_extremist_content': provides_side_child 1 -> 3 (child containing established_around [1155, 1157])",
+  "cross-link 'avoid_hateful_content': provides_side_child 1 -> 3 (child containing established_around [1237, 1239])",
+  "cross-link 'avoid_abuse': provides_side_child 1 -> 3 (child containing established_around [1314, 1316])",
+  "cross-link 'uphold_fairness': provides_side_child 1 -> 3 (child containing established_around [1979, 1983])",
+  "cross-link 'respect_real_world_ties': provides_side_child 1 -> 3 (child containing established_around [2050, 2054])",
+  "cross-link 'no_agenda': provides_side_child 1 -> 3 (child containing established_around [2128, 2132])",
+  "cross-link 'present_perspectives': provides_side_child 1 -> 3 (child containing established_around [2304, 2306])",
+  "cross-link 'no_topic_off_limits': provides_side_child 1 -> 3 (child containing established_around [2400, 2402])",
+  "cross-link 'be_honest_and_transparent': provides_side_child 1 -> 3 (child containing established_around [2475, 2477])",
+  "cross-link 'be_clear_and_direct': provides_side_child 1 -> 3 (child containing established_around [3756, 3758])",
+  "cross-link 'be_professional': provides_side_child 1 -> 3 (child containing established_around [3818, 3822])",
+  "cross-link 'have_conversational_sense': provides_side_child 1 -> 3 (child containing established_around [3878, 3880])",
+  "cross-link 'be_warm': provides_side_child 1 -> 3 (child containing established_around [3955, 3957])",
+  "cross-link 'do_not_make_unprompted_personal_comments': provides_side_child 1 -> 3 (child containing established_around [3997, 3999])",
+  "cross-link 'avoid_being_condescending': provides_side_child 1 -> 3 (child containing established_around [4050, 4052])",
+  "cross-link 'formatting_guidelines': provides_side_child 1 -> 3 (child containing established_around [4138, 4144])",
+  "cross-link 'be_thorough_but_efficient': provides_side_child 1 -> 3 (child containing established_around [4163, 4178])",
+  "cross-link 'use_preset_voice': provides_side_child 1 -> 3 (child containing established_around [1975, 1977])",
+  "cross-link 'comply_with_laws': provides_side_child 1 -> 3 (child containing established_around [801, 808])",
+  "cross-link 'disallowed_content': provides_side_child 1 -> 3 (child containing established_around [810, 818])",
+  "cross-link 'sexual_content_involving_minors': provides_side_child 1 -> 3 (child containing established_around [826, 830])",
+  "cross-link 'risky_situations': provides_side_child 1 -> 3 (child containing established_around [1414, 1416])",
+  "cross-link 'best_work': provides_side_child 1 -> 3 (child containing established_around [3148, 3150])",
+  "cross-link 'seek_truth': provides_side_child 1 -> 3 (child containing established_around [2126, 2128])",
+  "cross-link 'style_section': provides_side_child 1 -> 3 (child containing established_around [3502, 3504])",
+  "cross-link 'u18_prioritize_teen_safety': provides_side_child 1 -> 3 (child containing established_around [4578, 4596])"
+ ]
+}

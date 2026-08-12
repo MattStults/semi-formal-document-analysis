@@ -1,0 +1,46 @@
+{
+  "decision": "divide",
+  "children": [
+    {
+      "span": [292, 425],
+      "why_this_cut": "Covers 'Respect the letter and spirit of instructions' (authority=root). Establishes the principle of interpreting instructions by their underlying intent, context, and implicit goals of stakeholders. Includes discussion of handling ambiguous instructions, detecting misalignment, special care situations, and multiple worked examples. Clean break: L425 is a trailing blank line; L426 shifts to 'No other objectives', which establishes constraints on which goals to pursue—a distinct topic from interpretation strategy."
+    },
+    {
+      "span": [426, 526],
+      "why_this_cut": "Covers 'No other objectives' and 'Act within an agreed-upon scope of autonomy' (both authority=root). Establishes two paired constraints on autonomous action: (1) which goals the assistant may pursue (must be entailed by applicable instructions; certain goals are always prohibited), and (2) the boundaries of autonomy (scope definition, tradeoff management, risk mitigation). These form a unified 'action constraint' narrative distinct from L292-L425's 'interpretation strategy' narrative. No further clean breaks within—the two subsections are conceptually paired."
+    }
+  ],
+  "seed_vocabulary": [
+    {
+      "name": "authority_levels_hierarchy",
+      "prose": "The precedence ordering of instruction sources from highest to lowest: Root > System > Developer > User > Guideline > (No Authority). This ordering determines which instructions override which when conflicts arise.",
+      "established_around": [186, 191]
+    },
+    {
+      "name": "applicable_instructions",
+      "prose": "Instructions that must be followed, determined by filtering all candidate instructions to exclude those that are misaligned with higher-authority instructions, superseded by later same-level instructions, or suspected to be mistaken. These form the actual guidance the assistant follows.",
+      "established_around": [179, 195]
+    },
+    {
+      "name": "misaligned_instruction",
+      "prose": "An instruction that is in conflict with either the letter or implied intent of a higher-authority instruction. Misaligned instructions are filtered out when determining what the assistant should actually do.",
+      "established_around": [197, 197]
+    },
+    {
+      "name": "scope_of_autonomy",
+      "prose": "A clear, mutually understood boundary that defines which sub-goals the assistant may pursue, acceptable side effects, and when the assistant must pause for clarification or approval. This prevents misunderstandings about what autonomy the assistant has in pursuing multi-step goals.",
+      "established_around": [461, 488]
+    },
+    {
+      "name": "letter_and_spirit_principle",
+      "prose": "The principle that the assistant should respect not just the literal wording of instructions but also their underlying intent, context, plausible implicit goals of stakeholders, and the higher-level purpose the instructions serve. Guides interpretation of ambiguous, inconsistent, or indirectly stated instructions.",
+      "established_around": [292, 301]
+    }
+  ],
+  "expected_cross_links": [],
+  "judgment_calls": [
+    "Chose L425→L426 as the cut point because Child 1 (Respect letter and spirit) focuses on HOW to interpret instructions, while Child 2 (No other objectives + Act within scope) focuses on WHAT goals to pursue and WITHIN WHAT BOUNDARIES. These are logically independent topics. Rule (a) applies: no linkage crosses this cut. L296 mentions 'autonomously pursue goals', but this is casual forward reference to the scope discussion, not a hard dependency—a reader understanding interpretation strategy doesn't need the scope section to follow L292-L425.",
+    "Did not cut between 'No other objectives' (L426-L460) and 'Act within scope' (L461-L525) within Child 2, despite being technically possible, because these subsections form a paired constraint on autonomous action: first establishing what goals cannot be pursued, then establishing the boundaries within which approved goals may be pursued. Separating them would require seeding a new 'goal_constraint_principle' concept, complicate cross-linking, and split a thematically coherent block. Their unity is stronger than their difference.",
+    "All inherited seeds are passed down unchanged. No new seed vocabulary needed within my span—the concepts of 'interpretation strategy' vs. 'action constraints' emerge from the structure itself rather than from locally-established named concepts that cross my cut."
+  ]
+}

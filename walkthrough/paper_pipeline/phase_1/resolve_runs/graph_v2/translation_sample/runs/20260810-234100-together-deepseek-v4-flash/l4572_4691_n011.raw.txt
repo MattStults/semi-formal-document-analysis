@@ -1,0 +1,150 @@
+{"outcome":"translated","clause_id":"l4572_4691_n011","abstain_reason":null,"claims":["C1: For a teen user, the assistant must not engage in first-person intimacy, romantic pairing, or romantic pairing with the teen, even if a similar scene would be allowed between consenting adults.","C2: The prohibition applies to romantic pairing with the teen, first-person intimacy, and romantic pairing with the teen, even if a similar scene would be allowed between consenting adults.","C3: This restriction is an additional limit on top of the general principle that the assistant should not undermine real-world ties."],"acts":[
+
+    ],
+
+    "concepts": [
+        {
+            "name": "teen_user",
+            "arity": 1,
+            "gloss": "the user is a teen, i.e. under the age of majority",
+            "licence": "assumed",
+            "cites": null,
+            "inference": "the clause speaks of 'a teen' as the party in the interaction; identifying who is a teen is case knowledge",
+            "toggleable": false
+        },
+        {
+            "name": "first_person_intimacy",
+            "arity": 1,
+            "gloss": "the assistant's response involves first-person intimacy with the user",
+            "licence": "assumed",
+            "cites": null,
+            "inference": "the clause prohibits 'first-person intimacy' with a teen; the concept is needed to state the prohibition",
+            "toggleable": false
+        },
+        {
+            "name": "romantic_pairing",
+            "arity": 1,
+            "gloss": "the assistant's response involves romantic pairing of the assistant with the user",
+            "licence": "assumed",
+            "cites": null,
+            "inference": "the clause prohibits 'romantic pairing' with a teen; the concept is needed to state the prohibition",
+            "toggleable": false
+        },
+        {
+            "name": "romantic_pairing_with_teen",
+            "arity": 1,
+            "gloss": "the assistant's response involves romantic pairing of the assistant with the teen user",
+            "licence": "assumed",
+            "cites": null,
+            "inference": "the clause prohibits 'romantic pairing' with a teen; the concept is needed to state the prohibition",
+            "toggleable": false
+        },
+        {
+            "name": "first_person_intimacy_with_teen",
+            "arity": 1,
+            "gloss": "the assistant's response involves first-person intimacy with the teen user",
+            "licence": "assumed",
+            "cites": null,
+            "inference": "the clause prohibits 'first-person intimacy' with a teen; the concept is needed to state the prohibition",
+            "toggleable": false
+        },
+        {
+            "name": "teen_user",
+            "arity": 1,
+            "gloss": "the user is a teen (under the age of majority in the relevant jurisdiction)",
+            "licence": "assumed",
+            "cites": null,
+            "inference": "the clause's prohibition applies to interactions with a teen; identifying who is a teen is a case fact",
+            "toggleable": false
+        },
+        {
+            "name": "consenting_adults_scenario",
+            "arity": 1,
+            "gloss": "the scenario would be permitted between consenting adults",
+            "licence": "assumed",
+            "cites": null,
+            "inference": "the clause says the prohibition holds 'even if a similar scene would be allowed between consenting adults', so the concept of such a permitted adult scenario is needed",
+            "toggleable": false
+        }
+    ],
+    "ontology": [
+        {
+            "licence": "textual",
+            "cites": "l4571_n011",
+            "inference": null,
+            "toggleable": false,
+            "atom": "forbidden_with_teen(M)",
+            "gloss": "M is a message that is forbidden when the interaction involves a teen",
+            "body": "assistant_message(M), involves_teen(M), intimacy_or_pairing(M)"
+        },
+        {
+            "licence": "textual",
+            "cites": "l4571_n011",
+            "inference": null,
+            "toggleable": false,
+            "atom": "forbidden_with_teen(M)",
+            "gloss": "M is a message that is forbidden when the interaction involves a teen",
+            "body": "assistant_message(M), involves_teen(M), first_person_intimacy(M)"
+        },
+        {
+            "licence": "textual",
+            "cites": "l4571_n011",
+            "inference": null,
+            "toggleable": false,
+            "atom": "forbidden_with_teen(M)",
+            "gloss": "M is a message that is forbidden when the interaction involves a teen",
+            "body": "assistant_message(M), involves_teen(M), romantic_pairing(M)"
+        },
+        {
+            "licence": "textual",
+            "cites": "l4571_n011",
+            "inference": null,
+            "toggleable": false,
+            "atom": "forbidden_with_teen(M)",
+            "gloss": "M is a message that is forbidden when the interaction involves a teen",
+            "body": "assistant_message(M), involves_teen(M), first_person_intimacy(M)"
+        }
+    ],
+    "asserts": [
+        {
+            "read_back": "a message % is forbidden when the interaction involves a teen and the message contains first-person intimacy",
+            "read_back_slots": ["M"],
+            "licence": "textual",
+            "cites": "l4571_n011",
+            "inference": null,
+            "toggleable": false,
+            "status": "forbid",
+            "act": "assistant_message(M)",
+            "body": "involves_teen(M), first_person_intimacy(M)"
+        },
+        {
+            "read_back": "a message % is forbidden when the interaction involves a teen and the message contains romantic pairing",
+            "read_back_slots": ["M"],
+            "licence": "textual",
+            "cites": "l4571_n011",
+            "inference": null,
+            "toggleable": false,
+            "status": "forbid",
+            "act": "assistant_message(M)",
+            "body": "involves_teen(M), romantic_pairing(M)"
+        }
+    ],
+    "beats": [],
+    "defines": [],
+    "closure": [
+        {
+            "act_class": "assistant_message",
+            "closure": "cnpa",
+            "reason": "The clause forbids certain assistant messages involving teens; it does not state what is permitted, so the default closure for assistant messages is cepa (closed-world permissive) unless another clause says otherwise. However, the clause itself only restricts; it does not grant permission."
+        }
+    ],
+    "requires": [
+        "involves_teen/1",
+        "first_person_intimacy/1",
+        "romantic_pairing/1"
+    ],
+    "inputs": [
+        "assistant_message/1"
+    ],
+    "forbid_body": []
+}

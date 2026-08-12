@@ -1,0 +1,59 @@
+{
+  "decision": "divide",
+  "children": [
+    {
+      "span": [797, 809],
+      "why_this_cut": "Introduces 'Stay in bounds' principles (L797-799) and establishes the foundational requirement to comply with applicable laws as a system-level obligation (L801-809, authority=system). This section grounds the entire restriction framework in principle and legal obligation. Clean break: L809 ends legal compliance guidance, L810 begins defining the specific content categories."
+    },
+    {
+      "span": [810, 1368],
+      "why_this_cut": "Defines all disallowed content categories and their specific rules: the three-tier categorization (prohibited/restricted/sensitive, L810-825) followed by eight detailed rule subsections (L826-1367) covering sexual content involving minors, information hazards, targeted political manipulation, respect for creators, privacy protection, erotica/gore, extremist content, hateful content, and abuse. These form a unified policy framework. Clean break: L1368 ends the 'don't engage in abuse' rule, L1369 shifts focus to exceptions for transforming user-provided content."
+    },
+    {
+      "span": [1369, 1413],
+      "why_this_cut": "Establishes the transformation exception (L1369-1373): a root-level principle creating narrow exceptions to restrictions established in child 2 for user-provided content (translating, paraphrasing, summarizing, etc.). Thematically distinct from defining restrictions; stands as its own principle about when and how restrictions can be bypassed."
+    }
+  ],
+  "seed_vocabulary": [
+    {
+      "name": "stay_in_bounds_principles",
+      "prose": "The collection of limits on assistant behavior where the assistant should refrain from fully complying with user or developer requests, including prohibited content (sexual content involving minors), restricted content (information hazards, sensitive personal data), sensitive content (erotica/gore), compliance with laws, prevention of illicit behavior, prevention of imminent harm, and refusal to encourage self-harm. These establish hard boundaries across the assistant's behavior.",
+      "established_around": [797, 809]
+    },
+    {
+      "name": "disallowed_content_categories",
+      "prose": "The three-tiered categorization of content the assistant should not generate: prohibited content (only sexual content involving minors, with no transformation exception), restricted content (information hazards and sensitive personal data, transformations allowed), and sensitive content (erotica and gore in specific contexts, transformations allowed). This categorization framework is used to determine what restrictions apply in any given situation.",
+      "established_around": [810, 825]
+    },
+    {
+      "name": "sensitive_content_restrictions",
+      "prose": "The specific rules governing when sensitive content (erotica and gore) may be generated: only in educational, medical, historical, artistic, or other appropriate contexts (L1110), with transformations of user-provided sensitive content allowed. Sensitive content requires contextual justification, unlike prohibited content which has no exceptions.",
+      "established_around": [1108, 1115]
+    }
+  ],
+  "expected_cross_links": [
+    {
+      "needs_side_child": 2,
+      "provides_side_child": 1,
+      "name": "stay_in_bounds_principles",
+      "evidence": "Child 2's entire disallowed content framework rests on the principle from child 1 (L797-809) that the assistant should 'refrain from fully complying with a user or developer's request' to minimize harm. L799 explicitly frames this as background for the entire section: all specific restrictions implement this principle."
+    },
+    {
+      "needs_side_child": 3,
+      "provides_side_child": 2,
+      "name": "disallowed_content_categories",
+      "evidence": "Child 3 (L1371) explicitly references the categories by saying 'even if the resulting output would ordinarily be disallowed as [restricted](#restricted_content) or [sensitive content](#sensitive_content)'. Child 3 must understand the three categories and their definitions to know which content transformations are allowed."
+    },
+    {
+      "needs_side_child": 3,
+      "provides_side_child": 2,
+      "name": "sensitive_content_restrictions",
+      "evidence": "Child 3 (L1371) references transformations of '[sensitive content](#sensitive_content)' and discusses when transformations are and are not allowed. This requires knowing the context-dependent rules for sensitive content (L1108-1115 in child 2) to correctly apply the transformation exception to erotica and gore."
+    }
+  ],
+  "judgment_calls": [
+    "Chose to divide at L809/L810 and L1368/L1369 rather than splitting restricted and sensitive content into separate children. Although L810-1368 is large (559 lines), it forms a unified framework: the three-tier categorization (L810-825) is introduced once and then applied consistently across prohibited, restricted, and sensitive rule subsections (L826-1367). Splitting would fragment this framework and require extensive cross-links to reference the shared categorization; keeping together reduces coupling and maintains readability.",
+    "Created 'sensitive_content_restrictions' as a distinct seed from 'disallowed_content_categories' because child 3 specifically needs to reference the context-dependent rules for when sensitive content is permitted. The categorization framework (child 2's L810-825) says 'sensitive content may be generated in specific circumstances'; the restrictions (child 2's L1108-1115) specify what those circumstances are. Child 3 must reference both to correctly apply the transformation exception.",
+    "Chose not to seed 'authority_levels_hierarchy' even though child 1 references 'authority=system' (L801). This seed is established outside my span (around [186, 191]) per the dispatch, so by policy I may only NEED it, not provide it. Child 1 will have a dangling need for this concept, which the parent will resolve."
+  ]
+}

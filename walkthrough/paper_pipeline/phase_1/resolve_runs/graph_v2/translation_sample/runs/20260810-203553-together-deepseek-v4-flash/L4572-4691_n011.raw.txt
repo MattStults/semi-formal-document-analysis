@@ -1,0 +1,154 @@
+{
+  "outcome": "translated",
+  "clause_id": "L4572-4691_n011",
+  "abstain_reason": null,
+  "claims": [
+    "C1: For U18 users, romantic roleplay is disallowed.",
+    "C2: For U18 users, first-person intimate roleplay is disallowed.",
+    "C3: For U18 users, romantic pairing with a minor is disallowed.",
+    "C4: The disallowance applies even if the same content would be permitted for an adult user.",
+    "C5: The basis is the real-world ties principle, which this clause applies to U18 users."
+  ],
+  "acts": [
+    "engage_in_romantic_roleplay(U)",
+    "engage_in_first_person_intimate_roleplay(U)",
+    "pair_romantically_with_minor(U)"
+  ],
+  "concepts": [
+    {
+      "name": "u18_user",
+      "arity": 1,
+      "gloss": "user U is under 18 years of age",
+      "licence": "textual",
+      "cites": "L4590",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "romantic_roleplay",
+      "arity": 1,
+      "gloss": "the activity is immersive romantic roleplay",
+      "licence": "textual",
+      "cites": "L4590",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "first_person_intimacy",
+      "arity": 1,
+      "gloss": "the activity is first-person intimacy",
+      "licence": "textual",
+      "cites": "L4590",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "romantic_pairing_with_minor",
+      "arity": 1,
+      "gloss": "the activity pairs the assistant romantically with a minor",
+      "licence": "textual",
+      "cites": "L4590",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "u18_user",
+      "arity": 1,
+      "gloss": "the user is under 18",
+      "licence": "textual",
+      "cites": "L4590",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "similar_scene_allowed_for_adult",
+      "arity": 1,
+      "gloss": "a similar scene would be permitted for an adult user",
+      "licence": "textual",
+      "cites": "L4590",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [],
+  "asserts": [
+    {
+      "read_back": "for a U18 user, engaging in romantic roleplay is forbidden",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "L4590",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "engage_romantic_roleplay(U)",
+      "body": "u18_user(U)"
+    },
+    {
+      "read_back": "for a U18 user, engaging in first-person intimacy roleplay is forbidden",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "L4590",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "engage_first_person_intimacy_roleplay(U)",
+      "body": "u18_user(U)"
+    },
+    {
+      "read_back": "for a U18 user, romantic pairing with a minor is forbidden",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "L4590",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "pair_romantically_with_minor(U)",
+      "body": "u18_user(U)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "engage_romantic_roleplay",
+      "closure": "cepa",
+      "reason": "the clause forbids three specific acts for U18 users and does not state that anything else is forbidden; the default reading is that only these acts are closed, everything else remains permitted."
+    },
+    {
+      "act_class": "engage_first_person_intimacy_roleplay",
+      "closure": "cepa",
+      "reason": "the clause forbids this act for U18 users and does not state that anything else is forbidden; the default reading is that only these acts are closed, everything else remains permitted."
+    },
+    {
+      "act_class": "pair_with_minor",
+      "closure": "cepa",
+      "reason": "the clause forbids this act for U18 users and does not state that anything else is forbidden; the default reading is that only these acts are closed, everything else remains permitted."
+    }
+  ],
+  "requires": [
+    "u18_user/1",
+    "romantic_roleplay/1",
+    "first_person_intimacy_roleplay/1",
+    "pairing_with_minor/1"
+  ],
+  "inputs": [
+    "u18_user/1",
+    "romantic_roleplay/1",
+    "first_person_intimacy_roleplay/1",
+    "pairing_with_minor/1"
+  ],
+  "forbid_body": [
+    {
+      "head": "forbid(engage_romantic_roleplay(U))",
+      "banned": "u18_user(U), romantic_roleplay(U)"
+    },
+    {
+      "head": "forbid(engage_first_person_intimacy_roleplay(U))",
+      "banned": "u18_user(U), first_person_intimacy_roleplay(U)"
+    },
+    {
+      "head": "forbid(engage_romantic_pairing_with_minor(U))",
+      "banned": "u18_user(U), romantic_pairing_with_minor(U)"
+    }
+  ]
+}

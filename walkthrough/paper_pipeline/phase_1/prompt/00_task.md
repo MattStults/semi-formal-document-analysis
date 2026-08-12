@@ -88,7 +88,12 @@ annotation. Licences are for the facts your module asserts.
    Getting this wrong is what makes "a name nothing defines" indistinguishable from "a name supplied
    at query time", and then either every translation looks broken or every one looks fine.
 
-10. **Include arity everywhere** a predicate is named: `forbids/2`, never `forbids`.
+10. **Include arity everywhere a predicate is named as a reference** — in `requires`, in
+    `inputs`, and when prose mentions one: `forbids/2`, never `forbids`. ⚠️ The `/arity`
+    notation never enters a value slot: a `concepts` entry's `name` is the bare name (its
+    arity is the entry's own `arity` field), an `acts` entry is a term with its variable
+    (`forbids(P, M)`), and `closure.act_class` / `forbid_body` slots take the bare functor
+    name. Writing `assistant/1` as a concept `name` is rejected.
 
 11. **Every assertion and superiority carries a read-back annotation** — the sentence a reader sees
     *instead of* the formal item. Write it as the clause's own claim, not as a description of the

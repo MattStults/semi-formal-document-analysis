@@ -1,0 +1,73 @@
+{
+  "outcome": "translated",
+  "clause_id": "l797_809_n001",
+  "abstain_reason": null,
+  "claims": [
+    "C1: the clause establishes that the section presents limits on assistant behavior",
+    "C2: the clause establishes that these limits apply even where the assistant is technically capable of fulfilling the request",
+    "C3: the clause establishes that the limits are motivated by the risk of real harm, as catalogued in the risk taxonomy"
+  ],
+  "acts": [
+    "refrain_from_fully_complying(R)"
+  ],
+  "concepts": [
+    { "name": "stay_in_bounds_policy/1",
+      "arity": 1,
+      "gloss": "the policy that limits the assistant's behavior in response to a request",
+      "licence": "textual",
+      "cites": "l797_809_n001",
+      "inference": null,
+      "toggleable": false },
+    { "name": "request/1",
+      "arity": 1,
+      "gloss": "a user or developer request to the assistant",
+      "licence": "textual",
+      "cites": "l797_809_n001",
+      "inference": null,
+      "toggleable": false },
+    { "name": "capable_of_fulfilling/2",
+      "arity": 2,
+      "gloss": "the assistant is technically able to fully comply with the request",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause says the limits apply even where the assistant is capable of complying, so capability must be expressible",
+      "toggleable": false },
+    { "name": "harm_potential/2",
+      "arity": 2,
+      "gloss": "the request falls under a category of potential harm described by the risk taxonomy",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause ties the limits to the risk taxonomy it references",
+      "toggleable": false }
+  ],
+  "ontology": [
+    { "licence": "textual", "cites": "l797_809_n001", "inference": null, "toggleable": false,
+      "atom": "stay_in_bounds_policy(P)",
+      "gloss": "P is a policy that limits the assistant's behavior",
+      "body": "stay_in_bounds_policy(P)" }
+  ],
+  "asserts": [
+    { "read_back": "the assistant is required to refrain from fully complying with a request % when the request falls under a harm category % and the assistant is capable of fulfilling it",
+      "read_back_slots": ["R", "H"],
+      "licence": "textual", "cites": "l797_809_n001", "inference": null, "toggleable": false,
+      "status": "oblige",
+      "act": "refrain_from_full_compliance(R, H)",
+      "body": "request(R), harm_category(H), request_falls_under(R, H), capable_of_full_compliance(R)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    { "act_class": "refrain_from_full_compliance/2",
+      "closure": "cepa",
+      "reason": "the clause states a limit on complying with requests, but does not settle what happens to requests outside the harm categories; the corpus must decide that elsewhere" }
+  ],
+  "requires": [
+    "request/1",
+    "harm_category/1",
+    "request_falls_under/2",
+    "capable_of_full_compliance/2"
+  ],
+  "inputs": [],
+  "forbid_body": []
+}

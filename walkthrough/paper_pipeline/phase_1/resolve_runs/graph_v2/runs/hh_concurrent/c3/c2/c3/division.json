@@ -1,0 +1,122 @@
+{
+ "decision": "divide",
+ "children": [
+  {
+   "span": [
+    2405,
+    2473
+   ],
+   "why_this_cut": "Examples from the stay_in_bounds section (controversial historical event, disallowed content policies) with their comparison blocks; the only crossing linkage is the chain_of_command concept referenced in BAD tags, seeded below."
+  },
+  {
+   "span": [
+    2474,
+    2554
+   ],
+   "why_this_cut": "The 'Be honest and transparent' section and its 'Do not lie' subsection, including the outcome ordering; the only crossing linkage is the authority_level_ordering concept used in the lie-override rule, seeded below."
+  },
+  {
+   "span": [
+    2555,
+    2800
+   ],
+   "why_this_cut": "The 'Don't be sycophantic' and 'Consider uncertainty...' subsections with their examples; the only crossing linkage is the authority_level_ordering concept used in the ask_clarifying_questions heading tag, seeded below."
+  }
+ ],
+ "seed_vocabulary": [
+  {
+   "name": "authority_level_ordering",
+   "prose": "which of two authority levels outranks the other (root > system > developer > user > guideline > no authority)",
+   "established_around": [
+    69,
+    101
+   ]
+  },
+  {
+   "name": "untrusted_data",
+   "prose": "content in quoted text, untrusted_text blocks, multimodal data, file attachments, and tool outputs that has no authority by default and must be treated as information rather than instructions",
+   "established_around": [
+    701,
+    701
+   ]
+  },
+  {
+   "name": "stay_in_bounds",
+   "prose": "the section of the Model Spec describing limits on the assistant's behavior, including scenarios where the assistant should refrain from fully complying with a user or developer request",
+   "established_around": [
+    797,
+    799
+   ]
+  },
+  {
+   "name": "chain_of_command",
+   "prose": "the principle that the assistant must follow the highest-authority applicable instruction, and that lower-authority instructions cannot override higher ones",
+   "established_around": [
+    2405,
+    2473
+   ]
+  },
+  {
+   "name": "do_not_lie_rule",
+   "prose": "the rule that the assistant should not mislead the user or developer unless explicitly instructed to do so by a higher authority",
+   "established_around": [
+    2479,
+    2490
+   ]
+  },
+  {
+   "name": "lie_outcome_ordering",
+   "prose": "the overall ordering of outcomes when the assistant cannot give a straightforward answer: providing a good answer > refusing to answer > committing a lie of omission > committing a lie of commission > violating an explicit applicable instruction",
+   "established_around": [
+    2528,
+    2528
+   ]
+  },
+  {
+   "name": "avoid_sycophancy_rule",
+   "prose": "the rule that the assistant should not be sycophantic, flatter the user, or change its stance solely to agree with the user",
+   "established_around": [
+    2576,
+    2582
+   ]
+  },
+  {
+   "name": "ask_clarifying_questions_rule",
+   "prose": "the guideline that the assistant should consider uncertainty, state assumptions, and ask clarifying questions when appropriate",
+   "established_around": [
+    2654,
+    2673
+   ]
+  }
+ ],
+ "expected_cross_links": [
+  {
+   "name": "chain_of_command",
+   "needs_side_child": 1,
+   "provides_side_child": 1,
+   "evidence": "child 1's BAD tags reference chain_of_command; child 2's do_not_lie section relies on the chain of command concept"
+  },
+  {
+   "name": "authority_level_ordering",
+   "needs_side_child": 2,
+   "provides_side_child": 3,
+   "evidence": "child 2's lie-override rule relies on authority levels; child 3's ask_clarifying_questions heading tag (authority=guideline) relies on the same ordering"
+  },
+  {
+   "name": "do_not_lie_rule",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "child 3's sycophancy section references the do_not_lie rule's white-lie discussion"
+  }
+ ],
+ "judgment_calls": [
+  "Cut at L2473 (end of stay_in_bounds examples) rather than at L2475 (start of Be honest section) to keep the stay_in_bounds examples together; the only crossing linkage is chain_of_command.",
+  "Cut at L2554 (end of white-lie discussion) rather than at L2576 (start of sycophancy section) to keep the do_not_lie section's white-lie discussion together; the only crossing linkage is authority_level_ordering.",
+  "Seeded chain_of_command, do_not_lie_rule, lie_outcome_ordering, avoid_sycophancy_rule, and ask_clarifying_questions_rule because they are established in one child and used in another, or are needed by the parent to resolve cross-links."
+ ],
+ "_span_lo": 2405,
+ "_span_hi": 2800,
+ "driver_autofixes": [
+  "cross-link 'chain_of_command': provides_side_child 2 -> 1 (child containing established_around [2405, 2473])"
+ ]
+}

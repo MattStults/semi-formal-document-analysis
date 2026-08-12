@@ -1,0 +1,121 @@
+{
+  "outcome": "translated",
+  "clause_id": "l3384_3501_n007",
+  "abstain_reason": null,
+  "claims": [
+    "C1: a developer instruction that requires function-call-only responses is a higher-level instruction",
+    "C2: a higher-level instruction that requires function-call-only responses forbids plaintext responses",
+    "C3: a higher-level instruction that requires function-call-only responses permits function-call responses that ask clarifying questions"
+  ],
+  "acts": [
+    "respond_plaintext/1",
+    "respond_function_call/1"
+  ],
+  "concepts": [
+    {
+      "name": "higher_level_instruction",
+      "arity": 1,
+      "gloss": "I is an instruction from a higher level of the chain of command (e.g. the developer message) that governs the assistant's response behavior",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause speaks of instructions from higher levels of the chain of command; the notion of a higher level is presupposed by the text",
+      "toggleable": false
+    },
+    {
+      "name": "requires_function_call_only",
+      "arity": 1,
+      "gloss": "I is an instruction that requires the assistant to respond only via function calls, not plain text",
+      "licence": "textual",
+      "cites": "l3384_3501_n007",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "clarifying_question",
+      "arity": 1,
+      "gloss": "Q is a clarifying question the assistant asks the user to resolve ambiguity before answering",
+      "licence": "textual",
+      "cites": "l3384_3501_n007",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "function_call_response",
+      "arity": 1,
+      "gloss": "R is a response delivered through the function-call interface rather than as plain text",
+      "licence": "textual",
+      "cites": "l3384_3501_n007",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "l3384_3501_n007",
+      "inference": null,
+      "toggleable": false,
+      "atom": "higher_level_instruction(I)",
+      "gloss": "I is an instruction from a higher level of the chain of command than the assistant's own defaults",
+      "body": "instruction(I)"
+    },
+    {
+      "licence": "textual",
+      "cites": "l3384_3501_n007",
+      "inference": null,
+      "toggleable": false,
+      "atom": "function_call_only_instruction(I)",
+      "gloss": "I is an instruction that requires the assistant to respond only via function calls",
+      "body": "higher_level_instruction(I), requires_function_call_only(I)"
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "responding with a plain-text message is forbidden when a higher-level instruction requires function-call-only responses",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "l3384_3501_n007",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "respond_plaintext"
+    , "body": "higher_level_instruction(I), requires_function_call_only(I)"
+    },
+    {
+      "read_back": "responding with a function call is permitted when a higher-level instruction requires function-call-only responses",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "l3384_3501_n007",
+      "inference": null,
+      "toggleable": false,
+      "status": "permit",
+      "act": "respond_with_function_call",
+      "body": "higher_level_instruction(I), requires_function_call_only(I)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "respond_with_plaintext",
+      "closure": "cepa",
+      "reason": "The clause forbids plaintext responses only when a higher-level instruction requires function-call-only responses; silence about other cases leaves them permitted."
+    },
+    {
+      "act_class": "respond_with_function_call",
+      "closure": "cepa",
+      "reason": "The clause permits function-call responses when a higher-level instruction requires them; silence about other cases leaves them permitted."
+    }
+  ],
+  "requires": [
+    "higher_level_instruction/1",
+    "requires_function_call_only/1"
+  ],
+  "inputs": [],
+  "forbid_body": [
+    {
+      "head": "forbid(respond_with_plaintext)",
+      "banned": "respond_with_plaintext"
+    }
+  ]
+}

@@ -39,6 +39,22 @@ def _mod(**over):
         requires=[], inputs=[], forbid_body=[],
     )
     base.update(over)
+    # ⚠️ D4b level 2 wants a gloss for every borrow — `inputs` as well as
+    # `requires` since 2026-08-12 (Matt's ruling; READBACK_SMOKE.md). These
+    # tests are about RENDERING, not about the borrow contract, and each names
+    # its own borrows; supplying the descriptions here keeps 21 rendering
+    # assertions from silently becoming assertions about the schema.
+    have = {f"{c['name']}/{c['arity']}" for c in base.get("concepts") or []}
+    for sig in list(base.get("requires") or []) + list(base.get("inputs") or []):
+        if sig in have or "/" not in sig or sig.split("/")[0] in schema.RESERVED:
+            continue
+        nm, _, ar = sig.partition("/")
+        have.add(sig)
+        base.setdefault("concepts", []).append(
+            # ⛔ No part of the predicate's own name may appear: RB1 refuses a
+            # gloss that reuses its label, independently of the schema rule.
+            _concept(nm, "a condition the clause treats as given and does not "
+                         "itself establish", arity=int(ar)))
     return schema.validate(base)
 
 
@@ -296,13 +312,15 @@ def test_ontology_ground_fact_renders_x_is_g():
 
 def test_ontology_with_a_body_renders_a_when_clause():
     mod = _mod(
-        concepts=[_concept("risky", "it is risky")],
+        # the borrow's gloss must SAY something beyond the name — the schema's
+        # restates-name guard covers `inputs` since 2026-08-12.
+        concepts=[_concept("risky", "the act could cause harm")],
         inputs=["risky/1"],
         ontology=[_lic(atom="restricted(X)", gloss="it is restricted",
                        body="risky(X)")])
     rb = readback.render_module(mod)
     o = [r for r in rb.renderings if r.kind == "ontology"][0]
-    assert " when " in o.text and "«it is risky»" in o.text
+    assert " when " in o.text and "«the act could cause harm»" in o.text
 
 
 def test_asserts_renders_clause_status_act_when_body():
@@ -424,20 +442,24 @@ def test_rb1_exempts_only_the_marked_act_term():
     """The act term is the one label the renderer emits ON PURPOSE.
 
     It is exempt because it is marked and carries a `readback-act-literal`
-    note — never because it is quiet. Here `produce` is also a declared input,
-    so it is in the label set and RB1 would fire without the exemption.
+    note — never because it is quiet. Here the act functor `b` is also a
+    declared input, so it is in the label set and RB1 would fire without the
+    exemption. `b/1` because it must be declared and UNGLOSSED: since
+    2026-08-12 (READBACK_SMOKE.md) the schema demands a gloss for every
+    borrow, and a glossed act renders as its gloss, not as a marked term —
+    only a RESERVED placeholder can still be borrowed bare.
     """
     mod = _mod(
-        clause_id="m0217", acts=["produce(M)"],
+        clause_id="m0217", acts=["b(M)"],
         concepts=[_concept("political_content", "content about politics")],
-        inputs=["political_content/1", "produce/1"],
+        inputs=["political_content/1", "b/1"],
         asserts=[_lic(read_back="producing % is permitted",
-                      read_back_slots=["M"], status="permit", act="produce(M)",
+                      read_back_slots=["M"], status="permit", act="b(M)",
                       body="political_content(M)")],
-        closure=[dict(act_class="produce", closure="cepa", reason="a reason")])
+        closure=[dict(act_class="b", closure="cepa", reason="a reason")])
     rb = readback.render_module(mod)
     a = [r for r in rb.renderings if r.kind == "asserts"][0]
-    assert readback.ACT_MARK in a.text and "produce" in a.text
+    assert readback.ACT_MARK in a.text and "b(M)" in a.text
     assert rb.checks["RB1"] is True
     assert any(f.check_id == "readback-act-literal" for f in rb.findings)
 
@@ -633,14 +655,18 @@ def test_rb1_says_whether_the_label_is_in_the_gloss_or_in_the_renderers_text():
     msg = [f.message for f in rb.findings if f.check_id == "RB1-label-survives"]
     assert msg and "inside a gloss" in msg[0]
 
+    # The meaningless borrow is `b/1`: a RESERVED placeholder is the one
+    # borrow the schema still accepts unglossed (2026-08-12 ruling,
+    # READBACK_SMOKE.md), which is exactly the shape this test needs — a
+    # declared label with no definition available to render.
     outside = _mod(
         concepts=[_concept("known", "a thing with a meaning")],
-        inputs=["known/1", "nameless/1"],
+        inputs=["known/1", "b/1"],
         ontology=[_lic(atom="derived(X)", gloss="a derived thing",
-                       body="known(X), nameless(X)")])
+                       body="known(X), b(X)")])
     rb = readback.render_module(outside)
     msg = [f.message for f in rb.findings
-           if f.check_id == "RB1-label-survives" and "nameless" in f.message]
+           if f.check_id == "RB1-label-survives" and "'b'" in f.message]
     assert msg and "renderer's own text" in msg[0]
 
 
@@ -916,30 +942,41 @@ def test_ontology_arguments_are_not_dressed_as_glosses():
     diagnoses and the one a reader is told to discount: the classification was
     inverted for this case.
     """
+    # The constant is `b`: a RESERVED placeholder, because the shape under
+    # test is a declared borrow with NO written meaning, and since 2026-08-12
+    # (READBACK_SMOKE.md) a RESERVED name is the only borrow the schema still
+    # accepts unglossed.
     mod = _mod(
-        inputs=["new_step/1"],
-        ontology=[_lic(atom="restricted(new_step)",
+        inputs=["b/1"],
+        ontology=[_lic(atom="restricted(b)",
                        gloss="it falls under the restriction", body=None)],
         requires=["restricted/1"])
-    r = readback.render_module(mod).renderings[0]
-    assert "new_step" in r.text
-    assert "«new_step»" not in r.text, (
+    # ⚠️ NOT `renderings[0]`. The module now also carries a concept glossing
+    # its borrow (D4b level 2), so index 0 is that concept and this assertion
+    # was reading the wrong rendering. Select by KIND, which says what the
+    # test actually means.
+    r = [x for x in readback.render_module(mod).renderings
+         if x.kind == "ontology"][0]
+    assert "b is " in r.text
+    assert "«b»" not in r.text, (
         f"a bare constant is not a written meaning: {r.text!r}")
 
 
 def test_a_label_in_an_ontology_argument_is_blamed_on_the_RENDERER():
-    """`new_step` is a declared input with no written meaning anywhere, so the
-    renderer emits the bare label. RB1 must blame the renderer for it — before
-    the fix the `«»` wrapper made the `outside` scan miss it and RB1 reported
-    the module's gloss prose instead, sending the repair to the wrong place."""
+    """`b` is a declared input with no written meaning anywhere (a RESERVED
+    placeholder — the one unglossable borrow left since the 2026-08-12
+    ruling, READBACK_SMOKE.md), so the renderer emits the bare label. RB1 must
+    blame the renderer for it — before the fix the `«»` wrapper made the
+    `outside` scan miss it and RB1 reported the module's gloss prose instead,
+    sending the repair to the wrong place."""
     mod = _mod(
-        inputs=["new_step/1"],
-        ontology=[_lic(atom="restricted(new_step)",
+        inputs=["b/1"],
+        ontology=[_lic(atom="restricted(b)",
                        gloss="it falls under the restriction", body=None)],
         requires=["restricted/1"])
     rb = readback.render_module(mod)
     hits = [f for f in rb.findings if f.check_id == "RB1-label-survives"
-            and "new_step" in f.message]
+            and "'b'" in f.message]
     assert hits, [f.message for f in rb.findings]
     assert "renderer's own text" in hits[0].message, (
         "the renderer emitted the bare label itself; blaming the module's "

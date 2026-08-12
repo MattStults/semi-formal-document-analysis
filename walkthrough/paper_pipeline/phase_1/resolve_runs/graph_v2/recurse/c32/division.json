@@ -1,0 +1,38 @@
+{
+  "decision": "divide",
+  "children": [
+    {
+      "span": [3502, 4164],
+      "why_this_cut": "Covers core style principles: love humanity, rational optimism, responsibility, interesting, curious, clear, professional, conversational, warm, avoiding personal comments, avoiding condescension, helpful refusals, and Markdown formatting. All establish communication style guidelines that apply across contexts. Clean break: L4164 is blank line after Markdown examples close (~~~), L4165 starts 'Be thorough but efficient' section with distinct conceptual focus."
+    },
+    {
+      "span": [4165, 4250],
+      "why_this_cut": "Covers response length and efficiency tradeoffs: balancing thoroughness with token limits, user time, and avoiding redundancy. Distinct from core style principles—addresses a specific design tension in response construction rather than communication style per se. Clean break: L4250 is blank line after comparison examples, L4251 starts 'Adapt to the user's modality' section."
+    },
+    {
+      "span": [4251, 4571],
+      "why_this_cut": "Covers voice and video modality specific guidance: accent usage, conciseness in voice mode, length adaptation, handling interruptions, and responding to audio testing. Establishes how to apply communication principles specifically for audio/video conversations, distinct from text-based communication. Clean break marks end of parent span (L4571 ends with ~~~ closing audio testing example)."
+    }
+  ],
+  "seed_vocabulary": [
+    {
+      "name": "stay_in_bounds_principles",
+      "prose": "The collection of limits on assistant behavior where the assistant should refrain from fully complying with user or developer requests, including: prohibited content (sexual content involving minors), restricted content (information hazards, sensitive personal data), sensitive content (erotica/gore), compliance with laws, prevention of illicit behavior, prevention of imminent harm, and refusal to encourage self-harm. Section introduced at L0797-L0799.",
+      "established_around": [797, 799]
+    },
+    {
+      "name": "do_not_facilitate_illicit_behavior",
+      "prose": "Root-level requirement that if the user or developer asks the assistant to facilitate illicit behavior, the assistant must refuse to help with guidance, instructions, actionable steps, or improvements to user-provided plans, and should not encourage or promote such behaviors. Established at L1543-L1548.",
+      "established_around": [1543, 1548]
+    }
+  ],
+  "expected_cross_links": [],
+  "judgment_calls": [
+    "Chose to divide into three children rather than treat as a leaf because the span is 1070 lines (significantly above the ~150-line leaf threshold), covering multiple distinct topics with clear semantic boundaries.",
+    "Chose cut 1 at L4164→L4165 because 'Be thorough but efficient' introduces a conceptually distinct topic: managing response length and efficiency tradeoffs. Child 1 establishes HOW to communicate (tone, warmth, clarity, style); Child 2 addresses WHEN and HOW MUCH to communicate (token limits, response completeness). Cut at natural section boundary.",
+    "Chose cut 2 at L4250→L4251 because 'Adapt to the user's modality' is specialized guidance for voice/audio conversations, fundamentally distinct from text-based length principles. Voice section is self-contained and establishes its own voice-specific principles (accents, conciseness, interruption handling, audio testing).",
+    "Did not cut within 'Adapt to the user's modality' despite its size (~321 lines) because all subsections (accents, conciseness, length adaptation, interruptions, audio testing) are implementations of the same principle—how to apply communication style in voice/video mode. Splitting would fragment modality-specific guidance.",
+    "Did not create expected_cross_links because no explicit textual dependencies cross between children. Each child is self-contained: Child 1 establishes style principles without referencing Children 2 or 3; Child 2 establishes length tradeoffs independently; Child 3 establishes voice-specific applications. While implicit logical relationships exist (e.g., voice guidance applies style principles), these are not textually stated.",
+    "Carried forward stay_in_bounds_principles and do_not_facilitate_illicit_behavior (inherited seeds) because they are explicitly referenced in Child 1's 'When appropriate, be helpful when refusing' section (L4073-L4120): L4075 references stay_in_bounds, L4077 references do_not_facilitate_illicit_behavior. Did not carry sensitive_content_restrictions or self_harm_prohibition as they do not appear in my span."
+  ]
+}

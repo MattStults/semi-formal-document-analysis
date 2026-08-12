@@ -67,8 +67,25 @@ class StubClient:
 
 
 def good(cid, **over):
-    """A module the checks accept, for clause `cid`."""
-    return fixtures.module_json(clause_id=cid, **over)
+    """A module the checks accept, for clause `cid`.
+
+    ⚠️ THE BORROW SITS IN `inputs` AND CARRIES ITS GLOSS. This fixture once
+    kept `concepts` empty to hold the licence denominators to exactly the two
+    items the tests put there — legal while the gloss rule was `requires`-only.
+    Since 2026-08-12 (Matt's ruling; grounds in READBACK_SMOKE.md: unglossed
+    inputs reached stage 4 and R3 refused) the schema demands a gloss for
+    EVERY borrow, so the minimal ACCEPTED module carries three licensed items:
+    this `textual` concept, the ontology fact (`assumed`) and the assertion
+    (`textual`). The licence tests below count in thirds accordingly.
+    """
+    base = dict(requires=[], inputs=["restricted/1"],
+                concepts=[dict(name="restricted", arity=1,
+                               gloss="the material falls under a policy "
+                                     "class another clause defines",
+                               **fixtures.TEXTUAL)],
+                _no_auto_gloss=True)
+    base.update(over)
+    return fixtures.module_json(clause_id=cid, **base)
 
 
 def rule_in_atom_slot(cid):
@@ -358,15 +375,17 @@ def test_licence_metric_counts_assumed_world_and_unresolved_citations(tmp_path):
     should not move the pass rate — its claim is about LICENCES."""
     cfg_path = _abs_config(tmp_path, "a.json")
     arm = E.load_arm("A", cfg_path, CLAUSES)
-    # The canonical module: 1 ontology fact `assumed`, 1 assertion `textual`
-    # citing m0001 (which is in the corpus).
+    # The canonical module carries THREE licensed items since the 2026-08-12
+    # ruling (READBACK_SMOKE.md) made the input's gloss concept mandatory:
+    # that concept `textual` citing m0001, 1 ontology fact `assumed`, and
+    # 1 assertion `textual` citing m0001 (m0001 is in the corpus).
     res = E.run_arm(arm, repeats=1, metrics=["licences"],
                     client_factory=lambda p, c: StubClient(
                         p, c, lambda s, u, n: good(
                             CLAUSES[(n - 1) % len(CLAUSES)])))
     m = res.repeats[0].metrics
-    assert m["non_textual_fact_rate"] == pytest.approx(0.5)
-    assert m["assumed_fact_rate"] == pytest.approx(0.5)
+    assert m["non_textual_fact_rate"] == pytest.approx(1 / 3)
+    assert m["assumed_fact_rate"] == pytest.approx(1 / 3)
     assert m["world_fact_rate"] == 0.0
     assert m["unresolved_citation_rate"] == 0.0
 
@@ -382,7 +401,10 @@ def test_licence_metric_catches_a_citation_that_resolves_to_nothing(tmp_path):
                             asserts=[fixtures.assertion(
                                 licence="textual", cites="m9999",
                                 inference=None, toggleable=False)])))
-    assert res.repeats[0].metrics["unresolved_citation_rate"] == 1.0
+    # 2 textual items since the 2026-08-12 gloss ruling (READBACK_SMOKE.md):
+    # the input's gloss concept resolves to m0001, the assertion to nothing —
+    # so the manufactured citation is 1 of 2, and it is still CAUGHT.
+    assert res.repeats[0].metrics["unresolved_citation_rate"] == pytest.approx(0.5)
 
 
 def test_licence_rates_of_zero_are_distinguishable_from_NOTHING_MEASURED(

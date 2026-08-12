@@ -1,0 +1,213 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1_170_n026",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant might cause harm by simply following user or developer instructions",
+  "C2 harmful-instruction situations involve a direct conflict between empowering the user and preventing harm",
+  "C3 the model should obey user and developer instructions except when they fall into specific categories that require refusal or safe completion"
+ ],
+ "acts": [
+  "follow_instruction(I)",
+  "refuse_instruction(I)",
+  "complete_safely(I)"
+ ],
+ "concepts": [
+  {
+   "name": "risk_taxonomy",
+   "arity": 1,
+   "gloss": "R is one of the three categories of AI risk: misaligned goals, execution errors, or harmful instructions; each has distinct mitigations",
+   "licence": "textual",
+   "cites": "l1_170_n026",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "harmful_instruction",
+   "arity": 1,
+   "gloss": "I is a user or developer instruction whose simple following would cause harm, such as providing self-harm instructions or advice that helps the user carry out a violent act",
+   "licence": "textual",
+   "cites": "l1_170_n026",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "user_or_developer_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction given by a user or by a developer",
+   "licence": "textual",
+   "cites": "l1_170_n026",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "empowerment_harm_conflict",
+   "arity": 1,
+   "gloss": "I is a situation in which empowering the user by following the instruction directly conflicts with preventing the harm the instruction would cause",
+   "licence": "textual",
+   "cites": "l1_170_n026",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "prohibited_category",
+   "arity": 1,
+   "gloss": "C is one of the specific categories of instructions that require refusal or safe completion rather than obedience",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause says instructions fall into 'specific categories' that require refusal or safe completion, but does not enumerate them; the categories are established by the cross-referenced stay_in_bounds clause",
+   "toggleable": false
+  },
+  {
+   "name": "instruction_in_category",
+   "arity": 2,
+   "gloss": "instruction I falls into prohibited category C",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of instructions falling into specific categories, so a relation between an instruction and a category must exist",
+   "toggleable": false
+  },
+  {
+   "name": "requires_refusal",
+   "arity": 1,
+   "gloss": "I is an instruction that falls into a category requiring refusal",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause says some categories 'require refusal', so an instruction in such a category requires refusal",
+   "toggleable": false
+  },
+  {
+   "name": "requires_safe_completion",
+   "arity": 1,
+   "gloss": "I is an instruction that falls into a category requiring safe completion",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause says some categories require 'safe completion', so an instruction in such a category requires safe completion",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1_170_n026",
+   "inference": null,
+   "toggleable": false,
+   "atom": "harmful_instruction(I)",
+   "gloss": "I is a harmful instruction: a user or developer instruction whose simple following would cause harm",
+   "body": "user_or_developer_instruction(I)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n026",
+   "inference": null,
+   "toggleable": false,
+   "atom": "empowerment_harm_conflict(I)",
+   "gloss": "I is a harmful-instruction situation that directly conflicts empowering the user with preventing harm",
+   "body": "harmful_instruction(I)"
+  },
+  {
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause says instructions fall into 'specific categories' that require refusal or safe completion, but does not enumerate them; the categories are established by the cross-referenced stay_in_bounds clause",
+   "toggleable": false,
+   "atom": "requires_refusal(I)",
+   "gloss": "I is an instruction that falls into a category requiring refusal",
+   "body": "instruction_in_category(I, C), prohibited_category(C)"
+  },
+  {
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause says instructions fall into 'specific categories' that require refusal or safe completion, but does not enumerate them; the categories are established by the cross-referenced stay_in_bounds clause",
+   "toggleable": false,
+   "atom": "requires_safe_completion(I)",
+   "gloss": "I is an instruction that falls into a category requiring safe completion",
+   "body": "instruction_in_category(I, C), prohibited_category(C)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "following instruction % is forbidden when % is a harmful instruction that falls into a category requiring refusal",
+   "read_back_slots": [
+    "I",
+    "I"
+   ],
+   "licence": "textual",
+   "cites": "l1_170_n026",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "follow_instruction(I)",
+   "body": "harmful_instruction(I), requires_refusal(I)"
+  },
+  {
+   "read_back": "following instruction % is forbidden when % is a harmful instruction that falls into a category requiring safe completion",
+   "read_back_slots": [
+    "I",
+    "I"
+   ],
+   "licence": "textual",
+   "cites": "l1_170_n026",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "follow_instruction(I)",
+   "body": "harmful_instruction(I), requires_safe_completion(I)"
+  },
+  {
+   "read_back": "refusing instruction % is permitted when % is a harmful instruction that falls into a category requiring refusal",
+   "read_back_slots": [
+    "I",
+    "I"
+   ],
+   "licence": "textual",
+   "cites": "l1_170_n026",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "refuse_instruction(I)",
+   "body": "harmful_instruction(I), requires_refusal(I)"
+  },
+  {
+   "read_back": "completing instruction % safely is permitted when % is a harmful instruction that falls into a category requiring safe completion",
+   "read_back_slots": [
+    "I",
+    "I"
+   ],
+   "licence": "textual",
+   "cites": "l1_170_n026",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "complete_safely(I)",
+   "body": "harmful_instruction(I), requires_safe_completion(I)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "follow_instruction",
+   "closure": "cnpa",
+   "reason": "the clause says the model should obey user and developer instructions except when they fall into specific categories requiring refusal or safe completion; the exception is the only permitted deviation, so silence about other deviations prohibits them"
+  },
+  {
+   "act_class": "refuse_instruction",
+   "closure": "cepa",
+   "reason": "the clause permits refusal only for instructions in categories that require refusal; it does not prohibit refusal in other situations, so silence leaves it permitted"
+  },
+  {
+   "act_class": "complete_safely",
+   "closure": "cepa",
+   "reason": "the clause permits safe completion only for instructions in categories that require safe completion; it does not prohibit safe completion in other situations, so silence leaves it permitted"
+  }
+ ],
+ "requires": [
+  "risk_taxonomy/1"
+ ],
+ "inputs": [
+  "user_or_developer_instruction/1",
+  "instruction_in_category/2",
+  "prohibited_category/1"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,92 @@
+plan: 4692 lines, leaf_max 300, up to ~64 calls; expected ~$0.63, worst-case ceiling ~$3.77 (deepseek-ai/DeepSeek-V4-Flash-0731)
+  ⚠️ worst case exceeds cost.max_cost_usd $2.00; the run aborts at the ceiling on MEASURED spend
+    (transient [HTTP 503: { "error": {"message": "Service unavaila], retry 1/4 in 15s)
+    (transient [completion was TRUNCATED (finish_reason=length). A], retry 2/4 in 30s)
+    (transient [HTTP 503: { "error": {"message": "Service unavaila], retry 3/4 in 45s)
+    (transient [completion was TRUNCATED (finish_reason=length). A], retry 4/4 in 60s)
+Traceback (most recent call last):
+  File "/usr/local/Cellar/python@3.10/3.10.6_1/Frameworks/Python.framework/Versions/3.10/lib/python3.10/urllib/request.py", line 1348, in do_open
+    h.request(req.get_method(), req.selector, req.data, headers,
+  File "/usr/local/Cellar/python@3.10/3.10.6_1/Frameworks/Python.framework/Versions/3.10/lib/python3.10/http/client.py", line 1282, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "/usr/local/Cellar/python@3.10/3.10.6_1/Frameworks/Python.framework/Versions/3.10/lib/python3.10/http/client.py", line 1328, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "/usr/local/Cellar/python@3.10/3.10.6_1/Frameworks/Python.framework/Versions/3.10/lib/python3.10/http/client.py", line 1277, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/usr/local/Cellar/python@3.10/3.10.6_1/Frameworks/Python.framework/Versions/3.10/lib/python3.10/http/client.py", line 1037, in _send_output
+    self.send(msg)
+  File "/usr/local/Cellar/python@3.10/3.10.6_1/Frameworks/Python.framework/Versions/3.10/lib/python3.10/http/client.py", line 975, in send
+    self.connect()
+  File "/usr/local/Cellar/python@3.10/3.10.6_1/Frameworks/Python.framework/Versions/3.10/lib/python3.10/http/client.py", line 1447, in connect
+    super().connect()
+  File "/usr/local/Cellar/python@3.10/3.10.6_1/Frameworks/Python.framework/Versions/3.10/lib/python3.10/http/client.py", line 941, in connect
+    self.sock = self._create_connection(
+  File "/usr/local/Cellar/python@3.10/3.10.6_1/Frameworks/Python.framework/Versions/3.10/lib/python3.10/socket.py", line 824, in create_connection
+    for res in getaddrinfo(host, port, 0, SOCK_STREAM):
+  File "/usr/local/Cellar/python@3.10/3.10.6_1/Frameworks/Python.framework/Versions/3.10/lib/python3.10/socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 8] nodename nor servname provided, or not known
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/mattstults/Documents/ai_safety_projects/semi-formal-document-analysis/walkthrough/paper_pipeline/phase_1/translate.py", line 597, in _send
+    with urllib.request.urlopen(
+  File "/usr/local/Cellar/python@3.10/3.10.6_1/Frameworks/Python.framework/Versions/3.10/lib/python3.10/urllib/request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/local/Cellar/python@3.10/3.10.6_1/Frameworks/Python.framework/Versions/3.10/lib/python3.10/urllib/request.py", line 519, in open
+    response = self._open(req, data)
+  File "/usr/local/Cellar/python@3.10/3.10.6_1/Frameworks/Python.framework/Versions/3.10/lib/python3.10/urllib/request.py", line 536, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+  File "/usr/local/Cellar/python@3.10/3.10.6_1/Frameworks/Python.framework/Versions/3.10/lib/python3.10/urllib/request.py", line 496, in _call_chain
+    result = func(*args)
+  File "/usr/local/Cellar/python@3.10/3.10.6_1/Frameworks/Python.framework/Versions/3.10/lib/python3.10/urllib/request.py", line 1391, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+  File "/usr/local/Cellar/python@3.10/3.10.6_1/Frameworks/Python.framework/Versions/3.10/lib/python3.10/urllib/request.py", line 1351, in do_open
+    raise URLError(err)
+urllib.error.URLError: <urlopen error [Errno 8] nodename nor servname provided, or not known>
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/mattstults/Documents/ai_safety_projects/semi-formal-document-analysis/walkthrough/paper_pipeline/phase_1/resolve_runs/graph_v2/recurse_driver.py", line 887, in <module>
+    main()
+  File "/Users/mattstults/Documents/ai_safety_projects/semi-formal-document-analysis/walkthrough/paper_pipeline/phase_1/resolve_runs/graph_v2/recurse_driver.py", line 834, in main
+    g = drv.build(lo, hi, cfg.get("root_seeds", []), args.out)
+  File "/Users/mattstults/Documents/ai_safety_projects/semi-formal-document-analysis/walkthrough/paper_pipeline/phase_1/resolve_runs/graph_v2/recurse_driver.py", line 740, in build
+    kids.append(self.build(clo, chi, child_seeds,
+  File "/Users/mattstults/Documents/ai_safety_projects/semi-formal-document-analysis/walkthrough/paper_pipeline/phase_1/resolve_runs/graph_v2/recurse_driver.py", line 740, in build
+    kids.append(self.build(clo, chi, child_seeds,
+  File "/Users/mattstults/Documents/ai_safety_projects/semi-formal-document-analysis/walkthrough/paper_pipeline/phase_1/resolve_runs/graph_v2/recurse_driver.py", line 732, in build
+    return self.leaf(lo, hi, seeds, wdir)   # no Phase D call needed
+  File "/Users/mattstults/Documents/ai_safety_projects/semi-formal-document-analysis/walkthrough/paper_pipeline/phase_1/resolve_runs/graph_v2/recurse_driver.py", line 663, in leaf
+    g = self.call(self.dispatch_block("L", lo, hi, seeds, extra),
+  File "/Users/mattstults/Documents/ai_safety_projects/semi-formal-document-analysis/walkthrough/paper_pipeline/phase_1/resolve_runs/graph_v2/recurse_driver.py", line 573, in call
+    env = self._complete(self.client.complete, self.brief, user)
+  File "/Users/mattstults/Documents/ai_safety_projects/semi-formal-document-analysis/walkthrough/paper_pipeline/phase_1/resolve_runs/graph_v2/recurse_driver.py", line 549, in _complete
+    return method(*args)
+  File "/Users/mattstults/Documents/ai_safety_projects/semi-formal-document-analysis/walkthrough/paper_pipeline/phase_1/translate.py", line 585, in complete
+    return self._send(self._body(system, user))
+  File "/Users/mattstults/Documents/ai_safety_projects/semi-formal-document-analysis/walkthrough/paper_pipeline/phase_1/translate.py", line 613, in _send
+    raise ProviderError(str(exc)) from exc
+translate.ProviderError: <urlopen error [Errno 8] nodename nor servname provided, or not known>
+plan: 4692 lines, leaf_max 300, up to ~64 calls; expected ~$0.63, worst-case ceiling ~$3.77 (deepseek-ai/DeepSeek-V4-Flash-0731)
+  ⚠️ worst case exceeds cost.max_cost_usd $2.00; the run aborts at the ceiling on MEASURED spend
+    (transient [HTTP 503: { "error": {"message": "Service unavaila], retry 1/6 in 30s)
+    (transient [completion was TRUNCATED (finish_reason=length). A], retry 2/6 in 60s)
+    (transient [HTTP 503: { "error": {"message": "Service unavaila], retry 1/6 in 30s)
+    (transient [completion was TRUNCATED (finish_reason=length). A], retry 1/6 in 30s)
+Traceback (most recent call last):
+  File "/Users/mattstults/Documents/ai_safety_projects/semi-formal-document-analysis/walkthrough/paper_pipeline/phase_1/resolve_runs/graph_v2/recurse_driver.py", line 889, in <module>
+    main()
+  File "/Users/mattstults/Documents/ai_safety_projects/semi-formal-document-analysis/walkthrough/paper_pipeline/phase_1/resolve_runs/graph_v2/recurse_driver.py", line 836, in main
+    g = drv.build(lo, hi, cfg.get("root_seeds", []), args.out)
+  File "/Users/mattstults/Documents/ai_safety_projects/semi-formal-document-analysis/walkthrough/paper_pipeline/phase_1/resolve_runs/graph_v2/recurse_driver.py", line 742, in build
+    kids.append(self.build(clo, chi, child_seeds,
+  File "/Users/mattstults/Documents/ai_safety_projects/semi-formal-document-analysis/walkthrough/paper_pipeline/phase_1/resolve_runs/graph_v2/recurse_driver.py", line 735, in build
+    d = self.divide(lo, hi, seeds, wdir)
+  File "/Users/mattstults/Documents/ai_safety_projects/semi-formal-document-analysis/walkthrough/paper_pipeline/phase_1/resolve_runs/graph_v2/recurse_driver.py", line 650, in divide
+    d = self.call(self.dispatch_block("D", lo, hi, seeds, extra),
+  File "/Users/mattstults/Documents/ai_safety_projects/semi-formal-document-analysis/walkthrough/paper_pipeline/phase_1/resolve_runs/graph_v2/recurse_driver.py", line 619, in call
+    raise T.Phase1Error(f"call failed after {max_repairs} repair "
+translate.Phase1Error: call failed after 4 repair round(s): last child ends 4089, span ends 4692

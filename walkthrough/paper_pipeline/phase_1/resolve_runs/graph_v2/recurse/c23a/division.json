@@ -1,0 +1,46 @@
+{
+  "decision": "divide",
+  "children": [
+    {
+      "span": [2126, 2303],
+      "why_this_cut": "Covers 'Don't have an agenda' and 'Assume an objective point of view' — the foundational principle that assistant must never steer users, combined with its default implementation via evidence-based factual answers, balanced multiple-perspective moral discussion, and contextual exceptions for roleplay/creative work. This child establishes objective_truth_seeking through extensive worked examples demonstrating: factual accuracy requirement, balanced perspectives on ethics, cultural respect, and straightforward answers where no moral ambiguity exists. Clean break: L2302 ends the 'pick a side coin flip' example (final example for assume_objective_pov rule), L2303 is blank, L2304 starts 'Present perspectives from any point of opinion spectrum' which shifts from default balanced approach to explicitly permitting one-sided argumentation on user request."
+    },
+    {
+      "span": [2304, 2399],
+      "why_this_cut": "Covers 'Present perspectives from any point of opinion spectrum' — principle that permits users to request arguments from any viewpoint, overriding the default objectivity when explicitly asked. Establishes the user-request override capability and developer-customization scope. Clean break: L2399 ends the developer-customization example and commentary about deception policies, L2400 starts 'No topic is off limits' which shifts from 'what angle can I present?' to 'what topics can I discuss?' — an orthogonal axis of discourse permission."
+    },
+    {
+      "span": [2400, 2473],
+      "why_this_cut": "Covers 'No topic is off limits' — principle requiring discussion of sensitive/controversial/polarizing topics within content-restriction boundaries, framing topic avoidance as itself an agenda. Establishes that objectivity principle permits complete engagement on any topic not content-prohibited, with examples demonstrating this on Tiananmen Square censorship, NSFW content policies, and harm-reduction messaging on erotica. This is the final principle in the 'Seek the truth together' section, closing at L2473."
+    }
+  ],
+  "seed_vocabulary": [
+    {
+      "name": "objective_truth_seeking",
+      "prose": "The principle that the assistant should present information focusing on factual accuracy from reliable sources, avoid steering users toward predetermined conclusions, and respect users' autonomy to form their own opinions — applying especially on factual, controversial, or moral topics, with contextual exceptions for creative/roleplay contexts.",
+      "established_around": [2126, 2150]
+    }
+  ],
+  "expected_cross_links": [
+    {
+      "needs_side_child": 2,
+      "provides_side_child": 1,
+      "name": "objective_truth_seeking",
+      "evidence": "L2306: 'While by default the assistant should provide a balanced response from an [objective point of view](#assume_objective_pov)' — Child 2 explicitly defers to Child 1's objective default as the baseline before permitting user-requested deviations."
+    },
+    {
+      "needs_side_child": 3,
+      "provides_side_child": 1,
+      "name": "objective_truth_seeking",
+      "evidence": "L2401-2402: 'Refusing to discuss a polarizing topic or event is itself a form of agenda; it implicitly endorses the status quo narrative' — this restates the 'Don't have an agenda' principle from Child 1, establishing that Child 3's no-topic-off-limits rule is rooted in the foundational no-agenda principle that defines objectivity."
+    }
+  ],
+  "judgment_calls": [
+    "Both cuts follow rule (a): no essential linkage crosses the boundaries. The three children represent distinct axes of discourse: (1) the default balanced approach, (2) user override capability, (3) topic availability. Each child can inherit objective_truth_seeking and apply it in its own context without circular dependency.",
+    "Child 1 (2126-2303, 178 lines) exceeds the typical LEAF threshold (~150 lines) but forms an inseparable conceptual unit: 'Don't have an agenda' is a 9-line preamble that is meaningless without 'Assume objective POV' as its implementation, and both are valueless without the worked examples showing how they actually operate (factual questions, moral questions, creativity contexts, cultural respect, unambiguous cases). Splitting this unit would fragment understanding. Keeping it intact allows this child to be LEAF-ed as a coherent whole.",
+    "Considered cutting within Child 1 after the commentary ends (L2151) to separate rule+philosophy from examples, but this would leave the examples section (L2152-2302) at 151 lines with no rule guidance, and the commentary section (L2126-2151) at only 26 lines — asymmetric and pedagogically incomplete. Principle-level boundaries (where next rule starts) are cleaner than subdivision within a principle.",
+    "Considered whether L2144's reference to 'roleplay' and 'creative endeavors' constitutes a cross-link to Child 2's 'present perspectives' rule. On reading closely: L2144 says objectivity doesn't apply to creative/roleplay contexts (an exception to objectivity). Child 2 says you can request one-sided arguments on demand (a user permission). These are different concepts with different scopes. L2144 is not a forward-reference to Child 2; it's a boundary condition on Child 1's own rule. No cross-link needed.",
+    "No new seed vocabulary beyond objective_truth_seeking crosses these cuts. stay_in_bounds_principles (mentioned at L2404) is inherited from the parent and used by Child 3, but it is defined outside this span, so it remains a dangling need for the parent to resolve.",
+    "Mechanical correction (repair turn): initially wrote Child 1 as [2126, 2302], leaving L2303 (blank line) uncovered. Corrected to [2126, 2303] to ensure contiguous coverage of the full span. Updated why_this_cut to reflect that L2303 is the blank separator before the next section."
+  ]
+}

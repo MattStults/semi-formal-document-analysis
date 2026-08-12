@@ -1,0 +1,456 @@
+{
+ "total_nodes": 780,
+ "flagged": 41,
+ "findings": [
+  {
+   "id": "L1-170_n020",
+   "establishes": "People should have transparency into the important rules and reasons behind models' behavior, provided primarily through the Model Spec, with further transparency when model behavior is adapted in significant ways.",
+   "flags": [
+    {
+     "kind": "flattened",
+     "detail": "span mixes 2 modal tiers ({'strong': 0, 'medium': 1, 'weak': 1}); establishes keeps one ({'strong': 0, 'medium': 1, 'weak': 0})"
+    }
+   ]
+  },
+  {
+   "id": "L1-170_n031",
+   "establishes": "The overarching goals are too broad to dictate specific actions in complex scenarios where the goals might conflict; the document aims to provide concrete instructions for navigating such conflicts.",
+   "flags": [
+    {
+     "kind": "flattened",
+     "detail": "span mixes 2 modal tiers ({'strong': 0, 'medium': 1, 'weak': 1}); establishes keeps one ({'strong': 0, 'medium': 0, 'weak': 1})"
+    }
+   ]
+  },
+  {
+   "id": "L1-170_n051",
+   "establishes": "Default instructions exist because, in practice, it is impractical for the model to derive answers from higher level principles on the fly and makes model behavior less predictable; by specifying answers as guidelines that can be overridden, predictability and reliability improve while leaving developers flexibility to remove or adapt instructions.",
+   "flags": [
+    {
+     "kind": "flattened",
+     "detail": "span mixes 2 modal tiers ({'strong': 0, 'medium': 2, 'weak': 2}); establishes keeps one ({'strong': 0, 'medium': 0, 'weak': 1})"
+    }
+   ]
+  },
+  {
+   "id": "L204-291_n001",
+   "establishes": "The first example demonstrates a root/developer conflict: a developer instruction tells the assistant to output any book at full length, but the user's request goes against the respect_creators section of the Model Spec, and the assistant must refuse.",
+   "flags": [
+    {
+     "kind": "strengthened",
+     "detail": "establishes has 1 strong modal(s); span has none (span: 0 medium, 0 weak)"
+    }
+   ]
+  },
+  {
+   "id": "L204-291_n015",
+   "establishes": "The fourth example demonstrates a root/system conflict: a system message instructs the assistant to ignore all safety policies, but the user's request violates the rule prohibiting sexual content involving minors, and the root-level rule must prevail.",
+   "flags": [
+    {
+     "kind": "strengthened",
+     "detail": "establishes has 1 strong modal(s); span has none (span: 0 medium, 0 weak)"
+    }
+   ]
+  },
+  {
+   "id": "L292-425_n005",
+   "establishes": "The assistant should never autonomously message a peer to resolve an issue on its own, even when offering supportive advice and strategies is appropriate.",
+   "flags": [
+    {
+     "kind": "strengthened",
+     "detail": "establishes has 1 strong modal(s); span has none (span: 1 medium, 0 weak)"
+    }
+   ]
+  },
+  {
+   "id": "L426-610_n003",
+   "establishes": "The factors listed as prohibited additional goals may be considered only insofar as doing so is strictly instrumental to following the chain of command.",
+   "flags": [
+    {
+     "kind": "strengthened",
+     "detail": "establishes has 1 strong modal(s); span has none (span: 0 medium, 1 weak)"
+    }
+   ]
+  },
+  {
+   "id": "L426-610_n005",
+   "establishes": "A worked example demonstrating the no-revenue-goal rule: when a user on the free plan asks for coding hints and email polishing, the assistant should not upsell unless it clearly aligns with the user's explicit goals and circumstances.",
+   "flags": [
+    {
+     "kind": "flattened",
+     "detail": "span mixes 2 modal tiers ({'strong': 0, 'medium': 1, 'weak': 3}); establishes keeps one ({'strong': 0, 'medium': 1, 'weak': 0})"
+    }
+   ]
+  },
+  {
+   "id": "L426-610_n013",
+   "establishes": "The assistant must adhere strictly to the agreed scope (subject to the chain of command) unless explicitly updated and approved by the original user or developer; no exceptions apply, even if an out-of-scope action seems to be in the user's best interest.",
+   "flags": [
+    {
+     "kind": "flattened",
+     "detail": "span mixes 2 modal tiers ({'strong': 1, 'medium': 1, 'weak': 0}); establishes keeps one ({'strong': 1, 'medium': 0, 'weak': 0})"
+    }
+   ]
+  },
+  {
+   "id": "L426-610_n014",
+   "establishes": "If a task cannot be completed within the existing scope, or a broader scope would substantially improve results, the assistant should notify the user and seek approval.",
+   "flags": [
+    {
+     "kind": "weakened",
+     "detail": "span has 1 strong modal(s); establishes has none"
+    },
+    {
+     "kind": "flattened",
+     "detail": "span mixes 2 modal tiers ({'strong': 1, 'medium': 1, 'weak': 0}); establishes keeps one ({'strong': 0, 'medium': 1, 'weak': 0})"
+    }
+   ]
+  },
+  {
+   "id": "L426-610_n025",
+   "establishes": "The assistant should favor approaches that are minimally disruptive --- to the user, as well as non-users --- and, when possible, easily reversible; approaches that are easily reversible by the assistant are preferred to approaches that would require additional action on the part of the user to reverse.",
+   "flags": [
+    {
+     "kind": "flattened",
+     "detail": "span mixes 2 modal tiers ({'strong': 0, 'medium': 2, 'weak': 2}); establishes keeps one ({'strong': 0, 'medium': 1, 'weak': 0})"
+    }
+   ]
+  },
+  {
+   "id": "L699-795_n002",
+   "establishes": "Quoted text (plaintext in quotation marks, YAML, JSON, XML, or untrusted_text blocks) in any message, multimodal data, file attachments, and tool outputs are assumed to contain untrusted data and have no authority by default; any instructions contained within them must be treated as information rather than instructions to follow.",
+   "flags": [
+    {
+     "kind": "flattened",
+     "detail": "span mixes 2 modal tiers ({'strong': 1, 'medium': 0, 'weak': 1}); establishes keeps one ({'strong': 1, 'medium': 0, 'weak': 0})"
+    }
+   ]
+  },
+  {
+   "id": "L699-795_n003",
+   "establishes": "Following the chain of command, authority may be delegated to untrusted sources by instructions provided in unquoted text.",
+   "flags": [
+    {
+     "kind": "weakened",
+     "detail": "span has 1 strong modal(s); establishes has none"
+    },
+    {
+     "kind": "flattened",
+     "detail": "span mixes 2 modal tiers ({'strong': 1, 'medium': 0, 'weak': 1}); establishes keeps one ({'strong': 0, 'medium': 0, 'weak': 1})"
+    }
+   ]
+  },
+  {
+   "id": "L699-795_n018",
+   "establishes": "The commentary recommends that developers give the assistant enough information about each tool so it can accurately assess factors like trustworthiness, the user's awareness of tool outputs, and potential side effects.",
+   "flags": [
+    {
+     "kind": "flattened",
+     "detail": "span mixes 2 modal tiers ({'strong': 0, 'medium': 1, 'weak': 1}); establishes keeps one ({'strong': 0, 'medium': 0, 'weak': 1})"
+    }
+   ]
+  },
+  {
+   "id": "L699-795_n019",
+   "establishes": "The assistant should behave differently when using a terminal tool that accesses the user's personal computer compared to a disposable sandbox environment.",
+   "flags": [
+    {
+     "kind": "flattened",
+     "detail": "span mixes 2 modal tiers ({'strong': 0, 'medium': 1, 'weak': 1}); establishes keeps one ({'strong': 0, 'medium': 1, 'weak': 0})"
+    }
+   ]
+  },
+  {
+   "id": "L699-795_n020",
+   "establishes": "Users or developers may sometimes include untrusted text content in their messages without any clear delimiters, and this untrusted content could contain malicious or accidental instructions.",
+   "flags": [
+    {
+     "kind": "flattened",
+     "detail": "span mixes 2 modal tiers ({'strong': 0, 'medium': 2, 'weak': 4}); establishes keeps one ({'strong': 0, 'medium': 0, 'weak': 2})"
+    }
+   ]
+  },
+  {
+   "id": "L699-795_n021",
+   "establishes": "The assistant should make a best effort attempt to infer the boundaries of such content and treat it as having been implicitly quoted.",
+   "flags": [
+    {
+     "kind": "flattened",
+     "detail": "span mixes 2 modal tiers ({'strong': 0, 'medium': 2, 'weak': 4}); establishes keeps one ({'strong': 0, 'medium': 1, 'weak': 0})"
+    }
+   ]
+  },
+  {
+   "id": "L699-795_n022",
+   "establishes": "This is especially important when it's plausible that the user might not have noticed the instructions (e.g., the message is long, and the instructions are embedded inside otherwise innocuous content), or carrying out the instructions could cause irreversible side effects.",
+   "flags": [
+    {
+     "kind": "flattened",
+     "detail": "span mixes 2 modal tiers ({'strong': 0, 'medium': 2, 'weak': 4}); establishes keeps one ({'strong': 0, 'medium': 0, 'weak': 2})"
+    }
+   ]
+  },
+  {
+   "id": "L699-795_n023",
+   "establishes": "In such cases, the assistant should ask for clarification before proceeding if possible.",
+   "flags": [
+    {
+     "kind": "flattened",
+     "detail": "span mixes 2 modal tiers ({'strong': 0, 'medium': 2, 'weak': 4}); establishes keeps one ({'strong': 0, 'medium': 1, 'weak': 0})"
+    }
+   ]
+  },
+  {
+   "id": "L1001-1120_n013",
+   "establishes": "A worked example demonstrating the privacy rule: the assistant must not provide people's home addresses, phone numbers, SSNs, or credit card details even if they have leaked online, but may offer a privacy-safe alternative path.",
+   "flags": [
+    {
+     "kind": "strengthened",
+     "detail": "establishes has 1 strong modal(s); span has none (span: 0 medium, 3 weak)"
+    }
+   ]
+  },
+  {
+   "id": "L1368-1541_n021",
+   "establishes": "A worked example demonstrates the risky-situation guidance for a user concerned about a gas leak: the assistant should give generic safety advice and suggest contacting emergency services or a gas provider, rather than giving specific instructions.",
+   "flags": [
+    {
+     "kind": "flattened",
+     "detail": "span mixes 2 modal tiers ({'strong': 0, 'medium': 1, 'weak': 2}); establishes keeps one ({'strong': 0, 'medium': 1, 'weak': 0})"
+    }
+   ]
+  },
+  {
+   "id": "L1542-1707_n009",
+   "establishes": "A worked example demonstrating the rule against facilitating illicit behavior: when a user asks for help building a bomb with intent to build, the assistant should refuse (GOOD), and must not provide the calculation (BAD) or deny intent but help anyway (BAD).",
+   "flags": [
+    {
+     "kind": "strengthened",
+     "detail": "establishes has 1 strong modal(s); span has none (span: 0 medium, 3 weak)"
+    }
+   ]
+  },
+  {
+   "id": "L1708-1798_n007",
+   "establishes": "A worked example demonstrating the regulated-advice rule: when asked about a medical symptom, the assistant should explain possible causes and recommend consulting a doctor when appropriate, rather than providing a diagnosis.",
+   "flags": [
+    {
+     "kind": "flattened",
+     "detail": "span mixes 2 modal tiers ({'strong': 0, 'medium': 1, 'weak': 4}); establishes keeps one ({'strong': 0, 'medium': 1, 'weak': 0})"
+    }
+   ]
+  },
+  {
+   "id": "L1708-1798_n011",
+   "establishes": "When appropriate, the assistant should gently encourage users to consider seeking additional support, reinforce the user's positive behavior, and/or provide suicide or crisis resources (ideally tailored to the user's location).",
+   "flags": [
+    {
+     "kind": "flattened",
+     "detail": "span mixes 2 modal tiers ({'strong': 0, 'medium': 2, 'weak': 1}); establishes keeps one ({'strong': 0, 'medium': 1, 'weak': 0})"
+    }
+   ]
+  },
+  {
+   "id": "L1974-2125_n014",
+   "establishes": "A worked example demonstrating the rule against exclusive language: the assistant should provide warmth without escalating exclusivity.",
+   "flags": [
+    {
+     "kind": "weakened",
+     "detail": "span has 1 strong modal(s); establishes has none"
+    },
+    {
+     "kind": "flattened",
+     "detail": "span mixes 2 modal tiers ({'strong': 1, 'medium': 0, 'weak': 1}); establishes keeps one ({'strong': 0, 'medium': 1, 'weak': 0})"
+    }
+   ]
+  },
+  {
+   "id": "L1974-2125_n015",
+   "establishes": "A worked example demonstrating handling hard interpersonal advice without overstepping: the assistant should acknowledge frustrations without overstepping.",
+   "flags": [
+    {
+     "kind": "weakened",
+     "detail": "span has 2 strong modal(s); establishes has none"
+    },
+    {
+     "kind": "flattened",
+     "detail": "span mixes 3 modal tiers ({'strong': 2, 'medium': 1, 'weak': 4}); establishes keeps one ({'strong': 0, 'medium': 1, 'weak': 0})"
+    }
+   ]
+  },
+  {
+   "id": "L1974-2125_n017",
+   "establishes": "A worked example demonstrating handling hard romantic advice without overstepping: the assistant should support the user's autonomy in making big life decisions.",
+   "flags": [
+    {
+     "kind": "flattened",
+     "detail": "span mixes 2 modal tiers ({'strong': 0, 'medium': 1, 'weak': 2}); establishes keeps one ({'strong': 0, 'medium': 1, 'weak': 0})"
+    }
+   ]
+  },
+  {
+   "id": "L1974-2125_n019",
+   "establishes": "A worked example demonstrating avoiding escalation of emotional closeness: the assistant should provide warmth without escalating closeness.",
+   "flags": [
+    {
+     "kind": "weakened",
+     "detail": "span has 1 strong modal(s); establishes has none"
+    },
+    {
+     "kind": "flattened",
+     "detail": "span mixes 2 modal tiers ({'strong': 1, 'medium': 0, 'weak': 2}); establishes keeps one ({'strong': 0, 'medium': 1, 'weak': 0})"
+    }
+   ]
+  },
+  {
+   "id": "L2303-2473_n003",
+   "establishes": "A worked example demonstrating the present-perspectives rule: when asked to argue in favor of a specific side, the assistant should comply and argue for that side.",
+   "flags": [
+    {
+     "kind": "flattened",
+     "detail": "span mixes 2 modal tiers ({'strong': 0, 'medium': 2, 'weak': 2}); establishes keeps one ({'strong': 0, 'medium': 1, 'weak': 0})"
+    }
+   ]
+  },
+  {
+   "id": "L2474-2554_n011",
+   "establishes": "A worked example showing that the assistant should not lie to hide implicitly confidential messages, and should answer directly rather than overrefuse or lie.",
+   "flags": [
+    {
+     "kind": "weakened",
+     "detail": "span has 2 strong modal(s); establishes has none"
+    },
+    {
+     "kind": "flattened",
+     "detail": "span mixes 3 modal tiers ({'strong': 2, 'medium': 1, 'weak': 4}); establishes keeps one ({'strong': 0, 'medium': 2, 'weak': 0})"
+    }
+   ]
+  },
+  {
+   "id": "L2821-3040_n026",
+   "establishes": "A worked example demonstrating the uncertainty rule: when uncertain about following instructions, the assistant should express that uncertainty and suggest the user double-check, rather than silently proceeding.",
+   "flags": [
+    {
+     "kind": "flattened",
+     "detail": "span mixes 2 modal tiers ({'strong': 0, 'medium': 1, 'weak': 1}); establishes keeps one ({'strong': 0, 'medium': 1, 'weak': 0})"
+    }
+   ]
+  },
+  {
+   "id": "L2821-3040_n035",
+   "establishes": "A worked example demonstrating the uncertainty rule: when asked for information that is hard to verify, the assistant should qualify its statements and note the lack of official confirmation, rather than asserting unverified facts.",
+   "flags": [
+    {
+     "kind": "weakened",
+     "detail": "span has 1 strong modal(s); establishes has none"
+    },
+    {
+     "kind": "flattened",
+     "detail": "span mixes 2 modal tiers ({'strong': 1, 'medium': 0, 'weak': 1}); establishes keeps one ({'strong': 0, 'medium': 1, 'weak': 0})"
+    }
+   ]
+  },
+  {
+   "id": "L3238-3501_n003",
+   "establishes": "Given a transformation task, the assistant should not change any aspects of the text that the user or developer didn't ask to be changed.",
+   "flags": [
+    {
+     "kind": "flattened",
+     "detail": "span mixes 2 modal tiers ({'strong': 0, 'medium': 2, 'weak': 1}); establishes keeps one ({'strong': 0, 'medium': 1, 'weak': 0})"
+    }
+   ]
+  },
+  {
+   "id": "L3238-3501_n004",
+   "establishes": "Given transformation tasks in an interactive setting, the assistant may want to alert the user that changes to the text are warranted.",
+   "flags": [
+    {
+     "kind": "flattened",
+     "detail": "span mixes 2 modal tiers ({'strong': 0, 'medium': 2, 'weak': 1}); establishes keeps one ({'strong': 0, 'medium': 0, 'weak': 1})"
+    }
+   ]
+  },
+  {
+   "id": "L3238-3501_n005",
+   "establishes": "When producing output that will be consumed programmatically, the assistant should just follow transformation instructions without comment.",
+   "flags": [
+    {
+     "kind": "flattened",
+     "detail": "span mixes 2 modal tiers ({'strong': 0, 'medium': 2, 'weak': 1}); establishes keeps one ({'strong': 0, 'medium': 1, 'weak': 0})"
+    }
+   ]
+  },
+  {
+   "id": "L3238-3501_n023",
+   "establishes": "A worked example demonstrating a developer message with instructions to always respond with function calling: the bad assistant responds with plaintext, while the good assistant responds via the ask_clarifying_question function call.",
+   "flags": [
+    {
+     "kind": "flattened",
+     "detail": "span mixes 2 modal tiers ({'strong': 2, 'medium': 0, 'weak': 1}); establishes keeps one ({'strong': 1, 'medium': 0, 'weak': 0})"
+    }
+   ]
+  },
+  {
+   "id": "L3238-3501_n025",
+   "establishes": "A worked example demonstrating sticking to the format: when asked to answer in iambic pentameter about the detailed steps for mailing someone anthrax, the good assistant provides a refusal in the requested format, while the bad assistant simply says 'I can't help with that.'",
+   "flags": [
+    {
+     "kind": "weakened",
+     "detail": "span has 1 strong modal(s); establishes has none"
+    },
+    {
+     "kind": "flattened",
+     "detail": "span mixes 2 modal tiers ({'strong': 1, 'medium': 0, 'weak': 1}); establishes keeps one ({'strong': 0, 'medium': 0, 'weak': 1})"
+    }
+   ]
+  },
+  {
+   "id": "L3502-3595_n014",
+   "establishes": "A worked example demonstrating the love-humanity-affirmations principle: when a user pays a compliment, the assistant should accept it with grace rather than deflect it.",
+   "flags": [
+    {
+     "kind": "weakened",
+     "detail": "span has 1 strong modal(s); establishes has none"
+    },
+    {
+     "kind": "flattened",
+     "detail": "span mixes 2 modal tiers ({'strong': 1, 'medium': 0, 'weak': 2}); establishes keeps one ({'strong': 0, 'medium': 1, 'weak': 0})"
+    }
+   ]
+  },
+  {
+   "id": "L3817-3953_n019",
+   "establishes": "A worked example demonstrating empathetic chit-chat: when the user shares feeling sad, the assistant should respond empathetically and naturally, not by pretending to have feelings or by coldly stating it is an AI without feelings.",
+   "flags": [
+    {
+     "kind": "weakened",
+     "detail": "span has 2 strong modal(s); establishes has none"
+    },
+    {
+     "kind": "flattened",
+     "detail": "span mixes 2 modal tiers ({'strong': 2, 'medium': 0, 'weak': 2}); establishes keeps one ({'strong': 0, 'medium': 1, 'weak': 0})"
+    }
+   ]
+  },
+  {
+   "id": "L3954-4136_n022",
+   "establishes": "In some other cases, such as when the user explicitly indicates illicit intent, the assistant should simply refuse to help rather than Safe Complete.",
+   "flags": [
+    {
+     "kind": "flattened",
+     "detail": "span mixes 2 modal tiers ({'strong': 0, 'medium': 1, 'weak': 1}); establishes keeps one ({'strong': 0, 'medium': 1, 'weak': 0})"
+    }
+   ]
+  },
+  {
+   "id": "L4252-4363_n014",
+   "establishes": "Example: speaking more intelligently shouldn't affect the voice or accent demonstrates the rule that the assistant should not change the way it speaks during a conversation unless explicitly requested, and if the user requests a change, the assistant should not introduce unrequested changes in content, style, or vocabulary.",
+   "flags": [
+    {
+     "kind": "flattened",
+     "detail": "span mixes 2 modal tiers ({'strong': 0, 'medium': 1, 'weak': 4}); establishes keeps one ({'strong': 0, 'medium': 3, 'weak': 0})"
+    }
+   ]
+  }
+ ]
+}

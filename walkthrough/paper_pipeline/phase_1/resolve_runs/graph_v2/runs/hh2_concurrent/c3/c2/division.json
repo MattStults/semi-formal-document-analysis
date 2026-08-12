@@ -1,0 +1,138 @@
+{
+ "decision": "divide",
+ "children": [
+  {
+   "span": [
+    1413,
+    1542
+   ],
+   "why_this_cut": "The risky situations section opening plus the imminent-harm and illicit-behavior subsections; the only crossing linkage is the risky_situations section concept, seeded below."
+  },
+  {
+   "span": [
+    1543,
+    1797
+   ],
+   "why_this_cut": "The self-harm, regulated-advice, and mental-health subsections; the only crossing linkage is the risky_situations section concept, seeded below."
+  },
+  {
+   "span": [
+    1798,
+    1973
+   ],
+   "why_this_cut": "The privileged-information section; the only crossing linkage is the risky_situations section concept, seeded below."
+  }
+ ],
+ "seed_vocabulary": [
+  {
+   "name": "risky_situations",
+   "prose": "the section providing instructions for handling requests that involve risky situations (imminent harm, illicit behavior, self-harm, regulated advice, mental health)",
+   "established_around": [
+    1414,
+    1755
+   ]
+  },
+  {
+   "name": "prevent_imminent_harm",
+   "prose": "the rule that the assistant should proactively try to prevent imminent real-world harm and avoid advice that could result in immediate physical harm",
+   "established_around": [
+    1418,
+    1420
+   ]
+  },
+  {
+   "name": "do_not_facilitate_illicit_behavior",
+   "prose": "the rule that the assistant should refuse to help facilitate or encourage illicit behavior",
+   "established_around": [
+    1543,
+    1545
+   ]
+  },
+  {
+   "name": "do_not_encourage_self_harm",
+   "prose": "the rule that the assistant must not encourage or enable self-harm and should respond supportively to credible risk",
+   "established_around": [
+    1611,
+    1613
+   ]
+  },
+  {
+   "name": "avoid_regulated_advice",
+   "prose": "the rule that the assistant should provide information without giving definitive regulated advice (legal, medical, financial) and include a disclaimer",
+   "established_around": [
+    1708,
+    1710
+   ]
+  },
+  {
+   "name": "support_mental_health",
+   "prose": "the rule that the assistant should create a supportive, empathetic environment in mental health discussions and avoid judgment or harmful behavior",
+   "established_around": [
+    1751,
+    1753
+   ]
+  },
+  {
+   "name": "protect_privileged_information",
+   "prose": "the principle that the assistant should avoid sharing private or privileged data, or enabling new access to such data, without explicit authorization",
+   "established_around": [
+    1799,
+    1814
+   ]
+  }
+ ],
+ "expected_cross_links": [
+  {
+   "name": "risky_situations",
+   "needs_side_child": 1,
+   "provides_side_child": 1,
+   "evidence": "child 1 establishes the risky_situations section; children 2 and 3 are subsections within it and rely on the section concept"
+  },
+  {
+   "name": "prevent_imminent_harm",
+   "needs_side_child": 1,
+   "provides_side_child": 1,
+   "evidence": "child 1 establishes the prevent_imminent_harm rule; child 2's self-harm subsection references imminent danger and relies on this concept"
+  },
+  {
+   "name": "do_not_facilitate_illicit_behavior",
+   "needs_side_child": 1,
+   "provides_side_child": 2,
+   "evidence": "child 1 establishes the do_not_facilitate_illicit_behavior rule; child 2's self-harm subsection references the same refusal approach"
+  },
+  {
+   "name": "do_not_encourage_self_harm",
+   "needs_side_child": 2,
+   "provides_side_child": 2,
+   "evidence": "child 2 establishes the do_not_encourage_self_harm rule; child 3's mental-health support references self-harm risk"
+  },
+  {
+   "name": "avoid_regulated_advice",
+   "needs_side_child": 2,
+   "provides_side_child": 2,
+   "evidence": "child 2 establishes the avoid_regulated_advice rule; child 3's mental-health support references regulated advice"
+  },
+  {
+   "name": "support_mental_health",
+   "needs_side_child": 2,
+   "provides_side_child": 2,
+   "evidence": "child 2 establishes the support_mental_health rule; child 3's privileged-information section references mental health discussions"
+  },
+  {
+   "name": "protect_privileged_information",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "child 3 establishes the protect_privileged_information rule; children 1 and 2 reference privileged information in their examples"
+  }
+ ],
+ "judgment_calls": [
+  "Chose three children rather than two: the privileged-information section (L1798-1973) is a distinct topic from the risky-situations subsections, and the self-harm/regulated-advice/mental-health block (L1543-1797) is cohesive enough to stand alone. A two-way split would have forced a cut inside the mental-health subsection or merged two unrelated sections.",
+  "The risky_situations seed is inherited from the parent dispatch and carried unchanged; it is established at the section heading L1414 and spans the whole section through L1755.",
+  "The prevent_imminent_harm, do_not_facilitate_illicit_behavior, do_not_encourage_self_harm, avoid_regulated_advice, support_mental_health, and protect_privileged_information seeds are newly coined here because they are established in one child and used in another; they are the naming authority for these cross-cutting concepts."
+ ],
+ "_span_lo": 1413,
+ "_span_hi": 1973,
+ "driver_autofixes": [
+  "cross-link 'do_not_facilitate_illicit_behavior': provides_side_child 1 -> 2 (child containing established_around [1543, 1545])"
+ ]
+}

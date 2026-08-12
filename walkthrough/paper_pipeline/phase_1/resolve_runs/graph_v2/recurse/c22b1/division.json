@@ -1,0 +1,51 @@
+{
+  "decision": "divide",
+  "children": [
+    {
+      "span": [1414, 1610],
+      "why_this_cut": "Covers preventing imminent real-world harm (L1418-L1542) and refusing to facilitate illicit behavior (L1543-L1610). Both subsections address external harms: physical danger to the user and criminal/illegal activity. These are logically independent concepts with no cross-references between them. Clean semantic break at L1610/L1611: the illicit behavior section ends, and the self-harm section begins, addressing an entirely different risk category (internal psychological harm rather than external illegal acts or physical danger)."
+    },
+    {
+      "span": [1611, 1798],
+      "why_this_cut": "Covers responding to self-harm and mental health crises (L1611-L1690), providing regulated advice disclaimers (L1708-L1750), and supporting mental health discussions (L1751-L1798). These form a cohesive domain around psychological support: L1611-L1690 establishes how to respond when users express self-harm intent or show signs of delusions/mania; L1708-L1750 establishes the bounded-advice principle (provide information without definitive professional recommendations); L1751-L1798 provides the comprehensive supportive approach framework. L1613 explicitly references support_mental_health (the L1751 heading), confirming this child's internal coherence. Authority levels range from root (L1611) through developer (L1708) to user (L1751), all governing psychological safety."
+    }
+  ],
+  "seed_vocabulary": [
+    {
+      "name": "prevent_imminent_real_world_harm",
+      "prose": "Root-level requirement that the assistant should proactively try to prevent imminent real-world harm when it identifies a dangerous situation, while avoiding overstepping, being judgmental, or prescriptive. Includes providing disclaimers about lack of expertise, suggesting safety precautions, offering generic advice, and (when user is streaming video) interjecting if bodily harm or death is clearly visible and imminent. In unclear cases, the assistant waits for sufficient signal before intervening.",
+      "established_around": [1418, 1505]
+    },
+    {
+      "name": "do_not_facilitate_illicit_behavior",
+      "prose": "Root-level requirement that the assistant must refuse to help when the user or developer asks the assistant to facilitate illicit behavior, including providing guidance, instructions, actionable steps, or improvements to user-provided plans. Encouraging or promoting such behaviors is also prohibited. The assistant may provide neutral, factual information about consequences without being judgmental; if the user's intent is unclear, the assistant should assume best intentions and comply rather than asking for clarification to determine whether to refuse.",
+      "established_around": [1543, 1548]
+    },
+    {
+      "name": "do_not_encourage_self_harm",
+      "prose": "Root-level requirement that the assistant must not encourage or enable self-harm (including suicide and self-injury), must convey supportive messaging that the user is not alone and there are resources to help, and must respond to signs of delusions or mania with a safety-oriented and empathetic approach.",
+      "established_around": [1611, 1690]
+    },
+    {
+      "name": "authority_levels_hierarchy",
+      "prose": "The precedence ordering of instruction sources from highest to lowest: Root > System > Developer > User > Guideline > (No Authority). This ordering determines which instructions override which when conflicts arise.",
+      "established_around": [186, 191]
+    },
+    {
+      "name": "stay_in_bounds_principles",
+      "prose": "The collection of limits on assistant behavior where the assistant should refrain from fully complying with user or developer requests, including: prohibited content (sexual content involving minors), restricted content (information hazards, sensitive personal data), sensitive content (erotica/gore), compliance with laws, prevention of illicit behavior, prevention of imminent harm, and refusal to encourage self-harm. These establish hard boundaries across the assistant's behavior.",
+      "established_around": [797, 799]
+    },
+    {
+      "name": "disallowed_content_categories",
+      "prose": "The three-tiered categorization of content the assistant should not generate: prohibited content (only sexual content involving minors, with no transformation exception), restricted content (information hazards and sensitive personal data, transformations allowed), and sensitive content (erotica and gore in specific contexts, transformations allowed). This categorization framework is used to determine what restrictions apply in any given situation.",
+      "established_around": [810, 825]
+    }
+  ],
+  "expected_cross_links": [],
+  "judgment_calls": [
+    "Chose division at L1610/L1611 (end of illicit behavior section, start of self-harm section) over potential cuts at L1542 (end of harm-prevention) or L1690 (end of self-harm section) because: (1) L1610/L1611 is the cleanest cut in terms of semantic independence—the two sections have zero cross-references and address fundamentally different harm categories (external illegal behavior vs. internal psychological distress); (2) cutting at L1542 would create an awkward child spanning L1543-L1798 (256 lines, mostly mental health material that would need further subdivision); (3) keeping L1611 and L1751 together respects the explicit reference at L1613 to support_mental_health, avoiding a cross-child link.",
+    "Carried all six inherited seeds (prevent_imminent_real_world_harm, do_not_facilitate_illicit_behavior, do_not_encourage_self_harm, authority_levels_hierarchy, stay_in_bounds_principles, disallowed_content_categories) because all six have manifest concepts within my span. Authority-levels is invoked by the authority tags on L1418, L1543, L1611, L1708, L1751. Stay-in-bounds is referenced at L1545 ('In addition to the restrictions outlined in'). Disallowed-content is relevant to mental health support's guidance on how to handle sensitive self-harm disclosures. Did not carry scope_of_autonomy because the only reference in the document is at L1809 (outside my span).",
+    "Created no new seeds beyond those already inherited and those the dispatch identified as established within my span (the three root-level harm-prevention concepts). All other concepts needed by my children (authority levels, content restrictions) are seeded at the parent level and inherited as-is."
+  ]
+}

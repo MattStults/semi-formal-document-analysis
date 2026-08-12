@@ -1,0 +1,119 @@
+{
+  "decision": "divide",
+  "children": [
+    {
+      "span": [1, 170],
+      "why_this_cut": "Ends definitions and foundational principles. Section includes Overview (#overview), Red-line principles (#red_line_principles), General principles (#general_principles), and Definitions (#definitions). Clean break: L0170 ends with User definition, L0171 starts new top-level section 'The chain of command'. No rules-specific content crosses this boundary; all downstream sections reference the authority hierarchy defined here but do not feed back into this section."
+    },
+    {
+      "span": [171, 3147],
+      "why_this_cut": "Covers the chain of command (#chain_of_command) and all core behavioral rules and principles. Includes: (1) meta-rules about how to follow instructions (Follow all applicable instructions, Respect letter and spirit, No other objectives, Act within scope of autonomy); (2) root-level behavioral principles (Respect creators, Protect privacy, Sensitive content, Avoid extremist content, Uphold fairness, Respect real-world ties, Seek truth together, and related guidelines). Clean break: L3147 ends with 'Gently pushing back when user doesn't go along' example (still within Seek truth/Highlight misalignments section); L3148 begins new major section 'Do the best work' with practical execution focus. Cross-linkage: Child 3 extensively applies these rules in execution contexts; no rules content crosses backward into this section from below."
+    },
+    {
+      "span": [3148, 4691],
+      "why_this_cut": "Covers practical execution and application contexts. Includes: (1) Do the best work (#best_work) - error avoidance, refusal style, formatting, efficiency; (2) Adapt to modality - voice and video style guidelines; (3) Under-18 Principles (#chatgpt_u18) which explicitly state they layer on top of earlier sections. Clean break: L3147 ends Seek truth section, L3148 starts Do the best work. No rule-establishing content crosses backward; all content in this section applies or operationalizes rules from Child 2."
+    }
+  ],
+  "seed_vocabulary": [
+    {
+      "name": "authority_levels_hierarchy",
+      "prose": "The precedence ordering of instruction sources from highest to lowest: Root > System > Developer > User > Guideline > (No Authority). Established in L0069-L0191, particularly the ordered list at L0186-L0191.",
+      "established_around": [69, 191]
+    },
+    {
+      "name": "applicable_instructions",
+      "prose": "Instructions that must be followed, determined by filtering all candidate instructions (from spec sections and input messages) to exclude those that are misaligned with higher-authority instructions, superseded by later same-level instructions, or suspected to be mistaken. Defined in L0179-L0195.",
+      "established_around": [179, 195]
+    },
+    {
+      "name": "message_roles_and_authority",
+      "prose": "The association between message source roles (system, developer, user, assistant, tool) and their authority levels, where developer messages have greater authority than user messages. Defined in L0118-L0126 and L0120.",
+      "established_around": [118, 167]
+    },
+    {
+      "name": "root_level_instruction",
+      "prose": "Fundamental rules that cannot be overridden by system, developer, or user messages; come only from the Model Spec itself. Include prohibitions against catastrophic harm, legal violations, and undermining the chain of command. Established in L0071-L0077.",
+      "established_around": [71, 77]
+    },
+    {
+      "name": "candidate_instructions",
+      "prose": "All possibly relevant instructions before filtering for applicability, including instructions in the Model Spec and unquoted plain text in system, developer, and user messages. Defined in L0193.",
+      "established_around": [193, 193]
+    },
+    {
+      "name": "misaligned_instruction",
+      "prose": "An instruction that is in conflict with either the letter or implied intent of a higher-authority instruction. Defined in L0197.",
+      "established_around": [197, 197]
+    },
+    {
+      "name": "superseded_instruction",
+      "prose": "An instruction that is made irrelevant by a later instruction at the same authority level that contradicts, overrides, or changes the context of the request. Defined in L0199.",
+      "established_around": [199, 199]
+    },
+    {
+      "name": "stay_in_bounds_principles",
+      "prose": "The collection of limits on assistant behavior where the assistant should refrain from fully complying with user or developer requests, including: prohibited content (sexual content involving minors), restricted content (information hazards, sensitive personal data), sensitive content (erotica/gore), compliance with laws, prevention of illicit behavior, prevention of imminent harm, and refusal to encourage self-harm. Section introduced at L0797-L0799.",
+      "established_around": [797, 799]
+    },
+    {
+      "name": "sensitive_content_restrictions",
+      "prose": "Limitations on generating sensitive content (such as erotica or gore), which may only be generated under specific circumstances (educational, medical, historical contexts, or transformations of user-provided content). Established at L1108-L1110, with specific rules at L1112+ for erotica and gore.",
+      "established_around": [1108, 1114]
+    },
+    {
+      "name": "do_not_facilitate_illicit_behavior",
+      "prose": "Root-level requirement that if the user or developer asks the assistant to facilitate illicit behavior, the assistant must refuse to help with guidance, instructions, actionable steps, or improvements to user-provided plans, and should not encourage or promote such behaviors. Established at L1543-L1548.",
+      "established_around": [1543, 1548]
+    },
+    {
+      "name": "self_harm_prohibition",
+      "prose": "Root-level requirement that the assistant must not encourage or enable self-harm, including refusal to provide suicide methods, and must convey supportive messaging that the user is not alone and resources can help. Also covers responses to delusions and mania with safety-oriented approach. Established at L1611-L1690.",
+      "established_around": [1611, 1690]
+    }
+  ],
+  "expected_cross_links": [
+    {
+      "needs_side_child": 2,
+      "provides_side_child": 1,
+      "name": "authority_levels_hierarchy",
+      "evidence": "Child 2 (L0179-L0292+) extensively applies and references the authority hierarchy to explain how to identify and follow applicable instructions. The entire chain of command logic depends on the precedence ordering defined in Child 1 (L0186-L0191)."
+    },
+    {
+      "needs_side_child": 2,
+      "provides_side_child": 1,
+      "name": "message_roles_and_authority",
+      "evidence": "Child 2 (L0179+) repeatedly applies the role→authority mapping (system, developer, user) defined in Child 1 (L0120-L0127, L0159-L0167) when explaining which instructions take precedence."
+    },
+    {
+      "needs_side_child": 3,
+      "provides_side_child": 2,
+      "name": "do_not_facilitate_illicit_behavior",
+      "evidence": "Child 3 (L4592) references do_not_facilitate_illicit_behavior for minors context. While the exact section location is not in my read, this is a stay_in_bounds principle in Child 2 that Under-18 Principles must reference."
+    },
+    {
+      "needs_side_child": 3,
+      "provides_side_child": 2,
+      "name": "sensitive_content_restrictions",
+      "evidence": "Child 3 (L4591) references that Under-18 users must continue upholding Child 2's (L1108+) sensitive content boundaries (erotica, gore, explicit detail restrictions), applying them more broadly in youth context."
+    },
+    {
+      "needs_side_child": 3,
+      "provides_side_child": 2,
+      "name": "self_harm_prohibition",
+      "evidence": "Child 3 (L4589) explicitly states that under-18 self-harm protections build on Child 2's do_not_encourage_self_harm prohibition, extending it uniformly across fictional, hypothetical, and educational contexts for minors."
+    },
+    {
+      "needs_side_child": 3,
+      "provides_side_child": 2,
+      "name": "stay_in_bounds_principles",
+      "evidence": "Child 3 (L4576) explicitly states 'All of the principles in the [?](#stay_in_bounds) section of the Model Spec continue to apply for U18 users' — indicating Under-18 Principles layer on top of stay_in_bounds rules from Child 2."
+    }
+  ],
+  "judgment_calls": [
+    "Chose L170→L171 over alternative cut points in the definitions (e.g., L0108→L0109) because L0109-L0170 establishes not just vocabulary but the specific role/authority mapping used throughout Child 2, making it part of foundational material rather than appendix.",
+    "Chose L3147→L3148 (end of Seek truth through Highlight misalignments) rather than L2049→L2050 (end of fairness) to keep all core behavioral rules together. While Fairness and Real-world ties are thematically parallel root-level rules, they are followed by Seek truth section which is distinct in philosophy but depends on the behavioral rules established just above it. Splitting after fairness alone would require seeding more cross-link concepts.",
+    "Could have split Child 2 into two sections (rules about HOW to follow instructions vs. rules about WHAT to do), cutting around L0461 where 'Act within scope of autonomy' ends and 'Respect creators' begins (~L1002). Did not do this because: (1) the chain of command meta-rules (L0171-L0461) are relatively compact (~290 lines) compared to the behavioral rules (~2650 lines), creating unbalanced children; (2) the behavioral rules all reference the chain of command hierarchy, so separating them would add many cross-links; (3) they form a coherent block: how to follow instructions, then what instructions to follow.",
+    "Did not cut within the Under-18 section (L4572-L4691) despite it being clearly demarcated, because it explicitly depends on and references prior sections ('All principles in stay_in_bounds continue to apply'), and separating it would require treating the dependency as a cross-link rather than including the complete application of the model spec.",
+    "REPAIR: Added four missing seeds for expected_cross_links (do_not_facilitate_illicit_behavior, sensitive_content_restrictions, self_harm_prohibition, stay_in_bounds_principles), found at L1543-1548, L1108-1114, L1611-1690, and L0797-0799 respectively within Child 2's stay_in_bounds section."
+  ]
+}

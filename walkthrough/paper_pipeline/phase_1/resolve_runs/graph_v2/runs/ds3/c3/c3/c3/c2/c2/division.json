@@ -1,0 +1,159 @@
+{
+ "decision": "divide",
+ "children": [
+  {
+   "span": [
+    3756,
+    3953
+   ],
+   "why_this_cut": "Covers the first three sections (Be clear and direct, Be suitably professional, Have conversational sense). The only crossing linkage is the style_section_authority concept (heading tags assign authority=guideline or authority=user), which is seeded and applies to all sections in this span; no other concept crosses into the later sections."
+  },
+  {
+   "span": [
+    3954,
+    4137
+   ],
+   "why_this_cut": "Covers the remaining sections (Be warm, Don't make unprompted personal comments, Avoid being condescending or patronizing, When appropriate be helpful when refusing). The only crossing linkage is the style_section_authority concept, which is seeded and applies to all sections in this span; no other concept crosses into the earlier sections."
+  }
+ ],
+ "seed_vocabulary": [
+  {
+   "name": "style_section_authority",
+   "prose": "the authority level assigned to each style section by its heading tag (authority=user or authority=guideline), which determines how the section's rules rank in the chain of command",
+   "established_around": [
+    3506,
+    3506
+   ]
+  },
+  {
+   "name": "refusal_style",
+   "prose": "the principle of being helpful when refusing, typically 'Safe Completing' by briefly explaining why it cannot provide a full answer and then doing its best to provide safe and useful assistance",
+   "established_around": [
+    4073,
+    4079
+   ]
+  },
+  {
+   "name": "stay_in_bounds_section",
+   "prose": "the section of the Model Spec describing limits on the assistant's behavior, including scenarios where it should refrain from fully complying with a user or developer request",
+   "established_around": [
+    797,
+    800
+   ]
+  },
+  {
+   "name": "risky_situations",
+   "prose": "the section providing instructions for handling requests that involve risky situations (imminent harm, illicit behavior, self-harm, regulated advice, mental health)",
+   "established_around": [
+    1414,
+    1755
+   ]
+  },
+  {
+   "name": "avoid_errors",
+   "prose": "the principle of avoiding factual, reasoning, and formatting errors that would compromise the accuracy or utility of responses",
+   "established_around": [
+    3150,
+    3162
+   ]
+  },
+  {
+   "name": "hidden_chain_of_thought",
+   "prose": "a hidden chain-of-thought message used to reason before generating a final answer, not exposed to the user or developer except in summarized form",
+   "established_around": [
+    155,
+    155
+   ]
+  },
+  {
+   "name": "assume_best_intentions",
+   "prose": "the principle of applying three implicit biases (average reasonable human goals, positive intent, weak preference for self-actualization/kindness/truth/flourishing) when interpreting ambiguous instructions",
+   "established_around": [
+    610,
+    620
+   ]
+  },
+  {
+   "name": "prohibited_content",
+   "prose": "content that should never be produced by the assistant in any circumstance, including transformations of user-provided content; only sexual content involving minors is prohibited",
+   "established_around": [
+    820,
+    828
+   ]
+  },
+  {
+   "name": "restricted_content",
+   "prose": "content the assistant must not generate except in specific cases involving transformation of user-provided content; includes information hazards and sensitive personal data",
+   "established_around": [
+    852,
+    854
+   ]
+  }
+ ],
+ "expected_cross_links": [
+  {
+   "name": "style_section_authority",
+   "needs_side_child": 1,
+   "provides_side_child": 2,
+   "evidence": "Both children contain sections whose heading tags assign authority levels; the concept is established outside this span (around L3506) and is needed by rules in both children. It is a shared inherited seed, not provided by either child."
+  },
+  {
+   "name": "refusal_style",
+   "needs_side_child": 2,
+   "provides_side_child": 2,
+   "evidence": "The refusal_style section (L4073-4079) is entirely in child 2; child 1 does not reference it. This is a dangling need for child 2, not a cross-link between children."
+  },
+  {
+   "name": "stay_in_bounds_section",
+   "needs_side_child": 2,
+   "provides_side_child": 1,
+   "evidence": "The refusal_style section references the stay_in_bounds section (L4075); this is a dangling need for child 2, not a cross-link between children."
+  },
+  {
+   "name": "risky_situations",
+   "needs_side_child": 2,
+   "provides_side_child": 1,
+   "evidence": "The refusal_style section references risky_situations (L4075); this is a dangling need for child 2, not a cross-link between children."
+  },
+  {
+   "name": "avoid_errors",
+   "needs_side_child": 1,
+   "provides_side_child": 2,
+   "evidence": "The be_clear section (L3780) references avoiding errors; this is a dangling need for child 1, not a cross-link between children."
+  },
+  {
+   "name": "hidden_chain_of_thought",
+   "needs_side_child": 1,
+   "provides_side_child": 2,
+   "evidence": "The be_clear section (L3780) references hidden chain-of-thought messages; this is a dangling need for child 1, not a cross-link between children."
+  },
+  {
+   "name": "assume_best_intentions",
+   "needs_side_child": 2,
+   "provides_side_child": 1,
+   "evidence": "The refusal_style example (L4122-4136) demonstrates assuming best intent; this is a dangling need for child 2, not a cross-link between children."
+  },
+  {
+   "name": "prohibited_content",
+   "needs_side_child": 2,
+   "provides_side_child": 1,
+   "evidence": "The refusal_style section (L4075) references prohibited content; this is a dangling need for child 2, not a cross-link between children."
+  },
+  {
+   "name": "restricted_content",
+   "needs_side_child": 2,
+   "provides_side_child": 1,
+   "evidence": "The refusal_style section (L4075) references restricted content; this is a dangling need for child 2, not a cross-link between children."
+  }
+ ],
+ "judgment_calls": [
+  "Chose a 2-way split at L3953 (between Have conversational sense and Be warm) rather than a 3-way split, because the first three sections form a cohesive block of conversational style rules and the last five form a block of tone/refusal rules; a 3-way split would have required more cross-links without a cleaner cut.",
+  "The expected_cross_links list includes several entries that are actually dangling needs for a single child (e.g., refusal_style, stay_in_bounds_section, risky_situations, avoid_errors, hidden_chain_of_thought, assume_best_intentions, prohibited_content, restricted_content) rather than true cross-child links; I included them to document that these concepts are needed by one child and provided by neither child, so they will remain dangling for the parent to resolve.",
+  "I carried all inherited seeds that appear anywhere in my span (style_section_authority, refusal_style, stay_in_bounds_section, risky_situations, avoid_errors, hidden_chain_of_thought, assume_best_intentions, prohibited_content, restricted_content) even though most are only needed by one child, because dropping them would lose the names for the whole subtree."
+ ],
+ "_span_lo": 3756,
+ "_span_hi": 4137,
+ "driver_autofixes": [
+  "cross-link 'refusal_style': provides_side_child 1 -> 2 (child containing established_around [4073, 4079])"
+ ]
+}

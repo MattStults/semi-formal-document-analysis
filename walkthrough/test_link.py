@@ -52,9 +52,40 @@ def T(cite="m0255"):
 module_dict = fixtures.m0255_module
 
 
+#: Real glosses for the borrows test overrides tend to drop when they
+#: replace `concepts` (2026-08-12 inputs-gloss ruling, READBACK_SMOKE.md).
+_BORROW_GLOSSES = {
+    "new_material": "content the assistant originates rather than reworks "
+                    "from what it was given",
+    "disallowed": "the material falls under a policy that bars its "
+                  "production",
+    "policy_class": "the category a named policy belongs to, as this "
+                    "document groups them",
+    "purpose": "the aim the user states for wanting the material",
+    # ⚠️ byte-identical to `fixtures.CONC_AUD` on purpose: a second wording
+    # would make every table that carries both a `concept-multi-gloss` note.
+    "broad_audience": "content crafted for an unspecified or broad audience",
+}
+
+
+def _supplement_borrow_glosses(d):
+    """A local `concepts=` override must not silently lose the default
+    borrows' glosses -- re-supplement any still-borrowed known name."""
+    have = {c.get("name") for c in d.get("concepts", [])}
+    for p in list(d.get("requires", [])) + list(d.get("inputs", [])):
+        b = p.split("/")[0]
+        if b not in have and b in _BORROW_GLOSSES:
+            d.setdefault("concepts", []).append(dict(
+                name=b, arity=int(p.split("/")[1]),
+                gloss=_BORROW_GLOSSES[b], licence="assumed", cites=None,
+                inference="test fixture borrow, meaning restated for the "
+                          "gloss rule", toggleable=False))
+    return d
+
+
 def render(tmp_path, name, **over):
     """Validate a module through the contract and render it to a real `.lp`."""
-    d = module_dict(**over)
+    d = _supplement_borrow_glosses(module_dict(**over))
     mod = schema.validate(d)
     clause = dict(section_id="transformation_exception", kind="conditional",
                   quote="The transformation exception does not override any "
@@ -132,8 +163,12 @@ def test_d1_requires_is_not_reported_as_unresolved(tmp_path):
     """
     p = render(
         tmp_path, "needs.lp",
+        # D4b level 2: a borrow must carry a MEANING, so the borrowed
+        # `policy_class/2` gets its own concepts entry alongside the module's
         concepts=[dict(**T(), name="asserts_policy", arity=2,
-                       gloss="clause R asserts the policy named P")],
+                       gloss="clause R asserts the policy named P"),
+                  dict(**T(), name="policy_class", arity=2,
+                       gloss="policy P is of kind K")],
         asserts=[dict(**T(), status="forbid", act="produce(M)",
                       body="new_material(M), policy_class(P, K)",
                       read_back="producing % is still forbidden",
@@ -153,6 +188,10 @@ def test_d1_unprovided_requires_is_its_own_non_error_status(tmp_path):
     """It must still be VISIBLE — as a distinct, non-error status."""
     p = render(
         tmp_path, "needs.lp",
+        # the borrow carries its meaning (D4b level 2), and must STILL be
+        # reported as unprovided — a gloss is not a provider
+        concepts=[dict(**T(), name="policy_class", arity=2,
+                       gloss="policy P is of kind K")],
         asserts=[dict(**T(), status="forbid", act="produce(M)",
                       body="new_material(M), policy_class(P, K)",
                       read_back="producing % is still forbidden",
@@ -175,6 +214,10 @@ def test_d1_provided_requires_is_silent(tmp_path):
     """
     consumer = render(
         tmp_path, "consumer.lp",
+        # the consumer's own reading of the borrow (D4b level 2); the
+        # PROVIDER below is what clears the requires-unprovided status
+        concepts=[dict(**T(), name="policy_class", arity=2,
+                       gloss="policy P is of kind K")],
         asserts=[dict(**T(), status="forbid", act="produce(M)",
                       body="new_material(M), policy_class(P, K)",
                       read_back="producing % is still forbidden",
@@ -313,17 +356,20 @@ def test_d4_a_file_clingo_refuses_is_a_loud_failure(tmp_path):
     """An unsafe variable makes clingo refuse the WHOLE file. link() printed
     `✅ no unresolved references` and returned 0.
 
-    This module is schema-valid: `allow_vars` is keyed off the body being
-    present, and nothing checks that the body BINDS the act's variable.
+    ⚠️ NO LONGER schema-renderable: `Module._coherent` now rejects a head
+    variable the body never binds (the Q-22-era safety check), so a generated
+    module can never carry this defect. The shape still reaches link scope
+    from hand-written and pre-contract `.lp` files — so the fixture is a REAL
+    render with the rule line's body variables swapped, the byte-minimal
+    mutation a hand edit would make.
     """
-    p = render(
-        tmp_path, "unsafe.lp",
-        asserts=[dict(**T(), status="forbid", act="produce(M)",
-                      body="new_material(X)",          # X, not M -- M unsafe
-                      read_back="producing % is forbidden",
-                      read_back_slots=["M"])],
-        inputs=["new_material/1"],
-    )
+    p = render(tmp_path, "unsafe.lp")
+    text = open(p, encoding="utf-8").read()
+    assert "new_material(M), disallowed(M)" in text, \
+        "the rendered rule changed shape; update the mutation below"
+    open(p, "w", encoding="utf-8").write(text.replace(
+        "new_material(M), disallowed(M)",
+        "new_material(X), disallowed(X)"))     # X, not M -- M unsafe
     findings = link.collect([p])
     hits = by_id(findings, "clingo-error")
     assert len(hits) == 1, f"clingo refused this file; got {ids(findings)}"
@@ -336,6 +382,106 @@ def test_d4_clean_file_has_no_clingo_error(tmp_path):
     """The guard that must kill the test above."""
     p = render(tmp_path, "ok.lp")
     assert not by_id(link.collect([p]), "clingo-error")
+
+
+# --------------------------------------------------------------------------
+#  CORPUS SCOPE — the shared preamble is deduped, and ONLY it
+# --------------------------------------------------------------------------
+#
+# ⭐ Measured on the first cross-module link over the graph-node corpus
+# (resolve_runs/graph_v2/STEPS34_READINESS.md gap 1, 2026-08-11): render_lp
+# emits `#const onto = on.` into EVERY module that carries an ontology fact,
+# and at corpus scope clingo refuses the redefinition and analyses NOTHING.
+# The fix lives in the corpus-assembly layer — `link.dedupe_shared_preamble`,
+# applied by collect() at multi-file scope only — because render_lp serves the
+# single-module path (checks.py stage 2, per-module run artifacts) and must
+# stay byte-identical.
+
+def render_onto(tmp_path, name, clause_id):
+    """A REAL ontology-bearing module through the real contract — the shape
+    whose rendered preamble collided at corpus scope."""
+    d = fixtures.module(clause_id=clause_id)
+    mod = schema.validate(d)
+    clause = dict(section_id="test", kind="conditional", quote="a clause")
+    p = tmp_path / name
+    p.write_text(schema.render_lp(mod, clause), encoding="utf-8")
+    return str(p)
+
+
+def test_corpus_shared_preamble_links_cleanly(tmp_path):
+    """Two rendered ontology-bearing modules must link at corpus scope.
+
+    Each carries render_lp's `#const onto = on.` / `o :- onto = on.` preamble;
+    without dedup clingo refuses the redefinition and the whole corpus link
+    reports nothing but `clingo-error`.
+    """
+    a = render_onto(tmp_path, "a.lp", "m0101")
+    b = render_onto(tmp_path, "b.lp", "m0102")
+    for p in (a, b):
+        assert "#const onto = on." in open(p, encoding="utf-8").read(), \
+            "fixture drifted: render_lp no longer emits the shared preamble"
+    findings = link.collect([a, b])
+    assert not by_id(findings, "clingo-error"), \
+        f"corpus link refused: {[f.message for f in findings]}"
+
+
+def test_corpus_dedup_still_analyses_the_program(tmp_path):
+    """The dedup must leave a program clingo actually ANALYSES: an undeclared
+    head-less predicate in one module still surfaces at corpus scope. Guards
+    against a dedup that 'fixes' the error by breaking the clingo run."""
+    a = render_onto(tmp_path, "a.lp", "m0101")
+    b = render_onto(
+        tmp_path, "b.lp", "m0102")
+    # a hand-appended body dependency nothing declares — the detector's food
+    with open(b, "a", encoding="utf-8") as f:
+        f.write("asserts(m0102, forbid, produce(M)) :- undeclared_dep(M).\n")
+    hits = by_id(link.collect([a, b]), "unresolved-reference")
+    assert any("undeclared_dep/1" in h.message for h in hits), \
+        "corpus-scope L2 went blind: clingo's head-less report was lost"
+
+
+def test_corpus_single_module_path_is_untouched(tmp_path):
+    """At single-module scope the file is passed to clingo exactly as
+    rendered — the preamble stays, and the module still links clean."""
+    p = render_onto(tmp_path, "one.lp", "m0101")
+    before = open(p, encoding="utf-8").read()
+    assert not by_id(link.collect([p]), "clingo-error")
+    assert open(p, encoding="utf-8").read() == before
+
+
+def test_corpus_genuine_const_collision_still_errors(tmp_path):
+    """⛔ A `#const` collision that is NOT the shared preamble is a genuine
+    cross-module redefinition and must still surface as the clingo error it
+    is. Hand-written (write_raw): stage 1 cannot emit a second `#const`, but
+    hand-written link glue can, and silently deduping it would paper over a
+    real contradiction."""
+    a = write_raw(tmp_path, "glue_a.lp",
+                  "%% clause: t900   section: test   kind: conditional\n"
+                  "%% requires:\n%% inputs:\n"
+                  "#const onto = on.\no :- onto = on.\n"
+                  "#const depth = 1.\ndefines(t900, term, x).\n")
+    b = write_raw(tmp_path, "glue_b.lp",
+                  "%% clause: t901   section: test   kind: conditional\n"
+                  "%% requires:\n%% inputs:\n"
+                  "#const onto = on.\no :- onto = on.\n"
+                  "#const depth = 2.\ndefines(t901, term, y).\n")
+    hits = by_id(link.collect([a, b]), "clingo-error")
+    assert len(hits) == 1 and "redefinition" in hits[0].message, \
+        "a genuine non-preamble #const redefinition was silently absorbed"
+
+
+def test_corpus_preamble_constant_matches_render_lp(tmp_path):
+    """`link.SHARED_PREAMBLE` is kept in step with render_lp by TEXT (link.py
+    must not import the phase_1 tree), so THIS test pins the correspondence:
+    every SHARED_PREAMBLE line appears verbatim in a rendered ontology-bearing
+    module, and no OTHER `#const` line does."""
+    p = render_onto(tmp_path, "one.lp", "m0101")
+    lines = {ln.strip() for ln in open(p, encoding="utf-8")}
+    for pre in link.SHARED_PREAMBLE:
+        assert pre in lines, f"render_lp no longer emits {pre!r}"
+    consts = {ln for ln in lines if ln.startswith("#const")}
+    assert consts == {"#const onto = on."}, \
+        f"render_lp now emits #const lines the dedup does not know: {consts}"
 
 
 # --------------------------------------------------------------------------
@@ -423,13 +569,22 @@ def test_d4_every_documented_clingo_exit_code_stays_silent(tmp_path,
 def test_d5_headers_are_parsed(tmp_path):
     p = render(
         tmp_path, "hdr.lp",
+        # D4b level 2: the borrowed `policy_class/2` must carry a gloss, so
+        # it appears in the concepts header alongside the module's own entry
         concepts=[dict(**T(), name="asserts_policy", arity=2,
-                       gloss="clause R asserts the policy named P")],
+                       gloss="clause R asserts the policy named P"),
+                  dict(**T(), name="policy_class", arity=2,
+                       gloss="policy P is of kind K")],
         requires=["policy_class/2"],
     )
     h = link.header(p)
     assert h["acts"] == {"produce(M)"}
-    assert h["concepts"] == {"asserts_policy/2"}
+    # The base module still borrows `new_material/1` and `disallowed/1` as
+    # inputs, and since 2026-08-12 (READBACK_SMOKE.md) every borrow carries a
+    # gloss — so both appear in the concepts header beside the two written
+    # into this test. The header parser under test must report all four.
+    assert h["concepts"] == {"asserts_policy/2", "policy_class/2",
+                             "new_material/1", "disallowed/1"}
     assert h["requires"] == {"policy_class/2"}
     assert h["closure"] == {"produce": "cepa"}
 
@@ -562,10 +717,17 @@ political = fixtures.political_module
 def table_of(*overrides):
     """The concept table, built the way `translate.py` builds it: validate the
     module through the contract and take `schema.concept_rows`. Hand-writing
-    the rows would let the fixture drift from what a run actually writes."""
+    the rows would let the fixture drift from what a run actually writes.
+
+    ⚠️ Borrow glosses are re-supplemented exactly as in `render()`, because the
+    table-building module passes the same `schema.validate` (2026-08-12
+    inputs-gloss ruling). A test that needs a signature ABSENT from the table
+    must therefore drop it from the module's `inputs` too, not just from
+    `concepts` — see the partial-table tests."""
     rows = []
     for over in overrides:
-        rows.extend(schema.concept_rows(schema.validate(module_dict(**over))))
+        d = _supplement_borrow_glosses(module_dict(**over))
+        rows.extend(schema.concept_rows(schema.validate(d)))
     return rows
 
 
@@ -626,8 +788,14 @@ def test_d4b_a_concept_the_table_does_not_carry_still_fires(tmp_path):
         "permits\n"
         "asserts(m0217, permit, produce(M)) :- political_content(M), "
         "broad_audience(M).   % [T] m0217\n")
+    # ⚠️ `inputs` narrowed with `concepts`: since 2026-08-12 every borrow must
+    # carry a gloss, so a module borrowing `broad_audience/1` would put a row
+    # for it in the table (via the re-supplement) and destroy the omission
+    # this test exists to catch. The table-building module simply does not
+    # mention `broad_audience` at all.
     partial = table_of(political(
         concepts=[dict(**T("m0217"), **CONC_POL)],
+        inputs=["political_content/1"],
         asserts=[dict(**T("m0217"), status="permit", act="produce(M)",
                       body="political_content(M)",
                       read_back="producing % is permitted",
@@ -679,8 +847,11 @@ def test_d4b_concept_declared_by_a_module_but_absent_from_the_table(tmp_path):
     concept*. A module pointing at a concept row that does not exist is problem
     #1 (made-up things) at the table seam — the gloss cannot be recovered."""
     p = render(tmp_path, "m0217.lp", **political())
+    # `inputs` narrowed with `concepts` — same reasoning as the partial table
+    # in `test_d4b_a_concept_the_table_does_not_carry_still_fires`.
     partial = table_of(political(
         concepts=[dict(**T("m0217"), **CONC_POL)],
+        inputs=["political_content/1"],
         asserts=[dict(**T("m0217"), status="permit", act="produce(M)",
                       body="political_content(M)",
                       read_back="producing % is permitted",

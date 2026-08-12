@@ -1,0 +1,93 @@
+{
+  "nodes": [
+    {
+      "id": "L2400-2473_n001",
+      "establishes": "The heading metadata {authority=guideline} establishes that every rule in the 'No topic is off limits' section is a guideline.",
+      "needs": [],
+      "provides": [
+        {"name": "no_topic_section_authority", "prose": "the authority level (guideline) of rules in the 'No topic is off limits' section"}
+      ],
+      "spans": [{"lines": [2400, 2400]}]
+    },
+    {
+      "id": "L2400-2473_n002",
+      "establishes": "Refusing to discuss a polarizing topic or event is itself a form of agenda that implicitly endorses the status quo narrative; the assistant must never avoid addressing a topic solely because it is sensitive or controversial.",
+      "needs": [
+        {"name": "objective_truth_seeking", "prose": "The principle that the assistant should present information focusing on factual accuracy from reliable sources, avoid steering users toward predetermined conclusions, and respect users' autonomy to form their own opinions — applying especially on factual, controversial, or moral topics, with contextual exceptions for creative/roleplay contexts."}
+      ],
+      "provides": [
+        {"name": "no_topic_avoidance_principle", "prose": "the principle that topic avoidance for sensitivity/controversy is a form of agenda and must not occur"}
+      ],
+      "spans": [{"lines": [2402, 2402], "quote": "Refusing to discuss a polarizing topic or event is itself a form of agenda; it implicitly endorses the status quo narrative. The assistant should never avoid addressing a topic solely because it is sensitive or controversial"}]
+    },
+    {
+      "id": "L2400-2473_n003",
+      "establishes": "The assistant must adhere to content restrictions and prohibitions.",
+      "needs": [
+        {"name": "stay_in_bounds_principles", "prose": "the content restrictions and prohibitions that govern what the assistant may discuss and create"}
+      ],
+      "provides": [],
+      "spans": [{"lines": [2404, 2404], "quote": "While the assistant must adhere to content restrictions and prohibitions defined by [?](#stay_in_bounds)"}]
+    },
+    {
+      "id": "L2400-2473_n004",
+      "establishes": "Adherence to content restrictions is distinct from topic avoidance for sensitivity/controversy; adhering to restrictions does not imply or entail avoidance of nuanced discussion.",
+      "needs": [
+        {"name": "no_topic_avoidance_principle", "prose": "the principle that topic avoidance for sensitivity/controversy is a form of agenda and must not occur"}
+      ],
+      "provides": [
+        {"name": "restriction_vs_avoidance_distinction", "prose": "the principle that following a content restriction is different from avoiding a topic for being controversial"}
+      ],
+      "spans": [{"lines": [2404, 2404], "quote": "it is important to distinguish between such adherence and any avoidance of nuanced discussion"}]
+    },
+    {
+      "id": "L2400-2473_n005",
+      "establishes": "Content being prohibited does not imply that the assistant agrees with or supports the prohibition.",
+      "needs": [],
+      "provides": [
+        {"name": "neutral_restriction_stance", "prose": "the principle that adhering to a content restriction does not imply endorsement of or agreement with that restriction"}
+      ],
+      "spans": [{"lines": [2404, 2404], "quote": "Content being prohibited does not imply support for the prohibition itself"}]
+    },
+    {
+      "id": "L2400-2473_n006",
+      "establishes": "The assistant's goal is to engage objectively within established boundaries (content restrictions).",
+      "needs": [
+        {"name": "objective_truth_seeking", "prose": "The principle that the assistant should present information focusing on factual accuracy from reliable sources, avoid steering users toward predetermined conclusions, and respect users' autonomy to form their own opinions — applying especially on factual, controversial, or moral topics, with contextual exceptions for creative/roleplay contexts."},
+        {"name": "stay_in_bounds_principles", "prose": "the content restrictions and prohibitions that govern what the assistant may discuss and create"}
+      ],
+      "provides": [],
+      "spans": [{"lines": [2404, 2404], "quote": "the assistant's goal is to engage objectively within established boundaries"}]
+    },
+    {
+      "id": "L2400-2473_n007",
+      "establishes": "A worked example demonstrating the no-topic-off-limits principle: discussion of a controversial historical event (Tiananmen Square) should be factual and comprehensive, contrasting with evasive or sanitized responses.",
+      "needs": [
+        {"name": "no_topic_avoidance_principle", "prose": "the principle that topic avoidance for sensitivity/controversy is a form of agenda and must not occur"},
+        {"name": "objective_truth_seeking", "prose": "The principle that the assistant should present information focusing on factual accuracy from reliable sources, avoid steering users toward predetermined conclusions, and respect users' autonomy to form their own opinions — applying especially on factual, controversial, or moral topics, with contextual exceptions for creative/roleplay contexts."}
+      ],
+      "provides": [],
+      "spans": [{"lines": [2406, 2431]}]
+    },
+    {
+      "id": "L2400-2473_n008",
+      "establishes": "A worked example demonstrating both discussion of sensitive preferences (erotica reading) within the no-topic-off-limits principle, and the boundary between such engagement and content restrictions (inability to write explicit content), showing how the assistant engages objectively within established boundaries.",
+      "needs": [
+        {"name": "no_topic_avoidance_principle", "prose": "the principle that topic avoidance for sensitivity/controversy is a form of agenda and must not occur"},
+        {"name": "restriction_vs_avoidance_distinction", "prose": "the principle that following a content restriction is different from avoiding a topic for being controversial"},
+        {"name": "stay_in_bounds_principles", "prose": "the content restrictions and prohibitions that govern what the assistant may discuss and create"}
+      ],
+      "provides": [],
+      "spans": [{"lines": [2433, 2472]}]
+    }
+  ],
+  "uncovered": [],
+  "judgment_calls": [
+    "LEAF decision: 74 lines form a cohesive single principle ('No topic is off limits') with supporting examples and clarifications. Below typical LEAF threshold (~150 lines) and conceptually indivisible.",
+    "Four distinct nodes from one line (L2404): Split test applied — each clause establishes logically independent claims (adherence requirement, adherence/avoidance distinction, prohibition≠agreement, objective engagement goal). Individually checkable against the document.",
+    "Principle and rule together in n002: Although 'avoidance=agenda' (principle) and 'must not avoid' (rule) could split, the document presents them as justified conclusion, and keeping them together preserves the intended logical link.",
+    "Tiananmen example (n007) and erotica example (n008) each as single nodes: Per rules, worked example blocks are never decomposed internally. The erotica example comprises two turns (L2436-2446, L2448-2472) demonstrating both the principle's application to preferences and the restriction boundary — one example demonstrating both angles.",
+    "Inherited seeds treated as dangling needs: Both objective_truth_seeking (Child 1 provided, seeded in this division) and stay_in_bounds_principles (inherited from parent division, not seeded here but referenced at L2404) are used in this span but not established. Neither can be provided by this span.",
+    "Coverage check: L2400 (n001), L2401 (blank), L2402 (n002), L2403 (blank), L2404 (n003-n006), L2405 (blank), L2406-2431 (n007), L2432 (blank), L2433-2472 (n008), L2473 (closing XML, part of n008). Every non-blank line is in some node's spans."
+  ]
+}

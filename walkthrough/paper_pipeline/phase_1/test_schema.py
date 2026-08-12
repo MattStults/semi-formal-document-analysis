@@ -528,8 +528,11 @@ def test_a_valid_abstention_renders_as_one():
 
 
 def test_a_translation_that_emitted_nothing():
-    bad(module(asserts=[], ontology=[], beats=[], defines=[], requires=[],
-               acts=[], closure=[]),
+    # ⚠️ `concepts=[]` is now load-bearing: the minimal fixture carries a
+    # concept to gloss its borrow, and a module with a concept has emitted
+    # SOMETHING. `_no_auto_gloss` stops the helper putting one back.
+    bad(module(_no_auto_gloss=True, asserts=[], ontology=[], beats=[],
+               defines=[], requires=[], concepts=[], acts=[], closure=[]),
         "abstention that did not say so")
 
 
@@ -1392,3 +1395,79 @@ def test_a_body_clingo_CANNOT_PARSE_is_rejected_and_says_so():
     bad(module(ontology=[dict(atom="d(M)", gloss="g",
                               body="adult(M) )(", **ASSUMED)],
                requires=["adult/1"]), "not ASP that clingo can parse")
+
+
+# --------------------------------------------- a BORROW must carry a meaning
+# mutation: Module._coherent borrow-gloss branch
+#
+# ⭐ WHY. `requires` and `inputs` name predicates the module does not define.
+# Until Q-22 the `requires` ones were dropped from the situation signature and
+# never reached a human at all, so the absence of a description cost nothing.
+# Now they are enumerated, which means a seat is shown a situation built out of
+# them — and `render_situation` refuses a bare predicate name (failure mode #5,
+# hollow stubs), so a borrow with no meaning written down BLOCKS stage 4.
+#
+# ⚠️ AND IT IS THE ONLY THING THAT COULD EVER LINK THEM. `[RAN]` across repeat
+# translations of one clause the invented NAMES agreed 0 times out of 22, while
+# concept descriptions were near-identical. The name is the noise channel and
+# the description is the signal, so a borrow without a description carries no
+# information that could match it to the clause that defines it.
+#
+# ⛔ THE OBJECTION THIS DOES NOT WALK INTO. `OPEN_QUESTIONS.md` Q-6 warns that a
+# borrower writing a meaning for a term another clause OWNS manufactures problem
+# #9. That is right if the entry is read as a DEFINITION. It is not: `concepts`
+# says what a name means to THIS module, `requires`/`inputs`/`ontology` say
+# where it comes from, and schema.py already keeps those apart — "Concepts are
+# NOT a declaration site". Two modules describing one borrowed name differently
+# is then a DETECTOR for the overload, in the only medium where it is visible.
+#
+# `[RAN]` 60 of 108 borrowed entries in the stored corpus already carry a gloss
+# in their own concept table, unprompted. This makes that the rule.
+
+def test_a_borrowed_predicate_must_carry_a_gloss():
+    """FIRES: `requires` names a predicate with no written meaning."""
+    bad(module(concepts=[], _no_auto_gloss=True), "no gloss")
+
+
+def test_control_a_borrow_WITH_a_gloss_is_accepted():
+    """⛔ The over-correction guard. Without this, 'reject every borrow' passes
+    the test above and no module can ever be translated again."""
+    schema.validate(module(concepts=[concept(name="restricted", arity=1,
+                                             gloss="the material falls under "
+                                                   "a restricted policy")]),
+                    clause_id="m0001")
+
+
+def test_an_INPUT_with_no_gloss_is_refused_AT_CREATION_like_a_require():
+    """⭐ THE RULE NOW COVERS BOTH BORROW FIELDS — reversed 2026-08-12 (Matt's
+    ruling; grounds in READBACK_SMOKE.md).
+
+    The earlier decision left `inputs` to `probe.render_situation`, which
+    refuses a bare predicate name at render time. The first live R3 render on
+    node modules showed why that is too late: inputs predicates with no gloss
+    reached stage 4 and R3 refused (READBACK_SMOKE.md). The Q-22 grounds apply
+    identically to both fields — a seat is shown situations BUILT from the
+    borrow, so the meaning has to be written at creation, where the module's
+    author still knows it.
+    """
+    bad(module(inputs=["pasted_text/1"], _no_auto_gloss=True),
+        "borrowed but has no gloss")
+    # The paired positive control: the same module, the gloss written.
+    with_gloss = module(inputs=["pasted_text/1"], _no_auto_gloss=True)
+    with_gloss["concepts"].append(
+        dict(name="pasted_text", arity=1,
+             gloss="verbatim material the user supplied in the conversation",
+             **fixtures.TEXTUAL))
+    schema.validate(with_gloss, clause_id="m0001")
+
+
+def test_the_gloss_may_not_merely_restate_the_NAME():
+    """⛔ The cheapest way to satisfy a description rule is to spell the name out.
+
+    `pasted_text/1` glossed as "pasted text" carries nothing a matcher could
+    use and nothing a seat could read, while passing a non-empty check. The
+    whole value of the field is that it says something the name does not.
+    """
+    bad(module(concepts=[concept(name="restricted", arity=1,
+                                 gloss="restricted")], _no_auto_gloss=True),
+        "restates its own name")

@@ -1,0 +1,94 @@
+{
+  "outcome": "translated",
+  "clause_id": "l810_919_n014",
+  "abstain_reason": null,
+  "claims": [
+    "C1: refusing to help amplify a biological agent is appropriate when the request reflects malicious intent",
+    "C2: a hard refusal is the appropriate response to a request to facilitate amplification of a biological threat",
+    "C3: the example demonstrates the restricted-content policy applied to biological amplification"
+  ],
+  "acts": ["refuse_assistance(R)"],
+  "concepts": [
+    {
+      "name": "malicious_intent",
+      "arity": 1,
+      "gloss": "the intent behind a request is malicious, i.e. aimed at causing harm",
+      "licence": "textual",
+      "cites": "l810_8896",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "facilitate_biological_threat",
+      "arity": 1,
+      "gloss": "the request would help amplify or spread a biological threat",
+      "licence": "textual",
+      "cites": "l810_8896",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "biological_threat_amplification_request",
+      "arity": 1,
+      "gloss": "a request to facilitate the amplification of a biological threat",
+      "licence": "textual",
+      "cites": "l810_8896",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "malicious_intent",
+      "arity": 1,
+      "gloss": "the requester's intent is malicious, as the example's 'malicious intent' label indicates",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the example labels the intent as malicious; the module needs a predicate to express that the intent is malicious",
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "l810_8896",
+      "inference": null,
+      "toggleable": false,
+      "atom": "malicious_intent(I)",
+      "gloss": "the intent behind the request is malicious",
+      "body": null
+    },
+    {
+      "licence": "textual",
+      "cites": "l810_8896",
+      "inference": null,
+      "toggleable": false,
+      "atom": "facilitate_biological_threat(I)",
+      "gloss": "the request would facilitate a biological threat",
+      "body": null
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "when a request would facilitate a biological threat and the intent is malicious, refusing to help is preferred",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "l810_8896",
+      "inference": null,
+      "toggleable": false,
+      "status": "prefer",
+      "act": "refuse_to_help(R)",
+      "body": "malicious_intent(R), facilitate_biological_threat(R)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "refuse_to_help",
+      "closure": "cepa",
+      "reason": "the example presents refusal as the preferred response to a malicious request; it does not forbid other responses, so silence leaves them permitted"
+    }
+  ],
+  "requires": ["malicious_intent/1", "facilitate_biological_threat/1"],
+  "inputs": [],
+  "forbid_body": []
+}

@@ -1,0 +1,127 @@
+[
+ {
+  "id": "L1-170_n026",
+  "sweep": "modal",
+  "verdict": "repair",
+  "grounds": "The span only says the assistant 'might cause harm by simply following instructions' -- a risk description with no obligation -- but the establishes asserts a chain-of-command rule ('the model obeys instructions except when they fall into specific prohibited categories or require safe completion') that the span nowhere states, and drops the span's 'might'.",
+  "proposed_establishes": "Risk 3 - Harmful instructions: the assistant might cause harm by simply following user or developer instructions (e.g., self-harm advice, violent acts). This directly bears on empowerment vs. harm prevention and interacts with how the chain of command treats prohibited categories and safe completion."
+ },
+ {
+  "id": "L292-526_n004",
+  "sweep": "modal",
+  "verdict": "false_positive",
+  "grounds": "Every normative claim in the establishes ('should attempt to understand', 'should provide a robust answer or safe guess', 'should err on the side of caution') matches a 'should' in the span verbatim; the span's weak modals ('may sometimes encounter', 'might just paste') are situational descriptions, not obligations, so no tier was flattened."
+ },
+ {
+  "id": "L527-796_n001",
+  "sweep": "modal",
+  "verdict": "false_positive",
+  "grounds": "The span's sole obligation is 'the assistant should minimize side effects ... and ensure each action is proportionate', which the establishes reproduces with 'should'; the span's weak modal ('might not have intended') sits inside a descriptive definition of bad surprises, not a rule."
+ },
+ {
+  "id": "L527-796_n014",
+  "sweep": "modal",
+  "verdict": "repair",
+  "grounds": "The span prohibits censoring 'in a way that, if repeated at scale, may shut out some viewpoints'; the establishes hardens the condition to 'would shut out viewpoints' and drops the 'if repeated at scale' qualifier, narrowing the rule's scope.",
+  "proposed_establishes": "Meta commentary: OpenAI's belief that intellectual freedom, including the freedom to have, hear, and discuss ideas, is foundational to a self-governing and well-informed society, and the assistant should not avoid or censor topics in a way that, if repeated at scale, may shut out some viewpoints from public life."
+ },
+ {
+  "id": "L527-796_n027",
+  "sweep": "modal",
+  "verdict": "repair",
+  "grounds": "The span's only 'should' attaches to the assistant ('the assistant should behave differently when using a terminal tool that accesses the user's personal computer compared to a disposable sandbox'), while the developer guidance is a recommendation; the establishes reassigns 'should' to the developers and demotes the assistant's obligation to a mere 'accounting for differences'.",
+  "proposed_establishes": "Meta commentary: OpenAI recommends that developers give the assistant enough information about each tool to assess trustworthiness, user awareness of tool outputs, and potential side effects; the assistant should behave differently when using a tool that accesses the user's personal computer compared to a disposable sandbox environment."
+ },
+ {
+  "id": "L810-919_n006",
+  "sweep": "modal",
+  "verdict": "repair",
+  "grounds": "The span pairs a permission ('may discuss') with a distinct obligation ('the assistant should maintain a factual tone'); the establishes folds the obligation into a descriptive participle ('maintaining a factual tone'), erasing the 'should' tier.",
+  "proposed_establishes": "The assistant may discuss sexual content involving minors in non-graphic educational or sex-ed contexts, including non-graphic depictions within personal harm anecdotes (e.g., references to rape or abuse); in these contexts, the assistant should maintain a factual tone."
+ },
+ {
+  "id": "L1369-1413_n007",
+  "sweep": "modal",
+  "verdict": "repair",
+  "grounds": "The span says 'the assistant should assume that the user has the rights and permissions to provide the content'; the establishes converts this obligation into a passive background fact ('Users are assumed to have rights and permissions'), dropping the 'should' tier while keeping the weak 'may apply' tier.",
+  "proposed_establishes": "The motivation for the transformation exception is risk minimization based on the principle that if a user already has access to content, the incremental harm from transforming it is minimal. Many legitimate applications exist for transformations and classifications of sensitive content. The assistant should assume that the user has the rights and permissions to provide the content, per the service Terms of Use. System-level mitigations beyond the model scope may apply for misuse prevention."
+ },
+ {
+  "id": "L1611-1798_n004",
+  "sweep": "modal",
+  "verdict": "repair",
+  "grounds": "The span is a worked example (GOOD/BAD comparison) containing no modal at all; the establishes injects 'the assistant must refuse', asserting a strong obligation the example node does not own -- the example demonstrates the behavior, it does not state the rule.",
+  "proposed_establishes": "A worked example demonstrating the core prohibition against encouraging self-harm: when asked for methods of suicide, the good response refuses and instead offers supportive messaging, reassurance about not being alone, and crisis resources with specific US-based options (988 helpline, text support), while the bad response provides the methods."
+ },
+ {
+  "id": "L1799-1974_n016",
+  "sweep": "modal",
+  "verdict": "repair",
+  "grounds": "The span's strong modal sentence -- 'This does not mean that all such messages or policies must be confidential' -- is a load-bearing limitation on the confidentiality point, and the establishes omits it entirely, weakening the span by presenting only the pro-confidentiality half.",
+  "proposed_establishes": "The assistant's ability to keep some parts of system, developer messages, or internal policies confidential can be useful in some settings, particularly when detailed policies prohibiting revelation of information hazards themselves contain those hazards; this does not mean that all such messages or policies must be confidential -- OpenAI publicly shares substantial information about its policies, including the Model Spec, and encourages developers to do the same."
+ },
+ {
+  "id": "L1975-2125_n013",
+  "sweep": "modal",
+  "verdict": "false_positive",
+  "grounds": "The strong and weak modals the sweep counted occur inside the quoted example dialogue (including 'never' in the BAD assistant reply), not in normative spec text; the establishes correctly describes the example's demonstrated boundary without asserting a misgraded obligation."
+ },
+ {
+  "id": "L2126-2303_n001",
+  "sweep": "modal",
+  "verdict": "false_positive",
+  "grounds": "The establishes preserves the span's 'must never attempt to steer ... either directly or indirectly' verbatim in strength; the span's weak 'could include' introduces an illustrative list of steering forms, not a separate obligation tier, so rendering the list as parentheticals is faithful paraphrase."
+ },
+ {
+  "id": "L2576-2653_n003",
+  "sweep": "modal",
+  "verdict": "repair",
+  "grounds": "The span says factual aspects 'should not differ' based on phrasing and the assistant 'can articulate' its interpretation and aim for a thoughtful rationale; the establishes strengthens these to 'must be consistent' and 'require transparent reasoning', introducing a strong tier the span never uses.",
+  "proposed_establishes": "The distinction between objective and subjective questions calls for different honesty practices: for objective questions, the factual aspects of the response should not differ based on how the question is phrased or the user's stated stance; for subjective questions, the assistant can articulate its interpretation and assumptions and aim to provide a thoughtful, transparent rationale."
+ },
+ {
+  "id": "L2654-2820_n005",
+  "sweep": "modal",
+  "verdict": "repair",
+  "grounds": "The span says the assistant 'should clearly outline' the information, recipient, and trustworthiness context; the establishes strengthens this to 'must clearly outline'.",
+  "proposed_establishes": "When requesting confirmation for a potentially sensitive or irreversible action, the assistant should clearly outline what information will be sent, who will receive it, and whether the recipient appears trustworthy or the request seems unusual. This context helps the user provide informed consent."
+ },
+ {
+  "id": "L2821-3040_n011",
+  "sweep": "modal",
+  "verdict": "false_positive",
+  "grounds": "The modals the sweep counted are inside the example's quoted user instruction ('each line should be exactly 9 or 13 syllables') and assistant dialogue ('you may want to double check'); the establishes describes the demonstrated good/bad behavior without upgrading or downgrading any spec obligation."
+ },
+ {
+  "id": "L3239-3383_n006",
+  "sweep": "modal",
+  "verdict": "false_positive",
+  "grounds": "The establishes states one claim -- the programmatic-output rule -- and renders the span's 'should just follow transformation instructions without comment' faithfully as 'should follow ... without adding commentary'; the span's other tiers ('should not change', 'may want to alert') belong to sibling claims and are not misgraded here."
+ },
+ {
+  "id": "L3384-3501_n005",
+  "sweep": "modal",
+  "verdict": "false_positive",
+  "grounds": "The span's obligation 'the assistant should assume its output will be used programmatically' is carried as 'should recognize this signals programmatic consumption', same tier; the flip description ('the desired behavior is flipped') matches the span's non-modal descriptive sentence, so no tier was flattened."
+ },
+ {
+  "id": "L4572-4691_n014",
+  "sweep": "modal",
+  "verdict": "repair",
+  "grounds": "The span uses 'should' throughout ('should not encourage or enable', 'should continue to uphold this boundary ... and take extra care'); the establishes strengthens the second obligation to 'must take extra care'.",
+  "proposed_establishes": "For U18 users, the assistant should not encourage or enable unhealthy eating behaviors and should take extra care to not enable appearance critiques, image comparisons, gendered appearance ideals, or restrictive eating advice, even when such content may be acceptable for adults (e.g., intermittent fasting)."
+ },
+ {
+  "id": "L292-526_n020",
+  "sweep": "heading",
+  "verdict": "false_positive",
+  "grounds": "The establishes asserts only section metadata -- title, root authority (verbatim from the heading's 'authority=root'), and scope ('binding rules about how the assistant should behave when given autonomy') -- without stating any specific rule as an obligation; the 'should' sits inside the scope description, not a smuggled rule."
+ },
+ {
+  "id": "L1108-1368_n021",
+  "sweep": "heading",
+  "verdict": "repair",
+  "grounds": "The heading-only span supports a section-metadata claim, but the establishes phrases it as a property of 'the abuse rule' rather than of the section, and omits the section's title -- it never frames itself as metadata about a titled section.",
+  "proposed_establishes": "The section titled 'Don't engage in abuse' (#avoid_abuse) carries user-level authority designation."
+ }
+]

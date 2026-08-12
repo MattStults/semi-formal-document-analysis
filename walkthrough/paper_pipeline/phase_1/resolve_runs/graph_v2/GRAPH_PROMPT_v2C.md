@@ -1,0 +1,232 @@
+# Build a graph of what this document establishes
+
+You are given a specification document twice: the **raw file** (ground truth) and a copy with
+every line numbered `L0186  ...` (for addressing only — the numbers are not part of the text).
+
+Break the document into a **graph of nodes**. A node is a piece of the document that
+establishes ONE thing.
+
+## What the nodes are FOR — this decides their size
+
+Each node will be handed, alone, to a translator that turns it into a small logic module
+(a handful of formal rules), and that module is then checked sentence-by-sentence against the
+text the node cites. So a node must be exactly one checkable claim:
+
+- **one rule** (an obligation, prohibition, or permission that a situation can satisfy or violate),
+- **one definition** (what a term means),
+- **one ordering or grouping** (a ranking, a hierarchy, a set of categories),
+- **one scope statement** (when a set of rules does or does not apply), or
+- **one plain fact**.
+
+**The split test:** if the `establishes` prose joins two claims that could be independently
+true or false of a situation — "be honest and don't have an agenda" — that is two nodes.
+A quick self-check: an `establishes` holding an "and" between obligations, a semicolon
+chain, or a numbered enumeration of duties almost always fails the split test. Splitting
+never conflicts with any other rule in this document: coverage, accounting, and simplicity
+are all satisfiable at claim granularity, and merging claims to make the bookkeeping easier
+is the one trade you must not make — coarse nodes are the failure the bookkeeping exists to
+catch.
+
+**The merge test:** a list or table that assigns the same attribute across several items
+("the vault requires Curator; the reading room requires Visitor") is ONE node — one mapping —
+not one node per row. Split a row out only when some other node relies on that row by itself.
+
+A node is never a summary. "This section covers how conflicts are resolved" is not an
+`establishes`. If you cannot restate your `establishes` as a single claim a checker could
+verify against a situation, split it.
+
+## Node format
+
+```json
+{ "id": "n017",
+  "establishes": "prose: the one thing this part of the document settles, stated fully enough to check against the text",
+  "needs":    [ {"name": "clearance_order", "prose": "which of two clearance levels is the higher one"} ],
+  "provides": [ {"name": "clearance_order", "prose": "which of two clearance levels is the higher one"} ],
+  "spans":    [ {"lines": [183, 191]},
+                {"lines": [45, 45], "quote": "never leave the vault unlocked"} ] }
+```
+
+- `needs` — what this node relies on but does not itself settle.
+- `provides` — what this node settles that other parts of the document rely on. If nothing
+  else relies on it, `provides` is empty; the node still exists.
+- `spans` — where in the document this node lives. A span is a line range in the RAW file.
+  Add `quote` (verbatim text from within those lines) only to narrow a span to part of a line.
+  Every line number must exist; every quote must appear verbatim on the cited lines. Both are
+  checked mechanically.
+
+## Names: you are the naming authority
+
+Because you see the whole document at once, you ASSIGN each concept its canonical name —
+lower_snake_case — and reuse that exact string everywhere the concept appears, in `needs` and
+`provides` alike. Later stages link modules by these names, so:
+
+- one concept, one name, spelled identically at every use;
+- the `prose` is the authoritative meaning — write it so it can be checked against the
+  document; the name is just the handle;
+- a `needs` entry whose name matches no `provides` anywhere is a real and useful answer when
+  the document genuinely never settles it. Keep it, with honest prose. Never invent a node to
+  cover something the document does not establish.
+
+## Structure rules
+
+1. **Spans may overlap, nest, and skip.** A node may cover lines another node also covers; a
+   node may sit entirely inside another. Section headings do not constrain nodes.
+2. **One thing established in two places is ONE node with two spans.** Documents restate:
+   a ranking described in prose in one chapter and printed as a numbered list in another is
+   a single node whose `spans` list both places — not two nodes, and never one node with the
+   restatement ignored.
+3. **Formatting can be the content.** If a list is printed in priority order, the ordering is
+   established by the ARRANGEMENT — no single item states it. That ordering is its own node
+   spanning the whole list. Items may additionally be their own nodes, nested inside, when
+   something relies on them individually.
+4. **Headings and their metadata are content when they change what the rules mean.** A
+   heading tag like `{#some_section authority=charter}` establishes a property of every rule
+   under that heading — that is a node (spanning the heading line), and rules that depend on
+   that property need what it provides. A heading that only titles a topic establishes
+   nothing and goes in `uncovered`.
+5. **Coverage is an accounting identity: every non-blank line of the document ends up either
+   inside some node's spans or inside an `uncovered` range.** Text that only motivates,
+   illustrates, or demonstrates (commentary, sample conversations, worked examples) belongs
+   in `uncovered` — ranges may be large, one per block, each with a short reason. If neither
+   list holds a line, you have silently dropped it; that is the one failure that cannot be
+   repaired later, because nobody downstream knows to look.
+6. **Do not multiply nodes beyond what the text asserts.** One assertion, one node. When in
+   doubt between two mergeable nodes and one, prefer one — unless the split test above forces
+   two.
+7. **A `needs` entry is owed wherever your `establishes` uses a concept some other node
+   provides.** If your prose says "higher-level instruction" and a node provides the
+   authority ordering, that is a needs entry with that provider's exact name. After drafting,
+   sweep each node's `establishes` against your canonical-name list and add the needs you
+   missed — a rule node with an empty `needs` whose text uses defined terms is usually wrong.
+8. **In this document one line often holds a whole paragraph, and a paragraph often holds
+   several claims.** Expect many nodes to cite the same line, each narrowed by its own
+   `quote`. A node whose `establishes` conjoins several independently-checkable obligations
+   because they share a line has failed the split test.
+
+## Worked example — a toy document and its full graph
+
+The document (numbered copy shown; the raw file is the same without the `L` column):
+
+```
+L01  # Greenfield Archive — Access Rules
+L02
+L03  Staff must log every retrieval, and must never leave the vault unlocked.
+L04
+L05  ## Clearance {precedence=charter}
+L06
+L07  The following clearance levels are listed from highest to lowest.
+L08  A room may be entered only by holders of a clearance at or above the room's required level.
+L09
+L10  1. **Curator**
+L11  2. **Fellow**
+L12  3. **Visitor**
+L13
+L14  The vault requires Curator clearance. The reading room requires Visitor clearance.
+L15
+L16  Where a charter rule conflicts with a house rule, the charter rule prevails. House rules are posted at the front desk.
+L17
+L18  The archive was founded in 1911.
+```
+
+Its graph:
+
+```json
+{ "nodes": [
+  { "id": "n001",
+    "establishes": "Staff must log every retrieval.",
+    "needs": [], "provides": [],
+    "spans": [ {"lines": [3, 3], "quote": "Staff must log every retrieval"} ] },
+
+  { "id": "n002",
+    "establishes": "Staff must never leave the vault unlocked.",
+    "needs": [], "provides": [],
+    "spans": [ {"lines": [3, 3], "quote": "must never leave the vault unlocked"} ] },
+
+  { "id": "n003",
+    "establishes": "There are three clearance levels — Curator, Fellow, Visitor — ranked Curator highest, then Fellow, then Visitor. The ranking is carried by the printed order of the list, highest first.",
+    "needs": [],
+    "provides": [ {"name": "clearance_order", "prose": "which of two clearance levels is the higher one"},
+                  {"name": "clearance_levels", "prose": "the set of recognized clearance levels"} ],
+    "spans": [ {"lines": [7, 7]}, {"lines": [10, 12]} ] },
+
+  { "id": "n004",
+    "establishes": "Curator is a clearance level (the highest).",
+    "needs": [],
+    "provides": [ {"name": "curator_level", "prose": "the Curator clearance level"} ],
+    "spans": [ {"lines": [10, 10]} ] },
+
+  { "id": "n005",
+    "establishes": "Visitor is a clearance level (the lowest).",
+    "needs": [],
+    "provides": [ {"name": "visitor_level", "prose": "the Visitor clearance level"} ],
+    "spans": [ {"lines": [12, 12]} ] },
+
+  { "id": "n006",
+    "establishes": "A room may be entered only by holders of a clearance at or above the room's required level.",
+    "needs": [ {"name": "clearance_order", "prose": "which of two clearance levels is the higher one"},
+               {"name": "room_required_level", "prose": "the clearance level each room requires"} ],
+    "provides": [],
+    "spans": [ {"lines": [8, 8]} ] },
+
+  { "id": "n007",
+    "establishes": "Each room's required clearance: the vault requires Curator; the reading room requires Visitor.",
+    "needs": [ {"name": "curator_level", "prose": "the Curator clearance level"},
+               {"name": "visitor_level", "prose": "the Visitor clearance level"} ],
+    "provides": [ {"name": "room_required_level", "prose": "the clearance level each room requires"} ],
+    "spans": [ {"lines": [14, 14]} ] },
+
+  { "id": "n008",
+    "establishes": "When a charter rule conflicts with a house rule, the charter rule prevails.",
+    "needs": [ {"name": "charter_rules", "prose": "which rules are charter rules"},
+               {"name": "house_rules", "prose": "which rules are house rules — the document points outside itself (they are posted at the front desk) and never lists them"} ],
+    "provides": [],
+    "spans": [ {"lines": [16, 16], "quote": "Where a charter rule conflicts with a house rule, the charter rule prevails"} ] },
+
+  { "id": "n011",
+    "establishes": "House rules are posted at the front desk (outside this document).",
+    "needs": [], "provides": [],
+    "spans": [ {"lines": [16, 16], "quote": "House rules are posted at the front desk"} ] },
+
+  { "id": "n010",
+    "establishes": "Every rule in the Clearance section is a charter rule — the heading's tag (precedence=charter) assigns this to everything under it.",
+    "needs": [],
+    "provides": [ {"name": "charter_rules", "prose": "which rules are charter rules"} ],
+    "spans": [ {"lines": [5, 5]} ] },
+
+  { "id": "n009",
+    "establishes": "The archive was founded in 1911.",
+    "needs": [], "provides": [],
+    "spans": [ {"lines": [18, 18]} ] }
+],
+"uncovered": [ {"lines": [1, 1], "reason": "title"} ] }
+```
+
+Why this graph is right — each point is a rule from above in action:
+
+- **L03 is one line, two nodes** (n001, n002): two obligations a situation can violate
+  independently. Their spans overlap on the line; the quotes separate them.
+- **The ordering is its own node** (n003) spanning the list AND the sentence announcing the
+  order — a multi-span node. No single list item states the ranking; the arrangement does.
+- **n004 and n005 nest inside n003's span.** They exist because n007 relies on Curator and
+  Visitor individually. There is no Fellow node: nothing relies on Fellow by itself, so it
+  lives only inside the ordering. This is rule 4 and the merge test working together.
+- **n007 is ONE node for a two-row mapping** — the merge test. It does not split because
+  nothing relies on "the vault requires Curator" separately from the mapping.
+- **n010 is a heading-metadata node.** The heading's tag `{precedence=charter}` is the only
+  place the document says its Clearance rules are charter rules — formatting carrying
+  content. n008 consumes it (`charter_rules`). The `## Clearance` heading is therefore NOT in
+  `uncovered`; the title on L01, which establishes nothing, is.
+- **n008 carries a dangling need** (`house_rules`): the document points outside itself and
+  never lists the house rules. The need is kept, honestly described, and no node is invented.
+- **L16 is one line, two nodes, separated by quotes** (n008, n011). Note n011 does NOT
+  provide `house_rules`: saying where the house rules live is not settling which rules they
+  are. Proximity to a concept is not provision of it — n008's need stays dangling.
+- **n009 is isolated** — no needs, no provides. Plain facts are allowed to be alone.
+- **`clearance_order` is one name, spelled identically everywhere** across n003 and n006 —
+  that is the naming-authority rule.
+
+## What you return
+
+```json
+{ "nodes": [...], "uncovered": [...] }
+```

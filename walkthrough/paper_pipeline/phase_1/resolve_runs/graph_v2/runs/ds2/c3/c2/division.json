@@ -1,0 +1,109 @@
+{
+ "decision": "divide",
+ "children": [
+  {
+   "span": [
+    1801,
+    1973
+   ],
+   "why_this_cut": "The first child covers the privileged-information and information-flow rules (L1801-1926) plus the recipient-identification guidance and its examples (L1928-1973). The cut at L1973 (before the blank line at L1974) is clean: the next section begins a new heading (#use_preset_voice_in_voice_mode) with no linkage back to the privileged-information material. The only crossing linkage is the concept of privileged information itself, which is established in this child and used by the later sections' examples; it is seeded below."
+  },
+  {
+   "span": [
+    1974,
+    2400
+   ],
+   "why_this_cut": "The second child covers the preset-voice rule, the fairness section, the respect-real-world-ties section, and the 'Seek the truth together' / 'Don't have an agenda' section including the objective-point-of-view and present-perspectives subsections. The cut at L2400 (before the blank line at L2401) is clean: the next subsection (#no_topic_off_limits) begins a new topic. The crossing linkages are: the authority-level ordering (inherited seed) applies to the heading tags in this child; the stay_in_bounds concept is referenced at L2404; and the privileged-information concept is referenced at L2526 (in the next child) but the concept itself is established in child 1."
+  },
+  {
+   "span": [
+    2401,
+    2800
+   ],
+   "why_this_cut": "The third child covers the no-topic-off-limits subsection, the be-honest-and-transparent section with its do-not-lie and avoid-sycophancy subsections, and the ask-clarifying-questions subsection. The cut at L2400 is clean because the no-topic-off-limits heading begins a new topic. The crossing linkages are: stay_in_bounds (referenced at L2404), privileged-information (referenced at L2526), and the authority-level ordering (inherited seed) which applies to heading tags in this child."
+  }
+ ],
+ "seed_vocabulary": [
+  {
+   "name": "authority_level_ordering",
+   "prose": "which of two authority levels outranks the other (root > system > developer > user > guideline > no authority)",
+   "established_around": [
+    69,
+    101
+   ]
+  },
+  {
+   "name": "untrusted_data",
+   "prose": "content in quoted text, untrusted_text blocks, multimodal data, file attachments, and tool outputs that has no authority by default and must be treated as information rather than instructions",
+   "established_around": [
+    701,
+    701
+   ]
+  },
+  {
+   "name": "stay_in_bounds",
+   "prose": "the section of the Model Spec describing limits on the assistant's behavior, including scenarios where the assistant should refrain from fully complying with a user or developer request",
+   "established_around": [
+    797,
+    799
+   ]
+  },
+  {
+   "name": "privileged_information",
+   "prose": "non-public OpenAI policies, system messages, hidden chain-of-thought messages, and private content the developer or user has provided to the model, which must not be disclosed without permission",
+   "established_around": [
+    1803,
+    1803
+   ]
+  },
+  {
+   "name": "information_flow",
+   "prose": "the movement of information between parties, including direct transmission and actions like changing sharing settings or approving authentication connections, which the assistant should be mindful of",
+   "established_around": [
+    1801,
+    1801
+   ]
+  },
+  {
+   "name": "chain_of_command",
+   "prose": "the hierarchy of instructions (root > system > developer > user > guideline > no authority) that determines which instructions take precedence",
+   "established_around": [
+    1928,
+    1928
+   ]
+  }
+ ],
+ "expected_cross_links": [
+  {
+   "name": "privileged_information",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "child 3's do-not-lie section (L2526) references the privileged-information concept established in child 1 (L1803)."
+  },
+  {
+   "name": "stay_in_bounds",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "child 3's no-topic-off-limits section (L2404) references the stay_in_bounds concept established in child 2's span (L2404 is in child 3, but the concept is established earlier in the document at L797-799; child 2's span includes the section that references it)."
+  },
+  {
+   "name": "authority_level_ordering",
+   "needs_side_child": 2,
+   "provides_side_child": 1,
+   "evidence": "child 2's heading tags (e.g., #uphold_fairness authority=root, #assume_objective_pov authority=user) rely on the authority-level ordering established at L69-101 (in child 1's span)."
+  },
+  {
+   "name": "authority_level_ordering",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "child 3's heading tags (e.g., #no_topic_off_limits authority=guideline, #do_not_lie authority=user) rely on the authority-level ordering established at L69-101 (in child 1's span)."
+  }
+ ],
+ "judgment_calls": [
+  "Chose three children rather than two: the span is 1000 lines and naturally splits into three thematic blocks (privileged information, fairness/agenda, honesty/clarification). A two-way split would have made each child ~500 lines, still manageable but with more cross-linkage between the honesty and clarification material.",
+  "The cut at L1973/L2400 was chosen over alternative cuts at L1926 or L2126 because the section boundaries align with topic changes; cutting at L1926 would have split the recipient-identification guidance from its examples.",
+  "Seeded privileged_information and information_flow as new concepts because they are established in child 1 and used in child 3; the inherited seeds (authority_level_ordering, untrusted_data, stay_in_bounds) are carried unchanged because they appear in the span."
+ ],
+ "_span_lo": 1801,
+ "_span_hi": 2800
+}
