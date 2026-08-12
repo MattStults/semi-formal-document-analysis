@@ -52,7 +52,10 @@ def census(run_dir):
     for f in sorted(glob.glob(os.path.join(run_dir, "failed", "*.json"))):
         d = json.load(open(f))
         errs = d.get("errors") or []
-        m = re.search(r"_([DLU])_((?:c\d+_?)*)r(\d+)", os.path.basename(f))
+        # root dispatches name as _L__r0 (empty key -> double underscore);
+        # serial-path Driver._bury files carry only a millisecond stamp and
+        # legitimately classify as phase "?" (review finding 6)
+        m = re.search(r"_([DLU])_((?:c\d+_?)*)_?r(\d+)", os.path.basename(f))
         rows.append({
             "file": os.path.basename(f),
             "phase": m.group(1) if m else "?",

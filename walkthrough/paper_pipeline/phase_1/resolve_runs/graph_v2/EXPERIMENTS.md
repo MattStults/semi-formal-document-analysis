@@ -1405,3 +1405,23 @@ merged gloss 132 names, no errors. Steps-4 live seats not run this pass.
 work (Matt's order), then launch with enum_decisions + rename_seat +
 promise check + dense-recursion in driver_config. Budget $10.00, ~$6.20
 spent.
+
+## 2026-08-12: pre-ds6 adversarial review -- 6 findings, all validated and closed
+
+Suites at review: 117 graph_v2 + 800 phase_1, all green. Dispositions:
+1. (HIGH, FIXED+PINNED) dense-morph now honors a cached division.json on
+   resume -- redrawing re-paid a call and could silently re-span children
+   (test_dense_morph_honors_cached_division_on_resume).
+2. (MED, FIXED) rename-seat calls get 3 bounded attempts then fail-closed
+   different_concept -- one 429 no longer aborts the paid finale.
+3. (MED, RECORD CORRECTED) the clause-identity slip is a THREE-instance
+   class (n026, n011-225812, n014-235142), not one; verdicts amended;
+   lever (enum-force clause_id) tracked for the next paid TRANSLATION run.
+4. (LOW-MED, PROBED LIVE) together ACCEPTS the full-scale enum unwind
+   schema (817-id enums, 50KB, no json_object downgrade, $0.000).
+5. (LOW, FIXED) seat wiring restores client.reply_schema after the loop.
+6. (LOW, FIXED) census regex now parses root-dispatch bury names.
+Reviewer-confirmed CLEAN: BUG-1 fix, 402 ladder parity, morph state
+carry, dense-leaf guard, DEPTH_MAX, broken_promises shapes, enum edge
+cases, serial fallback artifacts, graveyard verdict spot-checks.
+ds6 preconditions ALL MET; launching on this commit.

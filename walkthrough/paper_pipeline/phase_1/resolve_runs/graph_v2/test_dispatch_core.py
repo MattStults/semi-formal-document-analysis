@@ -1200,3 +1200,31 @@ def test_feed_recovered_invalid_reply_requeues_for_repair(tmp_path,
     assert st.status == DC.PENDING and st.repair_round == 1
     assert sched.requeued == [st]
     assert sched.completed == []
+
+
+def test_dense_morph_honors_cached_division_on_resume(tmp_path):
+    """Pre-ds6 review finding 1: a resumed run whose dense subtree already
+    divided must use the stored division.json -- redrawing it re-pays a
+    call and can silently re-span children whose cached graphs belong to
+    the OLD division. With the cache present, the flow is dense-draw + two
+    leaves + unwind (4 calls) and division.json is byte-untouched."""
+    toy = os.path.join(HERE, "toy_doc.md")
+    lines = R.load_doc(toy)
+    replies = _replies()                       # stored D, L, L, U
+    division = replies[0]
+    dense = {"nodes": [
+        {"id": f"L1-9_n{i:03d}",
+         "establishes": f"distinct claim number {i} about an obligation",
+         "needs": [], "provides": [], "spans": [{"lines": [1, 1]}]}
+        for i in range(20)], "uncovered": []}
+    out = tmp_path / "run"
+    out.mkdir()
+    R.write_json(str(out / "division.json"), division)   # the resume state
+    before = open(out / "division.json", "rb").read()
+    cfg = {"leaf_max_lines": 100, "model": {"max_tokens": 4}}
+    drv = R.Driver(cfg, R.MockClient([dense] + replies[1:]), lines,
+                   str(out))
+    g = DC.run_build(drv, 1, len(lines), [], str(out), "serial")
+    assert len(g["nodes"]) == 10
+    assert drv.client.calls == 4, "the cached division must not be redrawn"
+    assert open(out / "division.json", "rb").read() == before

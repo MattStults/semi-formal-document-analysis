@@ -137,8 +137,15 @@ class DispatchState:
                 # for the same span -- the normal recursion absorbs a dense
                 # leaf (and a post-resample malfunction: dividing shrinks
                 # the span that triggered it). Rejected by name: the D6
-                # stages 2-3 mechanical boundary bisect.
-                self._morph(self.on_dense())
+                # stages 2-3 mechanical boundary bisect. A None replacement
+                # means the cached division was routed instead (review
+                # finding 1): retire this state quietly as DONE-no-op.
+                repl = self.on_dense()
+                if repl is None:
+                    self.on_success = lambda _g: None
+                    self.result, self.status = None, DONE
+                    return
+                self._morph(repl)
                 return
             return self._fail(
                 "oversize first draw (dense span, or malfunction resample "
@@ -404,9 +411,19 @@ class Scheduler:
 
         def dense():
             # Matt's ruling 2026-08-12: the dense leaf re-enters the normal
-            # division path (Driver.build's fallback, core-side)
+            # division path (Driver.build's fallback, core-side).
+            # ⛔ CACHE FIRST (pre-ds6 review finding 1): a resumed run whose
+            # dense subtree already divided must honor the stored
+            # division.json -- redrawing it re-pays a call and can silently
+            # re-span children whose graph.json artifacts belong to the OLD
+            # division. None tells feed() to retire this state quietly; the
+            # cached division routes through _division_done as always.
             task["dense"] = True
             print(f"    (dense leaf {lo}-{hi}: recursing via Phase D)")
+            dart = os.path.join(task["wdir"], "division.json")
+            if os.path.exists(dart):
+                self._division_done(task, json.load(open(dart)))
+                return None
             return self._division_state(task)
         st.on_dense = dense
         self.ready.append(st)

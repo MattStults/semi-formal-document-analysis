@@ -79,9 +79,25 @@ def judge(complete, prompt, schema_slot=None):
     a valid verdict object is DIFFERENT_CONCEPT (fail-closed), recorded
     with the parse problem as grounds."""
     import json
+    import time
     if schema_slot is not None:
         schema_slot(SCHEMA)
-    env = complete(BRIEF, prompt)
+    # bounded transient tolerance (pre-ds6 review finding 2): the seat runs
+    # LAST in a paid build -- one 429/timeout crashing run_resolution_pass
+    # would lose the whole paid finale. Two short retries, then fail-closed
+    # to different_concept: a rename lost to an outage is an honest
+    # dangling; an aborted finale is re-paid work.
+    env = None
+    for attempt in range(3):
+        try:
+            env = complete(BRIEF, prompt)
+            break
+        except Exception as exc:                # noqa: BLE001
+            if attempt == 2:
+                return {"verdict": "different_concept",
+                        "grounds": f"(fail-closed: seat transport error "
+                                   f"after 3 attempts: {exc!r:.120})"}
+            time.sleep(5 * (attempt + 1))
     text = env.get("text", "") if isinstance(env, dict) else str(env)
     try:
         o = json.loads(text)

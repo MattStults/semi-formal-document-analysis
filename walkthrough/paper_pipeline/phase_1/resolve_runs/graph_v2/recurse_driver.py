@@ -1668,6 +1668,10 @@ def run_resolution_pass(drv, g, out_dir):
             (kept if v["verdict"] == "same_concept"
              else still_gated).append(r)
         gated = still_gated
+        # restore the client's grammar slots (review finding 5): the seat
+        # schema must not leak into any later direct client call
+        if hasattr(drv.client, "reply_schema"):
+            drv.client.reply_schema = None
     dec["resolutions"] = kept
     if gated:
         g.setdefault("driver_autofixes", []).append(
