@@ -1556,3 +1556,21 @@ TRANCHE 2 (designed, NOT yet implemented -- next work items):
    drift verdicts, provider fanout -- emit ranked risk_queue.json for
    bounded frontier review.
 Then: clean-context adversarial review of the whole tranche -> ds7.
+
+## 2026-08-13: tranche 2 landed + LIVE SPOT CHECKS (Matt's precondition)
+
+Implemented (122 tests green, commit 856aa65): adjudicate_resolutions as
+THE rename choke-point at all three sites (both unwinds + final pass);
+greedy_rename_descend (embedding top-5, seat per candidate, first-accept,
+near-misses recorded, clean skip on embedding failure); risk_queue.py
+(ds6 smoke: 437 items, dominated by the known 381 low-sim edges).
+
+Live spot checks, $0.004 total:
+1. Fresh leaf on L1798-1898 (the section ds6 coined at): ZERO coinages,
+   canonical root_authority, first draw -- enforcement + prompt hold live.
+2. Greedy descend on a 4-dangling ds5 slice: rejected every bait
+   candidate with correct grounds, accepted chain_of_command ->
+   authority_level_ordering (facet-policy-consistent; lands in the risk
+   queue as seat_accepted_rename), near-misses recorded.
+
+Next: full-pipeline clean-context adversarial review -> iterate -> ds7.
