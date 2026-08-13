@@ -392,16 +392,23 @@ def autofix_authority_coinages(g, lines):
     document names the level; code only reads it. Unmappable coinages are
     left for validate_leaf to reject (repair loop). Prose is kept."""
     for n in g.get("nodes", []):
-        levels = set()
-        for s in n.get("spans", []):
-            a, b = (s.get("lines") or [0, 0])[:2]
-            for ln in lines[max(a - 1, 0):b]:
-                m = _AUTH_LABEL.search(ln)
-                if m:
-                    levels.add(m.group(1))
-        if len(levels) != 1:
-            continue                     # ambiguous or absent: validator's
-        canon = f"{levels.pop()}_authority"      # problem, not autofix's
+        # the node's SECTION label = the nearest authority= label at or
+        # ABOVE its first span line (pre-ds7 review finding 3: an in-span
+        # scan canonicalized to the NEXT section's label when a span ran
+        # over an adjacent heading; sectioning truth reads upward)
+        spans = n.get("spans", [])
+        if not spans:
+            continue
+        start = min((s.get("lines") or [10**9])[0] for s in spans)
+        level = None
+        for ln in range(min(start, len(lines)), 0, -1):
+            m = _AUTH_LABEL.search(lines[ln - 1])
+            if m:
+                level = m.group(1)
+                break
+        if level is None:
+            continue                     # no label above: validator's
+        canon = f"{level}_authority"     # problem, not autofix's
         for key in ("needs", "provides"):
             for d in n.get(key, []):
                 name = d.get("name") if isinstance(d, dict) else None
@@ -1621,6 +1628,15 @@ def main():
     drv = Driver(cfg, client, lines, args.out)
     t0 = time.time()
     mode = args.exec_mode or cfg.get("execution", {}).get("mode", "serial")
+    if mode == "concurrent" and cfg.get("rename_seat"):
+        # pre-ds7 review finding 4: the seat's schema_slot writes the
+        # one-slot client grammar OUTSIDE _body_lock -- a worker's leaf
+        # body can ship with the verdict grammar. Refuse loudly until the
+        # slot is thread-safe; batch and serial are unaffected.
+        raise T.Phase1Error(
+            "rename_seat + concurrent executor is a known schema-slot "
+            "race (pre-ds7 review finding 4): use --exec-mode batch or "
+            "serial, or disable rename_seat")
     if mode != "serial":
         # shared execution core (dispatch_core.py): same dispatches, same
         # artifacts, scheduled through the ready-queue design instead of
@@ -1694,13 +1710,16 @@ def _embed_texts(texts, api_key):
                                              delete=False) as tf:
                 tf.write(body)
                 name = tf.name
-            p = subprocess.run(
-                ["curl", "-sS", "https://api.together.xyz/v1/embeddings",
-                 "-H", "Authorization: Bearer " + api_key,
-                 "-H", "Content-Type: application/json",
-                 "--data-binary", "@" + name],
-                capture_output=True, text=True, timeout=180)
-            os.unlink(name)
+            try:
+                p = subprocess.run(
+                    ["curl", "-sS",
+                     "https://api.together.xyz/v1/embeddings",
+                     "-H", "Authorization: Bearer " + api_key,
+                     "-H", "Content-Type: application/json",
+                     "--data-binary", "@" + name],
+                    capture_output=True, text=True, timeout=180)
+            finally:
+                os.unlink(name)          # review finding 6: no temp leak
             r = json.loads(p.stdout)
             out += [d["embedding"] for d in r["data"]]
         return out
@@ -1730,8 +1749,19 @@ def greedy_rename_descend(drv, g, record):
             if isinstance(p, dict):
                 prov_prose.setdefault(p["name"], p.get("prose", ""))
                 prov_node.setdefault(p["name"], n)
-    dangling = [(n, d) for n in nodes for d in n.get("needs", [])
-                if isinstance(d, dict) and nm(d) not in provides]
+    dangling, _seen_pairs = [], set()
+    for n in nodes:
+        for d in n.get("needs", []):
+            # DEDUPE on (needer, name) -- pre-ds7 review finding 2
+            # (repro'd): a node with two same-named dangling needs would
+            # yield two accepted entries, the second of which errors
+            # "matched no needs entry" and kills the finished build.
+            # apply_decisions renames every matching entry at once, so
+            # one resolution per pair is both sufficient and safe.
+            if (isinstance(d, dict) and nm(d) not in provides
+                    and (n["id"], nm(d)) not in _seen_pairs):
+                _seen_pairs.add((n["id"], nm(d)))
+                dangling.append((n, d))
     if not dangling:
         return
     cands = sorted(prov_prose)
@@ -1756,15 +1786,27 @@ def greedy_rename_descend(drv, g, record):
     cvecs, qvecs = vecs[:len(cands)], vecs[len(cands):]
     accepted = []
     seen_verdicts = {}
+    # hard call cap (finding 1): the pre-registered call band is now a
+    # MECHANISM -- past the cap, remaining danglings stay honest with
+    # their ranked candidates recorded, and the run says so
+    budget_calls = int(drv.cfg.get("descend_max_calls", 600))
+    calls_made = 0
     for (n, d), qv in zip(dangling, qvecs):
         ranked = sorted(((cos(qv, cv), c) for cv, c in zip(cvecs, cands)),
                         reverse=True)[:5]
         hit = None
+        if calls_made >= budget_calls:
+            record.setdefault("descend_near_misses", []).append(
+                {"needer": n["id"], "name": nm(d), "capped": True,
+                 "candidates": [{"name": c, "sim": round(s, 3)}
+                                for s, c in ranked]})
+            continue
         for s, cand in ranked:
             vk = (d.get("prose", ""), cand)
             if vk in seen_verdicts:
                 v = seen_verdicts[vk]
             else:
+                calls_made += 1
                 prompt = RS.build_prompt(d.get("prose", ""), n,
                                          prov_prose.get(cand, ""),
                                          prov_node.get(cand), drv.lines)
@@ -1836,7 +1878,17 @@ def adjudicate_resolutions(drv, resolutions, nodes, record, context=""):
             continue
         np = need_prose.get((r.get("needer"), r.get("name")), "")
         pp = prov_prose.get(r.get("rename_to") or r.get("name"), "")
-        (kept if _sim(np, pp) >= 0.25 else gated).append(r)
+        if _sim(np, pp) >= 0.25:
+            kept.append(r)
+            # gate passes are RECORDED (pre-ds7 review finding 5: the
+            # acceptance criterion "every applied rename carries a
+            # verdict or gate pass ON THE ARTIFACT" was unverifiable)
+            record.setdefault("rename_seat_verdicts", []).append(
+                {"proposal": r, "verdict": "gate_pass",
+                 "grounds": f"prose similarity >= 0.25",
+                 "where": context})
+        else:
+            gated.append(r)
     if gated and drv.cfg.get("rename_seat"):
         import rename_seat as RS
         still = []
@@ -1955,6 +2007,10 @@ def post_build_checks(out_dir):
                             "--graph", gp, "--report",
                             os.path.join(out_dir,
                                          "sweep_headings_report.json")]),
+        # Matt's frontier-dispatch design (2026-08-13, wired per pre-ds7
+        # review finding 8c): every build emits its ranked review queue
+        ("risk_queue", [sys.executable,
+                        os.path.join(HERE, "risk_queue.py"), out_dir]),
     ]
     print("---- post-build checks " + "-" * 40)
     for name, cmd in jobs:

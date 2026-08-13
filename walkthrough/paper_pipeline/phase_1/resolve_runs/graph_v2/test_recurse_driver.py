@@ -1059,15 +1059,19 @@ def test_authority_coinages_autofix_to_the_spans_own_label():
     coinage whose span carries the document's authority=LEVEL label is
     mechanically canonicalized; an unmappable one is a validation error
     the repair loop must fix."""
-    lines = ["## Stay in bounds {authority=root}", "body text", "plain"]
+    # upward-nearest rule (review finding 3): the governing label is the
+    # nearest authority= AT OR ABOVE the span start -- a span running over
+    # the NEXT section's heading no longer mis-canonicalizes
+    lines = ["plain intro", "## Stay in bounds {authority=root}",
+             "body text"]
     g = {"nodes": [
         {"id": "n1", "establishes": "heading authority",
          "needs": [{"name": "stay_in_bounds_section_authority",
                     "prose": "p"}],
-         "provides": [], "spans": [{"lines": [1, 2]}]},
-        {"id": "n2", "establishes": "no label here",
+         "provides": [], "spans": [{"lines": [2, 3]}]},
+        {"id": "n2", "establishes": "no label above",
          "needs": [{"name": "other_section_authority", "prose": "p"}],
-         "provides": [], "spans": [{"lines": [3, 3]}]}],
+         "provides": [], "spans": [{"lines": [1, 1]}]}],
         "uncovered": []}
     R.autofix_authority_coinages(g, lines)
     assert g["nodes"][0]["needs"][0]["name"] == "root_authority"

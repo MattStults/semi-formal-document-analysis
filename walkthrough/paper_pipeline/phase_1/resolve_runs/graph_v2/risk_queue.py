@@ -29,13 +29,22 @@ def build(run_dir):
             name = d.get("name") if isinstance(d, dict) else d
             fanout[name] = fanout.get(name, 0) + 1
     items = []
-    # 1. applied renames: risk = seat-accept with low prose sim x fanout
-    for v in g.get("rename_seat_verdicts", []):
+    # 1. applied renames -- from the ROOT graph AND every interior unwind
+    # artifact (pre-ds7 review finding 5: interior verdicts never
+    # propagate to root; the queue walks the run tree instead)
+    import glob
+    verdicts = list(g.get("rename_seat_verdicts", []))
+    for p in glob.glob(os.path.join(run_dir, "**", "graph.json"),
+                       recursive=True):
+        try:
+            verdicts += json.load(open(p)).get("rename_seat_verdicts", [])
+        except Exception:
+            pass
+    for v in verdicts:
         if v.get("verdict") != "same_concept":
             continue
         p = v.get("proposal", {})
         name = p.get("rename_to") or p.get("name")
-        s = None
         items.append({
             "kind": "seat_accepted_rename", "detail": p,
             "grounds": v.get("grounds", ""), "where": v.get("where", ""),
@@ -64,17 +73,17 @@ def build(run_dir):
         top = (nm_.get("candidates") or [{}])[0]
         items.append({"kind": "dangling_near_miss", "detail": nm_,
                       "risk": round(0.4 + (top.get("sim") or 0), 2)})
-    # 5. modal drift verdicts, if the adjudication file is present
-    mad = os.path.join(os.path.dirname(run_dir.rstrip("/")), "..",
-                       "modal_adjudication_ds6.json")
-    for path in (os.path.join(run_dir, "modal_adjudication.json"),):
-        if os.path.exists(path):
-            for x in json.load(open(path)):
-                if x.get("verdict") == "drifted":
-                    items.append({"kind": "modal_drift",
-                                  "detail": {"id": x["id"],
-                                             "grounds": x["grounds"]},
-                                  "risk": 0.9})
+    # 5. modal drift verdicts (run-local file; produced by running
+    # modal_adjudicate.py against THIS run -- ds6's verdicts name ds6
+    # node ids and do not transfer)
+    path = os.path.join(run_dir, "modal_adjudication.json")
+    if os.path.exists(path):
+        for x in json.load(open(path)):
+            if x.get("verdict") == "drifted":
+                items.append({"kind": "modal_drift",
+                              "detail": {"id": x.get("id"),
+                                         "grounds": x.get("grounds", "")},
+                              "risk": 0.9})
     # 6. broken promises from health
     hp = os.path.join(run_dir, "health.jsonl")
     if os.path.exists(hp):

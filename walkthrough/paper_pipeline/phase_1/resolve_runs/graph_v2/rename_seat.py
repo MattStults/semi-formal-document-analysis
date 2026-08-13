@@ -109,6 +109,12 @@ def judge(complete, prompt, schema_slot=None):
             env = complete(BRIEF, prompt)
             break
         except Exception as exc:                # noqa: BLE001
+            # ⛔ the COST GATE is not a transient (pre-ds7 review finding
+            # 1): retrying it re-bills after the ceiling has already said
+            # stop, and fail-closing would grind on paid call after paid
+            # call. It propagates; the run stops loudly.
+            if type(exc).__name__ == "CostGateError":
+                raise
             if attempt == 2:
                 return {"verdict": "different_concept",
                         "grounds": f"(fail-closed: seat transport error "

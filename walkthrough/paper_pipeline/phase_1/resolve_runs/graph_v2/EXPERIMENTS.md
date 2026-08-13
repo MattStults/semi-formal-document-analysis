@@ -1599,3 +1599,36 @@ lines. Acceptance reads against THESE numbers, not against hopes:
 Deviation outside any band = diagnose before accepting, per the census
 process. Frontier fix pass (Matt's #3/#4) runs AFTER acceptance, off
 risk_queue.json, top-down within a stated budget.
+
+## 2026-08-13: full-pipeline pre-ds7 review -- 9 findings, dispositions
+
+1. (HIGH, FIXED) CostGateError now propagates out of the seat retry loop
+   (retrying a cost gate re-bills after stop); greedy descend gets a HARD
+   call cap (descend_max_calls, default 600) -- capped danglings recorded.
+2. (HIGH, FIXED) descend dedupes danglings on (needer, name) -- the
+   repro'd "matched no needs entry" end-of-build crash class is closed.
+3. (MED, FIXED) coinage canonicalization now reads the nearest
+   authority= label AT OR ABOVE the span start (sectioning truth), never
+   an in-span scan that could catch the next section's heading; no label
+   above -> validator error, honest.
+4. (MED, GUARDED) rename_seat + concurrent executor refuses loudly at
+   startup (schema-slot race); batch/serial unaffected (ds7 is batch).
+5. (MED, FIXED) gate passes now recorded as verdicts on the artifact
+   (the pre-registered criterion is verifiable); risk_queue walks the
+   whole run tree so interior-unwind verdicts reach the queue.
+6. (MED-LOW, PART-FIXED) embed temp file unlinked in finally; embedding
+   spend remains UNLEDGERED by construction -- recorded as a known
+   invisible-cost path (~$0.001/run), key-on-argv matches the existing
+   CurlTransport convention.
+7. (LOW, ACCEPTED BY NAME) seen_verdicts cache keys on (prose, candidate)
+   ignoring needer context: verdict-reuse economy accepted; grounds may
+   cite a sibling needer's passage.
+8. (LOW, FIXED) risk_queue: dead code removed, .get guards, run-local
+   modal file only (ds6 ids do not transfer), WIRED into
+   post_build_checks -- every build now emits risk_queue.json.
+9. (LOW, DEFERRED BY NAME) batch resume can double-ledger a failed
+   unwind's rows and recovered rows lack the _req_max truncation
+   backstop -- rare path, cost-integrity impact small; tracked.
+Also corrected against the record: descend candidates are embedding
+top-5 only (generator proposals are adjudicated at their own sites).
+122 tests green. LAUNCHING ds7 on this commit.
