@@ -1653,3 +1653,54 @@ effective FA -- worth it for a curated top slice, wasteful for breadth;
 V4-Pro is dominated (lower sens than Flash at 12x price). Brief quality
 moved this task more than model tier (0.57 -> 0.82 on Flash from the
 brief sweep alone).
+
+## 2026-08-13: HANDOFF SNAPSHOT (context-to-record audit before instance switch)
+
+OPERATIONAL STATE, transcript-only until now:
+* ds7 is RUNNING as a DETACHED process (nohup, pid 2216, launched from
+  frozen commit 0a6d541), logging to runs/ds7_log.txt. Detached because
+  this session's harness kills managed background tasks after ~minutes
+  (five external kills on ds6, zero pipeline faults) -- the nohup use is
+  the recorded exception to the no-nohup convention, grounds: managed
+  background mode is the thing that is broken. Status: `bash
+  ds7_status.sh` (this dir). If ds7 dies, resume with the SAME command:
+  .venv/bin/python recurse_driver.py --out runs/ds7 --exec-mode batch
+  --yes  (artifact cache + inflight manifest make resume lossless; a
+  resumed-run completion still satisfies the certificate as long as no
+  CODE changed -- record any restart).
+* together's batch queue is SLOW today (a 19-request batch >45 min vs
+  the ~62s measured SLA); this is provider-side latency, not a hang --
+  verify with CurlTransport.status(batch_id) before diagnosing.
+* Working-directory hazard for scripts: two probe scripts were written
+  to the repo root by mistake (cd drift after git commits); every
+  graph_v2 script assumes graph_v2 as cwd.
+
+POST-ds7 RUNBOOK (Matt-approved, autonomous through launch of the
+frontier pass):
+1. Acceptance read-off against the PRE-REGISTERED bands (this file,
+   2026-08-13 entry) -- deviation outside any band = census-style
+   diagnosis before acceptance, never reinterpretation.
+2. graph_compare vs recurse/root/graph.json + repair_census.py
+   runs/ds7 runs/ds6 runs/ds5 runs/ds4 + the name-prose similarity
+   histogram (expect <=7% below-0.1).
+3. modal_adjudicate.py adapted to runs/ds7 (produces the run-local
+   modal_adjudication.json the risk queue reads).
+4. K3 frontier pass on risk_queue.json: BATCHED (50% discount),
+   10-item parity sample first, then the curated top slice (~150 items,
+   ~$1.80); full-queue K3 (~$4.80) needs a budget bump past $10 --
+   Matt's call. Tier spot check says K3 sens 1.00 vs Flash 0.90 on this
+   task; Flash is the breadth tier next campaign.
+5. Production-graph verdict for Matt: ds7 + frontier fixes (his #3/#4
+   rulings); then the full-corpus steps 1-4 decision (his #7).
+
+STANDING DECISIONS previously transcript-only:
+* Matt: keep building on the walkthrough-prototype branch (PR #1 stays
+  open as the review surface; do not merge without his word).
+* F4 comparator authority-collapse: still UNBUILT and now possibly moot
+  post-restructure -- re-measure plumbing noise on ds7's compare before
+  deciding; treat raw edge metrics as noisy until then.
+* The frontier-fix queue for ds6's 6 modal-drift nodes names ds6 ids --
+  ds7 gets its own adjudication (step 3); do not port ds6 ids.
+* Budget: $10.00 authorization, ~$7.40 used at snapshot (ledger =
+  usage.jsonl, source of truth; embedding calls are the one unledgered
+  path, ~$0.001/run, recorded finding 6).
