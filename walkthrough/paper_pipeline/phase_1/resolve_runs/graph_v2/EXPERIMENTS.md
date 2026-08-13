@@ -1485,3 +1485,46 @@ Same-day probes, all recorded: embedding recall on golden ground truth
 together logprobs unavailable for DeepSeek-V4-Flash in every mode (serial/
 batch/forced) and the model's reasoning channel precludes 2-token content;
 forced-binary enum verdicts work perfectly in both modes.
+
+## 2026-08-13: Matt's rulings on the open design decisions
+
+1. AUTHORITY CONVENTION: explanation delivered (the ~45-name overlapping
+   authority ontology is driver-invented; the model guesses distinctions
+   the source never draws). Restructure recommendation stands, pending the
+   measurement of whether steps 1-4 ASP actually consumes per-section
+   authority nodes.
+2. FACET POLICY: KEEP the ruling (facets of one referent = one concept;
+   definition-vs-rule = two) -- noting Matt's point that this may be
+   PER-DOCUMENT: it becomes a config-level convention statement, not a
+   hardcoded rule.
+3. ds7 GOAL: the graph as close to correct as we can make it, via a
+   REPEATABLE recorded process -- targeted frontier-seat fixes on
+   adjudicated defects are in scope; hand edits are not.
+4. PRODUCTION GRAPH: the highest-quality DeepSeek graph plus
+   frontier-level fixes (fix-tier seat model TBD, parity-validated like
+   any seat).
+5. MODAL FIDELITY: must be resolved BEFORE ds7 -- adjudication experiment
+   of ds6's 31 flags launched (modal_adjudicate.py; forced-binary,
+   strength-only brief, omission-without-restrengthening = preserved).
+6. CONFIDENCE MACHINERY: HOLD (plain binary verdicts).
+7. FULL-CORPUS STEPS 1-4: after the high-quality graph exists.
+
+## 2026-08-13: three measurements close the ds7 design questions
+
+* CANONICAL-CARD EMBEDDING (Matt's idea, probed): NEGATIVE -- recall@10
+  94/139 vs raw enriched prose 114/139 (@5: 80 vs 99). Compression to
+  REFERENT|KIND|GOVERNS discards more signal than facet-normalization
+  gains. Raw prose stays the greedy-descend ranking basis; recorded
+  tried-with-numbers (canon_embed_probe.py).
+* MODAL FIDELITY (Matt's #5, pre-ds7 blocker): 6/31 ds6 flags adjudicated
+  REAL drift (~0.8% of nodes; e.g. 'must answer YES or NO' -> 'should');
+  25/31 are tier-counter false positives on paraphrase. Disposition: one
+  strength-preservation line in the ds7 leaf brief (prevent) + the six
+  nodes seed the frontier-fix queue (repair); verdicts+grounds in
+  modal_adjudication_ds6.json.
+* AUTHORITY CONSUMPTION (decision #1 evidence): only 4/81 translated
+  modules reference any per-section authority name in ASP (3 non-comment
+  lines); what translations consume is authority_levels_hierarchy. The
+  ~40 per-section boilerplate nodes are nearly unconsumed downstream --
+  restructuring is ~free for steps 1-4. Awaiting Matt's go (it reshapes
+  the graph).
