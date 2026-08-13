@@ -1632,3 +1632,24 @@ risk_queue.json, top-down within a stated budget.
 Also corrected against the record: descend candidates are embedding
 top-5 only (generator proposals are adjudicated at their own sites).
 122 tests green. LAUNCHING ds7 on this commit.
+
+## 2026-08-13: seat-tier spot check (Matt's next-campaign question) -- ~$0.60
+
+Same adopted brief, same 20 pos / 20 neg golden-labeled subsample,
+forced binary:
+  Kimi-K3            sens 1.00  FA 0.25   (~$0.010/item serial)
+  DeepSeek-V4-Flash  sens 0.90  FA 0.25   (~$0.0004/item)
+  DeepSeek-V4-Pro    sens 0.80  FA 0.10   (~$0.004/item)
+  Kimi-K2.5-fp4      UNAVAILABLE serverless (dedicated-endpoint only);
+                     the cheap-Kimi lane is K2.6 if ever wanted.
+FP audit: K3 and Flash share 4/5 false accepts, and the shared set is
+the KNOWN label-noise/boundary items (the chain-of-command synonym, the
+letter-and-spirit pair, the category-vs-rule pair) -- true FA for both
+is far below the raw 0.25. V4-Pro's low FA is mostly refusing those same
+mislabeled items, at the cost of 4 real links.
+READ FOR NEXT CAMPAIGN: Flash is the value king (90% of K3's sensitivity
+at 1/25th the price); K3 buys the last +0.10 sensitivity at equal
+effective FA -- worth it for a curated top slice, wasteful for breadth;
+V4-Pro is dominated (lower sens than Flash at 12x price). Brief quality
+moved this task more than model tier (0.57 -> 0.82 on Flash from the
+brief sweep alone).

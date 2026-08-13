@@ -1,0 +1,99 @@
+{
+ "decision": "divide",
+ "children": [
+  {
+   "span": [
+    1,
+    170
+   ],
+   "why_this_cut": "Front matter, overview, red-line principles, general principles, risk taxonomy, levels of authority, and definitions. The only crossing linkage is the authority-levels concept (root/system/developer/user/guideline ordering), which is established here and used throughout the chain-of-command section; seeded below."
+  },
+  {
+   "span": [
+    171,
+    4692
+   ],
+   "why_this_cut": "The chain of command and all subsequent behavioral sections. This child relies on the authority-level ordering and the definitions (assistant, conversation, message roles) established in the first child; no other cross-cutting concepts cross this boundary."
+  }
+ ],
+ "seed_vocabulary": [
+  {
+   "name": "authority_level_ordering",
+   "prose": "The ranking of instruction authority levels: root > system > developer > user > guideline > no authority, used to determine which instruction prevails in conflicts.",
+   "established_around": [
+    69,
+    101
+   ]
+  },
+  {
+   "name": "assistant_definition",
+   "prose": "The assistant is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document.",
+   "established_around": [
+    114,
+    116
+   ]
+  },
+  {
+   "name": "conversation_definition",
+   "prose": "A conversation is a list of messages, each containing a role and content; roles determine authority of instructions.",
+   "established_around": [
+    118,
+    126
+   ]
+  },
+  {
+   "name": "message_role_definition",
+   "prose": "The role of a message (system, developer, user, assistant, tool) specifies its source and determines authority in conflicts.",
+   "established_around": [
+    120,
+    125
+   ]
+  },
+  {
+   "name": "chain_of_command_principle",
+   "prose": "The principle that instructions with higher authority override those with lower authority, designed to maximize steerability and control.",
+   "established_around": [
+    67,
+    67
+   ]
+  }
+ ],
+ "expected_cross_links": [
+  {
+   "name": "authority_level_ordering",
+   "needs_side_child": 2,
+   "provides_side_child": 1,
+   "evidence": "Child 2's chain-of-command section (L183-191) lists the ordering of authority levels and relies on the ranking established at L69-101."
+  },
+  {
+   "name": "assistant_definition",
+   "needs_side_child": 2,
+   "provides_side_child": 1,
+   "evidence": "Child 2 repeatedly refers to 'the assistant' as the behaving entity; the definition is established at L114-116."
+  },
+  {
+   "name": "conversation_definition",
+   "needs_side_child": 2,
+   "provides_side_child": 1,
+   "evidence": "Child 2's chain-of-command section refers to 'input conversation' and 'messages' (L181, L193); the conversation/message structure is defined at L118-126."
+  },
+  {
+   "name": "message_role_definition",
+   "needs_side_child": 2,
+   "provides_side_child": 1,
+   "evidence": "Child 2's chain-of-command section assigns authority to message roles (L183, L193); the role definitions are at L120-125."
+  },
+  {
+   "name": "chain_of_command_principle",
+   "needs_side_child": 2,
+   "provides_side_child": 1,
+   "evidence": "Child 2's entire chain-of-command section (L171+) operationalizes the principle introduced at L67."
+  }
+ ],
+ "judgment_calls": [
+  "Chose a 2-child split at L170 (end of Definitions) rather than a 3-child split; the chain-of-command section (L171-800) is cohesive and its internal structure (follow-all-applicable, letter-and-spirit, no-other-objectives, scope, side-effects, assume-best-intentions, ignore-untrusted) is best handled by one child that can divide further. A cut at L110 (after levels of authority) would have split the definitions from the chain of command, requiring more seeds for the definitional concepts.",
+  "Seeded five concepts (authority_level_ordering, assistant_definition, conversation_definition, message_role_definition, chain_of_command_principle) because all are established in child 1 and used in child 2. Considered seeding 'applicable_instruction' but it is established within child 2 (L181, L193) and does not cross the cut."
+ ],
+ "_span_lo": 1,
+ "_span_hi": 4692
+}

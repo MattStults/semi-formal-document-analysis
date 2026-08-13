@@ -1,0 +1,105 @@
+{
+ "children": [
+  {
+   "span": [
+    4252,
+    4482
+   ],
+   "why_this_cut": "Voice style section: L4253-4482 covers the voice_style section (two voice systems, accents, conciseness, length/structure). The only crossing linkage is the voice_style_guidelines concept (the section's rules apply to both voice systems), seeded below. The cut at L4482 (end of the 'Adapt length and structure' example) is clean: the next section 'Handle interruptions' begins at L4484 with its own heading."
+  },
+  {
+   "span": [
+    4483,
+    4571
+   ],
+   "why_this_cut": "Voice style section continued: L4484-4571 covers 'Handle interruptions gracefully' and 'Respond appropriately to audio testing'. The only crossing linkage is voice_style_guidelines (seeded below). The cut at L4571 is clean: L4572 begins a new top-level section 'Under-18 Principles'."
+  },
+  {
+   "span": [
+    4572,
+    4692
+   ],
+   "why_this_cut": "Under-18 Principles section: L4572-4692 covers the U18 principles (safety priorities, safety practices, declining requests, examples). The only crossing linkage is the u18_scope concept (the section applies to users ages 13-17), seeded below. The cut at L4692 is the end of the span."
+  }
+ ],
+ "decision": "divide",
+ "expected_cross_links": [
+  {
+   "evidence": "Child 1 (L4252-4482) establishes the voice_style_guidelines concept (the section's style guidelines apply to both standard and advanced voice modes); child 2 (L4483-4571) relies on this concept for its rules about interruptions and audio testing.",
+   "name": "voice_style_guidelines",
+   "needs_side_child": 2,
+   "provides_side_child": 1
+  },
+  {
+   "evidence": "Child 3 (L4572-4692) establishes the u18_scope concept (the U18 principles apply to users ages 13-17); child 2 (L4483-4571) does not need it, but child 3's rules rely on it internally. This is a self-contained concept within child 3, but seeded to ensure consistency if any child needs it.",
+   "name": "u18_scope",
+   "needs_side_child": 3,
+   "provides_side_child": 3
+  }
+ ],
+ "judgment_calls": [
+  "Could have cut at L4260 (end of voice systems intro) or L4482 (end of length/structure section); chose L4482 because the voice_style section's rules (accents, conciseness, length) are cohesive and the only crossing linkage is voice_style_guidelines. A cut at L4260 would have split the voice_style section's rules across two children, requiring more seeds.",
+  "Could have cut at L4571 (end of voice style section) instead of L4572; chose L4572 because the U18 section is a distinct top-level section with its own scope, and the cut at L4572 is clean (L4572 is the section heading).",
+  "The u18_scope concept is established and used entirely within child 3; seeded it to ensure consistency if any child needs it, though it may not cross a cut."
+ ],
+ "seed_vocabulary": [
+  {
+   "established_around": [
+    69,
+    101
+   ],
+   "name": "authority_level_ordering",
+   "prose": "The ranking of instruction authority levels: root > system > developer > user > guideline > no authority, used to determine which instruction prevails in conflicts."
+  },
+  {
+   "established_around": [
+    114,
+    116
+   ],
+   "name": "assistant_definition",
+   "prose": "The assistant is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document."
+  },
+  {
+   "established_around": [
+    118,
+    126
+   ],
+   "name": "conversation_definition",
+   "prose": "A conversation is a list of messages, each containing a role and content; roles determine authority of instructions."
+  },
+  {
+   "established_around": [
+    120,
+    125
+   ],
+   "name": "message_role_definition",
+   "prose": "The role of a message (system, developer, user, assistant, tool) specifies its source and determines authority in conflicts."
+  },
+  {
+   "established_around": [
+    67,
+    67
+   ],
+   "name": "chain_of_command_principle",
+   "prose": "The principle that instructions with higher authority override those with lower authority, designed to maximize steerability and control."
+  },
+  {
+   "established_around": [
+    4255,
+    4260
+   ],
+   "name": "voice_style_guidelines",
+   "prose": "The style guidelines in the voice_style section apply to both standard and advanced voice modes; instructions about audio/video nuances apply only to advanced voice."
+  },
+  {
+   "established_around": [
+    4574,
+    4574
+   ],
+   "name": "u18_scope",
+   "prose": "The Under-18 (U18) Principles apply to users ages 13-17 and prioritize prevention, transparency, and early intervention."
+  }
+ ],
+ "_span_lo": 4252,
+ "_span_hi": 4692
+}

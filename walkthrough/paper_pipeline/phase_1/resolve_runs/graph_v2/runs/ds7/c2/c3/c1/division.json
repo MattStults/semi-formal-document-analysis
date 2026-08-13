@@ -1,0 +1,88 @@
+{
+ "children": [
+  {
+   "span": [
+    3502,
+    3504
+   ],
+   "why_this_cut": "Introductory section: title and general statement about assistant guidelines; no cross-cutting linkage to later sections beyond the general concept of guidelines, which is seeded."
+  },
+  {
+   "span": [
+    3505,
+    3953
+   ],
+   "why_this_cut": "Sections with authority=user (Love humanity, Be rationally optimistic, Be responsible, Be interesting and interested, Be curious, Have conversational sense) plus Be clear and direct and Be suitably professional (authority=guideline). The only cross-link is the authority_level_ordering concept, seeded."
+  },
+  {
+   "span": [
+    3954,
+    4251
+   ],
+   "why_this_cut": "Remaining sections (Be warm, Don't make unprompted personal comments, Avoid being condescending, When appropriate be helpful when refusing, Use Markdown with LaTeX extensions, Be thorough but efficient) \u2014 all authority=guideline except Be warm which is also guideline; no cross-link to child 2 except authority_level_ordering."
+  }
+ ],
+ "decision": "divide",
+ "expected_cross_links": [
+  {
+   "evidence": "Child 2's sections carry authority=user or authority=guideline tags; child 3's sections carry authority=guideline tags. The authority_level_ordering concept (root > system > developer > user > guideline > no authority) is needed to interpret these tags, and is established outside this span (L69-101).",
+   "name": "authority_level_ordering",
+   "needs_side_child": 2,
+   "provides_side_child": 3
+  },
+  {
+   "evidence": "Child 2's Be clear and direct section (L3756-3816) and Be suitably professional (L3818-3876) carry authority=guideline; child 3's sections also carry authority=guideline. Both children need the authority_level_ordering concept to interpret these tags.",
+   "name": "authority_level_ordering",
+   "needs_side_child": 3,
+   "provides_side_child": 2
+  }
+ ],
+ "judgment_calls": [
+  "Chose a 3-way split at L3505 and L3954 rather than a 2-way split at L3756, because the user-authority sections (L3506-3953) form a cohesive block of style guidelines with authority=user, while the guideline-authority sections (L3955-4251) form another block; a cut at L3756 would have split the user-authority block awkwardly.",
+  "The cut at L3954 places Be warm (authority=guideline) in child 3, even though it is stylistically similar to the user-authority sections in child 2; this is acceptable because the authority tag is the only cross-cutting linkage and it is seeded."
+ ],
+ "seed_vocabulary": [
+  {
+   "established_around": [
+    69,
+    101
+   ],
+   "name": "authority_level_ordering",
+   "prose": "The ranking of instruction authority levels: root > system > developer > user > guideline > no authority, used to determine which instruction prevails in conflicts."
+  },
+  {
+   "established_around": [
+    114,
+    116
+   ],
+   "name": "assistant_definition",
+   "prose": "The assistant is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document."
+  },
+  {
+   "established_around": [
+    118,
+    126
+   ],
+   "name": "conversation_definition",
+   "prose": "A conversation is a list of messages, each containing a role and content; roles determine authority of instructions."
+  },
+  {
+   "established_around": [
+    120,
+    125
+   ],
+   "name": "message_role_definition",
+   "prose": "The role of a message (system, developer, user, assistant, tool) specifies its source and determines authority in conflicts."
+  },
+  {
+   "established_around": [
+    67,
+    67
+   ],
+   "name": "chain_of_command_principle",
+   "prose": "The principle that instructions with higher authority override those with lower authority, designed to maximize steerability and control."
+  }
+ ],
+ "_span_lo": 3502,
+ "_span_hi": 4251
+}
