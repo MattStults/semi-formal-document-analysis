@@ -1,0 +1,997 @@
+{
+ "decision": "divide",
+ "children": [
+  {
+   "span": [
+    171,
+    2125
+   ],
+   "why_this_cut": "The chain of command section through the end of the 'Respect real-world ties' section; the only crossing linkage is the authority_level_ordering and chain_of_command concepts, seeded below, which the later sections rely on."
+  },
+  {
+   "span": [
+    2126,
+    3501
+   ],
+   "why_this_cut": "The 'Seek the truth together' and 'Do the best work' sections; these rely on the chain of command and authority ordering established earlier, and on the stay_in_bounds section (seeded) for content restrictions."
+  },
+  {
+   "span": [
+    3502,
+    4692
+   ],
+   "why_this_cut": "The 'Use appropriate style' and 'Under-18 Principles' sections; these rely on the chain of command, authority ordering, and the stay_in_bounds content restrictions established earlier."
+  }
+ ],
+ "seed_vocabulary": [
+  {
+   "name": "authority_level_ordering",
+   "prose": "which of two authority levels outranks the other (root > system > developer > user > guideline > no authority)",
+   "established_around": [
+    69,
+    101
+   ]
+  },
+  {
+   "name": "chain_of_command",
+   "prose": "the principle that instructions with higher authority override those with lower authority, and that the assistant must follow applicable instructions under this ordering",
+   "established_around": [
+    11,
+    67
+   ]
+  },
+  {
+   "name": "assistant_definition",
+   "prose": "the entity that the end user or developer interacts with; the model's behavior as the assistant",
+   "established_around": [
+    114,
+    116
+   ]
+  },
+  {
+   "name": "conversation_definition",
+   "prose": "valid input to the model is a conversation consisting of a list of messages, each with a role and content",
+   "established_around": [
+    118,
+    126
+   ]
+  },
+  {
+   "name": "message_roles",
+   "prose": "the set of message roles (system, developer, user, assistant, tool) and their sources",
+   "established_around": [
+    120,
+    125
+   ]
+  },
+  {
+   "name": "tool_definition",
+   "prose": "a program that can be called by the assistant to perform a specific task; tool responses are appended as role=tool messages",
+   "established_around": [
+    153,
+    153
+   ]
+  },
+  {
+   "name": "hidden_chain_of_thought",
+   "prose": "a hidden chain-of-thought message used to reason before generating a final answer, not exposed to the user or developer except potentially in summarized form",
+   "established_around": [
+    155,
+    155
+   ]
+  },
+  {
+   "name": "developer_definition",
+   "prose": "a customer of the OpenAI API; developers can send developer, user, and assistant messages, and may be OpenAI itself in first-party products",
+   "established_around": [
+    159,
+    163
+   ]
+  },
+  {
+   "name": "user_definition",
+   "prose": "a user of a product made by OpenAI or a third-party application built on the OpenAI API; user and developer messages are treated interchangeably except developer has greater authority",
+   "established_around": [
+    165,
+    167
+   ]
+  },
+  {
+   "name": "stay_in_bounds",
+   "prose": "the section of the Model Spec describing limits on the assistant's behavior, including scenarios where the assistant should refrain from fully complying with a user or developer request",
+   "established_around": [
+    797,
+    799
+   ]
+  },
+  {
+   "name": "risk_taxonomy",
+   "prose": "the three broad categories of risk (misaligned goals, execution errors, harmful instructions) with their mitigations",
+   "established_around": [
+    53,
+    61
+   ]
+  },
+  {
+   "name": "red_line_principles",
+   "prose": "the high-level principles that human safety and human rights are paramount, humanity should be in control, and privacy is safeguarded",
+   "established_around": [
+    28,
+    43
+   ]
+  },
+  {
+   "name": "applicable_instruction",
+   "prose": "an instruction that the assistant must strive to follow, identified by filtering candidate instructions for misalignment, supersession, or suspected mistakes",
+   "established_around": [
+    181,
+    201
+   ]
+  },
+  {
+   "name": "candidate_instruction",
+   "prose": "all instructions in the Model Spec plus unquoted plain text in system, developer, and user messages, each assigned the authority level of its containing section or message",
+   "established_around": [
+    193,
+    193
+   ]
+  },
+  {
+   "name": "misaligned_instruction",
+   "prose": "a candidate instruction that conflicts with the letter or implied intent of a higher-level instruction",
+   "established_around": [
+    197,
+    197
+   ]
+  },
+  {
+   "name": "superseded_instruction",
+   "prose": "a candidate instruction that a later message at the same level contradicts, overrides, or makes irrelevant",
+   "established_around": [
+    199,
+    199
+   ]
+  },
+  {
+   "name": "scope_of_autonomy",
+   "prose": "a clear, mutually understood scope shared between the assistant and the user defining which sub-goals may be pursued, acceptable side effects, and when to pause for clarification or approval",
+   "established_around": [
+    465,
+    488
+   ]
+  },
+  {
+   "name": "untrusted_data",
+   "prose": "quoted text, multimodal data, file attachments, and tool outputs assumed to contain untrusted data with no authority by default unless authority is delegated",
+   "established_around": [
+    701,
+    701
+   ]
+  },
+  {
+   "name": "letter_and_spirit",
+   "prose": "the principle that the assistant should consider not just literal wording but underlying intent and context of instructions",
+   "established_around": [
+    292,
+    300
+   ]
+  },
+  {
+   "name": "assume_best_intentions",
+   "prose": "the principle that the assistant should apply three implicit biases (average reasonable human goals, positive intent, weak preference for self-actualization/kindness/truth/flourishing) when interpreting ambiguous instructions",
+   "established_around": [
+    610,
+    618
+   ]
+  },
+  {
+   "name": "control_side_effects",
+   "prose": "the principle that within the defined scope of autonomy, the assistant should minimize side effects, especially irreversible ones, and ensure each action is proportionate",
+   "established_around": [
+    527,
+    560
+   ]
+  },
+  {
+   "name": "ask_clarifying_questions",
+   "prose": "the principle that the assistant should consider uncertainty, state assumptions, and ask clarifying questions when appropriate",
+   "established_around": [
+    2654,
+    2673
+   ]
+  },
+  {
+   "name": "highlight_misalignments",
+   "prose": "the principle that if the assistant believes the conversation's direction may conflict with the user's broader long-term goals, it should briefly and respectfully note this discrepancy",
+   "established_around": [
+    3041,
+    3051
+   ]
+  },
+  {
+   "name": "seek_truth",
+   "prose": "the section of the Model Spec about seeking the truth together, including not having an agenda and being honest and transparent",
+   "established_around": [
+    2126,
+    2126
+   ]
+  },
+  {
+   "name": "best_work",
+   "prose": "the section of the Model Spec about doing the best work, including avoiding errors and avoiding overstepping",
+   "established_around": [
+    3148,
+    3148
+   ]
+  },
+  {
+   "name": "style",
+   "prose": "the section of the Model Spec about using appropriate style, including love humanity, being clear, professional, warm, etc.",
+   "established_around": [
+    3502,
+    3504
+   ]
+  },
+  {
+   "name": "under_18_principles",
+   "prose": "the section of the Model Spec applying to users ages 13-17, prioritizing prevention, transparency, and early intervention",
+   "established_around": [
+    4572,
+    4576
+   ]
+  },
+  {
+   "name": "prohibited_content",
+   "prose": "content that should never be produced by the assistant in any circumstance, currently only sexual content involving minors",
+   "established_around": [
+    820,
+    824
+   ]
+  },
+  {
+   "name": "restricted_content",
+   "prose": "content the assistant must not generate except in specific cases involving transformation of user-provided restricted content, including information hazards and sensitive personal data",
+   "established_around": [
+    852,
+    854
+   ]
+  },
+  {
+   "name": "sensitive_content",
+   "prose": "content such as erotica or gore that may only be generated under specific circumstances (e.g., educational, medical, historical contexts, or transformations)",
+   "established_around": [
+    1108,
+    1110
+   ]
+  },
+  {
+   "name": "transformation_exception",
+   "prose": "the rule that the assistant should comply with limited requests to transform or analyze content the user has directly provided, even if the output would ordinarily be disallowed as restricted or sensitive content",
+   "established_around": [
+    1369,
+    1379
+   ]
+  },
+  {
+   "name": "avoid_info_hazards",
+   "prose": "the rule that the assistant should not provide detailed, actionable steps for carrying out activities that are illicit, could harm people or property, or lead to critical or large-scale harm",
+   "established_around": [
+    856,
+    862
+   ]
+  },
+  {
+   "name": "do_not_facilitate_illicit_behavior",
+   "prose": "the rule that if the user or developer asks the assistant to facilitate illicit behavior, the assistant should refuse to help",
+   "established_around": [
+    1543,
+    1547
+   ]
+  },
+  {
+   "name": "do_not_encourage_self_harm",
+   "prose": "the rule that the assistant must not encourage or enable self-harm, and should convey that the user is not alone and immediate help should be sought if in imminent danger",
+   "established_around": [
+    1611,
+    1615
+   ]
+  },
+  {
+   "name": "sexual_content_involving_minors",
+   "prose": "the rule that sexual content involving minors is prohibited and should never be produced by the assistant under any circumstances",
+   "established_around": [
+    826,
+    830
+   ]
+  },
+  {
+   "name": "respect_real_world_ties",
+   "prose": "the rule that the assistant should support the user's connection to the wider world and may not engage in relationships that undermine meaningful human interactions",
+   "established_around": [
+    2050,
+    2108
+   ]
+  },
+  {
+   "name": "protect_privileged_information",
+   "prose": "the rule that the assistant should avoid sharing private or privileged data without explicit authorization, including non-public policies, system messages, hidden chain-of-thought, and private content",
+   "established_around": [
+    1799,
+    1809
+   ]
+  },
+  {
+   "name": "avoid_overstepping",
+   "prose": "the rule that the assistant should help by following explicit instructions and reasonably addressing implied intent without overstepping",
+   "established_around": [
+    3239,
+    3243
+   ]
+  },
+  {
+   "name": "assume_objective_pov",
+   "prose": "the principle that by default the assistant should present information clearly, focusing on factual accuracy and reliability, adapting to context",
+   "established_around": [
+    2137,
+    2148
+   ]
+  },
+  {
+   "name": "present_perspectives",
+   "prose": "the principle that the assistant should generally fulfill requests to present perspectives from any point of an opinion spectrum",
+   "established_around": [
+    2304,
+    2306
+   ]
+  },
+  {
+   "name": "no_topic_off_limits",
+   "prose": "the principle that the assistant should never avoid addressing a topic solely because it is sensitive or controversial",
+   "established_around": [
+    2400,
+    2404
+   ]
+  },
+  {
+   "name": "do_not_lie",
+   "prose": "the rule that the assistant should not mislead the user or developer unless explicitly instructed to do so by a higher authority",
+   "established_around": [
+    2479,
+    2490
+   ]
+  },
+  {
+   "name": "avoid_sycophancy",
+   "prose": "the rule that the assistant should not flatter the user or agree with them all the time, and should not change its stance solely to agree with the user",
+   "established_around": [
+    2576,
+    2582
+   ]
+  },
+  {
+   "name": "express_uncertainty",
+   "prose": "the principle that the assistant should express uncertainty or qualify answers appropriately when questions span beyond its knowledge or available information",
+   "established_around": [
+    2821,
+    2851
+   ]
+  },
+  {
+   "name": "avoid_errors",
+   "prose": "the rule that the assistant should avoid making mistakes that would compromise the accuracy or utility of its responses or downstream actions",
+   "established_around": [
+    3150,
+    3162
+   ]
+  },
+  {
+   "name": "be_creative",
+   "prose": "the principle that the assistant should strive for creativity in its responses where appropriate",
+   "established_around": [
+    3319,
+    3327
+   ]
+  },
+  {
+   "name": "support_programmatic_use",
+   "prose": "the principle that the assistant's behavior should vary depending on whether it's interacting with a human in real time or whether its output will be consumed programmatically",
+   "established_around": [
+    3384,
+    3394
+   ]
+  },
+  {
+   "name": "refusal_style",
+   "prose": "the principle that when a direct response would contain prohibited or restricted elements, the assistant should typically Safe Complete, and in some cases simply refuse",
+   "established_around": [
+    4073,
+    4079
+   ]
+  },
+  {
+   "name": "love_humanity",
+   "prose": "the principle that the assistant should exhibit values in line with OpenAI's charter of ensuring AGI benefits all of humanity",
+   "established_around": [
+    3506,
+    3510
+   ]
+  },
+  {
+   "name": "be_clear",
+   "prose": "the principle that the assistant should communicate clearly and directly to maximize user understanding",
+   "established_around": [
+    3756,
+    3760
+   ]
+  },
+  {
+   "name": "be_professional",
+   "prose": "the principle that by default the assistant should adopt a professional tone, courteous and comprehensible, not overly casual",
+   "established_around": [
+    3818,
+    3822
+   ]
+  },
+  {
+   "name": "have_conversational_sense",
+   "prose": "the principle that the assistant should sense when to be thorough and when to keep things moving, responding with what the moment calls for",
+   "established_around": [
+    3878,
+    3880
+   ]
+  },
+  {
+   "name": "be_warm",
+   "prose": "the principle that the assistant should bring warmth and kindness to interactions, with context-appropriate humor or playfulness",
+   "established_around": [
+    3955,
+    3957
+   ]
+  },
+  {
+   "name": "do_not_make_unprompted_personal_comments",
+   "prose": "the rule that the assistant should refrain from making personal observations or comments about the user that were not solicited",
+   "established_around": [
+    3997,
+    3999
+   ]
+  },
+  {
+   "name": "avoid_being_condescending",
+   "prose": "the rule that the assistant should avoid condescending, patronizing, dismissive, or judgmental language",
+   "established_around": [
+    4050,
+    4052
+   ]
+  },
+  {
+   "name": "formatting",
+   "prose": "the rule that unless otherwise specified, assistant outputs should be formatted in Markdown with LaTeX extensions",
+   "established_around": [
+    4138,
+    4144
+   ]
+  },
+  {
+   "name": "be_thorough_but_efficient",
+   "prose": "the principle that the assistant should balance thoroughness and detail against token limits and user time, avoiding redundancy",
+   "established_around": [
+    4163,
+    4204
+   ]
+  },
+  {
+   "name": "voice_style",
+   "prose": "the section of the Model Spec containing style guidelines for audio and video conversations",
+   "established_around": [
+    4253,
+    4260
+   ]
+  },
+  {
+   "name": "prioritize_teen_safety",
+   "prose": "the principle that for U18 users, the assistant should prioritize teen safety, promote real-world support, treat teens like teens, and be transparent",
+   "established_around": [
+    4578,
+    4596
+   ]
+  },
+  {
+   "name": "avoid_hateful_content",
+   "prose": "the rule that the assistant must not generate hateful content targeting protected groups, including slurs, insults, and demeaning language",
+   "established_around": [
+    1237,
+    1241
+   ]
+  },
+  {
+   "name": "avoid_extremist_content",
+   "prose": "the rule that the assistant must not create content that praises, endorses, or aids extremist agendas that promote violence",
+   "established_around": [
+    1155,
+    1157
+   ]
+  },
+  {
+   "name": "protect_privacy",
+   "prose": "the rule that the assistant must not respond to requests for private or sensitive information about people, even if available online",
+   "established_around": [
+    1035,
+    1039
+   ]
+  },
+  {
+   "name": "no_erotica_or_gore",
+   "prose": "the rule that the assistant should not generate erotica, depictions of illegal or non-consensual sexual activities, or extreme gore except in appropriate contexts",
+   "established_around": [
+    1112,
+    1114
+   ]
+  },
+  {
+   "name": "avoid_targeted_political_manipulation",
+   "prose": "the rule that the assistant must not provide advice, instructions, or content specifically designed to manipulate the political views of specific individuals or demographic groups",
+   "established_around": [
+    920,
+    924
+   ]
+  },
+  {
+   "name": "respect_creators",
+   "prose": "the rule that the assistant must respect creators, their work, and their intellectual property rights while striving to be helpful",
+   "established_around": [
+    1002,
+    1004
+   ]
+  },
+  {
+   "name": "avoid_abuse",
+   "prose": "the rule that the assistant should not engage in gratuitous abuse, harassment, or negativity toward individuals unless explicitly instructed in a context that does not violate other principles",
+   "established_around": [
+    1314,
+    1316
+   ]
+  },
+  {
+   "name": "prevent_imminent_harm",
+   "prose": "the rule that the assistant should proactively try to prevent imminent real-world harm when it identifies a dangerous situation, while avoiding overstepping or being judgmental",
+   "established_around": [
+    1418,
+    1422
+   ]
+  },
+  {
+   "name": "avoid_regulated_advice",
+   "prose": "the rule that for advice on sensitive topics like legal, medical, and financial matters, the assistant should equip the user with information without providing definitive advice best given by a licensed professional",
+   "established_around": [
+    1708,
+    1710
+   ]
+  },
+  {
+   "name": "support_mental_health",
+   "prose": "the rule that for mental health topics, the assistant should create a supportive, empathetic environment and avoid judgment, stigmatization, or dismissiveness",
+   "established_around": [
+    1751,
+    1755
+   ]
+  },
+  {
+   "name": "use_preset_voice",
+   "prose": "the rule that if the assistant is capable of generating synthetic speech, it should only use the preset voice selected by the user or developer",
+   "established_around": [
+    1975,
+    1977
+   ]
+  },
+  {
+   "name": "uphold_fairness",
+   "prose": "the rule that the assistant should uphold fairness by considering relevant context and ignoring irrelevant details, not discriminating based on demographic details unless required",
+   "established_around": [
+    1979,
+    1983
+   ]
+  },
+  {
+   "name": "no_agenda",
+   "prose": "the rule that the assistant must never attempt to steer the user in pursuit of an agenda of its own, directly or indirectly",
+   "established_around": [
+    2128,
+    2132
+   ]
+  },
+  {
+   "name": "be_honest_and_transparent",
+   "prose": "the principle that the assistant builds trust through honesty, transparency, and empathy, acknowledging complexity and being forthright about uncertainty",
+   "established_around": [
+    2475,
+    2477
+   ]
+  },
+  {
+   "name": "be_rationally_optimistic",
+   "prose": "the principle that the assistant should be grounded in practicality and reason while being generally hopeful and positive",
+   "established_around": [
+    3597,
+    3599
+   ]
+  },
+  {
+   "name": "be_responsible",
+   "prose": "the principle that the assistant should take a thoughtful and empathetic approach, keeping both each unique audience and its own role in mind",
+   "established_around": [
+    3629,
+    3635
+   ]
+  },
+  {
+   "name": "be_interesting_and_interested",
+   "prose": "the principle that the assistant should be engaging and enjoyable, using its vast understanding to answer questions elegantly",
+   "established_around": [
+    3679,
+    3681
+   ]
+  },
+  {
+   "name": "be_curious",
+   "prose": "the principle that the assistant embodies a deep appreciation for knowledge, beauty, and the joy of discovery",
+   "established_around": [
+    3708,
+    3710
+   ]
+  }
+ ],
+ "expected_cross_links": [
+  {
+   "name": "authority_level_ordering",
+   "needs_side_child": 2,
+   "provides_side_child": 1,
+   "evidence": "children 2 and 3 rely on the authority ordering established in child 1's chain of command section"
+  },
+  {
+   "name": "chain_of_command",
+   "needs_side_child": 2,
+   "provides_side_child": 1,
+   "evidence": "children 2 and 3 reference the chain of command principle established in child 1"
+  },
+  {
+   "name": "stay_in_bounds",
+   "needs_side_child": 2,
+   "provides_side_child": 1,
+   "evidence": "children 2 and 3 reference the stay_in_bounds section for content restrictions"
+  },
+  {
+   "name": "stay_in_bounds",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "child 3's Under-18 section references stay_in_bounds"
+  },
+  {
+   "name": "assume_best_intentions",
+   "needs_side_child": 2,
+   "provides_side_child": 1,
+   "evidence": "child 2's seek_truth section references assume_best_intentions"
+  },
+  {
+   "name": "control_side_effects",
+   "needs_side_child": 2,
+   "provides_side_child": 1,
+   "evidence": "child 2's ask_clarifying_questions section references control_side_effects"
+  },
+  {
+   "name": "letter_and_spirit",
+   "needs_side_child": 2,
+   "provides_side_child": 1,
+   "evidence": "child 2's avoid_overstepping section references letter_and_spirit"
+  },
+  {
+   "name": "scope_of_autonomy",
+   "needs_side_child": 2,
+   "provides_side_child": 1,
+   "evidence": "child 2's avoid_overstepping section references scope_of_autonomy"
+  },
+  {
+   "name": "protect_privileged_information",
+   "needs_side_child": 2,
+   "provides_side_child": 1,
+   "evidence": "child 2's do_not_lie section references protect_privileged_information"
+  },
+  {
+   "name": "avoid_info_hazards",
+   "needs_side_child": 2,
+   "provides_side_child": 1,
+   "evidence": "child 2's do_not_facilitate_illicit_behavior section references avoid_info_hazards"
+  },
+  {
+   "name": "do_not_encourage_self_harm",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "child 3's Under-18 section references do_not_encourage_self_harm"
+  },
+  {
+   "name": "sexual_content_involving_minors",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "child 3's Under-18 section references sexual_content_involving_minors"
+  },
+  {
+   "name": "respect_real_world_ties",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "child 3's Under-18 section references respect_real_world_ties"
+  },
+  {
+   "name": "sensitive_content",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "child 3's Under-18 section references sensitive_content"
+  },
+  {
+   "name": "do_not_facilitate_illicit_behavior",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "child 3's Under-18 section references do_not_facilitate_illicit_behavior"
+  },
+  {
+   "name": "avoid_overstepping",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "child 3's style section references avoid_overstepping"
+  },
+  {
+   "name": "assume_objective_pov",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "child 3's style section references assume_objective_pov established in child 2"
+  },
+  {
+   "name": "avoid_hateful_content",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "child 3's style section references avoid_hateful_content established in child 1"
+  },
+  {
+   "name": "avoid_extremist_content",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "child 3's style section references avoid_extremist_content established in child 1"
+  },
+  {
+   "name": "express_uncertainty",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "child 3's style section references express_uncertainty established in child 2"
+  },
+  {
+   "name": "ask_clarifying_questions",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "child 3's style section references ask_clarifying_questions established in child 2"
+  },
+  {
+   "name": "highlight_misalignments",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "child 3's style section references highlight_misalignments established in child 2"
+  },
+  {
+   "name": "avoid_errors",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "child 3's style section references avoid_errors established in child 2"
+  },
+  {
+   "name": "be_creative",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "child 3's style section references be_creative established in child 2"
+  },
+  {
+   "name": "support_programmatic_use",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "child 3's style section references support_programmatic_use established in child 2"
+  },
+  {
+   "name": "refusal_style",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "child 3's style section references refusal_style established in child 1"
+  },
+  {
+   "name": "transformation_exception",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "child 3's style section references transformation_exception established in child 1"
+  },
+  {
+   "name": "protect_privacy",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "child 3's style section references protect_privacy established in child 1"
+  },
+  {
+   "name": "no_erotica_or_gore",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "child 3's style section references no_erotica_or_gore established in child 1"
+  },
+  {
+   "name": "avoid_targeted_political_manipulation",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "child 3's style section references avoid_targeted_political_manipulation established in child 1"
+  },
+  {
+   "name": "respect_creators",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "child 3's style section references respect_creators established in child 1"
+  },
+  {
+   "name": "avoid_abuse",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "child 3's style section references avoid_abuse established in child 1"
+  },
+  {
+   "name": "prevent_imminent_harm",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "child 3's style section references prevent_imminent_harm established in child 1"
+  },
+  {
+   "name": "avoid_regulated_advice",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "child 3's style section references avoid_regulated_advice established in child 1"
+  },
+  {
+   "name": "support_mental_health",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "child 3's style section references support_mental_health established in child 1"
+  },
+  {
+   "name": "use_preset_voice",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "child 3's style section references use_preset_voice established in child 1"
+  },
+  {
+   "name": "uphold_fairness",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "child 3's style section references uphold_fairness established in child 1"
+  },
+  {
+   "name": "respect_real_world_ties",
+   "needs_side_child": 3,
+   "provides_side_child": 1,
+   "evidence": "child 3's style section references respect_real_world_ties established in child 1"
+  },
+  {
+   "name": "no_agenda",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "child 3's style section references no_agenda established in child 2"
+  },
+  {
+   "name": "be_honest_and_transparent",
+   "needs_side_child": 3,
+   "provides_side_child": 2,
+   "evidence": "child 3's style section references be_honest_and_transparent established in child 2"
+  },
+  {
+   "name": "be_rationally_optimistic",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "child 3's style section references be_rationally_optimistic established in child 2"
+  },
+  {
+   "name": "be_responsible",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "child 3's style section references be_responsible established in child 2"
+  },
+  {
+   "name": "be_interesting_and_interested",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "child 3's style section references be_interesting_and_interested established in child 2"
+  },
+  {
+   "name": "be_curious",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "child 3's style section references be_curious established in child 2"
+  },
+  {
+   "name": "be_clear",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "child 3's style section references be_clear established in child 2"
+  },
+  {
+   "name": "be_professional",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "child 3's style section references be_professional established in child 2"
+  },
+  {
+   "name": "have_conversational_sense",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "child 3's style section references have_conversational_sense established in child 2"
+  },
+  {
+   "name": "be_warm",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "child 3's style section references be_warm established in child 2"
+  },
+  {
+   "name": "do_not_make_unprompted_personal_comments",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "child 3's style section references do_not_make_unprompted_personal_comments established in child 2"
+  },
+  {
+   "name": "avoid_being_condescending",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "child 3's style section references avoid_being_condescending established in child 2"
+  },
+  {
+   "name": "formatting",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "child 3's style section references formatting established in child 2"
+  },
+  {
+   "name": "be_thorough_but_efficient",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "child 3's style section references be_thorough_but_efficient established in child 2"
+  },
+  {
+   "name": "voice_style",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "child 3's style section references voice_style established in child 2"
+  },
+  {
+   "name": "prioritize_teen_safety",
+   "needs_side_child": 3,
+   "provides_side_child": 3,
+   "evidence": "child 3's Under-18 section establishes prioritize_teen_safety"
+  }
+ ],
+ "judgment_calls": [
+  "Could have cut at L2125 vs L2126; chose L2125 because the 'Respect real-world ties' section ends there and the next section 'Seek the truth together' begins a new top-level part. A cut at L2126 would have split the heading from its content.",
+  "Could have cut at L3501 vs L3502; chose L3501 because the 'Do the best work' section ends there and 'Use appropriate style' begins a new top-level part. A cut at L3502 would have split the heading from its content.",
+  "The three children are uneven (1955, 1376, 1191 lines) but the cuts are at clean section boundaries with minimal cross-linkage; an even split would have cut through the middle of sections and required many more seeds.",
+  "Seeded many concepts that are established in child 1 and used in children 2 and 3 (e.g., stay_in_bounds, assume_best_intentions, control_side_effects, letter_and_spirit, scope_of_autonomy, protect_privileged_information, avoid_info_hazards, do_not_encourage_self_harm, sexual_content_involving_minors, respect_real_world_ties, sensitive_content, do_not_facilitate_illicit_behavior, avoid_overstepping, refusal_style, transformation_exception, protect_privacy, no_erotica_or_gore, avoid_targeted_political_manipulation, respect_creators, avoid_abuse, prevent_imminent_harm, avoid_regulated_advice, support_mental_health, use_preset_voice, uphold_fairness, avoid_hateful_content, avoid_extremist_content) so that children 2 and 3 can use the exact seed names.",
+  "Seeded many concepts that are established in child 2 and used in child 3 (e.g., assume_objective_pov, express_uncertainty, ask_clarifying_questions, highlight_misalignments, avoid_errors, be_creative, support_programmatic_use, no_agenda, be_honest_and_transparent, be_rationally_optimistic, be_responsible, be_interesting_and_interested, be_curious, be_clear, be_professional, have_conversational_sense, be_warm, do_not_make_unprompted_personal_comments, avoid_being_condescending, formatting, be_thorough_but_efficient, voice_style) so that child 3 can use the exact seed names.",
+  "The expected_cross_links list is long because the document is heavily cross-referenced; each entry names a concept that crosses a cut and is seeded in the vocabulary."
+ ],
+ "_span_lo": 171,
+ "_span_hi": 4692,
+ "driver_autofixes": [
+  "cross-link 'avoid_overstepping': provides_side_child 1 -> 2 (child containing established_around [3239, 3243])",
+  "cross-link 'refusal_style': provides_side_child 1 -> 3 (child containing established_around [4073, 4079])",
+  "cross-link 'be_rationally_optimistic': provides_side_child 2 -> 3 (child containing established_around [3597, 3599])",
+  "cross-link 'be_responsible': provides_side_child 2 -> 3 (child containing established_around [3629, 3635])",
+  "cross-link 'be_interesting_and_interested': provides_side_child 2 -> 3 (child containing established_around [3679, 3681])",
+  "cross-link 'be_curious': provides_side_child 2 -> 3 (child containing established_around [3708, 3710])",
+  "cross-link 'be_clear': provides_side_child 2 -> 3 (child containing established_around [3756, 3760])",
+  "cross-link 'be_professional': provides_side_child 2 -> 3 (child containing established_around [3818, 3822])",
+  "cross-link 'have_conversational_sense': provides_side_child 2 -> 3 (child containing established_around [3878, 3880])",
+  "cross-link 'be_warm': provides_side_child 2 -> 3 (child containing established_around [3955, 3957])",
+  "cross-link 'do_not_make_unprompted_personal_comments': provides_side_child 2 -> 3 (child containing established_around [3997, 3999])",
+  "cross-link 'avoid_being_condescending': provides_side_child 2 -> 3 (child containing established_around [4050, 4052])",
+  "cross-link 'formatting': provides_side_child 2 -> 3 (child containing established_around [4138, 4144])",
+  "cross-link 'be_thorough_but_efficient': provides_side_child 2 -> 3 (child containing established_around [4163, 4204])",
+  "cross-link 'voice_style': provides_side_child 2 -> 3 (child containing established_around [4253, 4260])"
+ ]
+}

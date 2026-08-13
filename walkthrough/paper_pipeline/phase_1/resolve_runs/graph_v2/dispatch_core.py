@@ -460,8 +460,10 @@ class Scheduler:
         st = DispatchState(
             self._key("U", task), "U", wdir, user,
             lambda o: R.apply_decisions(
-                json.loads(json.dumps(nodes)), o, provides, lo, hi,
-                self.drv.lines)[1],
+                json.loads(json.dumps(nodes)),
+                R.autofix_unwind_merges(o, nodes, provides, lo, hi,
+                                        self.drv.lines),
+                provides, lo, hi, self.drv.lines)[1],
             R.unwind_schema(len(dangling), len(nodes),
                             **R.enum_pools(self.drv.cfg, nodes, provides,
                                            dangling)),
@@ -477,6 +479,8 @@ class Scheduler:
                  "judgment_calls": dec.get("judgment_calls", []),
                  "cross_link_report": dec.get("cross_link_report", []),
                  "unwind_log": log, "brief_sha": self.drv.brief_sha}
+            if dec.get("_dropped_merges"):
+                g["dropped_merges"] = dec["_dropped_merges"]
             os.makedirs(wdir, exist_ok=True)
             R.write_json(art, g)
             self.drv._health(g, lo, hi, "unwind", wdir,

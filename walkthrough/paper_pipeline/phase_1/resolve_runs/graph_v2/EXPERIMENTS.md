@@ -1425,3 +1425,22 @@ Reviewer-confirmed CLEAN: BUG-1 fix, 402 ladder parity, morph state
 carry, dense-leaf guard, DEPTH_MAX, broken_promises shapes, enum edge
 cases, serial fallback artifacts, graveyard verdict spot-checks.
 ds6 preconditions ALL MET; launching on this commit.
+
+## 2026-08-12 (ds6): merge-drop autofix ADOPTED -- the recorded trigger fired
+
+ds6 exhausted 4 repair rounds on TWO unwinds (c2_c1_c2_c2, c2_c3_c1) both
+re-proposing loses-content merges; the identical-reply restart fired and
+the fresh draws re-proposed them as variants. That is precisely the
+pre-registered reconsideration trigger ("reconsider only if the restart
+proves insufficient on a real build") -- so the once-rejected alternative
+is adopted: `autofix_unwind_merges` drops a validator-rejected
+loses-content merge and records it (`dropped_merges` on the artifact),
+round 0, both paths. Grounds: a merge is an optional dedupe -- the
+un-merged graph IS the valid pre-merge state -- and the validator's own
+content-loss finding is the deterministic signal; no content decision is
+made by code. Other unwind error classes still repair. Pinned
+(test_autofix_unwind_merges_drops_only_rejected_merges); 107 green.
+Certificate note: ds6 now carries TWO mid-run code fixes (this and
+nothing else -- the three earlier stops were external kills with zero
+pipeline fault, all batches recovered). Also observed working live: the
+broken-promise health warning fired twice mid-build.

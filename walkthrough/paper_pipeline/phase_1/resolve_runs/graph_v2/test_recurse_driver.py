@@ -1133,3 +1133,32 @@ def test_rename_seat_verdicts_route_gated_proposals(tmp_path):
     assert needs == ["visibility"], "the confirmed rename must be applied"
     assert out["rename_seat_verdicts"][0]["verdict"] == "same_concept"
     assert SeatMock.calls == 1
+
+
+def test_autofix_unwind_merges_drops_only_rejected_merges():
+    """ds6 2026-08-12: two unwinds burned 4 repair rounds re-proposing
+    loses-content merges (fresh restarts re-proposed them too) -- the
+    recorded reconsideration trigger fired, so the once-rejected
+    alternative is adopted: a validator-rejected merge is DROPPED and
+    recorded, never repaired. Valid merges and other error classes are
+    untouched."""
+    nodes = [
+        {"id": "s", "establishes": "the short claim", "needs": [],
+         "provides": [], "spans": [{"lines": [1, 1]}]},
+        {"id": "r", "establishes": "the short claim plus the Vital Tier "
+                                   "item", "needs": [],
+         "provides": [], "spans": [{"lines": [2, 2]}]},
+        {"id": "a", "establishes": "identical twin claim", "needs": [],
+         "provides": [], "spans": [{"lines": [3, 3]}]},
+        {"id": "b", "establishes": "identical twin claim", "needs": [],
+         "provides": [], "spans": [{"lines": [4, 4]}]},
+    ]
+    o = {"merges": [{"survivor": "s", "retired": "r"},    # loses content
+                    {"survivor": "a", "retired": "b"}],   # clean absorb
+         "resolutions": [], "structure_nodes": []}
+    fixed = R.autofix_unwind_merges(o, nodes, {})
+    assert fixed["merges"] == [{"survivor": "a", "retired": "b"}]
+    assert fixed["_dropped_merges"] == ["r->s"]
+    import copy
+    _log, errs = R.apply_decisions(copy.deepcopy(nodes), fixed, {})
+    assert not errs, "after the drop, the decision object applies cleanly"

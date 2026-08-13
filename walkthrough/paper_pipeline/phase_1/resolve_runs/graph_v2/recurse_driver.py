@@ -941,6 +941,38 @@ def classify_cap_overflow(partial_text):
     return "dense"
 
 
+def autofix_unwind_merges(o, nodes, provides, lo=None, hi=None, lines=None):
+    """Drop merges the validator rejects for content loss, recorded --
+    never repaired (ds6 2026-08-12: two unwinds burned 4 repair rounds
+    each re-proposing loses-content merges; the identical-reply restart
+    fired and the fresh draws re-proposed them too, so the recorded
+    reconsideration trigger for this EXACT alternative has fired --
+    EXPERIMENTS.md 'rejected alternative, by name', now adopted). A merge
+    is an OPTIONAL dedupe: the un-merged graph is the valid pre-merge
+    state, so declining a rejected merge makes no content decision; the
+    validator's own content-loss finding is the deterministic signal.
+    Only loses-content rejections are dropped -- every other error class
+    still repairs."""
+    if not isinstance(o, dict) or not o.get("merges"):
+        return o
+    import copy as _c
+    _log, errs = apply_decisions(_c.deepcopy(nodes), _c.deepcopy(o),
+                                 provides, lo, hi, lines)
+    bad = set()
+    for e in errs:
+        m = re.match(r"merge (\S+)->(\S+) loses content", str(e))
+        if m:
+            bad.add((m.group(1), m.group(2)))
+    if bad:
+        o["merges"] = [
+            mg for mg in o["merges"]
+            if not (isinstance(mg, dict)
+                    and (mg.get("retired"), mg.get("survivor")) in bad)]
+        o.setdefault("_dropped_merges", []).extend(
+            sorted(f"{a}->{b}" for a, b in bad))
+    return o
+
+
 def enum_pools(cfg, nodes, provides, dangling):
     """The per-dispatch option pools for unwind_schema's enum forcing --
     single source for Driver.unwind, the core's _want_unwind and the
@@ -1373,8 +1405,9 @@ class Driver:
         if self.cfg.get("transcript_continuity"):
             user = continuity_transcript(self, division, lo, hi, seeds, user)
         dec = self.call(user, lambda o: apply_decisions(
-            json.loads(json.dumps(nodes)), o, provides, lo, hi,
-            self.lines)[1],
+            json.loads(json.dumps(nodes)),
+            autofix_unwind_merges(o, nodes, provides, lo, hi, self.lines),
+            provides, lo, hi, self.lines)[1],
             schema=unwind_schema(len(dangling), len(nodes),
                                  **enum_pools(self.cfg, nodes, provides,
                                               dangling)))
@@ -1386,6 +1419,8 @@ class Driver:
              "judgment_calls": dec.get("judgment_calls", []),
              "cross_link_report": dec.get("cross_link_report", []),
              "unwind_log": log, "brief_sha": self.brief_sha}
+        if dec.get("_dropped_merges"):
+            g["dropped_merges"] = dec["_dropped_merges"]
         os.makedirs(wdir, exist_ok=True)
         write_json(art, g)
         self._health(g, lo, hi, "unwind", wdir,          # review F6
