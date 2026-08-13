@@ -882,7 +882,7 @@ def test_resolution_pass_gates_dissimilar_renames(tmp_path):
     # the dissimilar rename is GATED: need keeps its name, stays dangling
     assert g2["nodes"][1]["needs"][0]["name"] == \
         "stay_in_bounds_content_categories"
-    assert any("gated on prose" in a for a in g2["driver_autofixes"])
+    assert any("gated" in a for a in g2["driver_autofixes"])
 
 
 def test_duplicate_seed_names_autofix_validator_coherence():
@@ -1182,3 +1182,73 @@ def test_autofix_unwind_merges_drops_only_rejected_merges():
     import copy
     _log, errs = R.apply_decisions(copy.deepcopy(nodes), fixed, {})
     assert not errs, "after the drop, the decision object applies cleanly"
+
+
+def test_unwind_renames_pass_through_the_seat(tmp_path):
+    """2026-08-13 ruling: renames are adjudicated WHEREVER proposed. An
+    unwind resolution below the gate reaches the seat; a rejection stays
+    dangling and the verdict lands on the unwind artifact."""
+    class SeatMock(R.MockClient):
+        seat_calls = 0
+
+        def complete(self, system, user):
+            if "adjudicate" in system:
+                SeatMock.seat_calls += 1
+                return {"text": '{"verdict": "different_concept", '
+                                '"grounds": "unrelated"}', "usage": {}}
+            return R.MockClient.complete(self, system, user)
+    reps = json.load(open(os.path.join(HERE, "mock_replies.json")))
+    # give the stored unwind reply a below-gate rename proposal
+    reps[3] = dict(reps[3], resolutions=[
+        {"needer": "L13-20_n002", "name": "house_rules",
+         "rename_to": "clearance_order"}])
+    lines = R.load_doc(os.path.join(HERE, "toy_doc.md"))
+    drv = R.Driver({"leaf_max_lines": 15, "rename_seat": True},
+                   SeatMock(reps), lines, str(tmp_path))
+    g = drv.build(1, len(lines), [], str(tmp_path))
+    assert SeatMock.seat_calls == 1
+    assert g["rename_seat_verdicts"][0]["verdict"] == "different_concept"
+    provs = {R.nm(p) for n in g["nodes"] for p in n.get("provides", [])}
+    dang = {R.nm(d) for n in g["nodes"] for d in n.get("needs", [])
+            if R.nm(d) not in provs}
+    assert "house_rules" in dang, "the seat-rejected rename must NOT apply"
+
+
+def test_greedy_descend_applies_first_seat_accept(tmp_path, monkeypatch):
+    """The recall booster: a surviving dangling walks the embedding-ranked
+    top candidates through the seat; the first same_concept applies, and
+    the whole stage skips cleanly (recorded) when embeddings fail."""
+    g = {"nodes": [
+        {"id": "a", "establishes": "defines visibility",
+         "needs": [], "provides": [{"name": "visibility",
+                                    "prose": "what the user can see"}],
+         "spans": [{"lines": [1, 1]}]},
+        {"id": "b", "establishes": "relies on display state",
+         "needs": [{"name": "shown_to_user",
+                    "prose": "whether content is displayed to the user"}],
+         "provides": [], "spans": [{"lines": [2, 2]}]}],
+        "uncovered": []}
+
+    class SeatMock(R.MockClient):
+        def __init__(self):
+            super().__init__([])
+            self.key = "k"
+
+        def complete(self, system, user):
+            return {"text": '{"verdict": "same_concept", '
+                            '"grounds": "same display state"}',
+                    "usage": {}}
+    monkeypatch.setattr(R, "_embed_texts",
+                        lambda texts, key: [[1.0, 0.0]] * len(texts))
+    drv = R.Driver({"rename_seat": True, "greedy_rename_descend": True},
+                   SeatMock(), ["alpha", "beta"], str(tmp_path))
+    R.greedy_rename_descend(drv, g, g)
+    assert g["nodes"][1]["needs"][0]["name"] == "visibility"
+    assert g["rename_seat_verdicts"][0]["where"] == "greedy descend"
+    # embedding failure -> clean skip, recorded
+    g2 = json.loads(json.dumps(g))
+    g2["nodes"][1]["needs"][0]["name"] = "shown_again"
+    monkeypatch.setattr(R, "_embed_texts", lambda texts, key: None)
+    R.greedy_rename_descend(drv, g2, g2)
+    assert any("SKIPPED" in a for a in g2.get("driver_autofixes", []))
+    assert g2["nodes"][1]["needs"][0]["name"] == "shown_again"

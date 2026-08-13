@@ -470,6 +470,10 @@ class Scheduler:
             self.drv.cfg, self.drv.out, tally=self.drv._tally)
 
         def done(dec):
+            meta = {}
+            dec["resolutions"] = R.adjudicate_resolutions(
+                self.drv, dec.get("resolutions"), nodes, meta,
+                context=f"unwind L{lo}-{hi}")
             log, errs = R.apply_decisions(nodes, dec, provides, lo, hi,
                                           self.drv.lines)
             if errs:
@@ -479,6 +483,7 @@ class Scheduler:
                  "judgment_calls": dec.get("judgment_calls", []),
                  "cross_link_report": dec.get("cross_link_report", []),
                  "unwind_log": log, "brief_sha": self.drv.brief_sha}
+            g.update(meta)
             if dec.get("_dropped_merges"):
                 g["dropped_merges"] = dec["_dropped_merges"]
             os.makedirs(wdir, exist_ok=True)

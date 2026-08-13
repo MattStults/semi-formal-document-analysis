@@ -1473,6 +1473,10 @@ class Driver:
             schema=unwind_schema(len(dangling), len(nodes),
                                  **enum_pools(self.cfg, nodes, provides,
                                               dangling)))
+        meta = {}
+        dec["resolutions"] = adjudicate_resolutions(
+            self, dec.get("resolutions"), nodes, meta,
+            context=f"unwind L{lo}-{hi}")
         log, errs = apply_decisions(nodes, dec, provides, lo, hi, self.lines)
         if errs:
             raise T.Phase1Error("unwind decision application failed: "
@@ -1481,6 +1485,7 @@ class Driver:
              "judgment_calls": dec.get("judgment_calls", []),
              "cross_link_report": dec.get("cross_link_report", []),
              "unwind_log": log, "brief_sha": self.brief_sha}
+        g.update(meta)
         if dec.get("_dropped_merges"):
             g["dropped_merges"] = dec["_dropped_merges"]
         os.makedirs(wdir, exist_ok=True)
@@ -1671,6 +1676,193 @@ def resolution_pass_user(dangling, nodes):
             "\"judgment_calls\": [...max 10, decision classes only]}")
 
 
+EMBED_MODEL = "intfloat/multilingual-e5-large-instruct"
+
+
+def _embed_texts(texts, api_key):
+    """Embedding vectors via curl (together's WAF 403s stdlib urllib).
+    Returns None on ANY failure -- the descend is an optional recall
+    booster and must never break a finished build."""
+    import subprocess
+    import tempfile
+    out = []
+    try:
+        for i in range(0, len(texts), 64):
+            body = json.dumps({"model": EMBED_MODEL,
+                               "input": texts[i:i + 64]}).encode()
+            with tempfile.NamedTemporaryFile("wb", suffix=".json",
+                                             delete=False) as tf:
+                tf.write(body)
+                name = tf.name
+            p = subprocess.run(
+                ["curl", "-sS", "https://api.together.xyz/v1/embeddings",
+                 "-H", "Authorization: Bearer " + api_key,
+                 "-H", "Content-Type: application/json",
+                 "--data-binary", "@" + name],
+                capture_output=True, text=True, timeout=180)
+            os.unlink(name)
+            r = json.loads(p.stdout)
+            out += [d["embedding"] for d in r["data"]]
+        return out
+    except Exception:                            # noqa: BLE001
+        return None
+
+
+def greedy_rename_descend(drv, g, record):
+    """Recall booster (Matt-approved architecture, 2026-08-13): for each
+    dangling that SURVIVES the pass, rank all providers by embedding
+    cosine on enriched prose (measured 82% recall@10 on golden; the
+    canonical-card variant measured WORSE and was declined), walk the top
+    5 through the rename seat, apply the first same_concept verdict.
+    Below-threshold danglings keep their ranked near-misses on the
+    artifact for the risk queue. Skipped cleanly (recorded) when
+    embeddings or the seat are unavailable."""
+    if not (drv.cfg.get("greedy_rename_descend")
+            and drv.cfg.get("rename_seat")):
+        return
+    import rename_seat as RS
+    nodes = g["nodes"]
+    provides = {}
+    prov_prose, prov_node = {}, {}
+    for n in nodes:
+        for p in n.get("provides", []):
+            provides.setdefault(nm(p), []).append(n["id"])
+            if isinstance(p, dict):
+                prov_prose.setdefault(p["name"], p.get("prose", ""))
+                prov_node.setdefault(p["name"], n)
+    dangling = [(n, d) for n in nodes for d in n.get("needs", [])
+                if isinstance(d, dict) and nm(d) not in provides]
+    if not dangling:
+        return
+    cands = sorted(prov_prose)
+    key = getattr(drv.client, "key", None) or os.environ.get(
+        "TOGETHER_API_KEY", "")
+    ctexts = [prov_prose[c] + " || " + prov_node[c].get("establishes", "")
+              for c in cands]
+    qtexts = [(d.get("prose", "") + " || " + n.get("establishes", ""))
+              for n, d in dangling]
+    vecs = _embed_texts(ctexts + qtexts, key)
+    if vecs is None:
+        record.setdefault("driver_autofixes", []).append(
+            "greedy descend SKIPPED: embedding call failed (danglings "
+            "stay; rerun the pass to retry)")
+        return
+    import math
+
+    def cos(a, b):
+        d = sum(x * y for x, y in zip(a, b))
+        return d / (math.sqrt(sum(x * x for x in a))
+                    * math.sqrt(sum(x * x for x in b)) + 1e-9)
+    cvecs, qvecs = vecs[:len(cands)], vecs[len(cands):]
+    accepted = []
+    seen_verdicts = {}
+    for (n, d), qv in zip(dangling, qvecs):
+        ranked = sorted(((cos(qv, cv), c) for cv, c in zip(cvecs, cands)),
+                        reverse=True)[:5]
+        hit = None
+        for s, cand in ranked:
+            vk = (d.get("prose", ""), cand)
+            if vk in seen_verdicts:
+                v = seen_verdicts[vk]
+            else:
+                prompt = RS.build_prompt(d.get("prose", ""), n,
+                                         prov_prose.get(cand, ""),
+                                         prov_node.get(cand), drv.lines)
+                slot = (lambda sch: setattr(drv.client, "reply_schema",
+                                            sch)) \
+                    if hasattr(drv.client, "reply_schema") else None
+                v = RS.judge(drv.client.complete, prompt, schema_slot=slot)
+                seen_verdicts[vk] = v
+                record.setdefault("rename_seat_verdicts", []).append(
+                    {"proposal": {"needer": n["id"], "name": nm(d),
+                                  "rename_to": cand},
+                     "verdict": v["verdict"], "grounds": v["grounds"],
+                     "where": "greedy descend"})
+            if v["verdict"] == "same_concept":
+                hit = cand
+                break
+        if hit:
+            accepted.append({"needer": n["id"], "name": nm(d),
+                             "rename_to": hit})
+        else:
+            record.setdefault("descend_near_misses", []).append(
+                {"needer": n["id"], "name": nm(d),
+                 "candidates": [{"name": c, "sim": round(s, 3)}
+                                for s, c in ranked]})
+    if hasattr(drv.client, "reply_schema"):
+        drv.client.reply_schema = None
+    if accepted:
+        log, errs = apply_decisions(nodes, {"resolutions": accepted},
+                                    provides)
+        if errs:
+            raise T.Phase1Error("greedy descend application failed: "
+                                + "; ".join(str(e) for e in errs[:5]))
+        record.setdefault("driver_autofixes", []).append(
+            f"greedy descend: {len(accepted)} seat-confirmed rename(s) "
+            f"of {len(dangling)} dangling(s)")
+    print(f"  greedy descend: {len(accepted)}/{len(dangling)} danglings "
+          f"seat-confirmed")
+
+
+def adjudicate_resolutions(drv, resolutions, nodes, record, context=""):
+    """THE one choke point every proposed rename passes through (Matt's
+    2026-08-13 ruling: renames are adjudicated WHEREVER proposed -- unwind
+    or final pass; ds6 measured 417 unadjudicated unwind renames at 31%
+    mismatch). Gate prefilter (>=0.25 prose sim auto-accepts), rename seat
+    on the rest; verdicts + gate notes land on `record`. Returns the
+    accepted list; everything else stays dangling honestly."""
+    prov_prose, prov_node = {}, {}
+    by_id = {n["id"]: n for n in nodes}
+    for n in nodes:
+        for p in n.get("provides", []):
+            if isinstance(p, dict):
+                prov_prose.setdefault(p["name"], p.get("prose", ""))
+                prov_node.setdefault(p["name"], n)
+    need_prose = {}
+    for n in nodes:
+        for d in n.get("needs", []):
+            if isinstance(d, dict):
+                need_prose.setdefault((n["id"], d.get("name")),
+                                      d.get("prose", ""))
+
+    def _sim(a, b):
+        ta = {w for w in re.findall(r"[a-z]{4,}", (a or "").lower())}
+        tb = {w for w in re.findall(r"[a-z]{4,}", (b or "").lower())}
+        return len(ta & tb) / max(len(ta | tb), 1)
+
+    kept, gated = [], []
+    for r in resolutions or []:
+        if not isinstance(r, dict):
+            continue
+        np = need_prose.get((r.get("needer"), r.get("name")), "")
+        pp = prov_prose.get(r.get("rename_to") or r.get("name"), "")
+        (kept if _sim(np, pp) >= 0.25 else gated).append(r)
+    if gated and drv.cfg.get("rename_seat"):
+        import rename_seat as RS
+        still = []
+        for r in gated:
+            name = r.get("rename_to") or r.get("name")
+            prompt = RS.build_prompt(
+                need_prose.get((r.get("needer"), r.get("name")), ""),
+                by_id.get(r.get("needer")),
+                prov_prose.get(name, ""), prov_node.get(name), drv.lines)
+            slot = (lambda sch: setattr(drv.client, "reply_schema", sch)) \
+                if hasattr(drv.client, "reply_schema") else None
+            v = RS.judge(drv.client.complete, prompt, schema_slot=slot)
+            record.setdefault("rename_seat_verdicts", []).append(
+                {"proposal": r, "verdict": v["verdict"],
+                 "grounds": v["grounds"], "where": context})
+            (kept if v["verdict"] == "same_concept" else still).append(r)
+        gated = still
+        if hasattr(drv.client, "reply_schema"):
+            drv.client.reply_schema = None    # review finding 5
+    if gated:
+        record.setdefault("driver_autofixes", []).append(
+            f"{context or 'resolution pass'}: {len(gated)} rename(s) "
+            f"gated, left dangling")
+    return kept
+
+
 def run_resolution_pass(drv, g, out_dir):
     """Post-build stage (Matt-approved integration 2026-08-11): resolve
     the finished graph's danglings as a dedicated pass. Applies to the
@@ -1715,65 +1907,11 @@ def run_resolution_pass(drv, g, out_dir):
                                               dangling)))
     # ds4_divergence_analysis.md 2026-08-12: ungated, this pass renamed
     # stay_in_bounds_content_categories -> content_definition and attached
-    # 38 edges to the WRONG concept (message-format `content`). A rename
-    # applies only when need-prose and provider-prose actually describe
-    # the same thing; the rest stay dangling honestly (absence > wrong).
-    prose_by_need = {(d["needer"], d["name"]): d.get("prose", "")
-                     for d in dangling}
-    prov_prose = {}
-    for n in nodes:
-        for p in n.get("provides", []):
-            if isinstance(p, dict):
-                prov_prose.setdefault(p["name"], p.get("prose", ""))
-
-    def _sim(a, b):
-        ta = {w for w in re.findall(r"[a-z]{4,}", (a or "").lower())}
-        tb = {w for w in re.findall(r"[a-z]{4,}", (b or "").lower())}
-        return len(ta & tb) / max(len(ta | tb), 1)
-    kept, gated = [], []
-    for r in dec.get("resolutions", []) or []:
-        if not isinstance(r, dict):
-            continue
-        np = prose_by_need.get((r.get("needer"), r.get("name")), "")
-        pp = prov_prose.get(r.get("rename_to") or r.get("name"), "")
-        (kept if _sim(np, pp) >= 0.25 else gated).append(r)
-    # Matt's ruling 2026-08-12 (option c): the gate is a PREFILTER, not the
-    # verdict. Below-gate proposals go to the rename seat -- one-shot,
-    # order-blind, names never shown (rename_seat.py) -- instead of being
-    # auto-rejected. Seat off -> the ds5 behavior, byte-identical.
-    if gated and drv.cfg.get("rename_seat"):
-        import rename_seat as RS
-        by_id = {n["id"]: n for n in nodes}
-        prov_node = {}
-        for n in nodes:
-            for p in n.get("provides", []):
-                if isinstance(p, dict):
-                    prov_node.setdefault(p["name"], n)
-        still_gated = []
-        for r in gated:
-            name = r.get("rename_to") or r.get("name")
-            prompt = RS.build_prompt(
-                prose_by_need.get((r.get("needer"), r.get("name")), ""),
-                by_id.get(r.get("needer")),
-                prov_prose.get(name, ""), prov_node.get(name), drv.lines)
-            slot = (lambda sch: setattr(drv.client, "reply_schema", sch)) \
-                if hasattr(drv.client, "reply_schema") else None
-            v = RS.judge(drv.client.complete, prompt, schema_slot=slot)
-            g.setdefault("rename_seat_verdicts", []).append(
-                {"proposal": r, "verdict": v["verdict"],
-                 "grounds": v["grounds"]})
-            (kept if v["verdict"] == "same_concept"
-             else still_gated).append(r)
-        gated = still_gated
-        # restore the client's grammar slots (review finding 5): the seat
-        # schema must not leak into any later direct client call
-        if hasattr(drv.client, "reply_schema"):
-            drv.client.reply_schema = None
-    dec["resolutions"] = kept
-    if gated:
-        g.setdefault("driver_autofixes", []).append(
-            f"resolution pass: {len(gated)} rename(s) gated on prose "
-            f"similarity (< 0.25), left dangling")
+    # 38 edges to the WRONG concept. The shared choke point (gate prefilter
+    # + rename seat, Matt's option c) now filters here AND at both unwind
+    # sites -- absence > wrong, everywhere a rename is proposed.
+    dec["resolutions"] = adjudicate_resolutions(
+        drv, dec.get("resolutions"), nodes, g, context="resolution pass")
     shutil_path = os.path.join(out_dir, "root_graph.pre_resolution.json")
     write_json(shutil_path, g)
     log, errs = apply_decisions(nodes, dec, provides)
@@ -1790,6 +1928,7 @@ def run_resolution_pass(drv, g, out_dir):
         f"resolution pass: {len([l for l in log if l.startswith('resolved')])}"
         f" resolved, {len(dangling)} danglings before")
     print(f"resolution pass: {len(log)} actions on {len(dangling)} danglings")
+    greedy_rename_descend(drv, g, g)
     return g
 
 
