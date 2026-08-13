@@ -1,5 +1,8 @@
 """The rename-adjudication seat (Matt's ruling 2026-08-12, option c).
 
+BRIEF = baseline + H1 (referent test) + H2 (text-over-wording), ADOPTED per
+the 2026-08-13 sweep (sens 0.57->0.82; ruling + audit in EXPERIMENTS.md).
+
 The resolution pass PROPOSES renames of dangling needs to provided names;
 the 0.25 similarity gate auto-accepts the lexically obvious ones; every
 proposal below the gate comes HERE instead of being auto-rejected. One
@@ -33,6 +36,19 @@ different scope; different bearer of the obligation) -> different_concept.
 When uncertain, answer different_concept: an unlinked concept is recorded
 honestly as unresolved, while a wrong identification silently corrupts
 every edge built on it.
+
+The document often describes ONE named concept from different facets: a
+rule and the authority level it carries, a mechanism and its product, a
+principle and the section that houses it. Descriptions capturing different
+facets of the SAME referent are still the same concept. The test is not
+"do these descriptions describe the same kind of entity?" but "do the two
+passages engage the same named thing in the document -- the same tier of
+the hierarchy, the same section's rule, the same defined object?"
+
+The two descriptions were written independently by different annotators
+who each saw only their own passage. Their WORDING will differ even when
+the referent is identical -- weigh the passages' quoted text above the
+description phrasing.
 
 Reply with ONE JSON object and nothing else:
 {"verdict": "same_concept" | "different_concept", "grounds": "<one or two

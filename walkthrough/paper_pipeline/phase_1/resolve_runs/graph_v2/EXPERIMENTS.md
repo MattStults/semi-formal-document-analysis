@@ -1528,3 +1528,31 @@ forced-binary enum verdicts work perfectly in both modes.
   ~40 per-section boilerplate nodes are nearly unconsumed downstream --
   restructuring is ~free for steps 1-4. Awaiting Matt's go (it reshapes
   the graph).
+
+## 2026-08-13: ds7 build-out, tranche 1 LANDED (108 tests green)
+
+* AUTHORITY RESTRUCTURE (Matt-approved), enforced not prose: discovery --
+  the convention text has been in leaf_extra since 08-11 and ds6 still
+  emitted 283 coinages (prose does not hold; enforcement does).
+  `autofix_authority_coinages` mechanically canonicalizes a coinage to
+  the LEVEL named by the span's own `authority=` label (code reads the
+  document, decides nothing); unmappable coinages are validate_leaf
+  errors the repair loop must fix. Pinned.
+* MODAL-STRENGTH line in leaf_extra (the 6-real-drift class).
+* MERGE-BAIT line in the unwind prompt (different sections != restatements).
+* RENAME ENUMS OFF FOR GOOD, id enums stay (ruling + grounds in the code).
+* rename_seat.BRIEF = adopted H1+H2 verbatim.
+
+TRANCHE 2 (designed, NOT yet implemented -- next work items):
+1. Unwind resolutions through gate+seat (factor run_resolution_pass's
+   filter into a shared function; apply at both unwind sites).
+2. Greedy seat descend in the final resolution pass: candidates =
+   generator proposal + embedding top-5 (raw enriched prose ranking, per
+   the canonical-card negative result), stop at first accept, near-misses
+   recorded on the artifact.
+3. risk_queue.py post-build stage (Matt's frontier-dispatch design):
+   rank graph decisions by existing deterministic signals -- seat-accept
+   margin, name-prose similarity, dropped merges, broken promises, modal
+   drift verdicts, provider fanout -- emit ranked risk_queue.json for
+   bounded frontier review.
+Then: clean-context adversarial review of the whole tranche -> ds7.

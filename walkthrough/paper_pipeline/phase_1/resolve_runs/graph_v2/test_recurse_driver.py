@@ -1034,29 +1034,49 @@ def test_enum_forcing_flag_off_is_byte_identical():
                 {}, [], {}, []))[1], sort_keys=True))
 
 
-def test_enum_forcing_offers_only_valid_options():
-    """Matt's plan 2026-08-12: rename_to draws ONLY from provided names,
-    needer/survivor/retired ONLY from node ids, name ONLY from the actual
-    danglings. The ds3-era failure (renaming a dangling to a name nothing
-    provides, four repair rounds) is now unspeakable in the grammar."""
+def test_enum_forcing_ids_only_renames_unforced():
+    """2026-08-13 ruling (ds6 lesson): rename enums OFF for good -- a
+    closed menu of valid targets made wrong-but-valid the path of least
+    resistance (31% mismatched edges). ID enums stay: pure syntax, never
+    a plausible-but-wrong content decision."""
     nodes = [{"id": "a"}, {"id": "b"}]
     provides = {"x": ["a"], "y": ["b"]}
     dangling = [{"needer": "b", "name": "x_alias"}]
     pools = R.enum_pools({"enum_decisions": True}, nodes, provides, dangling)
+    assert set(pools) == {"node_ids"}
     _, sch = R.unwind_schema(1, 2, **pools)
     res = sch["properties"]["resolutions"]["items"]["properties"]
     mrg = sch["properties"]["merges"]["items"]["properties"]
-    assert res["rename_to"]["enum"] == ["x", "y"]
-    assert "phantom_name" not in res["rename_to"]["enum"]
+    assert "enum" not in res["rename_to"]      # renames adjudicated by seat
+    assert "enum" not in res["name"]
     assert res["needer"]["enum"] == ["a", "b"]
-    assert res["name"]["enum"] == ["x_alias"]
     assert mrg["survivor"]["enum"] == ["a", "b"]
     assert mrg["retired"]["enum"] == ["a", "b"]
-    # resolution pass rides the same pools with merges/structure closed
-    _, rsch = R.resolution_schema(1, 2, **pools)
-    assert rsch["properties"]["merges"]["maxItems"] == 0
-    assert (rsch["properties"]["resolutions"]["items"]["properties"]
-            ["rename_to"]["enum"] == ["x", "y"])
+
+
+def test_authority_coinages_autofix_to_the_spans_own_label():
+    """Matt-approved restructure 2026-08-13, ENFORCED: a per-section
+    coinage whose span carries the document's authority=LEVEL label is
+    mechanically canonicalized; an unmappable one is a validation error
+    the repair loop must fix."""
+    lines = ["## Stay in bounds {authority=root}", "body text", "plain"]
+    g = {"nodes": [
+        {"id": "n1", "establishes": "heading authority",
+         "needs": [{"name": "stay_in_bounds_section_authority",
+                    "prose": "p"}],
+         "provides": [], "spans": [{"lines": [1, 2]}]},
+        {"id": "n2", "establishes": "no label here",
+         "needs": [{"name": "other_section_authority", "prose": "p"}],
+         "provides": [], "spans": [{"lines": [3, 3]}]}],
+        "uncovered": []}
+    R.autofix_authority_coinages(g, lines)
+    assert g["nodes"][0]["needs"][0]["name"] == "root_authority"
+    assert any("authority coinage" in a
+               for a in g.get("driver_autofixes", []))
+    errs = R.validate_leaf(g, 1, 3, lines)
+    assert any("other_section_authority" in e and "FORBIDDEN" in e
+               for e in errs)
+    assert not any("root_authority' is a per-section" in e for e in errs)
 
 
 # ---------------- rename seat (Matt's option-c ruling, 2026-08-12) --------

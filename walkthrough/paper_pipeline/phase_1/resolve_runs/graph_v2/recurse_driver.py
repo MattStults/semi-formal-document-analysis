@@ -380,6 +380,39 @@ def formatting_reason(line):
 LEAF_DENSITY_MAX = 0.7
 
 
+_AUTH_LABEL = re.compile(r"authority\s*=\s*(root|system|developer|user|"
+                         r"guideline)")
+
+
+def autofix_authority_coinages(g, lines):
+    """Deterministic canonicalization (Matt-approved restructure,
+    2026-08-13): a per-section authority coinage (`X_section_authority`)
+    whose node's span contains the document's own `authority=LEVEL` label
+    is mechanically renamed to the canonical `LEVEL_authority` -- the
+    document names the level; code only reads it. Unmappable coinages are
+    left for validate_leaf to reject (repair loop). Prose is kept."""
+    for n in g.get("nodes", []):
+        levels = set()
+        for s in n.get("spans", []):
+            a, b = (s.get("lines") or [0, 0])[:2]
+            for ln in lines[max(a - 1, 0):b]:
+                m = _AUTH_LABEL.search(ln)
+                if m:
+                    levels.add(m.group(1))
+        if len(levels) != 1:
+            continue                     # ambiguous or absent: validator's
+        canon = f"{levels.pop()}_authority"      # problem, not autofix's
+        for key in ("needs", "provides"):
+            for d in n.get(key, []):
+                name = d.get("name") if isinstance(d, dict) else None
+                if isinstance(name, str) and "section_authority" in name:
+                    d["name"] = canon
+                    g.setdefault("driver_autofixes", []).append(
+                        f"{n.get('id')}: authority coinage '{name}' -> "
+                        f"'{canon}' (span's own authority= label)")
+    return g
+
+
 def validate_leaf(g, lo, hi, lines, derive_uncovered=False):
     """Leaf checks. `derive_uncovered` (ds3 flag, default OFF) switches the
     coverage tail: instead of trusting a model-emitted `uncovered` and
@@ -389,6 +422,23 @@ def validate_leaf(g, lo, hi, lines, derive_uncovered=False):
     behavior, byte-identical."""
     errs = []
     dedupe_nodes(g)
+    autofix_authority_coinages(g, lines)
+    # Matt-approved restructure 2026-08-13 (ENFORCED, not prose: the leaf
+    # extra has carried the convention since 08-11 and ds6 still emitted
+    # 283 coinages): any surviving per-section authority coinage is an
+    # error the repair loop must fix -- the canonical names are the ONLY
+    # lawful spelling of this dependency.
+    for n in g.get("nodes", []):
+        for key in ("needs", "provides"):
+            for d in n.get(key, []):
+                name = d.get("name") if isinstance(d, dict) else d
+                if isinstance(name, str) and "section_authority" in name:
+                    errs.append(
+                        f"{n.get('id')}: '{name}' is a per-section "
+                        f"authority coinage -- FORBIDDEN by the authority "
+                        f"convention. Use the canonical level name "
+                        f"(root/system/developer/user/guideline_authority) "
+                        f"or authority_levels_hierarchy")
     span_lines = hi - lo + 1
     if len(g.get("nodes", [])) > max(LEAF_DENSITY_MAX * span_lines, 8):
         errs.append(
@@ -816,8 +866,12 @@ def leaf_extra(lo, hi):
             "authority-level concept (root_authority / system_authority / "
             "developer_authority / user_authority / guideline_authority, "
             "or authority_levels_hierarchy for the ordering) -- never a "
-            "per-section coinage like X_section_authority. Verified "
-            "2026-08-11: 4/4 draws comply when stated here.")
+            "per-section coinage like X_section_authority (now also "
+            "ENFORCED by validator). "
+            "OBLIGATION STRENGTH: state each obligation at the "
+            "passage's own strength -- must/never stays mandatory, "
+            "should stays should, may stays optional. Do not flatten, "
+            "strengthen, or weaken (measured drift class, 2026-08-13).")
 
 
 def leaf_schema(lo, hi):
@@ -980,10 +1034,13 @@ def enum_pools(cfg, nodes, provides, dangling):
     (flag-off parity, same discipline as every other ds3+ flag)."""
     if not cfg.get("enum_decisions"):
         return {}
-    return {"provided_names": list(provides),
-            "node_ids": [n["id"] for n in nodes],
-            "dangling_names": [d.get("name") for d in dangling
-                               if d.get("name")]}
+    # ds6 lesson (2026-08-13 ruling): the RENAME enums are OFF for good --
+    # a closed menu of valid targets made wrong-but-valid the model's path
+    # of least resistance (31% mismatched edges). Only the ID enums stay:
+    # needer/survivor/retired are pure syntax (a wrong id is never a
+    # plausible-but-wrong content decision, just an error the validator
+    # catches). Renames are adjudicated by the seat instead.
+    return {"node_ids": [n["id"] for n in nodes]}
 
 
 def broken_promises(division, children_graphs):
@@ -1037,7 +1094,12 @@ def unwind_inputs(division, children, lo, hi, cfg):
             "The mechanical merge is DONE in code. Decide only what "
             "follows, from the reports below. NEVER resolve a need "
             "against a node that merely mentions the concept; needs no "
-            "child provides stay dangling (omit them from resolutions).\n"
+            "child provides stay dangling (omit them from resolutions). "
+            "MERGES: nodes about DIFFERENT sections are never "
+            "restatements, however similar their template (a "
+            "section-authority claim for section X and one for section Y "
+            "are two facts); prefer keeping both nodes over any merge "
+            "that would blur which section a claim belongs to.\n"
             f"Your division (with its expected_cross_links):\n"
             f"{json.dumps(division, indent=1)}\n"
             f"DANGLING NEEDS:\n{json.dumps(dangling, indent=1)}\n"
