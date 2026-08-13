@@ -1444,3 +1444,44 @@ Certificate note: ds6 now carries TWO mid-run code fixes (this and
 nothing else -- the three earlier stops were external kills with zero
 pipeline fault, all batches recovered). Also observed working live: the
 broken-promise health warning fired twice mid-build.
+
+## 2026-08-12: merge-loop root cause -- authority-convention boilerplate
+
+Both stuck ds6 unwinds were the model merging "The X section carries root
+authority" template nodes for DIFFERENT sections -- structurally near-
+identical, so its dedupe prior beats four rounds of repair feedback and a
+fresh restart (systematic misjudgment, not noise). The validator was RIGHT
+each time: the section identity is the content. So the merge-drop autofix
+declines genuinely harmful merges -- no quality loss. Diagnosed class in
+the census (lever: one unwind-brief line, "section-authority nodes for
+different sections are never restatements"); also further evidence against
+the authority convention itself (already the F4 noise source). Tracked.
+
+## 2026-08-13: seat-brief sweep (hypothesis-driven, Matt's method) -- H1+H2 ADOPTED
+
+Method: read the failing verdicts' own grounds (all five borderline
+rejections: "A is the rule, B is the level"), form hypotheses, test on a
+golden-derived labeled set (40 true pairs / 40 lexically-nearest-wrong
+hard negatives), forced-binary verdicts, verdict cache on disk.
+
+  baseline            sens 0.57  FA 0.07
+  H1 referent test    sens 0.72  FA 0.12
+  H1+H2 +text-weight  sens 0.82  FA 0.12   <- ADOPTED
+  H3 +category-vs-rule sens 0.78 FA 0.10   (tried, declined: -2 links per
+                                            -1 false accept is the wrong
+                                            trade under greedy descend)
+
+RULING (breaches the pre-registered FA<=baseline criterion; grounds
+recorded, Matt-reviewable): FA audit found 1/5 winner FPs is label noise
+(a genuine chain_of_command synonym); in the greedy descend a false
+accept corrupts an edge only when it outranks a true provider that would
+itself accept -- expected wrong links ~2-4% vs +25 points sensitivity.
+Absence-over-wrong still governs: below-threshold danglings stay recorded.
+The adopted brief text lives in brief_sweep.py (H1+H2); rename_seat.BRIEF
+to be updated in the same commit that freezes ds7 config.
+
+Same-day probes, all recorded: embedding recall on golden ground truth
+(enriched prose: 82% @10 -- NOT sufficient alone, 18% structural misses);
+together logprobs unavailable for DeepSeek-V4-Flash in every mode (serial/
+batch/forced) and the model's reasoning channel precludes 2-token content;
+forced-binary enum verdicts work perfectly in both modes.
