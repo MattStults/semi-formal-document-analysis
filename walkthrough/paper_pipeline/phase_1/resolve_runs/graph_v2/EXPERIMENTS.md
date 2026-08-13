@@ -1574,3 +1574,28 @@ Live spot checks, $0.004 total:
    queue as seat_accepted_rename), near-misses recorded.
 
 Next: full-pipeline clean-context adversarial review -> iterate -> ds7.
+
+## 2026-08-13: ds7 PRE-REGISTERED EXPECTATIONS (frozen before launch)
+
+Config: batch mode, enum_decisions (ids only), rename_seat, greedy
+descend, enforced authority canonicalization, modal + merge-bait prompt
+lines. Acceptance reads against THESE numbers, not against hopes:
+* Zero human/code interventions mid-run (the certificate property).
+* Cost: $0.20-0.40 (seat + descend add ~500-900 small calls).
+* Coinages: ZERO `section_authority` names in the final graph (enforced).
+* Mismatched edges (<0.1 name-prose sim): <= 7% (ds5's best; ds6 was 31%).
+* Name-level danglings: 20-80 instances (ds5: 166, ds6: 0-by-corruption).
+  Every residual dangling must be external-by-design or carry a seat
+  rejection / near-miss record. NOT a regression signal if within band.
+* Boundary objects: chain_of_command NOT dangling; no wrong-wiring of
+  external references (usage-policies class).
+* Every applied rename carries a seat verdict or a >=0.25 gate pass on
+  the artifact; risk_queue.json expected dominated by
+  seat_accepted_rename + dangling_near_miss (both are REVIEW queues, not
+  defects).
+* Repair census: total buried failures <= ds6's 17, with
+  merge-loses-content and cross-link-provider at or near zero (both
+  causes closed).
+Deviation outside any band = diagnose before accepting, per the census
+process. Frontier fix pass (Matt's #3/#4) runs AFTER acceptance, off
+risk_queue.json, top-down within a stated budget.
