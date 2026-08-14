@@ -1716,3 +1716,11 @@ batch recover via cache + manifest. QUEUED FIX (post-run, census
 process): add DNS-failure strings ("Could not resolve host", curl exit
 6/7 markers) to the transient ladders in both paths; the network-blip
 class is exactly why "Errno" was added, and this string escaped it.
+
+CORRECTION (Matt, ground truth): restart #1's cause was an INTERNET
+OUTAGE, not machine sleep -- the host stayed up and the detached process
+survived everything except the unretried DNS failure. Strengthens the
+queued fix: an outage of any length should park the poll loop in
+bounded-backoff waiting (the batch is sitting safely server-side the
+whole time), never exit. The correct behavior on network loss is
+patience, since the manifest already makes crash-recovery lossless.
