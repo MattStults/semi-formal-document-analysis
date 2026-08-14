@@ -2302,3 +2302,118 @@ it. Fixes dispatched: locality-constrained referent matching (also
 extended to the under-export class), section-BODY establishment ranges,
 and an authority-class decline in target selection. Re-run $0 prep +
 re-adjudicate targets, then GO with opus_verdicts set.
+
+## 2026-08-14: convergence review NO-GO -- B1 + B2 FIXED, prep re-adjudicated
+
+The adversarial convergence review returned NO-GO with two blocking
+findings. Guard 2's re-aim logic and the run-root ruling were confirmed
+CLOSED (5/5 re-aims verified line-by-line, 80/80 anchors unique, 12/15
+plans fail under the unwind route). Both blockers are fixed, each pinned
+RED first on the reviewer's own reproduction cases.
+
+**B1 -- guard 1 produced a FALSE SKIP of an evidence-confirmed defect.**
+`same_referent_provider` now requires LOCALITY: the providing NODE must
+cover the seed's establishment lines (`_node_covers`, the shared +-2
+tolerance). Mechanism confirmed: the document states per-section
+authority in a fixed TEMPLATE, so `risk_queue.sim` scores **0.545 for
+any two such claims regardless of section** -- the 0.5 threshold has no
+discriminating power on that shape. `user_authority_section_rules`
+(ea 3150, the `#avoid_errors` heading) was being skipped against
+`user_authority` on `L3239-3382_n001`, a different section 89 lines
+away. Both correct skips already satisfy locality and still fire
+(`L1-170_n042` covers ea 69; `L3505-3953_n001` covers ea 3506). Guard 1
+now runs AFTER guards 2+3, since locality needs the RESOLVED
+establishment. Without a usable ea the guard declines to fire: it must
+never skip a real defect on prose resemblance alone.
+
+**B2 -- the corrupting one: re-derived splices landed on authority
+ASSIGNMENT nodes.** Both halves fixed.
+* (a) `resolve_establishment` now returns the section BODY --
+  `section_span()`: heading through the line before the next heading of
+  the same-or-higher level, capped at `SECTION_MAX_LINES = 120`, then
+  clipped to the redraw leaf by `_clip_ea` (a seed whose ea straddles the
+  leaf boundary is owed by NO leaf, so the redraw would never be told
+  what it owes).
+* (b) `_select_target` gains ONE documented mode switch, `section=True`,
+  passed identically by the prep feasibility check and by `splice`. It
+  admits only nodes whose span STARTS inside the body (no tolerance, so
+  the commentary two lines ABOVE the heading is out), DECLINES an
+  authority-assignment node (`_is_authority_assignment`, riding
+  recurse_driver's own `AUTHORITY_CANONICAL` + `is_authority_coinage` --
+  one source), and ranks EARLIEST-then-narrowest. No admissible
+  candidate reports rather than splicing.
+
+This restores the repo's standing assignment-vs-definition ruling (the
+16/16 `dropped_merge` upholds) inside the repair stage: a section's
+substance may not be spliced onto its authority label.
+
+**RULING (review B3, second arm).** The under-export class is DEFINED --
+module docstring, delta_investigation cause 3 -- as a dangling whose
+content exists as a node with EMPTY provides. A plan whose elected target
+already exports SUBSTANCE (a non-authority name) is therefore a duplicate
+by the class's own contract and is skipped. This was needed because the
+prose filter cannot see the residual the reviewer named:
+`sexual_content_involving_minors_section` vs
+`sexual_content_minors_prohibition` scores **0.364** against the 0.5
+threshold. REJECTED BY NAME: lowering the prose threshold to ~0.36 to
+catch it -- tuning a floor until one case passes is exactly what produced
+B1's false skip. The arm is scoped to the under-export class: promise
+plans stand on a recorded division promise and legitimately aim at nodes
+exporting adjacent names.
+
+DETERMINISTIC PREP on runs/ds7 ($0, no `--yes`, shadow run dir; nothing
+under `runs/` written):
+
+| | plans | promise | under-export | skips | worst case vs $0.40 |
+|---|---|---|---|---|---|
+| `opus_verdicts` absent | **37** | 19 | 18 | 3 already-provided, 3 same-referent, 1 failed | **$0.31** ✅ |
+| `opus_verdicts` set | **29** | 11 | 18 | 15 not-opus-confirmed, 1 same-referent | **$0.25** ✅ |
+
+Every re-derived target re-adjudicated against the document; all seven in
+the `opus_verdicts` scope land on the first substantive claim under their
+heading: `avoid_overstepping` -> `L3239-3382_n002` (L3241),
+`red_line_principles_section` -> `L1-170_n017` (L30),
+`risk_taxonomy_section` -> `L1-170_n033` (L55),
+`control_side_effects_section` -> `L461-608_n013` (L529),
+`letter_and_spirit_section` -> `L171-426_n029` (L294),
+`support_mental_health` -> `L1707-1973_n008` (L1753),
+`refusal_style_section` -> `L3954-4251_n018` (L4075). The magnet node
+`L171-426_n004` and both off-by-two commentary nodes are gone.
+
+RESIDUAL, recorded not fixed: `refusal_style_section`'s target already
+exports `safe_complete_rule`. It is the correct first claim of
+`#refusal_style` and Opus confirms nothing refusal-style is exported, so
+the plan stands -- and the redraw's own deliver-or-explain escape hatch
+is the check, not more prep heuristics. `opus_verdicts` ABSENT still
+plans 4 same-referent duplicates Opus upheld (`avoid_info_hazards`,
+`restricted_content`, `transformation_exception(_section)`,
+`protect_privacy_section`); that is the reject-default over-breadth the
+intersection exists to remove, and it is why the paid run should set
+`opus_verdicts`. The key remains ABSENT in `driver_config.json`: setting
+it is a spend decision for the human.
+
+Pins: promise 37 -> **49** (12 new); graph_v2 suite 245 -> **257**.
+
+## 2026-08-14: prep guards CONVERGED -- GO with opus_verdicts SET
+
+Independent verification closed B1 (locality constraint, not a threshold
+tweak -- user_authority_section_rules recovered, targeting L3147-3238_n001
+@L3152 empty-provides; the correct verbatim skips still fire), B2 (section
+BODY establishment + section-mode selector declining authority-assignment
+nodes by name; 7/7 re-derived targets independently adjudicated to the
+document's first substantive claim, 6/7 empty-provides; _clip_ea proven
+unable to empty a range; the authority-decline proven unable to reject an
+authority+substance node), and B3 (the under-export class's own
+empty-provides contract instead of lowering a threshold to 0.36 -- the
+by-name rejection endorsed). 13/13 confirmed defects planned in both
+configs. 257 graph_v2 / 800 phase_1 green; runs/ byte-identical (1110
+files shasum'd).
+RULING: run with promise_repair.opus_verdicts SET. Key absent = 37 plans
+of which 8 write DUPLICATE exports into the accepted graph (equivalent
+referents already exported: avoid_info_hazards, restricted_content,
+transformation_exception(_section), protect_privacy_section, minors) and
+pays for them. Key set = 29 plans, $0.25 vs the $0.40 gate, 0 upheld
+names planned. Residuals recorded not blocking: earliest-first can pick a
+lead-in paragraph (2 instances, both outside the set scope); same-span
+ties fall to graph order (n017/n018 at L30, same sentence); slug
+first-wins is document-specific (80/80 anchors unique here).

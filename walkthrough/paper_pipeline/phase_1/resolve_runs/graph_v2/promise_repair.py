@@ -37,6 +37,32 @@ division/leaf artifacts. For each item:
      judgment_calls reason naming the seed), the promise is recorded as
      honestly-undeliverable in <run>/promise_repair_report.json.
 
+PREP GUARDS (2026-08-14, ruling in EXPERIMENTS "OPUS RECHECK"; grounds in
+opus_recheck_report.md -- the stage does NOT run until prep has all
+three, because 5/9 promise plans and 1 under-export plan were misaimed):
+
+  1. SAME-REFERENT already-provided (`skipped_same_referent`) -- the
+     exact-name filter extended to the referent: an existing provides
+     entry whose prose overlaps the seed's by >= 0.5 tokens
+     (risk_queue.sim) or contains it verbatim already exports the
+     concept, so a redraw would duplicate it
+     (authority_level_ordering -> authority_levels_hierarchy).
+  2. CITATION-SITE re-aim -- an established_around line that CITES the
+     seed's own anchor (`see [?](#avoid_overstepping)`) is not an
+     establishment site; the plan is re-derived from that anchor's own
+     section heading (ea 1422 -> L3239), or skipped
+     (`skipped_citation_site_unresolved`) when the document has no such
+     heading.
+  3. SECTION-HEADING fallback -- a seed with no usable
+     established_around (the `*_section` names) derives one by slugging
+     its own name and locating that section's heading
+     (refusal_style_section -> #refusal_style at L4073).
+
+Optional config `promise_repair.opus_verdicts` (a path; absent by
+default and then behaviour is unchanged): intersects the broken_promise
+rows with that file's `opus_decision == "reject"` names, so the repair
+scope is the evidence-confirmed set rather than the reject-default queue.
+
 The danglings computation re-runs after all repairs and the report says
 how many needers resolved. The stage is budget-gated up front
 (promise_repair.max_cost_usd, default 0.25 -- ~40 leaf redraws at ~$0.002)
@@ -47,6 +73,7 @@ and requires --yes: it spends real money.
 import argparse
 import json
 import os
+import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -62,7 +89,6 @@ DEFAULT_BUDGET = 0.40    # matches config (re-review 5 + final 1c note)
 
 
 def _safe(s):
-    import re
     return re.sub(r"[^A-Za-z0-9_.-]+", "_", s or "x")
 
 
@@ -72,6 +98,240 @@ def broken_promises_to_repair(run_dir):
     return [it for it in q.get("items", [])
             if it.get("kind") == "broken_promise"
             and it.get("verdict") == "reject"]
+
+
+def opus_confirmed_names(path):
+    """The evidence-confirmed defect names from an `opus_verdicts` file
+    (opus_recheck.json shape: rows with kind / detail / opus_decision).
+
+    Ruling (EXPERIMENTS 2026-08-14, OPUS RECHECK): the repair scope is the
+    14 evidence-confirmed broken promises, not the 45 reject-default queue
+    rows. A `reject` from the evidence recheck means "the promise really
+    is broken"; `uphold` means the concept is in the graph already. This
+    file NEVER invents a verdict -- it only intersects, and the key is
+    optional so an absent config leaves behaviour byte-identical."""
+    d = json.load(open(path))
+    rows = d.get("items", []) if isinstance(d, dict) else (d or [])
+    return {(r.get("detail") or {}).get("name") for r in rows
+            if isinstance(r, dict) and r.get("kind") == "broken_promise"
+            and r.get("opus_decision") == "reject"
+            and (r.get("detail") or {}).get("name")}
+
+
+# ---------------------------------------------------------------- guards
+#: a markdown cross-reference: `[?](#anchor)`, `[overstepping](#anchor)`.
+XREF_RE = re.compile(r"\[[^\]\n]*\]\(#([A-Za-z0-9_-]+)\)")
+#: a section heading carrying its own anchor: `## Title {#slug authority=x}`
+HEADING_RE = re.compile(r"^\s{0,3}#{1,6}\s+.*\{#([A-Za-z0-9_-]+)[ }]")
+
+
+def concept_slug(name):
+    """The document anchor a seed name refers to. The graph's own naming
+    convention appends `_section` to a seed that names a whole section
+    (`refusal_style_section` -> `#refusal_style`); everything else is
+    already the slug. GENERAL -- no name is hardcoded anywhere."""
+    name = name or ""
+    return name[:-len("_section")] if name.endswith("_section") else name
+
+
+def heading_line_for_slug(lines, slug):
+    """1-based line number of the section HEADING that owns `slug`, or
+    None. First match wins (a document has one heading per anchor)."""
+    if not slug:
+        return None
+    for i, ln in enumerate(lines or (), 1):
+        m = HEADING_RE.match(ln or "")
+        if m and m.group(1) == slug:
+            return i
+    return None
+
+
+def is_citation_site(lines, line_no, name):
+    """GUARD 2 test: the document line at `line_no` CITES the seed's own
+    concept (`... see [?](#refusal_style) ...`) instead of establishing
+    it. Real ds7 cases (opus_recheck_report §4): avoid_overstepping ea
+    1422 cites `(#avoid_overstepping)` whose section is L3239;
+    sexual_content_involving_minors_section ea 4576 cites the U18
+    section's pointer at the prohibition established at L826.
+
+    Deliberately NARROW: the cross-reference must name the SEED's own
+    slug. A line that merely happens to cite some other section still
+    counts as an establishment site -- this file must not make a content
+    judgment about which of several anchors a passage is "really" about."""
+    if not lines or not isinstance(line_no, int):
+        return False
+    if not 1 <= line_no <= len(lines):
+        return False
+    ln = lines[line_no - 1] or ""
+    if HEADING_RE.match(ln):
+        return False          # the heading itself IS the establishment
+    return concept_slug(name) in set(XREF_RE.findall(ln))
+
+
+#: cap on a re-derived section body (convergence review B2a). A heading
+#: whose section runs longer than this is truncated: the establishment of
+#: a section's substance is at its top, and an uncapped range would let
+#: max-overlap ranking reach halfway across the document.
+SECTION_MAX_LINES = 120
+
+
+def heading_level(line):
+    """Markdown depth of an anchored heading line, or None."""
+    if not HEADING_RE.match(line or ""):
+        return None
+    return len((line or "").lstrip()) - len((line or "").lstrip().lstrip("#"))
+
+
+def section_span(lines, heading_line, cap=SECTION_MAX_LINES):
+    """The BODY of the section a heading opens: [heading, last line before
+    the next heading of the same-or-higher level], capped at `cap`.
+
+    Convergence review B2a: a bare [heading, heading] establishment made
+    `_select_target` pick whatever node's span IS the heading line -- in
+    this graph the authority-ASSIGNMENT node ("Rules in the #X section
+    carry Y authority"), never the node establishing the section's
+    substance. A body range lets the selector see the substantive nodes,
+    and -- just as important -- EXCLUDES the commentary node two lines
+    ABOVE the heading that graph order was handing back (risk_taxonomy
+    heading 53 was selecting L1-170_n032 at line 51)."""
+    if not lines or not heading_line:
+        return None
+    lvl = heading_level(lines[heading_line - 1]) or 6
+    end = min(len(lines), heading_line + cap - 1)
+    for i in range(heading_line + 1, min(len(lines), heading_line + cap)):
+        h = heading_level(lines[i - 1])
+        if h is not None and h <= lvl:
+            end = i - 1
+            break
+    return [heading_line, max(heading_line, end)]
+
+
+def resolve_establishment(seed, lines):
+    """THE ONE establishment-line resolver -- guards 2 and 3 both live
+    here, and BOTH plan classes call it (the coherence lesson: two
+    resolution rules drift).
+
+    Returns (ea, kind, why):
+      * (ea, None, None)                     -- the seed's own ea stands;
+      * (ea, "reaimed_citation_site", why)   -- guard 2: the ea line cited
+        the concept; ea re-derived from the anchor's own SECTION BODY;
+      * (None, "skipped_citation_site_unresolved", why) -- guard 2 with no
+        heading for the slug: the plan is dropped, unpaid;
+      * (ea, "section_heading_fallback", why) -- guard 3: no usable ea at
+        all, so the seed name's slug locates the section body;
+      * (None, "no_establishment", None)     -- guard 3 found no heading
+        either; the caller keeps its existing failure path.
+
+    A re-derived ea is a section BODY range, never the bare heading line
+    (review B2a); callers mark those plans `section=True` so the ONE
+    selector ranks them in section mode."""
+    name = seed.get("name") or ""
+    ea = seed.get("established_around")
+    usable = isinstance(ea, (list, tuple)) and len(ea) >= 2
+    if not usable:
+        # GUARD 3 (opus_recheck_report §4 "Confirmed defects with NO
+        # plan": control_side_effects_section, risk_taxonomy_section,
+        # red_line_principles_section, refusal_style_section all failed
+        # prep with "no usable established_around")
+        hl = heading_line_for_slug(lines, concept_slug(name))
+        if hl is None:
+            return None, "no_establishment", None
+        body = section_span(lines, hl)
+        return body, "section_heading_fallback", (
+            f"seed '{name}' carries no established_around; the section "
+            f"#{concept_slug(name)} opens at line {hl} and its body runs "
+            f"{body}")
+    if not is_citation_site(lines, ea[0], name):
+        return list(ea[:2]), None, None
+    # GUARD 2
+    slug = concept_slug(name)
+    hl = heading_line_for_slug(lines, slug)
+    if hl is None:
+        return None, "skipped_citation_site_unresolved", (
+            f"established_around {list(ea[:2])} is a cross-reference to "
+            f"#{slug}, not an establishment site, and no section heading "
+            f"in the document carries that anchor")
+    body = section_span(lines, hl)
+    return body, "reaimed_citation_site", (
+        f"established_around {list(ea[:2])} cites #{slug}; re-aimed at "
+        f"that section, which opens at line {hl} with body {body}")
+
+
+def _norm_prose(s):
+    return re.sub(r"\s+", " ", (s or "")).strip().lower()
+
+
+def same_referent_provider(prose, g, ea, threshold=0.5, tol=2):
+    """GUARD 1: an EXISTING provides entry that already exports this
+    referent under a different NAME. Returns
+    (name, node_id, how, score) or None.
+
+    Two admissible signals (opus_recheck_report §2b, 15 of the 29 flipped
+    items): >= `threshold` token overlap between the seed prose and the
+    existing entry's prose -- scored by `risk_queue.sim`, THE one source,
+    imported not reimplemented -- or the seed prose contained VERBATIM
+    (case/whitespace-normalised) in the existing prose. Flagship: seed
+    `authority_level_ordering`'s prose is verbatim the prose of
+    `authority_levels_hierarchy` on L1-170_n042. A redraw for these buys
+    a duplicate export, not a repair.
+
+    LOCALITY IS REQUIRED (convergence review B1 -- this guard produced a
+    FALSE SKIP of an evidence-confirmed defect): the providing NODE must
+    cover the seed's establishment lines (the shared +-`tol` tolerance).
+    Ground: the document states per-section authority in a fixed TEMPLATE
+    ("Rules in the #X section carry Y-level instruction authority"), so
+    `risk_queue.sim` scores 0.545 for ANY two such claims regardless of
+    section -- the threshold has no discriminating power on that shape.
+    `user_authority_section_rules` (ea 3150, the #avoid_errors heading)
+    was skipped against `user_authority` on L3239-3382_n001, a DIFFERENT
+    section 89 lines away, while Opus lists it as a confirmed defect.
+    Both correct skips already satisfy locality: L1-170_n042 covers
+    `authority_level_ordering`'s ea 69, L3505-3953_n001 covers
+    `section_authority_level`'s ea 3506. Without a usable ea there is no
+    locality to test and the guard declines to fire -- it must never skip
+    a real defect on prose resemblance alone."""
+    import risk_queue as RQ
+    if not (isinstance(ea, (list, tuple)) and len(ea) >= 2):
+        return None
+    tgt = _norm_prose(prose)
+    best = None
+    for n in g.get("nodes", []):
+        if not _node_covers(n, ea, tol):
+            continue
+        for p in n.get("provides", []):
+            if not isinstance(p, dict) or not p.get("name"):
+                continue
+            pp = p.get("prose", "")
+            verbatim = bool(tgt) and tgt in _norm_prose(pp)
+            s = RQ.sim(prose, pp)
+            if not verbatim and s < threshold:
+                continue
+            key = (1 if verbatim else 0, s)
+            if best is None or key > best[0]:
+                best = (key, (p["name"], n.get("id"),
+                              "verbatim" if verbatim else "token-overlap",
+                              round(s, 3)))
+    return best[1] if best else None
+
+
+def _clip_ea(seed, lo, hi):
+    """Clip a re-derived SECTION BODY establishment to the redraw leaf.
+    A body range can outrun the leaf that covers its heading, and a seed
+    whose ea straddles the leaf boundary is owed by NO leaf
+    (validate_leaf's boundary ruling) -- the redraw would never be told
+    it owes the promise. The heading itself is always inside the leaf,
+    since that leaf was descended from it."""
+    ea = seed.get("established_around")
+    if not (isinstance(ea, (list, tuple)) and len(ea) >= 2):
+        return seed
+    return dict(seed, established_around=[max(ea[0], lo), min(ea[1], hi)])
+
+
+def seed_entry(unwind_dir, name):
+    """The responsible division's own seed row for `name`, or None."""
+    d = json.load(open(os.path.join(unwind_dir, "division.json")))
+    return next((s for s in d.get("seed_vocabulary", [])
+                 if isinstance(s, dict) and s.get("name") == name), None)
 
 
 def _unwind_dir(run_dir, art):
@@ -110,12 +370,15 @@ def _descend(unwind_dir, line):
         return (clo, chi, cdir, seeds), None
 
 
-def locate_leaf(unwind_dir, name):
+def locate_leaf(unwind_dir, name, seed=None):
     """(seed, lo, hi, leaf_wdir, inherited_seeds) for the promised name,
-    or (None, reason). Descends cached divisions only -- no model call."""
-    d = json.load(open(os.path.join(unwind_dir, "division.json")))
-    seed = next((s for s in d.get("seed_vocabulary", [])
-                 if isinstance(s, dict) and s.get("name") == name), None)
+    or (None, reason). Descends cached divisions only -- no model call.
+
+    `seed`: the caller's already-resolved seed (run_repair passes the one
+    `resolve_establishment` re-aimed). Absent, the division's own row is
+    read -- the pre-guard behaviour, unchanged."""
+    if seed is None:
+        seed = seed_entry(unwind_dir, name)
     ea = (seed or {}).get("established_around")
     if not (isinstance(ea, (list, tuple)) and len(ea) >= 2):
         return None, (f"seed '{name}' has no usable established_around in "
@@ -162,11 +425,60 @@ def _node_covers(node, ea, tol=2):
                for sp in (node or {}).get("spans", []))
 
 
-def _select_target(nodes, ea, tol=2):
+def is_authority_export(name):
+    """An authority-CLASS export name. ONE source: recurse_driver's own
+    `AUTHORITY_CANONICAL` + `is_authority_coinage` -- the constants the
+    validator and the autofix already share."""
+    return (isinstance(name, str)
+            and (name in R.AUTHORITY_CANONICAL
+                 or R.is_authority_coinage(name)))
+
+
+def _is_authority_assignment(node):
+    """A node that does nothing but ASSIGN an authority level to a
+    section (`provides: [user_authority]` on the heading line). The
+    repo's standing ruling -- assignment and definition are DISTINCT
+    (the 16/16 dropped_merge upholds) -- forbids splicing a section's
+    substance onto one."""
+    names = [R.nm(p) for p in (node or {}).get("provides", [])]
+    return bool(names) and all(is_authority_export(n) for n in names)
+
+
+def _exports_substance(node):
+    """The node already exports a NON-authority name -- i.e. it is not one
+    of the empty-provides nodes the under-export class exists to fill."""
+    names = [R.nm(p) for p in (node or {}).get("provides", [])]
+    return any(not is_authority_export(n) for n in names)
+
+
+def _select_target(nodes, ea, tol=2, section=False):
     """THE ONE splice-target selector (final re-review 1c displacement;
     both the prep feasibility check and splice's promise-class branch
     call this -- the coherence lesson: two selection rules drift).
-    Ranking, NEVER graph order:
+
+    SECTION MODE (`section=True`, convergence review B2b) -- used when the
+    establishment was re-derived from a section HEADING, so `ea` is that
+    section's BODY range rather than a pointer at establishing lines. The
+    ranking above is wrong for that shape: max-overlap picks the widest
+    node in the section (a worked example), and the +-2 tolerance reaches
+    BACKWARDS past the heading into the previous section's commentary.
+    Section mode instead:
+      1. admits only nodes whose span STARTS inside the body range -- no
+         tolerance, so the commentary two lines above the heading is out
+         (risk_taxonomy heading 53 was selecting L1-170_n032 at line 51);
+      2. DECLINES an authority-assignment node (`_is_authority_assignment`)
+         -- splicing a section's substance onto its authority label merges
+         assignment with definition, which this repo has ruled distinct;
+      3. ranks by EARLIEST span start, then narrowest: the node that
+         establishes a section's substance is the first substantive claim
+         under its heading (avoid_overstepping -> L3239-3382_n002, not the
+         `user_authority` node n001; red_line_principles -> n017 "Human
+         safety and human rights are paramount"; risk_taxonomy -> n033
+         "three broad categories of risk").
+    No admissible candidate returns None -- the caller reports rather than
+    splicing onto the wrong node.
+
+    Default (point/near-point ea) ranking, NEVER graph order:
       1. EXACT-cover nodes first -- a span containing ANY line of
          [ea0, ea1], no tolerance;
       2. only if none exist, the +-2 tolerance fallback;
@@ -180,15 +492,22 @@ def _select_target(nodes, ea, tol=2):
         return None
     best_node, best_key = None, None
     for n in nodes:
+        if section and _is_authority_assignment(n):
+            continue                      # B2b: assignment != definition
         for sp in n.get("spans", []):
             ln = sp.get("lines") if isinstance(sp, dict) else None
             if not (isinstance(ln, (list, tuple)) and len(ln) == 2):
                 continue
-            if not _covers(ln, ea, tol):
-                continue
-            exact = not (ln[1] < ea[0] or ln[0] > ea[1])
-            ov = max(0, min(ln[1], ea[1]) - max(ln[0], ea[0]) + 1)
-            key = (1 if exact else 0, ov, -(ln[1] - ln[0]))
+            if section:
+                if not ea[0] <= ln[0] <= ea[1]:
+                    continue              # must START inside the body
+                key = (-ln[0], -(ln[1] - ln[0]))       # earliest, narrowest
+            else:
+                if not _covers(ln, ea, tol):
+                    continue
+                exact = not (ln[1] < ea[0] or ln[0] > ea[1])
+                ov = max(0, min(ln[1], ea[1]) - max(ln[0], ea[0]) + 1)
+                key = (1 if exact else 0, ov, -(ln[1] - ln[0]))
             if best_key is None or key > best_key:
                 best_key, best_node = key, n
     return best_node
@@ -287,7 +606,8 @@ def redraw_leaf(drv, seed, lo, hi, seeds, scratch_wdir):
     return g
 
 
-def splice(g, seed, redraw, unwind_art, scratch_wdir, target_id=None):
+def splice(g, seed, redraw, unwind_art, scratch_wdir, target_id=None,
+           section=False):
     """The mechanical merge: ONLY the new provides entry (and any new
     needs the validator accepted on the providing node) reach the graph
     copy. Everything judgmental already happened -- in the redraw.
@@ -320,10 +640,12 @@ def splice(g, seed, redraw, unwind_art, scratch_wdir, target_id=None):
         target = next((n for n in g.get("nodes", [])
                        if n.get("id") == target_id), None)
     else:
-        target = _select_target(g.get("nodes", []), ea)
+        target = _select_target(g.get("nodes", []), ea, section=section)
     if target is None:
         return "failed", (f"no root-graph node covers the establishment "
                           f"lines {list(ea[:2])}"
+                          + (" that is not an authority-assignment node"
+                             if section else "")
                           if target_id is None
                           else f"scan target {target_id!r} vanished from "
                                f"the root graph")
@@ -357,6 +679,15 @@ def run_repair(run_dir, cfg, client, lines):
     """The whole stage. `client` and `lines` are injected: pins run it
     with a MockClient for $0; main() wires the live GraphClient."""
     items = broken_promises_to_repair(run_dir)
+    #: optional evidence intersection (absent => behaviour unchanged).
+    #: A path relative to this directory or absolute.
+    pr_cfg = cfg.get("promise_repair") or {}
+    confirmed = None
+    if pr_cfg.get("opus_verdicts"):
+        vp = pr_cfg["opus_verdicts"]
+        if not os.path.isabs(vp):
+            vp = os.path.join(HERE, vp)
+        confirmed = opus_confirmed_names(vp)
     g = json.load(open(os.path.join(run_dir, "root_graph.json")))
     g = json.loads(json.dumps(g))              # NEVER in place
     before = danglings(g)
@@ -376,6 +707,14 @@ def run_repair(run_dir, cfg, client, lines):
         if name in seen_promise:
             continue              # 1d (chain_of_command_principle x6 ->
         seen_promise.add(name)    #     one plan)
+        if confirmed is not None and name not in confirmed:
+            report_items.append({"name": name, "unwind": det.get("unwind"),
+                                 "class": "promise",
+                                 "status": "skipped_not_opus_confirmed",
+                                 "why": "the evidence recheck upheld this "
+                                        "row: the concept is in the graph, "
+                                        "so the promise is not broken"})
+            continue
         if name in provided_now:
             report_items.append({"name": name, "unwind": det.get("unwind"),
                                  "class": "promise",
@@ -389,16 +728,65 @@ def run_repair(run_dir, cfg, client, lines):
                                  "class": "promise", "status": "failed",
                                  "why": "unwind artifact dir not found"})
             continue
-        located, why = locate_leaf(udir, name)
+        # -- GUARDS 2 + 3 run FIRST: guard 1's locality test (review B1)
+        # needs the RESOLVED establishment, not the raw seed's.
+        # The note rides ON THE PLAN (never a second report row -- one row
+        # per name is the 1d invariant the counters depend on).
+        seed0 = seed_entry(udir, name)
+        seed_r, note, section = seed0, None, False
+        if seed0 is not None:
+            ea_r, kind, why_r = resolve_establishment(seed0, lines)
+            if kind == "skipped_citation_site_unresolved":
+                report_items.append({"name": name,
+                                     "unwind": det.get("unwind"),
+                                     "class": "promise", "status": kind,
+                                     "why": why_r})
+                continue
+            if ea_r is not None and kind is not None:
+                seed_r = dict(seed0, established_around=ea_r)
+                note = {"establishment": kind, "establishment_why": why_r}
+                section = True
+        # -- GUARD 1: same referent under a different exported name, at
+        # the establishment (review B1: locality is required)
+        match = same_referent_provider((seed_r or {}).get("prose", ""), g,
+                                       (seed_r or {}).get(
+                                           "established_around"))
+        if match is not None:
+            mname, mnode, how, msim = match
+            report_items.append(dict({
+                "name": name, "unwind": det.get("unwind"),
+                "class": "promise",
+                "status": "skipped_same_referent",
+                "matched_name": mname, "matched_node": mnode,
+                "match_kind": how, "sim": msim,
+                "why": f"the referent is already exported as '{mname}' on "
+                       f"{mnode} ({how}, sim {msim}) at the establishment "
+                       f"lines; a redraw would duplicate the export"},
+                **(note or {})))
+            continue
+        # A RE-DERIVED establishment (guard 2 or 3) points at wherever the
+        # DOCUMENT establishes the concept -- routinely outside the
+        # promising unwind's own span (avoid_overstepping: promised under
+        # the [1368, 1541] unwind, established at L3239). Descend the RUN
+        # ROOT for those, or the descent fails with "no child span covers
+        # line N" and the guard buys nothing. The seed's own ea keeps the
+        # pre-guard behaviour: its unwind promised it there.
+        base = udir
+        if note and os.path.exists(os.path.join(run_dir, "division.json")):
+            base = run_dir
+        located, why = locate_leaf(base, name, seed=seed_r)
         if located is None:
-            report_items.append({"name": name, "unwind": det.get("unwind"),
-                                 "class": "promise", "status": "failed",
-                                 "why": why})
+            report_items.append(dict({"name": name,
+                                      "unwind": det.get("unwind"),
+                                      "class": "promise",
+                                      "status": "failed",
+                                      "why": why}, **(note or {})))
             continue
         seed, lo, hi, leaf_wdir, seeds = located
+        seed = _clip_ea(seed, lo, hi) if section else seed
         plans.append({"class": "promise", "seed": seed, "lo": lo, "hi": hi,
                       "seeds": seeds, "unwind": det.get("unwind"),
-                      "target_id": None,
+                      "target_id": None, "note": note, "section": section,
                       "scratch": os.path.join(scratch_root,
                                               _safe(name))})
     # -- class (b), the under-export scan (item A extension,
@@ -410,23 +798,64 @@ def run_repair(run_dir, cfg, client, lines):
         for c in underexport_candidates(run_dir, g):
             if c["name"] in planned:
                 continue                 # the promise class owns this name
-            located, why = _descend(run_dir, c["established_around"][0])
-            if located is None:
+            # a synthetic seed: the dangling's own prose is the promise
+            seed_c = {"name": c["name"], "prose": c["prose"],
+                      "established_around": c["established_around"]}
+            # GUARD 2 applies to THIS class too (opus_recheck_report §4:
+            # sexual_content_involving_minors_section ea 4576 is the U18
+            # section's cross-reference to the L826 prohibition -- the
+            # splice would have landed ~3750 lines from the text). The
+            # re-aim drops the scan's target_id with the stale ea: the
+            # heading line elects its own target via _select_target.
+            ea_c, kind, why_c = resolve_establishment(seed_c, lines)
+            note, section = None, False
+            if kind == "skipped_citation_site_unresolved":
                 report_items.append({"name": c["name"],
                                      "class": "underexport",
-                                     "status": "failed", "why": why})
+                                     "status": kind, "why": why_c})
+                continue
+            if ea_c is not None and kind is not None:
+                seed_c["established_around"] = ea_c
+                c = dict(c, target_id=None)
+                note = {"establishment": kind, "establishment_why": why_c}
+                section = True
+            # GUARD 1 for THIS class too (review B3, non-blocking): the
+            # scan aims at a node with EMPTY provides, but the referent
+            # can still be exported by a NEIGHBOURING node at the same
+            # establishment -- `sexual_content_involving_minors_section`
+            # re-aims onto L826 where `sexual_content_minors_prohibition`
+            # already exports it. Same locality-constrained test, one
+            # function, so the two classes cannot drift.
+            match = same_referent_provider(seed_c["prose"], g,
+                                           seed_c["established_around"])
+            if match is not None:
+                mname, mnode, how, msim = match
+                report_items.append(dict({
+                    "name": c["name"], "class": "underexport",
+                    "status": "skipped_same_referent",
+                    "matched_name": mname, "matched_node": mnode,
+                    "match_kind": how, "sim": msim,
+                    "why": f"the referent is already exported as "
+                           f"'{mname}' on {mnode} ({how}, sim {msim}) at "
+                           f"the establishment lines; a redraw would "
+                           f"duplicate the export"}, **(note or {})))
+                continue
+            located, why = _descend(run_dir, seed_c["established_around"][0])
+            if located is None:
+                report_items.append(dict({"name": c["name"],
+                                          "class": "underexport",
+                                          "status": "failed", "why": why},
+                                         **(note or {})))
                 continue
             lo, hi, leaf_wdir, seeds = located
-            # a synthetic seed: the dangling's own prose is the promise
-            plans.append({"class": "underexport",
-                          "seed": {"name": c["name"],
-                                   "prose": c["prose"],
-                                   "established_around":
-                                       c["established_around"]},
+            if section:
+                seed_c = _clip_ea(seed_c, lo, hi)
+            plans.append({"class": "underexport", "seed": seed_c,
                           "lo": lo, "hi": hi, "seeds": seeds,
                           "unwind": f"(scan: {c['via']}, "
                                     f"target {c['target_id']})",
-                          "target_id": c["target_id"],
+                          "target_id": c["target_id"], "note": note,
+                          "section": section,
                           "scratch": os.path.join(
                               scratch_root, "underexport_"
                               + _safe(c["name"]))})
@@ -440,27 +869,68 @@ def run_repair(run_dir, cfg, client, lines):
     for p in plans:
         ea = p["seed"]["established_around"]
         if not _covers([p["lo"], p["hi"]], ea):
-            report_items.append({"name": p["seed"]["name"],
-                                 "class": p["class"],
-                                 "unwind": p["unwind"],
-                                 "status": "infeasible",
-                                 "why": f"redraw leaf [{p['lo']}, "
-                                        f"{p['hi']}] does not cover "
-                                        f"established_around "
-                                        f"{list(ea[:2])} (+-2)"})
+            report_items.append(dict({"name": p["seed"]["name"],
+                                      "class": p["class"],
+                                      "unwind": p["unwind"],
+                                      "status": "infeasible",
+                                      "why": f"redraw leaf [{p['lo']}, "
+                                             f"{p['hi']}] does not cover "
+                                             f"established_around "
+                                             f"{list(ea[:2])} (+-2)"},
+                                     **(p.get("note") or {})))
             continue
         if p["target_id"] is not None:
             tgt = next((n for n in g.get("nodes", [])
                         if n.get("id") == p["target_id"]), None)
         else:
-            tgt = _select_target(g.get("nodes", []), ea)
+            tgt = _select_target(g.get("nodes", []), ea,
+                                 section=p.get("section", False))
         if tgt is None:
-            report_items.append({"name": p["seed"]["name"],
-                                 "class": p["class"],
-                                 "unwind": p["unwind"],
-                                 "status": "infeasible",
-                                 "why": f"no splice target at "
-                                        f"{list(ea[:2])} (+-2)"})
+            report_items.append(dict({"name": p["seed"]["name"],
+                                      "class": p["class"],
+                                      "unwind": p["unwind"],
+                                      "status": "infeasible",
+                                      "why": f"no splice target at "
+                                             f"{list(ea[:2])}"
+                                             + (" that is not an "
+                                                "authority-assignment node"
+                                                if p.get("section")
+                                                else " (+-2)")},
+                                     **(p.get("note") or {})))
+            continue
+        # -- review B3, second arm: the UNDER-EXPORT class is DEFINED (see
+        # the module docstring and delta_investigation cause 3) as a
+        # dangling whose establishing content exists as a node with EMPTY
+        # provides. When the elected target already exports substance, the
+        # redraw writes a SECOND name for a referent the graph carries --
+        # the duplicate export Opus upheld at
+        # `sexual_content_involving_minors_section` (target L797-830_n014
+        # already exports `sexual_content_minors_prohibition`), which the
+        # prose test cannot see: that pair scores 0.364 against the 0.5
+        # threshold. REJECTED ALTERNATIVE, by name: lowering the prose
+        # threshold to ~0.36 to catch it -- tuning a floor until one case
+        # passes is what produced review finding B1's false skip of an
+        # evidence-confirmed defect. This arm reads the class's own
+        # written contract instead, and is scoped to that class: the
+        # promise class stands on a recorded division promise, and its
+        # targets legitimately export adjacent names (`refusal_style_section`
+        # aims at a node exporting `safe_complete_rule`, and Opus confirms
+        # nothing refusal-style is exported).
+        if p["class"] == "underexport" and _exports_substance(tgt):
+            names = [R.nm(x) for x in tgt.get("provides", [])]
+            report_items.append(dict({
+                "name": p["seed"]["name"], "class": p["class"],
+                "unwind": p["unwind"],
+                "status": "skipped_same_referent",
+                "matched_name": next(n for n in names
+                                     if not is_authority_export(n)),
+                "matched_node": tgt.get("id"),
+                "match_kind": "target-already-exports",
+                "why": f"the under-export class targets nodes with EMPTY "
+                       f"provides; {tgt.get('id')} already exports "
+                       f"{names}, so a redraw would add a duplicate name "
+                       f"for a referent the graph already carries"},
+                **(p.get("note") or {})))
             continue
         feasible.append(p)
     plans = feasible
@@ -502,22 +972,28 @@ def run_repair(run_dir, cfg, client, lines):
             redraw = redraw_leaf(drv, seed, p["lo"], p["hi"], p["seeds"],
                                  p["scratch"])
         except T.Phase1Error as exc:
-            report_items.append({"name": seed["name"],
-                                 "class": p["class"],
-                                 "unwind": p["unwind"], "status": "failed",
-                                 "why": f"redraw failed: {exc}"})
+            report_items.append(dict({"name": seed["name"],
+                                      "class": p["class"],
+                                      "unwind": p["unwind"],
+                                      "status": "failed",
+                                      "why": f"redraw failed: {exc}"},
+                                     **(p.get("note") or {})))
             continue
         status, detail = splice(g, seed, redraw, p["unwind"], p["scratch"],
-                                target_id=p.get("target_id"))
+                                target_id=p.get("target_id"),
+                                section=p.get("section", False))
         n_rep += status == "repaired"
         n_dec += status == "declined"
         if status == "repaired":
             repaired_names[p["class"]].add(seed["name"])
-        report_items.append({"name": seed["name"], "class": p["class"],
-                             "unwind": p["unwind"],
-                             "span": [p["lo"], p["hi"]], "status": status,
-                             ("target" if status == "repaired"
-                              else "why"): detail})
+        report_items.append(dict({"name": seed["name"],
+                                  "class": p["class"],
+                                  "unwind": p["unwind"],
+                                  "span": [p["lo"], p["hi"]],
+                                  "status": status,
+                                  ("target" if status == "repaired"
+                                   else "why"): detail},
+                                 **(p.get("note") or {})))
     after = danglings(g)
     resolved = len(before - after)
     # resolved-needer count PER CLASS (the item's own asked-for number):
@@ -534,6 +1010,21 @@ def run_repair(run_dir, cfg, client, lines):
             "skipped_already_provided": sum(
                 1 for r in rows
                 if r["status"] == "skipped_already_provided"),
+            # the 2026-08-14 guards, each counted on its own line
+            "skipped_same_referent": sum(
+                1 for r in rows if r["status"] == "skipped_same_referent"),
+            "skipped_citation_site_unresolved": sum(
+                1 for r in rows
+                if r["status"] == "skipped_citation_site_unresolved"),
+            "skipped_not_opus_confirmed": sum(
+                1 for r in rows
+                if r["status"] == "skipped_not_opus_confirmed"),
+            "reaimed_citation_site": sum(
+                1 for r in rows
+                if r.get("establishment") == "reaimed_citation_site"),
+            "section_heading_fallback": sum(
+                1 for r in rows
+                if r.get("establishment") == "section_heading_fallback"),
             "infeasible": sum(1 for r in rows
                               if r["status"] == "infeasible"),
             "needers_resolved": len(

@@ -422,8 +422,8 @@ def test_infeasible_plan_is_reported_and_never_paid(tmp_path,
     run = _repair_run(tmp_path)
     orig = PR.locate_leaf
 
-    def bad_locate(udir, name):
-        (seed, lo, hi, wdir, seeds), why = orig(udir, name)
+    def bad_locate(udir, name, seed=None):
+        (seed, lo, hi, wdir, seeds), why = orig(udir, name, seed)
         seed = dict(seed, established_around=[50, 51])   # far outside
         return (seed, lo, hi, wdir, seeds), None
     monkeypatch.setattr(PR, "locate_leaf", bad_locate)
@@ -495,6 +495,692 @@ def test_splice_promise_branch_uses_the_shared_selector(tmp_path):
     assert status == "repaired" and target == "L3383-3501_n001"
     n017 = g["nodes"][0]
     assert n017["provides"] == [], "the neighbour must stay untouched"
+
+
+# ============ 2026-08-14 prep guards (opus_recheck_report.md §4 ruling)
+#: a fixture document with the REAL shapes the matcher must handle: the
+#: `[?](#anchor)` and `[text](#anchor)` cross-reference forms, and the
+#: `## Title {#slug authority=x}` heading form. The real model_spec is
+#: read-only evidence -- the pins never depend on it.
+FIXTURE_DOC = [
+    "# Overview {#overview}",                                  # 1
+    "",                                                        # 2
+    "As outlined in the [?](#risk_taxonomy) section, the "      # 3
+    "assistant balances empowerment and safety.",
+    "",                                                        # 4
+    "## Specific risks {#risk_taxonomy}",                       # 5
+    "",                                                        # 6
+    "The taxonomy of risks the assistant weighs.",              # 7
+    "",                                                        # 8
+    "The assistant must avoid [overstepping](#avoid_overstepping) "  # 9
+    "or being judgmental.",
+    "",                                                        # 10
+    "## Avoid overstepping {#avoid_overstepping authority=user}",    # 11
+    "",                                                        # 12
+    "The assistant should follow explicit instructions without "     # 13
+    "overstepping.",
+    "",                                                        # 14
+    "See [?](#nowhere_at_all) for more.",                      # 15
+    "",                                                        # 16
+    "## When appropriate, be helpful when refusing "           # 17
+    "{#refusal_style authority=guideline}",
+    "",                                                        # 18
+    "How the assistant should style refusals.",                # 19
+]
+
+
+def _guard_run(tmp_path, seed, root_nodes, queue_name=None):
+    """A run whose division seeds exactly `seed` and whose queue carries
+    one broken_promise row for it."""
+    run = tmp_path / "run"
+    run.mkdir()
+    R.write_json(os.path.join(str(run), "division.json"),
+                 {"decision": "divide", "seed_vocabulary": [dict(seed)],
+                  "children": [{"span": [1, 10]}, {"span": [11, 19]}]})
+    R.write_json(os.path.join(str(run), "root_graph.json"),
+                 {"nodes": root_nodes})
+    R.write_json(os.path.join(str(run), "fixup_queue.json"),
+                 {"items": [{"kind": "broken_promise", "verdict": "reject",
+                             "detail": {"unwind": str(run),
+                                        "name": queue_name
+                                        or seed["name"]},
+                             "reason": "needs regeneration"}]})
+    return str(run)
+
+
+# ------------------------------------------- GUARD 1: same referent
+def test_same_referent_export_is_skipped_not_duplicated(tmp_path):
+    """RED (ds7 real case, opus_recheck_report §2b idx 97-105): seed
+    `authority_level_ordering`'s prose is VERBATIM the prose of the
+    provided name `authority_levels_hierarchy` on L1-170_n042. The
+    exact-name filter misses it, so nine queue rows planned a redraw that
+    would have created a duplicate export."""
+    prose = ("The ranking of instruction authority levels: root > system "
+             "> developer > user > guideline.")
+    seed = {"name": "authority_level_ordering", "prose": prose,
+            "established_around": [7, 7]}
+    run = _guard_run(tmp_path, seed, [
+        {"id": "L1-170_n042", "establishes": "the hierarchy",
+         "needs": [],
+         "provides": [{"name": "authority_levels_hierarchy",
+                       "prose": prose}],
+         "spans": [{"lines": [1, 10]}]}])
+    client = R.MockClient([])
+    rep = PR.run_repair(run, _CFG, client, list(FIXTURE_DOC))
+    assert client.calls == 0, "a duplicate export must cost nothing"
+    row = next(r for r in rep["items"] if r["class"] == "promise")
+    assert row["status"] == "skipped_same_referent"
+    assert row["matched_name"] == "authority_levels_hierarchy"
+    assert row["matched_node"] == "L1-170_n042"
+    assert row["match_kind"] == "verbatim"
+    assert rep["by_class"]["promise"]["skipped_same_referent"] == 1
+
+
+def test_same_referent_matches_on_token_overlap_and_uses_risk_queue_sim():
+    """The overlap arm rides risk_queue.sim (ONE source, not a copy), at
+    the >= 0.5 threshold; below it, nothing matches."""
+    import risk_queue as RQ
+    g = {"nodes": [{"id": "n1", "spans": [{"lines": [856, 860]}],
+                    "provides": [
+        {"name": "information_hazards_prohibition",
+         "prose": "The assistant must not provide detailed actionable "
+                  "information hazards that enable serious harm."}]}]}
+    near = ("must not provide detailed actionable information hazards "
+            "enabling serious harm")
+    assert RQ.sim(near, g["nodes"][0]["provides"][0]["prose"]) >= 0.5
+    hit = PR.same_referent_provider(near, g, [856, 856])
+    assert hit[0] == "information_hazards_prohibition"
+    assert hit[2] == "token-overlap"
+    assert PR.same_referent_provider("zebra quagga okapi tapir", g,
+                                     [856, 856]) is None
+    # verbatim containment wins even when the token overlap is low
+    long_g = {"nodes": [{"id": "n2", "spans": [{"lines": [10, 10]}],
+                         "provides": [
+        {"name": "big_export",
+         "prose": "Preamble sentence.  The  promised thing.  Plus many "
+                  "further unrelated clauses about quagga okapi tapir "
+                  "wildebeest springbok."}]}]}
+    v = PR.same_referent_provider("The promised thing.", long_g, [10, 10])
+    assert v is not None and v[2] == "verbatim" and v[0] == "big_export"
+
+
+def test_same_referent_leaves_a_genuinely_missing_concept_alone(tmp_path):
+    """The guard must not swallow a real defect: unrelated prose on every
+    existing export leaves the plan standing."""
+    seed = {"name": "promised_x", "prose": "zebra quagga okapi tapir",
+            "established_around": [7, 7]}
+    run = _guard_run(tmp_path, seed, [
+        {"id": "L1-10_n001", "establishes": "the establishing span",
+         "needs": [], "provides": [{"name": "other", "prose": "wombat"}],
+         "spans": [{"lines": [5, 8]}]}])
+    reply = _reply(1, 10, 10,
+                   provides=[{"name": "promised_x", "prose": "p"}])
+    rep = PR.run_repair(run, _CFG, R.MockClient([reply]),
+                        list(FIXTURE_DOC))
+    assert rep["repaired"] == 1
+
+
+# -------------------------------------------- GUARD 2: citation sites
+def test_citation_site_detection_and_heading_lookup():
+    """The matcher, against the real shapes: `[?](#slug)`,
+    `[text](#slug)`, and `## Title {#slug authority=x}`. A heading is
+    never itself a citation site."""
+    assert PR.heading_line_for_slug(FIXTURE_DOC, "avoid_overstepping") == 11
+    assert PR.heading_line_for_slug(FIXTURE_DOC, "risk_taxonomy") == 5
+    assert PR.heading_line_for_slug(FIXTURE_DOC, "refusal_style") == 17
+    assert PR.heading_line_for_slug(FIXTURE_DOC, "nowhere_at_all") is None
+    # [text](#slug) form (line 9) and [?](#slug) form (line 3)
+    assert PR.is_citation_site(FIXTURE_DOC, 9, "avoid_overstepping")
+    assert PR.is_citation_site(FIXTURE_DOC, 3, "risk_taxonomy_section")
+    # the heading itself is the establishment, never a citation
+    assert not PR.is_citation_site(FIXTURE_DOC, 11, "avoid_overstepping")
+    # a line citing SOME OTHER anchor is left alone -- this file must not
+    # decide which of several anchors a passage is "really" about
+    assert not PR.is_citation_site(FIXTURE_DOC, 9, "risk_taxonomy")
+    assert not PR.is_citation_site(FIXTURE_DOC, 13, "avoid_overstepping")
+    assert not PR.is_citation_site(FIXTURE_DOC, 999, "avoid_overstepping")
+    assert PR.concept_slug("refusal_style_section") == "refusal_style"
+    assert PR.concept_slug("avoid_overstepping") == "avoid_overstepping"
+
+
+def test_citation_site_plan_is_reaimed_at_the_section_heading(tmp_path):
+    """RED (opus_recheck_report §4, `avoid_overstepping`): the seed's ea
+    1422 is the imminent-harm rule CITING `(#avoid_overstepping)`; the
+    section itself is L3239. Un-guarded, the redraw attached the concept
+    to the wrong passage. Fixture analogue: ea 9 (the citation) must be
+    re-aimed to the heading at 11, planning that leaf and that target."""
+    seed = {"name": "avoid_overstepping",
+            "prose": "the policy section on avoiding overstepping",
+            "established_around": [9, 9]}
+    run = _guard_run(tmp_path, seed, [
+        {"id": "L1-10_n001", "establishes": "the imminent harm rule",
+         "needs": [], "provides": [], "spans": [{"lines": [9, 9]}]},
+        {"id": "L11-19_n001", "establishes": "the overstepping section",
+         "needs": [], "provides": [], "spans": [{"lines": [11, 13]}]}])
+    reply = _reply(11, 19, 19,
+                   provides=[{"name": "avoid_overstepping",
+                              "prose": "p"}])
+    rep = PR.run_repair(run, _CFG, R.MockClient([reply]),
+                        list(FIXTURE_DOC))
+    row = next(r for r in rep["items"] if r["class"] == "promise")
+    assert row["status"] == "repaired"
+    assert row["establishment"] == "reaimed_citation_site"
+    assert row["span"] == [11, 19], "the redraw must move to the section"
+    assert row["target"] == "L11-19_n001", \
+        "the citation node must NOT receive the splice"
+    assert rep["by_class"]["promise"]["reaimed_citation_site"] == 1
+    fixed = json.load(open(os.path.join(run, "root_graph.repaired.json")))
+    cite = next(n for n in fixed["nodes"] if n["id"] == "L1-10_n001")
+    assert cite["provides"] == []
+
+
+def test_citation_site_without_a_heading_is_skipped_unpaid(tmp_path):
+    """No heading carries the cited anchor: the plan is dropped with its
+    own kind rather than aimed at the citation."""
+    seed = {"name": "nowhere_at_all", "prose": "a dangling anchor",
+            "established_around": [15, 15]}
+    run = _guard_run(tmp_path, seed, [
+        {"id": "L11-19_n001", "establishes": "x", "needs": [],
+         "provides": [], "spans": [{"lines": [15, 15]}]}])
+    client = R.MockClient([])
+    rep = PR.run_repair(run, _CFG, client, list(FIXTURE_DOC))
+    assert client.calls == 0
+    row = next(r for r in rep["items"] if r["class"] == "promise")
+    assert row["status"] == "skipped_citation_site_unresolved"
+    assert rep["by_class"]["promise"][
+        "skipped_citation_site_unresolved"] == 1
+
+
+def test_citation_guard_covers_the_underexport_class_too(tmp_path):
+    """RED (opus_recheck_report §4, the one under-export misaim):
+    `sexual_content_involving_minors_section` ea 4576 is the U18
+    section's cross-reference; the prohibition is established at L826, so
+    the scan's target sat ~3750 lines away. The guard is ONE resolver and
+    both classes call it."""
+    run = tmp_path / "run"
+    run.mkdir()
+    R.write_json(os.path.join(str(run), "division.json"),
+                 {"decision": "divide", "seed_vocabulary": [
+                     {"name": "risk_taxonomy_section", "prose": "p",
+                      "established_around": [3, 3]}],
+                  "children": [{"span": [1, 10]}, {"span": [11, 19]}]})
+    # the scan picks the CITING node (its span contains the seed's ea 3);
+    # nothing overlaps by prose, so `via` is established_around -- exactly
+    # the minors shape, where the target sat far from the establishment
+    g = {"nodes": [
+        {"id": "L1-10_n001", "establishes": "the citing overview line",
+         "needs": [], "provides": [], "spans": [{"lines": [3, 3]}]},
+        {"id": "L5-8_n002", "establishes": "the taxonomy of risks the "
+                                           "assistant weighs",
+         "needs": [], "provides": [], "spans": [{"lines": [5, 8]}]},
+        {"id": "L11-19_n003", "establishes": "the needer",
+         "needs": [{"name": "risk_taxonomy_section",
+                    "prose": "zebra quagga okapi tapir"}],
+         "provides": [], "spans": [{"lines": [11, 13]}]}]}
+    R.write_json(os.path.join(str(run), "root_graph.json"), g)
+    R.write_json(os.path.join(str(run), "fixup_queue.json"), {"items": []})
+    reply = _reply(1, 10, 10,
+                   provides=[{"name": "risk_taxonomy_section",
+                              "prose": "p"}])
+    rep = PR.run_repair(str(run), _CFG, R.MockClient([reply]),
+                        list(FIXTURE_DOC))
+    row = next(r for r in rep["items"] if r["class"] == "underexport")
+    assert row["establishment"] == "reaimed_citation_site"
+    assert row["status"] == "repaired"
+    assert row["target"] == "L5-8_n002", \
+        "the splice must land on the section, not the citing node"
+
+
+def test_reaimed_plan_descends_the_RUN_ROOT_not_the_promising_unwind(
+        tmp_path):
+    """RED (found on the ds7 dry run): the re-aimed line lands wherever
+    the DOCUMENT establishes the concept, routinely OUTSIDE the span of
+    the unwind that promised it -- avoid_overstepping was promised under
+    the [1368, 1541] unwind and is established at L3239. Descending the
+    promising unwind fails with "no child span covers line N" and the
+    guard buys nothing; the run root must be descended instead."""
+    run = tmp_path / "run"
+    (run / "c1").mkdir(parents=True)
+    R.write_json(os.path.join(str(run), "division.json"),
+                 {"decision": "divide", "seed_vocabulary": [],
+                  "children": [{"span": [1, 10]}, {"span": [11, 19]}]})
+    # the PROMISING unwind covers [1, 10] only -- the citation site
+    R.write_json(os.path.join(str(run), "c1", "division.json"),
+                 {"decision": "divide", "seed_vocabulary": [
+                     {"name": "avoid_overstepping", "prose": "p",
+                      "established_around": [9, 9]}],
+                  "children": [{"span": [1, 5]}, {"span": [6, 10]}]})
+    R.write_json(os.path.join(str(run), "root_graph.json"), {"nodes": [
+        {"id": "L11-19_n001", "establishes": "the overstepping section",
+         "needs": [], "provides": [], "spans": [{"lines": [11, 13]}]}]})
+    R.write_json(os.path.join(str(run), "fixup_queue.json"),
+                 {"items": [{"kind": "broken_promise", "verdict": "reject",
+                             "detail": {"unwind": os.path.join(str(run),
+                                                               "c1"),
+                                        "name": "avoid_overstepping"},
+                             "reason": "r"}]})
+    reply = _reply(11, 19, 19,
+                   provides=[{"name": "avoid_overstepping", "prose": "p"}])
+    rep = PR.run_repair(str(run), _CFG, R.MockClient([reply]),
+                        list(FIXTURE_DOC))
+    row = next(r for r in rep["items"] if r["class"] == "promise")
+    assert row["status"] == "repaired", row
+    assert row["span"] == [11, 19]
+    assert row["establishment"] == "reaimed_citation_site"
+
+
+# ------------------------- GUARD 3: section seeds with no established_around
+def test_section_seed_without_ea_plans_from_its_heading(tmp_path):
+    """RED (opus_recheck_report §4 "Confirmed defects with NO plan"):
+    control_side_effects_section / risk_taxonomy_section /
+    red_line_principles_section / refusal_style_section all failed prep
+    with "no usable established_around" -- four confirmed defects with no
+    plan at all. The fallback slugs the seed name (stripping a trailing
+    `_section`) and finds that section's heading. GENERAL: no name is
+    hardcoded."""
+    seed = {"name": "refusal_style_section",
+            "prose": "how the assistant should style refusals"}
+    run = _guard_run(tmp_path, seed, [
+        {"id": "L11-19_n001", "establishes": "the refusal style section",
+         "needs": [], "provides": [], "spans": [{"lines": [17, 19]}]}])
+    reply = _reply(11, 19, 19,
+                   provides=[{"name": "refusal_style_section",
+                              "prose": "p"}])
+    rep = PR.run_repair(run, _CFG, R.MockClient([reply]),
+                        list(FIXTURE_DOC))
+    row = next(r for r in rep["items"] if r["class"] == "promise")
+    assert row["status"] == "repaired"
+    assert row["establishment"] == "section_heading_fallback"
+    assert "line 17" in row["establishment_why"]
+    assert row["target"] == "L11-19_n001"
+    assert rep["by_class"]["promise"]["section_heading_fallback"] == 1
+
+
+def test_seed_with_no_ea_and_no_heading_still_fails_as_before(tmp_path):
+    """The fallback is additive: a seed whose slug names no section keeps
+    the pre-guard failure row (and its message)."""
+    seed = {"name": "never_a_section_anywhere", "prose": "p"}
+    run = _guard_run(tmp_path, seed, [
+        {"id": "L1-10_n001", "establishes": "x", "needs": [],
+         "provides": [], "spans": [{"lines": [1, 3]}]}])
+    client = R.MockClient([])
+    rep = PR.run_repair(run, _CFG, client, list(FIXTURE_DOC))
+    row = next(r for r in rep["items"] if r["class"] == "promise")
+    assert row["status"] == "failed"
+    assert "no usable established_around" in row["why"]
+    assert client.calls == 0
+
+
+def test_resolve_establishment_is_the_one_resolver():
+    """All four outcomes off one function -- the coherence lesson."""
+    keep = {"name": "avoid_overstepping", "prose": "p",
+            "established_around": [13, 13]}
+    assert PR.resolve_establishment(keep, FIXTURE_DOC) == \
+        ([13, 13], None, None)
+    ea, kind, _ = PR.resolve_establishment(
+        dict(keep, established_around=[9, 9]), FIXTURE_DOC)
+    assert (ea, kind) == ([11, 16], "reaimed_citation_site"), \
+        "a re-derived ea is the section BODY range, never the bare " \
+        "heading line (review B2a)"
+    ea, kind, _ = PR.resolve_establishment(
+        {"name": "refusal_style_section", "prose": "p"}, FIXTURE_DOC)
+    assert (ea, kind) == ([17, 19], "section_heading_fallback")
+    ea, kind, _ = PR.resolve_establishment(
+        {"name": "nowhere_at_all", "prose": "p",
+         "established_around": [15, 15]}, FIXTURE_DOC)
+    assert (ea, kind) == (None, "skipped_citation_site_unresolved")
+    ea, kind, _ = PR.resolve_establishment(
+        {"name": "unknown_thing", "prose": "p"}, FIXTURE_DOC)
+    assert (ea, kind) == (None, "no_establishment")
+
+
+# ------------------------------------- optional opus_verdicts intersection
+def test_opus_verdicts_narrows_the_scope_to_confirmed_defects(tmp_path):
+    """The evidence intersection (EXPERIMENTS "OPUS RECHECK" ruling: the
+    repair scope is the 14 evidence-confirmed defects, not the 45
+    reject-default rows). An `uphold` row is dropped unpaid."""
+    seed = {"name": "promised_x", "prose": "zebra quagga",
+            "established_around": [7, 7]}
+    run = _guard_run(tmp_path, seed, [
+        {"id": "L1-10_n001", "establishes": "x", "needs": [],
+         "provides": [], "spans": [{"lines": [5, 8]}]}])
+    vp = tmp_path / "verdicts.json"
+    vp.write_text(json.dumps({"items": [
+        {"idx": 0, "kind": "broken_promise",
+         "detail": {"name": "promised_x"}, "opus_decision": "uphold"},
+        {"idx": 1, "kind": "broken_promise",
+         "detail": {"name": "someone_else"}, "opus_decision": "reject"},
+        {"idx": 2, "kind": "dropped_merge",
+         "detail": {"name": "promised_x"}, "opus_decision": "reject"}]}))
+    assert PR.opus_confirmed_names(str(vp)) == {"someone_else"}
+    cfg = dict(_CFG, promise_repair=dict(_CFG["promise_repair"],
+                                         opus_verdicts=str(vp)))
+    client = R.MockClient([])
+    rep = PR.run_repair(run, cfg, client, list(FIXTURE_DOC))
+    assert client.calls == 0
+    row = next(r for r in rep["items"] if r["class"] == "promise")
+    assert row["status"] == "skipped_not_opus_confirmed"
+    assert rep["by_class"]["promise"]["skipped_not_opus_confirmed"] == 1
+
+
+def test_opus_verdicts_absent_leaves_behaviour_unchanged(tmp_path):
+    """Default absent: the same run repairs exactly as before the key
+    existed."""
+    run = _repair_run(tmp_path)
+    reply = _reply(1, 12, 12,
+                   provides=[{"name": "promised_x",
+                              "prose": "the promised thing"}])
+    rep = PR.run_repair(run, _CFG, R.MockClient([reply]),
+                        R.load_doc(TOY))
+    assert rep["repaired"] == 1 and "opus_verdicts" not in \
+        json.dumps(_CFG)
+
+
+# ================= convergence review B1/B2: the two blocking findings
+#: the per-section authority TEMPLATE, verbatim from ds7. Any two of
+#: these score sim 0.545 against each other -- the shape that gave the
+#: 0.5 threshold no discriminating power.
+_AUTH_TEMPLATE = "Rules in the #{} section carry user-level instruction " \
+                 "authority."
+
+
+def test_B1_same_referent_requires_locality_not_just_prose(tmp_path):
+    """RED (convergence review B1 -- a FALSE SKIP of an evidence-confirmed
+    defect): `user_authority_section_rules` (ea 3150, the #avoid_errors
+    heading) was skipped against `user_authority` on L3239-3382_n001 --
+    a DIFFERENT section 89 lines away -- because the document's
+    per-section authority TEMPLATE scores sim 0.545 for ANY two such
+    claims. Opus lists this name as a confirmed defect. The providing
+    NODE must cover the establishment."""
+    import risk_queue as RQ
+    seed_prose = ("Rules in sections marked authority=user carry "
+                  "user-level instruction authority")
+    far = _AUTH_TEMPLATE.format("avoid_overstepping")
+    assert RQ.sim(seed_prose, far) >= 0.5, \
+        "the template really does clear the threshold -- that is the bug"
+    g = {"nodes": [
+        {"id": "L3239-3382_n001", "establishes": far,
+         "needs": [], "provides": [{"name": "user_authority",
+                                    "prose": far}],
+         "spans": [{"lines": [3239, 3239]}]}]}
+    assert PR.same_referent_provider(seed_prose, g, [3150, 3150]) is None, \
+        "a provider 89 lines from the establishment must NOT skip the plan"
+    # ... and the very same provider DOES skip when it is local
+    assert PR.same_referent_provider(seed_prose, g, [3239, 3239]) is not None
+
+
+def test_B1_the_two_correct_verbatim_skips_still_skip():
+    """The fix must not cost the guard its true positives: both correct
+    ds7 skips already satisfy locality (L1-170_n042 covers
+    `authority_level_ordering`'s ea 69; L3505-3953_n001 covers
+    `section_authority_level`'s ea 3506)."""
+    p1 = "which of two authority levels outranks the other"
+    g1 = {"nodes": [{"id": "L1-170_n042", "provides": [
+        {"name": "authority_levels_hierarchy", "prose": p1}],
+        "spans": [{"lines": [69, 69]}, {"lines": [186, 191]}]}]}
+    hit = PR.same_referent_provider(p1, g1, [69, 101])
+    assert hit and hit[0] == "authority_levels_hierarchy"
+    assert hit[2] == "verbatim"
+    p2 = ("The authority level assigned to a section's rules by its "
+          "heading metadata.")
+    g2 = {"nodes": [{"id": "L3505-3953_n001", "provides": [
+        {"name": "user_authority", "prose": p2}],
+        "spans": [{"lines": [3506, 3506]}, {"lines": [3629, 3629]}]}]}
+    hit = PR.same_referent_provider(p2, g2, [3506, 3506])
+    assert hit and hit[0] == "user_authority" and hit[2] == "verbatim"
+    # no usable ea => no locality to test => the guard declines to fire
+    assert PR.same_referent_provider(p1, g1, None) is None
+
+
+#: the reviewer's own three reproduction cases, node spans and establishes
+#: copied from runs/ds7/root_graph.json
+def _ds7_avoid_overstepping_nodes():
+    return [
+        {"id": "L3147-3238_n014", "provides": [], "needs": [],
+         "establishes": "A worked example about search.",
+         "spans": [{"lines": [3220, 3237]}]},
+        {"id": "L3239-3382_n001", "needs": [],
+         "establishes": _AUTH_TEMPLATE.format("avoid_overstepping"),
+         "provides": [{"name": "user_authority", "prose": "p"}],
+         "spans": [{"lines": [3239, 3239]}]},
+        {"id": "L3239-3382_n002", "provides": [], "needs": [],
+         "establishes": "The assistant should help the developer and user "
+                        "by following explicit instructions without "
+                        "overstepping.",
+         "spans": [{"lines": [3241, 3241]}]},
+        {"id": "L3239-3382_n007", "provides": [], "needs": [],
+         "establishes": "A worked example of transformation.",
+         "spans": [{"lines": [3245, 3281]}]}]
+
+
+def _ds7_overview_nodes():
+    return [
+        {"id": "L1-170_n016", "provides": [], "needs": [],
+         "establishes": "In the main body of the Model Spec, commentary "
+                        "that is not directly instructing the model will "
+                        "be placed in blocks like this one.",
+         "spans": [{"lines": [26, 26]}]},
+        {"id": "L1-170_n017", "provides": [], "needs": [],
+         "establishes": "Human safety and human rights are paramount to "
+                        "OpenAI's mission.",
+         "spans": [{"lines": [30, 30]}]},
+        {"id": "L1-170_n032", "provides": [], "needs": [],
+         "establishes": "The Model Spec includes root-level rules as well "
+                        "as user- and guideline-level defaults.",
+         "spans": [{"lines": [51, 51]}]},
+        {"id": "L1-170_n033", "provides": [], "needs": [],
+         "establishes": "OpenAI considers three broad categories of risk, "
+                        "each with its own set of potential mitigations.",
+         "spans": [{"lines": [55, 55]}]}]
+
+
+def test_B2_section_mode_declines_the_authority_assignment_node():
+    """RED (convergence review B2b -- THE CORRUPTING ONE): ea
+    [3239, 3239] selects L3239-3382_n001, whose only export is
+    `user_authority` -- the section's authority ASSIGNMENT. Splicing the
+    section's substance there merges assignment with definition, which
+    this repo has ruled distinct (the 16/16 dropped_merge upholds). The
+    substantive node is L3239-3382_n002."""
+    nodes = _ds7_avoid_overstepping_nodes()
+    assert PR._select_target(nodes, [3239, 3239])["id"] \
+        == "L3239-3382_n001", "the un-guarded ranking picks the assignment"
+    picked = PR._select_target(nodes, [3239, 3318], section=True)
+    assert picked["id"] == "L3239-3382_n002", picked["id"]
+
+
+def test_B2_section_mode_excludes_nodes_above_the_heading():
+    """RED (convergence review B2a): both off-by-two misses came from the
+    +-2 tolerance reaching BACKWARDS past the heading into the previous
+    section, then graph order handing back the earlier node.
+    risk_taxonomy heading 53 -> L1-170_n033 (not n032 at 51);
+    red_line_principles heading 28 -> L1-170_n017 (not n016 at 26)."""
+    nodes = _ds7_overview_nodes()
+    assert PR._select_target(nodes, [53, 53])["id"] == "L1-170_n032", \
+        "the un-guarded ranking picks the commentary two lines above"
+    assert PR._select_target(nodes, [53, 62], section=True)["id"] \
+        == "L1-170_n033"
+    assert PR._select_target(nodes, [28, 28])["id"] == "L1-170_n016", \
+        "the un-guarded ranking picks the commentary two lines above"
+    assert PR._select_target(nodes, [28, 44], section=True)["id"] \
+        == "L1-170_n017"
+
+
+def test_B2_section_mode_ranks_earliest_not_widest():
+    """The body range must not simply hand max-overlap the widest node:
+    the worked example L3239-3382_n007 spans 37 lines of the section and
+    would win the default ranking outright."""
+    nodes = _ds7_avoid_overstepping_nodes()
+    assert PR._select_target(nodes, [3239, 3318])["id"] \
+        == "L3239-3382_n007", "max-overlap picks the worked example"
+    assert PR._select_target(nodes, [3239, 3318], section=True)["id"] \
+        == "L3239-3382_n002"
+
+
+def test_B2_authority_class_test_rides_recurse_drivers_constants():
+    """ONE source for what counts as authority-class -- the constants the
+    validator and the autofix already share, canonical names AND the
+    `X_section_<level>_authority` coinage shape."""
+    assert PR.is_authority_export("user_authority")
+    assert PR.is_authority_export("authority_levels_hierarchy")
+    assert PR.is_authority_export(
+        "ask_clarifying_questions_section_guideline_authority")
+    assert not PR.is_authority_export("implicit_biases")
+    assert PR._is_authority_assignment(
+        {"provides": [{"name": "user_authority"}]})
+    # MIXED provides is not a pure assignment node -- it carries substance
+    assert not PR._is_authority_assignment(
+        {"provides": [{"name": "user_authority"},
+                      {"name": "avoid_overstepping"}]})
+    assert not PR._is_authority_assignment({"provides": []})
+
+
+def test_B2_section_mode_reports_rather_than_splicing_wrongly(tmp_path):
+    """"If that leaves no candidate, report rather than splice": a
+    section whose only node is the authority assignment yields an
+    infeasible row and costs nothing."""
+    seed = {"name": "refusal_style_section", "prose": "zebra quagga"}
+    run = _guard_run(tmp_path, seed, [
+        {"id": "L11-19_n001", "establishes": "assignment only",
+         "needs": [], "provides": [{"name": "guideline_authority",
+                                    "prose": "a"}],
+         "spans": [{"lines": [17, 17]}]}])
+    client = R.MockClient([])
+    rep = PR.run_repair(run, _CFG, client, list(FIXTURE_DOC))
+    assert client.calls == 0
+    row = next(r for r in rep["items"] if r["class"] == "promise")
+    assert row["status"] == "infeasible"
+    assert "authority-assignment" in row["why"]
+
+
+def test_B2_section_span_is_the_body_to_the_next_same_level_heading():
+    """The range: heading through the line before the next heading of the
+    same-or-higher level, capped."""
+    assert PR.section_span(FIXTURE_DOC, 5) == [5, 10]     # ## .. next ##
+    assert PR.section_span(FIXTURE_DOC, 11) == [11, 16]
+    assert PR.section_span(FIXTURE_DOC, 17) == [17, 19]   # to EOF
+    # a heading closes only at the SAME-or-higher level: the level-1
+    # heading at 1 is not closed by the level-2 headings below it
+    assert PR.section_span(FIXTURE_DOC, 1) == [1, 19]
+    assert PR.section_span(FIXTURE_DOC, 5, cap=2) == [5, 6]
+    assert PR.heading_level(FIXTURE_DOC[4]) == 2
+    assert PR.heading_level("plain prose") is None
+
+
+def test_B2_section_body_is_clipped_to_the_redraw_leaf():
+    """A body range that outruns the leaf is clipped: a seed whose ea
+    straddles the leaf boundary is owed by NO leaf (validate_leaf's
+    boundary ruling), so the redraw would never be told what it owes."""
+    seed = {"name": "x", "prose": "p", "established_around": [17, 40]}
+    assert PR._clip_ea(seed, 11, 19)["established_around"] == [17, 19]
+    errs = R.validate_leaf(_leaf_graph(11, 19), 11, 19, ["x"] * 19,
+                           seeds=[PR._clip_ea(seed, 11, 19)],
+                           enforce_promise_delivery=True)
+    assert any("x" in e for e in errs), \
+        "after clipping the leaf must OWE the promise"
+
+
+def test_B3_underexport_class_gets_the_same_referent_filter(tmp_path):
+    """Review B3 (non-blocking): the under-export scan aims at a node
+    with EMPTY provides, but a NEIGHBOURING node at the same
+    establishment can already export the referent --
+    `sexual_content_involving_minors_section` re-aims onto L826 where
+    `sexual_content_minors_prohibition` already exports it. One
+    function, both classes."""
+    run = tmp_path / "run"
+    run.mkdir()
+    R.write_json(os.path.join(str(run), "division.json"),
+                 {"decision": "divide", "seed_vocabulary": [
+                     {"name": "risk_taxonomy_section",
+                      "prose": "the taxonomy of risks the assistant weighs",
+                      "established_around": [3, 3]}],
+                  "children": [{"span": [1, 10]}, {"span": [11, 19]}]})
+    R.write_json(os.path.join(str(run), "root_graph.json"), {"nodes": [
+        {"id": "L1-10_n001", "establishes": "the citing overview line",
+         "needs": [], "provides": [], "spans": [{"lines": [3, 3]}]},
+        {"id": "L5-8_n002", "establishes": "the section body",
+         "needs": [],
+         "provides": [{"name": "risk_taxonomy_prohibition",
+                       "prose": "the taxonomy of risks the assistant "
+                                "weighs"}],
+         "spans": [{"lines": [7, 7]}]},
+        {"id": "L11-19_n003", "establishes": "the needer",
+         "needs": [{"name": "risk_taxonomy_section",
+                    "prose": "the taxonomy of risks the assistant "
+                             "weighs"}],
+         "provides": [], "spans": [{"lines": [11, 13]}]}]})
+    R.write_json(os.path.join(str(run), "fixup_queue.json"), {"items": []})
+    client = R.MockClient([])
+    rep = PR.run_repair(str(run), _CFG, client, list(FIXTURE_DOC))
+    assert client.calls == 0, "a duplicate export must cost nothing"
+    row = next(r for r in rep["items"] if r["class"] == "underexport")
+    assert row["status"] == "skipped_same_referent"
+    assert row["matched_name"] == "risk_taxonomy_prohibition"
+    assert rep["by_class"]["underexport"]["skipped_same_referent"] == 1
+
+
+def test_B3_underexport_target_that_already_exports_is_skipped(tmp_path):
+    """RED (review B3, the residual the prose test cannot see): the
+    under-export class is DEFINED as a dangling whose content exists as a
+    node with EMPTY provides. `sexual_content_involving_minors_section`
+    re-aims onto L797-830_n014, which already exports
+    `sexual_content_minors_prohibition` -- but that prose pair scores
+    0.364 against the 0.5 threshold, so only the class's own contract
+    catches it. Authority-only exports do NOT count as substance."""
+    import risk_queue as RQ
+    assert round(RQ.sim(
+        "The section of the Model Spec that prohibits sexual content "
+        "involving minors.",
+        "the prohibition on producing sexual content involving minors"),
+        3) == 0.364, "the prose signal really is below threshold"
+    assert PR._exports_substance(
+        {"provides": [{"name": "sexual_content_minors_prohibition"}]})
+    assert not PR._exports_substance(
+        {"provides": [{"name": "user_authority"}]})
+    assert not PR._exports_substance({"provides": []})
+    run = tmp_path / "run"
+    run.mkdir()
+    R.write_json(os.path.join(str(run), "division.json"),
+                 {"decision": "divide", "seed_vocabulary": [],
+                  "children": [{"span": [1, 10]}, {"span": [11, 19]}]})
+    R.write_json(os.path.join(str(run), "root_graph.json"), {"nodes": [
+        {"id": "L1-10_n014", "establishes": "the prohibition itself",
+         "needs": [],
+         "provides": [{"name": "minors_prohibition", "prose": "zebra"}],
+         "spans": [{"lines": [7, 7]}]},
+        {"id": "L11-19_n003", "establishes": "the U18 needer",
+         "needs": [{"name": "minors_section",
+                    "prose": "the prohibition itself"}],
+         "provides": [], "spans": [{"lines": [11, 13]}]}]})
+    R.write_json(os.path.join(str(run), "fixup_queue.json"), {"items": []})
+    client = R.MockClient([])
+    rep = PR.run_repair(str(run), _CFG, client, list(FIXTURE_DOC))
+    assert client.calls == 0, "a duplicate export must cost nothing"
+    row = next(r for r in rep["items"] if r["class"] == "underexport")
+    assert row["status"] == "skipped_same_referent"
+    assert row["match_kind"] == "target-already-exports"
+    assert row["matched_name"] == "minors_prohibition"
+
+
+def test_B3_promise_class_keeps_targets_that_export_adjacent_names(
+        tmp_path):
+    """The contract arm is scoped to the under-export class: a promise
+    plan stands on a recorded division promise, and `refusal_style_section`
+    legitimately aims at a node exporting `safe_complete_rule` -- Opus
+    confirms nothing refusal-style is exported there."""
+    seed = {"name": "refusal_style_section", "prose": "zebra quagga"}
+    run = _guard_run(tmp_path, seed, [
+        {"id": "L11-19_n018", "establishes": "the refusal style section",
+         "needs": [],
+         "provides": [{"name": "safe_complete_rule", "prose": "okapi"}],
+         "spans": [{"lines": [17, 19]}]}])
+    reply = _reply(11, 19, 19,
+                   provides=[{"name": "refusal_style_section",
+                              "prose": "p"}])
+    rep = PR.run_repair(run, _CFG, R.MockClient([reply]),
+                        list(FIXTURE_DOC))
+    row = next(r for r in rep["items"] if r["class"] == "promise")
+    assert row["status"] == "repaired", row
+    assert row["target"] == "L11-19_n018"
 
 
 def test_default_budget_fallback_matches_config():
