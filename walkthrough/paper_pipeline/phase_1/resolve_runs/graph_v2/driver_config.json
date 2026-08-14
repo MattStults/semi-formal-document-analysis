@@ -39,9 +39,9 @@
  "rename_seat": true,
  "greedy_rename_descend": true,
  "promise_repair": {
-  "max_cost_usd": 0.25
+  "max_cost_usd": 0.4
  },
- "_promise_repair": "Item A (Matt 2026-08-14): promise_repair.py -- targeted leaf redraws for frontier-confirmed broken promises (fixup_queue broken_promise rejects). ~40 redraws at ~$0.002 each fit well under $0.25; the gate is worst-case up front (full prompt in, leaf phase cap out, no cache credit). Requires --yes.",
+ "_promise_repair": "Item A (Matt 2026-08-14): promise_repair.py -- targeted leaf redraws for frontier-confirmed broken promises (fixup_queue broken_promise rejects) plus the under-export scan. Re-review 5: 0.40 covers the up-front gate (~$0.0084/plan worst at the leaf cap x ~31 feasible plans ~= $0.26) with repair-round headroom; repair rounds are not multiplied into the gate -- the MEASURED ceiling (client.max_cost_usd = this budget, enforced in _log_usage per routing-gap F2) backstops overruns mid-flight. Requires --yes.",
  "enforce_promise_delivery": true,
  "_enforce_promise_delivery": "Item B (Matt 2026-08-14, ds8 prevention of the ds7 45-broken-promise class): a leaf whose inherited seed is established INSIDE its span must provide exactly that name or decline it in judgment_calls naming the seed (cover-or-explain, the ds3 pattern). Enforced in validate_leaf on BOTH the serial and core paths. Default false in code for byte-parity with pinned builds; true here for future builds.",
  "golden_graph": null,

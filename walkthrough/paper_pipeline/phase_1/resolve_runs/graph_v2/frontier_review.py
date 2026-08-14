@@ -30,6 +30,14 @@ its own explicit invocation with --yes, per the repo rule that
 consequential spends prompt. Everything else is push-button:
 
     python frontier_review.py runs/ds7 --yes
+
+⚠️ EVIDENTIARY-WEIGHT NOTE (item C, k3_validity_report 2026-08-14):
+verdicts produced BEFORE the per-kind evidence prompts landed -- the ds7
+first slice's dropped_merge (16) and broken_promise (45) rows, judged on
+name-only prompts -- carry NO evidentiary weight: they are the briefs'
+uncertainty-defaults, not judgments, and must not be cited as
+confirmations. Rename-kind and low_sim_edge rows from that slice were
+substantive (the report's per-kind trust table) and stand.
 """
 import argparse
 import json
@@ -176,19 +184,156 @@ def vocab_for(kind):
     return ("uphold", "reject")
 
 
-def item_prompt(item):
-    """The one-shot user prompt: the item's own recorded evidence, JSON-
-    rendered -- deterministic, and blind to nothing the queue recorded."""
+class Evidence:
+    """Real per-item evidence (item C, k3_validity_report 2026-08-14: two
+    whole kinds were judged on prompts with NO evidence -- 61 verdicts
+    were the brief's uncertainty-default, not judgments; and the rename
+    BRIEF promises span text item_prompt never carried). Built from the
+    run's root_graph.json plus the document lines."""
+
+    def __init__(self, graph, lines, run_dir):
+        self.nodes = {n.get("id"): n for n in graph.get("nodes", [])}
+        self.prov_prose, self.prov_node = {}, {}
+        for n in graph.get("nodes", []):
+            for p in n.get("provides", []):
+                if isinstance(p, dict):
+                    self.prov_prose.setdefault(p.get("name"),
+                                               p.get("prose", ""))
+                    self.prov_node.setdefault(p.get("name"), n)
+        self.lines = list(lines or [])
+        self.run_dir = run_dir
+
+    def need_prose(self, needer_id, name):
+        n = self.nodes.get(needer_id) or {}
+        for d in n.get("needs", []):
+            if isinstance(d, dict) and d.get("name") == name:
+                return d.get("prose", "")
+        return ""
+
+    def node_text(self, node):
+        return (f"claim: {(node or {}).get('establishes', '')}\n"
+                f"text:\n{RS._span_text(node, self.lines)}")
+
+
+def load_evidence(run_dir, lines):
+    gp = os.path.join(run_dir, "root_graph.json")
+    if not os.path.exists(gp) or not lines:
+        return None
+    return Evidence(json.load(open(gp)), lines, run_dir)
+
+
+def _no_evidence(kind, item, why):
+    raise T.Phase1Error(
+        f"no evidence could be constructed for a {kind} item ({why}); "
+        f"judging it would reproduce the ds7 evidence-free default "
+        f"(k3_validity_report) -- fix the queue/graph rather than "
+        f"stamping. Item: {json.dumps(item.get('detail'))[:200]}")
+
+
+def _rename_evidence_prompt(item, ev):
+    """The seat's own prompt shape (rename_seat.build_prompt): both
+    descriptions WITH their passages' quoted text -- what the BRIEF
+    already instructs the judge to weigh above the wording."""
+    det = item.get("detail") or {}
+    needer = ev.nodes.get(det.get("needer"))
+    if item.get("kind") == "dangling_near_miss":
+        cands = det.get("candidates") or []
+        top = (cands[0] or {}).get("name") if cands else None
+        prov_name = top
+    else:
+        prov_name = det.get("rename_to") or det.get("name")
+    prov_node = ev.prov_node.get(prov_name)
+    if needer is None or prov_node is None:
+        _no_evidence(item.get("kind"), item,
+                     f"needer={det.get('needer')!r} or provider for "
+                     f"{prov_name!r} not in root graph")
+    need_prose = (det.get("prose")
+                  or ev.need_prose(det.get("needer"), det.get("name")))
+    return RS.build_prompt(need_prose, needer,
+                           ev.prov_prose.get(prov_name, ""), prov_node,
+                           ev.lines)
+
+
+def _nodes_covering(ev, a, b):
+    out = []
+    for n in ev.nodes.values():
+        for sp in n.get("spans", []):
+            ln = (sp.get("lines") or [0, -1]) if isinstance(sp, dict) \
+                else [0, -1]
+            if len(ln) == 2 and not (ln[1] < a or ln[0] > b):
+                out.append(n)
+                break
+    return out
+
+
+def item_prompt(item, ev=None):
+    """The one-shot user prompt. With an Evidence context (the normal
+    path), every kind ships the REAL material its brief needs -- node
+    claims, provides prose, and the passages' quoted text; a kind whose
+    evidence cannot be found raises loudly instead of producing another
+    evidence-free default. Without a context (ev=None) the queue item's
+    own recorded fields are all there is, JSON-rendered -- fallback only,
+    and the ds7 lesson says its verdicts carry no evidentiary weight for
+    dropped_merge/broken_promise."""
+    kind = item.get("kind")
+    tail = "\n\nJudge it per your brief. Reply with the JSON object only."
+    if ev is not None and kind in RENAME_KINDS:
+        return _rename_evidence_prompt(item, ev)
+    det = item.get("detail") or {}
+    if ev is not None and kind == "dropped_merge":
+        pair = det if isinstance(det, str) else json.dumps(det)
+        ids = pair.split("->") if isinstance(pair, str) else []
+        na, nb = (ev.nodes.get(i.strip()) for i in (ids + ["", ""])[:2])
+        if na is None or nb is None:
+            _no_evidence(kind, item, f"merge pair {pair!r} not resolvable "
+                                     f"to two root-graph nodes")
+        return (f"THE DROPPED MERGE (retired -> survivor): {pair}\n\n"
+                f"NODE A (proposed retired):\n{ev.node_text(na)}\n\n"
+                f"NODE B (proposed survivor):\n{ev.node_text(nb)}{tail}")
+    if ev is not None and kind == "broken_promise":
+        name = det.get("name")
+        seed, ctx = None, ""
+        dp = os.path.join(det.get("unwind") or "", "division.json")
+        for cand in (dp, os.path.join(ev.run_dir, dp)):
+            if os.path.exists(cand):
+                d = json.load(open(cand))
+                seed = next((s for s in d.get("seed_vocabulary", [])
+                             if isinstance(s, dict)
+                             and s.get("name") == name), None)
+                break
+        ea = (seed or {}).get("established_around")
+        if isinstance(ea, (list, tuple)) and len(ea) >= 2:
+            covering = _nodes_covering(ev, ea[0], ea[1])
+            ctx = "\n\n".join(ev.node_text(n) for n in covering[:4])
+        if seed is None and not ctx:
+            _no_evidence(kind, item,
+                         f"no seed entry or covering nodes for {name!r}")
+        return (f"THE BROKEN PROMISE: a division promised the concept "
+                f"'{name}' and no child delivered a provides entry for "
+                f"it.\nPROMISED CONCEPT (the division's seed): "
+                f"{json.dumps(seed) if seed else '(seed entry lost)'}\n\n"
+                f"THE NODES NOW COVERING ITS ESTABLISHMENT LINES:\n"
+                f"{ctx or '(none found)'}{tail}")
+    if ev is not None and kind == "low_sim_edge":
+        needer = ev.nodes.get(det.get("needer"))
+        prov = ev.prov_node.get(det.get("name"))
+        if needer is None or prov is None:
+            _no_evidence(kind, item, f"edge endpoints not in root graph")
+        return (f"THE SURVIVING EDGE under review: '{det.get('name')}'\n\n"
+                f"THE PASSAGE THAT RELIES ON IT (need prose: "
+                f"{det.get('prose', '')}):\n{ev.node_text(needer)}\n\n"
+                f"THE PASSAGE RECORDED AS ESTABLISHING IT (provides "
+                f"prose: {ev.prov_prose.get(det.get('name'), '')}):\n"
+                f"{ev.node_text(prov)}{tail}")
     body = {k: item.get(k) for k in ("kind", "detail", "grounds", "where")
             if item.get(k) is not None}
     head = ("PROPOSED IDENTIFICATION UNDER REVIEW (recorded evidence):"
-            if item.get("kind") in RENAME_KINDS
+            if kind in RENAME_KINDS
             else "RECORDED DECISION UNDER REVIEW:")
-    return (f"{head}\n{json.dumps(body, indent=1)}\n\n"
-            "Judge it per your brief. Reply with the JSON object only.")
+    return (f"{head}\n{json.dumps(body, indent=1)}{tail}")
 
 
-def judge_item(complete, item):
+def judge_item(complete, item, ev=None):
     """One verdict on one risk-queue item, rename_seat.judge-style: the
     `complete(system, user) -> {'text': ...}` callable is the only seam.
     Returns {"verdict": "uphold"|"reject"|"no_verdict", "grounds": ...}.
@@ -199,10 +344,19 @@ def judge_item(complete, item):
     risky item). CostGateError and terminal transport (402/401/403, key
     resolution) PROPAGATE, exactly as in rename_seat.judge post-F3."""
     ok, bad = vocab_for(item.get("kind"))
+    # re-review item 4: the prompt is built OUTSIDE the transport loop --
+    # unconstructable evidence is a skip-with-record (a no_verdict row
+    # naming the reason), never mislabeled a transport error and never
+    # retried as one
+    try:
+        prompt = item_prompt(item, ev)
+    except T.Phase1Error as exc:
+        return {"verdict": "no_verdict",
+                "grounds": f"evidence unconstructable: {str(exc)[:300]}"}
     env = None
     for attempt in range(3):
         try:
-            env = complete(brief_for(item.get("kind")), item_prompt(item))
+            env = complete(brief_for(item.get("kind")), prompt)
             break
         except Exception as exc:                # noqa: BLE001
             if type(exc).__name__ == "CostGateError":
@@ -231,10 +385,10 @@ def parse_verdict(text, ok, bad):
         v = o.get("verdict")
         if v == ok:
             return {"verdict": "uphold",
-                    "grounds": str(o.get("grounds", ""))[:400]}
+                    "grounds": str(o.get("grounds", ""))[:1200]}
         if v == bad:
             return {"verdict": "reject",
-                    "grounds": str(o.get("grounds", ""))[:400]}
+                    "grounds": str(o.get("grounds", ""))[:1200]}
         raise ValueError(f"verdict {v!r}")
     except Exception as exc:                    # noqa: BLE001
         return {"verdict": "no_verdict",
@@ -242,7 +396,8 @@ def parse_verdict(text, ok, bad):
 
 
 # ---------------------------------------------------------------- stage 1
-def parity_stage(items, frontier_complete, flash_complete, fcfg):
+def parity_stage(items, frontier_complete, flash_complete, fcfg,
+                 ev=None):
     """N items judged by BOTH judges; divergence above the band stops the
     stage loudly. Divergence is computed over pairs where both judges
     reached a real verdict; no_verdict pairs are recorded, not compared."""
@@ -250,8 +405,8 @@ def parity_stage(items, frontier_complete, flash_complete, fcfg):
     sample = items[:n]
     rows, agree, decided = [], 0, 0
     for i, it in enumerate(sample):
-        fv = judge_item(frontier_complete, it)
-        sv = judge_item(flash_complete, it)
+        fv = judge_item(frontier_complete, it, ev)
+        sv = judge_item(flash_complete, it, ev)
         rows.append({"idx": i, "kind": it.get("kind"),
                      "risk": it.get("risk"),
                      "frontier": fv, "flash": sv})
@@ -304,14 +459,14 @@ def _record_path(run_dir):
     return os.path.join(run_dir, "frontier_inflight.json")
 
 
-def _request_body(item, idx, fcfg):
+def _request_body(item, idx, fcfg, ev=None):
     return {"model": fcfg["model"],
             "temperature": 0.0,
             "max_tokens": int(fcfg.get("max_tokens",
                                        DEFAULTS["max_tokens"])),
             "messages": [
                 {"role": "system", "content": brief_for(item.get("kind"))},
-                {"role": "user", "content": item_prompt(item)}],
+                {"role": "user", "content": item_prompt(item, ev)}],
             "response_format": {"type": "json_object"}}
 
 
@@ -344,7 +499,8 @@ def _adopt_batch_id(entry, transport, rec_path):
     return entry["batch_id"]
 
 
-def batch_stage(run_dir, items, transport, fcfg, poll_s=20.0, client=None):
+def batch_stage(run_dir, items, transport, fcfg, poll_s=20.0, client=None,
+                ev=None):
     """Submit the curated slice as ONE batch job through CurlTransport,
     with a manifest-style record file (F2 doctrine: the record exists from
     the moment money is committed until results are routed; a killed
@@ -359,7 +515,7 @@ def batch_stage(run_dir, items, transport, fcfg, poll_s=20.0, client=None):
     rec_path = _record_path(run_dir)
     entry = (json.load(open(rec_path))
              if os.path.exists(rec_path) else {})
-    bodies = [_request_body(it, i, fcfg) for i, it in enumerate(items)]
+    bodies = [_request_body(it, i, fcfg, ev) for i, it in enumerate(items)]
     if not entry.get("batch_id") and entry.get("input_file_id"):
         _adopt_batch_id(entry, transport, rec_path)
     if not entry.get("batch_id"):
@@ -472,11 +628,11 @@ def batch_stage(run_dir, items, transport, fcfg, poll_s=20.0, client=None):
     return verdicts, gate_exc
 
 
-def live_stage(items, frontier_complete):
+def live_stage(items, frontier_complete, ev=None):
     """batch=false fallback: the same slice judged live, one call each."""
     out = []
     for i, it in enumerate(items):
-        v = judge_item(frontier_complete, it)
+        v = judge_item(frontier_complete, it, ev)
         out.append({"idx": i, "kind": it.get("kind"),
                     "risk": it.get("risk"),
                     "detail": it.get("detail"), **v})
@@ -485,7 +641,7 @@ def live_stage(items, frontier_complete):
 
 # ------------------------------------------------------------------- run
 def run_review(run_dir, fcfg, frontier_complete, flash_complete,
-               transport=None, poll_s=20.0, client=None):
+               transport=None, poll_s=20.0, client=None, lines=None):
     """The whole stage, judges and transport injected (tests run it
     offline for $0; main() wires the live clients). Ordering per the
     adversarial review: the WHOLE worst case (parity + slice) is gated
@@ -507,15 +663,48 @@ def run_review(run_dir, fcfg, frontier_complete, flash_complete,
     # parity sample's live calls (two judges per item, same body
     # arithmetic), so the run can never spend parity money and then
     # refuse at submit
-    worst = _worst_case_usd([_request_body(it, i, fcfg)
+    ev = load_evidence(run_dir, lines)
+    if ev is None:
+        print("  !! frontier review: no evidence context (root_graph.json "
+              "or document lines missing) -- prompts fall back to the "
+              "queue's own recorded fields; dropped_merge/broken_promise "
+              "verdicts then carry NO evidentiary weight "
+              "(k3_validity_report 2026-08-14)")
+    # re-review item 4 (batch half): items whose evidence cannot be
+    # constructed leave the slice AT PREP, each as a no_verdict report
+    # row naming the reason -- the stage never aborts on one, and they
+    # never reach the gate, the transport, or the ledger
+    excluded = []
+    if ev is not None:
+        judgeable = []
+        for it in top:
+            try:
+                item_prompt(it, ev)
+                judgeable.append(it)
+            except T.Phase1Error as exc:
+                excluded.append({"kind": it.get("kind"),
+                                 "risk": it.get("risk"),
+                                 "detail": it.get("detail"),
+                                 "verdict": "no_verdict",
+                                 "grounds": "evidence unconstructable: "
+                                            + str(exc)[:300]})
+        top = judgeable
+        if excluded:
+            print(f"  ({len(excluded)} item(s) excluded from the slice: "
+                  f"evidence unconstructable; recorded as no_verdict)")
+    worst = _worst_case_usd([_request_body(it, i, fcfg, ev)
                              for i, it in enumerate(top)], price)
     parity_worst = 0.0
     if not rec.get("parity"):
         n = min(int(fcfg.get("parity_n", DEFAULTS["parity_n"])),
                 len(items))
-        parity_worst = 2 * _worst_case_usd(
-            [_request_body(it, i, fcfg) for i, it in enumerate(items[:n])],
-            price)
+        pbodies = []
+        for i, it in enumerate(items[:n]):
+            try:
+                pbodies.append(_request_body(it, i, fcfg, ev))
+            except T.Phase1Error:
+                pass          # judge_item records these as no_verdict
+        parity_worst = 2 * _worst_case_usd(pbodies, price)
     if worst + parity_worst > ceiling:
         raise T.CostGateError(
             f"frontier review worst case ${worst + parity_worst:.2f} "
@@ -529,7 +718,7 @@ def run_review(run_dir, fcfg, frontier_complete, flash_complete,
               f"(divergence {parity['divergence']:.0%}, already passed)")
     else:
         parity = parity_stage(items, frontier_complete, flash_complete,
-                              fcfg)
+                              fcfg, ev=ev)
         rec["parity"] = parity            # item 3c: passed parity persists
         R.write_json(rec_path, rec)
         print(f"parity: divergence {parity['divergence']:.0%} over "
@@ -538,11 +727,14 @@ def run_review(run_dir, fcfg, frontier_complete, flash_complete,
     gate_exc = None
     if fcfg.get("batch", DEFAULTS["batch"]):
         verdicts, gate_exc = batch_stage(run_dir, top, transport, fcfg,
-                                         poll_s=poll_s, client=client)
+                                         poll_s=poll_s, client=client,
+                                         ev=ev)
     else:
-        verdicts = live_stage(top, frontier_complete)
+        verdicts = live_stage(top, frontier_complete, ev=ev)
+    verdicts = verdicts + excluded        # item 4: skips are report rows
     out = {"run": run_dir, "model": fcfg.get("model"),
            "parity": parity, "slice_n": len(top),
+           "excluded_no_evidence": len(excluded),
            "counts": {}, "verdicts": verdicts}
     for v in verdicts:
         out["counts"][v["verdict"]] = out["counts"].get(v["verdict"], 0) + 1
@@ -611,9 +803,11 @@ def main(argv=None):
                          "flash-seat")
     flash.max_cost_usd = float(fcfg["max_cost_usd"])
     transport = dc.CurlTransport(fcfg["base_url"], frontier.key)
+    doc = os.path.join(PHASE1, "..", "..", "..", cfg["doc_path"])
+    lines = R.load_doc(doc) if os.path.exists(doc) else None
     try:
         run_review(args.run, fcfg, frontier.complete, flash.complete,
-                   transport=transport, client=frontier)
+                   transport=transport, client=frontier, lines=lines)
     except T.Phase1Error as exc:
         print(f"⛔ {type(exc).__name__}: {exc}")
         return 2

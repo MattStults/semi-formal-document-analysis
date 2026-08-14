@@ -1,11 +1,23 @@
 #!/usr/bin/env python3
-"""Promise-repair stage (item A, Matt 2026-08-14): targeted regeneration
-of a run's frontier-confirmed broken promises.
+"""Promise-repair stage (item A, Matt 2026-08-14; scope extended per the
+k3_validity_report + delta_investigation): targeted regeneration of a
+run's missing provides exports, in TWO classes:
 
-Input: <run>/fixup_queue.json (the broken_promise items the frontier
-REJECTED -- fixup.py routes them here as needing regeneration), the run's
-root_graph.json, and its cached division/leaf artifacts. For each broken
-promise:
+  (a) PROMISE breaks -- <run>/fixup_queue.json broken_promise items the
+      frontier rejected (note: the ds7 first-slice K3 "confirmations" of
+      this kind were evidence-free defaults, k3_validity_report; the
+      class stands on the division's own recorded promise, not on them);
+  (b) UNDER-EXPORT -- the deterministic scan over the root graph's
+      danglings (delta_investigation cause 3, ds7's one real defect: 92
+      exported provides names vs the golden's 230): a dangling need whose
+      establishing content already EXISTS as a node -- establishes-prose
+      token overlap >= 0.25 with the need prose, or spans containing the
+      name's seeded established_around -- becomes a repair candidate
+      aimed at that node, with the SAME must-provide-or-explain redraw
+      and the same decline path.
+
+Input: <run>/fixup_queue.json, the run's root_graph.json, and its cached
+division/leaf artifacts. For each item:
 
   1. locate the promised name's seed entry (name + prose +
      established_around) in the responsible division.json;
@@ -46,7 +58,7 @@ for _p in (PHASE1, HERE):
 import translate as T          # noqa: E402
 import recurse_driver as R     # noqa: E402
 
-DEFAULT_BUDGET = 0.25
+DEFAULT_BUDGET = 0.40    # matches config (re-review 5 + final 1c note)
 
 
 def _safe(s):
@@ -71,6 +83,33 @@ def _unwind_dir(run_dir, art):
     return None
 
 
+def _descend(unwind_dir, line):
+    """Descend the cached division tree to the leaf whose span covers
+    `line`. Returns ((lo, hi, leaf_wdir, inherited_seeds), None) or
+    (None, reason). No model call."""
+    d = json.load(open(os.path.join(unwind_dir, "division.json")))
+    wdir = unwind_dir
+    while True:
+        seeds = d.get("seed_vocabulary", [])
+        idx = clo = chi = None
+        for i, c in enumerate(d.get("children", []), 1):
+            sp = c.get("span") if isinstance(c, dict) else None
+            if (isinstance(sp, (list, tuple)) and len(sp) == 2
+                    and sp[0] <= line <= sp[1]):
+                idx, (clo, chi) = i, sp
+                break
+        if idx is None:
+            return None, f"no child span covers line {line} under {wdir}"
+        cdir = os.path.join(wdir, f"c{idx}")
+        sub = os.path.join(cdir, "division.json")
+        if os.path.exists(sub):
+            d2 = json.load(open(sub))
+            if d2.get("decision") == "divide":
+                wdir, d = cdir, d2
+                continue
+        return (clo, chi, cdir, seeds), None
+
+
 def locate_leaf(unwind_dir, name):
     """(seed, lo, hi, leaf_wdir, inherited_seeds) for the promised name,
     or (None, reason). Descends cached divisions only -- no model call."""
@@ -81,27 +120,141 @@ def locate_leaf(unwind_dir, name):
     if not (isinstance(ea, (list, tuple)) and len(ea) >= 2):
         return None, (f"seed '{name}' has no usable established_around in "
                       f"{unwind_dir}/division.json")
-    wdir = unwind_dir
-    while True:
-        seeds = d.get("seed_vocabulary", [])
-        idx = None
-        for i, c in enumerate(d.get("children", []), 1):
-            sp = c.get("span") if isinstance(c, dict) else None
-            if (isinstance(sp, (list, tuple)) and len(sp) == 2
-                    and sp[0] <= ea[0] <= sp[1]):
-                idx, (clo, chi) = i, sp
-                break
-        if idx is None:
-            return None, (f"no child span covers established_around "
-                          f"{list(ea[:2])} under {wdir}")
-        cdir = os.path.join(wdir, f"c{idx}")
-        sub = os.path.join(cdir, "division.json")
-        if os.path.exists(sub):
-            d2 = json.load(open(sub))
-            if d2.get("decision") == "divide":
-                wdir, d = cdir, d2
+    located, why = _descend(unwind_dir, ea[0])
+    if located is None:
+        return None, why
+    lo, hi, leaf_wdir, seeds = located
+    return (seed, lo, hi, leaf_wdir, seeds), None
+
+
+def _all_division_seeds(run_dir):
+    """name -> seed entry, from every cached division.json under the run
+    (first wins, the validator's own convention)."""
+    import glob
+    out = {}
+    for p in sorted(glob.glob(os.path.join(run_dir, "**", "division.json"),
+                              recursive=True)):
+        try:
+            for s in json.load(open(p)).get("seed_vocabulary", []):
+                if isinstance(s, dict) and s.get("name"):
+                    out.setdefault(s["name"], s)
+        except Exception:               # noqa: BLE001
+            pass
+    return out
+
+
+def _covers(sp, ea, tol=2):
+    """Span-coherence test with tolerance (re-review 1c): a span counts as
+    covering the establishment when it contains ANY line of [ea0, ea1] or
+    sits within +-2 lines of it. Ground: the flagship
+    interactive_vs_programmatic case -- seed established_around
+    [3384, 3386], the establishing nodes START at 3386; exact-containment
+    of ea[0] alone called that infeasible."""
+    if not (isinstance(sp, (list, tuple)) and len(sp) == 2
+            and isinstance(ea, (list, tuple)) and len(ea) >= 2):
+        return False
+    return not (sp[1] < ea[0] - tol or sp[0] > ea[1] + tol)
+
+
+def _node_covers(node, ea, tol=2):
+    return any(isinstance(sp, dict)
+               and _covers(sp.get("lines"), ea, tol)
+               for sp in (node or {}).get("spans", []))
+
+
+def _select_target(nodes, ea, tol=2):
+    """THE ONE splice-target selector (final re-review 1c displacement;
+    both the prep feasibility check and splice's promise-class branch
+    call this -- the coherence lesson: two selection rules drift).
+    Ranking, NEVER graph order:
+      1. EXACT-cover nodes first -- a span containing ANY line of
+         [ea0, ea1], no tolerance;
+      2. only if none exist, the +-2 tolerance fallback;
+      3. among matches: maximum line-overlap with [ea0, ea1], then the
+         narrowest span.
+    Ground (ds7 flagship): ea [3384, 3386] with the adjacent worked-
+    example node L3239-3382_n017 (spans to 3382, inside tolerance)
+    present must select L3383-3501_n001 -- first-cover-in-graph-order
+    displaced the splice onto the neighbour."""
+    if not (isinstance(ea, (list, tuple)) and len(ea) >= 2):
+        return None
+    best_node, best_key = None, None
+    for n in nodes:
+        for sp in n.get("spans", []):
+            ln = sp.get("lines") if isinstance(sp, dict) else None
+            if not (isinstance(ln, (list, tuple)) and len(ln) == 2):
                 continue
-        return (seed, clo, chi, cdir, seeds), None
+            if not _covers(ln, ea, tol):
+                continue
+            exact = not (ln[1] < ea[0] or ln[0] > ea[1])
+            ov = max(0, min(ln[1], ea[1]) - max(ln[0], ea[0]) + 1)
+            key = (1 if exact else 0, ov, -(ln[1] - ln[0]))
+            if best_key is None or key > best_key:
+                best_key, best_node = key, n
+    return best_node
+
+
+def underexport_candidates(run_dir, g):
+    """The deterministic scan (item A extension; delta_investigation
+    cause 3 -- ds7's one real defect: 92 exported provides names vs the
+    golden's 230, with ~50 of the 64 near-miss danglings naming content
+    that EXISTS as nodes with empty provides). For each dangling need:
+    the best existing node whose establishes has >= 0.25 token overlap
+    with the need prose, or whose spans contain the name's seed
+    established_around (when any cached division seeded it). Emits one
+    candidate per dangling name."""
+    import risk_queue as RQ
+    provides = {R.nm(p) for n in g.get("nodes", [])
+                for p in n.get("provides", [])}
+    seeds = _all_division_seeds(run_dir)
+    cands = {}
+    for n in g.get("nodes", []):
+        for d in n.get("needs", []):
+            name = R.nm(d)
+            if name in provides or not isinstance(d, dict):
+                continue
+            if name in cands:
+                continue
+            prose = d.get("prose", "")
+            ea = (seeds.get(name) or {}).get("established_around")
+            best, best_sim, via = None, 0.0, None
+            for cand in g.get("nodes", []):
+                if cand is n:
+                    continue
+                s = RQ.sim(prose, cand.get("establishes", ""))
+                if s >= 0.25 and s > best_sim:
+                    best, best_sim, via = cand, s, "establishes-overlap"
+                if (best is None and isinstance(ea, (list, tuple))
+                        and len(ea) >= 2
+                        and any(isinstance(sp, dict)
+                                and (sp.get("lines") or [0, -1])[0]
+                                <= ea[0]
+                                <= (sp.get("lines") or [0, -1])[1]
+                                for sp in cand.get("spans", []))):
+                    best, via = cand, "established_around"
+            if best is None:
+                continue
+            a = (best.get("spans") or [{}])[0].get("lines") or [None, None]
+            if a[0] is None:
+                continue
+            # re-review 1b (target/ea coherence; 4/23 ds7 candidates
+            # incoherent): when the target was picked by establishes
+            # OVERLAP, the redraw location derives FROM THE TARGET's own
+            # span and the (possibly stale) seed ea is dropped -- never
+            # redraw an ea leaf to splice a distant node. Only an
+            # ea-picked target (which covers ea by construction) keeps
+            # the seed's established_around.
+            if via == "establishes-overlap" or not (
+                    isinstance(ea, (list, tuple)) and len(ea) >= 2):
+                ea_out = [a[0], a[1]]
+            else:
+                ea_out = list(ea[:2])
+            cands[name] = {
+                "name": name, "prose": prose, "needer": n.get("id"),
+                "target_id": best.get("id"), "via": via,
+                "sim": round(best_sim, 3),
+                "established_around": ea_out}
+    return list(cands.values())
 
 
 def promise_extra(seed):
@@ -134,10 +287,12 @@ def redraw_leaf(drv, seed, lo, hi, seeds, scratch_wdir):
     return g
 
 
-def splice(g, seed, redraw, unwind_art, scratch_wdir):
+def splice(g, seed, redraw, unwind_art, scratch_wdir, target_id=None):
     """The mechanical merge: ONLY the new provides entry (and any new
     needs the validator accepted on the providing node) reach the graph
-    copy. Everything judgmental already happened -- in the redraw."""
+    copy. Everything judgmental already happened -- in the redraw.
+    `target_id` (the under-export class): the scan already named the
+    node that owns the establishment lines."""
     name, ea = seed["name"], seed["established_around"]
     prov_node = prov_entry = None
     for n in redraw.get("nodes", []):
@@ -148,25 +303,30 @@ def splice(g, seed, redraw, unwind_art, scratch_wdir):
         if prov_entry:
             break
     if prov_entry is None:
+        # re-review 2-note: word-boundary match, never substring -- a
+        # judgment_calls entry naming support_mental_health_rule must not
+        # count as a decline of support_mental_health
         reason = next((j for j in redraw.get("judgment_calls", [])
-                       if isinstance(j, str) and name in j),
+                       if isinstance(j, str)
+                       and R.name_mentioned(name, j)),
                       "(declined without a judgment_calls reason -- "
                       "validator accepted the reply, treat as decline)")
         return "declined", reason
-    if not any(isinstance(sp, dict)
-               and (sp.get("lines") or [0, 0])[0] <= ea[0]
-               <= (sp.get("lines") or [0, -1])[1]
-               for sp in prov_node.get("spans", [])):
+    if not _node_covers(prov_node, ea):
         return "failed", (f"redraw provides '{name}' but not at the "
-                          f"establishment lines {list(ea[:2])}")
-    target = next((n for n in g.get("nodes", [])
-                   if any(isinstance(sp, dict)
-                          and (sp.get("lines") or [0, 0])[0] <= ea[0]
-                          <= (sp.get("lines") or [0, -1])[1]
-                          for sp in n.get("spans", []))), None)
+                          f"establishment lines {list(ea[:2])} "
+                          f"(+-2 tolerance)")
+    if target_id is not None:
+        target = next((n for n in g.get("nodes", [])
+                       if n.get("id") == target_id), None)
+    else:
+        target = _select_target(g.get("nodes", []), ea)
     if target is None:
         return "failed", (f"no root-graph node covers the establishment "
-                          f"lines {list(ea[:2])}")
+                          f"lines {list(ea[:2])}"
+                          if target_id is None
+                          else f"scan target {target_id!r} vanished from "
+                               f"the root graph")
     have_p = {R.nm(p) for p in target.get("provides", [])}
     if name not in have_p:
         target.setdefault("provides", []).append(dict(prov_entry))
@@ -202,29 +362,117 @@ def run_repair(run_dir, cfg, client, lines):
     before = danglings(g)
     scratch_root = os.path.join(run_dir, "promise_repair")
     drv = R.Driver(cfg, client, lines, scratch_root)
+    #: names already provided ANYWHERE in the root graph (re-review 1a;
+    #: ds7 real case: scope_of_autonomy already provided by L461-608_n002
+    #: -- 3/26 queue names were stale): a redraw for these buys nothing
+    provided_now = {R.nm(p) for n in g.get("nodes", [])
+                    for p in n.get("provides", [])}
     # -- deterministic prep first: locate every leaf, THEN gate, THEN spend
     plans, report_items = [], []
+    seen_promise = set()          # re-review 1d: one plan per name, max
     for it in items:
         det = it.get("detail") or {}
         name = det.get("name")
+        if name in seen_promise:
+            continue              # 1d (chain_of_command_principle x6 ->
+        seen_promise.add(name)    #     one plan)
+        if name in provided_now:
+            report_items.append({"name": name, "unwind": det.get("unwind"),
+                                 "class": "promise",
+                                 "status": "skipped_already_provided",
+                                 "why": "the name is already provided in "
+                                        "the root graph (stale queue row)"})
+            continue
         udir = _unwind_dir(run_dir, det.get("unwind"))
         if udir is None:
             report_items.append({"name": name, "unwind": det.get("unwind"),
-                                 "status": "failed",
+                                 "class": "promise", "status": "failed",
                                  "why": "unwind artifact dir not found"})
             continue
         located, why = locate_leaf(udir, name)
         if located is None:
             report_items.append({"name": name, "unwind": det.get("unwind"),
-                                 "status": "failed", "why": why})
+                                 "class": "promise", "status": "failed",
+                                 "why": why})
             continue
         seed, lo, hi, leaf_wdir, seeds = located
-        plans.append({"seed": seed, "lo": lo, "hi": hi, "seeds": seeds,
-                      "unwind": det.get("unwind"),
+        plans.append({"class": "promise", "seed": seed, "lo": lo, "hi": hi,
+                      "seeds": seeds, "unwind": det.get("unwind"),
+                      "target_id": None,
                       "scratch": os.path.join(scratch_root,
                                               _safe(name))})
+    # -- class (b), the under-export scan (item A extension,
+    # delta_investigation cause 3): danglings whose establishing content
+    # already EXISTS as a node with empty provides get the SAME
+    # must-provide-or-explain leaf redraw, aimed at that node's span
+    planned = {p["seed"]["name"] for p in plans}
+    if os.path.exists(os.path.join(run_dir, "division.json")):
+        for c in underexport_candidates(run_dir, g):
+            if c["name"] in planned:
+                continue                 # the promise class owns this name
+            located, why = _descend(run_dir, c["established_around"][0])
+            if located is None:
+                report_items.append({"name": c["name"],
+                                     "class": "underexport",
+                                     "status": "failed", "why": why})
+                continue
+            lo, hi, leaf_wdir, seeds = located
+            # a synthetic seed: the dangling's own prose is the promise
+            plans.append({"class": "underexport",
+                          "seed": {"name": c["name"],
+                                   "prose": c["prose"],
+                                   "established_around":
+                                       c["established_around"]},
+                          "lo": lo, "hi": hi, "seeds": seeds,
+                          "unwind": f"(scan: {c['via']}, "
+                                    f"target {c['target_id']})",
+                          "target_id": c["target_id"],
+                          "scratch": os.path.join(
+                              scratch_root, "underexport_"
+                              + _safe(c["name"]))})
+    # -- re-review 1c: prep-time splice feasibility, BEFORE spending.
+    # Redraw side: the leaf must cover the establishment lines (with the
+    # +-2 tolerance) or the redraw can never provide there. Target side:
+    # a root-graph node must exist at those lines (the scan's target for
+    # class b; any covering node for class a). Infeasible plans become
+    # report rows and cost nothing.
+    feasible = []
+    for p in plans:
+        ea = p["seed"]["established_around"]
+        if not _covers([p["lo"], p["hi"]], ea):
+            report_items.append({"name": p["seed"]["name"],
+                                 "class": p["class"],
+                                 "unwind": p["unwind"],
+                                 "status": "infeasible",
+                                 "why": f"redraw leaf [{p['lo']}, "
+                                        f"{p['hi']}] does not cover "
+                                        f"established_around "
+                                        f"{list(ea[:2])} (+-2)"})
+            continue
+        if p["target_id"] is not None:
+            tgt = next((n for n in g.get("nodes", [])
+                        if n.get("id") == p["target_id"]), None)
+        else:
+            tgt = _select_target(g.get("nodes", []), ea)
+        if tgt is None:
+            report_items.append({"name": p["seed"]["name"],
+                                 "class": p["class"],
+                                 "unwind": p["unwind"],
+                                 "status": "infeasible",
+                                 "why": f"no splice target at "
+                                        f"{list(ea[:2])} (+-2)"})
+            continue
+        feasible.append(p)
+    plans = feasible
     # -- budget gate BEFORE any call (worst case: full prompt in at the
-    # configured rate, the leaf phase cap out; no cache credit)
+    # configured rate, the leaf phase cap out; no cache credit).
+    # Re-review 5: repair rounds are NOT multiplied into this gate --
+    # documented rationale: the gate prices the expected path (one draw
+    # per plan); repair-round overruns are backstopped by the MEASURED
+    # ceiling main() sets (client.max_cost_usd = the stage budget), which
+    # GraphClient/Client._log_usage enforces after every billed call
+    # (routing-gap F2), so the stage can never spend past the budget
+    # however many repair rounds the draws take.
     budget = float((cfg.get("promise_repair") or {})
                    .get("max_cost_usd", DEFAULT_BUDGET))
     price = cfg.get("price_per_mtok")
@@ -247,6 +495,7 @@ def run_repair(run_dir, cfg, client, lines):
                 f"slices or raise the budget deliberately.")
     # -- spend: one targeted leaf redraw per plan
     n_rep = n_dec = 0
+    repaired_names = {"promise": set(), "underexport": set()}
     for p in plans:
         seed = p["seed"]
         try:
@@ -254,23 +503,48 @@ def run_repair(run_dir, cfg, client, lines):
                                  p["scratch"])
         except T.Phase1Error as exc:
             report_items.append({"name": seed["name"],
+                                 "class": p["class"],
                                  "unwind": p["unwind"], "status": "failed",
                                  "why": f"redraw failed: {exc}"})
             continue
-        status, detail = splice(g, seed, redraw, p["unwind"], p["scratch"])
+        status, detail = splice(g, seed, redraw, p["unwind"], p["scratch"],
+                                target_id=p.get("target_id"))
         n_rep += status == "repaired"
         n_dec += status == "declined"
-        report_items.append({"name": seed["name"], "unwind": p["unwind"],
+        if status == "repaired":
+            repaired_names[p["class"]].add(seed["name"])
+        report_items.append({"name": seed["name"], "class": p["class"],
+                             "unwind": p["unwind"],
                              "span": [p["lo"], p["hi"]], "status": status,
                              ("target" if status == "repaired"
                               else "why"): detail})
     after = danglings(g)
     resolved = len(before - after)
+    # resolved-needer count PER CLASS (the item's own asked-for number):
+    # a before-dangling resolves to a class when its name was repaired by
+    # that class's redraws
+    by_class = {}
+    for cls in ("promise", "underexport"):
+        rows = [r for r in report_items if r.get("class") == cls]
+        by_class[cls] = {
+            "planned": len(rows),
+            "repaired": sum(1 for r in rows if r["status"] == "repaired"),
+            "declined": sum(1 for r in rows if r["status"] == "declined"),
+            "failed": sum(1 for r in rows if r["status"] == "failed"),
+            "skipped_already_provided": sum(
+                1 for r in rows
+                if r["status"] == "skipped_already_provided"),
+            "infeasible": sum(1 for r in rows
+                              if r["status"] == "infeasible"),
+            "needers_resolved": len(
+                {(nid, nm) for nid, nm in (before - after)
+                 if nm in repaired_names[cls]})}
     n_fail = sum(1 for r in report_items if r["status"] == "failed")
     R.write_json(os.path.join(run_dir, "root_graph.repaired.json"), g)
     report = {"run": run_dir, "items": report_items,
               "repaired": n_rep, "declined_honestly": n_dec,
               "failed": n_fail,
+              "by_class": by_class,
               "danglings_before": len(before),
               "danglings_after": len(after),
               "needers_resolved": resolved,
@@ -282,11 +556,16 @@ def run_repair(run_dir, cfg, client, lines):
                             "kind": "promise_repair",
                             "repaired": n_rep, "declined": n_dec,
                             "failed": n_fail,
+                            "by_class": {c: by_class[c]["needers_resolved"]
+                                         for c in by_class},
                             "needers_resolved": resolved}) + "\n")
     print(f"promise repair: {n_rep} repaired, {n_dec} honestly "
           f"undeliverable, {n_fail} failed; danglings "
           f"{len(before)} -> {len(after)} ({resolved} needer(s) "
-          f"resolved) -> root_graph.repaired.json")
+          f"resolved: promise "
+          f"{by_class['promise']['needers_resolved']}, underexport "
+          f"{by_class['underexport']['needers_resolved']}) -> "
+          f"root_graph.repaired.json")
     return report
 
 

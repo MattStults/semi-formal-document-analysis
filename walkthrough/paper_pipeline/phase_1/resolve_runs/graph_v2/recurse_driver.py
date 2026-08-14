@@ -400,6 +400,17 @@ AUTHORITY_CANONICAL = frozenset((
 _AUTH_COINAGE = re.compile(r"section_.*authority")
 
 
+def name_mentioned(name, text):
+    """Word-boundary mention of a snake_case name in free text (re-review
+    2-note): 'support_mental_health_rule' in a judgment_calls entry must
+    NOT count as naming 'support_mental_health' -- substring matching let
+    a decline of one concept suppress the promise check for another."""
+    if not (isinstance(name, str) and isinstance(text, str) and name):
+        return False
+    return re.search(r"(?<![A-Za-z0-9_])" + re.escape(name)
+                     + r"(?![A-Za-z0-9_])", text) is not None
+
+
 def is_authority_coinage(name):
     return (isinstance(name, str)
             and name not in AUTHORITY_CANONICAL
@@ -469,10 +480,21 @@ def validate_leaf(g, lo, hi, lines, derive_uncovered=False, seeds=(),
         for s in seeds:
             ea = s.get("established_around") if isinstance(s, dict) else None
             name = s.get("name") if isinstance(s, dict) else None
+            # RULING (re-review 3-note, recorded here not transcript-only):
+            # a BOUNDARY-STRADDLING seed -- established_around crossing a
+            # leaf boundary, so `lo <= ea[0] and ea[1] <= hi` holds for no
+            # leaf -- is owed by no leaf. ACCEPTED GAP: forcing either
+            # neighbour to provide it would demand a claim about lines the
+            # dispatch cannot see; the division-level broken_promises
+            # check still catches an undelivered straddler post-unwind,
+            # which is the honest surface for it.
             if not (name and isinstance(ea, (list, tuple)) and len(ea) >= 2
                     and lo <= ea[0] and ea[1] <= hi):
                 continue                 # established elsewhere: not owed
-            if name in provided or name in jcs:
+            # word-boundary decline match (re-review 2-note): a
+            # judgment_calls entry naming a LONGER name must not suppress
+            # this seed's check
+            if name in provided or name_mentioned(name, jcs):
                 continue
             errs.append(
                 f"the inherited seed '{name}' ({s.get('prose', '')}) is "

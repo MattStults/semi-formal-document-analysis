@@ -2062,3 +2062,102 @@ Reports: delta_investigation.md, k3_validity_report.md. Three headlines:
    NOTHING blocks ds7+fixups as production graph once under-export is
    repaired (promise_repair scope extended to both classes) and the
    authority-excluded numbers are the recorded comparison basis.
+
+## 2026-08-14: promise items + evidence fixes LANDED (items A-extended, B, C)
+
+Driven by k3_validity_report.md + delta_investigation.md (both in this
+dir). All offline-pinned; suites green; no commit (coordinator stages).
+ A. promise_repair.py (new stage, --yes gated, budget
+    promise_repair.max_cost_usd default 0.25): targeted leaf redraws for
+    TWO classes -- (a) division-promise breaks from fixup_queue
+    broken_promise rejects (the class stands on the division's own
+    recorded promise; the ds7 K3 "confirmations" of this kind were
+    evidence-free defaults and carry no weight), and (b) the
+    UNDER-EXPORT scan (delta cause 3, the one real ds7 defect: 92
+    provides names vs golden 230): a dangling need whose establishing
+    content exists as a node (establishes-overlap >= 0.25, or spans
+    containing the seeded established_around) gets the same
+    must-provide-or-explain redraw aimed at that node. Mechanical splice
+    into root_graph.repaired.json (NEVER in place; provenance rows +
+    health line); honest declines recorded in
+    promise_repair_report.json; danglings recount with resolved-needer
+    counts PER CLASS.
+ B. enforce_promise_delivery (validate_leaf, default false for
+    byte-parity; true in driver_config for future builds): an inherited
+    seed established INSIDE the leaf's span must be provided under
+    exactly its name or declined in judgment_calls naming the seed --
+    cover-or-explain, wired through BOTH Driver.leaf and the core
+    _want_leaf (the D1 one-path lesson). ds8 prevention of the
+    45-broken-promise class.
+ C. frontier_review evidence fixes (k3_validity_report): item_prompt now
+    ships REAL per-kind evidence from an Evidence context
+    (root_graph.json + document lines) -- rename kinds get the seat's own
+    build_prompt with span text (the BRIEF promised it; the prompt never
+    carried it), dropped_merge both nodes' claims+text, broken_promise
+    the seed prose + covering-node texts, low_sim_edge both sides;
+    unconstructable evidence RAISES instead of defaulting; grounds cap
+    400 -> 1200; the module docstring records that ds7 first-slice
+    dropped_merge/broken_promise verdicts carry no evidentiary weight.
+New pins: test_promise_repair 13 (items A+B), test_frontier_review 30
+(+6 evidence pins), totals: routing 25 + frontier 30 + fixup 11 +
+promise 13 = 79.
+
+## 2026-08-14: promise_repair re-review -- 6 findings FIXED before commit
+
+Re-review verdict: items B + evidence-content sound; promise_repair prep
+was not. Fixed, each pinned:
+ 1a. GLOBAL already-provided filter at prep (ds7: scope_of_autonomy et
+     al, 3/26 queue names stale) -- skipped_already_provided report rows,
+     zero spend.
+ 1b. Target/ea coherence (4/23 ds7 candidates incoherent): an
+     overlap-picked target derives the redraw location FROM ITS OWN SPAN
+     and the stale seed ea is dropped -- never redraw an ea leaf to
+     splice a distant node.
+ 1c. Prep-time splice feasibility (redraw-leaf and target-side span
+     checks BEFORE spending; infeasible -> report rows, $0) with +-2
+     containment tolerance (flagship: interactive_vs_programmatic, ea
+     [3384,3386] vs nodes starting 3386).
+ 1d. Per-name dedupe in the promise class (chain_of_command_principle x6
+     -> one plan).
+ 2n. Decline matching is word-boundary (recurse_driver.name_mentioned,
+     used by validate_leaf AND the splice decline lookup):
+     support_mental_health_rule no longer declines support_mental_health.
+ 4.  _no_evidence aligned on both paths: judge_item builds the prompt
+     OUTSIDE the transport loop and returns a no_verdict row "evidence
+     unconstructable: <why>" (never a transport label); the batch slice
+     excludes such items AT PREP with report rows (excluded_no_evidence
+     on the artifact) -- the stage never aborts on one.
+ 5.  promise_repair.max_cost_usd 0.25 -> 0.40 (~$0.0084/plan x ~31 +
+     headroom); repair rounds deliberately NOT multiplied into the gate:
+     the measured ceiling (client.max_cost_usd = the stage budget,
+     enforced at _log_usage per routing-gap F2) backstops overruns
+     mid-flight -- rationale recorded at the gate.
+ 3n. RULING recorded in validate_leaf: boundary-straddling seeds (ea
+     crossing a leaf boundary) are owed by NO leaf -- accepted gap; the
+     division-level broken_promises check catches them post-unwind.
+Pin totals: routing 25 + frontier 32 + fixup 11 + promise 20 = 88.
+
+## 2026-08-14: final 1c displacement CLOSED (last blocker for the paid run)
+
+promise_repair splice-target selection factored into ONE function
+(`_select_target`) used by BOTH the prep feasibility check and splice's
+promise-class branch: EXACT-cover nodes first (no tolerance), +-2
+fallback only when none exist; ties by maximum line-overlap with
+[ea0, ea1], then narrowest span -- NEVER graph order (the ds7 flagship:
+ea [3384,3386] with adjacent L3239-3382_n017 present now selects
+L3383-3501_n001; do_not_facilitate ea 1543 selects exact L1542-1706_n001
+over the adjacent [1523,1541]). DEFAULT_BUDGET fallback 0.25 -> 0.40 to
+match config. Pins: promise 24 (4 new); totals routing 25 + frontier 32
++ fixup 11 + promise 24 = 92.
+
+## 2026-08-14: promise-repair set CONVERGED (3 review rounds) -- committed
+
+Final round closed the 1c displacement (exact-first _select_target, both
+call sites, pinned with the reviewer's own ds7 reproduction cases).
+92 pins across the fix-set files; graph_v2 232, phase_1 800 green.
+NEXT (in order, the standing runbook): (1) Opus-subagent recheck of the
+61 quarantined evidence-free verdicts using the corrected item_prompt
+(zero project spend); (2) promise_repair.py runs/ds7 --yes (simulated:
+29 plans, $0.244 worst case vs $0.40 gate); (3) danglings recount +
+quality battery on root_graph.repaired.json; (4) production-graph
+package. Budget $8.95 of $15.00 at this entry.

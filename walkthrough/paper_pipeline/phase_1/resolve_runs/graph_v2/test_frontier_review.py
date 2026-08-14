@@ -441,6 +441,148 @@ def test_batch_false_runs_the_slice_live(tmp_path):
     assert out["counts"] == {"uphold": 3}
 
 
+# ------------------------- item C: evidence-bearing prompts (k3 report)
+_DOC = [f"DOCLINE-{i} content of the document" for i in range(1, 21)]
+
+_GRAPH = {"nodes": [
+    {"id": "L1-12_n001", "establishes": "establishes the root authority",
+     "needs": [], "provides": [{"name": "root_authority",
+                                "prose": "the top level of authority"}],
+     "spans": [{"lines": [3, 4]}]},
+    {"id": "L13-20_n001", "establishes": "relies on the household rules",
+     "needs": [{"name": "house_rules",
+                "prose": "the household regulations"}],
+     "provides": [], "spans": [{"lines": [13, 14]}]}]}
+
+
+def _ev(run_dir="/nowhere"):
+    return FR.Evidence(json.loads(json.dumps(_GRAPH)), _DOC, run_dir)
+
+
+def test_rename_kind_prompts_carry_the_span_text_the_brief_promises():
+    """THE DEFECT (k3_validity_report): rename_seat.BRIEF tells the judge
+    to weigh 'the passages' quoted text' and item_prompt never sent any.
+    Both rename kinds must now ship the seat's own evidence prompt --
+    claims, prose, and the document lines."""
+    ev = _ev()
+    rename = {"kind": "seat_accepted_rename",
+              "detail": {"needer": "L13-20_n001", "name": "house_rules",
+                         "rename_to": "root_authority"}}
+    p = FR.item_prompt(rename, ev)
+    assert "DOCLINE-13" in p and "DOCLINE-3" in p, "span text missing"
+    assert "relies on the household rules" in p
+    assert "establishes the root authority" in p
+    assert "the household regulations" in p
+    assert "the top level of authority" in p
+    near = {"kind": "dangling_near_miss",
+            "detail": {"needer": "L13-20_n001", "name": "house_rules",
+                       "candidates": [{"name": "root_authority",
+                                       "sim": 0.9}]}}
+    p2 = FR.item_prompt(near, ev)
+    assert "DOCLINE-13" in p2 and "DOCLINE-3" in p2
+    assert "the household regulations" in p2
+
+
+def test_dropped_merge_prompt_carries_both_nodes(tmp_path):
+    """THE DEFECT: 16/16 ds7 dropped_merge verdicts were judged on a
+    node-id pair alone -- rubber-stamp-by-construction."""
+    item = {"kind": "dropped_merge",
+            "detail": "L1-12_n001->L13-20_n001"}
+    p = FR.item_prompt(item, _ev())
+    assert "establishes the root authority" in p
+    assert "relies on the household rules" in p
+    assert "DOCLINE-3" in p and "DOCLINE-13" in p
+
+
+def test_broken_promise_prompt_carries_seed_and_covering_nodes(tmp_path):
+    run = tmp_path / "run"
+    run.mkdir()
+    with open(os.path.join(str(run), "division.json"), "w") as f:
+        json.dump({"decision": "divide", "seed_vocabulary": [
+            {"name": "promised_x", "prose": "the promised thing",
+             "established_around": [3, 4]}],
+            "children": [{"span": [1, 12]}, {"span": [13, 20]}]}, f)
+    item = {"kind": "broken_promise",
+            "detail": {"unwind": str(run), "name": "promised_x"}}
+    p = FR.item_prompt(item, _ev(run_dir=str(run)))
+    assert "the promised thing" in p, "the seed's prose is the promise"
+    assert "establishes the root authority" in p, \
+        "the nodes covering the establishment lines are the context"
+    assert "DOCLINE-3" in p
+
+
+def test_low_sim_edge_prompt_carries_both_sides():
+    item = {"kind": "low_sim_edge",
+            "detail": {"needer": "L13-20_n001", "name": "root_authority",
+                       "prose": "needs the top level"}}
+    p = FR.item_prompt(item, _ev())
+    assert "relies on the household rules" in p
+    assert "establishes the root authority" in p
+    assert "the top level of authority" in p
+    assert "DOCLINE-13" in p and "DOCLINE-3" in p
+
+
+def test_unconstructable_evidence_raises_instead_of_defaulting():
+    """The pin the coordinator named: a no-evidence prompt construction is
+    a FAILURE, never another silent uncertainty-default."""
+    ev = _ev()
+    with pytest.raises(T.Phase1Error, match="no evidence"):
+        FR.item_prompt({"kind": "seat_accepted_rename",
+                        "detail": {"needer": "GHOST", "name": "x",
+                                   "rename_to": "root_authority"}}, ev)
+    with pytest.raises(T.Phase1Error, match="no evidence"):
+        FR.item_prompt({"kind": "dropped_merge",
+                        "detail": "GHOST->ALSO_GHOST"}, ev)
+
+
+def test_judge_item_skips_unconstructable_evidence_without_transport(
+        ):
+    """Re-review item 4: unconstructable evidence is a skip-with-record
+    -- a no_verdict row naming the reason, never a transport retry, never
+    a stage abort. The judge callable is never invoked."""
+    def never(system, user):
+        raise AssertionError("no judge call may happen")
+    v = FR.judge_item(never, {"kind": "seat_accepted_rename",
+                              "detail": {"needer": "GHOST", "name": "x",
+                                         "rename_to": "root_authority"}},
+                      _ev())
+    assert v["verdict"] == "no_verdict"
+    assert v["grounds"].startswith("evidence unconstructable")
+    assert "transport" not in v["grounds"]
+
+
+def test_batch_slice_excludes_unconstructable_items_at_prep(tmp_path):
+    """Item 4's batch half: the ghost item leaves the slice at prep as a
+    no_verdict report row; the judgeable item still ships and the stage
+    completes."""
+    good = {"kind": "seat_accepted_rename", "risk": 1.2,
+            "detail": {"needer": "L13-20_n001", "name": "house_rules",
+                       "rename_to": "root_authority"}}
+    ghost = {"kind": "seat_accepted_rename", "risk": 1.0,
+             "detail": {"needer": "GHOST", "name": "x",
+                        "rename_to": "root_authority"}}
+    run = _run_dir(tmp_path, items=[good, ghost])
+    with open(os.path.join(run, "root_graph.json"), "w") as f:
+        json.dump(_GRAPH, f)
+    tr = StubTransport([_row(0, "same_concept")])
+    out = FR.run_review(run, _fcfg(parity_n=1), _agreeing, _agreeing,
+                        transport=tr, poll_s=0, lines=_DOC)
+    assert out["excluded_no_evidence"] == 1
+    assert out["counts"] == {"uphold": 1, "no_verdict": 1}
+    ghost_row = next(v for v in out["verdicts"]
+                     if v["verdict"] == "no_verdict")
+    assert ghost_row["grounds"].startswith("evidence unconstructable")
+    # the batch carried ONLY the judgeable item
+    sent = [json.loads(l) for l in tr.jsonl.splitlines()]
+    assert len(sent) == 1
+
+
+def test_grounds_cap_is_1200_chars():
+    long = json.dumps({"verdict": "uphold", "grounds": "g" * 2000})
+    v = FR.parse_verdict(long, "uphold", "reject")
+    assert len(v["grounds"]) == 1200
+
+
 # --------------------------------------------------------------------- CLI
 def test_cli_refuses_without_yes(capsys):
     """The one stage that is deliberately NOT push-button: it spends real
