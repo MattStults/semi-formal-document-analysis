@@ -1753,3 +1753,18 @@ adjudicated against the document, per the standing rule. What the pilot
 must answer before full-corpus translation (Matt's #7): what the
 matching brief needs, whether atom granularity fits node granularity,
 and the cost/behavior of the full loop.
+
+## 2026-08-14: ds7 restart #2 -- unwind cap 8192->16384 (CONFIG intervention #1)
+
+U_c2_c1_c2's repair draws truncated 7x: the laden repair transcript
+inflates reasoning burn and the whole 8192 unwind cap went to reasoning
+(fresh r1 draw was 2k chars -- not density). Config phase_max_tokens
+unwind_decisions -> 16384; code untouched. HONEST CERTIFICATE NOTE: this
+is ds7's first real intervention (a config change mid-run). Two defects
+queued for post-run (census process): (1) transport-level TRUNCATED
+inside the retry ladder bypasses the fresh-restart remedy -- six paid
+retries of a request that cannot succeed; (2) DNS-failure strings not in
+the transient marks (restart #1). Also observed working: the validator
+correctly refused a rename to unprovided canonical name
+authority_level_ordering -- post-restructure, models prefer canonical
+authority rename targets even where unprovided; watch the class.
