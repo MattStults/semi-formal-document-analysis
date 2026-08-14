@@ -2488,3 +2488,105 @@ governs sequencing:
   adjudicated item-by-item by an independent frontier pass, which is a
   stronger check than the seat gate would have been. The thread stays
   OPEN until reviewed; it simply does not block the corpus run.
+
+## 2026-08-14: the four repaired_verification fixes LANDED (unreviewed)
+
+Built and pinned RED-first; the thread stays OPEN per the entry above
+(validation + adversarial review still owed). Nothing under `runs/` was
+written -- the ds7 prep re-check ran on a scratchpad copy.
+
+**FIX 1 -- splice adjudication seat (`splice_seat.py`, new).** The root
+cause: every promise_repair guard answers WHERE to aim a splice (span
+coverage, citation sites, authority-assignment nodes, same-referent
+duplication); NOTHING asked whether the receiving node's CONTENT
+establishes the concept, and 4 of ds7's 26 splices were wrong claims
+with every mechanical guard satisfied. The seat is `rename_seat.py`'s
+discipline applied to establishment: BLIND ON NAMES (concept prose +
+the receiving node's `establishes` and span text, never the predicate
+name), forced-binary `{"verdict": "establishes"|"does_not_establish",
+"grounds"}`, fail-closed to does_not_establish on any unparseable or
+uncertain reply, with rename_seat's CostGateError and terminal-transport
+(402/401/403, key resolution) carve-outs verbatim. The brief's
+load-bearing sentence: a passage that NEGATES, contradicts, or merely
+MENTIONS/comments on the concept does not establish it -- only one that
+defines, asserts or introduces it does (R1 was a negation on a
+`!!! meta "Commentary"` line; R2/R4 were real concepts established one
+node or 1,300 lines away). Wired into `promise_repair.splice` as the
+LAST gate before the graph is touched: `rejected_by_splice_seat` rows
+carry the grounds and change nothing. Config
+`promise_repair.splice_seat` DEFAULTS TRUE -- a correctness gate, not a
+flag; the calls ride the stage's existing client and budget.
+
+**FIX 2 -- narration mismatch.** `support_mental_health`'s decline
+ended "I will add a provides entry to n007 ..." and added none; the
+stage booked it as one of "3 honestly undeliverable". `asserts_delivery`
+matches future/past delivery phrasing sentence-by-sentence, requires the
+sentence to be about the entry, and excludes negated forms, so an honest
+decline that says what it declines to do stays one. A reason that
+asserts delivery with no entry is `narration_mismatch`, counted as a
+FAILED repair and never as a decline.
+
+**FIX 3 -- self-loops.** The receiving node's need for the name it now
+provides is dropped (a node cannot depend on itself; ds7 made 3, and
+each counted as a "resolved" needer), redraw needs naming the concept
+are not spliced, and the report carries a graph-level
+`self_loops_before/after` census plus `self_needs_dropped`.
+
+**FIX 4 -- run checkpoints (`run_checkpoint.py`, new; Matt's
+directive).** `checkpoint_every` (default 25, 0 disables) and
+`checkpoint_pause` (default FALSE -- a non-interactive run must not
+wedge), read from a stage section before the config root. Every N items
+the run prints and appends to the run's `health.jsonl`: done/remaining,
+spend vs ceiling, failures BY CATEGORY, graveyard open entries. Honoured
+in `translate_exec` (ticked inside `RunContext.finish`, AFTER the
+artifact and run.json flush; pause returns exit 3) and in
+`promise_repair` (after the report row is booked and the splice is in
+the graph copy). ⛔ The invariant is "never loses work": both pause pins
+assert the finished items' artifacts are on disk and the unstarted ones
+were never paid for, and the translate pin re-runs the remainder and
+byte-compares the union against one unpaused run.
+
+Pins: +30 `test_splice_seat.py`, +9 `test_run_checkpoint.py`; 25 of the
+30 and 4 of the 9 verified RED against the pre-fix files (the rest pin
+the new modules themselves). `test_promise_repair.py`'s 49 pins now run
+under the production default via a seat-satisfying client whose seat
+calls are counted separately, so every existing spend assertion keeps
+its meaning. graph_v2 279 -> **318**; phase_1 (excl. resolve_runs) 800,
+1 xfail.
+
+$0 PREP RE-CHECK on a scratchpad copy of runs/ds7 (redraw replaced by a
+raiser; no model call): plans and gate are IDENTICAL pre-fix and
+post-fix -- `opus_verdicts` SET **29 plans (11 promise / 18
+under-export), worst case $0.25**; ABSENT 37 (19/18), $0.31; seat calls
+0 in both, because the seat gates the SPLICE, not the PLAN. (Both sides
+differ from the 2026-08-14 prep table -- 29 as 10/19, 36 plans absent --
+by one promise plan that the table recorded as `skipped_same_referent`;
+the drift is in the run dir's inputs since that table was written, is
+present identically with the pre-fix file, and is NOT caused by these
+fixes.)
+
+## 2026-08-14: production certification CERTIFIED-WITH-CONDITIONS -> conditions applied
+
+production_certification.md: the 5 corrections were "exactly right, and
+exactly incomplete". Confirmed correct (all 5 verified against the
+document, 0 collateral change, 0 splices rejected out of 12 deeply
+re-adjudicated, delta reproduces, no golden coverage lost). MISSED:
+(C1) the R2 revert left the repair-fabricated NEED behind -- a latent
+false premise the moment an aliasing pass resolves it; (C2) the R4
+re-aim MOVED a self-loop rather than removing it; (C4) the corrections
+were an ad-hoc command, not a script -- outcome verified, process not
+reproducible (a REPRODUCIBILITY.md violation); (C5) stale report counts.
+CLOSED: graph_corrections.py (new, committed) applies every adjudicated
+correction deterministically with per-correction PRECONDITIONS that
+refuse rather than guess; rerunning it reproduces the production graph.
+C1 and C2 applied. NEAR-MISS CAUGHT IN-FLIGHT AND RECORDED: the first
+self-loop sweep was general and removed 19 loops -- 16 of which PRE-DATE
+the repair and are accepted, never-adjudicated content. Scoped to
+repair-introduced loops only (verified: original 16, production 16,
+introduced remaining 0). The lesson is the campaign's oldest: a fix's
+scope must be the adjudicated finding, not the class it belongs to.
+PRODUCTION CANDIDATE now: 773 nodes, 115 exported names, 1085 needs,
+25 danglings, 0 repair-introduced self-loops; battery green (0 bad
+spans/quotes, risk_queue 168, edge_similarity 8/1060 <0.1, recall
+0.4395). C5 (stale report counts: says 24 danglings / 3 honest declines,
+actual 25 / 2) and C3/C6 remain RECORD-ONLY.

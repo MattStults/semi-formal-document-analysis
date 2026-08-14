@@ -13127,10 +13127,6 @@
    "id": "L3383-3501_n001",
    "needs": [
     {
-     "name": "interactive_vs_programmatic_setting",
-     "prose": "Whether the assistant is interacting with a human in real time (interactive) or its output will be consumed programmatically; behavior varies accordingly."
-    },
-    {
      "name": "guideline_authority",
      "prose": "Rules in sections marked authority=guideline carry guideline-level instruction authority."
     }
@@ -15141,10 +15137,6 @@
     {
      "name": "user_authority",
      "prose": "Rules in the #have_conversational_sense section carry user authority."
-    },
-    {
-     "name": "assume_best_intentions_principle",
-     "prose": "The principle that the assistant should assume the user has best intentions."
     }
    ],
    "provides": [],
@@ -16370,10 +16362,6 @@
    "establishes": "The guidelines for content in this section apply to both systems, but instructions that discuss the nuances of audio or video inputs or outputs are only relevant to Advanced voice.",
    "id": "L4252-4482_n003",
    "needs": [
-    {
-     "name": "voice_style_guidelines",
-     "prose": "The style guidelines in the voice_style section apply to both standard and advanced voice modes; instructions about audio/video nuances apply only to advanced voice."
-    },
     {
      "name": "standard_voice_mode",
      "prose": "Standard voice mode, where automatic speech recognition transcribes the user's voice into text and the assistant's textual responses are converted to speech via a separate text-to-speech system."
@@ -26137,12 +26125,14 @@
   "promise_repair: spliced provides 'avoid_condescension_rule' onto L3954-4251_n014 from the targeted leaf redraw (established_around [4052, 4052])",
   "promise_repair: spliced provides 'no_repetition_rule' onto L3954-4251_n043 from the targeted leaf redraw (established_around [4204, 4204])",
   "promise_repair: spliced provides 'avoid_hedging_rule' onto L3954-4251_n045 from the targeted leaf redraw (established_around [4251, 4251])",
-  "REVERTED assume_objective_pov from L2126-2404_n031: node prose asserts the NEGATION of the document's #assume_objective_pov",
-  "REVERTED assume_best_intentions_principle from L3877-3953_n012: span is the thank-you rule L3937; the section is at L609",
-  "REVERTED user_authority_section_rules from L3147-3238_n001: span establishes avoid-errors L3152; the authority claim is heading L3150",
-  "REVERTED voice_style_guidelines from L4252-4482_n001: claim is at L4260, outside n001's spans",
-  "RE-AIMED voice_style_guidelines -> L4252-4482_n003 (covers L4260, verified)",
-  "RENAMED introduced need privileged_information_definition -> privileged_information (1)"
+  "REVERTED provides assume_objective_pov from L2126-2404_n031: span L2151 is inside a !!! meta Commentary block and its prose NEGATES the L2139 rule (repaired_verification R1)",
+  "REVERTED provides assume_best_intentions_principle from L3877-3953_n012: span L3937 is the thank-you rule; the section is at L610 (R2)",
+  "REVERTED provides user_authority_section_rules from L3147-3238_n001: span L3152 is the error-avoidance rule; the authority claim sits on heading L3150, which no node covers (R3)",
+  "RE-AIMED provides voice_style_guidelines L4252-4482_n001 -> L4252-4482_n003: the claim is the both-modes sentence at L4260, which n003's span covers verbatim and n001's does not (R4)",
+  "DROPPED need assume_best_intentions_principle from L3877-3953_n012: left behind by the R2 revert: a fabricated dependency on a name this node no longer provides -- latent false premise once an aliasing pass resolves it (certification C1)",
+  "RENAMED need privileged_information_definition -> privileged_information (1): the repair introduced a need under a name nothing provides; the same enumeration is provided by L1707-1973_n018",
+  "DROPPED repair-introduced self-need interactive_vs_programmatic_setting from L3383-3501_n001",
+  "DROPPED repair-introduced self-need voice_style_guidelines from L4252-4482_n003"
  ],
  "dropped_merges": [
   "L1001-1107_n001->L1-170_n043",
@@ -28160,11 +28150,13 @@
   }
  ],
  "verification_corrections": [
-  "REVERTED assume_objective_pov from L2126-2404_n031: node prose asserts the NEGATION of the document's #assume_objective_pov",
-  "REVERTED assume_best_intentions_principle from L3877-3953_n012: span is the thank-you rule L3937; the section is at L609",
-  "REVERTED user_authority_section_rules from L3147-3238_n001: span establishes avoid-errors L3152; the authority claim is heading L3150",
-  "REVERTED voice_style_guidelines from L4252-4482_n001: claim is at L4260, outside n001's spans",
-  "RE-AIMED voice_style_guidelines -> L4252-4482_n003 (covers L4260, verified)",
-  "RENAMED introduced need privileged_information_definition -> privileged_information (1)"
+  "REVERTED provides assume_objective_pov from L2126-2404_n031: span L2151 is inside a !!! meta Commentary block and its prose NEGATES the L2139 rule (repaired_verification R1)",
+  "REVERTED provides assume_best_intentions_principle from L3877-3953_n012: span L3937 is the thank-you rule; the section is at L610 (R2)",
+  "REVERTED provides user_authority_section_rules from L3147-3238_n001: span L3152 is the error-avoidance rule; the authority claim sits on heading L3150, which no node covers (R3)",
+  "RE-AIMED provides voice_style_guidelines L4252-4482_n001 -> L4252-4482_n003: the claim is the both-modes sentence at L4260, which n003's span covers verbatim and n001's does not (R4)",
+  "DROPPED need assume_best_intentions_principle from L3877-3953_n012: left behind by the R2 revert: a fabricated dependency on a name this node no longer provides -- latent false premise once an aliasing pass resolves it (certification C1)",
+  "RENAMED need privileged_information_definition -> privileged_information (1): the repair introduced a need under a name nothing provides; the same enumeration is provided by L1707-1973_n018",
+  "DROPPED repair-introduced self-need interactive_vs_programmatic_setting from L3383-3501_n001",
+  "DROPPED repair-introduced self-need voice_style_guidelines from L4252-4482_n003"
  ]
 }
