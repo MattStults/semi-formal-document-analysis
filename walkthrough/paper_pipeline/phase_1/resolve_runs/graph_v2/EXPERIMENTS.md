@@ -2161,3 +2161,23 @@ NEXT (in order, the standing runbook): (1) Opus-subagent recheck of the
 29 plans, $0.244 worst case vs $0.40 gate); (3) danglings recount +
 quality battery on root_graph.repaired.json; (4) production-graph
 package. Budget $8.95 of $15.00 at this entry.
+
+## 2026-08-14: OPUS RECHECK of the 61 quarantined verdicts ($0) -- ledger rewritten
+
+opus_recheck.json + opus_recheck_report.md. With real evidence: 29 of 57
+K3 name-only verdicts FLIP (broken_promise agreement 29%; dropped_merge
+16/16 stands on assignment-vs-definition grounds). REAL broken-promise
+defects: **14 of 45** (13 names, all instances of provides under-export;
+no document content missing). One flip in the unsafe direction (K3's
+lone uphold was wrong) -- the quarantine is fully vindicated. The finale
+entry's "40 real defects" is corrected to 14.
+PLAN ALIGNMENT: 4/9 promise plans clean; 5 misaligned (would duplicate
+same-referent exports or splice onto [?](#anchor) CITATION SITES -- a
+displacement class _select_target cannot catch); 1 under-export plan
+(minors ea 4576 vs establishment L826) same class; 5 confirmed defects
+have NO plan (section-name seeds without established_around).
+RULING: promise_repair does NOT run until prep gains (1) same-referent
+already-provided matching, (2) the citation-site guard (skip/re-aim
+plans whose ea sits inside a cross-reference), (3) plans for the 5
+unplanned confirmed defects (target by section heading line). The
+evidence-confirmed 14 + Opus verdicts are the repair scope, not the 45.
