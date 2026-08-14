@@ -2021,3 +2021,22 @@ Re-review CONVERGED; two polish items closed in the same set:
     re-parses for free and makes zero _log_usage calls (double-ledger
     would corrupt usage.jsonl's measurement, the one direction the
     overstate-is-survivable doctrine does not cover).
+
+## 2026-08-14: ds7 FINALE COMPLETE -- frontier review + fixup + quality battery
+
+Committed 51098a0; the chained stage ran end to end, zero interventions.
+* PARITY: 0% divergence over 10 decided K3-vs-Flash pairs (band 40%) --
+  the flash seat matched the frontier on every sampled judgment, again.
+* K3 SLICE (150 items, $1.38, fully ledgered): near-misses 62/64 UPHELD
+  (the honest danglings are honest -- absence-over-wrong vindicated at
+  frontier tier); seat renames 15/18 upheld, 2 rejected; dropped merges
+  16/16 upheld; broken promises 40/45 REJECTED = real defects -> queue.
+* FIXUP: 97 confirmed, 1 rename reverted -> root_graph.fixed.json;
+  52 non-mechanical items -> fixup_queue.json (dominated by the 40
+  broken-promise defects; content-shaped, never auto-applied).
+* QUALITY vs GOLDEN (deterministic, auto): 1:1 486; edge similarity
+  <0.1 = 7/1011 (0.7%); full compare/census/histogram in runs/ds7.
+* Campaign spend: $8.95 of $15.00.
+NEXT (the standing directive): DELTA INVESTIGATION -- every golden delta
+gets a why; the 52-item fixup queue (esp. the 40 frontier-confirmed
+broken promises) is the concrete defect list for the production graph.
