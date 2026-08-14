@@ -1768,3 +1768,19 @@ the transient marks (restart #1). Also observed working: the validator
 correctly refused a rename to unprovided canonical name
 authority_level_ordering -- post-restructure, models prefer canonical
 authority rename targets even where unprovided; watch the class.
+
+## 2026-08-14: restart #2 diagnosis CORRECTED by replay evidence (Matt's challenge)
+
+Matt: "we shouldn't just increase token limit -- sign of a bigger
+problem." Replay of the EXACT laden transcript at 16384: 1,776-char
+CORRECT reply (empty resolutions -- drops the bad rename), $0.005. The
+content never needed 8k. The seven truncations were BYTE-IDENTICAL
+retries at temp 0 -- the provider's stochastic-truncation pathology,
+replayed deterministically (prefix-cache-assisted) because the retry
+ladder re-sends the same request unchanged. The cap raise worked only as
+an accidental request-variation. ROOT CAUSE: transport-TRUNCATED inside
+the ladder bypasses the fresh-restart/variation remedy (this morning's
+queued defect, upgraded from wasteful to causal). POST-RUN FIX: ladder
+TRUNCATED branch -> restart/vary, + port resample_truncation semantics
+to the graph client. Also: the "hard" 70-dangling unwind's honest answer
+was ~450 tokens -- no deep deliberation existed.
