@@ -207,6 +207,55 @@ def test_a_pause_stops_cleanly_and_the_run_resumes_from_artifacts(tmp_path):
                 f"{cid}{suffix} differs from the unpaused run"
 
 
+def test_a_batch_pause_routes_every_paid_row_before_stopping(tmp_path):
+    """⛔ REVIEW DEFECT 4a, the blocking one. In BATCH mode the whole
+    corpus is submitted -- and PAID FOR -- in one job, then collected row
+    by row. A CheckpointPause raised out of `sched.complete` inside
+    `_collect`'s per-row loop aborted that loop, so every REMAINING row
+    of an already-paid batch was never fed, never written, never
+    ledgered, and a resumed run re-bought it (at checkpoint_every=25 on
+    750 items, ~725 rows). dispatch_core's own R5a doctrine deferred
+    CostGateError and poison for exactly this reason and did not know
+    about the pause. Now it does: every collected row is routed, THEN
+    the pause raises -- before any live rerun can spend more."""
+    scripts = TT._scripts()
+    cfg = TT._cfg(tmp_path, "batchpause",
+                  execution={"mode": "batch", "batch_min_pending": 2,
+                             "poll_s": 0})
+    cfg["checkpoint_every"], cfg["checkpoint_pause"] = 2, True
+    holder = {}
+
+    def factory(prov, c):
+        holder["c"] = TT.MockClient(prov, c, scripts)
+        return holder["c"]
+    code = TE.run_exec(cfg, TT._args(clause=list(TT.CIDS), live=True),
+                       client_factory=factory,
+                       transport=TT.FakeBatchTransport(scripts))
+    rundir = TT._rundir(cfg)
+    assert code == 3, "a pause stops the run cleanly"
+    # ⛔ EVERY collected row was FED AND LEDGERED -- all five, not the
+    # two that preceded the pause. m0003's attempt-1 row is "ok" but
+    # incomplete (it needs a repair round), so it is fed and billed and
+    # then left for the resume; the other four are finished and written.
+    done = ["m0001", "m0002", "m0004", "m0005"]
+    for cid in done:
+        assert os.path.exists(os.path.join(rundir, cid + ".raw.txt")), \
+            f"{cid}'s PAID batch row was discarded by the pause"
+    rows = {r["clause_id"] for r in json.load(
+        open(os.path.join(rundir, "run.json")))["results"]}
+    assert rows == set(done)
+    assert holder["c"].calls == len(TT.CIDS), \
+        "every clause's batch row must be billed exactly once"
+    assert len(holder["c"].ledger) == len(TT.CIDS), \
+        "a discarded row is an unledgered row: the spend goes invisible"
+    # ⛔ and the pause bought NOTHING more: m0003's repair round, which
+    # is a fresh paid draw, is left for the resume
+    assert not os.path.exists(os.path.join(rundir, "m0003.json"))
+    # the pause still happened, and at the right place
+    cks = [r for r in _health(rundir) if r["kind"] == "checkpoint"]
+    assert cks and cks[0]["completed"] == 2 and cks[0]["paused"] is True
+
+
 # ==========================================================================
 #  promise_repair honours the same mechanism
 # ==========================================================================
@@ -257,6 +306,73 @@ def test_promise_repair_checkpoints_between_plans(tmp_path):
                                   "rejected_by_splice_seat": 0,
                                   "declined": 0}
     assert rep["checkpoints"] == cks and rep["paused"] is None
+
+
+def test_a_resumed_paused_repair_does_not_re_pay_for_its_splices(tmp_path):
+    """⛔ REVIEW DEFECT 4b: the pause's resume hint was FALSE. prep read
+    the ORIGINAL root_graph.json, so the names already spliced into
+    root_graph.repaired.json were invisible to `skipped_already_provided`
+    -- a resumed run re-drew and RE-PAID every plan and then overwrote
+    the partial repaired graph. The rerun now takes the repaired graph as
+    its baseline, and says so."""
+    run = _two_plan_run(tmp_path)
+    first = PR.run_repair(run, TS._cfg(checkpoint_every=1,
+                                       checkpoint_pause=True),
+                          TS.SeatClient([_delivers(TS.NAME)]),
+                          list(TS.ESTABLISHING))
+    assert first["repaired"] == 1 and first["paused"]
+    assert first["resumed_from"] is None
+
+    # the RESUME: only the unfinished plan may cost anything
+    client = TS.SeatClient([_delivers("front_desk_duty")])
+    second = PR.run_repair(run, TS._cfg(), client, list(TS.ESTABLISHING))
+    assert second["resumed_from"] == "root_graph.repaired.json"
+    assert client.calls == 1, \
+        "the already-spliced name must not be re-drawn (and re-paid)"
+    assert second["repaired"] == 1
+    row = next(r for r in second["items"] if r["name"] == TS.NAME)
+    assert row["status"] == "skipped_already_provided"
+    # and both splices survive in one graph
+    fixed = json.load(open(os.path.join(run, "root_graph.repaired.json")))
+    assert {PR.R.nm(p) for p in fixed["nodes"][0]["provides"]} == \
+        {TS.NAME, "front_desk_duty"}
+    assert second["paused"] is None
+
+
+def test_a_completed_run_is_never_a_silent_resume_baseline(tmp_path):
+    """The other half of 4b: only a run that RECORDED A PAUSE resumes
+    from its own output. A completed run's repaired graph must never
+    become the silent base of a second repair -- that would compound
+    edits across runs with nothing saying so."""
+    run = _two_plan_run(tmp_path)
+    PR.run_repair(run, TS._cfg(),
+                  TS.SeatClient([_delivers(TS.NAME),
+                                 _delivers("front_desk_duty")]),
+                  list(TS.ESTABLISHING))
+    again = PR.run_repair(run, TS._cfg(),
+                          TS.SeatClient([_delivers(TS.NAME),
+                                         _delivers("front_desk_duty")]),
+                          list(TS.ESTABLISHING))
+    assert again["resumed_from"] is None
+
+
+def test_main_exits_3_on_a_pause(tmp_path, monkeypatch):
+    """A paused stage returned 0, so `ds7_repair.sh` (set -e) sailed
+    straight past a half-finished repair into the quality battery."""
+    run = _two_plan_run(tmp_path)
+    calls = {}
+
+    def fake(run_dir, cfg, client, lines):
+        calls["cfg"] = cfg
+        return {"paused": "paused at checkpoint after 1 item(s)"}
+    monkeypatch.setattr(PR, "run_repair", fake)
+    monkeypatch.setattr(PR.R, "GraphClient",
+                        lambda *a, **k: type("C", (), {})())
+    monkeypatch.setattr(PR.R, "load_doc", lambda *a, **k: ["x"])
+    assert PR.main([run, "--yes"]) == 3
+    fake_ok = lambda *a, **k: {"paused": None}          # noqa: E731
+    monkeypatch.setattr(PR, "run_repair", fake_ok)
+    assert PR.main([run, "--yes"]) == 0
 
 
 def test_promise_repair_pause_keeps_the_finished_splice(tmp_path):

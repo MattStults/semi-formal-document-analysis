@@ -688,7 +688,8 @@ def asserts_delivery(text, name=""):
     ANYWHERE ("I will add a provides entry" vs "... but the span does
     not establish it" -- review defect 2: the negation was searched only
     inside the pronoun-verb window, so a negation later in the sentence
-    was invisible), or if its verb is non-assertive (reported
+    was invisible), if it is CONDITIONAL ("... only where the span
+    establishes it"), or if its verb is non-assertive (reported
     instruction / counterfactual). Both directions are honesty: a
     decline that quotes its instructions stays an honest decline, and a
     reply that announces an entry it never emitted stays a
@@ -699,7 +700,7 @@ def asserts_delivery(text, name=""):
                 or "entry" in low or (name and R.name_mentioned(name,
                                                                sent))):
             continue
-        if _NEGATION.search(sent):
+        if _NEGATION.search(sent) or _CONDITIONAL.search(sent):
             continue
         m = _ACTIVE_DELIVERY.search(sent)
         if m and not _NON_ASSERTIVE.search(m.group("mid") or ""):

@@ -2706,3 +2706,33 @@ assertions (unresolved need = hard reportable; carry the 6 modal_drift
 nodes with the two teen-safety ones called out; report the honest
 authority-excluded pair 0.264 / 0.450).
 THE PRODUCTION GRAPH IS runs/ds7/root_graph.production.json.
+
+## 2026-08-14: FULL-CORPUS TRANSLATION -- setup (Matt's directives)
+
+Budget raised to $20.00 (Matt +$5). Certification complete, so the run
+is gated only by setup. Config (config_graph_nodes.json, regenerated
+against runs/ds7/root_graph.production.json):
+* corpus 15 -> 773 rows (the whole certified graph); the regeneration
+  also closes RUNBOOK_AUDIT gap 1 (the orphan-prompt guard now knows all
+  37 non-prompt .md files -- the documented command failed out of the box
+  before this).
+* cost ceiling 1.0 -> 8.0 with an honest note: MEASURED rate is
+  ~$0.004/node (run 8) -> ~$3.1 expected; the unbounded worst case
+  (~$40 at 5 attempts x the out-cap) is deliberately NOT the ceiling
+  because the MEASURED gate in Client._log_usage (routing-gap F2)
+  backstops it mid-flight.
+* graveyard cap 40 -> 10 (Matt: "stop every 10 and fix them"). Five
+  entries left open by the 08-12 rerun were diagnosed and cleared first
+  so the run starts with a full budget of 10: four converged-after-repair
+  (note-severity residue), one genuine DIAGNOSED-UNCONVERGED
+  (l797_809_n001: an ontology atom carries an unbound variable, 5
+  attempts) -- that class becomes a tracked census category with a prompt
+  lever if it recurs.
+* checkpoint_every 10, checkpoint_pause TRUE.
+* EXECUTION MODE: LIVE (not batch). Grounds: Matt sees no reason to batch
+  further, AND review defect 4a makes a pause in BATCH mode discard
+  already-paid collected rows -- live is the reviewed-clean pause path,
+  so we get stopping checkpoints now with zero exposure to 4a. Cost of
+  the choice: no 50% batch discount (~$3 live vs ~$1.5 batched),
+  affordable within the raised ceiling and squarely inside Matt's
+  "don't block on 4a unless it wastes money".
