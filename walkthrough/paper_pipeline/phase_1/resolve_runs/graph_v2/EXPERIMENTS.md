@@ -2437,3 +2437,37 @@ risk-queue contract): 6 of 45 flags are REAL obligation-strength drift
 now feeding the risk queue.
 Verification of splice integrity + delta re-investigation vs golden
 dispatched (repaired_verification.md).
+
+## 2026-08-14: repaired-graph verification -- NOT FIT, corrected -> PRODUCTION CANDIDATE
+
+repaired_verification.md (independent, $0) returned NOT FIT: 19 of 26
+splices clean, 3 accept-with-reservation, **4 REJECT** -- most seriously
+`assume_objective_pov` spliced onto a node whose prose asserts the
+NEGATION of the document's #assume_objective_pov (a FALSE CLAIM in the
+graph), plus two wrong-section splices and one whose claim lay outside
+the receiving node's spans. Also: 3 new self-loops, 1 need introduced by
+the repair, and the decline count mis-booked (2 honest, not 3 --
+support_mental_health's reason says "I will add a provides entry" and
+then didn't). Mechanically the splice was clean: 773 nodes both sides,
+ids byte-identical, ONLY provides/needs touched, 0 new duplicate names,
+36 golden edges newly matched with the unmatched set a strict subset.
+CORRECTIONS APPLIED deterministically -> runs/ds7/root_graph.production.json
+(never in place; every correction verified before applying and recorded
+on the artifact as verification_corrections): 3 wrong-claim splices
+REVERTED; voice_style_guidelines RE-AIMED n001 -> n003 after verifying
+n003's spans actually cover L4260; the introduced need renamed to the
+provided name. Result: 115 exported names, 26 danglings, 773 nodes.
+Battery on runs/ds7_production: graph_check OK (0 bad spans/quotes),
+sweeps OK, risk_queue 168, edge_similarity 8/1062 below 0.1, recall vs
+golden 0.4395 (authority-excluded pre-repair 0.177/0.378 -> post
+0.264/0.442; content edges 196 -> 242).
+DELTA STATUS: the remaining real class is the SAME predicted one --
+content-edge under-export, now enumerable (~160 edges; exemplars
+#do_not_lie, #avoid_errors, #avoid_sycophancy, #uphold_fairness,
+#respect_real_world_ties, #do_not_encourage_self_harm -- sections where
+golden exports 2-9 names and ds7 exports 0). Verifier's other finding
+worth keeping: 86 of golden's 230 names are dead (58 never needed) or
+superseded-by-convention (28 coinages), so the honest comparison is
+101 vs 153 LOAD-BEARING content names.
+NOT YET RE-VERIFIED: the corrected artifact needs one more independent
+pass before it is signed as production.
