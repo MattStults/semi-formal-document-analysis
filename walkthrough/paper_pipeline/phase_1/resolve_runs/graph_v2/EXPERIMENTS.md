@@ -1904,3 +1904,19 @@ act is forbidden). Honest bound recorded: 15-node coverage (37/593
 clauses) makes frontier-recall span-bounded, not matcher-bounded.
 Live pilot estimate: ~$0.18-0.25. Matt's 6 open questions in
 behavior_pilot/DESIGN.md §6.
+
+## 2026-08-14: budget -> $15.00; fixup + auto-quality-check directives (Matt)
+
+Budget authorization extended to $15.00 total. Directives, wired into
+the in-flight ds8 commit as items 14-15: (14) `--golden PATH` / config
+`golden_graph`: when set, post_build_checks automatically runs
+graph_compare + repair_census + the edge-similarity histogram against
+the named golden -- deterministic quality deltas emitted per build;
+(15) fixup.py: applies frontier verdicts MECHANICALLY where
+deterministic (rejected renames revert to honest danglings; never
+in-place -- writes root_graph.fixed.json), and emits fixup_queue.json
+for non-mechanical dispositions -- code never makes content decisions.
+SEQUENCE once reviews converge to accept: commit -> K3 frontier_review
+on ds7 -> fixup round -> auto quality checks vs golden -> DELTA
+INVESTIGATION (every delta gets a why, census-style) -> production
+package.
