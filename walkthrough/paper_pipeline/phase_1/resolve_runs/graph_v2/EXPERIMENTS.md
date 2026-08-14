@@ -2275,3 +2275,30 @@ pass (RUNBOOK_AUDIT.md: translate.py's banner still claims it validates
 nothing; node_corpus.py's usage lines are wrong; READBACK_SMOKE/
 BATCH_DESIGN stale). Corpus-scale translation spend (~$1.5-3) needs its
 own authorization at the time.
+
+## 2026-08-14: prep-guard convergence review -- NO-GO (2 blockers), fix round out
+
+Guard 2 (citation re-aim) and the run-root ruling CLOSED with strong
+evidence: all 5 ds7 re-aims verified line-by-line to genuine
+establishing headings; 80/80 document anchors unique; 12/15 re-derived
+plans fail under the promising-unwind route while the 3 that succeed
+return the identical leaf -- the ruling fixes avoid_overstepping and
+breaks nothing. opus_verdicts intersection CLOSED: all 13 confirmed
+names planned or accounted; duplicate-export plans drop 8 -> 1 with the
+key set (RECOMMENDED configuration).
+BLOCKERS: (B1) guard 1 false-skips the confirmed defect
+`user_authority_section_rules` -- the document's per-section authority
+TEMPLATE scores 0.545 Jaccard between ANY two such claims, so the 0.5
+threshold has no discriminating power and the guard has no locality
+constraint; a false skip silently keeps a defect. (B2, corrupting) both
+re-aim guards emit a single-line heading ea, so _select_target
+systematically picks the authority-ASSIGNMENT node (heading-line span)
+over the substantive empty-provides node that IS the under-export --
+5/8 (key set) or 11/15 (absent) re-derived splices land wrong,
+including two on off-by-two commentary nodes chosen by graph order.
+That would merge assignment with definition, contradicting the standing
+ruling the 16/16 dropped_merge upholds rest on, AND spend money doing
+it. Fixes dispatched: locality-constrained referent matching (also
+extended to the under-export class), section-BODY establishment ranges,
+and an authority-class decline in target selection. Re-run $0 prep +
+re-adjudicate targets, then GO with opus_verdicts set.
