@@ -1888,3 +1888,19 @@ driver-orchestrated calls -- same doctrine as post_build_checks
   grading of relevance selections).
 Implementation lands with the ds8 fix commit (it shares the batch/gate
 plumbing the audit findings touch).
+
+## 2026-08-14: behavior-matching pilot skeleton COMPLETE (offline, $0)
+
+behavior_pilot/ landed: deterministic pilot-behavior miner (5 selected,
+overlap stats recorded, labels-direct-attention guard in the artifact),
+behavior_match.py (engagement seat blind-on-names/fail-closed,
+injectable retrieval with lexical fallback, behavior-module ASP shape,
+clingo relevance query), 22 offline tests green, DESIGN.md with the
+refinement-loop design + 6 Matt questions. FIRST END-TO-END RESULT:
+U18 romantic-roleplay behavior -> 3 atoms -> correct node ranked first
+for all three -> matched module pair -> clingo fired 4 asserts and
+reported EXACTLY the right conflict (the performed romantic-roleplay
+act is forbidden). Honest bound recorded: 15-node coverage (37/593
+clauses) makes frontier-recall span-bounded, not matcher-bounded.
+Live pilot estimate: ~$0.18-0.25. Matt's 6 open questions in
+behavior_pilot/DESIGN.md §6.
