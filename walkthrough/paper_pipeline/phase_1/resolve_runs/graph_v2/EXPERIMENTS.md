@@ -2634,3 +2634,40 @@ run_clause recording a skipped seat instead of `continue`.
 NEXT STEP RULED: a <=10-clause FLASH pilot (~$0.05) whose deliverable is
 reply-shape measurements and the unclear rate -- NOT a faithfulness
 result. Stage 4 is its own project after the corpus translation.
+
+## 2026-08-14: pipeline-fix review -- CORRECTION to this log + 4 defects
+
+RECORD CORRECTION (my parenthetical above, on the 11/18-vs-10/19 prep
+split, was WRONG on two counts and is superseded): it said "one promise
+plan" (it is TWO, which cancel -- hence the unchanged total 29) and
+blamed "the run dir's inputs" (git-verified byte-identical; the
+concurrent commits touched no prep input). The reviewer REFUTED my
+guard-reordering hypothesis too, by ablation: reverting the ordering
+alone changes nothing. TRUE CAUSE: commit 3d549e7's two changes -- the
+B1 locality constraint and the B3 exports-substance arm --
+moving user_authority_section_rules INTO the promise class and
+sexual_content_involving_minors_section OUT of under-export. Totals and
+gate unaffected ($0.2452 either way). The earlier 10/19 table needs no
+correction: it was accurate for the code of its time.
+REVIEW RESULT: FIX 3 fully CLOSED; FIX 1's gate placement + fail-closed
+CLOSED (every reply shape enumerated); FIX 4's record-only path traced
+correct end to end; the 49 promise pins verified to still mean redraws.
+DEFECTS, fix round dispatched:
+* 4a BLOCKING (and it blocks exactly what Matt asked for): a pause in
+  BATCH mode discards already-paid collected rows -- sched.complete sits
+  INSIDE _collect's loop before the gate/poison deferrals, so a
+  CheckpointPause aborts routing; ~725 paid rows would be lost and
+  re-paid on a 750-item run at every=25, and the fresh-outdir-per-run
+  design puts them beyond orphan recovery. CheckpointPause needs the
+  same collect-then-raise deferral CostGateError already has.
+* 2: asserts_delivery FALSE-POSITIVES on honest declines that quote the
+  instruction ("I was asked to add a provides entry but the span does
+  not establish it") -- the negation search is confined to a <=3-word
+  window and the splitter ignores commas/dashes. It now overstates
+  failures on the same honesty metric it was built to protect.
+* 1b: seat calls sit OUTSIDE the up-front cost gate, and a late
+  CostGateError discards every splice already made.
+* 4b: the resume hint is false (prep reads the ORIGINAL graph, so a
+  resumed run re-pays every plan) and pause exits 0 under set -e.
+BINDING CONDITION until 4a lands: checkpoint_pause must stay FALSE for
+any batch run. Record-only checkpoints are safe today.
