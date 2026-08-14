@@ -7,7 +7,7 @@ if [ -f "$G/root_graph.json" ]; then
   grep -E "done:|resolution pass:|greedy descend:" "$D/runs/ds7_log.txt" | tail -4
   exit 0
 fi
-if kill -0 2216 2>/dev/null; then echo "ds7: RUNNING (pid 2216)"; else echo "ds7: PROCESS NOT RUNNING (stopped or crashed -- check $D/runs/ds7_log.txt)"; fi
+if kill -0 29197 2>/dev/null; then echo "ds7: RUNNING (pid 2216)"; else echo "ds7: PROCESS NOT RUNNING (stopped or crashed -- check $D/runs/ds7_log.txt)"; fi
 echo "divisions: $(find "$G" -name division.json 2>/dev/null | wc -l | tr -d ' ')  subtree graphs: $(find "$G" -name graph.json 2>/dev/null | wc -l | tr -d ' ')  buried repairs: $(ls "$G/failed" 2>/dev/null | wc -l | tr -d ' ')"
 for j in "$G"/inflight/job-*.json; do
   [ -e "$j" ] || continue

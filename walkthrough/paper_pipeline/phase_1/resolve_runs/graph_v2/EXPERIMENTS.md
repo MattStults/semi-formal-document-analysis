@@ -1704,3 +1704,15 @@ STANDING DECISIONS previously transcript-only:
 * Budget: $10.00 authorization, ~$7.40 used at snapshot (ledger =
   usage.jsonl, source of truth; embedding calls are the one unledgered
   path, ~$0.001/run, recorded finding 6).
+
+## 2026-08-13 (evening): ds7 restart #1 -- DNS blip, zero code change
+
+The detached ds7 process died on `curl: (6) Could not resolve host`
+during a batch-status poll (network drop; the string matches no
+transient mark, so the poll treated it as terminal). Resumed detached
+(pid 29197) with ZERO code changes -- certificate property intact per
+the recorded restart rule. All 53 artifacts + the in-flight 5-request
+batch recover via cache + manifest. QUEUED FIX (post-run, census
+process): add DNS-failure strings ("Could not resolve host", curl exit
+6/7 markers) to the transient ladders in both paths; the network-blip
+class is exactly why "Errno" was added, and this string escaped it.

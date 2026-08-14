@@ -1,0 +1,89 @@
+{
+ "children": [
+  {
+   "span": [
+    2555,
+    2652
+   ],
+   "why_this_cut": "The first child covers the tail of the previous section's example (the white lie example) and the entire 'Don't be sycophantic' section with its three examples. The cut at 2652 is at a blank line after the last sycophancy example, cleanly separating it from the next section. The only crossing linkage is the authority_level_ordering concept (the sycophancy section heading carries authority=user), which is seeded."
+  },
+  {
+   "span": [
+    2653,
+    3040
+   ],
+   "why_this_cut": "The second child covers the 'Consider uncertainty, state assumptions, and ask clarifying questions' section (authority=guideline) and the 'Express uncertainty' section (authority=guideline), including all their examples. The cut at 3040 is at a blank line after the last express-uncertainty example, cleanly separating it from the next section. The only crossing linkage is the authority_level_ordering concept (both section headings carry authority=guideline), which is seeded."
+  },
+  {
+   "span": [
+    3041,
+    3146
+   ],
+   "why_this_cut": "The third child covers the 'Highlight possible misalignments' section (authority=guideline) and its examples. The cut at 3041 is at the section heading line, cleanly separating it from the previous section. The only crossing linkage is the authority_level_ordering concept (the section heading carries authority=guideline), which is seeded."
+  }
+ ],
+ "decision": "divide",
+ "expected_cross_links": [
+  {
+   "evidence": "Each child's section heading carries an authority tag (authority=user for child 1, authority=guideline for children 2 and 3), and the rules under those headings inherit that authority. The ranking of these authority levels is established outside this span (at L69-101) and is needed to determine which instructions prevail in conflicts.",
+   "name": "authority_level_ordering",
+   "needs_side_child": 1,
+   "provides_side_child": 2
+  }
+ ],
+ "judgment_calls": [
+  "Could have cut at L2652 instead of L2653, but chose L2653 because the blank line at L2652 cleanly separates the sycophancy section from the uncertainty section. A cut at L2652 would have been equally clean, but the current cut keeps the section boundaries intact.",
+  "Could have cut at L3040 instead of L3041, but chose L3041 because the blank line at L3040 cleanly separates the express-uncertainty section from the highlight-misalignments section. A cut at L3040 would have been equally clean, but the current cut keeps the section boundaries intact.",
+  "The 'Highlight possible misalignments' section references concepts (conscientious employee metaphor, letter_and_spirit principle, assume_best_intentions principle) that are established outside this span. These are dangling needs that must be escalated upward, not resolved within this span.",
+  "The authority_level_ordering concept is inherited from the seed vocabulary and is needed by all three children (each section heading carries an authority tag). It is not established within this span, so it remains a dangling need for the parent to resolve."
+ ],
+ "seed_vocabulary": [
+  {
+   "established_around": [
+    69,
+    101
+   ],
+   "name": "authority_level_ordering",
+   "prose": "The ranking of instruction authority levels: root > system > developer > user > guideline > no authority, used to determine which instruction prevails in conflicts."
+  },
+  {
+   "established_around": [
+    114,
+    116
+   ],
+   "name": "assistant_definition",
+   "prose": "The assistant is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document."
+  },
+  {
+   "established_around": [
+    118,
+    126
+   ],
+   "name": "conversation_definition",
+   "prose": "A conversation is a list of messages, each containing a role and content; roles determine authority of instructions."
+  },
+  {
+   "established_around": [
+    120,
+    125
+   ],
+   "name": "message_role_definition",
+   "prose": "The role of a message (system, developer, user, assistant, tool) specifies its source and determines authority in conflicts."
+  },
+  {
+   "established_around": [
+    67,
+    67
+   ],
+   "name": "chain_of_command_principle",
+   "prose": "The principle that instructions with higher authority override those with lower authority, designed to maximize steerability and control."
+  }
+ ],
+ "_span_lo": 2555,
+ "_span_hi": 3146,
+ "driver_autofixes": [
+  "dropped cross-link 'conscientious_employee_metaphor': provides_side_child 0 means no child provides it -- provided-elsewhere is encoded by absence",
+  "dropped cross-link 'letter_and_spirit_principle': provides_side_child 0 means no child provides it -- provided-elsewhere is encoded by absence",
+  "dropped cross-link 'assume_best_intentions_principle': provides_side_child 0 means no child provides it -- provided-elsewhere is encoded by absence"
+ ]
+}
