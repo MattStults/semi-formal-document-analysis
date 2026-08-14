@@ -1793,3 +1793,21 @@ The running ds7 loaded 16384 at its startup (unaffected mid-run); the
 formerly wedged dispatch is completed and cached. Any future restart
 runs at the code-default caps (division 16384 / leaf 24576 / unwind
 8192). The real fix remains the queued ladder-truncation restart/vary.
+
+## 2026-08-14: IDENTICAL-RETRY GUARD design (Matt: make the mistake impossible)
+
+Post-ds7 (ds8-era) change, specified before implementation: at the
+client SEND SEAM (the one path every request traverses -- ladders,
+repairs, restarts, batch-rows-rerun-live, seats), keep a set of
+byte-hashes of request bodies that FAILED in this process; a hash-match
+on send appends a deterministic marker line to the FINAL user message
+("[transport retry N: prior identical attempt failed]") before the
+request leaves. Properties: (a) byte-identical failed retries become
+structurally impossible, no per-path wiring, future paths inherit it;
+(b) suffix-only change preserves prefix-cache economics while
+guaranteeing generation divergence (the 2026-08-14 lock-in cure);
+(c) every trigger is telemetry. RECORDED TENSION: the marker is visible
+to the model (one contentless line on varied retries) -- accepted over
+invisible parameter jitter, which is provider-implementation-dependent.
+Pin: send, fail, re-send -> bytes differ and carry the marker. Lands
+with the routing-gap audit fixes in one reviewed commit.
