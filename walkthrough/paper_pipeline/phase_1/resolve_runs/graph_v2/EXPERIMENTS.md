@@ -1784,3 +1784,12 @@ queued defect, upgraded from wasteful to causal). POST-RUN FIX: ladder
 TRUNCATED branch -> restart/vary, + port resample_truncation semantics
 to the graph client. Also: the "hard" 70-dangling unwind's honest answer
 was ~450 tokens -- no deep deliberation existed.
+
+## 2026-08-14: cap override REVERTED (Matt): fail-fast doctrine restored
+
+The unwind 16384 config override is removed -- the replay proved the
+raise diagnostically wrong, and low caps are the fail-fast mechanism.
+The running ds7 loaded 16384 at its startup (unaffected mid-run); the
+formerly wedged dispatch is completed and cached. Any future restart
+runs at the code-default caps (division 16384 / leaf 24576 / unwind
+8192). The real fix remains the queued ladder-truncation restart/vary.
