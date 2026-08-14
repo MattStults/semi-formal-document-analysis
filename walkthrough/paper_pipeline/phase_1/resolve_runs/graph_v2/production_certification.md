@@ -502,3 +502,128 @@ to be the production graph.** As it stands today it would not corrupt a translat
 C1 is a latent corruption that activates the moment a follow-on aliasing pass resolves
 `assume_best_intentions_principle`, and the repo's own standard is that a repair does not leave
 claims it cannot defend.
+
+---
+
+# CLOSURE ADDENDUM — conditions applied, verdict converted
+
+Re-verified after `graph_corrections.py` (new, committed at `5a95279`) was written and the
+artifact regenerated. Same posture: independent, offline, $0, nothing under `runs/` written
+(all trial runs wrote to scratch; `runs/ds7/root_graph.production.json` and
+`runs/ds7_production/root_graph.json` mtimes unchanged at 16:13/16:14).
+
+## (1) The diff is exactly the corrections plus C1/C2 — confirmed
+
+`repaired -> production` now touches **6 nodes / 9 field changes**, and every one is a named
+correction:
+
+| node.field | change | correction |
+|---|---|---|
+| `L2126-2404_n031.provides` | `[assume_objective_pov]` -> `[]` | R1 revert |
+| `L3147-3238_n001.provides` | `[user_authority_section_rules]` -> `[]` | R3 revert |
+| `L3877-3953_n012.provides` | `[assume_best_intentions_principle]` -> `[]` | R2 revert |
+| `L3877-3953_n012.needs` | drops `assume_best_intentions_principle` | **C1** |
+| `L4252-4482_n001.provides` | drops `voice_style_guidelines` | R4 (from) |
+| `L4252-4482_n003.provides` | `[]` -> `[voice_style_guidelines]` | R4 (to) |
+| `L4252-4482_n003.needs` | drops `voice_style_guidelines` | **C2** |
+| `L3383-3501_n001.needs` | drops `interactive_vs_programmatic_setting` | **C2** (second repair-introduced loop) |
+| `L1707-1973_n024.needs` | `privileged_information_definition` -> `privileged_information` | rename |
+
+Nothing else. Every other top-level key is byte-identical to `repaired`
+(`uncovered`, `judgment_calls`, `dropped_merges`, `promise_repairs`, `unwind_log`,
+`cross_link_report`, `rename_seat_verdicts`, `descend_near_misses`, `brief_sha`);
+`driver_autofixes` 30 -> 38 (+8, one line per correction) and `verification_corrections`
+carries the same 8 with grounds. Against the **original**: `spans` 0 changed, `establishes` 0
+changed, `id` 0 changed, node ids list-identical, 773 nodes, **0 provides entries removed**,
+and the only `needs` names removed are the two repair-introduced self-needs.
+
+## (2) C1 and C2 correctly and completely applied — confirmed, no third leftover
+
+* **C1.** `L3877-3953_n012.needs` = `[assistant_definition, user_authority]` — the fabricated
+  dependency is gone, and the two remaining needs are original. `assume_best_intentions_principle`
+  now has exactly **one** needer, the legitimate `L3041-3146_n002`.
+* **C2.** `L4252-4482_n003` provides `voice_style_guidelines` and no longer needs it; its one
+  genuine needer `L4252-4482_n001` still resolves. `L3383-3501_n001` likewise: 13 genuine
+  needers remain (14 -> 13, the dropped one being itself).
+* **No third leftover of the same class.** I re-derived every `needs` entry added by the repair
+  and checked each against its receiving node. Of the 14, the 3 problematic ones are now all
+  disposed (C1 + the two self-needs); the remaining 11 are `assistant_definition` (×5),
+  `conversation_definition` (×2), `root_authority`, `privileged_information` (renamed), and
+  `user_authority` on `L2126-2404_n031` — which is **correct** and should stay, since L2151 sits
+  under `#assume_objective_pov authority=user`.
+
+## (3) The self-loop scoping is right and complete — confirmed, and the near-miss catch was correct
+
+| graph | self-loop entries | distinct pairs |
+|---|---|---|
+| original (baseline) | 17 | **16** |
+| repaired | 20 | 19 |
+| **production** | **17** | **16** |
+
+* production's self-loop set is **set-equal to the original's** (`set(prod) == set(orig)` -> True);
+* **repair-introduced remaining: 0**;
+* **pre-existing wrongly removed: 0**;
+* the sorted **entry list** is identical too, so `L1-170_n042`'s pre-existing *duplicate*
+  `authority_levels_hierarchy` need entry (17 entries vs 16 distinct pairs) survives intact —
+  the sweep did not silently deduplicate accepted content either.
+
+The near-miss was real and the catch was right: a general sweep would have deleted 16
+never-adjudicated needs from the accepted graph, which is exactly the class of unadjudicated
+edit the repo's rules forbid. The baseline-scoped implementation in `apply(g, baseline=...)`
+is the correct fix, and `main()` loads the baseline from `HERE/runs/ds7/root_graph.json`
+unconditionally — the scoping cannot be lost by forgetting an argument.
+
+## (4) The preconditions genuinely refuse — verified by execution, four ways
+
+All runs directed at scratch outputs; no `runs/` write.
+
+| trial | result |
+|---|---|
+| run against the **original** `root_graph.json` | `precondition failed: assume_objective_pov not on L2126-2404_n031`, **exit 1**, no output written |
+| run against the **already-corrected** production graph (double-apply) | same refusal, **exit 1** — the script is not silently idempotent, it refuses |
+| mutated input: `L4252-4482_n003` span moved off L4260 | `precondition failed: L4252-4482_n003 does not cover L4260`, **exit 1** |
+| mutated input: `privileged_information` removed from `L1707-1973_n018` | `precondition failed: privileged_information is not provided`, **exit 1** |
+
+Each guard is a hard `SystemExit` before any write, and the revert/drop guards check
+*cardinality* (`before - 1`, `len != before`) rather than merely filtering, so a name that is
+absent cannot pass as a no-op. **C4 is closed**: rerunning the script on
+`root_graph.repaired.json` reproduces `root_graph.production.json` **byte-for-byte** (verified
+by byte comparison, not just canonical-JSON equality).
+
+## (5) Post-correction state re-measured
+
+| | value |
+|---|---|
+| nodes / exported names / needs | 773 / **115** / **1085** |
+| danglings | **25 needers / 15 names** (was 26/15; C1 removed one) — all enumerated by `graph_check` |
+| self-loops | **16 distinct**, all pre-existing |
+| `graph_check` | 0 bad line ranges / 846 spans; **0 bad quotes / 602**; 0 zero-line nodes |
+| duplicate providers | the same 6 pre-existing names; **0 new**; 0 duplicate entries within a node |
+| `uncovered` | byte-identical to the original |
+| recall vs golden (all names / content-only) | **0.4395 / 0.2637 — unchanged**; precision 0.0558 / **0.4496** (up from 0.4458) |
+| content edges | 238 (was 240; the 2 dropped are the two degenerate self-edges) |
+| battery | `edge_similarity` 8/1060 <0.10 (0.75%); `risk_queue` 168; `modal_adjudication` 45 rows / 6 drifted; `repair_census` 0 buried failures; staged copy canonical-JSON identical to the candidate |
+
+**Recall is identical to four decimal places on both the raw and content-only measures**, which
+is the load-bearing check: dropping the two self-edges removed no golden coverage. Precision
+rose. Nothing else moved.
+
+## Converted verdict
+
+**CERTIFIED.** `runs/ds7/root_graph.production.json` is fit to be the production graph for a
+full-corpus translation run and downstream behavior matching. C1, C2 and C4 are closed; the
+self-loop scoping is verified correct and complete.
+
+Nothing further must change before the translation run. Three items remain open as **recorded
+follow-ups, not gates**:
+
+* **C3** — the three reservation proses (`red_line_principles_section`, `risk_taxonomy_section`
+  span-scope overreach; `no_agenda_section` name pointing 1,516 lines from `#no_agenda` at
+  L2128). None is a false claim; tighten in the next bounded pass.
+* **C5** — `promise_repair_report.json` is stale (`declined_honestly = 3` should be 2;
+  `danglings_after = 24` should be 25). Package bookkeeping only; the graph is unaffected.
+* **C6** — consumer-side assertions for the run: an unresolved need must be a hard reportable
+  so the 25 enumerated danglings cannot silently drop edges; carry the 6 `modal_drift` nodes
+  forward as a known list, with the two teen-safety nodes `L4572-4692_n008/n009` called out;
+  and report the authority-excluded pair **recall 0.264 / precision 0.450** as the honest edge
+  numbers rather than the plumbing-dominated raw pair.

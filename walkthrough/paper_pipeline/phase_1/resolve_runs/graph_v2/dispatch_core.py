@@ -37,6 +37,9 @@ import time
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 import recurse_driver as R  # noqa: E402  (validators, schemas, prompts)
+import run_checkpoint as CK  # noqa: E402  (CheckpointPause: deferred in
+#: _collect exactly as CostGateError is -- see the R5a note there. No
+#: cycle: run_checkpoint imports translate only.
 
 T = R.T
 
@@ -1250,7 +1253,7 @@ class BatchExecutor:
         rows whenever a rerun earlier in dict order aborted the loop."""
         by_id = {r.get("custom_id"): r for r in rows}
         taxonomy, poison, reruns = {}, [], []
-        gate_exc = None
+        gate_exc = pause_exc = None
 
         def _ledger(env):
             # adversarial review item 4: _log_usage can now raise
@@ -1275,7 +1278,22 @@ class BatchExecutor:
                 _ledger(env)
                 state.feed({"text": env["text"], "usage": env["usage"]})
                 if state.status == DONE:
-                    sched.complete(state)
+                    # ⛔ a scheduler callback can now raise a CHECKPOINT
+                    # PAUSE (run_checkpoint.CheckpointPause, raised from
+                    # translate_exec's RunContext.finish). It is deferred
+                    # exactly like gate_exc above and for the same R5a
+                    # reason: this batch is ALREADY SUBMITTED AND PAID,
+                    # so aborting the loop here would throw away every
+                    # remaining collected row -- unfed, unwritten,
+                    # unledgered -- and a resumed run would re-pay them
+                    # (at checkpoint_every=25 on a 750-item batch, ~725
+                    # rows). Routing finishes; the pause raises below,
+                    # before any live rerun can spend more.
+                    try:
+                        sched.complete(state)
+                    except CK.CheckpointPause as exc:
+                        if pause_exc is None:
+                            pause_exc = exc
                 elif state.status == PENDING:
                     sched.requeue(state)    # repair round batches too
                 else:
@@ -1303,6 +1321,10 @@ class BatchExecutor:
             # manifest entry survives, so the rerun states re-enqueue on
             # resume (review R5).
             raise T.Phase1Error(poison[0].error)
+        if pause_exc is not None:
+            # after every collected row is routed, before the live reruns:
+            # a pause is a CLEAN stop, so it must not cost one more call
+            raise pause_exc
         for state in reruns:
             self._run_live(state, sched)
         return taxonomy

@@ -468,6 +468,10 @@ class RunContext:
                 self.failures += 1
             self.flush()
             done = sum(1 for r in self.results if r is not None)
+            if not self.checkpoint.due(done):
+                # (review, minor) the status scans below are O(clauses)
+                # and used to run after EVERY clause to be discarded
+                return
             fails, remaining = {}, [
                 j["row"][self.idk] for i, j in enumerate(self.jobs)
                 if self.results[i] is None]
@@ -738,6 +742,12 @@ def execute(ctx, mode, exec_cfg, transport=None):
         print(f"\n⏸ CHECKPOINT PAUSE: {paused}")
         print(f"   {len(todo)} clause(s) not translated: "
               f"{', '.join(todo[:12])}{' …' if len(todo) > 12 else ''}")
+        if ctx.failures:
+            # (review, minor) exit 3 subsumes exit 1: a paused run with
+            # failed clauses would otherwise report only the pause
+            print(f"   ⚠️ AND {ctx.failures} clause(s) FAILED before the "
+                  f"pause -- exit 3 hides the failure exit 1; check the "
+                  f"statuses in run.json before resuming")
         return 3
     return 1 if ctx.failures else 0
 

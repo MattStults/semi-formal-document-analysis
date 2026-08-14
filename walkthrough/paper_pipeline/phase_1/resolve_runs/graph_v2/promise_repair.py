@@ -106,6 +106,11 @@ import splice_seat as SS       # noqa: E402
 import run_checkpoint as CK    # noqa: E402
 
 DEFAULT_BUDGET = 0.40    # matches config (re-review 5 + final 1c note)
+#: the splice seat's own reply cap: one JSON object with a two-sentence
+#: grounds. Priced into the up-front gate (review defect 1b) AND set on
+#: the call, so the gate's arithmetic is the arithmetic that runs.
+#: 1024 is frontier_review's seat cap, reused rather than re-chosen.
+SEAT_MAX_TOKENS = 1024
 
 
 def _safe(s):
@@ -643,28 +648,61 @@ _NEGATION = re.compile(r"\b(?:not|never|n't|cannot|can't|won't|wont|"
 _ACTIVE_DELIVERY = re.compile(
     r"\b(?:i|we)\b(?P<mid>(?:'(?:ll|ve|d|m))?(?:\s+[\w']+){0,3}?)\s+"
     + _DELIVERY_VERB + r"\b", re.I)
-#: "a provides entry will be added", "the entry has been included"
+#: "a provides entry will be added", "the entry has been included",
+#: "the entry was added". ⛔ `should be added` is deliberately ABSENT:
+#: ds7's refusal_style_section decline says "if the driver requires a
+#: provides entry, it should be added to n015" -- a recommendation about
+#: what someone else should do, not a claim that this reply delivered.
 _PASSIVE_DELIVERY = re.compile(
-    r"\b(?:will\s+be|has\s+been|have\s+been|is\s+being)\s+"
+    r"\b(?:will\s+be|has\s+been|have\s+been|is\s+being|was|were)\s+"
     r"(?:added|included|provided|emitted|created|inserted)\b", re.I)
+#: review defect 2, the OPPOSITE direction: two families of honest
+#: decline that quote the instruction and read as delivery claims.
+#:   REPORTED INSTRUCTION -- "I was asked to add a provides entry ..."
+#:   COUNTERFACTUAL       -- "I would add a provides entry if ..."
+#: Neither asserts that this reply delivered anything, so a mid-window
+#: carrying one of these is not an assertion at all.
+_NON_ASSERTIVE = re.compile(
+    r"\b(?:would|could|might|may|should|asked|instructed|told|"
+    r"required|supposed|expected|meant|requested)\b", re.I)
+#: a CONDITIONAL clause states a rule, not a delivery: "I will add a
+#: provides entry only where the span establishes the concept", "the
+#: instruction says I must add one if the span establishes it".
+_CONDITIONAL = re.compile(
+    r"\b(?:if|unless|whenever|provided\s+that|in\s+the\s+event|"
+    r"only\s+(?:if|when|where))\b", re.I)
+#: clause boundaries: commas and dashes as well as sentence enders --
+#: the contrastive clause of "I would add X, but it does not establish
+#: Y" is where the negation lives, and it used to stay in-sentence
+_CLAUSE_SPLIT = re.compile(r"[.;\n]+|,|--|—")
 
 
 def asserts_delivery(text, name=""):
     """True when `text` claims the provides entry was or will be
-    delivered. Scoped SENTENCE-BY-SENTENCE and required to be about the
-    entry (the sentence mentions `provides`/`entry` or the seed's own
+    delivered. Scoped CLAUSE-BY-CLAUSE and required to be about the
+    entry (the clause mentions `provides`/`entry` or the seed's own
     name), so "I will explain in judgment_calls" is not a delivery
-    claim; negated forms ("I will NOT add", "cannot provide") are not
-    either -- a decline that says what it declines to do stays an
-    honest decline."""
-    for sent in re.split(r"[.;\n]+", str(text or "")):
+    claim.
+
+    ⛔ A clause is not a delivery claim if it carries a NEGATION
+    ANYWHERE ("I will add a provides entry" vs "... but the span does
+    not establish it" -- review defect 2: the negation was searched only
+    inside the pronoun-verb window, so a negation later in the sentence
+    was invisible), or if its verb is non-assertive (reported
+    instruction / counterfactual). Both directions are honesty: a
+    decline that quotes its instructions stays an honest decline, and a
+    reply that announces an entry it never emitted stays a
+    non-delivery."""
+    for sent in _CLAUSE_SPLIT.split(str(text or "")):
         low = sent.lower()
         if not ("provides" in low or "provide entry" in low
                 or "entry" in low or (name and R.name_mentioned(name,
                                                                sent))):
             continue
+        if _NEGATION.search(sent):
+            continue
         m = _ACTIVE_DELIVERY.search(sent)
-        if m and not _NEGATION.search(m.group("mid") or ""):
+        if m and not _NON_ASSERTIVE.search(m.group("mid") or ""):
             return True
         if _PASSIVE_DELIVERY.search(sent):
             return True
@@ -812,7 +850,26 @@ def run_repair(run_dir, cfg, client, lines):
         if not os.path.isabs(vp):
             vp = os.path.join(HERE, vp)
         confirmed = opus_confirmed_names(vp)
-    g = json.load(open(os.path.join(run_dir, "root_graph.json")))
+    # ⛔ RESUME BASELINE (review defect 4b). The stage always reads the
+    # ORIGINAL graph -- which made the pause's resume hint FALSE: the
+    # partial repairs live only in root_graph.repaired.json, prep never
+    # read it, and a resumed run re-drew and RE-PAID every plan and then
+    # overwrote the partial graph. On resume from a PAUSED run (and only
+    # then -- a completed run's output must never become the silent base
+    # of a second repair) the repaired graph is the baseline, so the
+    # already-spliced names filter out as `skipped_already_provided`.
+    base_path = os.path.join(run_dir, "root_graph.json")
+    resumed_from = None
+    prev_report = os.path.join(run_dir, "promise_repair_report.json")
+    repaired_path = os.path.join(run_dir, "root_graph.repaired.json")
+    if os.path.exists(prev_report) and os.path.exists(repaired_path):
+        try:
+            if (json.load(open(prev_report)) or {}).get("paused"):
+                base_path = repaired_path
+                resumed_from = os.path.basename(repaired_path)
+        except (ValueError, OSError):
+            pass                        # unreadable report: original base
+    g = json.load(open(base_path))
     g = json.loads(json.dumps(g))              # NEVER in place
     before = danglings(g)
     scratch_root = os.path.join(run_dir, "promise_repair")
@@ -1069,51 +1126,103 @@ def run_repair(run_dir, cfg, client, lines):
     # however many repair rounds the draws take.
     budget = float((cfg.get("promise_repair") or {})
                    .get("max_cost_usd", DEFAULT_BUDGET))
+    seat_on = bool(pr_cfg.get("splice_seat", True))
+    seat_cap = int(pr_cfg.get("splice_seat_max_tokens", SEAT_MAX_TOKENS))
     price = cfg.get("price_per_mtok")
     if price and plans:
         pin, pout = price
         cap = cfg.get("phase_max_tokens",
                       R.Driver.PHASE_MAX_TOKENS).get("leaf_graph", 24576)
-        worst = 0.0
+        worst = seat_worst = 0.0
         for p in plans:
             extra, _sch, _d = R.leaf_dispatch(p["lo"], p["hi"], cfg)
             prompt = drv.dispatch_block("L", p["lo"], p["hi"], p["seeds"],
                                         extra + promise_extra(p["seed"]))
             worst += ((len(drv.brief) + len(prompt)) / 3.5 / 1e6 * pin
                       + cap / 1e6 * pout)
-        if worst > budget:
+            # ⛔ review defect 1b: the SEAT is part of the stage's worst
+            # case and used to be priced nowhere -- one call per DELIVERED
+            # redraw, i.e. at most one per plan. The whole worst case is
+            # gated up front (the stage's own stated doctrine) or the
+            # ceiling trips mid-run, and a ceiling trip mid-run is the
+            # expensive kind. Input: the seat brief + a prompt bounded by
+            # the node evidence window; output: the seat's own cap.
+            if seat_on:
+                seat_prompt = SS.build_prompt(
+                    p["seed"].get("prose", ""),
+                    _select_target(g.get("nodes", []),
+                                   p["seed"]["established_around"],
+                                   section=p.get("section", False))
+                    or {}, lines)
+                seat_worst += ((len(SS.BRIEF) + len(seat_prompt))
+                               / 3.5 / 1e6 * pin + seat_cap / 1e6 * pout)
+        if worst + seat_worst > budget:
             raise T.CostGateError(
-                f"promise repair worst case ${worst:.2f} over "
-                f"{len(plans)} leaf redraw(s) exceeds "
+                f"promise repair worst case ${worst + seat_worst:.2f} "
+                f"(redraws ${worst:.2f} + splice seat ${seat_worst:.2f}) "
+                f"over {len(plans)} leaf redraw(s) exceeds "
                 f"promise_repair.max_cost_usd ${budget:.2f}. Repair in "
                 f"slices or raise the budget deliberately.")
     # -- FIX 1: the splice seat rides the stage's OWN client and budget
-    # (one extra small call per delivered redraw, inside the ceiling
-    # main() already set on the client). Default TRUE: it is a
-    # correctness gate, not a feature flag; setting it false is a
-    # deliberate, recorded choice to splice unadjudicated.
+    # (one extra small call per delivered redraw, priced into the gate
+    # above and capped at `splice_seat_max_tokens` so the price is real).
+    # Default TRUE: it is a correctness gate, not a feature flag; setting
+    # it false is a deliberate, recorded choice to splice unadjudicated.
     seat = None
-    if pr_cfg.get("splice_seat", True):
+    if seat_on:
         slot = (lambda sch: setattr(client, "reply_schema", sch)) \
             if hasattr(client, "reply_schema") else None
-        seat = SS.Seat(client.complete, lines, schema_slot=slot)
+
+        def _seat_complete(system, user, _c=client, _cap=seat_cap):
+            """The priced cap, enforced: a seat reply is one small JSON
+            object, so it draws against the seat's own max_tokens and
+            not the leaf phase cap the gate would then be under-pricing."""
+            had = hasattr(_c, "max_tokens_override")
+            prev = getattr(_c, "max_tokens_override", None)
+            if had:
+                _c.max_tokens_override = _cap
+            try:
+                return _c.complete(system, user)
+            finally:
+                if had:
+                    _c.max_tokens_override = prev
+        seat = SS.Seat(_seat_complete, lines, schema_slot=slot)
     # -- FIX 4: periodic checkpoints over the plan list
     ckpt_every, ckpt_pause = CK.checkpoint_config(cfg, "promise_repair")
     ckpt = CK.Checkpoint(
         ckpt_every, ckpt_pause, os.path.join(run_dir, "health.jsonl"),
         "promise_repair", total=len(plans), ceiling_usd=budget,
         resume_hint="re-run promise_repair.py on the same run dir: the "
-                    "prep is deterministic and the already-repaired "
-                    "names are skipped as already provided")
+                    "prep is deterministic, and because this report "
+                    "records the pause, the rerun takes "
+                    "root_graph.repaired.json as its baseline, so every "
+                    "name already spliced skips as already provided")
     # -- spend: one targeted leaf redraw per plan
     n_rep = n_dec = 0
     repaired_names = {"promise": set(), "underexport": set()}
-    paused = None
+    paused = gate_tripped = None
     for i, p in enumerate(plans):
         seed = p["seed"]
         try:
             redraw = redraw_leaf(drv, seed, p["lo"], p["hi"], p["seeds"],
                                  p["scratch"])
+        except T.CostGateError as exc:
+            # ⛔ review defect 1b, second arm: the MEASURED ceiling can
+            # trip mid-stage (a redraw or a seat call). Letting it
+            # propagate here threw away every splice already made AND the
+            # spend that bought them -- root_graph.repaired.json is only
+            # written below. Break, write the artifacts, THEN re-raise:
+            # the ceiling still stops the run loudly, but the paid work
+            # survives on disk and a rerun does not re-buy it.
+            gate_tripped = exc
+            report_items.append(dict({"name": seed["name"],
+                                      "class": p["class"],
+                                      "unwind": p["unwind"],
+                                      "status": "failed",
+                                      "why": f"cost ceiling reached: "
+                                             f"{exc}"},
+                                     **(p.get("note") or {})))
+            break
         except T.Phase1Error as exc:
             report_items.append(dict({"name": seed["name"],
                                       "class": p["class"],
@@ -1122,10 +1231,22 @@ def run_repair(run_dir, cfg, client, lines):
                                       "why": f"redraw failed: {exc}"},
                                      **(p.get("note") or {})))
             continue
-        status, detail = splice(g, seed, redraw, p["unwind"], p["scratch"],
-                                target_id=p.get("target_id"),
-                                section=p.get("section", False),
-                                seat=seat)
+        try:
+            status, detail = splice(g, seed, redraw, p["unwind"],
+                                    p["scratch"],
+                                    target_id=p.get("target_id"),
+                                    section=p.get("section", False),
+                                    seat=seat)
+        except T.CostGateError as exc:          # the SEAT tripped it
+            gate_tripped = exc
+            report_items.append(dict({"name": seed["name"],
+                                      "class": p["class"],
+                                      "unwind": p["unwind"],
+                                      "status": "failed",
+                                      "why": f"cost ceiling reached in "
+                                             f"the splice seat: {exc}"},
+                                     **(p.get("note") or {})))
+            break
         n_rep += status == "repaired"
         n_dec += status == "declined"
         if status == "repaired":
@@ -1139,19 +1260,22 @@ def run_repair(run_dir, cfg, client, lines):
                                    else "why"): detail},
                                  **(p.get("note") or {})))
         # the checkpoint lands HERE: the report row is booked and the
-        # graph copy holds this plan's splice, so a pause loses nothing
-        try:
-            ckpt.tick(i + 1,
-                      spent_usd=getattr(client, "spent_usd", 0.0),
-                      failures={
-                          k: sum(1 for r in report_items
-                                 if r["status"] == k)
-                          for k in ("failed", "narration_mismatch",
-                                    "rejected_by_splice_seat",
-                                    "declined")})
-        except CK.CheckpointPause as exc:
-            paused = str(exc)
-            break
+        # graph copy holds this plan's splice, so a pause loses nothing.
+        # The counts are built ONLY when one is due (review, minor): the
+        # scan is O(rows) and ran on every plan for nothing.
+        if ckpt.due(i + 1):
+            try:
+                ckpt.tick(i + 1,
+                          spent_usd=getattr(client, "spent_usd", 0.0),
+                          failures={
+                              k: sum(1 for r in report_items
+                                     if r["status"] == k)
+                              for k in ("failed", "narration_mismatch",
+                                        "rejected_by_splice_seat",
+                                        "declined")})
+            except CK.CheckpointPause as exc:
+                paused = str(exc)
+                break
     if seat is not None and hasattr(client, "reply_schema"):
         client.reply_schema = None
     after = danglings(g)
@@ -1206,8 +1330,7 @@ def run_repair(run_dir, cfg, client, lines):
     n_fail = sum(1 for r in report_items
                  if r["status"] == "failed") + n_mis
     #: FIX 3: the graph-level self-loop census, before and after
-    loops_before, loops_after = self_loops(
-        json.load(open(os.path.join(run_dir, "root_graph.json")))), \
+    loops_before, loops_after = self_loops(json.load(open(base_path))), \
         self_loops(g)
     dropped_self = [d for pr in g.get("promise_repairs", [])
                     for d in (pr.get("dropped_self_needs") or [])]
@@ -1228,6 +1351,9 @@ def run_repair(run_dir, cfg, client, lines):
               "needers_resolved": resolved,
               "checkpoints": ckpt.fired,
               "paused": paused,
+              "resumed_from": resumed_from,
+              "stopped_by_cost_gate": (str(gate_tripped)
+                                       if gate_tripped else None),
               "plans": len(plans),
               "spent_usd": round(getattr(client, "spent_usd", 0.0), 6)}
     R.write_json(os.path.join(run_dir, "promise_repair_report.json"),
@@ -1253,7 +1379,15 @@ def run_repair(run_dir, cfg, client, lines):
           f"{by_class['promise']['needers_resolved']}, underexport "
           f"{by_class['underexport']['needers_resolved']}) -> "
           f"root_graph.repaired.json"
+          + (f"\n(resumed from {resumed_from}: the names already spliced "
+             f"there were skipped, not re-drawn)" if resumed_from else "")
           + (f"\n⏸ {paused}" if paused else ""))
+    if gate_tripped is not None:
+        # the artifacts are on disk NOW; the ceiling still stops the run
+        print(f"⛔ CostGateError after {n_rep} splice(s): {gate_tripped}\n"
+              f"   root_graph.repaired.json and the report were written "
+              f"first -- the paid work survives; re-run to continue.")
+        raise gate_tripped
     return report
 
 
@@ -1284,10 +1418,17 @@ def main(argv=None):
     client.max_cost_usd = float((cfg.get("promise_repair") or {})
                                 .get("max_cost_usd", DEFAULT_BUDGET))
     try:
-        run_repair(args.run, cfg, client, lines)
+        rep = run_repair(args.run, cfg, client, lines)
     except T.Phase1Error as exc:
         print(f"⛔ {type(exc).__name__}: {exc}")
         return 2
+    if rep.get("paused"):
+        # ⛔ review defect 4b: a paused stage returned 0, so ds7_repair.sh
+        # (set -e) sailed straight past a HALF-FINISHED repair into the
+        # quality battery. Exit 3 = "stopped cleanly, not finished".
+        print("⛔ the repair is INCOMPLETE: re-run this command to "
+              "continue from root_graph.repaired.json")
+        return 3
     return 0
 
 

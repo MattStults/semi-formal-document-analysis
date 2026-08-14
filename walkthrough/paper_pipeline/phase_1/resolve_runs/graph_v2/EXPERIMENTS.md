@@ -2671,3 +2671,38 @@ DEFECTS, fix round dispatched:
   resumed run re-pays every plan) and pause exits 0 under set -e.
 BINDING CONDITION until 4a lands: checkpoint_pause must stay FALSE for
 any batch run. Record-only checkpoints are safe today.
+
+## 2026-08-14: ds7 PRODUCTION GRAPH -- CERTIFIED
+
+production_certification.md addendum: CERTIFIED-WITH-CONDITIONS converts
+to **CERTIFIED**. Independent closure check verified all four:
+(1) the diff repaired->production is EXACTLY the adjudicated corrections
+plus C1/C2 -- 6 nodes / 9 field changes, every one attributable, 0
+spans/establishes/ids touched, 773 nodes, ids list-identical;
+(2) C1/C2 complete with no third leftover -- all 14 repair-introduced
+needs re-derived and checked, the 11 survivors legitimate (incl. one the
+certifier ruled should STAY: user_authority on L2126-2404_n031, since
+L2151 sits under #assume_objective_pov authority=user);
+(3) THE NEAR-MISS WAS REAL and the scoping fix is right: original 16
+distinct self-loops, production 16, set-equal, repair-introduced
+remaining 0, pre-existing wrongly removed 0 -- a general sweep would
+have deleted 16 never-adjudicated needs, the exact unadjudicated-edit
+class the repo forbids;
+(4) graph_corrections.py's preconditions REFUSE by execution, four ways
+(original input, double-apply, moved span, unprovided rename target) --
+hard SystemExit before any write, cardinality-checked so an absent name
+cannot pass as a no-op; rerunning reproduces the artifact BYTE-FOR-BYTE
+(C4 closed).
+FINAL: 773 nodes | 115 exported names | 1085 needs | 25 enumerated
+danglings | 16 pre-existing self-loops | graph_check 0 bad spans, 0 bad
+quotes | 0 new duplicate providers | uncovered byte-identical | recall
+vs golden unchanged to 4dp (0.4395 raw / 0.2637 content) with content
+precision UP 0.4458 -> 0.4496 -- the two dropped self-edges removed no
+golden coverage.
+OPEN AS FOLLOW-UPS, NOT GATES: C3 three reservation proses (overreach /
+name mismatch, none false); C5 stale promise_repair_report counts
+(declined_honestly 3->2, danglings_after 24->25); C6 consumer-side
+assertions (unresolved need = hard reportable; carry the 6 modal_drift
+nodes with the two teen-safety ones called out; report the honest
+authority-excluded pair 0.264 / 0.450).
+THE PRODUCTION GRAPH IS runs/ds7/root_graph.production.json.

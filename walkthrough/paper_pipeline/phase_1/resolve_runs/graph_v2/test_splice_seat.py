@@ -335,6 +335,97 @@ def test_splice_without_a_seat_is_the_mechanical_unit_path():
             and "splice_seat" in PR.__doc__)
 
 
+# ---------------------------------------- review defect 1b: seat pricing
+#: input priced at 0 so the arithmetic is exactly the two output caps:
+#: a redraw draws the leaf cap (24576 * $1000/Mtok = $24.576), a seat
+#: reply draws its own cap (1024 -> $1.024). A budget BETWEEN them is
+#: the whole point: it fits the redraw the old gate priced and NOT the
+#: seat call the old gate could not see.
+_PRICED = {"leaf_max_lines": 15, "price_per_mtok": [0.0, 1000.0]}
+
+
+def test_the_seat_is_priced_into_the_up_front_gate(tmp_path):
+    """RED: the gate priced `len(plans)` redraws only, while the seat
+    added one unpriced call per delivered redraw -- so the stage's own
+    "whole worst case gated up front" doctrine was false, and the
+    overrun could only be caught by the MEASURED ceiling mid-run, which
+    is the expensive place to catch it."""
+    run = _run(tmp_path)
+    cfg = dict(_PRICED, promise_repair={"max_cost_usd": 25.0})
+    client = SeatClient([_delivering_reply()])
+    with pytest.raises(T.CostGateError) as exc:
+        PR.run_repair(run, cfg, client, list(ESTABLISHING))
+    assert "splice seat" in str(exc.value)
+    assert "$25.60" in str(exc.value), str(exc.value)
+    assert client.calls == 0 and client.seat_calls == 0, \
+        "the gate must fire before ANY spend, seat included"
+    # the same budget with the gate off is affordable, and runs
+    off = _run(tmp_path / "off")
+    rep = PR.run_repair(off, dict(_PRICED, promise_repair={
+        "max_cost_usd": 25.0, "splice_seat": False}),
+        SeatClient([_delivering_reply()]), list(ESTABLISHING))
+    assert rep["repaired"] == 1
+
+
+def test_the_seat_call_is_capped_at_the_price_it_was_gated_at(tmp_path):
+    """The gate's arithmetic must be the arithmetic that runs: the seat
+    call sets `max_tokens_override` to its own cap and restores it, so
+    the reply cannot draw the leaf cap the gate did not price."""
+    run = _run(tmp_path)
+    seen = []
+
+    class Capped(SeatClient):
+        max_tokens_override = None
+
+        def complete(self, system, user):
+            if system == SS.BRIEF:
+                seen.append(self.max_tokens_override)
+            return SeatClient.complete(self, system, user)
+    client = Capped([_delivering_reply()])
+    PR.run_repair(run, _cfg(), client, list(ESTABLISHING))
+    assert seen == [PR.SEAT_MAX_TOKENS] == [1024]
+    # and the DRIVER's own leaf cap is put back, not left at the seat's:
+    # the seat borrows the client for one call and returns it unchanged
+    assert client.max_tokens_override == 24576
+
+
+def test_a_late_cost_gate_keeps_the_splices_already_paid_for(tmp_path):
+    """RED: `root_graph.repaired.json` is written at the END, so a
+    ceiling trip on plan 2 discarded plan 1's splice AND the money that
+    bought it. The ceiling must still stop the run -- loudly -- but the
+    paid work is written first."""
+    run = _run(tmp_path)
+    # a second plan, so the first can be paid for and the second trip
+    d = json.load(open(os.path.join(run, "division.json")))
+    d["seed_vocabulary"].append({"name": "second_duty", "prose": "Second.",
+                                 "established_around": [3, 4]})
+    R.write_json(os.path.join(run, "division.json"), d)
+    q = json.load(open(os.path.join(run, "fixup_queue.json")))
+    q["items"].append({"kind": "broken_promise", "verdict": "reject",
+                       "detail": {"unwind": run, "name": "second_duty"},
+                       "reason": "needs regeneration"})
+    R.write_json(os.path.join(run, "fixup_queue.json"), q)
+
+    class Ceiling(SeatClient):
+        def complete(self, system, user):
+            if self.calls >= 1 and system != SS.BRIEF:
+                raise T.CostGateError("ceiling $0.25 reached")
+            return SeatClient.complete(self, system, user)
+        complete_messages = complete
+    client = Ceiling([_delivering_reply(),
+                      _reply(1, 12, provides=[{"name": "second_duty",
+                                               "prose": "Second."}])])
+    with pytest.raises(T.CostGateError):
+        PR.run_repair(run, _cfg(), client, list(ESTABLISHING))
+    fixed = json.load(open(os.path.join(run, "root_graph.repaired.json")))
+    assert any(R.nm(p) == NAME for p in fixed["nodes"][0]["provides"]), \
+        "the splice that was PAID FOR must survive the ceiling"
+    disk = json.load(open(os.path.join(run,
+                                       "promise_repair_report.json")))
+    assert disk["repaired"] == 1
+    assert "ceiling" in disk["stopped_by_cost_gate"]
+
+
 # ==========================================================================
 #  FIX 2 -- narration mismatch is not an honest decline
 # ==========================================================================
@@ -362,6 +453,58 @@ def test_delivery_narration_is_detected(text):
 ])
 def test_a_genuine_decline_is_not_delivery_narration(text):
     assert not PR.asserts_delivery(text, "x"), text
+
+
+#: review defect 2 (the OPPOSITE direction): honest declines that QUOTE
+#: the instruction read as delivery claims. None of the six pins above
+#: probes this -- each puts the negation next to the pronoun, which is
+#: the only place the detector used to look.
+@pytest.mark.parametrize("text", [
+    # -- reported instruction
+    "I was asked to add a provides entry but the span does not establish it",
+    "I was asked to add a provides entry with exactly this name",
+    "I am instructed to include a provides entry here",
+    "the promise repair told me to add a provides entry for this name",
+    "the instruction says I must add a provides entry if the span "
+    "establishes it, which it does not",
+    # -- counterfactual
+    "I would add a provides entry if the span established the concept, "
+    "but it does not",
+    "I would add a provides entry if this were the establishment site",
+    "I could include a provides entry, but the concept is established "
+    "in the appendix",
+    # -- recommendation about someone else (the real ds7
+    #    refusal_style_section decline)
+    "If the driver requires a provides entry, it should be added to n015",
+    # -- the negation sits LATE in the sentence, far from the pronoun
+    "I will add a provides entry only where the span establishes the "
+    "concept, and this span does not",
+])
+def test_quoting_the_instruction_is_not_delivery_narration(text):
+    assert not PR.asserts_delivery(text, "x"), text
+
+
+@pytest.mark.parametrize("text", [
+    "The entry was added to the covering node",     # simple past passive
+    "The provides entries were included as required",
+])
+def test_past_passive_delivery_is_detected(text):
+    assert PR.asserts_delivery(text, "x"), text
+
+
+def test_a_reported_instruction_decline_stays_an_honest_decline(tmp_path):
+    """Stage level: the decline that quotes its own instruction and then
+    refuses must be booked `declined`, not `narration_mismatch` -- the
+    honesty metric has to be right in BOTH directions."""
+    run = _run(tmp_path)
+    reply = _reply(1, 12, jcs=[
+        f"{NAME}: I was asked to add a provides entry with exactly this "
+        f"name, but the span states a different rule, so I would add it "
+        f"only if this were the establishment site."])
+    rep = PR.run_repair(run, _cfg(), SeatClient([reply]),
+                        list(ESTABLISHING))
+    assert rep["declined_honestly"] == 1 and rep["narration_mismatch"] == 0
+    assert _row(rep)["status"] == "declined"
 
 
 def test_narration_mismatch_is_booked_as_a_failed_repair(tmp_path):
