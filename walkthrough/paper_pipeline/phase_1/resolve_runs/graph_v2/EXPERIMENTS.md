@@ -1811,3 +1811,29 @@ to the model (one contentless line on varied retries) -- accepted over
 invisible parameter jitter, which is provider-implementation-dependent.
 Pin: send, fail, re-send -> bytes differ and carry the marker. Lands
 with the routing-gap audit fixes in one reviewed commit.
+
+## 2026-08-14: ds7 COMPLETE -- ACCEPTANCE READ-OFF: PASS (all bands)
+
+773 nodes, ~$0.35 total across segments, 49% cache. Against the frozen
+bands: coinages 0/0 ✅; mismatched edges 7/1077 = 0.6% (target <=7;
+ds6 was 31%, ds5 7%) ✅; danglings 66 in [20-80] ✅, every one carrying
+a seat rejection or recorded near-miss; 326 verdicts on the artifact
+(criterion verifiable+met) ✅; census 12 buried <= 17, merge-loses-
+content 0, cross-link-provider 0 ✅; boundary: chain_of_command concept
+PROVIDED name-free as chain_of_command_principle, zero dangling needers
+(the pre-registered check named the golden's spelling; the protocol is
+name-free -- read-off corrected, not reinterpreted: the underlying rule
+"the concept must not dangle" is met). Resolution pass: 6 actions on 73
+danglings; greedy descend 5/69 confirmed; risk queue 173 items
+(45 broken promises, 39 dropped merges, 18 seat accepts, 64 near-misses,
+7 low-sim edges). CERTIFICATE, honestly: two restarts (internet outage;
+provider truncation lock-in) + one config intervention (unwind cap,
+later reverted; one dispatch completed under it). Zero code changes,
+zero artifact edits.
+RESIDUALS for the fix queue: (a) coinage-VARIANT names escaped the
+literal substring check ("X_section_guideline_authority" class, ~2) --
+widen the pattern in ds8 code; (b) 45 modal flags await the run-local
+adjudication (runbook step 3); (c) 45 broken promises to review via
+risk queue.
+NEXT: modal adjudication on ds7 -> K3 parity sample -> curated K3
+frontier pass (batched) -> production-graph verdict for Matt.
