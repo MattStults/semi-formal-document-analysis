@@ -995,7 +995,13 @@ def test_dense_leaf_recurses_via_phase_d_serial(tmp_path):
     lines = R.load_doc(toy)
     replies = [_dense_reply()] + json.load(
         open(os.path.join(HERE, "mock_replies.json")))
-    drv = R.Driver({"leaf_max_lines": 100, "model": {"max_tokens": 4}},
+    # F5 2026-08-14: the oversize threshold reads the ENGAGED phase cap;
+    # the fixture forces it low on every phase (valid replies short-circuit
+    # before the threshold, so only the dense draw trips it)
+    drv = R.Driver({"leaf_max_lines": 100, "model": {"max_tokens": 4},
+                    "phase_max_tokens": {"division": 4, "leaf_graph": 4,
+                                         "leaf_graph_derived": 4,
+                                         "unwind_decisions": 4}},
                    R.MockClient(replies), lines, str(tmp_path))
     g = drv.build(1, len(lines), [], str(tmp_path))
     assert len(g["nodes"]) == 10            # the normal toy result
@@ -1015,7 +1021,11 @@ def test_dense_leaf_recurses_via_phase_d_core(tmp_path):
     a, b = os.path.join(str(tmp_path), "ser"), os.path.join(str(tmp_path),
                                                             "core")
     os.makedirs(a), os.makedirs(b)
-    cfg = {"leaf_max_lines": 100, "model": {"max_tokens": 4}}
+    cfg = {"leaf_max_lines": 100, "model": {"max_tokens": 4},
+           # F5 2026-08-14: threshold reads the engaged phase cap
+           "phase_max_tokens": {"division": 4, "leaf_graph": 4,
+                                "leaf_graph_derived": 4,
+                                "unwind_decisions": 4}}
     R.Driver(cfg, R.MockClient(list(replies)), lines, a).build(
         1, len(lines), [], a)
     drv = R.Driver(cfg, R.MockClient(list(replies)), lines, b)

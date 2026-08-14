@@ -323,7 +323,13 @@ class _TolerantRunOne:
                 detail = (str(exc) if isinstance(exc, T.Phase1Error)
                           else f"{type(exc).__name__}: {exc}")
                 state.feed_failure("error", detail)
-            if not isinstance(exc, T.Phase1Error) or state.status == FAILED:
+            if (not isinstance(exc, T.Phase1Error)
+                    or isinstance(exc, T.CostGateError)
+                    or state.status == FAILED):
+                # CostGateError by name (routing-gap audit F2): tolerating
+                # the ceiling per-clause would bill one more call per
+                # remaining clause -- the run stops loudly instead, with
+                # every completed clause's artifacts and run.json intact.
                 raise
 
 
@@ -715,7 +721,10 @@ def main(argv=None):
     try:
         cfg = T.load_config(args.config)
         return run_exec(cfg, args)
-    except T.Phase1Error as exc:
+    except (T.Phase1Error, gy.GraveyardError) as exc:
+        # gy.GraveyardError by name (routing-gap audit F10): it cannot
+        # subclass Phase1Error (import direction), and the cap refusal is
+        # a usage error and exit 2, not a traceback.
         print(f"⛔ {type(exc).__name__}: {exc}")
         return 2
 

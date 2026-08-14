@@ -1920,3 +1920,104 @@ SEQUENCE once reviews converge to accept: commit -> K3 frontier_review
 on ds7 -> fixup round -> auto quality checks vs golden -> DELTA
 INVESTIGATION (every delta gets a why, census-style) -> production
 package.
+
+## 2026-08-14: ds8 fix set LANDED -- seam guard + F1-F10 + frontier stage + fixup + golden flag
+
+One reviewed change set, all offline-pinned (new pins: test_routing_fixes
+25, test_frontier_review 24, test_fixup 11 = 60; every guard fed the
+defect it catches). Item -> file:
+ 1. IDENTICAL-RETRY SEAM GUARD -- translate.py Client._send /
+    _vary_identical_retry: sha256 failed-body set; hash-match appends
+    "[transport retry N]" to the FINAL user message and re-hashes
+    (suffix-only, prefix cache holds); telemetry `retry_variations`.
+    Covers guard-raised (TRUNCATED/empty) sends too. GraphClient inherits.
+ 2. F1 -- dispatch_core._ladder + recurse_driver Driver._complete:
+    TRUNCATED joins the 402-style SHORT ladder (2 tries + seam-guard
+    variation, then restart paths/raise).
+ 3. F2 -- translate.py Client._log_usage enforces max_cost_usd after
+    billing (CostGateError), as GraphClient does; translate_exec
+    _TolerantRunOne propagates CostGateError by name (no per-clause grind).
+ 4. F3 -- rename_seat.judge raises on terminal transport (402/401/403,
+    key resolution) after bounded retries instead of fail-closing.
+ 5. F4 -- translate.py _send stamps requested_max_tokens; _check_envelope
+    raises TRUNCATED on finish_reason-null completions at the cap.
+ 6. F5 -- oversize threshold reads the ENGAGED per-phase cap:
+    DispatchState.out_cap property + Driver.call; the D6 dense/malfunction
+    machinery is reachable again (3 fixture cfgs updated to force phase
+    caps, not model.max_tokens).
+ 7. F6 -- "empty response" is transient in both ladders, same 2-retry cap.
+ 8. F8 -- statusless batch polls ({"error": ...}) become a ProviderError
+    after 3 consecutive polls (dispatch_core _poll_and_collect + _sweep).
+ 9. F9 -- _ladder re-raises CostGateError over the per-dispatch budget
+    diagnosis; F10 -- GraveyardError caught BY NAME in translate.main and
+    translate_exec.main (cannot subclass Phase1Error: import direction,
+    recorded in graveyard.py docstring).
+10. F7 (deterministic half) -- per-request max_tokens persisted in the
+    flush manifest entry; _sweep rebuilds _req_max for _classify. The
+    double-ledger half stays DEFERRED, recorded in a _sweep comment.
+11. frontier_review.py -- the K3 stage per the ruling: risk_queue in,
+    parity sample (divergence > band = loud ParityStopError), batched
+    slice via CurlTransport + frontier_inflight.json record, worst-case
+    gate at submit, frontier_verdicts.json + health line out; --yes
+    required. Config block `frontier_review` in driver_config.json.
+12. Item 13 -- coinage VARIANT pattern widened (ds7 RESIDUALS (a)):
+    recurse_driver is_authority_coinage / _AUTH_COINAGE, ONE constant
+    consulted by validate_leaf AND autofix_authority_coinages.
+13. Item 14 -- golden-flag quality checks: config `golden_graph` /
+    --golden runs graph_compare -> compare_vs_golden.json, repair_census,
+    and edge_similarity_report (token-Jaccard buckets <0.1/0.1-0.25/
+    >=0.25 -> edge_similarity.json) inside post_build_checks. Offline.
+14. Item 15 -- fixup.py: mechanical dispositions from frontier_verdicts
+    (rejected rename -> revert; upholds -> confirmed; dropped_merge
+    confirmation -> no-op) into root_graph.fixed.json (never in place);
+    non-mechanical -> fixup_queue.json with reasons + health line.
+Also: behavior_pilot/DESIGN.md now labels the U18 romantic-roleplay
+example as a hand-written smoke fixture, NOT a corpus behavior.
+
+## 2026-08-14: adversarial review of the ds8 fix set -- 9 findings FIXED
+
+Clean-context review before commit (fired again; right again). Fixed in
+the same set, each with a pin:
+ 1. gate math (HIGH): frontier price default DELETED -- price_per_mtok is
+    REQUIRED config (refuse over guess); max_cost_usd 2.50 -> 3.00 (the
+    150-slice worst case at the corrected $3/$15 is ~$2.57); the WHOLE
+    worst case (parity + slice) now gates BEFORE the parity stage spends
+    (run_review, item 1c) -- the old order spent parity money then
+    refused at submit.
+ 2. near-miss semantics INVERTED (HIGH): for dangling_near_miss the
+    recorded decision is the NON-rename, so vocab_for maps
+    different_concept -> uphold and same_concept -> reject; a rejected
+    near-miss is a PROPOSED NEW RENAME on the fix queue (through the
+    resolution pass's gate, never auto-applied). fixup dispositions now
+    persist as ROWS on frontier_verdicts.json (confirmed + reverted).
+ 3. double-pay windows: create-kill-window adopt via list_batches
+    (dispatch_core doctrine; unlistable -> refuse to resubmit); the
+    inflight record is cleared only AFTER frontier_verdicts.json is on
+    disk; a passed parity report persists in the record so a resume
+    never re-pays parity.
+ 4. F2 x batch collection: CostGateError from _log_usage is DEFERRED at
+    dispatch_core._collect (rows fed/completed first, live reruns never
+    start) and _sweep (raise only after _persist_recovered + clear -- no
+    dropped rows, no double-ledger on resume).
+ 5. frontier batch spend LEDGERED: every returned row goes through
+    client._log_usage with measured cost at the configured price; a
+    ledger gate raise defers until the verdicts persist; no client ->
+    loud invisibility warning.
+ 8. seam-guard marker restricted to the last USER message; a userless
+    body is re-sent unchanged (system/assistant turns never mutated).
+ 9. ParityStopError carries .report (the parity rows).
+ INFO (latent): fixup revert refuses when >1 needs share the rename
+    target (a genuine need is byte-indistinguishable from the renamed
+    one) -- ambiguity queues, code never renames a real edge.
+Re-review CONVERGED; two polish items closed in the same set:
+ N1: parity no longer fails OPEN on zero decided pairs -- decided <
+    min(len(sample), max(3, parity_n//2)) raises ParityStopError with
+    the no_verdict evidence in .report (a judge pair that cannot decide
+    is as defective as one that diverges); parse_verdict now uses the
+    driver's fence-tolerant parse_json_reply, so a markdown-fenced
+    frontier reply still decides.
+ N2: `ledgered: true` persists into the inflight record BEFORE the
+    ledger loop; a resume killed between ledgering and the verdict write
+    re-parses for free and makes zero _log_usage calls (double-ledger
+    would corrupt usage.jsonl's measurement, the one direction the
+    overstate-is-survivable doctrine does not cover).

@@ -34,6 +34,7 @@ Exit codes:  0 clean · 1 a clause failed · 2 usage/config error
 """
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -538,6 +539,13 @@ class Client:
     what this client used to hand it.
     """
 
+    #: Hard run ceiling on MEASURED dollars (routing-gap audit F2,
+    #: 2026-08-14). None = unenforced (serial translate.py's run-level gate
+    #: is `cost_gate` before anything is sent); translate_exec.prepare sets
+    #: it from cost.max_cost_usd so the measured backstop actually BINDS in
+    #: concurrent/batch translation, exactly as GraphClient enforces it.
+    max_cost_usd = None
+
     def __init__(self, prov, cfg):
         self.p = prov
         self.cfg = cfg
@@ -550,6 +558,15 @@ class Client:
         #: Read at the end of a run to say out loud what `spend.py` cannot see.
         self.spent_usd = 0.0
         self.calls = 0
+        #: IDENTICAL-RETRY SEAM GUARD (EXPERIMENTS.md 2026-08-14): sha256
+        #: hashes of request bodies that FAILED (raised) in this process.
+        #: A hash-match on a later send appends a deterministic marker to
+        #: the FINAL user message before the request leaves, so a
+        #: byte-identical failed retry is structurally impossible on every
+        #: path through this seam. Suffix-only: prefix-cache economics keep.
+        self._failed_body_hashes = set()
+        #: telemetry: how many sends were varied by the guard
+        self.retry_variations = 0
 
     def _body(self, system, user):
         p = self.p
@@ -600,41 +617,97 @@ class Client:
                     continue
                 raise
 
+    def _vary_identical_retry(self, body):
+        """IDENTICAL-RETRY SEAM GUARD (EXPERIMENTS.md 2026-08-14 design):
+        if this exact body already FAILED at this seam in this process,
+        append '[transport retry N: prior identical attempt failed]' to the
+        FINAL user message and re-hash, until the bytes are novel. Returns
+        (body, payload_bytes) with `payload` being EXACTLY what is sent —
+        the same bytes the failure path hashes, so guard and ledger of
+        failures can never disagree.
+
+        RECORDED TENSION (accepted in the design entry): the marker is
+        visible to the model — one contentless line on varied retries —
+        accepted over invisible parameter jitter, which is provider-
+        implementation-dependent. Suffix-only, so the prefix cache holds
+        while generation divergence is guaranteed.
+        """
+        payload = json.dumps(body).encode()
+        n = 0
+        while hashlib.sha256(payload).hexdigest() in self._failed_body_hashes:
+            n += 1
+            body = dict(body)
+            body["messages"] = [dict(m) for m in body.get("messages", [])]
+            # review item 8: the marker lands ONLY on a user turn -- a
+            # body with no user message (however unlikely) is sent
+            # unchanged rather than ever mutating system/assistant turns
+            target = None
+            for m in body["messages"]:
+                if m.get("role") == "user":
+                    target = m
+            if target is None:
+                break
+            target["content"] = (str(target.get("content", ""))
+                                 + f"\n[transport retry {n}: prior "
+                                   f"identical attempt failed]")
+            payload = json.dumps(body).encode()
+            self.retry_variations += 1
+        return body, payload
+
     def _send(self, body):
         import urllib.error
         import urllib.request
-        url = self.p.base_url.rstrip("/") + "/chat/completions"
-        req = urllib.request.Request(
-            url, json.dumps(body).encode(),
-            {"Authorization": f"Bearer {self.key}",
-             "Content-Type": "application/json",
-             "User-Agent": "walkthrough-phase1/0.1"})
+        body, payload = self._vary_identical_retry(body)
         try:
-            with urllib.request.urlopen(
-                    req, timeout=int(os.environ.get(
-                        "PHASE1_HTTP_TIMEOUT", "600"))) as resp:
-                data = json.load(resp)
-        except urllib.error.HTTPError as exc:
-            detail = exc.read().decode()[:500]
-            hint = ""
-            if self.forcing == "json_schema" and (
-                    "response_format" in detail or "json_schema" in detail
-                    or exc.code == 400):
-                hint = ("\n   ⇒ this provider may not support strict "
-                        "json_schema. Try model.format_forcing=\"json_object\" "
-                        "— but record that the shape is then NOT guaranteed at "
-                        "generation, which is a departure from stage 1.")
-            raise ProviderError(f"HTTP {exc.code}: {detail}{hint}") from exc
-        except Exception as exc:
-            raise ProviderError(str(exc)) from exc
+            url = self.p.base_url.rstrip("/") + "/chat/completions"
+            req = urllib.request.Request(
+                url, payload,
+                {"Authorization": f"Bearer {self.key}",
+                 "Content-Type": "application/json",
+                 "User-Agent": "walkthrough-phase1/0.1"})
+            try:
+                with urllib.request.urlopen(
+                        req, timeout=int(os.environ.get(
+                            "PHASE1_HTTP_TIMEOUT", "600"))) as resp:
+                    data = json.load(resp)
+            except urllib.error.HTTPError as exc:
+                detail = exc.read().decode()[:500]
+                hint = ""
+                if self.forcing == "json_schema" and (
+                        "response_format" in detail
+                        or "json_schema" in detail
+                        or exc.code == 400):
+                    hint = ("\n   ⇒ this provider may not support strict "
+                            "json_schema. Try model.format_forcing="
+                            "\"json_object\" — but record that the shape is "
+                            "then NOT guaranteed at generation, which is a "
+                            "departure from stage 1.")
+                raise ProviderError(f"HTTP {exc.code}: {detail}{hint}") \
+                    from exc
+            except ProviderError:
+                raise
+            except Exception as exc:
+                raise ProviderError(str(exc)) from exc
 
-        full = response_envelope(self.p, data)
-        # Log BEFORE the truncation/emptiness guards: a truncated or empty
-        # completion is billed exactly like a good one, and the guards raise.
-        self._log_usage(full)
-        env = _check_envelope(full)
-        env["cost_usd"] = (full.get("usage") or {}).get("cost_usd") or 0.0
-        return env
+            full = response_envelope(self.p, data)
+            # F4 (routing-gap audit): the requested output cap rides in the
+            # envelope so _check_envelope can catch finish_reason-null
+            # truncation (completion at the cap IS truncation, whatever
+            # finish_reason says -- the batch collector's own backstop).
+            full["requested_max_tokens"] = body.get("max_tokens")
+            # Log BEFORE the truncation/emptiness guards: a truncated or
+            # empty completion is billed exactly like a good one, and the
+            # guards raise.
+            self._log_usage(full)
+            env = _check_envelope(full)
+            env["cost_usd"] = (full.get("usage") or {}).get("cost_usd") or 0.0
+            return env
+        except Exception:
+            # any raise at this seam -- transport, HTTP, truncation, empty,
+            # cost gate -- marks these exact bytes as failed: a later
+            # identical send will be varied instead of repeated verbatim
+            self._failed_body_hashes.add(hashlib.sha256(payload).hexdigest())
+            raise
 
     def _log_usage(self, env):
         """Append one measured call, in the shape `_append_usage` reads.
@@ -652,13 +725,24 @@ class Client:
         log = self.cfg["model"].get("usage_log", "DEFAULT")
         if not log:
             print("  ⚠️ model.usage_log is off — this call is in NO ledger")
-            return
-        try:
-            import providers as _p                            # noqa: WPS433
-            _p._append_usage(log, env)                        # noqa: SLF001
-        except Exception as exc:                              # noqa: BLE001
-            print(f"  ⚠️ usage not logged to the ledger ({exc}) — "
-                  f"spend.py will under-count this run")
+        else:
+            try:
+                import providers as _p                        # noqa: WPS433
+                _p._append_usage(log, env)                    # noqa: SLF001
+            except Exception as exc:                          # noqa: BLE001
+                print(f"  ⚠️ usage not logged to the ledger ({exc}) — "
+                      f"spend.py will under-count this run")
+        # F2 (routing-gap audit 2026-08-14): the measured run ceiling is
+        # enforced HERE, after billing, exactly as GraphClient does --
+        # translate_exec sets max_cost_usd on this client, and before this
+        # check the ceiling was UNENFORCED in concurrent/batch translation
+        # (ClauseState.budget is inf; only the pre-send estimate gated).
+        if self.max_cost_usd and self.spent_usd > self.max_cost_usd:
+            raise CostGateError(
+                f"measured spend ${self.spent_usd:.2f} exceeds the run "
+                f"ceiling ${self.max_cost_usd:.2f} (cost.max_cost_usd) -- "
+                f"artifacts so far are kept; resume raises again unless the "
+                f"ceiling is raised")
 
 
 def normalize_usage(raw):
@@ -781,8 +865,17 @@ def _check_envelope(env):
     # collector and complete here, failing later as a parse error that
     # blamed response_format. The finish-reason list stays as the fallback
     # for envelopes built elsewhere without the flag.
-    if env.get("truncated") or finish in ("length", "max_tokens",
-                                          "max_output_tokens"):
+    # F4 (routing-gap audit 2026-08-14): the finish_reason-null backstop.
+    # together.ai returns finish_reason null on this model (the caveat
+    # above), so a live reply cut at the cap sailed past this guard and
+    # failed a stage later as a parse error. The batch collector already
+    # keys truncation off completion_tokens >= the requested cap; the live
+    # path now does the same when `_send` stamps `requested_max_tokens`.
+    req_max = env.get("requested_max_tokens")
+    out_toks = (env.get("usage") or {}).get("completion_tokens") or 0
+    at_cap_null_finish = (not finish and req_max and out_toks >= req_max)
+    if env.get("truncated") or at_cap_null_finish or finish in (
+            "length", "max_tokens", "max_output_tokens"):
         raise ProviderError(
             "completion was TRUNCATED (finish_reason=length). A cut-off module "
             "can be syntactically fine and semantically half a clause. Raise "
@@ -2279,7 +2372,10 @@ def main(argv=None):
         if args.list_models:
             return list_models(load_config(args.config), args)
         return run(load_config(args.config), args)
-    except (Phase1Error, version.VersionError) as exc:
+    except (Phase1Error, version.VersionError, gy.GraveyardError) as exc:
+        # gy.GraveyardError is caught BY NAME (routing-gap audit F10): it
+        # cannot subclass Phase1Error (import direction -- see its docstring),
+        # and a graveyard-cap refusal is a usage error, not a traceback.
         # A refused waiver is a usage error and exits 2. It is NOT "a clause
         # failed" (exit 1): no clause was sent, and the operator has to fix a
         # file before anything can be.

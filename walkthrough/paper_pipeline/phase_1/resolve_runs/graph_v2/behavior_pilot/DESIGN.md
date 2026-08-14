@@ -114,7 +114,9 @@ validator surface, not new machinery.
   exit like a check that passed). Output: which modules' `asserts` fire
   (relevant), which stay silent, and forbid-vs-does conflicts.
 
-Demo (real modules on disk, mocked seat): U18 romantic-roleplay behavior ->
+Demo (real modules on disk, mocked seat) — the U18 romantic-roleplay
+example here is a hand-written smoke fixture, NOT a corpus behavior:
+U18 romantic-roleplay behavior ->
 3 atoms -> lexical retrieval puts the right node first for all 3 -> mocked
 seat accepts 3 pairs -> clingo over `l797_809_n001` + `l4572_4691_n011`
 (the requires-resolved pair: `stay_in_bounds_principles/1` provided) fires

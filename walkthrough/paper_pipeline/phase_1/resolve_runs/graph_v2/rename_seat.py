@@ -116,6 +116,19 @@ def judge(complete, prompt, schema_slot=None):
             if type(exc).__name__ == "CostGateError":
                 raise
             if attempt == 2:
+                # ⛔ TERMINAL transport propagates (routing-gap audit F3,
+                # 2026-08-14): credit exhaustion (402), a bad or missing
+                # key (401/403, key resolution) will fail EVERY later seat
+                # call identically -- fail-closing here would grind a paid
+                # finale into hundreds of silent all-rejections instead of
+                # stopping the run loudly, exactly the failure class the
+                # CostGateError carve-out above already names.
+                msg = str(exc)
+                if (any(m in msg for m in ("HTTP 402", "HTTP 401",
+                                           "HTTP 403"))
+                        or "no key for $" in msg
+                        or "Refusing to build a live client" in msg):
+                    raise
                 return {"verdict": "different_concept",
                         "grounds": f"(fail-closed: seat transport error "
                                    f"after 3 attempts: {exc!r:.120})"}

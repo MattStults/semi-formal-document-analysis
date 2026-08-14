@@ -1221,7 +1221,11 @@ def test_dense_morph_honors_cached_division_on_resume(tmp_path):
     out.mkdir()
     R.write_json(str(out / "division.json"), division)   # the resume state
     before = open(out / "division.json", "rb").read()
-    cfg = {"leaf_max_lines": 100, "model": {"max_tokens": 4}}
+    cfg = {"leaf_max_lines": 100, "model": {"max_tokens": 4},
+           # F5 2026-08-14: threshold reads the engaged phase cap
+           "phase_max_tokens": {"division": 4, "leaf_graph": 4,
+                                "leaf_graph_derived": 4,
+                                "unwind_decisions": 4}}
     drv = R.Driver(cfg, R.MockClient([dense] + replies[1:]), lines,
                    str(out))
     g = DC.run_build(drv, 1, len(lines), [], str(out), "serial")

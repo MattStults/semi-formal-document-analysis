@@ -74,7 +74,11 @@ class DispatchState:
         # 2026-08-11 ruling; the repair count is cfg `max_repairs`.
         self.budget = cfg.get("per_dispatch_usd", 0.30)
         self.max_repairs = cfg.get("max_repairs", 2)
-        self.out_cap = cfg.get("model", {}).get("max_tokens", 16384)
+        # F5 (routing-gap audit 2026-08-14): the oversize threshold must use
+        # the ENGAGED cap. Replies are bounded by the per-phase cap when one
+        # applies, so a threshold read off model.max_tokens (32768) sat above
+        # anything a phase-capped reply could reach and the D6 dense/
+        # malfunction machinery was dead code. out_cap is a property below.
         # a list user is a pre-seeded transcript (transcript_continuity's
         # [D-user, D-reply, U-user] reconstruction) -- Driver.call's own
         # `list(user) if isinstance(user, list)` branch (delta review D1)
@@ -88,6 +92,19 @@ class DispatchState:
         self.result = None
         self.error = None
         self.errs = []
+
+    @property
+    def out_cap(self):
+        """The engaged output cap for THIS dispatch (F5): the schema-keyed
+        per-phase cap when one applies, model.max_tokens otherwise. A
+        property because _morph swaps the schema in place -- a leaf that
+        morphs into a division must be judged at the division's cap."""
+        if self.schema:
+            cap = self.cfg.get("phase_max_tokens",
+                               R.Driver.PHASE_MAX_TOKENS).get(self.schema[0])
+            if cap:
+                return cap
+        return self.cfg.get("model", {}).get("max_tokens", 16384)
 
     # -- step interface ----------------------------------------------------
     def next_request(self):
@@ -535,7 +552,19 @@ class InFlightManifest:
 
 # ------------------------------------------------------------------- executors
 _TRANSIENT_MARKS = ("TRUNCATED", "timed out", "HTTP 5", "Connection",
-                    "unavailable", "urlopen error", "Errno", "HTTP 402", "HTTP 429",)
+                    "unavailable", "urlopen error", "Errno", "HTTP 402",
+                    "HTTP 429",
+                    # F6 (routing-gap audit 2026-08-14): an empty live reply
+                    # is a bad DRAW, exactly like a truncation -- batch mode
+                    # already reran it while live aborted the build. It rides
+                    # the SHORT ladder below (2 tries), never the full one.
+                    "empty response",)
+
+#: F1/F6: marks that ride the SHORT ladder (2 retries, like HTTP 402) -- a
+#: reply degenerating at the cap does not heal by repetition; with the
+#: identical-retry seam guard varying the bytes, two tries either produce a
+#: divergent draw or the failure routes to the restart paths / raises.
+_SHORT_LADDER_MARKS = ("TRUNCATED", "empty response", "HTTP 402")
 
 #: sentinel snapshot: "read the per-thread billed accumulator" (R1 concurrent)
 _TLS_BILLED = object()
@@ -609,6 +638,13 @@ class SerialExecutor:
                              or "json_schema" in detail)):
                     self.client._schema_rejected = True
                     continue
+                if isinstance(exc, T.CostGateError):
+                    # F9 (routing-gap audit 2026-08-14): the run CEILING
+                    # outranks the per-dispatch budget diagnosis -- when
+                    # both blew on the same billed draw, re-raising the
+                    # CostGateError reports the ceiling by type and text
+                    # instead of laundering it into a Phase1Error.
+                    raise
                 if state.status == FAILED:
                     # budget blown by billed failed draws: fail loudly with
                     # the budget diagnosis, not another paid retry
@@ -620,8 +656,13 @@ class SerialExecutor:
                 # rejected alternative, by name: terminal 402 -- because
                 # together.ai 402s flapped for ~minutes after mid-campaign
                 # credit top-ups; two retries (~90s) ride out a flap and
-                # fail fast on real exhaustion.
-                if "HTTP 402" in detail and attempt >= 2:
+                # fail fast on real exhaustion. F1/F6 (routing-gap audit
+                # 2026-08-14): TRUNCATED and empty replies join the short
+                # ladder -- the seam guard varies the bytes on each retry,
+                # and after two varied tries the failure routes to the
+                # existing restart paths (run_one's fresh restart) or raises.
+                if (attempt >= 2 and any(m in detail
+                                         for m in _SHORT_LADDER_MARKS)):
                     transient = False
                 if transient and attempt < 6:
                     wait = min(30 * (attempt + 1), 180)
@@ -1083,10 +1124,16 @@ class BatchExecutor:
             for st, body in rows:
                 f.write(json.dumps({"custom_id": st.custom_id(),
                                     "body": body}) + "\n")
+        # F7 (routing-gap audit 2026-08-14, the deterministic half): the
+        # requested max_tokens is PERSISTED per request, so a resumed
+        # sweep's _classify can rebuild _req_max and keep its
+        # completion-at-cap truncation backstop across a process death.
         entry = {"requests": {st.custom_id(): {
                      "key": st.key, "kind": st.kind,
                      "wdir": os.path.relpath(st.wdir, self.drv.out),
-                     "round": st.repair_round} for st, _ in rows}}
+                     "round": st.repair_round,
+                     "max_tokens": (self._req_max or {}).get(st.custom_id())}
+                 for st, _ in rows}}
         file_id = self.transport.upload(jpath, name + ".jsonl")
         # F2 ordering: the manifest entry exists BEFORE the job does, so a
         # kill in the create window still leaves a record to sweep. The
@@ -1114,6 +1161,20 @@ class BatchExecutor:
         for job in jobs:
             j = self._rpc(self.transport.status, job["batch_id"])
             status = str(j.get("status") or "").upper()
+            # F8 (routing-gap audit 2026-08-14): a reply with NO
+            # recognizable status field (e.g. {"error": ...}) used to poll
+            # forever as not-yet-terminal. Three consecutive such polls are
+            # a transport error -- loud, resumable via the manifest.
+            if not status:
+                job["no_status"] = job.get("no_status", 0) + 1
+                if job["no_status"] >= 3:
+                    raise T.ProviderError(
+                        f"batch status for {job['batch_id']} carried no "
+                        f"status field in 3 consecutive polls: "
+                        f"{json.dumps(j)[:200]}")
+                remaining.append(job)
+                continue
+            job["no_status"] = 0
             if status == "COMPLETED":
                 rows = self._rows(j.get("output_file_id"))
                 # R4: the job's committed worst-case is released BEFORE
@@ -1183,14 +1244,29 @@ class BatchExecutor:
         rows whenever a rerun earlier in dict order aborted the loop."""
         by_id = {r.get("custom_id"): r for r in rows}
         taxonomy, poison, reruns = {}, [], []
+        gate_exc = None
+
+        def _ledger(env):
+            # adversarial review item 4: _log_usage can now raise
+            # CostGateError (F2). Mid-collection that must not lose fed
+            # rows or double-ledger on resume -- collect-then-raise: the
+            # row IS ledgered and billed before the raise, every row in
+            # hand is still routed, and the FIRST gate error re-raises
+            # after the loop (before any live rerun can spend more).
+            nonlocal gate_exc
+            if hasattr(self.client, "_log_usage"):
+                try:
+                    self.client._log_usage(env)
+                except T.CostGateError as exc:
+                    if gate_exc is None:
+                        gate_exc = exc
         for cid, state in job["states"].items():
             kind, env = self._classify(by_id.get(cid))
             taxonomy[cid] = kind
             if kind == "ok":
                 # usage reaches the ledger at collection (F2's fix): the
                 # ceiling backstop and spend visibility both live there
-                if hasattr(self.client, "_log_usage"):
-                    self.client._log_usage(env)
+                _ledger(env)
                 state.feed({"text": env["text"], "usage": env["usage"]})
                 if state.status == DONE:
                     sched.complete(state)
@@ -1200,8 +1276,7 @@ class BatchExecutor:
                     poison.append(state)
             else:
                 if env is not None:
-                    if hasattr(self.client, "_log_usage"):
-                        self.client._log_usage(env)  # truncated is billed too
+                    _ledger(env)                 # truncated is billed too
                     # review R1: a billed truncated row counts against the
                     # dispatch budget, exactly like a billed live truncation
                     state.bill((env.get("usage") or {}).get("cost_usd")
@@ -1210,6 +1285,11 @@ class BatchExecutor:
                     poison.append(state)
                 else:
                     reruns.append(state)
+        if gate_exc is not None:
+            # the ceiling outranks (F9 doctrine) and stops the run before
+            # the live reruns spend anything more; every collected row
+            # above already fed/ledgered, so resume is artifact-cheap
+            raise gate_exc
         if poison:
             # F5 poison ordering: every success above already wrote its
             # artifact; resume stays cheap. Raising BEFORE the live reruns
@@ -1281,6 +1361,7 @@ class BatchExecutor:
         submitted-but-uncollected job is money already committed, so its
         results are fetched and routed -- never blindly resubmitted."""
         recovered = {}
+        gate_exc = None      # review item 4: deferred F2 ceiling raise
         # review R3: a prior sweep may have persisted recovered results and
         # crashed before they were fed; load the spool first
         for fn in sorted(os.listdir(self.manifest.dir)):
@@ -1304,17 +1385,43 @@ class BatchExecutor:
                     continue
             j = self._rpc(self.transport.status, bid)
             status = str(j.get("status") or "").upper()
+            no_status = 0
             while status not in ("COMPLETED", "FAILED", "EXPIRED",
                                  "CANCELLED"):
+                # F8: same no-recognizable-status backstop as
+                # _poll_and_collect -- three consecutive statusless
+                # replies are a transport error, not an eternal wait
+                no_status = no_status + 1 if not status else 0
+                if no_status >= 3:
+                    raise T.ProviderError(
+                        f"batch status for {bid} carried no status field "
+                        f"in 3 consecutive polls: {json.dumps(j)[:200]}")
                 time.sleep(max(self.poll_s, 0.1))   # R7: never busy-spin
                 j = self._rpc(self.transport.status, bid)
                 status = str(j.get("status") or "").upper()
             if status == "COMPLETED":
                 by_id = {r.get("custom_id"): r
                          for r in self._rows(j.get("output_file_id"))}
+                # F7: rebuild _req_max from the persisted manifest metadata
+                # so _classify's completion-at-cap truncation backstop
+                # holds on resume exactly as it did at flush time
+                for cid, meta in reqs.items():
+                    if meta.get("max_tokens"):
+                        if self._req_max is None:
+                            self._req_max = {}
+                        self._req_max[cid] = meta["max_tokens"]
                 n, items = 0, []
                 for cid, meta in reqs.items():
                     if os.path.exists(self._artifact_path(meta)):
+                        # F7's OTHER half -- the double-ledger question --
+                        # is STILL DEFERRED (recorded 2026-08-14): a row
+                        # whose state has no artifact but whose usage rows
+                        # already reached the ledger (a crash between
+                        # _log_usage and the artifact write) would be
+                        # ledgered twice here. The artifact-existence
+                        # witness above covers the common crash windows;
+                        # closing the remaining one needs a ledger-side
+                        # idempotence key, out of scope for this fix set.
                         # review R5b: the artifact is the witness that this
                         # row was written AND ledgered before a crash;
                         # ledgering it again would double-count usage.jsonl
@@ -1324,8 +1431,17 @@ class BatchExecutor:
                                                    "_log_usage"):
                         # paid at submit, ledgered now (F2); review R8:
                         # billed truncated/error rows reach the ledger too,
-                        # not only the "ok" ones
-                        self.client._log_usage(env)
+                        # not only the "ok" ones. Adversarial review item
+                        # 4: a CostGateError here (the F2 ceiling) is
+                        # DEFERRED -- the row is already billed, and
+                        # raising mid-loop would lose recovered rows the
+                        # spool has not persisted yet and re-ledger them
+                        # on the next resume.
+                        try:
+                            self.client._log_usage(env)
+                        except T.CostGateError as exc:
+                            if gate_exc is None:
+                                gate_exc = exc
                     if kind == "ok":
                         key = (meta.get("wdir"), meta.get("kind"))
                         recovered[key] = env
@@ -1340,6 +1456,11 @@ class BatchExecutor:
                 print(f"  (orphaned batch {bid} ended {status}; its "
                       f"dispatches re-enqueue)")
             self.manifest.clear(name)
+            if gate_exc is not None:
+                # item 4: raise only after _persist_recovered + clear --
+                # the paid rows are on disk and the record cannot
+                # re-ledger them on resume
+                raise gate_exc
         return recovered
 
     def _feed_recovered(self, state, sched):

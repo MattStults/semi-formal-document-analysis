@@ -383,6 +383,28 @@ LEAF_DENSITY_MAX = 0.7
 _AUTH_LABEL = re.compile(r"authority\s*=\s*(root|system|developer|user|"
                          r"guideline)")
 
+#: The five canonical level names plus the hierarchy node -- the ONLY lawful
+#: spellings of the authority dependency. Never treated as coinages.
+AUTHORITY_CANONICAL = frozenset((
+    "root_authority", "system_authority", "developer_authority",
+    "user_authority", "guideline_authority", "authority_levels_hierarchy"))
+
+#: Widened coinage pattern (ds7 acceptance RESIDUALS (a), 2026-08-14): the
+#: literal "section_authority" substring check missed VARIANT coinages of
+#: the "X_section_<level>_authority" shape (live escape:
+#: "ask_clarifying_questions_section_guideline_authority"). Any name with
+#: "section_" followed anywhere later by "authority" is a coinage. ONE
+#: compiled constant consulted by BOTH autofix_authority_coinages and
+#: validate_leaf -- the duplicate-seed lesson: one source both consult, so
+#: the validator and the autofix cannot drift.
+_AUTH_COINAGE = re.compile(r"section_.*authority")
+
+
+def is_authority_coinage(name):
+    return (isinstance(name, str)
+            and name not in AUTHORITY_CANONICAL
+            and bool(_AUTH_COINAGE.search(name)))
+
 
 def autofix_authority_coinages(g, lines):
     """Deterministic canonicalization (Matt-approved restructure,
@@ -412,7 +434,7 @@ def autofix_authority_coinages(g, lines):
         for key in ("needs", "provides"):
             for d in n.get(key, []):
                 name = d.get("name") if isinstance(d, dict) else None
-                if isinstance(name, str) and "section_authority" in name:
+                if is_authority_coinage(name):
                     d["name"] = canon
                     g.setdefault("driver_autofixes", []).append(
                         f"{n.get('id')}: authority coinage '{name}' -> "
@@ -439,7 +461,7 @@ def validate_leaf(g, lo, hi, lines, derive_uncovered=False):
         for key in ("needs", "provides"):
             for d in n.get(key, []):
                 name = d.get("name") if isinstance(d, dict) else d
-                if isinstance(name, str) and "section_authority" in name:
+                if is_authority_coinage(name):
                     errs.append(
                         f"{n.get('id')}: '{name}' is a per-section "
                         f"authority coinage -- FORBIDDEN by the authority "
@@ -1257,11 +1279,19 @@ class Driver:
                              or "Connection" in detail
                              or "unavailable" in detail
                              or "urlopen error" in detail   # DNS/route loss
-                             or "Errno" in detail)          # (sleep/wake)
+                             or "Errno" in detail           # (sleep/wake)
+                             or "empty response" in detail)  # F6: bad draw
                 # 402 short ladder -- mirrored in dispatch_core._ladder
                 # (steps-1-4 audit 2026-08-12, BUG 2): ride out a credit
-                # propagation flap, fail fast on real exhaustion
-                if "HTTP 402" in detail and attempt >= 2:
+                # propagation flap, fail fast on real exhaustion. F1/F6
+                # (routing-gap audit 2026-08-14): TRUNCATED and empty
+                # replies ride the same short ladder -- the identical-retry
+                # seam guard varies the bytes on each retry, and after two
+                # varied tries the failure routes to call()'s fresh-restart
+                # path or raises, instead of six byte-identical redraws.
+                if (attempt >= 2 and ("HTTP 402" in detail
+                                      or "TRUNCATED" in detail
+                                      or "empty response" in detail)):
                     transient = False
                 if transient and attempt < 6:
                     wait = min(30 * (attempt + 1), 180)
@@ -1315,7 +1345,17 @@ class Driver:
         obj, errs = self._attempt(env, validate)
         if not errs:
             return obj
-        out_cap = self.cfg.get("model", {}).get("max_tokens", 16384)
+        # F5 (routing-gap audit 2026-08-14): the oversize threshold uses the
+        # ENGAGED cap -- the schema-keyed per-phase cap when one applies,
+        # model.max_tokens otherwise. Phase-capped replies are bounded below
+        # model.max_tokens, so the old threshold made the D6 dense/
+        # malfunction machinery unreachable whenever phase caps engaged.
+        out_cap = None
+        if schema:
+            out_cap = self.cfg.get("phase_max_tokens",
+                                   self.PHASE_MAX_TOKENS).get(schema[0])
+        if not out_cap:
+            out_cap = self.cfg.get("model", {}).get("max_tokens", 16384)
         if len(env["text"]) > out_cap * 3:   # ~chars/token floor (review F11)
             self._bury(user, env["text"], errs)
             # D6 stage 1 wired live (ds5 2026-08-12, mirrored in
@@ -1549,6 +1589,12 @@ def main():
     ap.add_argument("--exec-mode", choices=["serial", "concurrent", "batch"],
                     help="execution core (dispatch_core.py); default serial "
                          "runs this file's reference path untouched")
+    ap.add_argument("--golden", default=None,
+                    help="golden graph path (overrides config golden_graph):"
+                         " post_build_checks additionally runs the "
+                         "deterministic quality instruments against it "
+                         "(graph_compare, repair_census, edge similarity). "
+                         "Offline, $0.")
     args = ap.parse_args()
     cfg = json.load(open(args.config))
     if args.leaf_max:
@@ -1655,7 +1701,13 @@ def main():
           f"({drv.cache_hits}/{total} prompt tokens)")
     g = run_resolution_pass(drv, g, args.out)
     write_json(os.path.join(args.out, "root_graph.json"), g)
-    post_build_checks(args.out)
+    # item 14 (Matt 2026-08-14): deterministic golden-quality checks are a
+    # FLAG -- CLI --golden wins, config golden_graph is the standing value;
+    # relative paths resolve against this file's directory
+    golden = args.golden or cfg.get("golden_graph")
+    if golden and not os.path.isabs(golden):
+        golden = os.path.join(HERE, golden)
+    post_build_checks(args.out, golden=golden, doc_path=doc)
     if not args.mock:
         T.spend_invisibility_warning(client.p, client.spent_usd,
                                      client.calls)
@@ -1984,12 +2036,54 @@ def run_resolution_pass(drv, g, out_dir):
     return g
 
 
-def post_build_checks(out_dir):
+def edge_similarity_report(g, out_path):
+    """Name-prose similarity histogram over every surviving edge (Matt's
+    directive 2026-08-14, item 14c): token-Jaccard between each need's
+    prose and its provider's prose -- the recorded probe arithmetic
+    (risk_queue.sim is THE one source, imported not copied) -- bucketed
+    <0.1 / 0.1-0.25 / >=0.25. Offline, deterministic."""
+    import risk_queue as RQ
+    prov_prose = {}
+    for n in g.get("nodes", []):
+        for p in n.get("provides", []):
+            if isinstance(p, dict):
+                prov_prose.setdefault(p["name"], p.get("prose", ""))
+    buckets = {"lt_0.10": 0, "0.10_0.25": 0, "gte_0.25": 0}
+    low = []
+    total = 0
+    for n in g.get("nodes", []):
+        for d in n.get("needs", []):
+            if not isinstance(d, dict):
+                continue
+            pp = prov_prose.get(d.get("name"))
+            if pp is None:
+                continue                    # dangling: no edge to score
+            total += 1
+            s = RQ.sim(d.get("prose", ""), pp)
+            if s < 0.1:
+                buckets["lt_0.10"] += 1
+                low.append({"needer": n.get("id"), "name": d.get("name"),
+                            "sim": round(s, 3)})
+            elif s < 0.25:
+                buckets["0.10_0.25"] += 1
+            else:
+                buckets["gte_0.25"] += 1
+    out = {"total_edges": total, "buckets": buckets, "low_sim_edges": low}
+    write_json(out_path, out)
+    return out
+
+
+def post_build_checks(out_dir, golden=None, doc_path=None):
     """Auto-run the mechanical quality instruments on the finished graph
     (Matt's ruling 2026-08-10: detection is built into the pipeline, no
     separate step). graph_check = hard mechanical defects; the two sweeps =
     adjudication CANDIDATES (the Haiku golden's repair loop starts from
-    these reports). All output lands in the run dir."""
+    these reports). All output lands in the run dir.
+
+    `golden` (Matt's directive 2026-08-14, item 14: config `golden_graph`
+    or --golden) additionally runs the deterministic quality instruments:
+    graph_compare against the golden, repair_census over this run, and the
+    edge name-prose similarity histogram. All offline, $0."""
     import subprocess
     gp = os.path.join(out_dir, "root_graph.json")
     if not os.path.exists(gp):
@@ -2012,6 +2106,17 @@ def post_build_checks(out_dir):
         ("risk_queue", [sys.executable,
                         os.path.join(HERE, "risk_queue.py"), out_dir]),
     ]
+    if golden:
+        cmd = [sys.executable, os.path.join(HERE, "graph_compare.py"),
+               "--a", golden, "--b", gp,
+               "--out", os.path.join(out_dir, "compare_vs_golden.json")]
+        if doc_path:
+            cmd += ["--doc", doc_path]
+        jobs.append(("compare_vs_golden", cmd))
+        jobs.append(("repair_census", [sys.executable,
+                                       os.path.join(HERE,
+                                                    "repair_census.py"),
+                                       out_dir]))
     print("---- post-build checks " + "-" * 40)
     for name, cmd in jobs:
         r = subprocess.run(cmd, capture_output=True, text=True)
@@ -2022,6 +2127,14 @@ def post_build_checks(out_dir):
                          if l.strip())[:160] or f"(exit {r.returncode})"
         flag = "OK " if r.returncode == 0 else "!! "
         print(f"  {flag}{name}: {head}")
+    if golden:
+        rep = edge_similarity_report(
+            json.load(open(gp)),
+            os.path.join(out_dir, "edge_similarity.json"))
+        b = rep["buckets"]
+        print(f"  OK edge_similarity: {rep['total_edges']} edge(s) -- "
+              f"<0.1: {b['lt_0.10']}, 0.1-0.25: {b['0.10_0.25']}, "
+              f">=0.25: {b['gte_0.25']}")
     print("  full reports in", out_dir)
 
 

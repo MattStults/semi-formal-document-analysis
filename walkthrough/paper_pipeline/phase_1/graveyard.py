@@ -49,7 +49,15 @@ import time
 
 
 class GraveyardError(RuntimeError):
-    """Refusing to lose an entry, or to proceed past the cap."""
+    """Refusing to lose an entry, or to proceed past the cap.
+
+    F10 (routing-gap audit 2026-08-14), decided by import direction: this
+    CANNOT subclass translate.Phase1Error -- translate.py imports this
+    module BEFORE Phase1Error is defined, so `import translate` here would
+    hit the half-initialised module. The audit's remedy is therefore the
+    other branch it names: translate.main() and translate_exec.main() catch
+    GraveyardError explicitly, so a cap refusal exits 2 with its message
+    instead of a traceback."""
 
 
 #: What is always kept, regardless of sampling rate, and why.
