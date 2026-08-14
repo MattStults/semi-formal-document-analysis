@@ -442,16 +442,45 @@ def autofix_authority_coinages(g, lines):
     return g
 
 
-def validate_leaf(g, lo, hi, lines, derive_uncovered=False):
+def validate_leaf(g, lo, hi, lines, derive_uncovered=False, seeds=(),
+                  enforce_promise_delivery=False):
     """Leaf checks. `derive_uncovered` (ds3 flag, default OFF) switches the
     coverage tail: instead of trusting a model-emitted `uncovered` and
     failing on the identity, code DERIVES uncovered as the coverage
     complement, auto-labels formatting runs, and errors only on uncovered
     CONTENT lines (cover-or-explain). Default False is the pinned ds2
-    behavior, byte-identical."""
+    behavior, byte-identical.
+
+    `enforce_promise_delivery` (item B, Matt 2026-08-14; ds8 prevention of
+    the ds7 broken-promise class -- 45 promised names no child delivered):
+    an inherited seed whose established_around falls INSIDE [lo, hi] must
+    either be provided under exactly its name or be declined in
+    judgment_calls naming the seed -- cover-or-explain, the ds3
+    uncovered-content pattern exactly. Default False for byte-parity with
+    every pinned build."""
     errs = []
     dedupe_nodes(g)
     autofix_authority_coinages(g, lines)
+    if enforce_promise_delivery and seeds:
+        jcs = " ".join(j for j in g.get("judgment_calls", [])
+                       if isinstance(j, str))
+        provided = {nm(p) for n in g.get("nodes", [])
+                    for p in n.get("provides", [])}
+        for s in seeds:
+            ea = s.get("established_around") if isinstance(s, dict) else None
+            name = s.get("name") if isinstance(s, dict) else None
+            if not (name and isinstance(ea, (list, tuple)) and len(ea) >= 2
+                    and lo <= ea[0] and ea[1] <= hi):
+                continue                 # established elsewhere: not owed
+            if name in provided or name in jcs:
+                continue
+            errs.append(
+                f"the inherited seed '{name}' ({s.get('prose', '')}) is "
+                f"established around L{ea[0]}-{ea[1]} INSIDE your span, "
+                f"but your reply provides no entry with that name. If "
+                f"this span genuinely establishes it, add a provides "
+                f"entry named exactly '{name}'; if it does NOT, say why "
+                f"in judgment_calls naming '{name}'")
     # Matt-approved restructure 2026-08-13 (ENFORCED, not prose: the leaf
     # extra has carried the convention since 08-11 and ds6 still emitted
     # 283 coinages): any surviving per-section authority coinage is an
@@ -1493,8 +1522,13 @@ class Driver:
             return json.load(open(art))
         extra, schema, derive = leaf_dispatch(lo, hi, self.cfg)   # D1 source
         g = self.call(self.dispatch_block("L", lo, hi, seeds, extra),
-                      lambda o: validate_leaf(o, lo, hi, self.lines,
-                                              derive_uncovered=derive),
+                      lambda o: validate_leaf(
+                          o, lo, hi, self.lines, derive_uncovered=derive,
+                          # item B: the seeds this dispatch inherited ARE
+                          # its promise obligations when the flag is on
+                          seeds=seeds,
+                          enforce_promise_delivery=self.cfg.get(
+                              "enforce_promise_delivery", False)),
                       schema=schema)
         os.makedirs(wdir, exist_ok=True)
         write_json(art, g)

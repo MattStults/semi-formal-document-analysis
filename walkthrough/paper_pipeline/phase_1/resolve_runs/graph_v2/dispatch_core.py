@@ -414,8 +414,14 @@ class Scheduler:
         st = DispatchState(
             self._key("L", task), "L", wdir,
             self.drv.dispatch_block("L", lo, hi, task["seeds"], extra),
-            lambda o: R.validate_leaf(o, lo, hi, self.drv.lines,
-                                      derive_uncovered=derive),
+            lambda o: R.validate_leaf(
+                o, lo, hi, self.drv.lines, derive_uncovered=derive,
+                # item B: promise-delivery enforcement, SHARED with
+                # Driver.leaf (the D1 lesson: a validator variant living
+                # on one path only silently pins the wrong semantics)
+                seeds=task["seeds"],
+                enforce_promise_delivery=self.drv.cfg.get(
+                    "enforce_promise_delivery", False)),
             schema, self.drv.cfg, self.drv.out,
             tally=self.drv._tally)
 

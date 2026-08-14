@@ -2040,3 +2040,25 @@ Committed 51098a0; the chained stage ran end to end, zero interventions.
 NEXT (the standing directive): DELTA INVESTIGATION -- every golden delta
 gets a why; the 52-item fixup queue (esp. the 40 frontier-confirmed
 broken promises) is the concrete defect list for the production graph.
+
+## 2026-08-14: delta investigation + K3 validity -- CORRECTION and the one real defect
+
+Reports: delta_investigation.md, k3_validity_report.md. Three headlines:
+1. CORRECTION to this log's finale entry: the 40 broken-promise
+   "frontier confirmations" carried NO evidence -- frontier_review's
+   item_prompt sent name-only for that kind (and no node text for
+   dropped_merge), so those verdicts were the reject-default on name
+   shape. The underlying defect is real but its evidence is
+   investigation B, not the K3 verdicts. Evidence fixes queued (item C).
+2. K3 judge verdict: MIXED -- trustworthy where evidenced (frontier
+   re-adjudication agreed 6/6 incl. finding the single true pair among
+   64 near-misses); the 62/64-uphold pattern is queue saturation
+   (embedding candidates uniformly wrong), not rubber-stamping.
+3. THE one real ds7 defect: PROVIDES UNDER-EXPORT -- 92 exported names
+   vs golden's 230; ~50/64 danglings name content that EXISTS as ds7
+   nodes with empty provides. Everything else is measurement artifact
+   (raw edge precision 0.050 is 92.7% authority fan-out; excluded:
+   precision 0.378) or benign-by-protocol granularity. Delta verdict:
+   NOTHING blocks ds7+fixups as production graph once under-export is
+   repaired (promise_repair scope extended to both classes) and the
+   authority-excluded numbers are the recorded comparison basis.
