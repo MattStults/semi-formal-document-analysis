@@ -59,12 +59,13 @@ def judge(prompt):
     return v
 
 def main():
+    run = sys.argv[1] if len(sys.argv) > 1 else "runs/ds6"
     lines = R.load_doc(os.path.join(
         HERE, "../../../../../specs/openai-model-spec/model_spec.md"))
-    g = json.load(open(os.path.join(HERE, "runs/ds6/root_graph.json")))
+    g = json.load(open(os.path.join(HERE, run, "root_graph.json")))
     by_id = {n["id"]: n for n in g["nodes"]}
-    rep = json.load(open(os.path.join(HERE,
-                                      "runs/ds6/sweep_modals_report.json")))
+    rep = json.load(open(os.path.join(HERE, run,
+                                      "sweep_modals_report.json")))
     rows = rep[[k for k in rep if k not in ("total_nodes", "flagged")][0]]
     out = []
     for r in rows:
@@ -80,8 +81,8 @@ def main():
                     "verdict": v["verdict"], "grounds": v["grounds"],
                     "establishes": r["establishes"][:160]})
         print(f"{r['id']:20s} {r['flags'][0]['kind']:12s} -> {v['verdict']}")
-    json.dump(out, open(os.path.join(HERE, "modal_adjudication_ds6.json"),
-                        "w"), indent=1)
+    json.dump(out, open(os.path.join(HERE, run, "modal_adjudication.json"),
+                        "w"), indent=1)   # run-local: risk_queue reads it
     d = sum(1 for x in out if x["verdict"] == "drifted")
     print(f"\n{d}/{len(out)} flags adjudicated as REAL drift")
 

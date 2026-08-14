@@ -2417,3 +2417,23 @@ names planned. Residuals recorded not blocking: earliest-first can pick a
 lead-in paragraph (2 instances, both outside the set scope); same-span
 ties fall to graph order (n017/n018 at L30, same sentence); slug
 first-wins is document-specific (80/80 anchors unique here).
+
+## 2026-08-14: ds7 REPAIRED + verification battery
+
+promise_repair (opus_verdicts scope) ran clean: 26 repaired, 3 honestly
+undeliverable, 0 failed; ~$0.22. Before -> after: exported names 92 ->
+118, danglings 66 -> 24 (43 needers resolved: 20 promise-class, 23
+under-export), need-edges 1077 -> 1088, nodes unchanged 773, mismatched
+(<0.1) 7 -> 8. Edge recall vs golden 0.369 -> 0.440. The identical-retry
+guard and truncation short-ladder both FIRED LIVE during the run and it
+completed instead of wedging -- first real outing for both.
+Battery on runs/ds7_repaired (staged copy): graph_check OK (0 bad spans,
+0 bad quotes), sweeps OK, risk_queue 162 items, edge_similarity 8/1064
+below 0.1. (repair_census errors on the staged dir by design -- no
+failed/ history there.)
+MODAL ADJUDICATION (the last outstanding ds7 check, run-local per the
+risk-queue contract): 6 of 45 flags are REAL obligation-strength drift
+(~0.8% of nodes, same rate as ds6's 6/31) -> modal_adjudication.json,
+now feeding the risk queue.
+Verification of splice integrity + delta re-investigation vs golden
+dispatched (repaired_verification.md).
