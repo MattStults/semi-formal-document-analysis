@@ -1862,3 +1862,29 @@ F1+guard subsume each other; F2, F3, F5, F6 each get pins; F7-F10 fixed
 or deferred-by-name in the same review. ds7 stands accepted (built
 before these findings; none corrupts artifacts -- they are
 availability/cost routing, not content).
+
+## 2026-08-14: frontier review moves INTO the pipeline (Matt's ruling)
+
+The K3 pass will be `frontier_review.py`, a pipeline stage, not
+driver-orchestrated calls -- same doctrine as post_build_checks
+("detection built into the pipeline, no separate step"). Shape:
+* Input: <run>/risk_queue.json (already emitted by every build).
+* Config block `frontier_review` in driver_config.json: model
+  (moonshotai/Kimi-K3), batch: true, slice (top-N by risk, default 150),
+  max_cost_usd (hard gate at submit, batch worst-case arithmetic like
+  the existing batch gate), parity_n (default 10).
+* Stage order: (1) parity sample -- N items judged by BOTH the frontier
+  model and the flash seat; divergence rate recorded; a divergence above
+  a configured band STOPS the stage loudly (seat-defect doctrine);
+  (2) the curated slice, batched via the existing CurlTransport +
+  manifest (lossless recovery); (3) verdicts land on
+  <run>/frontier_verdicts.json + a disposition summary appended to the
+  run's health; items the frontier REJECTS become the fix queue.
+* NOT auto-run inside post_build_checks: it spends real money, so it
+  requires its own explicit invocation/flag (--frontier --yes), per the
+  repo rule that consequential spends prompt. Everything else about it
+  is push-button.
+* The behavior-pipeline reuses the same stage shape later (frontier
+  grading of relevance selections).
+Implementation lands with the ds8 fix commit (it shares the batch/gate
+plumbing the audit findings touch).
