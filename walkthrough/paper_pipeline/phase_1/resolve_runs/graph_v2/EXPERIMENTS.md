@@ -2181,3 +2181,97 @@ already-provided matching, (2) the citation-site guard (skip/re-aim
 plans whose ea sits inside a cross-reference), (3) plans for the 5
 unplanned confirmed defects (target by section heading line). The
 evidence-confirmed 14 + Opus verdicts are the repair scope, not the 45.
+
+## 2026-08-14: promise_repair PREP GUARDS 1-3 LANDED (the OPUS RECHECK ruling)
+
+The three guards the recheck ruling made a precondition for spending are
+in `promise_repair.py`, each pinned RED-first against the defect it
+catches (fixture document; the real `model_spec.md` was read-only
+evidence only).
+
+1. **Same-referent already-provided** (`skipped_same_referent`) --
+   `same_referent_provider()` extends the exact-name filter to the
+   REFERENT: an existing provides entry whose prose overlaps the seed's
+   by >= 0.5 tokens (`risk_queue.sim`, imported not copied) or contains
+   it verbatim (case/whitespace-normalised) already exports the concept.
+   ds7: 4 promise plans dropped, incl. the flagship
+   `authority_level_ordering` -> `authority_levels_hierarchy`
+   (L1-170_n042, verbatim, sim 1.0), plus `section_authority_level` and
+   `user_authority_section_rules` -> `user_authority`, and
+   `assume_best_intentions_section` -> `implicit_biases` (sim 0.6).
+2. **Citation-site re-aim** -- an `established_around` line whose
+   markdown cross-reference names the seed's OWN anchor
+   (`see [?](#avoid_overstepping)`, `[restricted](#restricted_content)`)
+   is not an establishment site; the plan is re-derived from that
+   anchor's own section heading, or dropped as
+   `skipped_citation_site_unresolved` when the document has no such
+   heading. ds7 re-aims: `avoid_overstepping` 1422 -> **3239**,
+   `avoid_info_hazards` 1373 -> 856, `restricted_content` 1371 -> 852,
+   `transformation_exception` 814 -> 1369, and (under-export class, the
+   same one resolver) `sexual_content_involving_minors_section`
+   4576 -> **826**.
+3. **Section-heading fallback** -- a seed with no usable
+   `established_around` derives one by slugging its own name (stripping a
+   trailing `_section`) and locating that section's heading. GENERAL, no
+   name hardcoded. This plans all five confirmed defects the recheck
+   found unplanned: `control_side_effects_section` L527,
+   `risk_taxonomy_section` L53, `red_line_principles_section` L28,
+   `refusal_style_section` L4073, `letter_and_spirit_section` L292.
+
+**RULING (found on the dry run, recorded here rather than in the
+transcript):** a RE-DERIVED establishment is descended from the **run
+root**, not from the unwind that promised the name. The alternative --
+"keep descending the promising unwind" -- is rejected BY NAME: the
+document establishes `avoid_overstepping` at L3239 while the promising
+unwind spans [1368, 1541], so that route fails with "no child span
+covers line 3239" and the guard buys nothing. A seed's OWN ea keeps the
+pre-guard route (its unwind promised it there).
+
+Second ruling: `is_citation_site` is deliberately NARROW -- the
+cross-reference must name the seed's own slug. A line citing some other
+anchor still counts as an establishment site. Rejected by name: "re-aim
+at whichever anchor the line cites", which would have this file make a
+content decision about what a passage is really about.
+
+Optional config `promise_repair.opus_verdicts` (a path; **absent in
+`driver_config.json`, so committed behaviour is unchanged**) intersects
+the broken_promise rows with an `opus_recheck.json`-shaped file's
+`opus_decision == "reject"` names -- the evidence-confirmed scope the
+ruling asks for. Setting it is a spend decision left to the human.
+
+DETERMINISTIC PREP on runs/ds7 ($0, no `--yes`, shadow run dir; nothing
+under `runs/` written):
+
+| | plans | promise | under-export | gate worst case vs $0.40 |
+|---|---|---|---|---|
+| guards, `opus_verdicts` absent | **36** | 18 | 18 | **$0.30** ✅ |
+| guards + `opus_verdicts` | **29** | 10 | 19 | **$0.25** ✅ |
+| (pre-guard, for reference) | 29 | 9 | 20 | $0.244 |
+
+Skips, `opus_verdicts` absent: 3 `skipped_already_provided`, 4
+`skipped_same_referent`, 0 `skipped_citation_site_unresolved`, and 1
+promise name still unlocatable -- `information_hazards_section`, whose
+slug names no heading (the document's anchor is `#avoid_info_hazards`);
+the fallback correctly declines to guess. 4 `reaimed_citation_site` + 11
+`section_heading_fallback` re-derived. With `opus_verdicts`: 15
+`skipped_not_opus_confirmed`, 1 `skipped_same_referent`, 1 + 6
+re-derived (promise) and 1 re-derived (under-export).
+
+Pins: promise 24 -> **37** (13 new); graph_v2 suite 232 -> **245**.
+
+## 2026-08-14: standing directive -- translation is DRIVER-RUN, after graph validation
+
+Matt: the translation pipeline is to be driven by the coordinating
+instance (not handed to an external agent) once the graph is FULLY
+VALIDATED. TRANSLATION_RUNBOOK.md therefore serves as the checklist the
+driver follows, not as a hand-off package. Ordering is binding: no
+corpus translation until the ds7 repair + verification cycle closes and
+the production-graph package is signed. Two known blockers to clear
+first, both recorded: (a) stage-4 seats have NO config-driven
+client_factory anywhere in the repo -- writing that seam is a DESIGN
+decision (4c's anchor property is enforced by the absence of a
+rendering parameter), Matt's to rule on; (b) the documentation-truth
+pass (RUNBOOK_AUDIT.md: translate.py's banner still claims it validates
+nothing; node_corpus.py's usage lines are wrong; READBACK_SMOKE/
+BATCH_DESIGN stale). Corpus-scale translation spend (~$1.5-3) needs its
+own authorization at the time.
