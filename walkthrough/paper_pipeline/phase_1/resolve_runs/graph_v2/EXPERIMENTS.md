@@ -2471,3 +2471,20 @@ superseded-by-convention (28 coinages), so the honest comparison is
 101 vs 153 LOAD-BEARING content names.
 NOT YET RE-VERIFIED: the corrected artifact needs one more independent
 pass before it is signed as production.
+
+## 2026-08-14: pipeline-fix thread -- validation + review required before close
+
+The four fixes from repaired_verification (splice adjudication seat,
+narration-mismatch check, self-loop check, run checkpoints) do NOT close
+on the builder's report: validate-then-adversarially-review applies, as
+to every substantive change. DEPENDENCY SPLIT recorded because it
+governs sequencing:
+* FIX 4 (checkpoints, translate_exec.py) is ON the translation critical
+  path -- the corpus run uses that loop. It must be validated AND
+  reviewed before the translation run starts.
+* FIXES 1-3 (splice seat, narration mismatch, self-loops, all in
+  promise_repair.py) gate any FUTURE repair run, not translation and not
+  the current certification: the production candidate's 26 splices were
+  adjudicated item-by-item by an independent frontier pass, which is a
+  stronger check than the seat gate would have been. The thread stays
+  OPEN until reviewed; it simply does not block the corpus run.

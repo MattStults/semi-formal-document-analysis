@@ -50,6 +50,17 @@ Cost/spend contract (deliverable 2):
     F3 submit gate (worst-case at submit, plus outstanding commitment) binds
     on top of the run-level gate, never instead of it.
 
+RUN CHECKPOINTS (Matt's directive 2026-08-14, `run_checkpoint.py`): every
+`checkpoint_every` clauses (config root, default 25) the run prints and
+appends to `<outdir>/health.jsonl` a compact status -- clauses done and
+remaining, spend so far against the ceiling, failures by category,
+graveyard open entries. With `checkpoint_pause` true (default FALSE: a
+non-interactive run must not wedge) it stops there and `run_exec`
+returns 3. The tick fires inside `RunContext.finish`, AFTER the
+artifacts and run.json flush, so a pause never loses a clause and the
+remainder resumes by re-running with the clause ids that have no
+run.json row.
+
 Divergences from serial translate.py, accepted by name:
   - a hard transport failure inside an executor that run_one cannot deliver
     back to the clause (i.e. one raised OUTSIDE a pending request) aborts the
@@ -84,6 +95,7 @@ for _p in (PHASE1, HERE):
 
 import translate as T          # noqa: E402  (the serial reference harness)
 import graveyard as gy         # noqa: E402
+import run_checkpoint as CK    # noqa: E402
 import schema as S             # noqa: E402
 import version                 # noqa: E402
 import dispatch_core as dc     # noqa: E402  (shared core -- import, not copy)
@@ -324,7 +336,8 @@ class _TolerantRunOne:
                           else f"{type(exc).__name__}: {exc}")
                 state.feed_failure("error", detail)
             if (not isinstance(exc, T.Phase1Error)
-                    or isinstance(exc, T.CostGateError)
+                    or isinstance(exc, (T.CostGateError,
+                                        CK.CheckpointPause))
                     or state.status == FAILED):
                 # CostGateError by name (routing-gap audit F2): tolerating
                 # the ceiling per-clause would bill one more call per
@@ -414,6 +427,19 @@ class RunContext:
         self.concepts = [None] * len(jobs)    # concept rows, slot-ordered
         self.user_shas = {}
         self.failures = 0
+        # -- FIX 4 (Matt 2026-08-14): periodic status stops. Built here
+        # so `execute` and any other driver of a RunContext get the same
+        # one; ticked in `finish`, i.e. BETWEEN clauses with every
+        # artifact and run.json already on disk.
+        every, pause = CK.checkpoint_config(cfg)
+        self.checkpoint = CK.Checkpoint(
+            every, pause, os.path.join(outdir, "health.jsonl"),
+            "translate_exec", total=len(jobs),
+            ceiling_usd=float((cfg.get("cost") or {}).get("max_cost_usd")
+                              or 0.0) or None,
+            resume_hint=f"artifacts are in {outdir}; resume by re-running "
+                        f"with --clause limited to the clause ids with no "
+                        f"row in run.json (or --only-stale)")
 
     # -- run.json / concept table, after every clause (translate's flush) --
     def flush(self):
@@ -441,6 +467,22 @@ class RunContext:
             if rec.get("status") not in _SUCCESS_STATUSES:
                 self.failures += 1
             self.flush()
+            done = sum(1 for r in self.results if r is not None)
+            fails, remaining = {}, [
+                j["row"][self.idk] for i, j in enumerate(self.jobs)
+                if self.results[i] is None]
+            for r in self.results:
+                if r is not None and r.get("status") not in _SUCCESS_STATUSES:
+                    k = str(r.get("status"))
+                    fails[k] = fails.get(k, 0) + 1
+        # ⛔ raised OUTSIDE the io_lock and AFTER flush(): the pause can
+        # only ever happen with this clause's artifacts and run.json
+        # written, which is what makes it resumable
+        self.checkpoint.tick(
+            done, spent_usd=getattr(self.client, "spent_usd", 0.0),
+            failures=fails,
+            graveyard_open=len(gy.open_entries(self.gy_dir)),
+            extra={"remaining_clause_ids": remaining[:20]})
 
     # -- the loop body of translate.run(), one clause, shim model ----------
     def clause_body(self, job, shim):
@@ -658,8 +700,15 @@ def execute(ctx, mode, exec_cfg, transport=None):
     sched = FlatScheduler(ctx, states)
     driver = _Driver(ctx.cfg, ctx.client, ctx.system, ctx.outdir)
     ex = build_executor(mode, driver, exec_cfg, transport=transport)
+    paused = None
     try:
         ex.run(sched)
+    except CK.CheckpointPause as exc:
+        # FIX 4: a checkpoint pause is a CLEAN stop, not a run failure --
+        # every completed clause's artifacts and run.json row are on
+        # disk (the tick fires after flush()), so the summary below is
+        # true of a partial run and the exit code says "incomplete".
+        paused = exc
     finally:
         ctx.flush()
 
@@ -682,6 +731,14 @@ def execute(ctx, mode, exec_cfg, transport=None):
     if spent:
         print(T.spend_invisibility_warning(
             ctx.prov, spent, getattr(ctx.client, "calls", 0)))
+    if paused is not None:
+        done = {r["clause_id"] for r in results}
+        todo = [j["row"][ctx.idk] for j in ctx.jobs
+                if j["row"][ctx.idk] not in done]
+        print(f"\n⏸ CHECKPOINT PAUSE: {paused}")
+        print(f"   {len(todo)} clause(s) not translated: "
+              f"{', '.join(todo[:12])}{' …' if len(todo) > 12 else ''}")
+        return 3
     return 1 if ctx.failures else 0
 
 

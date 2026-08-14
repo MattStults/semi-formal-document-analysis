@@ -41,7 +41,12 @@
  "promise_repair": {
   "max_cost_usd": 0.4,
   "opus_verdicts": "opus_recheck.json",
-  "_opus_verdicts_note": "reviewer GO condition 2026-08-14: restricts repair scope to the evidence-adjudicated ledger. Key ABSENT writes 8 duplicate exports into the accepted graph and pays for them -- do not run without it."
+  "_opus_verdicts_note": "reviewer GO condition 2026-08-14: restricts repair scope to the evidence-adjudicated ledger. Key ABSENT writes 8 duplicate exports into the accepted graph and pays for them -- do not run without it.",
+  "splice_seat": true,
+  "_splice_seat_note": "repaired_verification.md 2026-08-14: the meaning gate. 4 of ds7's 26 splices were wrong claims (one asserting the NEGATION of the document's principle) with every mechanical guard satisfied. TRUE is the correctness default -- setting it false splices unadjudicated and says so in the report.",
+  "checkpoint_every": 5,
+  "checkpoint_pause": false,
+  "_checkpoint_note": "Matt 2026-08-14: periodic stops during long runs, more frequent rather than less. Every 5 plans the stage reports done/remaining, spend vs ceiling and failures by category to stdout + health.jsonl; checkpoint_pause is FALSE because the stage is non-interactive."
  },
  "_promise_repair": "Item A (Matt 2026-08-14): promise_repair.py -- targeted leaf redraws for frontier-confirmed broken promises (fixup_queue broken_promise rejects) plus the under-export scan. Re-review 5: 0.40 covers the up-front gate (~$0.0084/plan worst at the leaf cap x ~31 feasible plans ~= $0.26) with repair-round headroom; repair rounds are not multiplied into the gate -- the MEASURED ceiling (client.max_cost_usd = this budget, enforced in _log_usage per routing-gap F2) backstops overruns mid-flight. Requires --yes.",
  "enforce_promise_delivery": true,

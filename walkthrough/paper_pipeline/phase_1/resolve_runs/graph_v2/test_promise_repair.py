@@ -18,6 +18,7 @@ import translate as T           # noqa: E402
 import recurse_driver as R      # noqa: E402
 import dispatch_core as DC      # noqa: E402
 import promise_repair as PR     # noqa: E402
+import splice_seat as SS        # noqa: E402
 
 TOY = os.path.join(HERE, "toy_doc.md")
 
@@ -175,6 +176,29 @@ _CFG = {"leaf_max_lines": 15, "price_per_mtok": [0.14, 0.28],
         "promise_repair": {"max_cost_usd": 0.25}}
 
 
+class _SeatOk(R.MockClient):
+    """The stage's client with the 2026-08-14 SPLICE SEAT satisfied.
+
+    The seat is ON by default (a correctness gate), so every delivered
+    redraw now costs one extra small call. These pins are about the
+    MECHANICAL merge, so the seat answers `establishes` here and its
+    calls are counted on their OWN counter -- `calls` keeps meaning
+    "redraws", which is what every existing spend assertion below
+    asserts. The seat's own judgment is pinned in test_splice_seat.py."""
+
+    def __init__(self, replies, verdict="establishes"):
+        R.MockClient.__init__(self, replies)
+        self.seat_calls, self.seat_verdict = 0, verdict
+
+    def complete(self, system, user):
+        if system == SS.BRIEF:
+            self.seat_calls += 1
+            return {"text": json.dumps({"verdict": self.seat_verdict,
+                                        "grounds": "(fixture)"}),
+                    "usage": {}}
+        return R.MockClient.complete(self, system, user)
+
+
 def test_delivered_promise_is_spliced_into_a_repaired_copy(tmp_path):
     """The mechanical merge: the redraw's provides entry (and its new
     needs) land on the node covering the establishment lines, in
@@ -187,7 +211,7 @@ def test_delivered_promise_is_spliced_into_a_repaired_copy(tmp_path):
                               "prose": "the promised thing"}],
                    needs=[{"name": "extra_need", "prose": "new dep"}])
     lines = R.load_doc(TOY)
-    rep = PR.run_repair(run, _CFG, R.MockClient([reply]), lines)
+    rep = PR.run_repair(run, _CFG, _SeatOk([reply]), lines)
     assert rep["repaired"] == 1 and rep["failed"] == 0
     assert rep["needers_resolved"] == 1, \
         "the promised_x needer must resolve after the splice"
@@ -217,7 +241,7 @@ def test_declined_promise_is_recorded_honestly_undeliverable(tmp_path):
     reply = _reply(1, 12, 12,
                    jcs=["promised_x: the span paraphrases it; the real "
                         "establishment is elsewhere"])
-    rep = PR.run_repair(run, _CFG, R.MockClient([reply]),
+    rep = PR.run_repair(run, _CFG, _SeatOk([reply]),
                         R.load_doc(TOY))
     assert rep["repaired"] == 0 and rep["declined_honestly"] == 1
     assert rep["needers_resolved"] == 0
@@ -235,7 +259,7 @@ def test_declined_promise_is_recorded_honestly_undeliverable(tmp_path):
 def test_budget_gate_refuses_before_any_call(tmp_path):
     run = _repair_run(tmp_path)
     cfg = dict(_CFG, promise_repair={"max_cost_usd": 0.0})
-    client = R.MockClient([])
+    client = _SeatOk([])
     with pytest.raises(T.CostGateError, match="promise_repair"):
         PR.run_repair(run, cfg, client, R.load_doc(TOY))
     assert client.calls == 0, "the gate must fire before any spend"
@@ -251,10 +275,10 @@ def test_redraw_prompt_carries_the_promise_instruction(tmp_path):
                    provides=[{"name": "promised_x", "prose": "p"}])
     seen = []
 
-    class Spy(R.MockClient):
+    class Spy(_SeatOk):
         def complete(self, system, user):
             seen.append(user)
-            return R.MockClient.complete(self, system, user)
+            return _SeatOk.complete(self, system, user)
         complete_messages = complete
 
     PR.run_repair(run, _CFG, Spy([reply]), R.load_doc(TOY))
@@ -273,7 +297,7 @@ def test_unlocatable_promise_is_a_failed_item_not_a_crash(tmp_path):
     R.write_json(os.path.join(run, "fixup_queue.json"), q)
     reply = _reply(1, 12, 12,
                    provides=[{"name": "promised_x", "prose": "p"}])
-    rep = PR.run_repair(run, _CFG, R.MockClient([reply]), R.load_doc(TOY))
+    rep = PR.run_repair(run, _CFG, _SeatOk([reply]), R.load_doc(TOY))
     assert rep["by_class"]["promise"]["failed"] == 1
     assert "established_around" in rep["items"][0]["why"]
     assert rep["by_class"]["underexport"]["repaired"] == 1
@@ -302,7 +326,7 @@ def test_underexport_scan_repairs_a_dangling_with_existing_content(
     reply = _reply(1, 12, 12,
                    provides=[{"name": "self_harm_rule",
                               "prose": "no encouraging self harm"}])
-    rep = PR.run_repair(run, _CFG, R.MockClient([reply]), R.load_doc(TOY))
+    rep = PR.run_repair(run, _CFG, _SeatOk([reply]), R.load_doc(TOY))
     bc = rep["by_class"]
     assert bc["underexport"]["repaired"] == 1
     assert bc["underexport"]["needers_resolved"] == 1
@@ -348,7 +372,7 @@ def test_already_provided_name_is_skipped_with_a_record(tmp_path):
         {"id": "L1-12_n001", "establishes": "already exports it",
          "needs": [], "provides": [{"name": "promised_x", "prose": "p"}],
          "spans": [{"lines": [1, 6]}]}])
-    client = R.MockClient([])
+    client = _SeatOk([])
     rep = PR.run_repair(run, _CFG, client, R.load_doc(TOY))
     assert client.calls == 0, "a stale queue row must cost nothing"
     row = rep["items"][0]
@@ -366,7 +390,7 @@ def test_promise_items_dedupe_per_name(tmp_path):
     R.write_json(os.path.join(run, "fixup_queue.json"), q)
     reply = _reply(1, 12, 12,
                    provides=[{"name": "promised_x", "prose": "p"}])
-    client = R.MockClient([reply])
+    client = _SeatOk([reply])
     rep = PR.run_repair(run, _CFG, client, R.load_doc(TOY))
     assert client.calls == 1, "duplicate queue rows must not redraw twice"
     assert rep["repaired"] == 1
@@ -427,7 +451,7 @@ def test_infeasible_plan_is_reported_and_never_paid(tmp_path,
         seed = dict(seed, established_around=[50, 51])   # far outside
         return (seed, lo, hi, wdir, seeds), None
     monkeypatch.setattr(PR, "locate_leaf", bad_locate)
-    client = R.MockClient([])
+    client = _SeatOk([])
     rep = PR.run_repair(run, _CFG, client, R.load_doc(TOY))
     assert client.calls == 0
     row = next(r for r in rep["items"] if r["status"] == "infeasible")
@@ -565,7 +589,7 @@ def test_same_referent_export_is_skipped_not_duplicated(tmp_path):
          "provides": [{"name": "authority_levels_hierarchy",
                        "prose": prose}],
          "spans": [{"lines": [1, 10]}]}])
-    client = R.MockClient([])
+    client = _SeatOk([])
     rep = PR.run_repair(run, _CFG, client, list(FIXTURE_DOC))
     assert client.calls == 0, "a duplicate export must cost nothing"
     row = next(r for r in rep["items"] if r["class"] == "promise")
@@ -615,7 +639,7 @@ def test_same_referent_leaves_a_genuinely_missing_concept_alone(tmp_path):
          "spans": [{"lines": [5, 8]}]}])
     reply = _reply(1, 10, 10,
                    provides=[{"name": "promised_x", "prose": "p"}])
-    rep = PR.run_repair(run, _CFG, R.MockClient([reply]),
+    rep = PR.run_repair(run, _CFG, _SeatOk([reply]),
                         list(FIXTURE_DOC))
     assert rep["repaired"] == 1
 
@@ -660,7 +684,7 @@ def test_citation_site_plan_is_reaimed_at_the_section_heading(tmp_path):
     reply = _reply(11, 19, 19,
                    provides=[{"name": "avoid_overstepping",
                               "prose": "p"}])
-    rep = PR.run_repair(run, _CFG, R.MockClient([reply]),
+    rep = PR.run_repair(run, _CFG, _SeatOk([reply]),
                         list(FIXTURE_DOC))
     row = next(r for r in rep["items"] if r["class"] == "promise")
     assert row["status"] == "repaired"
@@ -682,7 +706,7 @@ def test_citation_site_without_a_heading_is_skipped_unpaid(tmp_path):
     run = _guard_run(tmp_path, seed, [
         {"id": "L11-19_n001", "establishes": "x", "needs": [],
          "provides": [], "spans": [{"lines": [15, 15]}]}])
-    client = R.MockClient([])
+    client = _SeatOk([])
     rep = PR.run_repair(run, _CFG, client, list(FIXTURE_DOC))
     assert client.calls == 0
     row = next(r for r in rep["items"] if r["class"] == "promise")
@@ -722,7 +746,7 @@ def test_citation_guard_covers_the_underexport_class_too(tmp_path):
     reply = _reply(1, 10, 10,
                    provides=[{"name": "risk_taxonomy_section",
                               "prose": "p"}])
-    rep = PR.run_repair(str(run), _CFG, R.MockClient([reply]),
+    rep = PR.run_repair(str(run), _CFG, _SeatOk([reply]),
                         list(FIXTURE_DOC))
     row = next(r for r in rep["items"] if r["class"] == "underexport")
     assert row["establishment"] == "reaimed_citation_site"
@@ -761,7 +785,7 @@ def test_reaimed_plan_descends_the_RUN_ROOT_not_the_promising_unwind(
                              "reason": "r"}]})
     reply = _reply(11, 19, 19,
                    provides=[{"name": "avoid_overstepping", "prose": "p"}])
-    rep = PR.run_repair(str(run), _CFG, R.MockClient([reply]),
+    rep = PR.run_repair(str(run), _CFG, _SeatOk([reply]),
                         list(FIXTURE_DOC))
     row = next(r for r in rep["items"] if r["class"] == "promise")
     assert row["status"] == "repaired", row
@@ -786,7 +810,7 @@ def test_section_seed_without_ea_plans_from_its_heading(tmp_path):
     reply = _reply(11, 19, 19,
                    provides=[{"name": "refusal_style_section",
                               "prose": "p"}])
-    rep = PR.run_repair(run, _CFG, R.MockClient([reply]),
+    rep = PR.run_repair(run, _CFG, _SeatOk([reply]),
                         list(FIXTURE_DOC))
     row = next(r for r in rep["items"] if r["class"] == "promise")
     assert row["status"] == "repaired"
@@ -803,7 +827,7 @@ def test_seed_with_no_ea_and_no_heading_still_fails_as_before(tmp_path):
     run = _guard_run(tmp_path, seed, [
         {"id": "L1-10_n001", "establishes": "x", "needs": [],
          "provides": [], "spans": [{"lines": [1, 3]}]}])
-    client = R.MockClient([])
+    client = _SeatOk([])
     rep = PR.run_repair(run, _CFG, client, list(FIXTURE_DOC))
     row = next(r for r in rep["items"] if r["class"] == "promise")
     assert row["status"] == "failed"
@@ -855,7 +879,7 @@ def test_opus_verdicts_narrows_the_scope_to_confirmed_defects(tmp_path):
     assert PR.opus_confirmed_names(str(vp)) == {"someone_else"}
     cfg = dict(_CFG, promise_repair=dict(_CFG["promise_repair"],
                                          opus_verdicts=str(vp)))
-    client = R.MockClient([])
+    client = _SeatOk([])
     rep = PR.run_repair(run, cfg, client, list(FIXTURE_DOC))
     assert client.calls == 0
     row = next(r for r in rep["items"] if r["class"] == "promise")
@@ -870,7 +894,7 @@ def test_opus_verdicts_absent_leaves_behaviour_unchanged(tmp_path):
     reply = _reply(1, 12, 12,
                    provides=[{"name": "promised_x",
                               "prose": "the promised thing"}])
-    rep = PR.run_repair(run, _CFG, R.MockClient([reply]),
+    rep = PR.run_repair(run, _CFG, _SeatOk([reply]),
                         R.load_doc(TOY))
     assert rep["repaired"] == 1 and "opus_verdicts" not in \
         json.dumps(_CFG)
@@ -1044,7 +1068,7 @@ def test_B2_section_mode_reports_rather_than_splicing_wrongly(tmp_path):
          "needs": [], "provides": [{"name": "guideline_authority",
                                     "prose": "a"}],
          "spans": [{"lines": [17, 17]}]}])
-    client = R.MockClient([])
+    client = _SeatOk([])
     rep = PR.run_repair(run, _CFG, client, list(FIXTURE_DOC))
     assert client.calls == 0
     row = next(r for r in rep["items"] if r["class"] == "promise")
@@ -1109,7 +1133,7 @@ def test_B3_underexport_class_gets_the_same_referent_filter(tmp_path):
                              "weighs"}],
          "provides": [], "spans": [{"lines": [11, 13]}]}]})
     R.write_json(os.path.join(str(run), "fixup_queue.json"), {"items": []})
-    client = R.MockClient([])
+    client = _SeatOk([])
     rep = PR.run_repair(str(run), _CFG, client, list(FIXTURE_DOC))
     assert client.calls == 0, "a duplicate export must cost nothing"
     row = next(r for r in rep["items"] if r["class"] == "underexport")
@@ -1152,7 +1176,7 @@ def test_B3_underexport_target_that_already_exports_is_skipped(tmp_path):
                     "prose": "the prohibition itself"}],
          "provides": [], "spans": [{"lines": [11, 13]}]}]})
     R.write_json(os.path.join(str(run), "fixup_queue.json"), {"items": []})
-    client = R.MockClient([])
+    client = _SeatOk([])
     rep = PR.run_repair(str(run), _CFG, client, list(FIXTURE_DOC))
     assert client.calls == 0, "a duplicate export must cost nothing"
     row = next(r for r in rep["items"] if r["class"] == "underexport")
@@ -1176,7 +1200,7 @@ def test_B3_promise_class_keeps_targets_that_export_adjacent_names(
     reply = _reply(11, 19, 19,
                    provides=[{"name": "refusal_style_section",
                               "prose": "p"}])
-    rep = PR.run_repair(run, _CFG, R.MockClient([reply]),
+    rep = PR.run_repair(run, _CFG, _SeatOk([reply]),
                         list(FIXTURE_DOC))
     row = next(r for r in rep["items"] if r["class"] == "promise")
     assert row["status"] == "repaired", row

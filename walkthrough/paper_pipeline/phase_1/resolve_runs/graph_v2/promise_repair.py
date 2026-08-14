@@ -58,6 +58,24 @@ three, because 5/9 promise plans and 1 under-export plan were misaimed):
      its own name and locating that section's heading
      (refusal_style_section -> #refusal_style at L4073).
 
+THE SPLICE SEAT (2026-08-14, repaired_verification.md): every guard
+above answers WHERE to aim a splice; NONE asked whether the receiving
+node's content ESTABLISHES the concept, and 4 of ds7's 26 splices were
+wrong claims (one asserting the NEGATION of the document's principle).
+`splice_seat.py` adjudicates concept prose vs the receiving node,
+BLIND ON THE NAME, as the last gate before the graph is touched --
+`rejected_by_splice_seat` rows carry the grounds and change nothing.
+Config `promise_repair.splice_seat` DEFAULTS TO TRUE (a correctness
+gate, not a flag); the calls ride the stage's own client and budget.
+
+Two smaller findings from the same verification, both mechanical:
+NARRATION MISMATCH -- a redraw whose judgment_calls reason says it will
+add the entry and then does not is booked `narration_mismatch` and
+counted as a FAILED repair, never as an honest decline; and SELF-LOOPS
+-- a receiving node's need for the name it now provides is dropped (a
+node cannot depend on itself), with a graph-level self-loop census in
+the report.
+
 Optional config `promise_repair.opus_verdicts` (a path; absent by
 default and then behaviour is unchanged): intersects the broken_promise
 rows with that file's `opus_decision == "reject"` names, so the repair
@@ -84,6 +102,8 @@ for _p in (PHASE1, HERE):
 
 import translate as T          # noqa: E402
 import recurse_driver as R     # noqa: E402
+import splice_seat as SS       # noqa: E402
+import run_checkpoint as CK    # noqa: E402
 
 DEFAULT_BUDGET = 0.40    # matches config (re-review 5 + final 1c note)
 
@@ -606,13 +626,82 @@ def redraw_leaf(drv, seed, lo, hi, seeds, scratch_wdir):
     return g
 
 
+#: FIX 2 (repaired_verification.md §1e): phrasings by which a redraw's
+#: judgment_calls text ASSERTS that it delivered (or is about to deliver)
+#: the provides entry. ds7 booked "I will add a provides entry to n007
+#: for 'support_mental_health' ... to satisfy the promise repair" as an
+#: HONEST DECLINE -- the reply announced compliance and then emitted
+#: nothing, and the stage's own report overstated its declines by one.
+_DELIVERY_VERB = (r"(?:add|adding|added|includ(?:e|ing|ed)|"
+                  r"provid(?:e|es|ing|ed)|emit(?:ting|ted)?|"
+                  r"creat(?:e|ing|ed)|insert(?:ing|ed)?|"
+                  r"suppl(?:y|ying|ied)|writ(?:e|ing)|wrote)")
+_NEGATION = re.compile(r"\b(?:not|never|n't|cannot|can't|won't|wont|"
+                       r"refuse[sd]?|declin(?:e|es|ed)|unable|"
+                       r"should\s+not|must\s+not|no)\b", re.I)
+#: "I will add ...", "we have included ...", "I am adding ..."
+_ACTIVE_DELIVERY = re.compile(
+    r"\b(?:i|we)\b(?P<mid>(?:'(?:ll|ve|d|m))?(?:\s+[\w']+){0,3}?)\s+"
+    + _DELIVERY_VERB + r"\b", re.I)
+#: "a provides entry will be added", "the entry has been included"
+_PASSIVE_DELIVERY = re.compile(
+    r"\b(?:will\s+be|has\s+been|have\s+been|is\s+being)\s+"
+    r"(?:added|included|provided|emitted|created|inserted)\b", re.I)
+
+
+def asserts_delivery(text, name=""):
+    """True when `text` claims the provides entry was or will be
+    delivered. Scoped SENTENCE-BY-SENTENCE and required to be about the
+    entry (the sentence mentions `provides`/`entry` or the seed's own
+    name), so "I will explain in judgment_calls" is not a delivery
+    claim; negated forms ("I will NOT add", "cannot provide") are not
+    either -- a decline that says what it declines to do stays an
+    honest decline."""
+    for sent in re.split(r"[.;\n]+", str(text or "")):
+        low = sent.lower()
+        if not ("provides" in low or "provide entry" in low
+                or "entry" in low or (name and R.name_mentioned(name,
+                                                               sent))):
+            continue
+        m = _ACTIVE_DELIVERY.search(sent)
+        if m and not _NEGATION.search(m.group("mid") or ""):
+            return True
+        if _PASSIVE_DELIVERY.search(sent):
+            return True
+    return False
+
+
+def self_loops(g):
+    """(node id, name) pairs where a node NEEDS a name it PROVIDES.
+    A node cannot depend on itself: the 'resolution' of such a need is
+    degenerate (repaired_verification.md: ds7's repair took self-loops
+    16 -> 19 and 3 of 43 'resolved' needers resolved onto themselves)."""
+    out = set()
+    for n in g.get("nodes", []):
+        prov = {R.nm(p) for p in n.get("provides", [])}
+        for d in n.get("needs", []):
+            if R.nm(d) in prov:
+                out.add((n.get("id"), R.nm(d)))
+    return out
+
+
 def splice(g, seed, redraw, unwind_art, scratch_wdir, target_id=None,
-           section=False):
+           section=False, seat=None):
     """The mechanical merge: ONLY the new provides entry (and any new
     needs the validator accepted on the providing node) reach the graph
-    copy. Everything judgmental already happened -- in the redraw.
-    `target_id` (the under-export class): the scan already named the
-    node that owns the establishment lines."""
+    copy. `target_id` (the under-export class): the scan already named
+    the node that owns the establishment lines.
+
+    ⛔ `seat` (FIX 1, repaired_verification.md) is the MANDATORY meaning
+    gate in production: after the redraw has delivered the entry and
+    EVERY mechanical check has passed, a splice_seat.Seat adjudicates
+    the concept's prose against the RECEIVING NODE's own content, blind
+    on the name. Only "establishes" splices; anything else returns
+    `rejected_by_splice_seat` with the seat's grounds and leaves the
+    graph untouched. The four ds7 wrong splices all reached this point
+    with every mechanical guard satisfied. `seat=None` skips the gate --
+    the mechanical-unit path only; `run_repair` builds one whenever
+    `promise_repair.splice_seat` is true, which is the DEFAULT."""
     name, ea = seed["name"], seed["established_around"]
     prov_node = prov_entry = None
     for n in redraw.get("nodes", []):
@@ -626,11 +715,20 @@ def splice(g, seed, redraw, unwind_art, scratch_wdir, target_id=None,
         # re-review 2-note: word-boundary match, never substring -- a
         # judgment_calls entry naming support_mental_health_rule must not
         # count as a decline of support_mental_health
-        reason = next((j for j in redraw.get("judgment_calls", [])
-                       if isinstance(j, str)
-                       and R.name_mentioned(name, j)),
-                      "(declined without a judgment_calls reason -- "
-                      "validator accepted the reply, treat as decline)")
+        named = next((j for j in redraw.get("judgment_calls", [])
+                      if isinstance(j, str)
+                      and R.name_mentioned(name, j)), None)
+        reason = named or ("(declined without a judgment_calls reason -- "
+                           "validator accepted the reply, treat as "
+                           "decline)")
+        # FIX 2: a reason that ANNOUNCES the entry it never emitted is a
+        # NARRATION MISMATCH, not an honest decline. An honest decline
+        # names the seed AND emits no entry AND does not claim to have.
+        if named is not None and asserts_delivery(named, name):
+            return "narration_mismatch", (
+                f"the redraw's reason asserts it delivers the provides "
+                f"entry and no such entry exists in the reply -- a "
+                f"non-delivery, NOT an honest decline: {named}")
         return "declined", reason
     if not _node_covers(prov_node, ea):
         return "failed", (f"redraw provides '{name}' but not at the "
@@ -649,22 +747,48 @@ def splice(g, seed, redraw, unwind_art, scratch_wdir, target_id=None,
                           if target_id is None
                           else f"scan target {target_id!r} vanished from "
                                f"the root graph")
+    # ⛔ FIX 1: THE MEANING GATE, last thing before the graph is touched.
+    # Blind on the name: the seat sees the concept's PROSE and the
+    # target's own establishes + span text. Nothing below this line runs
+    # on a "does_not_establish".
+    verdict = None
+    if seat is not None:
+        verdict = seat.adjudicate(prov_entry.get("prose")
+                                  or seed.get("prose", ""), target)
+        if verdict["verdict"] != "establishes":
+            return "rejected_by_splice_seat", (
+                f"the splice seat judged that {target.get('id')} does "
+                f"not establish the concept: {verdict['grounds']}")
     have_p = {R.nm(p) for p in target.get("provides", [])}
     if name not in have_p:
         target.setdefault("provides", []).append(dict(prov_entry))
     have_n = {R.nm(d) for d in target.get("needs", [])}
+    # FIX 3: a node cannot depend on itself. The name it now PROVIDES is
+    # dropped from its own needs (ds7 made 3 such self-loops, and each
+    # counted as a "resolved" needer), and no new self-need is spliced in.
+    dropped_self = [R.nm(d) for d in target.get("needs", [])
+                    if R.nm(d) == name]
+    if dropped_self:
+        target["needs"] = [d for d in target.get("needs", [])
+                           if R.nm(d) != name]
+        have_n.discard(name)
     new_needs = [dict(d) for d in prov_node.get("needs", [])
-                 if isinstance(d, dict) and d.get("name") not in have_n]
+                 if isinstance(d, dict) and d.get("name") not in have_n
+                 and d.get("name") != name]
     target.setdefault("needs", []).extend(new_needs)
     g.setdefault("promise_repairs", []).append({
         "name": name, "unwind": unwind_art, "target": target.get("id"),
         "established_around": list(ea[:2]),
         "redraw_artifact": os.path.relpath(scratch_wdir),
-        "spliced_needs": [d.get("name") for d in new_needs]})
+        "spliced_needs": [d.get("name") for d in new_needs],
+        "dropped_self_needs": dropped_self,
+        "splice_seat": verdict})
     g.setdefault("driver_autofixes", []).append(
         f"promise_repair: spliced provides '{name}' onto "
         f"{target.get('id')} from the targeted leaf redraw "
-        f"(established_around {list(ea[:2])})")
+        f"(established_around {list(ea[:2])})"
+        + (f"; dropped the node's self-need '{name}'"
+           if dropped_self else ""))
     return "repaired", target.get("id")
 
 
@@ -963,10 +1087,29 @@ def run_repair(run_dir, cfg, client, lines):
                 f"{len(plans)} leaf redraw(s) exceeds "
                 f"promise_repair.max_cost_usd ${budget:.2f}. Repair in "
                 f"slices or raise the budget deliberately.")
+    # -- FIX 1: the splice seat rides the stage's OWN client and budget
+    # (one extra small call per delivered redraw, inside the ceiling
+    # main() already set on the client). Default TRUE: it is a
+    # correctness gate, not a feature flag; setting it false is a
+    # deliberate, recorded choice to splice unadjudicated.
+    seat = None
+    if pr_cfg.get("splice_seat", True):
+        slot = (lambda sch: setattr(client, "reply_schema", sch)) \
+            if hasattr(client, "reply_schema") else None
+        seat = SS.Seat(client.complete, lines, schema_slot=slot)
+    # -- FIX 4: periodic checkpoints over the plan list
+    ckpt_every, ckpt_pause = CK.checkpoint_config(cfg, "promise_repair")
+    ckpt = CK.Checkpoint(
+        ckpt_every, ckpt_pause, os.path.join(run_dir, "health.jsonl"),
+        "promise_repair", total=len(plans), ceiling_usd=budget,
+        resume_hint="re-run promise_repair.py on the same run dir: the "
+                    "prep is deterministic and the already-repaired "
+                    "names are skipped as already provided")
     # -- spend: one targeted leaf redraw per plan
     n_rep = n_dec = 0
     repaired_names = {"promise": set(), "underexport": set()}
-    for p in plans:
+    paused = None
+    for i, p in enumerate(plans):
         seed = p["seed"]
         try:
             redraw = redraw_leaf(drv, seed, p["lo"], p["hi"], p["seeds"],
@@ -981,7 +1124,8 @@ def run_repair(run_dir, cfg, client, lines):
             continue
         status, detail = splice(g, seed, redraw, p["unwind"], p["scratch"],
                                 target_id=p.get("target_id"),
-                                section=p.get("section", False))
+                                section=p.get("section", False),
+                                seat=seat)
         n_rep += status == "repaired"
         n_dec += status == "declined"
         if status == "repaired":
@@ -994,6 +1138,22 @@ def run_repair(run_dir, cfg, client, lines):
                                   ("target" if status == "repaired"
                                    else "why"): detail},
                                  **(p.get("note") or {})))
+        # the checkpoint lands HERE: the report row is booked and the
+        # graph copy holds this plan's splice, so a pause loses nothing
+        try:
+            ckpt.tick(i + 1,
+                      spent_usd=getattr(client, "spent_usd", 0.0),
+                      failures={
+                          k: sum(1 for r in report_items
+                                 if r["status"] == k)
+                          for k in ("failed", "narration_mismatch",
+                                    "rejected_by_splice_seat",
+                                    "declined")})
+        except CK.CheckpointPause as exc:
+            paused = str(exc)
+            break
+    if seat is not None and hasattr(client, "reply_schema"):
+        client.reply_schema = None
     after = danglings(g)
     resolved = len(before - after)
     # resolved-needer count PER CLASS (the item's own asked-for number):
@@ -1007,6 +1167,14 @@ def run_repair(run_dir, cfg, client, lines):
             "repaired": sum(1 for r in rows if r["status"] == "repaired"),
             "declined": sum(1 for r in rows if r["status"] == "declined"),
             "failed": sum(1 for r in rows if r["status"] == "failed"),
+            # FIX 2 / FIX 1: neither is an honest decline. A narration
+            # mismatch is a NON-DELIVERY (counted as a failed repair
+            # below); a seat rejection is the gate working.
+            "narration_mismatch": sum(
+                1 for r in rows if r["status"] == "narration_mismatch"),
+            "rejected_by_splice_seat": sum(
+                1 for r in rows
+                if r["status"] == "rejected_by_splice_seat"),
             "skipped_already_provided": sum(
                 1 for r in rows
                 if r["status"] == "skipped_already_provided"),
@@ -1030,15 +1198,37 @@ def run_repair(run_dir, cfg, client, lines):
             "needers_resolved": len(
                 {(nid, nm) for nid, nm in (before - after)
                  if nm in repaired_names[cls]})}
-    n_fail = sum(1 for r in report_items if r["status"] == "failed")
+    n_mis = sum(1 for r in report_items
+                if r["status"] == "narration_mismatch")
+    n_seat = sum(1 for r in report_items
+                 if r["status"] == "rejected_by_splice_seat")
+    #: FIX 2: a narration mismatch is a FAILED repair, never a decline
+    n_fail = sum(1 for r in report_items
+                 if r["status"] == "failed") + n_mis
+    #: FIX 3: the graph-level self-loop census, before and after
+    loops_before, loops_after = self_loops(
+        json.load(open(os.path.join(run_dir, "root_graph.json")))), \
+        self_loops(g)
+    dropped_self = [d for pr in g.get("promise_repairs", [])
+                    for d in (pr.get("dropped_self_needs") or [])]
     R.write_json(os.path.join(run_dir, "root_graph.repaired.json"), g)
     report = {"run": run_dir, "items": report_items,
               "repaired": n_rep, "declined_honestly": n_dec,
               "failed": n_fail,
+              "narration_mismatch": n_mis,
+              "rejected_by_splice_seat": n_seat,
+              "splice_seat": ("on" if seat is not None else "off"),
+              "splice_seat_calls": getattr(seat, "calls", 0),
               "by_class": by_class,
               "danglings_before": len(before),
               "danglings_after": len(after),
+              "self_loops_before": len(loops_before),
+              "self_loops_after": len(loops_after),
+              "self_needs_dropped": len(dropped_self),
               "needers_resolved": resolved,
+              "checkpoints": ckpt.fired,
+              "paused": paused,
+              "plans": len(plans),
               "spent_usd": round(getattr(client, "spent_usd", 0.0), 6)}
     R.write_json(os.path.join(run_dir, "promise_repair_report.json"),
                  report)
@@ -1047,16 +1237,23 @@ def run_repair(run_dir, cfg, client, lines):
                             "kind": "promise_repair",
                             "repaired": n_rep, "declined": n_dec,
                             "failed": n_fail,
+                            "narration_mismatch": n_mis,
+                            "rejected_by_splice_seat": n_seat,
+                            "self_loops_after": len(loops_after),
+                            "paused": paused,
                             "by_class": {c: by_class[c]["needers_resolved"]
                                          for c in by_class},
                             "needers_resolved": resolved}) + "\n")
     print(f"promise repair: {n_rep} repaired, {n_dec} honestly "
-          f"undeliverable, {n_fail} failed; danglings "
-          f"{len(before)} -> {len(after)} ({resolved} needer(s) "
-          f"resolved: promise "
+          f"undeliverable, {n_fail} failed ({n_mis} narration "
+          f"mismatch), {n_seat} rejected by the splice seat; danglings "
+          f"{len(before)} -> {len(after)}; self-loops "
+          f"{len(loops_before)} -> {len(loops_after)} ({resolved} "
+          f"needer(s) resolved: promise "
           f"{by_class['promise']['needers_resolved']}, underexport "
           f"{by_class['underexport']['needers_resolved']}) -> "
-          f"root_graph.repaired.json")
+          f"root_graph.repaired.json"
+          + (f"\n⏸ {paused}" if paused else ""))
     return report
 
 
