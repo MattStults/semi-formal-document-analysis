@@ -1724,3 +1724,32 @@ queued fix: an outage of any length should park the poll loop in
 bounded-backoff waiting (the batch is sitting safely server-side the
 whole time), never exit. The correct behavior on network loss is
 patience, since the manifest already makes crash-recovery lossless.
+
+## 2026-08-13: BEHAVIOR-PIPELINE PILOT PLAN (Matt-approved direction)
+
+Target architecture (the product the graph exists to serve):
+1. A behavior is WRITTEN DOWN (free text).
+2. TRANSLATED into ASP by an extension of the existing stage-1 machinery
+   (same repair loops, schema checks, graveyard discipline -- behavior
+   modules alongside clause modules; behavior atoms as the intermediate
+   decomposition, cf. semi-formal-experiment/behavior_atoms_prompt.md).
+3. A MATCHING ALGORITHM finds relevance and conflict: atom-to-node
+   candidate retrieval by embedding (raw enriched prose, 82%@10
+   measured), seat adjudication of each candidate match (the validated
+   rename-seat pattern with a matching brief), then clingo
+   relevance/contradiction queries over the linked behavior+clause
+   modules.
+4. INTERACTIVE REFINEMENT: the user gives feedback in prose; an LLM
+   revises the behavior's translation (not the graph) under the same
+   validators; iterate. Feedback refines the QUERY, never the corpus.
+
+PILOT (next instance starts here): select behaviors from the
+semi-formal-experiment annotation corpus whose frontier-selected clauses
+CONCENTRATE in the 15-node translated sample's regions
+(chain-of-command, privileged info); run the full loop end-to-end at
+tiny scale. Frontier annotations are the PRE-REGISTERED evaluation
+reference only -- labels direct attention, never truth; disagreements
+adjudicated against the document, per the standing rule. What the pilot
+must answer before full-corpus translation (Matt's #7): what the
+matching brief needs, whether atom granularity fits node granularity,
+and the cost/behavior of the full loop.
