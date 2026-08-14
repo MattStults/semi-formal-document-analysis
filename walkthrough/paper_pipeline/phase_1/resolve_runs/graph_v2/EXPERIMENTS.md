@@ -2590,3 +2590,47 @@ PRODUCTION CANDIDATE now: 773 nodes, 115 exported names, 1085 needs,
 spans/quotes, risk_queue 168, edge_similarity 8/1060 <0.1, recall
 0.4395). C5 (stale report counts: says 24 danglings / 3 honest declines,
 actual 25 / 2) and C3/C6 remain RECORD-ONLY.
+
+## 2026-08-14: STAGE-4 ADVERSARIAL DESIGN REVIEW -- skeleton sound, accounting not
+
+STAGE4_DESIGN_REVIEW.md (13 findings, all RUN not argued). Verdict: the
+four-blinding skeleton is SOUND and should be kept; the evidential
+accounting built on it is not. Build the factory (nothing in the seat
+design blocks it); do NOT run corpus-scale.
+* F1 (CRITICAL): the evidential output collapses to ONE seat. RB4's
+  non-evidential stamp is keyed on the CLAUSE MEAN, so it fires on 0% of
+  the corpus while 6.6% of items sit at per-item echo >=0.90 (the seats
+  comparing the clause to itself); 3/12 modules carry
+  readback-check-failed, voiding all 4b/4d verdicts; 4d's stage-3
+  cross-check is UNWIREABLE (4d keys on claim sentences, ClaimCoverage on
+  claim IDs). Only 4c is countable.
+* F2 (CRITICAL): §6.2's independence premise is FALSE for 48% of 4c's
+  denominator -- _item_text shows 4c a concept as "the term X means:
+  <gloss>" while 4b's rendering IS that gloss verbatim. The anchor does
+  not survive a WRONG gloss: the repo's own measured failure mode #4
+  (7.5%) passes all four seats.
+* F3 (HIGH): a layer-1 rendering cannot reach 4b/4d -- _MODULE_PATTERNS
+  inherits ":-" from probe._DISCLOSURE, so an admitted layer-1 rule is
+  refused as a disclosure attack and kills the whole clause. Latent
+  today (0/121), live the moment layer-1 constructs are used.
+* F4: judge has NO reply hardening -- 5 of 7 realistic live shapes raise
+  uncaught exceptions; every mock returns clean json.dumps (the
+  mock-vs-live gap that the single live 4b call already demonstrated).
+* F5: the coverage rule lives only in judge -- a zero-seat run returns
+  routing "none", byte-identical to a clean pass.
+* THE STRUCTURAL GAP none of the four catches: UNDER-READING the clause.
+  4d is denominated on mod.claims -- the TRANSLATOR'S OWN reading -- so a
+  translator that reads 3 of 5 claims and encodes all 3 passes
+  unanimously. No seat is denominated on the DOCUMENT.
+* COST: §7 mandates frontier until parity is measured; frontier at 750
+  modules = $651 worst / $87 likely vs $6.44 ledger remaining. Stage 4
+  at corpus scale is NOT AFFORDABLE as specified.
+FACTORY SPEC delivered (signature takes ONLY seat name + config; the
+absent rendering parameter IS the mechanism -- passing plan/readback for
+sizing or logging puts the rendering in lexical scope at 4c's call site,
+and _refuse runs at prompt construction only). Two changes belong in
+seats.py not the factory: defensive reply parsing in judge, and
+run_clause recording a skipped seat instead of `continue`.
+NEXT STEP RULED: a <=10-clause FLASH pilot (~$0.05) whose deliverable is
+reply-shape measurements and the unclear rate -- NOT a faithfulness
+result. Stage 4 is its own project after the corpus translation.
