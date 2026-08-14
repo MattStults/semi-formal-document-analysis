@@ -1837,3 +1837,28 @@ adjudication (runbook step 3); (c) 45 broken promises to review via
 risk queue.
 NEXT: modal adjudication on ds7 -> K3 parity sample -> curated K3
 frontier pass (batched) -> production-graph verdict for Matt.
+
+## 2026-08-14: routing-gap audit COMPLETE -- 10 findings, full signal->remedy table
+
+Clean-context audit of every failure signal x every path (report in the
+session transcript; table reproduced in the next commit's review file).
+NEW HIGHS beyond the motivating incident: F2 -- translate_exec sets
+max_cost_usd on a client that never checks it (the measured ceiling is
+UNENFORCED in translation concurrent/batch; ClauseState.budget=inf), so
+translation spend can exceed the gated worst case with nothing stopping
+it; F3 -- rename_seat.judge absorbs terminal transport (402/401/key)
+into fail-closed different_concept: a mid-finale credit exhaustion would
+grind 600 descend calls into silent all-rejections instead of stopping.
+F1 confirmed still open (ladder truncation byte-identical retries); F5
+-- the D6 dense/malfunction machinery is DEAD CODE when phase caps
+engage (oversize threshold reads model.max_tokens 32768, phase caps
+bound replies below it); F4 -- finish_reason-null truncation backstop
+exists only in batch; F6 -- empty reply aborts live but reruns batch;
+F7-F10 lower. Verified fixed: DNS marks, 402 short ladder, seat
+CostGateError propagation.
+DISPOSITION: all fixes are ds8-era code, landing in ONE reviewed commit
+together with the identical-retry seam guard (designed 2026-08-14) --
+F1+guard subsume each other; F2, F3, F5, F6 each get pins; F7-F10 fixed
+or deferred-by-name in the same review. ds7 stands accepted (built
+before these findings; none corrupts artifacts -- they are
+availability/cost routing, not content).
