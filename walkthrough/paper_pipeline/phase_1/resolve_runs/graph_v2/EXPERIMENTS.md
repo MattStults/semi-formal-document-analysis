@@ -2736,3 +2736,23 @@ against runs/ds7/root_graph.production.json):
   the choice: no 50% batch discount (~$3 live vs ~$1.5 batched),
   affordable within the raised ceiling and squarely inside Matt's
   "don't block on 4a unless it wastes money".
+
+## 2026-08-14: corpus translation STOPPED after 12 modules -- waiting for batching
+
+Matt: "we should probably wait for batching given the cost." Live
+concurrent slice 1 stopped at 12 translated modules, $0.026 spent (they
+are on disk and --only-stale will skip them, so the work is banked, not
+lost). Campaign $9.20 of $20.
+Grounds: live forgoes together's 50% batch discount -- ~$3 live vs ~$1.5
+batched for the corpus. Config switched to execution.mode=batch,
+batch_min_pending=8.
+⛔ BINDING CONSEQUENCE, recorded at the config: checkpoint_pause is now
+FALSE. In batch mode a pause aborts _collect's routing loop and discards
+already-paid collected rows (review defect 4a, reproduced) -- exactly the
+"wasted money" case Matt's ruling carved out. So the corpus run waits on
+the 4a fix (already dispatched), and until it lands the ONLY safe batch
+configuration is record-only checkpoints. The graveyard cap (10) still
+stops the run for diagnosis regardless of mode -- that mechanism is
+independent of checkpoints and unaffected by 4a.
+SEQUENCE: 4a fix lands -> reviewed -> checkpoint_pause back to true ->
+resume the corpus in batch with --only-stale.
