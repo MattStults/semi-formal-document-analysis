@@ -215,6 +215,22 @@ def test_watches_matches_on_the_whole_path_not_the_basename():
     assert guard.watches(["other/schema.py"]) == 1
 
 
+def test_watches_agrees_with_resolve_star_does_not_cross_slash():
+    """G10 (2026-08-15): resolve() watches with glob, where `*` stops at
+    `/`. watches() used fnmatch, where it crosses — so a staged
+    `prompt/sub/x.md` fired the hook for a file resolve() does not watch
+    at all. Over-blocking is the safe direction, but 'what is watched'
+    must have ONE answer: the matcher the guard checks by."""
+    assert guard.watches(
+        ["walkthrough/paper_pipeline/phase_1/prompt/sub/x.md"]) == 1, \
+        "a file one level DEEPER than prompt/*.md fired the watch matcher"
+    # same-depth control: the real prompt files still fire
+    assert guard.watches(
+        ["walkthrough/paper_pipeline/phase_1/prompt/00_task.md"]) == 0
+    assert guard.watches(
+        ["walkthrough/paper_pipeline/phase_1/prompt/30_failure_modes.md"]) == 0
+
+
 # --------------------------------------------------------------------------
 # the pre-commit hook, exercised without running git
 # --------------------------------------------------------------------------

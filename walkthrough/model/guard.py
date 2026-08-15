@@ -286,6 +286,20 @@ def accept(paths, who=None):
     return 0
 
 
+def _glob_match(rel, pattern):
+    """glob semantics for one relative path: `*` and `?` stop at `/`.
+
+    resolve() watches with glob.glob; this matcher must agree with it, or
+    'what is watched' has two answers (G10, 2026-08-15 — fnmatch's `*`
+    crossed `/`, so a staged prompt/sub/x.md fired the hook for a file
+    resolve() does not watch). Same segment count, then fnmatch per
+    segment, which is glob's per-segment behaviour for `*`, `?` and [...]
+    (no `**` recursion — resolve() does not use recursive=True either)."""
+    rel_parts, pat_parts = rel.split("/"), pattern.split("/")
+    return len(rel_parts) == len(pat_parts) and all(
+        fnmatch.fnmatch(r, p) for r, p in zip(rel_parts, pat_parts))
+
+
 def watches(paths):
     """Return 0 if any given path is one this guard watches, else a non-zero
     the caller maps to its skip code (the CLI maps it to exit 3, reserved
@@ -306,7 +320,7 @@ def watches(paths):
                 rel = rel[len(prefix):]
                 break
         for e in entries:
-            if fnmatch.fnmatch(rel, e["path"]):
+            if _glob_match(rel, e["path"]):
                 return 0
     return 1
 
