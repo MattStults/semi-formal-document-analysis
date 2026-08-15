@@ -3093,3 +3093,55 @@ NOT YET ESTABLISHED (do not overclaim): 3 samples, all from L1-170. Whether
 this explains all 19 unrepaired -- and how many of the 32
 `undeclared-body-name` findings sit on genuinely normative clauses -- needs
 the rest of the sample. That is the next measurement, and it is free.
+
+## 2026-08-15: CHAIN ANALYSIS -- freezing is MOTION, not difficulty (98% vs 9%)
+
+_debug_gen11/CHAIN_ANALYSIS.md. Over 96 repair chains in three runs:
+  every reply distinct from every earlier reply -> 63 of 64 TRANSLATED (98%)
+  some reply repeats an earlier reply           ->  3 of 32 translated (9%)
+NOTHING about the defect predicts the outcome: recovered vs lost chains have
+the same round-1 finding counts (2.15 vs 2.47, medians both 1), the same
+check_ids, the same message shapes, the same output-length growth, and the
+same defect-trading rate (33% vs 32%). All 19 lost chains repeat an earlier
+reply; none of the 31 clean recoveries does. Repeat-of-ANY-earlier-reply
+beats adjacent byte-identity (19/19 vs 17/19) -- the attractor is a small
+CYCLE, not a point (n078 replies A,B,C,A,D; n056 replies A,B,A,A,A). Median
+distinct replies in a 5-call lost chain: 2.
+THREE HYPOTHESES KILLED WITH EVIDENCE:
+* provider determinism REFUTED -- 08-15 re-issued attempt 1 for all 19 with
+  byte-identical prompts and identical system/schema/provenance hashes;
+  0 of 19 replies matched. Sampling is live cold and frozen only inside a
+  transcript.
+* uninformative repair prompt REFUTED -- Haiku stand-ins replayed four
+  frozen transcripts in the ACCUMULATED condition (the exact input DeepSeek
+  froze on) and 4 of 4 performed the named repair in ONE turn, passing the
+  real schema.validate + checks.run_checks.
+* unfixable defect REFUTED for 14 of 19.
+What remains is ANCHORING ON ITS OWN PRIOR ANSWER -- and 9 of the 19 first
+repeat at ROUND 1, so one prior wrong answer in context is enough.
+CORRECTION TO THE RECORD: the class doc's "3 link-stage recoveries are
+corpus fill, quote 11 of 16" is WRONG -- translate.py:1381 calls repair_loop
+without concepts=, so in-loop checks never see concepts.json and its growth
+cannot have loosened anything. All 19 finals re-validated offline under
+identical gates: 14 recoveries pass, all 19 08-14 finals fail. **The number
+is 14 of 19.**
+EV, and it answers Matt's question directly (coverage, not just waste):
+current 95 calls -> 0 modules; stop-at-first-repeat (54 calls) + one clean
+restart (45 calls) = 99 calls -> 14 MODULES. The 45 calls a stop avoids are
+exactly the 45 the restart costs -- a call-for-call trade. Whole 100-clause
+population: ~230 calls / 69 modules today vs ~230 calls / ~81-83 modules.
+POLICY (designed, not implemented): hash every assistant turn against ALL
+earlier turns; on first repeat discard the transcript and restart the clause
+from attempt 1 ONCE (max_attempts unchanged, worst case 10 calls); on a
+repeat inside the restart, abandon and record with a new `frozen` graveyard
+flag. REJECTED BY NAME: paraphrasing the repair message, raising repair
+temperature, re-rendering full finding history -- the message is sufficient,
+the CONTEXT IT ARRIVES IN is the defect.
+Translation should adopt the graph driver's existing remedy
+(recurse_driver.py:1460-1467, dispatch_core.feed). translate_exec.can_restart
+returns hard False, but that decision was scoped to TRUNCATION only; freezing
+had never been measured. Two things not to copy: do not zero per-clause spend
+(the budget gate would lie), and key on repeat-of-any, not adjacent identity.
+FALSIFIER: "a repeated reply predicts non-convergence" -- whole-disk replay
+gives 3/49 (6.1%) adjacent and 3/32 (9%) repeat-of-any; above ~20% in a
+future corpus region the policy would be discarding real convergences.
