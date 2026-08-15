@@ -3,7 +3,7 @@
 **Headline: the confound did NOT survive. `TIER_ANALYSIS.md` §6's 5/10 → 10/10 (p = 0.033)
 was batch variance, not the instruction.** Under randomisation, with the same model, the
 same byte-identical prompts and three draws per cell, arm A scores **20/30** and arm B
-scores **21/30** (p = 1.00). The rank-1 falsifier named in `TIER_ANALYSIS.md` §8 —
+scores **22/30** (p = 0.78). The rank-1 falsifier named in `TIER_ANALYSIS.md` §8 —
 *"if arm A's pass rate then matches arm B's, the §6 result was batch variance"* — **fired.**
 
 Per the standing instruction that this result gates everything downstream:
@@ -60,11 +60,11 @@ harness reproduces the pipeline's own verdicts on bytes whose verdicts are alrea
 | arm | clean at attempt 1 | 95% (Wilson) |
 |---|---|---|
 | **A — stock gen-11 prompt** | **20 / 30 = 67%** | [49–81] |
-| **B — stock + RULE G** | **21 / 30 = 70%** | [52–83] |
+| **B — stock + RULE G** | **22 / 30 = 73%** | [56–86] |
 
-* **Fisher exact, two-sided: p = 1.000.** Difference **+3.3 pp**, 95% CI **[−20, +27] pp**.
+* **Fisher exact, two-sided: p = 0.779.** Difference **+6.7 pp**, 95% CI **[−16, +30] pp**.
 * **Clause-blocked permutation test** (arm labels permuted *within* each clause, which is
-  the randomisation actually performed): diff = +0.033, **p = 1.000**. This is the primary
+  the randomisation actually performed): diff = +0.067, **p = 0.769**. This is the primary
   test — it cannot borrow strength from between-clause differences.
 * **The original claimed +50 pp. That is outside the replication's confidence interval.**
   The replication is powered to exclude the reported effect size, and does.
@@ -74,7 +74,7 @@ Per clause (clean draws / total):
 | clause | arm A | arm B |
 |---|---|---|
 | l1_170_n036 | 2/3 | 2/3 |
-| l1_170_n046 | 3/3 | 1/3 |
+| l1_170_n046 | 3/3 | 2/3 |
 | l1_170_n049 | 2/3 | 2/3 |
 | l1_170_n051 | 3/3 | 3/3 |
 | l1_170_n056 | 3/3 | 2/3 |
@@ -90,7 +90,7 @@ The obvious way to dismiss a null here is "the requirement never fired". It did 
 
 * **25 of 30 arm-A draws declared at least one borrowed name** (`requires` + `inputs`),
   mean 2.70 names per draft, so they were exposed to the obligation. Clean-among-exposed
-  is 19/25 (A) vs 20/27 (B) — the same null.
+  is 19/25 (A) vs 21/27 (B) — the same null.
 * Arm B did write more: mean 3.27 declared names and 3.97 `concepts` entries against arm
   A's 2.70 and 3.23. **RULE G was read and acted on.** It simply did not move the endpoint.
 
@@ -114,11 +114,11 @@ numbers, but the sign is there:
 
 | classes seen ONLY in arm A | classes seen ONLY in arm B |
 |---|---|
-| `borrowed-without-gloss` (2), `act-not-in-acts` (1), `empty-body-not-null` (1) | `asp-body-unparseable` (2), `unsafe-variable` (1), `undeclared-body-name` (1), `readback-slot-arity` (1), `toggleable-licence-mismatch` (1) |
+| `borrowed-without-gloss` (2), `act-not-in-acts` (1), `empty-body-not-null` (1) | `asp-body-unparseable` (2), `undeclared-body-name` (1), `readback-slot-arity` (1), `toggleable-licence-mismatch` (1) |
 
-Arm B removed 2 findings of the target class and introduced 6 findings across five other
-classes, two of them (`asp-body-unparseable`, `unsafe-variable`) in the family that makes
-clingo refuse the whole file. **Directional only — do not quote as a measured trade rate.**
+Arm B removed 2 findings of the target class and introduced 5 findings across four other
+classes, two of them (`asp-body-unparseable`) in the family that makes clingo refuse the
+whole file. **Directional only — do not quote as a measured trade rate.**
 
 ## 4. The specific §6 claim that does not reproduce
 
@@ -128,7 +128,7 @@ Splitting this replication by the original batches:
 
 | original batch | originally | arm A here | arm B here |
 |---|---|---|---|
-| A1: n036, n046, n049, n051, n056 | 5/5 PASS | **13/15 (87%)** | 10/15 (67%) |
+| A1: n036, n046, n049, n051, n056 | 5/5 PASS | **13/15 (87%)** | 11/15 (73%) |
 | A2: n071, n072, n075, n082, n087 | **0/5 FAIL** | **7/15 (47%)** | 11/15 (73%) |
 
 * The A2 clauses are genuinely somewhat harder (87% vs 47% within arm A) — **there is a
@@ -138,7 +138,18 @@ Splitting this replication by the original batches:
   bad luck, amplified by n = 5 with no replication.
 * On the A2 subset alone, arm B is +26.7 pp (11/15 vs 7/15), **Fisher p = 0.264, CI
   [−7, +60]** — a direction, not a finding, and it is exactly the subgroup the original
-  design selected on, so it is the least trustworthy number in this document.
+  design selected on, so it is the least trustworthy number in this document. On the A1
+  subset arm B is **−13.3 pp** (11/15 vs 13/15, p = 0.651); the two subgroups cancel, which
+  is what a null looks like when you slice it.
+
+⚠️ **One disclosure about the draws.** Three tasks (`t054`, `t057`, `t059`) were dispatched
+twice — the first attempt hit the 20-subagent concurrency limit and was re-issued, and both
+agents eventually ran and wrote to the same file, so the stored answer is the second
+agent's. Each stored answer is still exactly one isolated agent's single first response, so
+the design is intact, but the *selection* of which of two draws survived was arbitrary
+rather than random for those three. Scoring the earlier set instead gives arm B 21/30
+(p = 1.00) rather than 22/30 (p = 0.78). **Both readings are null and both exclude the
+original's +50 pp**, so nothing in this document turns on it.
 
 ## 5. EXPERIMENT 2 — built, staged, and NOT RUN
 
@@ -180,7 +191,7 @@ another Haiku pass.
   this. `borrowed-no-gloss` really is 57% of the 2-attempt tier's single repair round and
   26% of all repair rounds **in the DeepSeek corpus**. This replication says nothing about
   those counts; it says the *live A/B that was offered as the fix's evidence* was noise.
-* **NOT established:** that Fix C is worthless. The CI admits effects up to +27 pp, and
+* **NOT established:** that Fix C is worthless. The CI admits effects up to +30 pp, and
   §3.2 shows this instrument could not detect a real effect anyway. **The correct next
   measurement is the DeepSeek A/B that `TIER_ANALYSIS.md` §8 rank 1 already names** — and
   it should be run with this replication's randomisation, not the original's batching.

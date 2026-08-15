@@ -3192,3 +3192,46 @@ on first-try; and 9 of the 19 clauses that burned all 5 attempts for nothing
 passed on ATTEMPT 1 of a byte-identical re-draw. No static feature can
 explain most of the 43->80 gap -- which is why the chain policy (restart on
 repeat) and the fresh-draw finding rank where they do.
+
+## 2026-08-15: FIX C's EVIDENCE DIES UNDER RANDOMISATION -- and the ladder
+## to 80% first-try goes with it
+
+_debug_gen11/FIXC_REPLICATION.md. The tier analysis reported arm A (stock)
+5/10 vs arm B (stock + a counted gloss rule) 10/10, p=0.033 -- with its A/B
+split coinciding with the subagent batch split. Re-run with arm fully
+decorrelated from agent identity (60 ISOLATED Haiku subagents, one task
+each -- no batch to confound with and no cross-clause carryover), 10 clauses
+x 2 arms x 3 draws, byte-identical stored prompts, validated through the
+exact call translate.py:2557 makes:
+    arm A stock  20/30 = 67% [49-81]
+    arm B RULE G 22/30 = 73% [56-86]
+    Fisher p=0.779; clause-blocked permutation p=0.769; +6.7pp,
+    95% CI [-16, +30]. **The original +50pp is OUTSIDE the interval.**
+The null is INFORMATIVE, not merely underpowered: (a) not vacuous -- 25/30
+arm-A draws declared >=1 borrowed name so were exposed to the obligation,
+and arm B visibly complied (3.97 vs 3.23 concepts); (b) the targeted defect
+BARELY OCCURS -- borrowed-without-gloss fired on 2 of 30 arm-A draws, so the
+original's apparent power came from ONE subagent making it five times in a
+row; (c) the original's key argument fails directly -- the five clauses it
+scored 0/5 pass 7/15 here under the same stock prompt; (d) directional harm
+signal: arm B removed 2 target findings and INTRODUCED 5 across four other
+classes, two of them asp-body-unparseable.
+NOTHING WAS LANDED OR PROPOSED. node_worked_example.md, prompt/*.md and
+schema.py are untouched (verified against git). Experiment 2 (the DC-1
+worked example) was built to runnable and STOPPED, since it is gated on
+step 1; the draft example validates clean and is staged in
+_debug_gen11/fixc_replication/, not in any prompt.
+CONSEQUENCE, stated plainly: the counterfactual ladder 43% -> 55% ->
+75-81% rests on Fix C's 12pp first rung, which is now UNSUPPORTED. The
+"best case 80% first-try / 98% translated" projection given to Matt earlier
+today is NOT established. What survives with evidence is the chain policy
+(98% vs 9%, implemented) and the arity check (4/4 lethal, implemented) --
+both of which raise EVENTUAL coverage, not first-try rate.
+TWO HONEST CAVEATS from the agent: RULE_G.txt is a RECONSTRUCTION from the
+original's prose (its artifacts were lost to a session scratchpad) -- if the
+original wording surfaces, re-run before treating this as settled; and the
+null kills THE EVIDENCE OFFERED FOR Fix C, not Fix C (the CI admits up to
++30pp, and this instrument may not be able to detect a real effect at all).
+The decision needs a DeepSeek A/B with this randomisation. Same warning
+before spending on experiment 2: check first whether Haiku reproduces
+undeclared-body-name on that cohort at all.
