@@ -1,5 +1,30 @@
 # REVIEW 2026-08-13 — graph_v2 campaign (pre-ds7 slice, deep adversarial pass)
 
+## ⚠️ STATUS ADDENDUM — re-verified 2026-08-14 at HEAD `9f44d21`
+
+The original verdict reviewed ds7's launch slice (`8614f44`). Since then: **ds7 COMPLETE —
+acceptance PASS on all pre-registered bands** (0.6% mismatched edges, 0 coinages) after two
+restarts; root cause of the restarts was identical-retry temp-0 lock-in, fixed in the **ds8
+fix set** (`51098a0`: dispatch_core +143, recurse_driver +131, new `frontier_review.py` /
+`fixup.py`, 92 new pins); an Opus recheck corrected the finale's "40 defects" to **14/45**
+(`opus_recheck_report.md`); `production_certification.md` and ds7_production/ds7_repaired
+artifacts landed. The statement "ds7 is already running on frozen commit" below is
+SUPERSEDED — ds7 is done and the code has moved. Finding status at today's HEAD:
+
+| Finding | Status 08-14 | Evidence |
+|---|---|---|
+| F1 risk_queue double-counts root-unwind verdicts | **STILL LIVE** (latent) | `risk_queue.py:37` `**/graph.json` glob unchanged; ds7 acceptance passed anyway (0.6% is far under the 7% band on any denominator) |
+| F2 descend cap per-dangling overshoot | **PARTIALLY FIXED** | cap is now a mechanism with honest records: capped danglings recorded in `descend_near_misses` with `capped: true` + ranked candidates (`recurse_driver.py:1897–1906`); the cap is still checked per-dangling rather than per-call |
+| F3 `adjudicate_resolutions` no dedupe / re-billing | **PARTIALLY FIXED** | greedy descend now has a `seen_verdicts` cache keyed `(prose, candidate)` (`recurse_driver.py:1896,1913`) — still needer-blind per accepted disposition #7; `adjudicate_resolutions` itself still shows no dedupe |
+| F4 spend banner never printed | **NOT RE-RUN** | new stages propagate exit codes (`fixup.py:166`, `frontier_review.py:818`, refusal paths `sys.exit(2)`), which addresses F5's shape; banner printing itself unverified |
+| F5 post-build failures ≠ exit code | **PARTIALLY FIXED** | as above — new stages exit non-zero; original recurse_driver post-build path not re-run |
+| §3 expectation checkability | **SUPERSEDED-BY-RESULT** | ds7's acceptance script ran and PASSED all bands; the denominator ambiguity never bit (0.6% ≪ 7%) |
+| §1 nine prior dispositions | still valid | `risk_queue.py`, leaf/unwind code untouched except as noted; re-verification table below remains accurate for the reviewed slice |
+
+New code not covered by this review (needs its own pass): `frontier_review.py` (624 lines),
+`fixup.py` (166), `behavior_pilot/` (behavior_match.py 502 + tests 292),
+`test_routing_fixes.py` (687 pins), `production_certification.md`.
+
 **Verdict: PASS WITH CORRECTIONS.** The five claims marked FIXED in the
 pre-ds7 review all hold under repro. The three deferred/accepted items are
 correctly scoped LOW with bounded blast radius, and — important for an

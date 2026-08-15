@@ -2899,3 +2899,29 @@ documented --all command would clobber the fixture a fourth time --
 detected by test_full_corpus_mode..., not prevented), and
 node_worked_example.md cites sample-corpus node ids that do not exist in
 the 773 -- harmless as pedagogy, but its pin now means less than it says.
+
+## 2026-08-15: proactive graveyard check -- both entries BENIGN, but the cap
+## will fire on convergence noise, not defects
+
+Checked the first 2 entries from the corpus run rather than waiting for the
+cap. Both `translated` (3 and 2 attempts), ZERO error-severity findings;
+the only notes are `requires-unprovided`, which at ~45/773 modules is
+EXPECTED BY CONSTRUCTION -- most providers are not translated yet, so a
+cross-module `requires` has nothing to resolve against. Cleared with
+verdicts that carry a RECHECK-AT-COMPLETION condition: if those names are
+still unprovided once all 773 exist, it becomes a real under-export
+finding.
+PROJECTION worth ruling on: the graveyard records every NON-FIRST-ATTEMPT
+CONVERGENCE, not only failures. Observed rate on the live slice is ~2
+entries / 12 modules (~17%); the campaign's recorded repair rate is ~25%.
+Over 773 modules that is ~130-190 entries, i.e. ~13-19 stops at cap 10 --
+almost all of them benign convergences like these two. The cap's stated
+purpose ("a hundred uninspected non-convergences is not a corpus") is
+aimed at the FAILURE case, which these are not.
+OPTIONS for Matt: (a) keep cap 10 and accept ~15 diagnosis stops (his
+stated preference for frequent stops, and each stop is cheap when the
+entries are clean); (b) raise the cap to ~30 -- still bounded, ~5 stops;
+(c) leave the cap and let the census distinguish -- an UNREPAIRED entry is
+the signal, a converged-after-repair entry is recorded evidence. NOT
+recommended: making the graveyard stop recording convergences, which would
+delete the evidence trail the census reads.

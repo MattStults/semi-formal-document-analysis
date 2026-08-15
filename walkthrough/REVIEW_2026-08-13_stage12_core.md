@@ -1,5 +1,25 @@
 # REVIEW — stage-1/stage-2 core (`translate.py`, `schema.py`, `checks.py`, `link.py`) — 2026-08-13
 
+## ⚠️ STATUS ADDENDUM — re-verified 2026-08-14 at HEAD `9f44d21`
+
+Method: `git diff 8614f44..HEAD` audit of scope files + targeted re-runs. Read this block
+before citing any finding below; the original text is the 08-13 snapshot, unchanged.
+
+| Finding | Status 08-14 | Evidence |
+|---|---|---|
+| §A1 content guard counts `concepts` | **STILL LIVE** | `schema.py:789–790` unchanged — `or self.concepts` still in the guard; Attack D still open |
+| §A2 repair guards telemetry-only | **STILL LIVE** | ds8 fix set (`51098a0`) changed `translate.py` (+178) and `translate_exec.py` (+13), but the diff is the identical-retry TRANSPORT seam guard (sha256 telemetry + send-variance), not the gaming guards; no outcome-setting added |
+| §A3 suite RED (`test_d4b_no_table_and_no_concepts_declared_is_silent`) | **STILL RED** | re-ran 08-14: still fails, same fixture-drift cause |
+| §A4 `link.py` misreads flagship header | **STILL LIVE** | re-ran `link.py walkthrough/m0255.lp` 08-14: same 3 false unresolved-reference ERRORs (`out_of_scope/2`, `policy_class/2`, `scope/2`) |
+| §A5 `forbid-body` case/trailing-comment inertness | **STILL LIVE** | `link.py:118` FORBID regex still lacks `re.I` |
+| §A6–§A9 | unchanged scope files | `schema.py`/`checks.py`/`link.py` all show an EMPTY diff since review HEAD |
+
+Context deltas since 08-13: (1) `TRANSLATION_RUNBOOK.md` + `RUNBOOK_AUDIT.md` landed in
+phase_1 — not reviewed here. (2) This review's "translate_exec.py is a second copy of the
+repair loop" note still applies and that file was modified in ds8 — re-audit recommended
+before the next translation campaign. (3) Baseline counts below are 08-13 snapshots; the
+suite has since grown (EXPERIMENTS.md 08-14: graph_v2 232, phase_1 800 green).
+
 **VERDICT: the core is unusually disciplined — honest tests, negative controls, silent-paths
 closed one by one — but it admits a whole class of contentless modules as `translated`
 (Attack D, now generalized), its repair-gaming guards are telemetry-only AND have concrete

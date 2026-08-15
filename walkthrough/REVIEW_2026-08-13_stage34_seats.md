@@ -1,5 +1,22 @@
 # Adversarial review — stage 3/4 seats, read-back and mutation harnesses, 2026-08-13
 
+## ⚠️ STATUS ADDENDUM — re-verified 2026-08-14 at HEAD `9f44d21`
+
+Method: `git diff 8614f44..HEAD` over every in-scope file (`seats.py`, `readback.py`,
+`readback_r3.py`, `probe.py`, `mutate_seats.py`, `mutate_schema.py`, `mutate_readback_r3.py`
+and their tests). **The diff is EMPTY for all of them** — none of the 10 commits since this
+review touched stage 3/4. Consequences:
+
+- Every finding below stands exactly as written (F1 FIXED … F10 FIXED, **F8 STILL-LIVE**,
+  N1–N3 confirmed). Nothing was fixed, nothing regressed, nothing changed shape.
+- F8 re-confirmed directly 08-14: `readback.py:70` still `ECHO_LEVEL = 0.90`; corpus max
+  echo unchanged, so the non-evidential stamp still cannot fire and §3a's 0.88 example
+  still contradicts.
+- The overnight work (ds7 completion, ds8 fix set, Opus recheck, behavior pilot) all landed
+  OUTSIDE this scope — in graph_v2, translate.py transport, and new files.
+- Baseline counts below (940 / 440) are 08-13 snapshots; the suite has since grown
+  (EXPERIMENTS.md 08-14: phase_1 800 green + graph_v2 232, a different counting cut).
+
 **Reviewer:** clean-context subagent, no stake in this code, READ-ONLY (the only file created is
 this report). **Scope:** `walkthrough/paper_pipeline/phase_1/` — `seats.py`, `readback.py`,
 `readback_r3.py`, `probe.py`, `mutate_seats.py`, `mutate_schema.py`, `mutate_readback_r3.py` and

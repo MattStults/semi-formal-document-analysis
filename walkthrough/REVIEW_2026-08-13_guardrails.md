@@ -1,5 +1,24 @@
 # Engineering review — the meta-instruments, 2026-08-13
 
+## ⚠️ STATUS ADDENDUM — re-verified 2026-08-14 at HEAD `9f44d21`
+
+Method: re-ran the gauge, the ledger reconciliation, the drift diff and the attestation
+greps at today's HEAD. Read this block before citing any finding below.
+
+| Finding | Status 08-14 | Evidence |
+|---|---|---|
+| G1 budget gauge ~4× wrong | **MECHANISM STILL LIVE, urgency downgraded** | `spend.py` still prints **$3.45 of $8.50 (41%)**, still no DeepSeek-V4-Flash row, still "2051 calls with no price entry". BUT the budget was **raised to $15** (recorded rulings `dff232f`/`3668862`) and the campaign ledger tracks it honestly: EXPERIMENTS.md 08-14 says "$8.95 of $15.00", which matches the independently computed embedded-cost sum ($8.95). The gauge's default display "$8.50" now also contradicts the recorded $15 ruling — a new sub-finding |
+| G2 pre-commit hook fails open | **STILL LIVE** | hook line unchanged: `python3 walkthrough/model/guard.py --watches $staged || exit 0` |
+| G3 eval-arm drift / write-only attestation | **STILL LIVE** | re-ran 08-14: `eval_arms/prompt_head/00_task.md` still differs from live `prompt/00_task.md`; only `prompt_b` carries a `.provenance.json` sidecar — `prompt_a_pre_example`, `prompt_head_plus6`, `prompt_head_plus6_prose` have none |
+| G4 embedding spend unledgered; no reconciliation command | **STILL LIVE** | raw-curl embedding path unchanged; still no command that reconciles ledger total vs cap |
+| G7 suite RED | **STILL RED** | `test_d4b_no_table_and_no_concepts_declared_is_silent` still fails at HEAD |
+| Attestation audit | **MIXED** | walkthrough `README.md` no longer contains the 27,754-char / 53-check / $0.021 figures (resolved by edit); `AGENTS.md:86` still reads "$8.50, ~$2.15 used" — **STALE on both numbers** (cap is $15, usage $8.95) |
+| Guard state | **GREEN** | 6/6 watched files at review point — as this report originally recorded (the RED expectation came from the stale REVIEW_QUEUE entry) |
+
+**Verdict: NOT CLEAN** — G1/G2/G3 all remain open in mechanism; G1's breach condition was
+removed by the cap raise, not by fixing the gauge. The meta-question below still has three
+verified yeses.
+
 Scope: the guardrails, ledgers and evaluation harnesses — the instruments that certify
 everything else. Staleness guard (`model/guard.py` + hook), spend accounting
 (`semi-formal-experiment/spend.py` + `usage.jsonl`), the eval harness
