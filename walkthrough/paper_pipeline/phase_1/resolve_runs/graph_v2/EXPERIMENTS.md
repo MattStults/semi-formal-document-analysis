@@ -3642,3 +3642,167 @@ LEDGER: PRICED SUBTOTAL $11.924 of the $20.00 `spend.py:BUDGET`. `spend.py`
 still refuses to call it a total -- 1 of 3130 rows has no price entry -- and
 separately warns the figure OVERSTATES for 1,641 cached-input rows and for
 any batch-billed rows (G1).
+
+## 2026-08-15: preflight review -- SOUND, four numbers corrected, run the slice
+
+Independent re-derivation of the preflight replay (own scripts, no `translate`
+import except where noted, sha1 recomputed locally). `_debug_gen11/review_preflight/`.
+**Every headline reproduces exactly on the population it was computed against**
+-- 52/212, 0/237, 0/230, 0/120, 11 attempt-1 flags, 8% vs 66% pooled. Runtime
+fidelity verified: the replay imports `translate._reply_hash` rather than
+copying it; attempt indexing is right (the earliest possible fire is attempt 2
+and the replay starts there); every stored transcript's role sequence is
+exactly `(UA)*attempts`, 352 of 354, the 2 exceptions being the known
+pre-`9388554` truncations. No finding blocks the run. FOUR CORRECTIONS:
+
+**C1 -- BLAST RADIUS IS 32%, NOT 24.5%.** Stratifying by
+`(system_sha, schema_sha)`, both live configs compute to `system_sha 5ff9daf7 /
+schema_sha 30ef9db2 / max_attempts 5`, i.e. **the live run sits in one specific
+stratum**, and on that stratum 33 of 103 multi-attempt chains fire = **32.0%,
+Wilson95 [23.8%, 41.6%]** (17.4% of all chains). The preflight conceded
+generation-specificity for the 9/98 predictor; the same objection applies to
+the blast radius and moves it the UNFAVOURABLE way. The consolation: the
+predictor gets BETTER in the live stratum -- **9% vs 99%** (3/33 vs 69/70),
+reproducing CHAIN_ANALYSIS almost exactly. Quote 32%.
+
+**C2 -- THE COST MULTIPLIER IS RIGHT BUT MUST NOT TOUCH THE GATE.** Fitting
+per-call cost from run-level `spend.usd` across 23 runs gives
+`c_k = 0.001676 + 0.000101*(k-1)`. Token-weighted on the live stratum: redraw
+lands first try **0.877x**; redraw = 2 attempts **0.955x**; redraw runs full
+`max_attempts` **1.217x**; unphysical no-truncation bound 1.414x. The
+truncation saving is MEASURED, not assumed -- fired chains fire at attempt 2-3
+in 28 of 33 live-stratum cases while stored length is 5 in 31 of 33. So the
+claimed 1.28x upper bound holds under every physical assumption.
+**⛔ The correct message is "expected spend ~= 1.0x, gate headroom must remain
+2x" -- NOT "do not budget 2x".** `translate.py:1302` doubles before
+`cost_gate` by signed ruling, and the 125-node slice cap depends on it. Also
+restricted to FIRED chains alone the range is 0.79x-1.60x, so 0.89-1.28x is a
+whole-run figure and is wrong read as a per-clause guarantee.
+**TRAP RECORDED:** `run.json`'s per-clause `cost_usd`/`tokens_in`/`tokens_out`
+are written at `translate.py:1435` from `client.complete(...)` **before
+`repair_loop` runs** -- they record ATTEMPT 1 ONLY. Summed per-clause cost is
+flat in chain length ($0.00155 at L=1, $0.00159 at L=5); that is the field not
+measuring repair, not a caching effect. Any multiplier derived from it is
+meaningless. Sound bases: call counts and run-level `spend.usd`.
+
+**C3 -- THE ARITY UPSIDE IS ~5x OVERSTATED; THE FALSE-POSITIVE HALF IS
+CONFIRMED.** `checks.run_checks` returns `CheckResult("invalid", ...)` when
+`schema.validate_all` yields `mod is None`, **before** `findings +=
+arity_findings(mod)`. The replay scored raw dicts unconditionally, counting
+flags the live loop never emits: 39 flagged, **16 live-emitting**, 23
+suppressed by the short circuit; at attempt 1, 11 flagged but **2**
+live-emitting. Price the check at **16 live firings across 348 chains**, not
+39/11. The load-bearing half survives intact: `arity_mismatches(raw_dict)` vs
+`arity_mismatches(validated Module)` disagree on **0** attempts where a Module
+exists, so the 0-false-positive result is not an artefact of scoring the wrong
+object, and all 16 live firings carry zero schema breaches -- each is
+genuinely additive, none on an accepted final attempt.
+
+**C4 -- "6 chains / 5 clauses", not 5.** Six chains carry the mismatch at every
+scored attempt and end `unrepaired`: `l4251_4571_n029`, `l797_809_n001`,
+`l1_170_n047`, `l1_170_n087`, `l1_170_n088`, `l171_426_n024`. "5" requires
+additionally that every stored chain for the clause failed, which drops
+`l1_170_n088`. Definitional, not an error -- state both.
+
+UPHELD, and worth recording because each was a live suspicion:
+* **The 9-12% band is GENUINE, not retrofitted** -- `CHAIN_ANALYSIS.md` lines
+  98/309 and the `repair_loop` docstring, all written at `23b297c`, before the
+  preflight. **And it pre-registers the actual decision rule at line 338: "if a
+  future corpus region puts that materially above ~20%, revisit."**
+  Pooled 4/52 = 7.7% [3.0, 18.2], P(X<=4 | p=.20) = 0.014 -> 20% excluded.
+  Live stratum 3/33 = 9.1% [3.1, 23.6], P(X<=3 | p=.20) = 0.081 -> **20% NOT
+  excluded**. The point estimate sits dead centre of the band on the population
+  that matters, but **n=33 cannot distinguish 9% from 20%**, and it can only be
+  excluded by pooling across generations, which C1 says not to do. So this is
+  "priced, recheck after the first slice", not "settled". ⚠️ Also the 52-chain
+  population largely CONTAINS CHAIN_ANALYSIS's 32 -- enlarged evidence, not an
+  independent replication.
+* **No selection or survivorship bias.** The 17 transcript-less results
+  (translated 7 / invalid_module 6 / error 4) all have `attempts` null or 1 --
+  **none could have fired**. Of the 2 truncated transcripts, at most one missed
+  fire, in the direction that would RAISE the blast radius.
+* **Resumption holds including the gap the coordinator named.** Killed INSIDE
+  `write_stamp` with the module already on disk -> `unstamped`, re-translates.
+  Killed after the stamp but before the `run.json` flush -> `current`, skips --
+  and that is CORRECT, because the write order is `.json` -> `.lp` -> stamp, so
+  a stamp implies a complete artefact; the only loss is a census row.
+
+RULING: authorised to run the slice. The review's own recommendation and the
+2026-08-15 slice ruling agree -- 3/33 is the one number the data cannot
+separate from the pre-registered 20% revisit threshold, and a small slice is
+how it gets separated.
+
+## 2026-08-15: node_worked_example.md is STALE in 5 respects -- and WHICH SIDE IS WRONG IS NOW OPEN
+
+Clean transcription review commissioned by the guard going red on the newly
+watched file (`39b464c`). Deliverable
+`_debug_gen11/REVIEW_node_worked_example.md`. No file edited, no `--accept`,
+zero spend. Verdict STALE, five respects, ordered by consequence.
+
+**S1 -- THE FILE TEACHES A VIOLATION OF ITS OWN CONTRACT, and this is bigger
+than what the review was sent to test.** Contract #2 (`node_worked_example.md:12-15`)
+says "Every `NEEDS` name goes in `requires`, spelled exactly as given". Its own
+third exemplar `l4251_4571_n029` has `"requires": []` at line 231 while that
+node's contract carries `NEEDS: voice_turn_taking_rule`. **Nothing catches it:**
+`checks.py` never reads NEEDS/PROVIDES, and `test_node_worked_example.py:107-113`
+pins the contract for the flagship node ONLY. The prose at line 189 also omits
+the NEEDS line when introducing the node, so it is invisible from the file
+alone. A demonstration is what the model imitates; this one demonstrates the
+breach of the rule stated 200 lines above it.
+
+**S2 -- THE CONTRADICTION IS REAL, INTERNAL, AND PARTLY INVERTED.** Confirmed
+and it does not need 00_task.md at all: line 148 calls the heading node "a
+classification, not obligations", line 300 says a node establishing no
+obligation should abstain, line 152 shows it TRANSLATED. That is internal to
+the file. **But the direction of blame is now open:** `00_task.md:111`'s
+four-trigger list ("it is a section heading ... it is an example") is licensed
+by **NO sentence in `resources/03_pipeline.md`** -- the design's criterion is
+FAITHFULNESS ALONE (`03_pipeline.md:635-638`). ⛔ The `watch.json` `why` and PR
+#5 both framed the worked example as the erroneous side. **That framing is
+withdrawn.** On the design's own text the four-trigger list is the unlicensed
+addition, and the worked example's "hollow-but-honest module OR a clean
+abstention" may be the faithful reading. This must be settled against
+`03_pipeline.md`, not by picking whichever file we read first.
+
+**S2b -- THE CAUSAL CLAIM ABOUT THE EXEMPLAR IS WITHDRAWN.** Corrected counts:
+**9 runs** on `l3995_4164_n001`, **7 with the exemplar in prompt -> 6
+translated / 1 abstained** (NOT "six runs, 5 translated / 1 abstained" as this
+log and PR #5 stated). The sharp datum SURVIVES in its cleanest form:
+`20260810-225427` abstained while `234100` and `133317` translated on
+**byte-identical system prompts** (md5 `9a74c4...`), same model -- so the
+instruction underdetermines the answer. **But the 2 runs WITHOUT the exemplar
+also translated, 2/2, so the data does NOT show the exemplar CAUSES
+translation.** What is established is underdetermination, not causation.
+
+**S3 -- THE HEADING MODULE IS A DEAD DEMONSTRATION.** The file states no
+PROVIDES contract anywhere, and the heading module's only rule is guarded by
+`rule_under_heading/2`, which **ZERO of the 773 live nodes provide** -- so it
+derives nothing, while **126 nodes NEED the `guideline_authority` it was
+supposed to provide.** That is failure mode #3, demonstrated by the file meant
+to teach against it. NOTE, and it matters for the owner's heading-authority
+ruling: this is NOT an argument against the body-less ontology route. A ground
+atom with no body stays legal (`10_output_format.md:33-34`); the defect is the
+GUARD on the rule, not the fact-shaped entry. No edit proposed.
+
+**S4 -- "real nodes of this corpus" IS FALSE (`node_worked_example.md:5`).**
+`config_corpus_all.json` runs `node_corpus_all.json` (773 nodes, from
+`runs/ds7/graph.json`) and **none of the four exemplar ids exist in it**; the
+content moved to `l609_698_n008`, `l3954_4251_n009`, `l4252_4482_n025`,
+`l1707_1973_n022`. `test_node_worked_example.py` reads the frozen 15-node
+fixture, **so it passes blind**. This is exactly the "the design moved and
+nobody edited the file" direction the guard exists for.
+
+**S5** -- `03_pipeline.md:403` still says "one good, five bad". Reported,
+unresolved.
+
+CONTEXT THAT MAKES THE GAP STRUCTURAL: `guard.py --self-test` 7/7, 41 tests
+pass, and **no other watched file is stale** -- the design has not moved since
+2026-08-12. Every divergence above is against UNWATCHED artifacts
+(`node_corpus_all.json`, the graph itself), i.e. structurally out of the watch
+list's reach. Widening the list caught the file; it does not yet catch what the
+file drifted against.
+
+DISPOSITION: `--accept` remains UNRUN and must stay unrun -- the file is stale
+on five counts and one of them (S2) is a live design question the owner has to
+rule on. REJECTED BY NAME: editing the worked example to match 00_task.md's
+four-trigger list, which would harden an addition the design does not license.

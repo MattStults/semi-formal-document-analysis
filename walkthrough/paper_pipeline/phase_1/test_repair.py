@@ -950,9 +950,21 @@ def test_the_TWO_cost_call_sites_do_not_DRIFT():
 #: `--limit` slices. Pinning the full-corpus price against the ceiling would
 #: therefore pin a claim the config never made. What IS pinned for it is that a
 #: real slice still fits, sized from the config's own `execution.batch_min_pending`
-#: (below that, batch mode will not dispatch at all, so a config whose smallest
-#: DISPATCHABLE slice is unaffordable is dead in exactly the way this pin
-#: exists to catch). The largest gate-passing slice at the time of the
+#: — a config-derived number rather than one invented here, and a slice that
+#: size is unambiguously real.
+#: ⛔ CORRECTED (review finding F-C, 2026-08-15): this used to justify that
+#: size by claiming "below that, batch mode will not dispatch at all, so a
+#: config whose smallest DISPATCHABLE slice is unaffordable is dead".
+#: `dispatch_core.py:930-937` says the opposite in its own docstring — a flush
+#: fires when the ready queue holds >= `batch_min_pending`, and "when nothing
+#: is in flight and the queue is smaller, the queued items run LIVE
+#: (starvation fallback — the tail and top of a tree never wait on a
+#: threshold they cannot reach)". So a sub-threshold slice IS dispatchable.
+#: The assertion was never wrong — 8 nodes is a real slice and it passes — but
+#: the stated grounds were, and this round's own F3 was precisely "a docstring
+#: asserting behaviour the code contradicts is how the wrong thing gets
+#: reintroduced". Do not restore the "will not dispatch" claim.
+#: The largest gate-passing slice at the time of the
 #: 2026-08-15 review was 125 nodes (down from ~250 — the restart doubling
 #: legitimately halves it); that figure is recorded in
 #: `resolve_runs/graph_v2/EXPERIMENTS.md` and deliberately NOT pinned here,

@@ -183,9 +183,43 @@ def main():
     # node texts are ~3x clause size, so the worst-case estimate (full
     # max_tokens out per node, repair growth) exceeds phase_1's $0.25 gate.
     # Raised DELIBERATELY for this sample; realistic spend is ~10-20% of it.
-    # 5-attempt worst case prices at ~$0.99 (triangular growth); measured
-    # spend across runs 1-5 was $0.05-0.08/run. Raised DELIBERATELY.
-    cfg["cost"] = dict(cfg["cost"], max_cost_usd=1.00)
+    # ⛔ THIS VALUE CARRIES A HUMAN RULING AND THE GENERATOR MUST NOT ERASE IT
+    # (review finding F-A, 2026-08-15). This file GENERATES
+    # config_graph_nodes.json, so a routine `python3 node_corpus.py` refresh
+    # rewrites the whole `cost` block from phase_1/config.json. Until this
+    # line was fixed it wrote 1.00 back and DELETED the `_ceiling_note` that
+    # records why the ceiling moved — silently reverting the ruling. The note
+    # is therefore emitted HERE, by the generator, not patched into the JSON
+    # by hand; a hand-patch is exactly what the next refresh would lose.
+    #
+    # The old comment here said "5-attempt worst case prices at ~$0.99
+    # (triangular growth)". That was true and is now FALSE: stage 2's repair
+    # loop may discard a frozen transcript and redraw the clause once, so a
+    # clause's worst case is TWO chains of max_attempts and run() prices it by
+    # doubling the single-chain estimate. Measured: $0.9970 single-chain,
+    # $1.9940 doubled. Realistic spend remains ~10-20% of the worst case
+    # (0.89x-1.28x of the old policy, since the truncated chain nearly pays
+    # for the redraw) — but a gate is priced on the worst case, not the mean.
+    _CEILING_NOTE = (
+        "RAISED 1.00 -> 2.00 by the human, 2026-08-15, and the raise is "
+        "MINIMAL BY RULING. Stage 2's repair loop may DISCARD a frozen "
+        "transcript and redraw the clause once from attempt 1, so a clause's "
+        "worst case is TWO chains of max_attempts, and run() prices it by "
+        "doubling the single-chain estimate. This selection prices $0.9970 "
+        "single-chain and $1.9940 doubled, so the old $1.00 ceiling refused "
+        "it with a CostGateError before a single call. The doubling is REAL "
+        "COST -- a second sampled draw that is actually paid for -- not an "
+        "estimation artefact, so the answer is a ceiling that admits it and "
+        "not a cheaper estimate. 2.00 exactly, NOT 2.50 and not 'with "
+        "headroom': a ceiling with slack is a ceiling that has stopped being "
+        "a constraint, and this one must still bite the next time the worst "
+        "case moves (16 nodes already prices $2.1267 and is refused). "
+        "Grounds and the measured figures: the 2026-08-15 chain-policy "
+        "adversarial-review entry in EXPERIMENTS.md (finding P5), and the "
+        "generator-erasure finding F-A in the same file."
+    )
+    cfg["cost"] = dict(cfg["cost"], _ceiling_note=_CEILING_NOTE,
+                       max_cost_usd=2.00)
     # run-5 evidence: the residual failures are single-instance craft slips,
     # not classes; the honest lever is repair budget (each attempt costs
     # ~$0.001-0.004), not more prompt prose

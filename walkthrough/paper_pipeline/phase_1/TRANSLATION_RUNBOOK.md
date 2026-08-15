@@ -126,7 +126,7 @@ They differ in more than paths — **know these before you interpret a result:**
 
 | knob | clause config | node config |
 |---|---|---|
-| `cost.max_cost_usd` | **0.25** | **1.00** |
+| `cost.max_cost_usd` | **0.25** | **2.00** |
 | `repair.max_attempts` | **3** | **5** |
 | `model.resample_truncation` | *unset* (= raise on truncation) | **2** |
 | graveyard dir | `repair_graveyard/` | `translation_sample/repair_graveyard/` |
@@ -187,11 +187,27 @@ Read the cost line before anything else. Current measured values:
 
 | selection | worst-case cost | ceiling | margin |
 |---|---|---|---|
-| clause default (3 clauses) | $0.0872 | $0.25 | comfortable |
-| **node default (15 nodes)** | **$0.9970** | **$1.00** | **$0.003** |
+| clause default (3 clauses) | $0.1745 | $0.25 | comfortable |
+| **node default (15 nodes)** | **$1.9940** | **$2.00** | **$0.006** |
 
-⛔ **The node run sits $0.003 under its own gate.** Any increase — one more node, a higher
-`max_attempts`, a longer prompt file — trips `CostGateError` (→ S2). This is not a bug to
+⛔ **THE RESTART POLICY DOUBLES BOTH NUMBERS ABOVE.** Stage 2's repair loop may discard a
+frozen transcript and redraw the clause once from attempt 1, so a clause's worst case is
+TWO chains of `max_attempts`, and `run()` prices it by doubling the single-chain estimate.
+The worst-case CALL COUNT is likewise 2 × `max_attempts`, not `max_attempts`. Every figure
+in this table already carries that doubling; the pre-policy figures were $0.0872 and
+$0.9970. Expect it in the printed cost line — it is not an error.
+
+**What to expect to actually spend:** ~0.9×–1.2× of the old policy, not 2×. The restart
+truncates the frozen chain early, so the calls saved nearly pay for the redraw (measured
+0.89×–1.28× whole-run; 0.79×–1.60× if you look only at chains that fired). **Do not use
+that to shave the ceiling.** The gate is priced on the worst case by signed ruling, and the
+125-node cap on `config_corpus_all` slices depends on it: expected spend ≈ 1.0×, required
+gate headroom = 2×.
+
+⛔ **The node run sits $0.006 under its own gate, and that is deliberate** — the raise to
+$2.00 was ruled MINIMAL, not "with headroom", because a ceiling with slack has stopped
+being a constraint. 16 nodes already prices $2.1267 and is refused. Any increase — one more
+node, a higher `max_attempts`, a longer prompt file — trips `CostGateError` (→ S2). This is not a bug to
 route around; it is the gate binding. If it fires, cut the selection with `--limit`.
 
 Other free checks worth running:
