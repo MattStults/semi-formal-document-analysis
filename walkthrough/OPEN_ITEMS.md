@@ -45,9 +45,16 @@ review state; do not spend attention on an UNREVIEWED row.
 |---|---|---|---|
 | R1 | Translation autofix (**fix A**) — written, 34 RED-first pins | wire at the START of the next corpus generation, never mid-corpus | `translate_autofix.py` |
 | R2 | **Fix B** — `cites`/`clause_id` as a per-request `const` under strict json_schema | same gate as R1; "four lines, cannot regress" | `TRANSLATION_FIX_PLAN.md` §B |
+| R4 | ⛔ **GATE ON gen-12: the graveyard must be FULLY dispositioned before any gen-12 run starts.** The gen-11 cap was raised 10→2000 so the data-collection run completes; the obligation moved, it did not disappear. Every open entry needs its own written `VERDICT.md`; there is deliberately no bulk clear. | before gen-12 | Matt 2026-08-15 |
+| R5 | End-of-run census over the COMPLETE gen-11 corpus (the thing the mid-run stops were a worse substitute for): failure classes, defect-trading rate, per-class cost, and the W1 `requires-unprovided` recheck | at corpus completion | Matt 2026-08-15 |
 | R3 | `promise_repair.py:868` — resume test reads `paused` only, so a cost-gate stop re-pays every plan | next repair run | pipeline-fix review |
 
 ## 3 · Designed, not built
+
+**Run policy (Matt 2026-08-15):** gen-11 runs to COMPLETION uninterrupted —
+the data is the deliverable, and retry cost is <$1 while the informative
+signal (57% defect-trading, wall clock) is only visible in aggregate. All
+fixes queue for gen-12; nothing is applied mid-corpus.
 
 **Build policy (Matt 2026-08-15):** every fix gets its OWN commit with its own
 pins, so any one can be shelved at launch without disturbing the others. Build
