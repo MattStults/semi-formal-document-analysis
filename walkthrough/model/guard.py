@@ -2,7 +2,8 @@
 
     python3 guard.py                    # check — non-zero if anything is stale
     python3 guard.py --accept PATH...   # record THOSE files as re-reviewed
-    python3 guard.py --accept --all     # record every watched file (say why)
+                                        # (per file; there is deliberately no
+                                        # accept-all — DESIGN NOTE below)
     python3 guard.py --watches PATH...  # hooks: exit 0 any path watched,
                                         # 3 nothing watched (the RESERVED skip
                                         # code — see __main__), else "broken"
@@ -34,6 +35,22 @@ DESIGN NOTE — why per-file, and why an exact sha.
   when. Accepting the prompt after a typo fix must not silently accept an
   unreviewed change to schema.py that happened to be sitting in the same
   working tree. `--accept` with no arguments is refused for that reason.
+
+  RULING 2026-08-15 (G6) — there is deliberately no accept-all. The code
+  and REVIEW_QUEUE §1 contradicted each other ("Accepting is per file …
+  There is deliberately no accept-all" vs an `--accept --all` the docstring
+  even advertised). The doctrine wins and the code was wrong. Provenance:
+  the original guard (commit e29a55a) had no `--all`; the flag rode in on
+  5c020cf — the 2026-08-07 save point committed WITH --no-verify while this
+  very guard was RED — and no workflow need for it is recorded anywhere.
+  Sibling ruling, same grounds: the repair graveyard deliberately has no
+  clear-all — "a graveyard that gets bulk-emptied is worse than none: the
+  mechanism that worked … blocked and had to be answered case by case"
+  (paper_pipeline/phase_1/graveyard.py, pinned by test_graveyard.py).
+  Rejected alternative, by name: keep `--all` as an escape hatch for a
+  genuine whole-list re-read — the graveyard's answer is the answer here:
+  the bulk path exists exactly once, spelled one `--accept <file>` per file
+  actually re-read.
 
   Exact sha, deliberately, over the whole file. A whitespace-insensitive or
   section-scoped digest would cry wolf less — but the two error costs are not
@@ -236,17 +253,27 @@ def accept(paths, who=None):
         print(f"⛔ ERROR — {e}")
         return 2
 
-    if not paths:
-        print("⛔ --accept needs the paths you actually re-read.")
-        print("   Accepting the whole list at once is how an unreviewed change")
-        print("   rides in beside a typo fix. Use --accept --all only if you")
-        print("   genuinely re-read every file below:")
+    if paths == ["--all"]:
+        print("⛔ There is deliberately no accept-all (ruling 2026-08-15, G6).")
+        print("   A single command attesting every file is how an unreviewed")
+        print("   change rides in beside a typo fix — the exact failure the")
+        print("   per-file review point exists to prevent, performed by hand.")
+        print("   Sibling ruling, same grounds: the repair graveyard has no")
+        print("   clear-all — 'a graveyard that gets bulk-emptied is worse than")
+        print("   none' (graveyard.py). Accept the files you actually re-read,")
+        print("   ONE AT A TIME:")
         for k in sorted(now):
             print(f"      python3 guard.py --accept {k}")
         return 2
 
-    if paths == ["--all"]:
-        paths = sorted(now)
+    if not paths:
+        print("⛔ --accept needs the paths you actually re-read.")
+        print("   Accepting the whole list at once is how an unreviewed change")
+        print("   rides in beside a typo fix. Accept the files you re-read,")
+        print("   one at a time:")
+        for k in sorted(now):
+            print(f"      python3 guard.py --accept {k}")
+        return 2
 
     resolved, bad = [], []
     for p in paths:

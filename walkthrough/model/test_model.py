@@ -169,6 +169,28 @@ def test_accept_refuses_a_path_it_does_not_watch(tmp_path, monkeypatch, capsys):
     assert "not watched" in capsys.readouterr().out
 
 
+def test_accept_all_is_refused_not_a_bulk_attestation(tmp_path, monkeypatch,
+                                                       capsys):
+    """⭐ G6 ruling (2026-08-15): doctrine wins, the code was wrong.
+    REVIEW_QUEUE §1 states 'There is deliberately no accept-all'; the flag
+    nonetheless rode in on commit 5c020cf — the save point committed WITH
+    --no-verify while the guard was RED — with no workflow need recorded
+    anywhere. The sibling ruling is the repair graveyard: 'There is
+    deliberately no clear-all. A graveyard that gets bulk-emptied is worse
+    than none' (graveyard.py, pinned by test_graveyard.py). A single
+    command attesting every file is the per-file invariant's negation."""
+    stamp = tmp_path / "reviewed.json"
+    monkeypatch.setattr(guard, "STAMP", str(stamp))
+    monkeypatch.setattr(guard, "current",
+                        lambda: {"a.md": "aaaa", "b.md": "bbbb"})
+    rc = guard.accept(["--all"], who="test")
+    assert rc != 0, "--all accepted"
+    assert not stamp.exists(), "--all recorded a bulk attestation"
+    out = capsys.readouterr().out
+    # the refusal points at the per-file commands, one per file
+    assert "--accept a.md" in out and "--accept b.md" in out
+
+
 def test_stale_report_states_why_the_file_is_watched(capsys):
     """A guard that cries wolf gets ignored. The cure is not a weaker check —
     it is a report that says what to re-read."""
