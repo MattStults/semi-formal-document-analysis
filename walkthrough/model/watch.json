@@ -15,11 +15,16 @@
   {
    "path": "paper_pipeline/phase_1/schema.py",
    "why": "The output contract encodes the design's rulings — required fields, licence values, what counts as a valid citation. A ruling changed in the design and not here produces output that validates and is wrong. Re-check the required fields against the design's stage-2 checks and invariants."
+  },
+  {
+   "path": "paper_pipeline/phase_1/resolve_runs/graph_v2/node_*.md",
+   "why": "This is the graph-node run's WORKED EXAMPLE, and it is SUBSTITUTED FOR the watched prompt/20_worked_example.md — config_corpus_all.json assembles its system prompt from 00_task.md, 10_output_format.md, node_worked_example.md and 30_failure_modes.md, and lists 20_worked_example.md as unused. So three of the four files that instruct the corpus run were fenced and this one was not, purely because it lives beside the graph configs instead of in prompt/. It is a transcription of the design in exactly the sense _rule means: the design can move and this file keeps confidently demonstrating the old rules — and a DEMONSTRATION overrides prose, because it is what the model imitates. Re-check the worked modules against the design's problem table AND against 00_task.md's own abstention criterion: as of 2026-08-15 they contradict each other (00_task.md:110 makes a section heading grounds to abstain; this file shows a heading node translated and says a hollow module or a clean abstention 'are both better than an invented obligation')."
   }
  ],
 
  "_history": [
   "2026-08-07 — added prompt/*.md and schema.py. Three of the five conformance failures assessed that day were structurally out of reach of the old watch list, because they happened in plans and prompts rather than in the design document or the (now retired) .lp model.",
-  "2026-08-07 — removed model/pipeline.lp and model/rules.lp; the assertion layer they belonged to was retired. See RETIRED.md."
+  "2026-08-07 — removed model/pipeline.lp and model/rules.lp; the assertion layer they belonged to was retired. See RETIRED.md.",
+  "2026-08-15 — added resolve_runs/graph_v2/node_*.md. Found while asking why a gen-12 commit touched no watched file: the graph-node run swaps node_worked_example.md in for the watched 20_worked_example.md, so the guard was fencing a file that config does not use while the file it does use went unwatched. Nothing had slipped through — both last moved in 3d856a8 — but the drafted abstention fix edits this very file, and it would have landed without review. Registration, not documentation, fences a file."
  ]
 }
