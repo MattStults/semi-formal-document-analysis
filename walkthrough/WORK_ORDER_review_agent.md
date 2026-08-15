@@ -162,3 +162,49 @@ rejected alternative, and an explicit list of files touched.
 * **G4 is confirmed, and already recorded** on the other console as routing-gap
   finding 6 (embedding spend unledgered by construction, ~$0.001/run). Cross-
   reference rather than re-deriving it.
+
+---
+
+## 6. Amendments (2026-08-15, after the agent's clarifying questions)
+
+* **§2 corrected — phase 1 also runs in its own worktree.** As first written the
+  order forbade `checkout` in the main tree while prescribing a worktree only for
+  phase 2, which made phase 1 impossible to comply with. Use
+  `git worktree add ../sfda-guardrails-worktree -b guardrails-fixes walkthrough-prototype`.
+* **§3 corrected — phase 2 STACKS on phase 1**, not parallel off
+  `walkthrough-prototype`. Both phases touch `node_corpus.py` (docstring truth vs
+  `--out`); stacking makes fold-in linear and removes the conflict rather than
+  deferring it. If phase 1 stalls awaiting a ruling, rebase phase 2 onto
+  `walkthrough-prototype` and take the conflict deliberately.
+* **§3.5 scope confirmed:** `behavior_pilot` gets a review-style honesty and
+  missing-pin pass, NOT mutation infrastructure — it is a mocked skeleton that
+  has never run live. Highest-value questions there: does any pin pass
+  *vacuously* (hand-written fixtures make that easy), and is the clingo relevance
+  query genuinely exercised or merely constructed?
+* **G6 ruling guidance:** the agent's lean (doctrine wins; remove `--accept --all`)
+  is consistent with an existing sibling ruling — the repair graveyard has
+  deliberately no bulk clear, on the recorded grounds that a mechanism which
+  blocks and must be answered case by case is what works and the bulk version is
+  "worse than none". Cite it. If the code's own rationale reveals a real workflow
+  need for `--all`, surface that as a finding instead of overriding it silently.
+* **`test_d4b`:** rebuild the fixture if you like, but if the rebuild goes GREEN,
+  STOP and report rather than landing it. The red test is currently the only
+  visible marker that an unresolved design question exists; a green one removes
+  the marker without answering the question. Forbidden absolutely: `xfail`,
+  deletion, or narrowing scope until it passes.
+* **C6(a):** implement as a NEW standalone consumer-check script (new files are
+  unowned; no collision). It should read
+  `runs/ds7/root_graph.production.json` READ-ONLY, exit non-zero on violations,
+  ship with its own pins, and assert: an unresolved need is a hard reportable
+  (never a silent no-op); the six modal-drift nodes are carried forward with the
+  two teen-safety ones called out; the honest authority-excluded pair
+  (0.264 / 0.450) is what gets reported, not the raw numbers that are ~93%
+  authority fan-out. ALSO add: the config used for a corpus run must point at the
+  CERTIFIED graph — nothing currently prevents pointing a translation run at a
+  superseded build. Integration into the live driver stays with the coordinating
+  console.
+* **Git ownership:** the coordinating console owns all pushes to
+  `walkthrough-prototype`. The review agent pushes only its own branches and
+  opens PRs; it never pushes the shared branch. (The "stale base" observed on
+  2026-08-15 was a stale fetch — `origin/walkthrough-prototype` and local HEAD
+  were identical at `12891dc`.)
