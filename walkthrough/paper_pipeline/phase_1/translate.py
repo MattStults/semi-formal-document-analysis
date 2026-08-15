@@ -4,14 +4,20 @@
     THE ONE QUESTION THIS ANSWERS:  can a model produce a logic module for a
     specification clause in the form `03_pipeline.md` stage 1 describes?
 
-Stage 1 has never been run. Every downstream stage assumes its output. This is
-the harness that finds out whether anything can enter the pipeline at all.
+Stage 1 has run — repeatedly; the directories under runs/ and the campaign log
+at resolve_runs/graph_v2/EXPERIMENTS.md are the record. This is the harness
+that found out what can enter the pipeline at all.
 
-⛔ IT VALIDATES NOTHING ABOUT THE TRANSLATION.  It does not compile the ASP, does
-not link it, does not check the headers, does not read the module back. Stage 2
-is those checks and it is deliberately not built yet: we want to see raw output
-before deciding what to check. A clean run here means "a model returned a fenced
-block", never "the translation is right".
+⚠️ IT VALIDATES MECHANICALLY, NOT SEMANTICALLY (corrected 2026-08-15; this
+docstring once said stage 2 was "deliberately not built yet" — it is built,
+and it is the unconditional gate). Every attempt — the first included — goes
+through stage 2 before anything is written: checks.run_checks runs the schema
+contract (schema.py) and the deterministic link checks (walkthrough/link.py,
+clingo compilation among them), and every `error`-severity finding sends the
+attempt back with the complete findings list. What no check here does is judge
+the translation: whether the module for a clause says what the clause says is
+stage 4, and needs a reader. A clean run means "the answer satisfies every
+mechanical contract we can state", never "the translation is right".
 
 WHAT IT DOES FAIL ON, loudly, because a harness whose "pass" is
 indistinguishable from "did not run" is broken by design:
@@ -1512,7 +1518,9 @@ def run(cfg, args, client_factory=None):
               f"summary does not partition on, so the counts above do not add "
               f"up. Statuses seen: "
               f"{sorted({str(r.get('status')) for r in results})}")
-    print("⛔ NOTHING here has been validated. No compile, no link, no read-back.")
+    print("⚠️ Stage 2 ran on every attempt: schema contract, clingo compile, "
+          "link checks. NOT judged: whether the translation says what the "
+          "clause says — that is stage 4, and needs a reader.")
     spent = getattr(client, "spent_usd", 0.0)
     if spent:
         print(spend_invisibility_warning(prov, spent,
