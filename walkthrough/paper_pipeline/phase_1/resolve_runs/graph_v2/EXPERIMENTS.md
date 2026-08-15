@@ -3276,3 +3276,369 @@ translate.py to stabilise -- the chain policy is under a fix round there now.
 CAVEAT the agent raised against its own result: the 33% abstention may be an
 artefact of the one-shot subagent framing rather than a property of the
 model; free to test, does not change the gate, but changes how to read it.
+
+## 2026-08-15: RULING -- the "bogus dependency" drop proposal is REFUSED
+
+The other console (corpus-exclusion work order) reported a drop proposal
+carried in production_certification.md §5: node `L3877-3953_n012` (the
+"thank you" rule) allegedly carries a FABRICATED need for
+`assume_best_intentions_principle` left over from the C1 correction, said to
+be a trap because the follow-on $0 aliasing pass would silently promote it
+to a real edge and a false premise in behaviour matching. Proposed action:
+"must be dropped now rather than recorded."
+
+CHECKED AGAINST runs/ds7/root_graph.production.json BEFORE ACTING. The
+proposal is wrong on all three of its load-bearing claims:
+
+1. WRONG NODE. `L3877-3953_n012` does not carry that need at all; its needs
+   are `assistant_definition` (provided by L1-170_n065) and `user_authority`
+   (11 providers). The sole needer of `assume_best_intentions_principle` is
+   **`L3041-3146_n002`**.
+2. NOT FABRICATED -- IT IS THE DOCUMENT'S OWN CROSS-REFERENCE. That node
+   spans line 3043, whose source text reads verbatim: _"This principle builds
+   on the metaphor of the \"conscientious employee\" discussed in
+   [?](#letter_and_spirit) and the principles in [?](#assume_best_intentions)."_
+   Both needs are transcriptions of explicit markdown anchors. The target
+   section exists and is anchored `{#assume_best_intentions authority=root}`
+   at line 609. This is the most legitimate need class in the graph: the
+   model recorded a link the document itself makes.
+3. THE DANGLING IS UNDER-EXPORT, NOT INVENTION. L609-698_n001 covers the
+   section but provides only `root_authority`; nothing exports the principle.
+   Same for `letter_and_spirit_principle`, dangling identically. Note the
+   dangling set carries BOTH `assume_best_intentions` and
+   `assume_best_intentions_principle` -- two spellings of one anchor, and the
+   document's own spelling is the former.
+
+RULING: **do not drop.** The correct disposition is the opposite of the
+proposal -- export the principle from L609-698 and alias the `_principle`
+spelling to the document's anchor name. Dropping would delete a
+cross-reference the document states in its own text, which is the
+patient-pricing failure mode exactly (`cycles/patient-pricing-2026-08-04`):
+a local tidiness gain that removes real guidance. REJECTED BY NAME: "drop
+the need now, before the aliasing pass runs."
+
+The underlying WORRY is legitimate and is retained: an aliasing pass that
+resolves a dangling name to the wrong provider does silently manufacture a
+false premise. That is what the rename seat (rename_seat.py) exists for, it
+is blind on names by construction, and it defaults to different_concept. The
+answer to the worry is to route these two through the seat, not to delete
+them ahead of it.
+
+SELF-LOOPS, same message, same disposition: the report claims "two
+repair/caused self-loops, one cleared as a side effect, one remains to
+clear." Production carries **exactly 16 self-loops, all pre-existing** --
+the same 16 the baseline-scoped sweep in graph_corrections.py deliberately
+refuses to touch because they are accepted content that was never
+adjudicated. The repair-introduced loops (19 found minus 16 baseline = 3)
+are ALREADY cleared. There is no remaining repair-caused loop; "one remains"
+would mean editing accepted content, which the baseline scoping exists to
+forbid.
+
+SCOPE NOTE: the reply answered a GRAPH-NODE question. The open question was
+about PR #4's TRANSLATION-CORPUS exclusion ("gaming guards now bind --
+flagged status, kept out of the corpus"), which decides which spans get
+translated, not which nodes exist. That question is still open and it now
+INTERACTS with the abstention-boundary measurement in flight: both change
+the rule for what enters the corpus. PR #4's exclusion piece is held until
+that reports.
+
+## 2026-08-15: chain-policy round -- adversarial review = FIX-FIRST, 2 findings
+
+Clean-context review of the uncommitted restart-on-repeat round (D1/D2/D3/P1).
+Both substantive findings REPRODUCED INDEPENDENTLY by the coordinator before
+any fix was dispatched, per the standing rule that adversarial reviews find
+false positives.
+
+UPHELD, and worth stating because the round was fought over it:
+* **D1's arithmetic is exact, not an approximation.** `estimate_cost` carries
+  TWO quadratic terms -- `system+user` at `T(T+1)/2` and resent completions
+  at `max_tokens*n*T(T-1)/2` -- so `estimate_cost(2T)` is nowhere near two
+  chains of `T`. Two restarts-worth of work is two INDEPENDENT chains, each
+  from an empty transcript (the redraw is one turn, no marker), and both
+  terms are additive over two chains. Call accounting: 1 + (T-1) + 1 + (T-1)
+  = 2T. **And `2x` is a genuine BOUND, not a floor: translate.py:2858 caps it
+  at one restart per clause** -- a refreeze abandons rather than restarts
+  again. The dangerous direction (under-charging a hard ceiling) is closed.
+* **D3's RULING is right on the merits.** The strongest case for the rejected
+  alternative ("a flag describes the clause") has no instance behind it: the
+  entire flag vocabulary is `shrank` and `declaration-edit`, both computed
+  from `_shape` counts of two successive DRAFTS, and `frozen` is a loop event
+  set only post-restart. No flag reads the span, locator, or any clause
+  property. Nothing clause-level is dropped by clearing them.
+* All six new pins BIND (mutation sweep, runtime + textual); none vacuous.
+  The P1 rewrite works -- it now reddens under a paraphrasing redraw where
+  before the `restarted` assert it was trivially true.
+
+F1 -- HIGH, CONFIRMED. **A shipped config is refused by its own cost gate.**
+`config_graph_nodes.json` (T=5, 15 clauses, ceiling $1.00) prices at
+**$1.9940** under the correct doubling and raises `CostGateError` before a
+single call. Single-chain was $0.9970 -- it passed with 0.3% headroom, so the
+restart policy is exactly what breaks it. The new P5 pin reads only
+`phase_1/config.json` ($0.1745/$0.25, passes comfortably), so **the pin
+written to catch "green in its own suite, dead in the real configuration"
+misses the one shipped configuration that is dead.** Also: the largest
+gate-passing `config_corpus_all` slice is now **125** nodes ($7.9573; 126 ->
+$8.022), not the ~250 the comment at translate.py:1250 implies. The doubling
+legitimately halves it.
+DISPOSITION: pin parametrised over every reachable `config*.json` asserting
+the RELATION (never a pinned dollar figure). The ceiling decision itself is
+RESERVED TO THE HUMAN and marked `xfail(strict=True)` naming this entry, so
+the suite stays honest and the choice cannot be forgotten. REJECTED BY NAME:
+raising the ceiling to make the pin green, lowering the estimate, narrowing
+the parametrisation, and silent xfail.
+
+RULED 2026-08-15 (Matt), and the reservation above is now discharged for ONE
+file and no other:
+  * `config_graph_nodes.json`: `cost.max_cost_usd` 1.00 -> **2.00 exactly**.
+    The MINIMAL raise that clears the measured $1.9940 -- not 2.50, not "with
+    headroom": a ceiling with slack has stopped being a constraint. Grounds
+    (also written into the config's own `_ceiling_note`): the restart policy
+    doubles a chain's worst case, single-chain prices $0.9970, and the
+    doubling is REAL COST -- a second sampled draw that is actually paid for
+    -- not an estimation artefact, so the answer is a ceiling that admits it
+    rather than a cheaper estimate. The `xfail(strict=True)` came off in the
+    same change and that case is now an ordinary passing one; `cost_gate` was
+    re-checked and accepts $1.9940 while still refusing $2.0001.
+  * `config_corpus_all.json`: ceiling **STAYS at $8.00**, deliberately. The
+    remedy for the halved slice is more, smaller slices (max 125 nodes, not
+    ~250), so the gate keeps its stopping power on the one run that commits
+    the whole corpus. Re-measured 2026-08-15: 125 -> $7.9573, 126 -> $8.0220.
+    The pin therefore prices this config's SMALLEST DISPATCHABLE slice (sized
+    from its own `execution.batch_min_pending`, not a pinned figure) and
+    claims nothing about the full 773-node selection passing in one run,
+    which it is not meant to.
+  * The stale comment at `translate.py:1250` that implied ~250 was the
+    correct post-doubling slice was corrected in the same change: 250 was the
+    SINGLE-CHAIN figure, 125 is the current one, and 71 was the 2T shim's.
+NOTHING was made green by weakening a pin: no estimate was lowered, no config
+was dropped from the parametrisation, and the second ceiling was not touched.
+
+F2 -- HIGH, CONFIRMED. **D3 has a hole: `prev_shape` is not reset at the
+restart.** translate.py:2909, `prev_shape = _shape(raw) or prev_shape`. Flags
+are cleared; `prev_shape` is not. If the redraw's reply does not parse (a
+first-class case -- `look()` has a `not-json` branch), `_shape` returns `{}`,
+the `or` retains the DISCARDED draft's shape, and the next post-restart
+module is diffed against bytes nobody kept. Reproduced: status `translated`,
+`restarted True`, `flags ['shrank']`, `pre_restart []`, `should_keep True`
+-- on a module that never shrank. This is the population distortion
+`pre_restart_flags` exists to prevent, arriving through the other door, and
+`should_keep`'s `if flags:` force-keeps the clause into the graveyard on the
+strength of a discarded draft. The existing pre-restart-flag pin misses it
+because its redraw PARSES.
+
+F3 -- LOW, the reintroduction hazard the round was fought over.
+repair_loop's own docstring (translate.py:2756) states the REJECTED shim as
+current behaviour: "`estimate_cost` is called with twice `max_attempts`".
+The drift pin cannot catch it -- it strips `#` lines (this is a docstring)
+and matches the literal `max_attempts * 2` (this reads "twice").
+
+F4 -- LOW, ACCEPTED not fixed. The redraw sends attempt 1's body byte for
+byte, so the identical-retry seam guard can append its marker to it
+(reachable: attempt 1 truncates under `resample_truncation: 2`, the clean
+hash is recorded failed, the resample succeeds, the clause later freezes).
+Suffix-only, contentless, prefix cache intact -- but the redraw stops being
+byte-identical to attempt 1 and `out.transcript` records the clean turn while
+the wire carried the marker. Written down rather than repaired.
+
+## 2026-08-15: HOLD I1 -- the top-ranked A/B would optimise the wrong endpoint
+
+The recovery-ideas campaign (branch `recovery-ideas`, 98e4d34) froze three
+instrument checks and ranked a DeepSeek shortlist: **#1 I1 worked example,
+68 draws, $0.12**, described there as "the single experiment to run with
+production budget". Independently, the abstention-boundary measurement
+adjudicated non-normativity blind on the SAME 17-clause cohort. Joining the
+two (both artifacts already on disk, no new work):
+
+**8 of I1's 17 cohort clauses are NON-NORMATIVE. 8 are normative. 1 ambiguous.**
+The split is not marginal -- the non-normative eight are 0N/3NN or 1N/4NN,
+the normative eight 3N/0NN, i.e. near-unanimous in both directions.
+
+| clause | verdict | votes |
+|---|---|---|
+| l1_170_n014, n016, n032, n053, n057, n062 | NON-NORMATIVE | 0N/3NN |
+| l1_170_n045, n058 | NON-NORMATIVE | 1N/4NN |
+| l1_170_n084 | AMBIGUOUS | 2N/3NN |
+| l171_426_n001, l1_170_n019, n023, n050, n065, n067, n078, n086 | NORMATIVE | 3N/0NN |
+
+I1's endpoint is the clean-attempt-1 rate. On the non-normative eight, a
+"clean attempt 1" IS a well-formed module for a span that should not have
+one. **The intervention would therefore raise its own metric by making the
+quality defect worse on nearly half its cohort** -- the patient-pricing
+failure mode exactly (`cycles/patient-pricing-2026-08-04`): the aggregate
+improves, the per-item adjudication says the change destroyed something.
+
+RULING: **I1 does not run as designed.** Not killed -- its mechanism (the
+body-less `ontology` ground atom is undiscoverable) is untouched by this and
+its evidence base stands. What is wrong is the ENDPOINT and the COHORT.
+Before any spend it must either (a) score abstention as SUCCESS on the
+non-normative half, so the arm is measured on "does the model do the right
+thing" rather than "does the model emit a module", or (b) restrict the
+cohort to the normative eight and re-power. REJECTED BY NAME: running the
+staged $0.12 A/B on the cohort as built because the arm-B prompt is already
+validated and contamination-audited -- readiness is not a reason to measure
+the wrong thing. Same question must be put to I2 and I3 before they run.
+
+CONVERGENCE, and it is why this is not one agent's opinion. FOUR independent
+instrument checks on three different non-DeepSeek model classes now report
+the same asymmetry:
+
+| check | instrument | target defect | observed |
+|---|---|---|---|
+| DC-1 | Haiku | undeclared-body-name | 3/51 (5.9%) |
+| IC-1 | Qwen-class | undeclared-body-name | 1/17 |
+| IC-3 | Qwen-class | borrowed-no-gloss | 1/9 |
+| IC-4 | Qwen-class | unsafe-variable | 0/8 |
+
+The recovery campaign's own frozen verdict states the mechanism without
+having been asked the abstention question: this model class "finds the legal
+routes, writes the glosses proactively, and **abstains on the meta-spans
+where DeepSeek over-translates (12 abstentions across the three checks, all
+on non-normative spans)**." That is a THIRD instrument, on a different
+branch, with pre-registered falsifiers committed before results, reaching
+the abstention-boundary conclusion from the opposite direction.
+
+READING THIS CORRECTLY. The repeated instrument-check failures have been
+recorded as "the local instrument is too weak to make DeepSeek's mistakes".
+Four for four, across three model classes, that reading no longer holds:
+**DeepSeek is the outlier, and the specific way it is an outlier is that it
+translates meta-spans other models decline.** The sharpest single datum is
+IC-3's n056 -- the class's only lost module on DeepSeek, five byte-identical
+frozen attempts, ruled "not sampling noise" in its own mechanism file --
+translated clean on the first draw of another model from the same prompt
+bytes.
+
+CONSEQUENCE FOR THE FIX PROGRAMME: I1/I2/I3 were all designed to make
+DeepSeek succeed at translating these cohorts. If a third of the corpus
+should not be translated, several of them are optimising the wrong
+objective. The prompt's self-contradiction (00_task.md:110 vs
+node_worked_example.md:255) is upstream of all three and should be settled
+first.
+
+## 2026-08-15: the 32% over-translation FIGURE is withdrawn; the DIRECTION survives
+
+Cross-model re-adjudication of the SAME 53 blind items (md5-verified identical
+item files, same wording, same 3-draw + escalation rule), Sonnet-tier judge,
+165 draws, pre-registered before the first draw
+(`_debug_gen11/abstention_crossmodel/PREREG_crossmodel.txt`). ZERO spend.
+
+**Cohen's kappa = 0.248 [0.094, 0.428]**, raw agreement 60.4% (72.4% on the
+29 dispute items). The pre-registration's ARTEFACT branch (kappa < 0.40)
+fires: **non-normativity judgement is itself substantially model-dependent.**
+
+WITHDRAWN: the figure "~22 of 69 modules, 32% [20%, 49%]" must NOT be quoted
+as a property of the corpus. It is a property of Haiku's threshold applied to
+the corpus. The coordinator quoted it to the owner as a corpus property before
+this check returned; that was premature and this entry is the correction.
+The Sonnet figure (78% [61,88]) is EQUALLY unquotable and for a worse reason
+-- its falsifier F1 FAILED: it scores ds_abstain 12/12 and ds_success 19/24,
+Fisher p = 0.146, i.e. **it cannot separate the class DeepSeek abstained on
+from the class it translated at all.** (Haiku passed F1 at p = 0.00094.) A
+number needs a validated instrument; neither model supplies one.
+
+WHAT SURVIVES, AND IS NOW STRONGER:
+
+1. **The circularity worry is REFUTED BY DIRECTION.** "It is just Haiku's
+   conservatism" predicts a second judge is more permissive and shrinks
+   ABSTAINER RIGHT. It went the other way: **15 of 15 clean discordant pairs
+   run Haiku-NORMATIVE -> Sonnet-NON-NORMATIVE, zero the other way, exact
+   McNemar p = 6.1e-5.** ABSTAINER RIGHT 66% -> 90%; TRANSLATOR RIGHT 7% ->
+   **0%**. Haiku's threshold cannot be the source of an inflation that a
+   stricter judge inflates further.
+2. **The documentary finding never depended on a judge, and the enumeration
+   found a passage the first report missed.** Assembled prompt sha256[:16]
+   `5ff9daf7fe58845f`, 36,820 bytes. Line **577-582** states an OPERATIVE
+   TEST -- "if the node establishes an obligation, translate it; if it
+   establishes none, abstain" -- which is STRICTER than the four-trigger list
+   at 109-114. The heading exemplar at 426-467 **fails that test by its own
+   gloss** ("yields a classification, **not obligations**") while being
+   labelled `"outcome": "translated"` and "small is correct". Line 611 names
+   hollow stubs as failure mode 5.
+   To emit a hollow module for a heading a model must DISREGARD three
+   passages (111, 581-582, 611) while RELYING on two (the worked JSON at
+   426-467, the "both" licence at 537-539). The three it must disregard are
+   PROSE; the two it relies on are a CONCRETE DEMONSTRATION and an explicit
+   permission. That asymmetry is why the contradiction is operative rather
+   than theoretical, and it is the same asymmetry DEBUGGING_TIPS 19 named.
+3. **`l3995_4164_n001`, confirmed and stronger than first reported.** Across
+   six DeepSeek runs: `translated` 5x, `abstained` 1x. The abstaining run's
+   own `prompt_system.txt` is the identical 36,820-byte artefact and carries
+   the `## A heading-authority node -- small is correct` exemplar **for that
+   very clause** at line 426. **The model was shown the translated answer for
+   this exact clause in its own system prompt and abstained on it anyway.**
+   (Path correction: the file is under
+   `resolve_runs/graph_v2/translation_sample/runs/20260810-225427-.../`, not
+   `runs/`.)
+
+THE CORRECT CLAIM, and the only one to be used downstream: *an unknown but
+substantial fraction of the 69 translated modules are modules for
+non-normative spans -- every independent judge so far puts it at least a
+third, one puts it at four-fifths, and no judge places it near zero.* Any
+sizing must be a BRACKET, not a point. The $0.95 A/B must be re-specced
+against the bracket; it was sized against 32%.
+
+CONSEQUENCE FOR THE I1 HOLD (entry above): UNCHANGED and reinforced. That
+ruling rested on 8 of I1's 17 cohort clauses being non-normative under the
+Haiku adjudication. Under the stricter judge the count can only rise, and
+TRANSLATOR RIGHT falls to zero, so the endpoint objection holds a fortiori.
+The hold does not depend on the withdrawn figure.
+
+## 2026-08-15: gen-12 validation run -- NO REGRESSION, but NEITHER NEW PATH FIRED
+
+Run `translation_sample/runs/20260815-113545-together-deepseek-v4-flash`.
+6 clauses, serial, `config_corpus_all.json`, gate worst case $0.3816 against
+the $8.00 ceiling. **Actual spend $0.0119 over 7 calls.** Criteria were
+written down per clause BEFORE the run (preflight CHECK 4).
+
+| clause | picked as | before | now | verdict |
+|---|---|---|---|---|
+| l171_426_n005 | restart trigger | froze @2, recovered @4 | translated @2, no restart | NON-RESULT |
+| l1_170_n058 | restart trigger (4 stored fires) | `A,B,A,A,A` oscillator | translated @1 | NON-RESULT |
+| l171_426_n024 | arity + restart | **unrepaired, 5 attempts** | **translated @1** | no arity finding |
+| l171_426_n034 | arity @1 | translated @2 | translated @1 | no arity finding |
+| l427_460_n005 | first-try control | translated @1 | translated @1, flags [] | PASS |
+| l1_170_n006 | first-try + unresolved xref | translated @1 | translated @1, xref intact | PASS |
+
+**6 translated, 0 abstained, 0 failed, `flags` empty everywhere, `restarted`
+absent on all six.**
+
+THE HONEST READING, and it is not the flattering one: **the run demonstrates
+that the changed code does not break the happy path. It does NOT demonstrate
+that either new path works live.** No chain froze, so the restart policy was
+never entered; no module carried an arity mismatch, so `arity_findings` never
+fired. The pre-registered inference "no arity finding => not wired" does NOT
+apply, because it is only valid if the model reproduced the defect, and it
+did not. Both mechanisms remain verified OFFLINE ONLY (preflight CHECK 1: 52
+of 212 multi-attempt chains would fire; CHECK 2: 11 attempt-1 drafts flagged,
+0 false positives on 237 accepted modules) and UNVALIDATED LIVE.
+
+WHY THE COHORT WENT QUIET, and this is the substantive result: **the cohort
+was selected on OLD-PROMPT failures and the already-committed prompt changes
+appear to have fixed them.** The assembled system prompt moved 28,091 ->
+37,891 chars (rule 10's `/arity`-never-in-a-value-slot paragraph, the
+`requires`-needs-a-`concepts`-gloss section). `l171_426_n024` went from
+**unrepaired after 5 attempts to translated on attempt 1**; `l171_426_n034`
+from 2 attempts to 1. The preflight named this exact risk in writing before
+the run ("a clause that froze then is not guaranteed to freeze now") and
+picked two triggers with >=3 stored fires each to make it unlikely. Both went
+quiet anyway. Recorded as the pre-registered NON-RESULT, not reinterpreted.
+
+CONSEQUENCE: a live validation of the restart and arity paths needs clauses
+that fail under the CURRENT prompt, which are not identifiable from stored
+runs at the old prompt. Cheapest honest route is to take the failures of the
+next real slice as they arrive rather than to hunt for them with paid probes.
+REJECTED BY NAME: reading 6/6 translated as validation of the chain policy.
+
+SIDE FINDING -- A FALSE ALARM ON THE HARD CAP, worth fixing. The harness
+printed a loud banner claiming this run's $0.0119 is "SPEND NOT VISIBLE TO
+spend.py ... the hard cap is that much closer than it reports", because
+`spend.py:prices()` builds from `providers.json` and this provider is defined
+inline. **Measured: false.** Before 3123 rows / DeepSeek $8.463; after 3130
+rows / DeepSeek $8.475 -- +7 calls and +$0.012, matching the run exactly. The
+rows ARE priced and counted. A banner that wrongly says the budget ceiling is
+closer than reported is a defect in the direction that causes bad decisions
+about spend, and it should be corrected or removed.
+
+LEDGER: PRICED SUBTOTAL $11.924 of the $20.00 `spend.py:BUDGET`. `spend.py`
+still refuses to call it a total -- 1 of 3130 rows has no price entry -- and
+separately warns the figure OVERSTATES for 1,641 cached-input rows and for
+any batch-billed rows (G1).

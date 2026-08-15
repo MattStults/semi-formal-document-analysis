@@ -841,14 +841,212 @@ def test_the_run_level_estimate_PRICES_the_restart():
     prov = T.Provider("p", "openai-compatible", "m", "u", "K", 0.2, 1000,
                       [1.0, 1.0])
     system, users = "s" * 33_506, ["u" * 5_341]
-    one, _, out_one = T.estimate_cost(system, users, prov, cfg,
-                                      max_attempts=3)
-    two, _, out_two = T.estimate_cost(system, users, prov, cfg,
-                                      max_attempts=6)
-    assert out_two == 2 * out_one, (out_one, out_two)
-    src = (HERE / "translate.py").read_text()
-    assert "max_attempts=_max_attempts * 2 if _max_attempts > 1 else 1" in src, \
-        "run() prices one chain; the restart can spend past the gate"
+    T_ = 3
+    one, in_one, out_one = T.estimate_cost(system, users, prov, cfg,
+                                           max_attempts=T_)
+    twice, in_2t, out_2t = T.estimate_cost(system, users, prov, cfg,
+                                           max_attempts=2 * T_)
+    # ⛔ THE SHIM THAT LOOKS CONSERVATIVE AND IS NOT. `estimate_cost`'s dominant
+    # term is `max_tokens · n · T(T-1)/2` — QUADRATIC in turns — so one chain of
+    # 2T is far more than two chains of T. Shipped once, it refused config.json
+    # against its own $0.25 ceiling. The multiplier is pinned so nobody
+    # "simplifies" the doubling back into the argument.
+    assert twice > 2.5 * one, (one, twice)
+    assert out_2t == 2 * out_one, "the OUTPUT term is linear; the input is not"
+    assert in_2t > 2 * in_one
+
+    # what run() must actually print: EXACTLY twice the single-chain estimate
+    printed, single = _dry_run_cost(HERE / "config.json")
+    # `printed` is the %.4f the operator actually sees, so compare at that
+    # resolution — the claim is "exactly twice", not "twice to 12 digits"
+    assert printed == pytest.approx(2 * single, abs=1e-4), (printed, single)
+
+
+class _NoArgs:
+    clause = section = kinds = limit = provider = model = max_tokens = None
+    live = False
+    show_prompt = 0
+    only_stale = False
+
+
+def _dry_run_cost(path, monkey=None, limit=None):
+    """(what run() PRINTS, what `estimate_cost` returned for ONE chain).
+
+    The single-chain number is recorded by wrapping `estimate_cost` for the
+    duration of the dry run rather than re-deriving the user blocks here — a
+    second copy of run()'s selection/xref logic in a test is a second thing to
+    keep equivalent, and it would drift.
+
+    ⚠️ `monkey` is required for any config OUTSIDE `phase_1/`: a config's
+    `corpus.path` and `prompt.system_files` are relative to the config, so the
+    dry run has to happen with that directory as cwd — and it has to be undone,
+    which is `monkeypatch.chdir`'s job and not this function's.
+    """
+    import contextlib
+    import io
+    import re as _re
+    path = Path(path)
+    real, seen = T.estimate_cost, []
+
+    def spy(*a, **k):
+        out = real(*a, **k)
+        seen.append(out[0])
+        return out
+
+    args = _NoArgs()
+    args.limit = limit
+    buf = io.StringIO()
+    T.estimate_cost = spy
+    try:
+        if monkey is not None:
+            monkey.chdir(path.parent)
+        with contextlib.redirect_stdout(buf):
+            T.run(T.load_config(path.name if monkey is not None else str(path)),
+                  args)
+    finally:
+        T.estimate_cost = real
+    m = _re.search(r"cost \(worst\) : \$([0-9.]+)", buf.getvalue())
+    assert m and seen, buf.getvalue()
+    return float(m.group(1)), seen[-1]
+
+
+def test_the_TWO_cost_call_sites_do_not_DRIFT():
+    """Serial and concurrent must price identically, or a run is refused in one
+    mode and sent in the other — the failure the shared gate exists to prevent.
+    `translate_exec` re-expresses run()'s body call-for-call, so a textual pin
+    is the honest one here: the two blocks must be the same arithmetic."""
+    ser = (HERE / "translate.py").read_text()
+    con = (HERE / "resolve_runs" / "graph_v2" / "translate_exec.py").read_text()
+    double = "est, in_tok, out_tok = est * 2, in_tok * 2, out_tok * 2"
+    assert ser.count(double) == 1 and con.count(double) == 1
+    # ⛔ and NEITHER may feed a doubled TURN COUNT into the estimate: the
+    # resent-completion term is quadratic, so `max_attempts * 2` over-charges
+    # 4.5x and refused every shipped config at its own ceiling
+    for name, src in (("translate.py", ser), ("translate_exec.py", con)):
+        # CODE only — the prose above each call site quotes the wrong shim by
+        # name so nobody reintroduces it, and must not trip its own pin
+        code = "\n".join(ln for ln in src.splitlines()
+                         if not ln.lstrip().startswith("#"))
+        assert "max_attempts * 2" not in code, name
+    # ⚠️ AND ONE PROSE SPELLING, because stripping `#` lines is exactly what
+    # let the shim survive as PROSE: `repair_loop`'s docstring asserted "`run()`
+    # prices the restart instead (`estimate_cost` is called with twice
+    # `max_attempts`)" as current behaviour — the removed shim, stated as fact
+    # in the docstring of the function whose restart it prices, which is how it
+    # gets reintroduced. A docstring-wide pin is NOT attempted: prose has
+    # unbounded paraphrases and any general matcher would either miss them or
+    # fire on the rejection notices themselves. This pins the ONE spelling that
+    # was wrong and that never has a correct use — the true statement is
+    # "twice the RESULT", never twice the attempt count.
+    for name, src in (("translate.py", ser), ("translate_exec.py", con)):
+        assert "twice `max_attempts`" not in src, name
+        assert "twice max_attempts" not in src, name
+
+
+#: ⛔ SLICED BY DESIGN, and the config says so itself: `config_corpus_all`'s
+#: `cost._ceiling_note` prices 773 nodes at "~$40" worst case against an $8.00
+#: ceiling and explains that the ceiling is deliberately NOT the unbounded
+#: worst case — the full corpus is never dispatched in one run, it is run in
+#: `--limit` slices. Pinning the full-corpus price against the ceiling would
+#: therefore pin a claim the config never made. What IS pinned for it is that a
+#: real slice still fits, sized from the config's own `execution.batch_min_pending`
+#: (below that, batch mode will not dispatch at all, so a config whose smallest
+#: DISPATCHABLE slice is unaffordable is dead in exactly the way this pin
+#: exists to catch). The largest gate-passing slice at the time of the
+#: 2026-08-15 review was 125 nodes (down from ~250 — the restart doubling
+#: legitimately halves it); that figure is recorded in
+#: `resolve_runs/graph_v2/EXPERIMENTS.md` and deliberately NOT pinned here,
+#: because it is a live-artifact number and this repo forbids pinning those.
+#:
+#: ⭐ RULED 2026-08-15 (human): this ceiling STAYS AT $8.00. The remedy for the
+#: halved slice is to run more, smaller slices — not to raise the ceiling — so
+#: that the gate keeps its stopping power on the one run that commits the whole
+#: corpus. Nothing here should be read as a claim that the full 773-node
+#: selection is meant to pass in a single run; it is not, and it never was.
+_SLICED_BY_DESIGN = {"config_corpus_all.json"}
+
+#: Output snapshots, not shipped configurations. A config copied into a run
+#: directory records what a past run was sent and must not be re-gated against
+#: today's corpus.
+_NOT_A_SHIPPED_CONFIG = ("runs", "repair_graveyard", "translation_sample",
+                         "__pycache__")
+
+
+def _shipped_configs():
+    """Every `config*.json` reachable from `phase_1/` — discovered, not listed.
+
+    ⚠️ A GLOB AND NOT A LITERAL LIST, deliberately. The pin this replaces read
+    exactly one path (`HERE / "config.json"`) and so missed the one shipped
+    configuration that was actually dead at its own ceiling
+    (`resolve_runs/graph_v2/config_graph_nodes.json`). A hand-maintained list
+    would have the same hole the day the next config lands.
+    """
+    out = []
+    for p in sorted(HERE.rglob("config*.json")):
+        rel = p.relative_to(HERE).parts
+        if any(part in _NOT_A_SHIPPED_CONFIG or _re_run_dir(part)
+               for part in rel[:-1]):
+            continue
+        out.append(p)
+    assert out, "no shipped configs found — the glob is broken, not the repo"
+    return out
+
+
+def _re_run_dir(name):
+    """`run1/`, `run2/`, … — numbered output directories.
+
+    ⚠️ NOT `.*_runs`: `resolve_runs/` is where the graph configs SHIP, and a
+    pattern that swallowed it would restore precisely the blind spot this
+    parametrisation exists to remove.
+    """
+    import re as _re
+    return bool(_re.fullmatch(r"run\d+", name))
+
+
+#: ⚠️ THIS PIN WAS RED WHEN IT WAS WRITTEN, and how it went green is the part
+#: worth keeping. `config_graph_nodes.json` priced $1.9940 against a $1.00
+#: ceiling — `cost_gate` refused it before a single call — and it was carried
+#: as an explicit `xfail(strict=True)` naming the pending decision rather than
+#: quietly narrowed away. THE HUMAN THEN RULED (2026-08-15): raise that one
+#: ceiling to exactly $2.00, because the restart's doubling is real cost and
+#: not an estimation artefact. The mark came off in the same change. Nothing
+#: about the pin was weakened to achieve it — ⛔ REJECTED BY NAME, then and
+#: still: lowering the estimate, dropping a config from the parametrisation,
+#: and a bare or silent xfail. `config_corpus_all.json`'s $8.00 ceiling was
+#: deliberately NOT raised in the same ruling (see `_SLICED_BY_DESIGN`): the
+#: run that commits the whole corpus is the one the gate must keep stopping,
+#: so the answer there is more, smaller slices.
+@pytest.mark.parametrize(
+    "cfg_path", [pytest.param(p, id=str(p.relative_to(HERE)))
+                 for p in _shipped_configs()])
+def test_EVERY_shipped_config_passes_its_OWN_cost_gate(cfg_path, monkeypatch):
+    """⛔ THE PIN THE BLOCKER NEEDED, WIDENED TO EVERY SHIPPED CONFIG. The
+    suite priced the restart against a synthetic provider and never against a
+    shipped config, so an over-charge that refused `config.json` at its own
+    ceiling was green in every test. Then the pin that caught THAT read one
+    path, and so was itself green while
+    `resolve_runs/graph_v2/config_graph_nodes.json` was dead at its own
+    ceiling. "Green in its own suite, dead in the real configuration" is the
+    failure mode this project keeps hitting, and it survives a pin with a
+    narrow field of view.
+
+    ⚠️ NO LIVE COUNT AND NO PINNED DOLLAR FIGURE anywhere below: the assertion
+    is the RELATION between the printed worst case and that config's own
+    ceiling, so a config that legitimately grows a corpus still passes.
+    """
+    cfg = T.load_config(str(cfg_path))
+    ceiling = float(cfg["cost"]["max_cost_usd"])
+    limit = None
+    if cfg_path.name in _SLICED_BY_DESIGN:
+        limit = int((cfg.get("execution") or {}).get("batch_min_pending") or 1)
+    printed, _ = _dry_run_cost(cfg_path, monkeypatch, limit=limit)
+    what = ("the smallest dispatchable slice of this config"
+            if limit else "this shipped config")
+    assert printed <= ceiling, (
+        f"{what} prices at ${printed:.4f} against its own ${ceiling:.2f} "
+        f"ceiling — `cost_gate` would REFUSE it at --live, before a single "
+        f"call is made")
+    T.cost_gate(printed, cfg)          # the gate itself, on the same number
 
 
 def test_the_STORED_transcript_keeps_BOTH_segments_and_says_where_it_broke():
@@ -872,6 +1070,16 @@ def test_the_STORED_transcript_keeps_BOTH_segments_and_says_where_it_broke():
     for t in out.transcript:
         assert set(t) == {"role", "content"}, t
         assert t["role"] in ("user", "assistant"), t
+    # ⚠️ AND THE ASSUMPTION THAT MAKES THAT ENOUGH, PINNED RATHER THAN LEFT
+    # IMPLICIT (group review P3): the marker turn creates the only two adjacent
+    # same-role turns any stored transcript contains, and re-sending it is legal
+    # ONLY because the provider is OpenAI-compatible and tolerates them.
+    # Endpoints that enforce strict alternation exist. If this project ever
+    # points at one, fold the marker into the redraw's first user turn — do NOT
+    # give it an invented role or an extra key, which is the failure above.
+    roles = [t["role"] for t in out.transcript]
+    same = [i for i, (a, b) in enumerate(zip(roles, roles[1:])) if a == b]
+    assert same == [cut], (same, roles)
 
 
 def test_an_abstention_AFTER_A_RESTART_is_not_counted_as_a_first_answer():
@@ -893,12 +1101,29 @@ def test_the_loop_does_not_PARAPHRASE_or_RE_RENDER_to_break_a_freeze():
     by a stand-in model from the exact accumulated bytes DeepSeek froze on, so
     the message is sufficient and the defect is the CONTEXT IT ARRIVES IN. All
     three vary the prompt — changing a measured artifact to fix an unmeasured
-    one. The redraw's first turn is therefore byte-identical to the original."""
+    one. The redraw's first turn is therefore byte-identical to the original.
+
+    ⚠️ THAT LAST SENTENCE IS TRUE OF THE LOOP AND NOT ALWAYS OF THE WIRE
+    (adversarial review 2026-08-15, F4; ACCEPTED). `repair_loop` never varies
+    it, but `Client._vary_identical_retry` can append a contentless
+    `[transport retry N: …]` line to it if attempt 1's identical body is
+    already recorded failed — reachable via a truncated attempt 1 under
+    `resample_truncation`. Grounds, the reachable path and the two claims that
+    go false are in `_vary_identical_retry`'s docstring. This test asserts the
+    loop-level claim, which is the one the rejection doctrine is about."""
     model = ScriptedModel(*FROZEN_CHAIN)
-    T.repair_loop(BROKEN, clause={"id": "m0001"}, model=model,
-                  first_user="THE REAL FIRST PROMPT", system="SYS",
-                  max_attempts=5)
-    assert model.calls[2][1][0] == model.calls[0][1][0], \
+    out = T.repair_loop(BROKEN, clause={"id": "m0001"}, model=model,
+                        first_user="THE REAL FIRST PROMPT", system="SYS",
+                        max_attempts=5)
+    # ⚠️ WITHOUT THIS LINE THIS TEST MEASURED NOTHING (group review P1): with
+    # the detector disabled no redraw happens, `calls[2]` is an ordinary repair
+    # round, and "its first turn equals call 1's first turn" is trivially true
+    # because the transcript PREFIX never changes. The claim is about the
+    # REDRAW, so the redraw has to have happened.
+    assert out.restarted, "no restart: the assertions below are vacuous"
+    redraw = model.calls[2][1]
+    assert len(redraw) == 1, redraw
+    assert redraw[0] == model.calls[0][1][0], \
         "the redraw's first turn was rewritten"
     assert len({c[0] for c in model.calls}) == 1, \
         "the system block changed between rounds"
@@ -957,3 +1182,136 @@ def test_findings_that_DIFFER_ANYWHERE_are_never_collapsed():
     log = T.render_error_log([("attempt 1", [a, b, c])])
     assert len([ln for ln in log.split("\n") if ln.startswith("  - [")]) == 3
     assert "×" not in log, log
+
+
+# --------------------------------------------------------------------------
+#  The graveyard seams (group adversarial review D2, D3)
+# --------------------------------------------------------------------------
+
+def test_a_restarted_and_recovered_clause_is_sampled_as_REPAIRED():
+    """PRE-FIX BEHAVIOUR THIS CATCHES: `attempts` is re-based by the restart, so
+    a clause that burned four calls, froze, was redrawn and then recovered
+    arrived at `graveyard.should_keep` with `attempts == 1` and was bucketed
+    `first_try` — 5% under the shipped rates against 25% for an ordinary
+    repair. The single most diagnostically valuable outcome this loop produces
+    would have been kept at a fifth of the rate of the ordinary one.
+
+    ⚠️ The `attempts >= max_attempts` branch is a DIFFERENT question and is
+    correctly left reading the re-based number: it asks about the transcript
+    that produced the result. This one asks how much work the clause took.
+    """
+    import graveyard
+    out = T.repair_loop(BROKEN, clause={"id": "m0001"},
+                        model=ScriptedModel(BROKEN2, BROKEN, module_json()),
+                        max_attempts=5)
+    assert out.status == "translated" and out.restarted and out.attempts == 1
+    keep, why = graveyard.should_keep(
+        out, 5, {"repaired": 1.0, "first_try": 0.0}, clause_id="m0001")
+    assert keep, "a restarted chain was bucketed as a first-try"
+    assert "repaired" in why, why
+    keep, _ = graveyard.should_keep(
+        out, 5, {"repaired": 0.0, "first_try": 1.0}, clause_id="m0001")
+    assert not keep, "a restarted chain is still being sampled as a first-try"
+
+
+def test_the_graveyard_ENTRY_does_not_contradict_its_own_transcript(tmp_path):
+    """PRE-FIX BEHAVIOUR THIS CATCHES: `entry.json` recorded `attempts: 1`
+    beside a `transcript.json` holding twelve turns and a restart marker. A
+    graveyard entry is read BY HAND — that is the whole reason the directory
+    exists — and a self-contradictory one costs more than it tells."""
+    import graveyard
+    out = T.repair_loop(BROKEN, clause={"id": "m0001"},
+                        model=ScriptedModel(BROKEN2, BROKEN, BROKEN3, BROKEN3),
+                        max_attempts=5)
+    path = graveyard.write_entry(str(tmp_path), {"id": "m0001"}, out,
+                                 reason="test", contract_hash="c",
+                                 provenance_hash="p")
+    import json as _json
+    entry = _json.load(open(f"{path}/entry.json"))
+    stored = _json.load(open(f"{path}/transcript.json"))
+    assert entry["restarted"] is True, entry
+    assert entry["pre_restart_per_attempt"], entry
+    assert T.RESTART_MARKER_TEXT in [t["content"] for t in stored]
+    assert len(stored) > 2 * entry["attempts"], (len(stored), entry["attempts"])
+
+
+def test_a_flag_earned_BEFORE_the_restart_does_not_ride_onto_the_new_module():
+    """⭐ RULED, and the alternative is rejected by name in
+    `RepairOutcome.pre_restart_flags`: a flag is a SHAPE DIFF between two
+    drafts, and a restart throws its drafts away.
+
+    PRE-FIX BEHAVIOUR THIS CATCHES: a `shrank` earned by a discarded draft rode
+    through onto a clean redrawn module — `run()` printed `⚠️ shrank` against a
+    module that never shrank, `run.json` recorded a claim about bytes nobody
+    kept, and `should_keep`'s force-keep on `if flags:` routed the clause into
+    the graveyard on the strength of a draft. That is precisely the population
+    distortion `restarted` was made a field rather than a flag to avoid,
+    arriving through the other door.
+    """
+    import graveyard
+    # shrank AND still broken: the ontology that derived `disallowed/1` is
+    # gone, so the assertion body references an undeclared name
+    shrunk_broken = module_json(ontology=[])
+    out = T.repair_loop(BROKEN, clause={"id": "m0001"},
+                        model=ScriptedModel(shrunk_broken, BROKEN,
+                                            module_json()),
+                        max_attempts=5)
+    assert out.status == "translated" and out.restarted
+    assert out.flags == [], out.flags
+    # NOT LOST — moved, and written into the graveyard entry
+    assert "shrank" in out.pre_restart_flags, out.pre_restart_flags
+    # and the discarded draft no longer force-keeps the clause
+    keep, why = graveyard.should_keep(
+        out, 5, {"repaired": 0.0, "first_try": 0.0}, clause_id="m0001")
+    assert not keep, why
+
+
+def test_a_NON_PARSING_redraw_does_not_inherit_the_discarded_shape():
+    """⭐ THE OTHER DOOR INTO THE SAME DISTORTION, and the reason the test
+    above does not cover it: its redraw PARSES, so the shape baseline is
+    overwritten no matter what the fallback does.
+
+    PRE-FIX BEHAVIOUR THIS CATCHES: the restart cleared `flags` but left
+    `prev_shape = _shape(raw) or prev_shape`. When the redraw does not parse,
+    `_shape` returns `{}` and the `or` RETAINED the discarded draft's counts —
+    so the next post-restart module was diffed against bytes nobody kept, wore
+    a `shrank` it never earned, and `should_keep`'s force-keep on `if flags:`
+    routed a clean converged clause into the graveyard. Same population
+    distortion as `pre_restart_flags`, arriving through the shape baseline
+    instead of the flag list.
+
+    The chain: a BIG draft, repeated verbatim (the freeze) → restart → a
+    redraw that is not JSON at all → a small but VALID module. Nothing after
+    the restart ever shrank, because the only parsed post-restart shape is the
+    last one.
+    """
+    import graveyard
+    bad = fixtures.assertion(read_back="producing this is forbidden",
+                             read_back_slots=["M"])       # a real breach
+    big = module_json(claims=["C1 a", "C2 b", "C3 c", "C4 d"],
+                      asserts=[bad, bad, bad])
+    not_json = "sorry, I cannot produce JSON for this clause"
+    out = T.repair_loop(big, clause={"id": "m0001"},
+                        model=ScriptedModel(big, not_json, module_json()),
+                        max_attempts=5)
+    assert out.restarted and out.status == "translated", out.status
+    assert out.flags == [], (
+        f"{out.flags} — earned against the DISCARDED draft's shape; the "
+        f"redraw did not parse and its `{{}}` shape was overwritten by the "
+        f"pre-restart one")
+    keep, why = graveyard.should_keep(
+        out, 5, {"repaired": 0.0, "first_try": 0.0}, clause_id="m0001")
+    assert not keep, why
+
+
+def test_a_flag_earned_AFTER_the_restart_is_still_reported():
+    """The negative control for the rule above. Clearing flags at the restart
+    must not disarm the guards for the rest of the clause's life — the guards
+    are the reason a repair that goes green while making the module worse is
+    visible at all."""
+    gutted = module_json(asserts=[], acts=[], closure=[])
+    out = T.repair_loop(BROKEN, clause={"id": "m0001"},
+                        model=ScriptedModel(BROKEN2, BROKEN, BROKEN3, gutted),
+                        max_attempts=5)
+    assert out.restarted and out.status == "translated"
+    assert "shrank" in out.flags, out.flags

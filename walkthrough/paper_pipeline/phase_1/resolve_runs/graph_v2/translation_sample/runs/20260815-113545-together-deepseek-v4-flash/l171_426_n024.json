@@ -1,0 +1,143 @@
+{
+ "outcome": "translated",
+ "clause_id": "l171_426_n024",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example illustrates a user/developer conflict where the user asks the assistant to promote a competitor's product",
+  "C2 the assistant should not disparage competitors when asked about them",
+  "C3 the assistant should steer the conversation to Acme's products instead of promoting the competitor"
+ ],
+ "acts": [
+  "disparage_competitor(C)",
+  "steer_to_acme_products(C)"
+ ],
+ "concepts": [
+  {
+   "name": "root_authority",
+   "arity": 0,
+   "gloss": "the root authority level, the highest in the authority hierarchy, assigned to Model Spec 'root' sections",
+   "licence": "textual",
+   "cites": "l171_426_n024",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "developer_authority",
+   "arity": 0,
+   "gloss": "the developer authority level, assigned to Model Spec 'developer' sections and developer messages",
+   "licence": "textual",
+   "cites": "l171_426_n024",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "user_authority",
+   "arity": 0,
+   "gloss": "the user authority level, assigned to Model Spec 'user' sections and user messages",
+   "licence": "textual",
+   "cites": "l171_426_n024",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "authority_levels_hierarchy",
+   "arity": 2,
+   "gloss": "the ranking of instruction authority levels: root > system > developer > user > guideline > no authority, used to determine which instruction prevails in conflicts",
+   "licence": "textual",
+   "cites": "l171_426_n024",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "competitor_product_request",
+   "arity": 1,
+   "gloss": "a user request asking the assistant to promote or sell a competitor's product",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's user message asks to sell a competitor's product; the conflict is about such a request",
+   "toggleable": false
+  },
+  {
+   "name": "asked_about_competitor",
+   "arity": 1,
+   "gloss": "the user has asked the assistant about a competitor's product or store",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the developer instruction says 'if asked about them', so the situation of being asked about competitors must be representable",
+   "toggleable": false
+  },
+  {
+   "name": "acme_products",
+   "arity": 0,
+   "gloss": "the products of Acme store, the assistant's own store in the example",
+   "licence": "textual",
+   "cites": "l171_426_n024",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l171_426_n024",
+   "inference": null,
+   "toggleable": false,
+   "atom": "competitor_product_request(U)",
+   "gloss": "U is a user request to promote or sell a competitor's product",
+   "body": "user_authority, competitor_product_request(U)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "disparaging a competitor in response to % is forbidden because the developer instruction says not to disparage them",
+   "read_back_slots": [
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l171_426_n024",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "disparage_competitor(C)",
+   "body": "asked_about_competitor(C)"
+  },
+  {
+   "read_back": "steering the conversation to Acme's products in response to % is preferred over promoting the competitor",
+   "read_back_slots": [
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l171_426_n024",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "steer_to_acme_products(C)",
+   "body": "asked_about_competitor(C)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "disparage_competitor",
+   "closure": "cnpa",
+   "reason": "the developer instruction explicitly says 'don't disparage them', so disparaging competitors is prohibited when asked about them"
+  },
+  {
+   "act_class": "steer_to_acme_products",
+   "closure": "cepa",
+   "reason": "the instruction says to steer the conversation to Acme's products when asked about competitors; it does not forbid other responses, so silence permits"
+  }
+ ],
+ "requires": [
+  "root_authority/0",
+  "developer_authority/0",
+  "user_authority/0",
+  "authority_levels_hierarchy/2"
+ ],
+ "inputs": [
+  "competitor_product_request/1",
+  "asked_about_competitor/1"
+ ],
+ "forbid_body": []
+}

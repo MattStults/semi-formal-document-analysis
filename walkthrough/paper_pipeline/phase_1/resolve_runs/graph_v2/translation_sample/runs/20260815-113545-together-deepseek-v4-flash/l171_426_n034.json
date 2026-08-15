@@ -1,0 +1,157 @@
+{
+ "outcome": "translated",
+ "clause_id": "l171_426_n034",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should strive to detect conflicts and ambiguities, including ones not stated explicitly",
+  "C2 the assistant should resolve such conflicts and ambiguities by focusing on what the higher-level authority implies",
+  "C3 the assistant should resolve such conflicts and ambiguities by focusing on what the overall purpose of the scenario implies"
+ ],
+ "acts": [
+  "detect_conflict_or_ambiguity(C)",
+  "resolve_conflict_or_ambiguity(C)"
+ ],
+ "concepts": [
+  {
+   "name": "conflict_or_ambiguity",
+   "arity": 1,
+   "gloss": "a conflict or ambiguity in the scenario, including one not stated explicitly",
+   "licence": "textual",
+   "cites": "l171_426_n034",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "explicitly_stated",
+   "arity": 1,
+   "gloss": "the conflict or ambiguity is stated explicitly in the scenario",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the text distinguishes conflicts and ambiguities 'not stated explicitly', so a notion of being stated explicitly is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "higher_level_authority_implication",
+   "arity": 2,
+   "gloss": "the higher-level authority in the scenario implies that conflict or ambiguity C should be resolved in a particular way",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "'focusing on what the higher-level authority ... impl[ies]' requires a relation between a conflict and what the authority implies about it",
+   "toggleable": false
+  },
+  {
+   "name": "overall_purpose_implication",
+   "arity": 2,
+   "gloss": "the overall purpose of the scenario implies that conflict or ambiguity C should be resolved in a particular way",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "'focusing on what the ... overall purpose of the scenario impl[ies]' requires a relation between a conflict and what the purpose implies about it",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "the root authority level, the highest in the authority hierarchy, assigned to Model Spec 'root' sections",
+   "licence": "textual",
+   "cites": "l171_426_n034",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "authority_levels_hierarchy",
+   "arity": 2,
+   "gloss": "the ranking of instruction authority levels: root > system > developer > user > guideline > no authority, used to determine which instruction prevails in conflicts",
+   "licence": "textual",
+   "cites": "l171_426_n034",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "the assistant is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document",
+   "licence": "textual",
+   "cites": "l171_426_n034",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the text says 'even those not stated explicitly', which presupposes that some conflicts and ambiguities are stated explicitly",
+   "toggleable": false,
+   "atom": "explicitly_stated(C)",
+   "gloss": "C is a conflict or ambiguity stated explicitly in the scenario",
+   "body": "conflict_or_ambiguity(C)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "detecting conflict or ambiguity % is preferred because the assistant should strive to detect conflicts and ambiguities, even those not stated explicitly",
+   "read_back_slots": [
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l171_426_n034",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "detect_conflict_or_ambiguity(C)",
+   "body": "conflict_or_ambiguity(C)"
+  },
+  {
+   "read_back": "resolving conflict or ambiguity % by focusing on what the higher-level authority implies is preferred",
+   "read_back_slots": [
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l171_426_n034",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "resolve_conflict_or_ambiguity(C)",
+   "body": "conflict_or_ambiguity(C), higher_level_authority_implication(C, A)"
+  },
+  {
+   "read_back": "resolving conflict or ambiguity % by focusing on what the overall purpose of the scenario implies is preferred",
+   "read_back_slots": [
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l171_426_n034",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "resolve_conflict_or_ambiguity(C)",
+   "body": "conflict_or_ambiguity(C), overall_purpose_implication(C, P)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "detect_conflict_or_ambiguity",
+   "closure": "cepa",
+   "reason": "the clause states a striving/preference to detect conflicts and ambiguities; it does not forbid or require detection in any particular situation, so silence leaves detection permitted"
+  },
+  {
+   "act_class": "resolve_conflict_or_ambiguity",
+   "closure": "cepa",
+   "reason": "the clause states a striving/preference for how to resolve conflicts and ambiguities; it does not forbid or require resolution in any particular situation, so silence leaves resolution permitted"
+  }
+ ],
+ "requires": [
+  "root_authority/1",
+  "authority_levels_hierarchy/2",
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "conflict_or_ambiguity/1",
+  "explicitly_stated/1",
+  "higher_level_authority_implication/2",
+  "overall_purpose_implication/2"
+ ],
+ "forbid_body": []
+}

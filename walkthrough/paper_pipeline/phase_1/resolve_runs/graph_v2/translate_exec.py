@@ -570,7 +570,8 @@ class RunContext:
         # would otherwise understate how many calls the clause took
         if out.restarted:
             rec.update(restarted=True,
-                       pre_restart_per_attempt=out.pre_restart_per_attempt)
+                       pre_restart_per_attempt=out.pre_restart_per_attempt,
+                       pre_restart_flags=out.pre_restart_flags)
         with open(os.path.join(outdir, f"{cid}.transcript.json"), "w",
                   encoding="utf-8") as fh:
             json.dump(out.transcript, fh, indent=1)

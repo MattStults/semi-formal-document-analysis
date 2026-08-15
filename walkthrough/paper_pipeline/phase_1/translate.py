@@ -637,6 +637,33 @@ class Client:
         accepted over invisible parameter jitter, which is provider-
         implementation-dependent. Suffix-only, so the prefix cache holds
         while generation divergence is guaranteed.
+
+        ⚠️ SECOND ACCEPTED TENSION — THIS GUARD CAN FIRE ON `repair_loop`'s
+        REDRAW (adversarial review 2026-08-15, F4; ACCEPTED, not repaired;
+        reproduction `_debug_gen11/review_chainpolicy/seam.py`). The redraw
+        rebuilds the clause's FIRST turn deliberately unchanged, so
+        `_body_messages(system, [first_turn()])` serialises to the same bytes
+        `_body(system, user)` produced for attempt 1. The reachable path:
+        attempt 1 TRUNCATES under `model.resample_truncation`, `_send` records
+        the clean body's hash as failed, the resample succeeds, and the clause
+        later freezes — so by the time the redraw is sent, its bytes are
+        already in `_failed_body_hashes` and it leaves with
+        `[transport retry 1: prior identical attempt failed]` appended.
+
+        WHY IT IS TOLERATED: the marker is suffix-only and contentless, the
+        prefix cache is intact, the redraw is still a clean single-turn
+        transcript, and the repair message is untouched — none of the three
+        remedies rejected in `repair_loop` (paraphrase / temperature /
+        re-render) is being performed. WHAT IS NEVERTHELESS FALSE AT THE WIRE
+        when it fires, and must not be re-asserted as unconditional: (1) the
+        redraw is no longer byte-identical to attempt 1, and (2)
+        `RepairOutcome.transcript` stores the clean `first_turn()` while the
+        wire carried the marked one. ⛔ REJECTED BY NAME: exempting the redraw
+        from the guard (a whitelisted seam is a seam with no guard, and this
+        one exists precisely because a byte-identical failed retry is what the
+        provider is known to answer identically), and clearing
+        `_failed_body_hashes` at the restart (the failures it records are
+        transport facts about this process, not facts about the transcript).
         """
         payload = json.dumps(body).encode()
         n = 0
@@ -1251,10 +1278,22 @@ def run(cfg, args, client_factory=None):
     # multiplies it by 4.5× while the true worst case only doubles. Measured on
     # the shipped configs, that over-charge REFUSED `config.json` against its
     # own $0.25 ceiling ($0.2744 against an exact $0.1745) and cut the largest
-    # gate-passing `config_corpus_all` slice from 250 nodes to 71. "An estimate
-    # is allowed to be high" is true in general and FALSE here: this number is
+    # gate-passing `config_corpus_all` slice to 71 nodes. "An estimate is
+    # allowed to be high" is true in general and FALSE here: this number is
     # wired to a hard `CostGateError`, so a needless over-charge is a silent
     # refusal of every live config. Doubling the RESULT is exact.
+    #
+    # ⚠️ AND THE CORRECT SLICE IS NOT ~250 EITHER — an earlier version of this
+    # comment implied it was, by naming 250 as the figure the shim cut from.
+    # 250 was the SINGLE-CHAIN slice, i.e. the one priced before the restart
+    # existed. Under the exact doubling above the largest gate-passing
+    # `config_corpus_all` slice is 125 nodes against its $8.00 ceiling
+    # (measured 2026-08-15). That halving is CORRECT and was ruled on: the
+    # restart is real cost, and the human's 2026-08-15 ruling is to run more,
+    # smaller slices rather than raise that ceiling, so the gate keeps its
+    # stopping power on the run that commits the whole corpus. The one ceiling
+    # raised in that ruling was `config_graph_nodes.json`, $1.00 → $2.00
+    # exactly, whose grounds are in the config's own `_ceiling_note`.
     #
     # This is also why the restart does not re-base per-clause spend the way
     # `dispatch_core` does: a gate the loop can spend past is not a gate.
@@ -1439,7 +1478,8 @@ def run(cfg, args, client_factory=None):
             # clause actually took.
             if out.restarted:
                 rec.update(restarted=True,
-                           pre_restart_per_attempt=out.pre_restart_per_attempt)
+                           pre_restart_per_attempt=out.pre_restart_per_attempt,
+                           pre_restart_flags=out.pre_restart_flags)
             with open(os.path.join(outdir, f"{cid}.transcript.json"), "w",
                       encoding="utf-8") as fh:
                 json.dump(out.transcript, fh, indent=1)
@@ -2538,14 +2578,26 @@ def render_error_log(attempts):
     every turn would duplicate attempt 1 into every later turn and pay for it
     again, while adding nothing the conversation did not already carry.
 
-    ⭐ IDENTICAL FINDINGS ARE COLLAPSED WITH A COUNT. One name used at four body
-    sites produces four findings with the same `(check_id, where, message)` —
-    `where` is `<root>` for the declaration checks, so the lines are not merely
-    similar, they are byte-identical. A measured log showed 6 lines carrying 4
-    distinct problems and another 9 carrying 3. Repeating a line neither says
-    anything the first one did not nor tells the model where the other three
-    uses are; it spends the repair-turn budget and makes a small defect look
-    like a large one.
+    ⭐ IDENTICAL FINDINGS ARE COLLAPSED WITH A COUNT — identical on ALL THREE of
+    `(check_id, where, message)`, never on `message` alone. The undeclared-name
+    breach reports `where="<root>"` however many body sites the name is used at,
+    so its repeats are not merely similar, they are byte-identical: a measured
+    log showed 6 lines carrying 4 distinct problems and another 9 carrying 3.
+    Repeating such a line neither says anything the first one did not nor points
+    at the other uses; it spends the repair-turn budget and makes a small defect
+    look like a large one.
+
+    ⚠️ NOT EVERY REPEATED-NAME CHECK LOOKS LIKE THAT, and a later reader must not
+    "finish the job" by keying on `message`. The arity check reports a real
+    position (`asserts[0]`, `ontology[3]`, …), so two of its findings for one
+    name at two sites are DIFFERENT findings and are correctly left as two
+    lines — `where` is what tells the model which site to fix, and merging on
+    the message would hide half the module. The consequence is a real budget
+    exposure rather than a defect: an arity line is ~400 chars and does not
+    collapse, so ~18 sites of one wrong-arity name would exceed
+    `REPAIR_LOG_CHAR_BUDGET` and silently under-price the run. The most any
+    module on disk carries is 2. If that changes, price the log — do not widen
+    this key.
 
     ⛔ THIS IS NOT A REWORDING, and must not become one. Paraphrasing the repair
     message is REJECTED BY NAME in `repair_loop`'s docstring — the message was
@@ -2574,6 +2626,11 @@ def render_error_log(attempts):
             if f.severity != "error":
                 notes += 1
                 continue
+            # ⚠️ counts FINDINGS SHOWN, not lines emitted — since the dedupe it
+            # is no longer the number of `  - ` lines. It has one reader, the
+            # `if not shown` branch below, which asks "was the model handed
+            # anything at all to fix", and for that question the finding count
+            # is the right one. Do not reuse it as a line count.
             shown += 1
             key = (f.check_id, f.where, f.message)
             if key in seen:
@@ -2735,8 +2792,18 @@ def repair_loop(initial_raw, clause, model, max_attempts=3, corpus_ids=None,
       * it sets `self.spent = 0.0` on restart. Nothing here resets any spend:
         translation's gate is a run-level budget against a per-clause estimate,
         and re-basing spend at the restart would make the printed worst case a
-        lie. `run()` prices the restart instead (`estimate_cost` is called with
-        twice `max_attempts`).
+        lie. `run()` prices the restart instead, by DOUBLING THE RESULT of a
+        single-chain estimate — two independent chains of `max_attempts`, not
+        one chain of twice as many turns.
+        ⛔ REJECTED BY NAME, and it was in this docstring as fact until a
+        review caught it: `estimate_cost(..., 2T)`, i.e. feeding a doubled TURN
+        COUNT. Both of `estimate_cost`'s terms are quadratic in the attempt
+        count (the resent-completion term is `max_tokens · n · T(T-1)/2`), so
+        T=5→10 multiplies the estimate ~4.5× while the true worst case only
+        doubles — and because this number is wired to a hard `CostGateError`,
+        that over-charge REFUSES every live config before a single call.
+        Doubling the result is exact. Full grounds and the measured figures at
+        the call site in `run()`.
       * it keys on adjacent identity (see above).
     """
     import checks as _checks
@@ -2874,11 +2941,35 @@ def repair_loop(initial_raw, clause, model, max_attempts=3, corpus_ids=None,
             # the strength of bytes nobody kept. Grounds and the rejected
             # alternative: `RepairOutcome.pre_restart_flags`.
             pre_restart_flags, flags = flags, []
+            # ⚠️ THE REDRAW REBUILDS ATTEMPT 1'S TURN UNCHANGED, so its request
+            # body is byte-identical to attempt 1's — which means the
+            # identical-retry seam guard CAN append its contentless marker to
+            # it on the wire (accepted, not repaired: adversarial review
+            # 2026-08-15 F4, grounds and reachable path in
+            # `Client._vary_identical_retry`). Do not "fix" that by varying the
+            # first turn here: varying the prompt is the remedy this loop
+            # rejects by name.
             transcript = [first_turn()]
             env = model.complete_messages(system, transcript)
             raw = env["text"]
             res, found = look(raw, 1)
-            prev_shape = _shape(raw) or prev_shape
+            # ⭐ AND SO DOES THE BASELINE THE FLAGS ARE MEASURED AGAINST — no
+            # `or prev_shape` here, deliberately. Inside a chain (line ~2847)
+            # that fallback is right: an unparseable REPAIR reply has no shape,
+            # and holding the last real one keeps the guards armed for the rest
+            # of the chain. Across the restart it is the same corruption the
+            # line above exists to stop, arriving through the other door: if
+            # the redraw does not parse, `_shape` returns `{}` and the fallback
+            # would retain the DISCARDED draft's counts, so the next
+            # post-restart module is diffed against bytes nobody kept and
+            # earns `shrank` against a module that never shrank —
+            # `should_keep`'s `if flags:` then force-keeps it into the
+            # graveyard. `{}` is the correct baseline for a fresh chain and is
+            # already safe: `_diff_flags` returns no flags when `before` is
+            # empty, exactly as it does for attempt 1 of the FIRST chain (line
+            # ~2792, which has no fallback either). Pinned by
+            # `test_a_NON_PARSING_redraw_does_not_inherit_the_discarded_shape`.
+            prev_shape = _shape(raw)
             # A fresh chain: the discarded segment's answers are no longer in
             # context, so they are no longer anchors and must not stop it.
             seen = {_reply_hash(raw)}

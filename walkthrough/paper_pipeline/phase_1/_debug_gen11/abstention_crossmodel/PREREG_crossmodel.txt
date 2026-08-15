@@ -1,0 +1,143 @@
+PRE-REGISTRATION — CROSS-MODEL REPLICATION OF THE ABSTENTION-BOUNDARY ADJUDICATION
+written 2026-08-15, BEFORE any Sonnet-tier draw was dispatched and BEFORE any
+new judgement existed on disk.
+
+WHY
+`_debug_gen11/ABSTENTION_BOUNDARY.md` concludes that the pipeline's permissive
+side is systematically wrong (ABSTAINER RIGHT 19/29) and that ~32% of the 69
+translated modules should not exist. Every non-normativity judgement behind those
+numbers came from ONE model (local Haiku). Haiku is also the abstainer in the
+cohort17 dispute set. If Haiku simply has a low threshold for calling a span
+descriptive, the finding is circular. That report names this as the one
+alternative it cannot rule out from inside itself (§6) and names this exact test
+as the cheapest next step.
+
+THIS RUN IS NOT A DEFENCE OF THE EARLIER RESULT. A verdict of "the 32% figure is
+a judge artefact" is a fully acceptable outcome and will be reported as written.
+
+MATERIALS — IDENTICAL, NOT REBUILT
+* The same 53 item files, byte-for-byte, from
+  `_debug_gen11/abstention_boundary/items/X000.txt` .. `X052.txt`.
+  They are READ ONLY. Nothing under `abstention_boundary/` is written.
+* The same opaque ids, so the two runs join item-for-item.
+* The sealed key `abstention_boundary/KEY_do_not_open_until_judged.json` is
+  already open (the prior run opened it). It is NOT shown to any judging agent.
+
+BLINDING — WHERE IT LIVES IN THIS RUN
+The judge is blind, the orchestrator is not, and that is stated plainly because
+it cannot be otherwise on a replication. Each judging subagent receives EXACTLY
+the item file text plus the fixed question wrapper below — no clause id, no model
+name, no outcome, no stratum, no reference to the prior run or its verdicts, and
+no access to the key. The orchestrator has read the key (unavoidable: the
+comparison is against the prior joined verdicts). The join from new verdicts to
+key is performed by script, after every judgement file is on disk, and the
+verdict-derivation script is written before the first draw.
+
+ADJUDICATOR
+One isolated Sonnet-tier local subagent per (item, draw). Never batched: an agent
+sees exactly one item and answers once. 3 draws per item = 159 draws, plus
+pre-registered escalations.
+
+THE SINGLE QUESTION PUT TO EACH DRAW — WORDING FROZEN, IDENTICAL TO THE PRIOR RUN
+"Does this span state an obligation, permission, prohibition or definition that a
+logic module could faithfully encode, or is it a statement about the document, an
+example, or commentary?"
+Answer is one of NORMATIVE (encodable) / NON-NORMATIVE (about the document, an
+example, or commentary), plus one sentence of grounds. Option order NORMATIVE
+first, as before, so any order artifact is common to both runs.
+
+DECISION RULE (identical to the prior run, fixed here before any result)
+Per item, over its draws:
+  3/3 NORMATIVE      -> NORMATIVE
+  3/3 NON-NORMATIVE  -> NON-NORMATIVE
+  2-1 either way     -> escalate to 5 draws; then 5-0 or 4-1 resolves to the
+                        majority; 3-2 -> AMBIGUOUS
+Escalation is decided on draw counts alone.
+
+=========================  COMPARISON CRITERIA  =========================
+All thresholds below are fixed now and will be reported as written.
+
+C1 — PER-ITEM AGREEMENT AND COHEN'S KAPPA  (headline)
+  C1a HEADLINE: 3-category kappa (NORMATIVE / NON-NORMATIVE / AMBIGUOUS) over
+      all 53 items, Haiku verdict vs Sonnet verdict.
+  C1b SECONDARY: 2-category kappa (NORMATIVE / NON-NORMATIVE) over the subset of
+      items where NEITHER run returned AMBIGUOUS.
+  C1c Raw percent agreement, both 53-item and dispute-set-only (n=29).
+  READING of C1a, fixed now:
+    kappa >= 0.60  -> SURVIVES. Non-normativity judgement is substantially
+                      reproducible across models; the finding is about the
+                      prompt/spans, not about Haiku.
+    0.40 <= kappa < 0.60 -> PARTIAL. Judgement is moderately model-dependent;
+                      the direction may hold but point estimates are soft.
+    kappa < 0.40  -> ARTEFACT. Non-normativity judgement is itself
+                      model-dependent; the 32% figure is a property of the judge
+                      and must be reported as such.
+  Kappa is also reported with a bootstrap 95% CI (10,000 item-level resamples,
+  seed 20260815) so a small-n kappa is not over-read.
+
+C2 — THE THREE-WAY SPLIT, RECOMPUTED
+  Same three buckets, same definitions, same 29-item dispute set, same Wilson 95%
+  intervals, printed beside the Haiku figures.
+    ABSTAINER RIGHT     verdict NON-NORMATIVE and some model translated it
+    TRANSLATOR RIGHT    verdict NORMATIVE and some model abstained on it
+    GENUINELY AMBIGUOUS verdict AMBIGUOUS
+    (control)           normative, no abstainer to vindicate
+  READING, fixed now: the prior run's central claim is "the permissive side is
+  systematically wrong". It SURVIVES if Sonnet's ABSTAINER RIGHT >= 50% of the
+  dispute set (the threshold ABSTENTION_BOUNDARY.md §6 itself names). It is
+  WEAKENED if 30-50%. It is REFUTED if < 30%, or if TRANSLATOR RIGHT >=
+  ABSTAINER RIGHT.
+
+C3 — THE OVER-TRANSLATION ESTIMATE, RECOMPUTED
+  Identical stratified estimator to §4 of the prior report:
+    stratum A = census of the cohort17 clauses whose DeepSeek outcome was
+                `translated`; count adjudicated NON-NORMATIVE.
+    stratum B = the 24 ds_success items; p_B = NON-NORMATIVE / 24.
+    point estimate = A_nonnorm + (69 - |A|) * p_B, over 69.
+    95% CI from the Wilson interval on p_B, propagated the same way.
+  READING, fixed now:
+    point >= 25%  and CI lower bound >= 15%  -> HOLDS
+    point 12-25%                              -> MOVES (report both figures; the
+                                                 defect is real but smaller)
+    point < 12%   or CI lower bound < 5%      -> COLLAPSES
+
+C4 — CHARACTERISING DISAGREEMENT
+  Over the 53 items, cross-tabulate Haiku verdict x Sonnet verdict.
+  C4a THRESHOLD SHIFT: exact McNemar on the NORMATIVE/NON-NORMATIVE discordant
+      pairs. Declared if McNemar p < 0.05 AND >= 75% of discordant pairs run in
+      the same direction. Also report each model's overall NON-NORMATIVE rate
+      over all draws and over item verdicts.
+  C4b IDIOSYNCRATIC NOISE: declared if McNemar p >= 0.05 and the discordant
+      pairs are within 60/40 of balanced.
+  C4c BOUNDARY-CONCENTRATED (would CONFIRM the prior finding rather than
+      undermine it): declared if >= 50% of all disagreements fall on items that
+      were AMBIGUOUS in either run or that drew a non-unanimous 3-draw tally in
+      either run.
+  These are not exclusive; whichever hold are reported, with the counts.
+
+C5 — FALSIFIERS ON THE NEW INSTRUMENT (same as the prior run's F1-F3)
+  F1 discrimination: Fisher exact on ds_abstain (12) vs ds_success (24)
+     NON-NORMATIVE rates under the Sonnet verdicts. If p >= 0.05 the new
+     instrument does not separate the classes and its numbers are reported as
+     UNINTERPRETABLE — which would itself be evidence that the judgement is
+     model-dependent (feeds C1's ARTEFACT branch).
+  F2 degenerate answering: if > 90% of all Sonnet draws give one answer, the
+     instrument is a constant and C2/C3 are void.
+  F3 option-order artifact: if the NORMATIVE rate exceeds 90%, a reversed-order
+     subset re-run is required before reporting.
+
+C6 — THE DOCUMENTARY CHECK (no model involved, cannot be a judge artefact)
+  Enumerate every passage in the assembled `prompt_system.txt` bearing on
+  abstain-vs-translate; quote each verbatim with its line number; state exactly
+  which passages a model must disregard to emit a hollow module for a heading.
+  Separately verify that `l3995_4164_n001` appears BOTH as a translated
+  worked-example node in the assembled prompt AND as a DeepSeek abstention in
+  `runs/`. This section stands or falls on file bytes and is unaffected by C1-C5.
+
+WHAT WILL NOT BE DONE
+No file under runs/, translation_sample/runs/, repair_graveyard/,
+_debug_gen11/abstention_boundary/ is modified. No guard-watched prompt file or
+schema.py is edited. translate.py, translate_exec.py, test_repair.py and
+resolve_runs/graph_v2/config_graph_nodes.json are not touched (another agent owns
+them). No git commit. ZERO API spend against spend.py:BUDGET — all draws are
+local subagents, as in the prior run.

@@ -130,7 +130,8 @@
   "_": "Estimate printed BEFORE any call and gated. Over the ceiling, nothing is sent. An unpriced provider counts as OVER budget, never as free.",
   "_assumed_output_tokens": "Deliberately the full max_tokens, i.e. the worst case, not the ~600 tokens a module costs. Overstating an estimate is survivable; understating is how a hard cap gets passed.",
   "chars_per_token": 4.0,
-  "max_cost_usd": 1.0
+  "_ceiling_note": "RAISED 1.00 -> 2.00 by the human, 2026-08-15, and the raise is MINIMAL BY RULING. Stage 2's repair loop may DISCARD a frozen transcript and redraw the clause once from attempt 1, so a clause's worst case is TWO chains of max_attempts, and run() prices it by doubling the single-chain estimate. This selection prices $0.9970 single-chain and $1.9940 doubled, so the old $1.00 ceiling refused it with a CostGateError before a single call. The doubling is REAL COST -- a second sampled draw that is actually paid for -- not an estimation artefact, so the answer is a ceiling that admits it and not a cheaper estimate. 2.00 exactly, NOT 2.50 and not 'with headroom': a ceiling with slack is a ceiling that has stopped being a constraint, and this one must still bite the next time the worst case moves. Grounds and the measured figures: the 2026-08-15 chain-policy adversarial-review entry in EXPERIMENTS.md (finding P5).",
+  "max_cost_usd": 2.0
  },
  "repair": {
   "_": "Stage 2's repair loop. A failing translation is sent back in ONE accumulating transcript carrying its own prior modules and every check they failed, with reasons. Only stage-2 findings may enter it; later stages carry expected answers and are filtered by origin.",
