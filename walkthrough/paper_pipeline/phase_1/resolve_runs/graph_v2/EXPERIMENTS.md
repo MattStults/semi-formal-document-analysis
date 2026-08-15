@@ -3053,3 +3053,43 @@ translation harness. `translate.Client` speaks **openai-compatible only**
 no Haiku entry -- the only anthropic row is `fable`. Options are recorded
 in the conversation; this needs Matt's pick before the cross-model
 iteration starts.
+
+## 2026-08-15: HAIKU CROSS-MODEL TEST -- the failures are MISSING ABSTENTION,
+## not a schema defect. Fix F is aimed at a SYMPTOM.
+
+Method (Matt's idea, zero project spend): local Haiku subagents given the
+BYTE-IDENTICAL system prompt (36,820 bytes) and user message DeepSeek
+received on failing clauses, with no hint of the failure. Their modules were
+then run through the SAME schema.validate.
+RESULT, 3 of 3: Haiku **ABSTAINED** on every clause DeepSeek left
+`unrepaired`, each module passing schema cleanly, with converging reasons --
+"describes the organizational structure and content of the document rather
+than imposing normative requirements on model behaviour".
+The document text confirms Haiku is RIGHT. All three are meta-statements:
+L0011 "These goals can sometimes conflict, and the Model Spec helps navigate
+these trade-offs..."; L0021 "This overview sets out the goals, trade-offs and
+governance approach... primarily intended for human readers"; L0023 "The rest
+of the document consists of direct instructions to the model, beginning with
+some foundational definitions...". None imposes an obligation on the
+assistant. They are ABOUT the document.
+THE MECHANISM, and it re-ranks the whole fix plan a SECOND time:
+`undeclared-body-name` is a SYMPTOM, not a cause. Forced to translate
+non-normative prose, the model invents predicates for it --
+`sets_out_guidance`, `rest_of_document_section`, `overarching_goal`,
+`additional_principle` -- and an invented name has nothing to declare it, so
+the body-reference check fires. FIX F (body literals carry their origin, a
+schema-shape change the census ranked 6th and TWO reviews rejected) would
+make the model DECLARE its invented predicates rather than stop inventing
+them: it treats the symptom and would convert hard failures into plausible
+fabrications, which is strictly worse for a corpus that feeds behaviour
+matching.
+THE REAL FIX is abstention guidance -- prompt-level, cheap, low-risk, and
+already a first-class outcome (12 of 100 modules abstained today, so the
+path works; the model just does not take it on meta-clauses). DeepSeek
+abstains when the clause is obviously non-normative and forces a translation
+when the clause SOUNDS normative ("helps navigate", "sets out", "consists of
+direct instructions").
+NOT YET ESTABLISHED (do not overclaim): 3 samples, all from L1-170. Whether
+this explains all 19 unrepaired -- and how many of the 32
+`undeclared-body-name` findings sit on genuinely normative clauses -- needs
+the rest of the sample. That is the next measurement, and it is free.
