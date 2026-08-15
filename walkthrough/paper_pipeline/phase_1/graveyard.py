@@ -123,7 +123,19 @@ def should_keep(out, max_attempts, rates, clause_id="", seed=0):
     if attempts >= max_attempts:
         return True, ALWAYS["last_attempt"]
 
-    bucket = "repaired" if attempts > 1 else "first_try"
+    # ⛔ `attempts` IS RE-BASED BY A RESTART, AND THIS LINE IS WHY THAT MATTERS.
+    # `repair_loop` may discard a frozen transcript and redraw the clause from
+    # attempt 1; the counter restarts with it, so a clause that burned four
+    # calls, froze, was redrawn and then recovered arrives here with
+    # `attempts == 1`. Bucketed on that alone it would be sampled as a
+    # `first_try` — 5% under the shipped rates instead of 25% — and the single
+    # most diagnostically valuable outcome this loop produces would be kept at
+    # a fifth of the rate of an ordinary repair. The `attempts >= max_attempts`
+    # branch above is unharmed by the re-basing (it asks about the transcript
+    # that produced the result, which is what it means); THIS one asks how much
+    # work the CLAUSE took, and must see through the restart.
+    restarted = bool(getattr(out, "restarted", False))
+    bucket = "repaired" if (attempts > 1 or restarted) else "first_try"
     rate = float(rates.get(bucket, 0.0))
     if rate <= 0:
         return False, ""
@@ -153,6 +165,18 @@ def write_entry(root, clause, out, reason, contract_hash, provenance_hash,
         "attempts": getattr(out, "attempts", None),
         "per_attempt": list(getattr(out, "per_attempt", []) or []),
         "flags": list(getattr(out, "flags", []) or []),
+        # ⚠️ WITHOUT THESE THE ENTRY CONTRADICTS ITS OWN TRANSCRIPT. `attempts`
+        # and `per_attempt` are re-based by a restart, so an entry read
+        # `"attempts": 3, "per_attempt": [1,1,1]` beside a twelve-turn
+        # `transcript.json` carrying a restart marker. An entry is read by hand
+        # — that is the whole reason this directory exists — and a self-
+        # contradictory one costs more than it tells. `getattr` with a default
+        # because `out` is any object with this surface, not only
+        # `RepairOutcome`.
+        "restarted": bool(getattr(out, "restarted", False)),
+        "pre_restart_per_attempt": list(
+            getattr(out, "pre_restart_per_attempt", []) or []),
+        "pre_restart_flags": list(getattr(out, "pre_restart_flags", []) or []),
         "contract_hash": contract_hash,
         "provenance_hash": provenance_hash,
         "section_id": clause.get("section_id"),

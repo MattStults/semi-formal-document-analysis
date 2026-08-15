@@ -3,24 +3,15 @@
   "clause_id": "l1_170_n050",
   "abstain_reason": null,
   "claims": [
-    "C1: The system authority level is positioned in the hierarchy below root but above developer, user, and guideline levels",
-    "C2: System-level instructions can only be supplied by OpenAI, via the Model Spec, detailed policies, or system messages"
+    "C1 the system level ranks below root and above developer, user, and guideline",
+    "C2 a system-level instruction may only be supplied by OpenAI through this Model Spec, a detailed policy, or a system message"
   ],
-  "acts": [],
+  "acts": ["supply(I)"],
   "concepts": [
-    {
-      "name": "system_level",
-      "arity": 0,
-      "gloss": "the system authority level in the instruction hierarchy",
-      "licence": "textual",
-      "cites": "l1_170_n050",
-      "inference": null,
-      "toggleable": false
-    },
     {
       "name": "system_authority",
       "arity": 1,
-      "gloss": "I is a rule or instruction at the system authority level, set by OpenAI and transmittable via system messages",
+      "gloss": "I is a system-level instruction: a rule set by OpenAI that can be transmitted or overridden through system messages, but cannot be overridden by developers or users",
       "licence": "textual",
       "cites": "l1_170_n050",
       "inference": null,
@@ -29,59 +20,46 @@
     {
       "name": "authority_levels_hierarchy",
       "arity": 2,
-      "gloss": "L1 outranks L2 in the authority hierarchy",
+      "gloss": "Level A has higher instruction authority than level B; the ranking is root > system > developer > user > guideline > no authority",
+      "licence": "textual",
+      "cites": "l1_170_n050",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "openai_authorized_supply",
+      "arity": 1,
+      "gloss": "instruction I is supplied by OpenAI through this Model Spec, a detailed policy, or a system message",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause lists three allowed supply channels for system-level instructions, so the case-side fact must record whether an instruction was supplied through any of them",
+      "toggleable": false
+    }
+  ],
+  "ontology": [],
+  "asserts": [
+    {
+      "status": "forbid",
+      "act": "supply(I)",
+      "body": "system_authority(I), not openai_authorized_supply(I)",
+      "read_back": "supplying % is forbidden because % is a system-level instruction that is not supplied by OpenAI through the Model Spec, a detailed policy, or a system message",
+      "read_back_slots": ["I", "I"],
       "licence": "textual",
       "cites": "l1_170_n050",
       "inference": null,
       "toggleable": false
     }
   ],
-  "ontology": [
-    {
-      "atom": "authority_levels_hierarchy(root, system)",
-      "body": null,
-      "gloss": "root authority level outranks system level",
-      "licence": "textual",
-      "cites": "l1_170_n050",
-      "inference": null,
-      "toggleable": false
-    },
-    {
-      "atom": "authority_levels_hierarchy(system, developer)",
-      "body": null,
-      "gloss": "system authority level outranks developer level",
-      "licence": "textual",
-      "cites": "l1_170_n050",
-      "inference": null,
-      "toggleable": false
-    },
-    {
-      "atom": "authority_levels_hierarchy(system, user)",
-      "body": null,
-      "gloss": "system authority level outranks user level",
-      "licence": "textual",
-      "cites": "l1_170_n050",
-      "inference": null,
-      "toggleable": false
-    },
-    {
-      "atom": "authority_levels_hierarchy(system, guideline)",
-      "body": null,
-      "gloss": "system authority level outranks guideline level",
-      "licence": "textual",
-      "cites": "l1_170_n050",
-      "inference": null,
-      "toggleable": false
-    }
-  ],
-  "asserts": [],
   "beats": [],
   "defines": [],
-  "closure": [],
-  "requires": [
-    "system_authority/1",
-    "authority_levels_hierarchy/2"
+  "closure": [
+    {
+      "act_class": "supply",
+      "closure": "cepa",
+      "reason": "the clause restricts only the supply of system-level instructions; supplies of instructions that are not system-level are not addressed, so silence permits"
+    }
   ],
-  "inputs": [],
+  "requires": ["system_authority/1", "authority_levels_hierarchy/2"],
+  "inputs": ["openai_authorized_supply/1"],
   "forbid_body": []
 }

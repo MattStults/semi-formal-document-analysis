@@ -2499,7 +2499,34 @@ class RepairOutcome:
     #: the transcript that produced the result (which is what `should_keep`'s
     #: `attempts >= max_attempts` means). The discarded segment's per-attempt
     #: finding counts are kept here rather than thrown away.
+    #:
+    #: ⚠️ `graveyard.should_keep`'s OTHER reader of `attempts` — the
+    #: `repaired`/`first_try` sampling bucket — must NOT use the re-based
+    #: number, and does not: it asks `attempts > 1 or restarted`. A re-based 1
+    #: there would sample a restarted-and-recovered clause at 5% instead of
+    #: 25%, which is the outcome this whole change most needs to see.
     pre_restart_per_attempt: list = dataclasses.field(default_factory=list)
+    #: ⭐ RULED: FLAGS ARE CLEARED AT THE RESTART, and moved here.
+    #:
+    #: `flags` (`shrank`, `declaration-edit`) are read off a SHAPE DIFF between
+    #: two drafts. A restart throws its drafts away, so a flag earned before it
+    #: is a claim about bytes that are not in the answer — and `should_keep`
+    #: force-keeps anything flagged, so carrying them would route a
+    #: restarted-and-recovered clause into the graveyard on the strength of a
+    #: discarded draft. That is exactly the population distortion `restarted`
+    #: was made a field rather than a flag to avoid, arriving through the other
+    #: door; `run.json` and the `↻` line would also print `⚠️ shrank` against a
+    #: module that never shrank.
+    #:
+    #: ⛔ THE ALTERNATIVE, REJECTED BY NAME: carry them forward on the reading
+    #: that a flag describes the CLAUSE ("this clause tempts the model to
+    #: delete the offending rule") rather than the module. Rejected because
+    #: every consumer treats a flag as a property of the module that was kept —
+    #: `should_keep`'s `ALWAYS["flagged"]` says "converged, but a guard fired",
+    #: and the guards exist to catch a repair that went green while making THE
+    #: RETURNED MODULE worse. The clause-level reading is not lost: the flags
+    #: are recorded here and written into the graveyard entry.
+    pre_restart_flags: list = dataclasses.field(default_factory=list)
 
 
 def render_error_log(attempts):
@@ -2740,7 +2767,8 @@ def repair_loop(initial_raw, clause, model, max_attempts=3, corpus_ids=None,
     #: holds the segments a restart discarded, so `out.transcript` stays a
     #: record of the whole exchange while the model sees a clean one.
     transcript, record = [first_turn()], []
-    per_attempt, flags, pre_restart = [], [], []
+    per_attempt, flags = [], []
+    pre_restart, pre_restart_flags = [], []
     restarted = False
     res, found = look(initial_raw, 1)
     prev_shape = _shape(initial_raw)
@@ -2760,7 +2788,8 @@ def repair_loop(initial_raw, clause, model, max_attempts=3, corpus_ids=None,
         return RepairOutcome(status=status, per_attempt=per_attempt,
                              flags=flags, transcript=record + transcript,
                              restarted=restarted,
-                             pre_restart_per_attempt=pre_restart, **kw)
+                             pre_restart_per_attempt=pre_restart,
+                             pre_restart_flags=pre_restart_flags, **kw)
 
     while True:
         for n in range(1, max_attempts + 1):
@@ -2838,6 +2867,13 @@ def repair_loop(initial_raw, clause, model, max_attempts=3, corpus_ids=None,
             record.append(dict(RESTART_MARKER))
             restarted = True
             pre_restart, per_attempt = per_attempt, []
+            # ⭐ AND THE FLAGS GO WITH THEM. A flag is a shape diff between two
+            # drafts, and both drafts have just been thrown away — carrying one
+            # onto the redrawn module would print `⚠️ shrank` against a module
+            # that never shrank and force-keep the clause in the graveyard on
+            # the strength of bytes nobody kept. Grounds and the rejected
+            # alternative: `RepairOutcome.pre_restart_flags`.
+            pre_restart_flags, flags = flags, []
             transcript = [first_turn()]
             env = model.complete_messages(system, transcript)
             raw = env["text"]
