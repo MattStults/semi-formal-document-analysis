@@ -1,12 +1,17 @@
 """Running API spend, from measured usage.
 
-hard budget for this autonomous session: $7.50 total. Every live path must
+The hard budget ceiling for this repo is `BUDGET` below — the ONE ceiling
+the machine reads (G9 ruling, 2026-08-15: documents quote the constant or
+its authorization history, never a second number). Every live path must
 append to usage.jsonl via providers.complete_envelope(usage_log=...) or its
 own equivalent; anything that does not is invisible here and will make this
 number an undercount, so `audit()` reports which artifacts look unlogged.
+Rows the price table cannot price are louder still: the report REFUSES its
+total and `--check` fails closed, because a partial sum printed as the total
+is how $9.20 of spend once read as 24% of cap (G1).
 
   .venv/bin/python spend.py                # report
-  .venv/bin/python spend.py --check 5.00   # exit 1 if over budget
+  .venv/bin/python spend.py --check 5.00   # exit 1 if over budget OR unpriceable
   .venv/bin/python spend.py --would-cost luna --batches 26   # pre-flight
 """
 from __future__ import annotations
@@ -15,12 +20,22 @@ import argparse, glob, json, os, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 USAGE = os.path.join(HERE, "usage.jsonl")
-#: Raised 7.50 -> 8.50 on 2026-08-02 by Matt, explicitly, to cover the
-#: grammar-extension annotation pass + its read-back evaluation after a
-#: dry-run showed the original quote ($0.55) covered only the annotation
-#: half. This is a HARD CAP read by ladder.preflight(); raising it is a
-#: decision, never a workaround for a run that does not fit.
-BUDGET = 8.50
+#: The machine-read HARD CAP (ladder.preflight() and annotate.py read this).
+#: Authorization history — every raise is a recorded decision by Matt, never
+#: a workaround for a run that does not fit:
+#:   $7.50  original session quote
+#:   $8.50  2026-08-02, to cover the grammar-extension annotation pass + its
+#:          read-back evaluation after a dry-run showed the original quote
+#:          ($0.55) covered only the annotation half
+#:   $10.00 2026-08-12, campaign extension (resolve_runs/graph_v2/
+#:          EXPERIMENTS.md:1291 "Matt extended the campaign authorization")
+#:   $20.00 2026-08-14, "+$5" for the full-corpus translation (EXPERIMENTS.md
+#:          "Budget raised to $20.00 (Matt +$5)", ~line 2712)
+#: G9 (2026-08-13 review): this constant had fallen behind the live
+#: authorization twice; the gauge printed percentages against $8.50 while
+#: $9.20 had been spent with authorization to $20. A cap change updates THIS
+#: constant and the documents that quote it — nothing else.
+BUDGET = 20.00
 
 
 def prices(path=os.path.join(HERE, "providers.json")):
@@ -99,11 +114,14 @@ def cost_of(r, px):
 def total(path=USAGE, px=None):
     px = prices() if px is None else px
     by_model, unpriced, assumed, n = {}, 0, 0, 0
+    unpriced_models = {}
     for r in rows(path):
         c = cost_of(r, px)
         n += 1
         if c is None:
             unpriced += 1
+            m = r.get("model") or r.get("provider") or "<no model field>"
+            unpriced_models[m] = unpriced_models.get(m, 0) + 1
             continue
         cached = r.get("cached_input_tokens") or 0
         p = px.get(r.get("model")) or px.get(r.get("provider"))
@@ -119,6 +137,7 @@ def total(path=USAGE, px=None):
         d["cache_write"] += r.get("cache_write_tokens") or 0
         d["cost"] += c
     return {"by_model": by_model, "calls": n, "unpriced": unpriced,
+            "unpriced_models": unpriced_models,
             "cache_price_assumed": assumed,
             "total": sum(d["cost"] for d in by_model.values())}
 
@@ -174,7 +193,85 @@ def would_cost(model, batches, in_tok=6000, out_tok=7000, cached_tok=0):
     return batches * cost_of(row, px)
 
 
-def main():
+def batch_notes(path=os.path.join(HERE, "providers.json")):
+    """model/provider name -> batch-billing caveat, from providers.json DATA.
+
+    A row that carries a `batch_billing_note` was billed through a batch API
+    at some point, and its ledger rows may not be distinguishable from
+    list-price live rows — the note says so wherever the model's rows appear,
+    rather than letting a list-price total read as the actual bill."""
+    out = {}
+    for p in json.load(open(path)):
+        note = p.get("batch_billing_note")
+        if note:
+            if p.get("model"):
+                out[p["model"]] = note
+            if p.get("name"):
+                out[p["name"]] = note
+    return out
+
+
+def report_lines(path=USAGE, px=None):
+    """The gauge, as lines of text.
+
+    ⭐ When ANY logged row has no price entry the total is REFUSED, not
+    reported: the sum printed is labeled a PARTIAL subtotal and the unpriced
+    models are named. A partial sum printed as the total is the G1 failure —
+    the gauge read 24% while the ledger's own arithmetic said over cap.
+    """
+    t = total(path, px)
+    lines = [f"{'model':34s} {'calls':>5s} {'in':>9s} {'cached':>9s} "
+             f"{'out':>9s} {'cost':>8s}"]
+    for m, d in sorted(t["by_model"].items(), key=lambda kv: -kv[1]["cost"]):
+        lines.append(f"{m:34s} {d['calls']:5d} {d['in']:9d} "
+                     f"{d.get('cached_in', 0):9d} {d['out']:9d} "
+                     f"${d['cost']:7.3f}")
+    if t["unpriced"]:
+        lines.append(f"{'PRICED SUBTOTAL (PARTIAL)':34s} {t['calls']:5d} "
+                     f"{'':9s} {'':9s} {'':9s} ${t['total']:7.3f}")
+        lines.append("")
+        lines.append(f"⛔ TOTAL REFUSED: {t['unpriced']} of {t['calls']} logged "
+                     f"row(s) have no price entry,")
+        lines.append("   so the number above is a PARTIAL sum and is NOT the "
+                     "spend. Unpriced:")
+        for m, n in sorted(t["unpriced_models"].items()):
+            lines.append(f"      {m}: {n} row(s)")
+        lines.append("   A partial sum printed as the total is how $9.20 of "
+                     "spend read as 24% of cap")
+        lines.append("   (G1, 2026-08-13 review). Add the missing price(s) to "
+                     "providers.json, or")
+        lines.append("   accept that this gauge cannot report a total — it "
+                     "will keep refusing.")
+    else:
+        lines.append(f"{'TOTAL':34s} {t['calls']:5d} {'':9s} {'':9s} {'':9s} "
+                     f"${t['total']:7.3f}"
+                     f"   of ${BUDGET:.2f}  ({100*t['total']/BUDGET:.0f}%)")
+    if t.get("cache_price_assumed"):
+        lines.append(f"  !! {t['cache_price_assumed']} calls had cached input "
+                     "but no cached rate in providers.json — billed at the "
+                     "FULL input rate, so this total is an OVERSTATEMENT for "
+                     "those rows")
+    notes = batch_notes()
+    for note in sorted({notes[m] for m in t["by_model"] if m in notes}):
+        lines.append("")
+        lines.append(f"⚠️  {note}")
+    au = audit()
+    lines.append("")
+    lines.append(f"usage.jsonl rows: {au['usage_rows']}")
+    if au["UNLOGGED_MODELS"]:
+        lines.append("")
+        lines.append("!! UNLOGGED SPEND — these models produced artifacts but "
+                     "have no usage rows.")
+        lines.append("   Their calls were billed and are NOT in the total "
+                     "above:")
+        for m, fs in sorted(au["UNLOGGED_MODELS"].items()):
+            lines.append(f"   {m}: {len(fs)} artifact(s) — e.g. {fs[0]}")
+    else:
+        lines.append("audit: every artifact's model appears in the usage log")
+    return lines
+
+
+def run_cli(argv=None, usage_path=USAGE):
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", type=float, default=None)
     ap.add_argument("--would-cost", default=None)
@@ -183,46 +280,41 @@ def main():
     ap.add_argument("--out-tok", type=int, default=7000)
     ap.add_argument("--cached-tok", type=int, default=0,
                     help="how much of --in-tok is a repeated constant prefix")
-    a = ap.parse_args()
+    a = ap.parse_args(argv)
 
     if a.would_cost:
         c = would_cost(a.would_cost, a.batches, a.in_tok, a.out_tok,
                        a.cached_tok)
-        t = total()["total"]
+        t = total(usage_path)
         if c is None:
-            print(f"no price for {a.would_cost!r}"); sys.exit(2)
+            print(f"no price for {a.would_cost!r}")
+            return 2
         print(f"projected: {a.batches} batches on {a.would_cost} = ${c:.3f}")
-        print(f"spent so far ${t:.3f} -> after ${t + c:.3f} of ${BUDGET:.2f} "
-              f"({100*(t+c)/BUDGET:.0f}%)")
-        sys.exit(1 if t + c > BUDGET else 0)
+        print(f"spent so far ${t['total']:.3f} -> after "
+              f"${t['total'] + c:.3f} of ${BUDGET:.2f} "
+              f"({100*(t['total']+c)/BUDGET:.0f}%)")
+        if t["unpriced"]:
+            print(f"  !! 'spent so far' is a PARTIAL sum: {t['unpriced']} "
+                  "logged row(s) have no price entry — the projection may "
+                  "understate.")
+        return 1 if t["total"] + c > BUDGET else 0
 
-    t = total()
-    print(f"{'model':34s} {'calls':>5s} {'in':>9s} {'cached':>9s} "
-          f"{'out':>9s} {'cost':>8s}")
-    for m, d in sorted(t["by_model"].items(), key=lambda kv: -kv[1]["cost"]):
-        print(f"{m:34s} {d['calls']:5d} {d['in']:9d} "
-              f"{d.get('cached_in', 0):9d} {d['out']:9d} ${d['cost']:7.3f}")
-    print(f"{'TOTAL':34s} {t['calls']:5d} {'':9s} {'':9s} {'':9s} "
-          f"${t['total']:7.3f}"
-          f"   of ${BUDGET:.2f}  ({100*t['total']/BUDGET:.0f}%)")
-    if t["unpriced"]:
-        print(f"  !! {t['unpriced']} logged calls had no price entry")
-    if t.get("cache_price_assumed"):
-        print(f"  !! {t['cache_price_assumed']} calls had cached input but no "
-              "cached rate in providers.json — billed at the FULL input rate, "
-              "so this total is an OVERSTATEMENT for those rows")
-    au = audit()
-    print(f"\nusage.jsonl rows: {au['usage_rows']}")
-    if au["UNLOGGED_MODELS"]:
-        print("\n!! UNLOGGED SPEND — these models produced artifacts but have no "
-              "usage rows.\n   Their calls were billed and are NOT in the total above:")
-        for m, fs in sorted(au["UNLOGGED_MODELS"].items()):
-            print(f"   {m}: {len(fs)} artifact(s) — e.g. {fs[0]}")
-    else:
-        print("audit: every artifact's model appears in the usage log")
-    if a.check is not None and t["total"] > a.check:
-        print(f"\nOVER BUDGET: ${t['total']:.3f} > ${a.check:.2f}")
-        sys.exit(1)
+    print("\n".join(report_lines(usage_path)))
+    if a.check is not None:
+        t = total(usage_path)
+        if t["unpriced"]:
+            print(f"\nCHECK REFUSED: {t['unpriced']} logged row(s) have no "
+                  "price entry, so the gate cannot certify the sum. The "
+                  "TOTAL REFUSED block above names them.")
+            return 1
+        if t["total"] > a.check:
+            print(f"\nOVER BUDGET: ${t['total']:.3f} > ${a.check:.2f}")
+            return 1
+    return 0
+
+
+def main():
+    sys.exit(run_cli())
 
 
 if __name__ == "__main__":
