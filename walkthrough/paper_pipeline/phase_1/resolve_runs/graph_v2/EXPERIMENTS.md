@@ -2925,3 +2925,47 @@ entries are clean); (b) raise the cap to ~30 -- still bounded, ~5 stops;
 the signal, a converged-after-repair entry is recorded evidence. NOT
 recommended: making the graveyard stop recording convergences, which would
 delete the evidence trail the census reads.
+
+## 2026-08-15: census ADVERSARIAL REVIEW -- the 58% is really 43%, and 2 of 49
+
+Matt asked whether the ruling requests had been adversarially reviewed. They
+had not. One was dispatched; TRANSLATION_CENSUS_REVIEW.md is the result and
+it materially changes the ask.
+SURVIVED, independently re-derived from raw transcripts (not by re-running
+the author's script): 191 clauses / 435 calls / 244 repair rounds (56%), the
+per-class table, gen-11 71/87, the 84/84 faithfulness replay, every Fix-A
+firing count. BETTER than claimed: all 435 calls matched 1:1 to usage.jsonl
+rows (the census never attempted this) -- real repair share 61%, cost model
+1.05x high not 1.11x, and the stated cause (undiscounted cache) is WRONG;
+the real cause is in_cpt = out_cpt at census:307. Ranking is robust: the
+gen-11 top five never reorder at 0/25/100% cache discount.
+§6.2 SURVIVED A HARD ATTACK and got worse: replaying every earlier failing
+module through the live checks, 97 novel-class instances were genuinely
+introduced vs only 5 already latent -- real defect-TRADING, not masking, at
+57% (not 52%).
+THE MISLEADING CLAIM: "58% removed, MEASURED by replaying every stored
+failing module." Only 2 of the 49 kills are measured; 47 are class
+subtraction by fiat. Fix D's mechanism (required `body`) reaches only
+body-less ontology sites, but the sim subtracts the whole class including 3
+assert-site and 12 already-bodied findings. Corrected: 58% -> 43%. The sim
+states the assumption honestly; the two documents Matt would read say
+"measured". Also: §6.1/§6.2 are computed by no committed script, and §3.2's
+attribution of the 2.27->0.67 improvement to the per-request adapter is
+PERFECTLY CONFOUNDED (resample_truncation switches on at the same
+transition, and max_tokens drops 16384->4096 inside "generation 11", which a
+prompt-hash key cannot see).
+FIX VERDICTS: A NEEDS WORK (declare-asserted-act decides which of two
+disagreeing lists is authoritative -- a constructed case blesses a typo --
+and nets +10 breach-rounds; readback-empty-slots silences a check without
+fixing the read-back). B NEEDS WORK (the diff NO-OPS for `cites`, and would
+make `cites: null` illegal for 224/1386 licensed items, pushing the model
+toward FABRICATED citations; ~60-120 lines, not four). C SAFE minus
+requires-inputs-overlap. D NEEDS WORK (200 stored modules unloadable with no
+migration; apply_waivers RAISES on contract-stale, forcing an uncosted paid
+re-translation; the cheaper lever -- conditionally requiring `body` -- is not
+rejected by name). E REJECT as written (deletes _check_head_bound with no
+replacement; silently no-ops three of Fix A's eight rules while all 34 tests
+still pass on old-shape fixtures). F REJECT / not ready.
+CONSEQUENCE FOR M1: the guard-accept request is WITHDRAWN pending rework --
+only C is close to landable, and the coverage claim it rests on is 43%, not
+58%, with 47 of 49 kills unmeasured.

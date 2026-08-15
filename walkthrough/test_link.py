@@ -822,16 +822,37 @@ def test_d4b_no_table_supplied_is_reported_not_silent(tmp_path):
     assert "m0217.lp" in hits[0].where
 
 
-def test_d4b_no_table_and_no_concepts_declared_is_silent(tmp_path):
-    """The guard that must kill the test above: the m0255 worked example
-    declares no concepts at all, and must not acquire a new complaint.
+def test_d4b_no_table_and_no_concepts_declared_is_quiet(tmp_path):
+    """A module declaring no concepts, with no table, is reported as a FACT
+    and never shouted.
 
-    ⚠️ A warning that fires on every run is how the old `no %% provides:`
-    message became invisible, so the CLI must not shout here either — while
-    still saying where it stands on the table.
+    ⭐ THE RULE THIS PINS IS LOUDNESS, NOT EXISTENCE (Matt's ruling
+    2026-08-15, after this test sat RED as a held design tension).
+
+    The predecessor asserted the finding must not exist at all. That was
+    over-specified: `note` severity is exactly the register for *fact, not
+    alarm*, and an argument that no finding may exist here would justify
+    deleting every note in the pipeline. What the docstring was really
+    reaching for is severity discipline — the old `no %% provides:` message
+    became invisible because it SHOUTED on every run, not because it existed.
+
+    So: the finding may exist, and MUST be quiet — `note` severity, no ⚠️,
+    no capitalised alarm on the CLI's first line, which must still say where
+    the link stands on the table.
+
+    Rejected alternative, by name: suppressing the finding in the empty case.
+    That would leave "no concept table in this link scope" — a real property
+    of the artifact — unrecorded, and silence is how the *other* half of this
+    project's warning failures happened.
     """
     p = render(tmp_path, "plain.lp")                   # module_dict: concepts=[]
-    assert not by_id(link.collect([p]), "concept-table-absent")
+    found = by_id(link.collect([p]), "concept-table-absent")
+    # the guard is genuinely exercised: this fixture DOES reach the empty-
+    # concepts path (the predecessor failed here, which is the evidence)
+    assert found, "the empty-concepts path no longer reaches this guard; " \
+                  "rebuild the fixture rather than deleting the pin"
+    assert all(f.severity == "note" for f in found), \
+        f"a fact about the artifact must stay note-severity: {found}"
     r = subprocess.run([PY, "link.py", p], cwd=HERE,
                        capture_output=True, text=True)
     first = (r.stdout.splitlines() or [""])[0]
