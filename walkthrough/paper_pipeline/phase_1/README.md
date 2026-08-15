@@ -7,7 +7,7 @@
 # from anywhere; paths in config.json are relative to this directory
 V=../../../semi-formal-experiment/.venv/bin/python
 
-$V translate.py --self-test                      # 53 checks, no network, no cost
+$V translate.py --self-test                      # 52 checks (51 pass + the 1 known Q-4 dryrun staleness), no network, no cost
 $V translate.py                                  # DRY RUN — selection + cost, sends nothing
 $V translate.py --clause m0255 --show-prompt     # see exactly what would be sent
 $V translate.py --section definitions --kinds definitional --limit 4
@@ -40,15 +40,14 @@ One clause at a time, and each clause runs the same three steps:
 The output is a **JSON object**, not raw ASP. `schema.py` validates it and renders the `.lp`; the
 object is the record and the `.lp` is a rendering of it.
 
-⚠️ **`translate.py`'s module docstring and its end-of-run banner are STALE and say the opposite of
-what the harness does.** Both still date from before stage 2 existed: the docstring opens *"Stage 1
-has never been run"* and *"⛔ IT VALIDATES NOTHING ABOUT THE TRANSLATION… Stage 2 is those checks and
-it is deliberately not built yet"*, and every run ends by printing *"⛔ NOTHING here has been
-validated. No compile, no link, no read-back."* Since stage 2 became the unconditional gate, every
-attempt is compiled by clingo, link-checked, rule-shape checked and cycle checked before anything is
-written. Believe this file and the code, not those three strings, until they are corrected.
-(`translate.py` is not a watched file, so nothing will catch it. Verified still present
-2026-08-07: `translate.py:7`, `:10-14`, `:1225`.)
+✅ **`translate.py`'s module docstring and its end-of-run banner were corrected 2026-08-15**
+(branch `guardrails-fixes`, G8). They had dated from before stage 2 existed and said the opposite of
+what the harness does (*"Stage 1 has never been run"*, *"⛔ IT VALIDATES NOTHING"*, *"No compile, no
+link, no read-back"*); both now state the truth — every attempt is compiled by clingo, link-checked,
+rule-shape checked and cycle checked before anything is written, because stage 2 is the
+unconditional gate (`repair_loop` runs `checks.run_checks` on every attempt including the first).
+(`translate.py` is not a watched file, so nothing catches it if these strings drift again — this
+paragraph is the only record that they were verified.)
 
 ## What it checks, and what it still does not
 
@@ -142,7 +141,8 @@ somewhere else entirely, and `prompt.system_files` fixes the concatenation order
 
 **Prompt order is fixed-block-first.** The `prompt/*.md` files are concatenated into the system
 block; the clause text and its cross-references go last, per `03_pipeline.md` stage 1. Currently
-27,754 chars from 4 files.
+**37,891 chars from 4 files** (measured by the self-test's assembly check, 2026-08-15; the old
+undated figure here was 27,754).
 
 **Cross-references come from the document's own markdown anchors** — `[restricted](#restricted_content)`
 — matched against `section_id`. ⚠️ **This is a lower bound.** Only ~13% of clauses carry anchors, so
@@ -190,11 +190,22 @@ asserts the estimate is never below it.
 re-sends only an error log). That is left in deliberately, and the two errors must not be netted off
 against each other: high is survivable, low is not.
 
-⚠️ **This harness's spend is invisible to `spend.py`.** The configured provider is defined inline in
-`config.json` rather than in `providers.json`, and `spend.py` prices only from the latter, so these
-rows are logged and then dropped from the total. Every run prints the residue rather than swallowing
-it, and `run.json` records `visible_to_spend_py: false` with the reason. Repo ledger: **$2.06 of
-$8.50**; this directory has spent a further **$0.021** across 17 calls that the ledger does not see.
+⚠️ **This harness's spend USED TO BE invisible to `spend.py` — closed 2026-08-15.** The configured
+provider is defined inline in `config.json`, and `spend.py` prices only from
+`semi-formal-experiment/providers.json`, so these rows were logged and then dropped from the total:
+on 2026-08-13 the gauge read "$2.07 of $8.50 (24%)" while this directory's own rows alone carried
+~$6.8 of embedded cost. Since 2026-08-15 (branch `guardrails-fixes`) providers.json carries the row
+`together-deepseek-v4-flash` / `deepseek-ai/DeepSeek-V4-Flash-0731` at list [$0.14, $0.28], with
+cached input billed at the FULL rate (the conservative direction, this directory's own doctrine),
+and `spend.py`'s recompute equals the rows' embedded `cost_usd` exactly (verified on all 2,118 rows
+that carry one). Measured from `usage.jsonl` at the branch's base commit (12891dc, 2026-08-15):
+**2,121 calls, embedded sum $7.7967**; whole-ledger priced subtotal **$11.249 of the $20.00 machine
+ceiling** (`spend.py:BUDGET`), with the total REFUSED because one row is still unpriced —
+`text-embedding-3-small`, the embedding path that is unledgered by construction (~$0.001/run,
+routing-gap finding 6). ⚠️ Two mechanisms below are stale by construction and cannot be fixed from
+inside this file's edit allowance: the harness still prints its spend-invisibility warning and
+`run.json` still records `visible_to_spend_py: false` — both hardcoded in `translate.py`, both now
+untrue; trust `spend.py`'s output over them.
 
 **Caching is unpriced for this provider.** together.ai lists a cached-input rate for it, but the
 estimate bills every input token at the full rate — the conservative direction, which is what a hard
