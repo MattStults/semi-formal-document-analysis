@@ -10,6 +10,24 @@ Status: `READY` (designed+validated, awaiting a gate) · `DESIGNED` (spec exists
 not built) · `IN FLIGHT` (someone is on it) · `NEEDS RULING` (blocked on Matt) ·
 `DEFERRED` (deliberate, with the reason).
 
+## 0 · Review status of what §1 asks you to rule on
+
+⛔ **A ruling request that has not survived an adversarial pass is not ready.**
+Audited 2026-08-15: every builder self-report that DID go to clean-context
+review this campaign came back with defects the builder had missed (promise
+repair 3 rounds; ds8 fix set 2; pipeline fixes 2; the frontier stage's
+near-miss would have inverted 43% of a paid slice). Items below carry their
+review state; do not spend attention on an UNREVIEWED row.
+
+| item | reviewed? |
+|---|---|
+| M1 fixes C/D/E | ⏳ IN REVIEW (dispatched 2026-08-15, `TRANSLATION_CENSUS_REVIEW.md`) |
+| M2 fix F | ⏳ same review |
+| M3 factory spec | ⚠️ PARTIAL — its parent was an adversarial review; the spec itself is that reviewer's own output, unattacked |
+| M4 held test | n/a — your design tension, not a review artifact |
+| M5 behavior-pipeline questions | ❌ UNREVIEWED — written by the pilot's builder; the skeleton has never had a review pass |
+| M6 backups | n/a — not a claim about the code |
+
 ## 1 · Blocked on Matt (nothing proceeds without a ruling)
 
 | id | item | why it needs you | source |
