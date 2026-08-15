@@ -3145,3 +3145,50 @@ had never been measured. Two things not to copy: do not zero per-clause spend
 FALSIFIER: "a repeated reply predicts non-convergence" -- whole-disk replay
 gives 3/49 (6.1%) adjacent and 3/32 (9%) repeat-of-any; above ~20% in a
 future corpus region the policy would be discarding real convergences.
+
+## 2026-08-15: TIER ANALYSIS -- first-try is defect KIND, not clause difficulty
+
+_debug_gen11/TIER_ANALYSIS.md. 319 clause-observations, 5 prompt generations.
+Methodological catch worth keeping: sha256(prompt_system.txt) is NOT a
+complete generation label -- inside "gen 11" the schema_sha changes and
+max_tokens drops 16384->4096, so the CHECKER moved. Claims are reported on
+both the gen-11 pool (n=228) and the single-schema 08-14 pair (n=100).
+Distribution is TRIMODAL, not a decay: 43% land immediately, 24% after one
+round, 20% die.
+SEPARATORS (Fisher): a1 draft with a body-bearing ontology entry AND zero
+inputs -> 15% vs 49% (p<0.0001; 10% vs 58% on the 08-14 pair); requires >=2
+borrowed names -> 22% vs 51% (p<0.0001); **graph needs >=2 -> 24% vs 45%
+(p=0.005) -- the only EXOGENOUS separator, knowable BEFORE spending**; arity
+mismatch (DC-5) -> 0/11 first-try, 73% unrepaired (p=0.004).
+NULL: span length, line count, narrowing, output length, predicate count,
+provides. Also null: DEFECT COUNT -- 1 finding resolves in one round 41% of
+the time, 4 findings 43%. Tier is governed by defect KIND, not volume. The
+predicate-count gradient on FINAL modules is survivorship and dissolves on
+attempt-1 drafts.
+DC-7 ADJUDICATED with a genuinely outcome-blind classification (shuffled,
+opaque keys, joined to outcomes afterwards): NORMATIVE 31% [13-58] n=13 vs
+NON-NORMATIVE 49% [39-60] n=87, p=0.25 -- not significant AND THE WRONG
+SIGN. Span-type routing would divert ABOUT-THE-DOCUMENT, the EASIEST bucket
+at 58%. The reviewer's DC-7 is confirmed and strengthened; graph-stage
+span-type classification is dead in this region.
+DC-1 INDEPENDENTLY CORROBORATED: drafts using the body-less ontology route
+land first-try at 60% (n=15) vs 38% overall -- but only 7% of drafts use it.
+Discoverability, exactly as the review argued.
+COUNTERFACTUAL LADDER: +Fix C (borrowed-name gloss as a local counted
+obligation; 57% of the 2-attempt tier's single repair round, 26% of ALL
+repair rounds) -> 55%; + undeclared-body-name via DC-1's worked example ->
+75% [81% on the 08-14 pair]; + unsafe-var -> 82%. Two classes reach ~75-81%;
+three pass 80%.
+HAIKU EXPERIMENT, with its confound recorded: byte-identical stored prompts,
+10 clauses whose sole a1 defect was borrowed-no-gloss. Arm A (stock) 5/10;
+Arm B (stock + one counted gloss paragraph) 10/10, p=0.033, with the effect
+entirely on five clauses where Haiku reproduced DeepSeek's exact findings.
+BUT the A/B split coincided with the subagent batch split, so agent variance
+is not separable from clause difficulty -- randomised replication is the
+rank-1 falsifier before this touches a prompt.
+THE REFRAME: tier is largely NOT a stable property of the clause. Median
+within-cell attempt spread is 3; of 20 twice-drawn cells, 10 are discordant
+on first-try; and 9 of the 19 clauses that burned all 5 attempts for nothing
+passed on ATTEMPT 1 of a byte-identical re-draw. No static feature can
+explain most of the 43->80 gap -- which is why the chain policy (restart on
+repeat) and the fresh-draw finding rank where they do.
