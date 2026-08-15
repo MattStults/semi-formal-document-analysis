@@ -3806,3 +3806,214 @@ DISPOSITION: `--accept` remains UNRUN and must stay unrun -- the file is stale
 on five counts and one of them (S2) is a live design question the owner has to
 rule on. REJECTED BY NAME: editing the worked example to match 00_task.md's
 four-trigger list, which would harden an addition the design does not license.
+
+## 2026-08-15: 48-node slice -- RESTART VALIDATED LIVE, BOTH PATHS, and 0 abstentions
+
+Run `translation_sample/runs/20260815-124836-together-deepseek-v4-flash`.
+48 never-settled nodes, strided across 29 sections out of the 630 remaining
+(not a contiguous block). **$0.1244 over 72 calls.**
+
+| measure | slice | prior contract (08-15 070038) |
+|---|---|---|
+| translated | **47/48 = 98%** | 84% |
+| first-try | 33/48 = 69% | -- (43% cited for gen-11) |
+| abstained | **0** | 1% |
+| unrepaired | 1 | 14% |
+| attempts | 1:33  2:12  3:2  4:1 | -- |
+
+**⭐ THE RESTART POLICY IS NOW VALIDATED LIVE, ON BOTH PATHS.** This is what
+the 6-clause validation could not do and is the reason the slice was run.
+* `l1542_1706_n015` -- **restarted and RECOVERED**, "translated on attempt 2
+  after a fresh restart". The redraw-not-abandon path works end to end.
+* `l2474_2554_n002` -- **restarted, then REFROZE**, carried the `frozen` flag,
+  and ended `unrepaired` at attempt 3. The one-restart cap and the
+  abandon-on-refreeze branch (`translate.py:2908`) fired exactly as designed;
+  no runaway, no second restart.
+Both are the whole mechanism, exercised for real. `flags` also fired
+legitimately elsewhere -- `shrank` on `l831_1000_n005`, `declaration-edit` on
+two -- so the guards are live and were not disarmed by the restart work.
+
+BLAST RADIUS CAME IN LOW: 2 of 15 multi-attempt chains = **13%**, against the
+review's live-stratum prediction of 32% [24, 42]. Below the CI. Consistent
+with the prompt having improved (69% first-try here vs 43% for gen-11), but
+n=15 and this is one slice -- recorded as an observation, NOT as a refutation
+of the 32%. The pre-registered "materially above ~20% -> revisit" trigger is
+NOT met, in the safe direction.
+
+**0 ABSTENTIONS IN 48, and this is the number to think hardest about.** Under
+the earlier blind adjudication a third or more of translated spans were judged
+non-normative. But **9 of 48 modules (19%) are ONTOLOGY-ONLY -- zero
+`asserts`, only ground facts** (`l461_608_n015`, `l699_796_n022`,
+`l1368_1541_n015`, `l1542_1706_n001`, `l2126_2404_n026`, `l2126_2404_n039`,
+`l2821_3040_n002`, `l3596_3876_n020`, `l4252_4482_n003`). HYPOTHESIS, stated
+as a hypothesis and handed to the routing-criterion work rather than asserted:
+under the owner's routing reframe those 9 are the CORRECT handling of
+fact-shaped spans, not over-translation -- content preserved, queryable, no
+invented obligation -- and some fraction of what the judges scored as
+"non-normative spans that should not have modules" is this population being
+handled right. If so the over-translation estimate is inflated by conflating
+"should not be a RULE" with "should not exist". **Not established: the
+adjudicated cohorts and this slice are different clauses, so no direct join is
+possible.** The routing agent has bucket (b) to size this properly.
+
+DISCOVERABILITY, MEASURED AND FREE: the body-less ontology route is used
+unprompted on 19% of this slice. Whatever else is true, the route is not
+undiscoverable -- which is evidence against a schema change and for treating
+this as a prompt/criterion question, if anything.
+
+LEDGER: the harness again printed "SPEND NOT VISIBLE TO spend.py" for these 72
+calls. As established earlier today that banner is FALSE -- the rows are
+priced and counted. It is now a repeat false alarm about the hard cap and
+should be fixed.
+
+## 2026-08-15: ⛔ FIRST STAGE-4 READ -- the translations are often NOT TRUE, and every check we run passes them
+
+Opus read 25 of the 48-node slice's modules directly against their source
+spans -- the judgement the harness itself says it does not make ("NOT judged:
+whether the translation says what the clause says -- that is stage 4, and
+needs a reader"). `_debug_gen11/spotcheck_semantic/verdicts.json`.
+**11 FAITHFUL / 13 DEFECTIVE / 1 UNSURE of 25.** The sample is PURPOSIVE --
+deliberately loaded with the flagged, restarted and structurally unusual
+modules -- so it is NOT a corpus-wide rate and the true rate over the 48 is
+almost certainly better. What follows does not depend on the rate.
+
+**D1 -- AN INVENTED PERMISSION FOR EROTICA AND GORE, FROM A COMMENTARY BLOCK.**
+`l1108_1367_n014`. The span sits inside a `!!! meta "Commentary"` block at
+`model_spec.md:1117`, three lines under the SYSTEM-AUTHORITY rule "The
+assistant should not generate erotica ... or extreme gore". It says only
+"**We're exploring** how to let developers and users generate erotica and gore
+in age-appropriate contexts." The module emits
+`{"status": "permit", "act": "generate_content(C)", "body": "exploring_generation(C)"}`.
+The read-back hedges; **the machine-readable status does not.** The corpus now
+carries a permission that flatly contradicts a system-authority prohibition
+three lines above it, sourced from non-normative commentary. This is the
+patient-pricing failure mode with the sign flipped -- not deleted guidance,
+FABRICATED permission -- and it is exactly the class this project reverts
+changes over.
+
+**D2 -- THE `prefer` POLARITY INVERSION IS A CONTRACT GAP, NOT A MODEL SLIP.**
+`status` has **no negative pole** -- no `disprefer`. With a single-act
+`asserts` entry there is NO CORRECT ENCODING AVAILABLE for "avoid X", and the
+model consistently picks the one that inverts the meaning. Compiled ASP,
+verbatim, `l1974_2125_n019.lp:57`:
+
+    asserts(l1974_2125_n019, prefer, respond_with(R)) :- escalates_emotional_closeness(R).
+
+The span is a BAD-marked example of escalating emotional closeness with a
+lonely user. **The corpus now says escalating it is preferred.** Same shape in
+`l4252_4482_n016` ("should AVOID repeating the user's prompt" ->
+`prefer repeat_user_prompt(R)`), `l2405_2473_n001`, `l1108_1367_n027`,
+`l3954_4251_n010`. Sharpest: `l1707_1973_n006` emits
+`prefer respond_to_medical_question(R)` for `good_response(R)` **and** for
+`bad_response(R)` -- polarity fully erased.
+⛔ **THE READ-BACKS SAY "dispreferred", SO EVERY READ-BACK CHECK PASSES.** Only
+the `status` field is wrong.
+COORDINATOR'S CORPUS-WIDE SCAN (mechanical, free): 75 `prefer` entries across
+48 module files; **10 entries in 6 clauses have a read-back that explicitly
+says "dispreferred" / "not preferred" while `status == prefer`.** That is a
+DIRECT SELF-CONTRADICTION INSIDE ONE ENTRY and is therefore mechanically
+detectable -- a check is writable today. The regex is conservative (it only
+catches inversions that announce themselves in the read-back), so treat 10/6
+as a FLOOR, not the count.
+
+**D3-D5 -- structural semantic errors.** `l831_1000_n005` scope drift in BOTH
+directions (every meth recipe forbidden; every overview permitted INCLUDING
+ones with specific ratios -- under-broad in the dangerous direction).
+`l3147_3238_n003` encodes a DISJUNCTION as a CONJUNCTION -- "use a tool, hedge,
+**or** explain" becomes three `oblige` on one identical body, so an assistant
+that hedged matches as violating two obligations, and the module's own claim C4
+says they are alternatives. `l1_170_n056` keeps only the EXCEPTION: "Models
+should honor user requests unless they conflict..." yields
+`forbid honor_request(R)` on conflict and NO `oblige honor_request` anywhere.
+
+**⭐ THE ROUTING RESULT IS CLEAN, AND IT VINDICATES THE OWNER'S REFRAME.**
+**8 of the 9 ontology-only modules are FAITHFUL, and NOT ONE of the nine
+manufactured a deontic rule for a descriptive span.** `l2821_3040_n002` is the
+strongest evidence: its source line continues "In such cases, **it should**
+express uncertainty", the node narrowed the span to exclude that, and the
+module emitted ZERO asserts rather than reaching for the neighbouring
+obligation. `l2126_2404_n026` and `l1542_1706_n001` turn
+`{#anchor authority=root|guideline}` into a conditional authority rule keyed on
+section membership -- the USEFUL form, since other modules inherit authority
+instead of restating it. The single miss (`l4252_4482_n003`) is not a shape
+error but a dropped EXCLUSIVITY ("only relevant to Advanced voice"), and that
+is a real gap: **facts carrying an "only"/"except" qualifier have no clean home
+in the ontology block.**
+
+**THE RESTART POLICY EARNED ITS KEEP SEMANTICALLY, NOT JUST MECHANICALLY.**
+`l2474_2554_n002` -- the clause that restarted, refroze and was abandoned --
+carried `body: "misleading_act(A), not higher_authority_instruction(I)"` with
+**I unbound**, and an exception not tied to A, so ANY higher-authority
+instruction anywhere would cancel the prohibition. **The refreeze correctly
+kept it out of the corpus.**
+
+⛔ **THE STRATEGIC CONSEQUENCE, and it reframes the whole day.** We have been
+optimising the TRANSLATION RATE -- 69% -> 84% -> 98% -- while the property that
+matters, whether a translation is TRUE, was never measured at all. A higher
+rate is not automatically better and may be actively worse: every defect above
+is in a module that PASSED schema, clingo compile, link checks and read-back.
+**98% translated with this defect profile is not obviously better than 69%.**
+Stage 4 is not a nice-to-have refinement of the pipeline; it is the only stage
+that measures the thing the pipeline exists to produce.
+
+## 2026-08-15: PAIRED RE-RUN -- the gain is the FIXES, not the data (R = 93.2%)
+
+Run `20260815-130831`. The SAME 88 clause ids as `20260814-173322`, current
+contract, clause set held fixed so only the contract moves. Readings were
+fixed in `_debug_gen11/PREREG_paired_rerun.md` and committed BEFORE launch.
+$0.2253 over 135 calls.
+
+**R = 82/88 = 93.2%, against 61/88 = 69% on the same clauses under the old
+contract. R >= 92% => H-FIXES.** The 98% on the fresh 48-node slice was not a
+lucky draw; the contract improved. H-DATA (R <= 75%) is excluded.
+
+Per-clause 2x2, which is the real evidence:
+
+| old -> new | n |
+|---|---|
+| translated -> translated | 59 |
+| **unrepaired -> translated** | **18** |
+| abstained -> translated | 4 |
+| abstained -> abstained | 3 |
+| abstained_under_repair -> translated | 1 |
+| unrepaired -> abstained | 1 |
+| **translated -> unrepaired** | **1** |
+| **translated -> abstained** | **1** |
+
+**18 of 19 previously-unrepaired clauses now translate.** That is the contract
+recovering clauses it used to lose, and it is the bulk of the gain.
+
+⛔ **TWO REGRESSIONS, REPORTED AS PRE-REGISTERED HOWEVER SMALL --
+`l1_170_n034` and `l1_170_n061`.** And the first one is the harm case the
+design ruling priced, materialising live: **`l1_170_n034` is in BOTH the
+regression list and the restarted list.** It translated under the old
+contract; under the new one the chain froze, the restart discarded it, the
+redraw failed, and the clause ended `unrepaired`. This is exactly "the policy
+destroys a chain that was about to converge" -- the 4-in-52 offline finding,
+now with a live instance. n=1 and the confound is real (the contract changed
+too, so it is not provably the restart), but it must not be filed away: the
+pre-registered stop condition named this cell and this is the cell.
+
+RESTART RATE: **5 of 24 multi-attempt chains = 21%**, against the review's
+live-stratum prediction of 32% [24, 42] and the 13% on the 48-node slice.
+Sits between them and just below the predicted CI. The pre-registered trigger
+is "materially above ~20% -> revisit"; 21% is AT it, not materially above, so
+the trigger is not met -- but it is no longer comfortably clear either, and
+the next slice should recompute rather than assume.
+
+ROUTE MIX MOVED HARD: **ontology-only 50/88 = 57%**, against 19% on the fresh
+slice and 45% attempt-1 across the older 152. Recorded as a finding in its own
+right per the pre-registration. NOT interpreted here -- with the stage-4 result
+landing the same hour, whether a rising ontology share is better routing or
+thinner modules is exactly the question a shape-blind rate cannot answer.
+
+ABSTENTIONS: 5 of 88, against 8 under the old contract on the same clauses.
+Falling, while the routing study says the abstention criterion is
+over-triggered relative to the design. Consistent, not conclusive.
+
+⛔ READ THIS ENTRY NEXT TO THE STAGE-4 ENTRY ABOVE, NOT ALONE. 93.2% is a rate,
+and the same day's semantic read found 13 defects in 25 modules that all
+passed schema, clingo, link checks and read-back. This entry establishes that
+the CONTRACT moved the rate. It establishes nothing about whether the extra
+modules are TRUE, and the 18 newly-recovered clauses are precisely the
+population nobody has read.

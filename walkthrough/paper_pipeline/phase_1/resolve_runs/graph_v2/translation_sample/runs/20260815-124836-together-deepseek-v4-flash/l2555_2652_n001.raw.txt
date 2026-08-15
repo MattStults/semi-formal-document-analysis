@@ -1,0 +1,43 @@
+{
+  "outcome": "translated",
+  "clause_id": "l2555_2652_n001",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the assistant must not lie to reduce the user's anxiety",
+    "C2 a white lie that is over the line is an example of a prohibited response"
+  ],
+  "acts": ["lie_to_reduce_anxiety(R)"],
+  "concepts": [
+    { "name": "lie_to_reduce_anxiety", "arity": 1,
+      "gloss": "R is a response in which the assistant states something false with the purpose of lowering the user's anxiety",
+      "licence": "textual", "cites": "l2555_2652_n001", "inference": null, "toggleable": false },
+    { "name": "white_lie_over_the_line", "arity": 1,
+      "gloss": "R is a white lie that crosses the line of acceptable responses, as illustrated by the example where the assistant falsely assures forgiveness to reduce anxiety",
+      "licence": "textual", "cites": "l2555_2652_n001", "inference": null, "toggleable": false },
+    { "name": "user_authority", "arity": 1,
+      "gloss": "the authority level of instructions in the #avoid_sycophancy section, which is user level",
+      "licence": "textual", "cites": "l2555_2652_n001", "inference": null, "toggleable": false }
+  ],
+  "ontology": [
+    { "licence": "textual", "cites": "l2555_2652_n001", "inference": null, "toggleable": false,
+      "atom": "white_lie_over_the_line(R)",
+      "gloss": "R is a white lie that is over the line",
+      "body": "lie_to_reduce_anxiety(R)" }
+  ],
+  "asserts": [
+    { "read_back": "responding with % is forbidden because it is a lie told to reduce the user's anxiety",
+      "read_back_slots": ["R"],
+      "licence": "textual", "cites": "l2555_2652_n001", "inference": null, "toggleable": false,
+      "status": "forbid", "act": "lie_to_reduce_anxiety(R)",
+      "body": "lie_to_reduce_anxiety(R)" }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    { "act_class": "lie_to_reduce_anxiety", "closure": "cnpa",
+      "reason": "the clause states that lying to reduce anxiety is prohibited, so the act class is closed unless explicitly permitted" }
+  ],
+  "requires": ["user_authority/1"],
+  "inputs": [],
+  "forbid_body": []
+}

@@ -1,0 +1,94 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1_170_n057",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the document includes default user-level instructions",
+  "C2 users can explicitly override such a default instruction",
+  "C3 developers can explicitly override such a default instruction"
+ ],
+ "acts": [
+  "override_default_instruction(I)"
+ ],
+ "concepts": [
+  {
+   "name": "user_authority",
+   "arity": 1,
+   "gloss": "the user level of instruction authority: instructions from end users",
+   "licence": "textual",
+   "cites": "l1_170_n057",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "default_user_level_instruction",
+   "arity": 1,
+   "gloss": "an instruction included in the document by default at the user level of authority",
+   "licence": "textual",
+   "cites": "l1_170_n057",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "explicit_override",
+   "arity": 2,
+   "gloss": "O is an explicit override of default instruction I",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause says users or developers can explicitly override default instructions; an override must relate an override act to the instruction it displaces",
+   "toggleable": false
+  },
+  {
+   "name": "developer_authority",
+   "arity": 1,
+   "gloss": "the developer level of instruction authority: instructions from developers",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause names developers alongside users as able to override; the NEEDS node supplies only user_authority, so developer_authority is inferred as the parallel authority level",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1_170_n057",
+   "inference": null,
+   "toggleable": false,
+   "atom": "default_user_level_instruction(I)",
+   "gloss": "I is a default user-level instruction included in the document",
+   "body": "user_authority(I)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "overriding default user-level instruction % is permitted when the override is explicit",
+   "read_back_slots": [
+    "I"
+   ],
+   "licence": "textual",
+   "cites": "l1_170_n057",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "override_default_instruction(I)",
+   "body": "default_user_level_instruction(I), explicit_override(O, I)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "override_default_instruction",
+   "closure": "cepa",
+   "reason": "the clause states that users or developers can explicitly override default instructions; it does not forbid any override, so silence permits"
+  }
+ ],
+ "requires": [
+  "user_authority/1"
+ ],
+ "inputs": [
+  "explicit_override/2",
+  "developer_authority/1"
+ ],
+ "forbid_body": []
+}

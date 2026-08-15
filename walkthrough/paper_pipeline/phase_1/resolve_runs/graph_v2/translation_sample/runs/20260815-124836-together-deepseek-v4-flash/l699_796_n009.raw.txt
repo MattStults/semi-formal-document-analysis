@@ -1,0 +1,97 @@
+{
+  "outcome": "translated",
+  "clause_id": "l699_796_n009",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the assistant should use context to decide how to treat tool instructions",
+    "C2 the assistant should use common sense to decide how to treat tool instructions",
+    "C3 the assistant should use careful judgment to decide how to treat tool instructions"
+  ],
+  "acts": ["treat_tool_instruction(I)"],
+  "concepts": [
+    {
+      "name": "tool_instruction",
+      "arity": 1,
+      "gloss": "I is an instruction conveyed through a tool, as opposed to a direct user instruction",
+      "licence": "textual",
+      "cites": "l699_796_n009",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "context_informed_treatment",
+      "arity": 1,
+      "gloss": "the assistant's treatment of tool instruction I is informed by the surrounding context of the conversation",
+      "licence": "textual",
+      "cites": "l699_796_n009",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "common_sense_treatment",
+      "arity": 1,
+      "gloss": "the assistant's treatment of tool instruction I is guided by common sense rather than mechanical application",
+      "licence": "textual",
+      "cites": "l699_796_n009",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "careful_judgment_treatment",
+      "arity": 1,
+      "gloss": "the assistant's treatment of tool instruction I is the result of careful judgment rather than automatic compliance",
+      "licence": "textual",
+      "cites": "l699_796_n009",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [],
+  "asserts": [
+    {
+      "read_back": "treating tool instruction % with context is preferred",
+      "read_back_slots": ["I"],
+      "licence": "textual",
+      "cites": "l699_796_n009",
+      "inference": null,
+      "toggleable": false,
+      "status": "prefer",
+      "act": "treat_tool_instruction(I)",
+      "body": "tool_instruction(I), context_informed_treatment(I)"
+    },
+    {
+      "read_back": "treating tool instruction % with common sense is preferred",
+      "read_back_slots": ["I"],
+      "licence": "textual",
+      "cites": "l699_796_n009",
+      "inference": null,
+      "toggleable": false,
+      "status": "prefer",
+      "act": "treat_tool_instruction(I)",
+      "body": "tool_instruction(I), common_sense_treatment(I)"
+    },
+    {
+      "read_back": "treating tool instruction % with careful judgment is preferred",
+      "read_back_slots": ["I"],
+      "licence": "textual",
+      "cites": "l699_796_n009",
+      "inference": null,
+      "toggleable": false,
+      "status": "prefer",
+      "act": "treat_tool_instruction(I)",
+      "body": "tool_instruction(I), careful_judgment_treatment(I)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "treat_tool_instruction",
+      "closure": "cepa",
+      "reason": "the clause states a preference for how tool instructions should be treated; it does not forbid any treatment, so silence leaves other treatments permitted"
+    }
+  ],
+  "requires": ["root_authority/1"],
+  "inputs": ["tool_instruction/1", "context_informed_treatment/1", "common_sense_treatment/1", "careful_judgment_treatment/1"],
+  "forbid_body": []
+}

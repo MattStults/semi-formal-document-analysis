@@ -1,0 +1,143 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2405_2473_n001",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should answer a direct question about a controversial historical event directly and factually",
+  "C2 the factual answer should include acknowledging censorship when censorship is part of the historical record",
+  "C3 refusing to answer or evading the question is not the preferred response"
+ ],
+ "acts": [
+  "answer_directly(Q)",
+  "acknowledge_censorship(Q)",
+  "refuse_or_evade(Q)"
+ ],
+ "concepts": [
+  {
+   "name": "controversial_historical_event_question",
+   "arity": 1,
+   "gloss": "Q is a user question asking about a controversial historical event",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example is about asking about a controversial historical event, so a class of such questions is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "direct_factual_answer",
+   "arity": 1,
+   "gloss": "a response that answers the question directly and factually",
+   "licence": "textual",
+   "cites": "l2405_2473_n001",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "censorship_acknowledgement",
+   "arity": 1,
+   "gloss": "a response that acknowledges censorship as part of the historical record",
+   "licence": "textual",
+   "cites": "l2405_2473_n001",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "refusal_or_evasion",
+   "arity": 1,
+   "gloss": "a response that refuses to answer or evades the question",
+   "licence": "textual",
+   "cites": "l2405_2473_n001",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "chain_of_command_principle",
+   "arity": 1,
+   "gloss": "the principle that instructions with higher authority override those with lower authority, designed to maximize steerability and control",
+   "licence": "textual",
+   "cites": "l2405_2473_n001",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "answers_question",
+   "arity": 2,
+   "gloss": "response R answers question Q",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example relates a response to the question it answers, so a relation between a response and a question is presupposed",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "answering question % directly and factually is preferred",
+   "read_back_slots": [
+    "Q"
+   ],
+   "licence": "textual",
+   "cites": "l2405_2473_n001",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "answer_directly(Q)",
+   "body": "controversial_historical_event_question(Q), direct_factual_answer(R), answers_question(R, Q)"
+  },
+  {
+   "read_back": "acknowledging censorship in answering question % is preferred",
+   "read_back_slots": [
+    "Q"
+   ],
+   "licence": "textual",
+   "cites": "l2405_2473_n001",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "acknowledge_censorship(Q)",
+   "body": "controversial_historical_event_question(Q), censorship_acknowledgement(R), answers_question(R, Q)"
+  },
+  {
+   "read_back": "refusing or evading question % is not preferred",
+   "read_back_slots": [
+    "Q"
+   ],
+   "licence": "textual",
+   "cites": "l2405_2473_n001",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "refuse_or_evade(Q)",
+   "body": "controversial_historical_event_question(Q), refusal_or_evasion(R), answers_question(R, Q)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "answer_directly",
+   "closure": "cepa",
+   "reason": "the example states a preference for direct factual answers; it does not forbid other responses, so silence permits"
+  },
+  {
+   "act_class": "acknowledge_censorship",
+   "closure": "cepa",
+   "reason": "the example states a preference for acknowledging censorship; it does not forbid other responses, so silence permits"
+  },
+  {
+   "act_class": "refuse_or_evade",
+   "closure": "cepa",
+   "reason": "the example states a preference against refusing or evading; it does not forbid them, so silence permits"
+  }
+ ],
+ "requires": [
+  "chain_of_command_principle/1"
+ ],
+ "inputs": [
+  "controversial_historical_event_question/1",
+  "direct_factual_answer/1",
+  "censorship_acknowledgement/1",
+  "refusal_or_evasion/1",
+  "answers_question/2"
+ ],
+ "forbid_body": []
+}

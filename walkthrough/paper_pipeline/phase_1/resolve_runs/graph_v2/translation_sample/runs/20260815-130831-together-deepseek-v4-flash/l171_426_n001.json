@@ -1,0 +1,168 @@
+{
+ "outcome": "translated",
+ "clause_id": "l171_426_n001",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant must adhere to the Model Spec above all else",
+  "C2 much of the Model Spec consists of default instructions at user or guideline level",
+  "C3 those default instructions can be overridden by users or developers"
+ ],
+ "acts": [
+  "adhere_to_spec(A)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document",
+   "licence": "textual",
+   "cites": "l171_426_n001",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "authority_levels_hierarchy",
+   "arity": 2,
+   "gloss": "the ranking of instruction authority levels: root > system > developer > user > guideline > no authority, used to determine which instruction prevails in conflicts",
+   "licence": "textual",
+   "cites": "l171_426_n001",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "model_spec",
+   "arity": 1,
+   "gloss": "the Model Spec document that the assistant must adhere to above all else",
+   "licence": "textual",
+   "cites": "l171_426_n001",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "default_instruction",
+   "arity": 1,
+   "gloss": "an instruction in the Model Spec that is a default at user or guideline level and can be overridden by users or developers",
+   "licence": "textual",
+   "cites": "l171_426_n001",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "overridable_by_user_or_developer",
+   "arity": 1,
+   "gloss": "the instruction can be overridden by a user or a developer",
+   "licence": "textual",
+   "cites": "l171_426_n001",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "model_spec_instruction",
+   "arity": 1,
+   "gloss": "an instruction that is part of the Model Spec document",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of instructions that constitute the Model Spec; such a relation is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "instruction_level",
+   "arity": 2,
+   "gloss": "instruction I is at authority level L in the hierarchy",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause says default instructions are at user or guideline level, so each instruction must carry a level",
+   "toggleable": false
+  },
+  {
+   "name": "user_level",
+   "arity": 0,
+   "gloss": "the user authority level in the hierarchy, below developer and above guideline",
+   "licence": "textual",
+   "cites": "l171_426_n001",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "guideline_level",
+   "arity": 0,
+   "gloss": "the guideline authority level in the hierarchy, below user and above no authority",
+   "licence": "textual",
+   "cites": "l171_426_n001",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l171_426_n001",
+   "inference": null,
+   "toggleable": false,
+   "atom": "adhere_to_spec(A)",
+   "gloss": "the assistant adheres to the Model Spec above all else",
+   "body": "assistant_definition(A), model_spec(S)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l171_426_n001",
+   "inference": null,
+   "toggleable": false,
+   "atom": "default_instruction(I)",
+   "gloss": "I is a default instruction in the Model Spec at user or guideline level",
+   "body": "model_spec_instruction(I), instruction_level(I, L), authority_levels_hierarchy(L, user_level)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l171_426_n001",
+   "inference": null,
+   "toggleable": false,
+   "atom": "default_instruction(I)",
+   "gloss": "I is a default instruction in the Model Spec at guideline level",
+   "body": "model_spec_instruction(I), instruction_level(I, L), authority_levels_hierarchy(L, guideline_level)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l171_426_n001",
+   "inference": null,
+   "toggleable": false,
+   "atom": "overridable_by_user_or_developer(I)",
+   "gloss": "I can be overridden by a user or developer",
+   "body": "default_instruction(I)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "the assistant must adhere to the Model Spec above all else",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l171_426_n001",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "adhere_to_spec(A)",
+   "body": "assistant_definition(A), model_spec(S)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "adhere_to_spec",
+   "closure": "cepa",
+   "reason": "the clause obliges adherence to the Model Spec above all else; it does not forbid any particular act, so silence permits acts not covered by the obligation"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "authority_levels_hierarchy/2"
+ ],
+ "inputs": [
+  "model_spec/1",
+  "model_spec_instruction/1",
+  "instruction_level/2",
+  "user_level/0",
+  "guideline_level/0"
+ ],
+ "forbid_body": []
+}

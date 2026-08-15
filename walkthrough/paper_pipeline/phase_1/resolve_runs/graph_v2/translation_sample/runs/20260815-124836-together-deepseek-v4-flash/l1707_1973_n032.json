@@ -1,0 +1,156 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1707_1973_n032",
+ "abstain_reason": null,
+ "claims": [
+  "C1 when the assistant is uncertain about the sensitivity of information involved in a tool call, it should request user authorization or avoid the interaction entirely",
+  "C2 when the assistant is uncertain about the trustworthiness of the tool recipient, it should request user authorization or avoid the interaction entirely"
+ ],
+ "acts": [
+  "request_user_authorization(A)",
+  "avoid_interaction(A)"
+ ],
+ "concepts": [
+  {
+   "name": "uncertain_information_sensitivity",
+   "arity": 1,
+   "gloss": "the assistant is uncertain whether the information involved in interaction A is sensitive or how it should be classified",
+   "licence": "textual",
+   "cites": "l1707_1973_n032",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "uncertain_tool_trustworthiness",
+   "arity": 1,
+   "gloss": "the assistant is uncertain whether the tool involved in interaction A is trustworthy",
+   "licence": "textual",
+   "cites": "l1707_1973_n032",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "the rule carries root authority: it is a top-level requirement of the protect_privileged_information section",
+   "licence": "textual",
+   "cites": "l1707_1973_n032",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1707_1973_n032",
+   "inference": null,
+   "toggleable": false,
+   "atom": "root_authority(request_user_authorization(A))",
+   "gloss": "the obligation to request user authorization when uncertain carries root authority",
+   "body": "uncertain_information_sensitivity(A)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1707_1973_n032",
+   "inference": null,
+   "toggleable": false,
+   "atom": "root_authority(request_user_authorization(A))",
+   "gloss": "the obligation to request user authorization when uncertain carries root authority",
+   "body": "uncertain_tool_trustworthiness(A)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1707_1973_n032",
+   "inference": null,
+   "toggleable": false,
+   "atom": "root_authority(avoid_interaction(A))",
+   "gloss": "the obligation to avoid the interaction when uncertain carries root authority",
+   "body": "uncertain_information_sensitivity(A)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1707_1973_n032",
+   "inference": null,
+   "toggleable": false,
+   "atom": "root_authority(avoid_interaction(A))",
+   "gloss": "the obligation to avoid the interaction when uncertain carries root authority",
+   "body": "uncertain_tool_trustworthiness(A)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "when uncertain about information sensitivity, the assistant should request user authorization for interaction %",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l1707_1973_n032",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "request_user_authorization(A)",
+   "body": "uncertain_information_sensitivity(A)"
+  },
+  {
+   "read_back": "when uncertain about tool trustworthiness, the assistant should request user authorization for interaction %",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l1707_1973_n032",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "request_user_authorization(A)",
+   "body": "uncertain_tool_trustworthiness(A)"
+  },
+  {
+   "read_back": "when uncertain about information sensitivity, the assistant should avoid interaction % entirely",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l1707_1973_n032",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "avoid_interaction(A)",
+   "body": "uncertain_information_sensitivity(A)"
+  },
+  {
+   "read_back": "when uncertain about tool trustworthiness, the assistant should avoid interaction % entirely",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l1707_1973_n032",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "avoid_interaction(A)",
+   "body": "uncertain_tool_trustworthiness(A)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "request_user_authorization",
+   "closure": "cepa",
+   "reason": "the clause obliges requesting authorization only when uncertain; it does not forbid or permit anything else, so silence leaves other requests permitted"
+  },
+  {
+   "act_class": "avoid_interaction",
+   "closure": "cepa",
+   "reason": "the clause obliges avoiding the interaction only when uncertain; it does not forbid or permit anything else, so silence leaves other avoidances permitted"
+  }
+ ],
+ "requires": [
+  "root_authority/1"
+ ],
+ "inputs": [
+  "uncertain_information_sensitivity/1",
+  "uncertain_tool_trustworthiness/1"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,132 @@
+{
+  "outcome": "translated",
+  "clause_id": "l1542_1706_n015",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the assistant should respond with the same supportive, safety-oriented approach when context strongly suggests a credible risk to the user's safety or life",
+    "C2 this obligation holds even if suicidal or self-injurious intent is not stated explicitly",
+    "C3 the obligation covers indirect expressions of such intent",
+    "C4 the obligation covers ambiguous statements paired with concerning details about distress or harmful means"
+  ],
+  "acts": ["respond_with_supportive_safety_approach(R)"],
+  "concepts": [
+    {
+      "name": "root_authority",
+      "arity": 1,
+      "gloss": "the rule carries root authority: it is a top-level rule in the #do_not_encourage_self_harm section that outranks lower-authority rules",
+      "licence": "textual",
+      "cites": "l1542_1706_n015",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "credible_risk_to_safety_or_life",
+      "arity": 1,
+      "gloss": "the context strongly suggests a credible risk to the user's safety or life",
+      "licence": "textual",
+      "cites": "l1542_1706_n015",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "suicidal_or_self_injurious_intent_stated_explicitly",
+      "arity": 1,
+      "gloss": "the user has stated suicidal or self-injurious intent explicitly",
+      "licence": "textual",
+      "cites": "l1542_1706_n015",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "indirect_expression_of_intent",
+      "arity": 1,
+      "gloss": "the user's message indirectly expresses suicidal or self-injurious intent, e.g. 'Maybe everyone would be better off if I just went away for good'",
+      "licence": "textual",
+      "cites": "l1542_1706_n015",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "ambiguous_statement_with_concerning_details",
+      "arity": 1,
+      "gloss": "the user's message is an ambiguous statement paired with concerning details about distress or harmful means",
+      "licence": "textual",
+      "cites": "l1542_1706_n015",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "supportive_safety_oriented_response",
+      "arity": 1,
+      "gloss": "a response that is supportive and safety-oriented, appropriate for a credible risk to the user's safety or life",
+      "licence": "textual",
+      "cites": "l1542_1706_n015",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "l1542_1706_n015",
+      "inference": null,
+      "toggleable": false,
+      "atom": "root_authority(respond_with_supportive_safety_approach(R))",
+      "gloss": "the obligation to respond with a supportive, safety-oriented approach carries root authority",
+      "body": "respond_with_supportive_safety_approach(R)"
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "responding with % is obliged when context strongly suggests a credible risk to the user's safety or life, even if suicidal or self-injurious intent is not stated explicitly",
+      "read_back_slots": ["R"],
+      "licence": "textual",
+      "cites": "l1542_1706_n015",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "respond_with_supportive_safety_approach(R)",
+      "body": "supportive_safety_oriented_response(R), credible_risk_to_safety_or_life(C), not suicidal_or_self_injurious_intent_stated_explicitly(C)"
+    },
+    {
+      "read_back": "responding with % is obliged when the user's message is an indirect expression of suicidal or self-injurious intent and context strongly suggests a credible risk to the user's safety or life",
+      "read_back_slots": ["R"],
+      "licence": "textual",
+      "cites": "l1542_1706_n015",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "respond_with_supportive_safety_approach(R)",
+      "body": "supportive_safety_oriented_response(R), indirect_expression_of_intent(M), credible_risk_to_safety_or_life(C)"
+    },
+    {
+      "read_back": "responding with % is obliged when the user's message is an ambiguous statement paired with concerning details about distress or harmful means and context strongly suggests a credible risk to the user's safety or life",
+      "read_back_slots": ["R"],
+      "licence": "textual",
+      "cites": "l1542_1706_n015",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "respond_with_supportive_safety_approach(R)",
+      "body": "supportive_safety_oriented_response(R), ambiguous_statement_with_concerning_details(M), credible_risk_to_safety_or_life(C)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "respond_with_supportive_safety_approach",
+      "closure": "cepa",
+      "reason": "the clause obliges this response in the specified risk contexts and does not address other contexts, so silence leaves other responses permitted"
+    }
+  ],
+  "requires": ["root_authority/1"],
+  "inputs": [
+    "credible_risk_to_safety_or_life/1",
+    "suicidal_or_self_injurious_intent_stated_explicitly/1",
+    "indirect_expression_of_intent/1",
+    "ambiguous_statement_with_concerning_details/1",
+    "supportive_safety_oriented_response/1"
+  ],
+  "forbid_body": []
+}

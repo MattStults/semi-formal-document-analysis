@@ -1,0 +1,159 @@
+{
+  "outcome": "translated",
+  "clause_id": "l2653_2820_n004",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the assistant should weigh the cost of incorrect assumptions against the inconvenience of asking the user when forming responses",
+    "C2 the assistant should attempt to fill information gaps using context or trusted external sources",
+    "C3 the assistant should resort to direct user queries only when uncertainty persists"
+  ],
+  "acts": [
+    "fill_gap_with(G)",
+    "ask_user(Q)"
+  ],
+  "concepts": [
+    {
+      "name": "assistant_definition",
+      "arity": 1,
+      "gloss": "A is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document",
+      "licence": "textual",
+      "cites": "l2653_2820_n004",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "ask_clarifying_questions_section_guideline_authority",
+      "arity": 1,
+      "gloss": "R is a rule in the #ask_clarifying_questions section and carries guideline authority",
+      "licence": "textual",
+      "cites": "l2653_2820_n004",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "information_gap",
+      "arity": 1,
+      "gloss": "G is a piece of information the assistant lacks that is needed to form a response",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause speaks of filling information gaps, so a class of such gaps must exist",
+      "toggleable": false
+    },
+    {
+      "name": "context_or_trusted_external_source",
+      "arity": 1,
+      "gloss": "S is context available to the assistant or a trusted external source such as a file search or web browsing",
+      "licence": "textual",
+      "cites": "l2653_2820_n004",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "can_fill_from",
+      "arity": 2,
+      "gloss": "information gap G can be filled from source S",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause directs filling gaps from sources, so a relation between a gap and a source must exist",
+      "toggleable": false
+    },
+    {
+      "name": "uncertainty_persists",
+      "arity": 1,
+      "gloss": "after attempting context and trusted external sources, uncertainty about the correct response to question Q persists",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause conditions direct user queries on persistent uncertainty, so a predicate for that condition is needed",
+      "toggleable": false
+    },
+    {
+      "name": "question_for_user",
+      "arity": 1,
+      "gloss": "Q is a question the assistant could ask the user to resolve an information gap",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "direct user queries are questions addressed to the user, so a class of such questions is needed",
+      "toggleable": false
+    },
+    {
+      "name": "resolves_gap",
+      "arity": 2,
+      "gloss": "asking question Q would resolve information gap G",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "a direct user query is resorted to in order to fill a gap, so a relation between the question and the gap is needed",
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "l2653_2820_n004",
+      "inference": null,
+      "toggleable": false,
+      "atom": "fill_gap_with(G)",
+      "gloss": "filling information gap G using context or a trusted external source",
+      "body": "information_gap(G), context_or_trusted_external_source(S), can_fill_from(G, S)"
+    },
+    {
+      "licence": "textual",
+      "cites": "l2653_2820_n004",
+      "inference": null,
+      "toggleable": false,
+      "atom": "ask_user(Q)",
+      "gloss": "asking the user question Q to resolve an information gap",
+      "body": "question_for_user(Q), information_gap(G), resolves_gap(Q, G), uncertainty_persists(Q)"
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "filling information gap % using context or a trusted external source is preferred",
+      "read_back_slots": ["G"],
+      "licence": "textual",
+      "cites": "l2653_2820_n004",
+      "inference": null,
+      "toggleable": false,
+      "status": "prefer",
+      "act": "fill_gap_with(G)",
+      "body": "information_gap(G), context_or_trusted_external_source(S), can_fill_from(G, S)"
+    },
+    {
+      "read_back": "asking the user % is preferred only when uncertainty persists after attempting context and trusted external sources",
+      "read_back_slots": ["Q"],
+      "licence": "textual",
+      "cites": "l2653_2820_n004",
+      "inference": null,
+      "toggleable": false,
+      "status": "prefer",
+      "act": "ask_user(Q)",
+      "body": "question_for_user(Q), information_gap(G), resolves_gap(Q, G), uncertainty_persists(Q)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "fill_gap_with",
+      "closure": "cepa",
+      "reason": "the clause directs the assistant to prefer filling gaps from context or trusted sources; it does not forbid any particular method, so silence permits"
+    },
+    {
+      "act_class": "ask_user",
+      "closure": "cnpa",
+      "reason": "the clause says the assistant should resort to direct user queries only when uncertainty persists, so asking the user is not permitted when uncertainty does not persist"
+    }
+  ],
+  "requires": [
+    "assistant_definition/1",
+    "ask_clarifying_questions_section_guideline_authority/1"
+  ],
+  "inputs": [
+    "information_gap/1",
+    "context_or_trusted_external_source/1",
+    "can_fill_from/2",
+    "question_for_user/1",
+    "resolves_gap/2",
+    "uncertainty_persists/1"
+  ],
+  "forbid_body": []
+}

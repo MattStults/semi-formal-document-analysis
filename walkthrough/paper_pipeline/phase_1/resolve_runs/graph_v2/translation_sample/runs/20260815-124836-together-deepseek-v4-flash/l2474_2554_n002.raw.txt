@@ -1,0 +1,131 @@
+{
+  "outcome": "translated",
+  "clause_id": "l2474_2554_n002",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the assistant is forbidden from misleading the user or developer",
+    "C2 the prohibition is lifted when a higher authority explicitly instructs the assistant to mislead",
+    "C3 misleading by commission — making intentionally untrue statements — is one form of the forbidden act",
+    "C4 misleading by omission — deliberately withholding information that would materially change the user's understanding of the truth — is another form of the forbidden act"
+  ],
+  "acts": ["mislead(A)"],
+  "concepts": [
+    {
+      "name": "misleading_act",
+      "arity": 1,
+      "gloss": "A is an act by the assistant that misleads the user or developer, whether by commission or by omission",
+      "licence": "textual",
+      "cites": "l2474_2554_n002",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "mislead_by_commission",
+      "arity": 1,
+      "gloss": "A is an act of making an intentionally untrue statement",
+      "licence": "textual",
+      "cites": "l2474_2554_n002",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "mislead_by_omission",
+      "arity": 1,
+      "gloss": "A is an act of deliberately withholding information that would materially change the user's understanding of the truth",
+      "licence": "textual",
+      "cites": "l2474_2554_n002",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "explicitly_instructed_to_mislead",
+      "arity": 2,
+      "gloss": "a higher authority explicitly instructed the assistant to perform misleading act A",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the exception requires an explicit instruction from a higher authority directed at the misleading act; the relation between instruction and act is presupposed by 'instructed to do so'",
+      "toggleable": false
+    },
+    {
+      "name": "authority_levels_hierarchy",
+      "arity": 2,
+      "gloss": "which of two instruction authority levels is higher, per the ranking root > system > developer > user > guideline > no authority",
+      "licence": "textual",
+      "cites": "l2474_2554_n002",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "instruction_authority_level",
+      "arity": 2,
+      "gloss": "instruction I was issued at authority level L",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the exception speaks of an instruction from a higher authority, so each instruction must carry an authority level for the comparison to range over",
+      "toggleable": false
+    },
+    {
+      "name": "higher_authority_instruction",
+      "arity": 1,
+      "gloss": "I is an instruction from an authority level higher than the assistant's default level",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "'higher authority' is relative to the level at which the assistant ordinarily operates; the text presupposes that baseline without naming it",
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "l2474_2554_n002",
+      "inference": null,
+      "toggleable": false,
+      "atom": "misleading_act(A)",
+      "gloss": "A is a misleading act because it is a lie by commission",
+      "body": "mislead_by_commission(A)"
+    },
+    {
+      "licence": "textual",
+      "cites": "l2474_2554_n002",
+      "inference": null,
+      "toggleable": false,
+      "atom": "misleading_act(A)",
+      "gloss": "A is a misleading act because it is a lie by omission",
+      "body": "mislead_by_omission(A)"
+    },
+    {
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the exception requires an instruction from a higher authority; this derives that class from the instruction's level and the hierarchy",
+      "toggleable": false,
+      "atom": "higher_authority_instruction(I)",
+      "gloss": "I is an instruction from an authority level above the assistant's default level",
+      "body": "explicitly_instructed_to_mislead(I, A), instruction_authority_level(I, L), authority_levels_hierarchy(L, assistant_default_level)"
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "performing % is forbidden because it misleads the user or developer",
+      "read_back_slots": ["A"],
+      "licence": "textual",
+      "cites": "l2474_2554_n002",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "mislead(A)",
+      "body": "misleading_act(A), not higher_authority_instruction(I)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "mislead",
+      "closure": "cnpa",
+      "reason": "the clause states a general prohibition on misleading the user or developer, with only a narrow exception for explicit higher-authority instruction; silence about other misleading acts does not permit them"
+    }
+  ],
+  "requires": ["authority_levels_hierarchy/2"],
+  "inputs": ["mislead_by_commission/1", "mislead_by_omission/1", "explicitly_instructed_to_mislead/2", "instruction_authority_level/2", "assistant_default_level/0"],
+  "forbid_body": []
+}

@@ -283,6 +283,86 @@ def arity_findings(module):
     return out
 
 
+#: A read-back that says the act is DISFAVOURED while `status` says `prefer`.
+#: Both halves come from the same entry, so this is a self-contradiction inside
+#: one object — the stage-2 property exactly (`03_pipeline.md:497`): derived
+#: from the module alone, no expected verdict anywhere near it.
+POLARITY_CHECK_ID = "prefer-polarity"
+POLARITY_MESSAGE_MARK = "but its own read-back calls it"
+
+#: Words a read-back uses when it means the act is to be AVOIDED. Deliberately
+#: narrow: this fires only when the read-back SAYS SO, never on a guess about
+#: what the clause meant. A wider net here would be a semantic judgement, and
+#: semantic judgement is stage 4's job, not stage 2's.
+_DISFAVOURED = re.compile(
+    r"\b(dispreferred|disprefer|not preferred|discouraged|"
+    r"should be avoided|is worse|undesirable)\b", re.I)
+
+
+def polarity_mismatches(module):
+    """Yield (where, act, phrase) for every `prefer` assert whose own
+    read-back says the act is disfavoured.
+
+    ⛔ WHY THIS EXISTS AND WHY NOTHING ELSE CATCHES IT (2026-08-15 stage-4
+    read). `Status` has NO NEGATIVE POLE — there is no `disprefer` — so for a
+    clause that says "avoid X" or marks X as a BAD example there is no correct
+    single-act encoding, and the model reliably picks the one that INVERTS the
+    meaning: `prefer` attached to the act the document tells it to avoid. The
+    compiled ASP then asserts the opposite of the specification. Measured
+    instance, `l1974_2125_n019.lp:57`, from a BAD-marked example of escalating
+    emotional closeness with a lonely user:
+
+        asserts(l1974_2125_n019, prefer, respond_with(R))
+            :- escalates_emotional_closeness(R).
+
+    ⛔ EVERY OTHER CHECK PASSES IT, INCLUDING ALL FOUR STAGE-4 SEATS. The
+    read-back prose is CORRECT ("responding with % is dispreferred"); only
+    `status` is wrong. Seats 4a-4d all judge the English RENDERING — 4b is
+    explicitly not shown the program at all — so a defect living in the gap
+    between a correct rendering and the field it was rendered from is
+    structurally invisible to them. That is why this is mechanical and here.
+    """
+    out = []
+    for i, a in enumerate(getattr(module, "asserts", None) or []):
+        if getattr(a, "status", None) != "prefer":
+            continue
+        m = _DISFAVOURED.search(str(getattr(a, "read_back", "") or ""))
+        if m:
+            out.append((f"asserts[{i}]", getattr(a, "act", "?"), m.group(0)))
+    return out
+
+
+def polarity_findings(module):
+    """`polarity_mismatches` as Findings — NAMING WHAT IS THE CASE, NO FIX.
+
+    ⛔ ORIGIN IS `stage4-detector`, WHICH IS *NOT* DISCLOSABLE, AND THAT IS A
+    DELIBERATE RULING, NOT AN OVERSIGHT (2026-08-15). Every instinct says a
+    self-contradiction inside one entry is stage-2-shaped and should reach the
+    repair loop. It must not, YET, and the reason is defect-trading: because
+    `status` has no negative pole, a model told "these two disagree" CANNOT
+    resolve it correctly. Its two available moves are to drop the entry —
+    deleting the specification's guidance — or to REWRITE THE READ-BACK to say
+    "preferred", which silences the only surviving evidence of the inversion
+    and leaves a module that is semantically backwards AND internally
+    consistent. That is strictly worse than what we have now, and it is the
+    exact shape of the defect-trading this project has been bitten by before.
+
+    ⭐ THE PRECONDITION FOR PROMOTING THIS TO A DISCLOSABLE STAGE-2 CHECK is a
+    negative pole in `status` (a `disprefer`, or a two-act comparative form) —
+    an owner ruling on `schema.py`, which is guard-watched. Once a correct
+    encoding EXISTS, this becomes an ordinary stage-2 finding and the origin
+    should change to "schema" in the same commit that adds the pole. Until
+    then it detects and reports and does not touch the loop.
+    """
+    return [Finding(
+        POLARITY_CHECK_ID, "error", where,
+        f"`{act}` is asserted with status `prefer` {POLARITY_MESSAGE_MARK} "
+        f"'{phrase}'. The compiled rule therefore states a PREFERENCE FOR an "
+        f"act this module's own rendering describes as one to avoid, and the "
+        f"two cannot both be what the clause says",
+        "stage4-detector") for where, act, phrase in polarity_mismatches(module)]
+
+
 @dataclasses.dataclass(frozen=True)
 class Finding:
     """One thing that is wrong with an attempt, and where.
@@ -439,6 +519,12 @@ def run_checks(obj, clause, corpus_ids, concepts=None, lp_path=None,
     # content field, so it has no bodies to check, and adding findings before
     # that return could only ever turn a terminal outcome into a repair round.
     findings += arity_findings(mod)
+    # ⭐ The prefer-polarity detector. Same placement rationale as the arity
+    # check above (after the abstention return — an abstention has no asserts).
+    # Its origin is NOT disclosable, so it can never turn a terminal outcome
+    # into a repair round; it is reported and counted, and nothing more. See
+    # `polarity_findings` for why that restraint is the whole point.
+    findings += polarity_findings(mod)
 
     if lp_path is None:
         tmp = tempfile.mkdtemp(prefix="stage2_checks_")

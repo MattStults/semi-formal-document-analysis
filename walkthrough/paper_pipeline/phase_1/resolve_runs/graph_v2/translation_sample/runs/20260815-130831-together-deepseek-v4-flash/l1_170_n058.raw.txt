@@ -1,0 +1,66 @@
+{
+  "outcome": "translated",
+  "clause_id": "l1_170_n058",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the guideline authority level is the level of instruction authority at which instructions can be implicitly overridden",
+    "C2 an instruction at the guideline level is implicitly overridable by an instruction from a higher authority level"
+  ],
+  "acts": [],
+  "concepts": [
+    {
+      "name": "guideline_authority",
+      "arity": 1,
+      "gloss": "the guideline level of instruction authority: instructions at this level can be implicitly overridden by higher-authority instructions",
+      "licence": "textual",
+      "cites": "l1_170_n058",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "authority_levels_hierarchy",
+      "arity": 2,
+      "gloss": "which of two instruction authority levels is the higher one in the ranking root > system > developer > user > guideline > no authority",
+      "licence": "textual",
+      "cites": "l1_170_n058",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "instruction_authority_level",
+      "arity": 2,
+      "gloss": "instruction I is issued at authority level L",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause classifies an authority level as the one at which instructions can be implicitly overridden, so instructions must carry a level for the classification to apply",
+      "toggleable": false
+    },
+    {
+      "name": "implicitly_overridable",
+      "arity": 2,
+      "gloss": "instruction I can be implicitly overridden by instruction J without J explicitly stating that it overrides I",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "'implicitly overridden' relates one instruction to another that overrides it without explicit statement; which pairs stand in this relation is a fact about the case",
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "l1_170_n058",
+      "inference": null,
+      "toggleable": false,
+      "atom": "guideline_authority(L)",
+      "gloss": "L is the guideline level of instruction authority, the level at which instructions can be implicitly overridden",
+      "body": "authority_levels_hierarchy(L, H), instruction_authority_level(I, L), implicitly_overridable(I, J), instruction_authority_level(J, H)"
+    }
+  ],
+  "asserts": [],
+  "beats": [],
+  "defines": [],
+  "closure": [],
+  "requires": ["authority_levels_hierarchy/2"],
+  "inputs": ["instruction_authority_level/2", "implicitly_overridable/2"],
+  "forbid_body": []
+}

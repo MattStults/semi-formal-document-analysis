@@ -1,0 +1,127 @@
+{
+  "outcome": "translated",
+  "clause_id": "l2126_2404_n013",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the assistant should present the strongest arguments for each position when addressing a topic with multiple perspectives",
+    "C2 the assistant should allocate attention to each position proportionately to its level of acceptance and evidential support"
+  ],
+  "acts": ["present_arguments(P)", "allocate_attention(P)"],
+  "concepts": [
+    {
+      "name": "assistant_definition",
+      "arity": 1,
+      "gloss": "A is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document",
+      "licence": "textual",
+      "cites": "l2126_2404_n013",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "user_authority",
+      "arity": 1,
+      "gloss": "I is an instruction from the user role, whose authority level is below developer and above guideline in the authority hierarchy",
+      "licence": "textual",
+      "cites": "l2126_2404_n013",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "multiple_perspectives_topic",
+      "arity": 1,
+      "gloss": "T is a topic that has multiple significant perspectives or positions",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause speaks of 'topics with multiple perspectives', so a class of such topics is presupposed",
+      "toggleable": false
+    },
+    {
+      "name": "position",
+      "arity": 2,
+      "gloss": "P is a significant position or perspective on topic T",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause speaks of 'each position' within a topic, so a relation between positions and topics is presupposed",
+      "toggleable": false
+    },
+    {
+      "name": "strongest_argument",
+      "arity": 2,
+      "gloss": "A is the strongest argument available for position P",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause directs presenting 'the strongest arguments for each position', so a relation between arguments and positions is presupposed",
+      "toggleable": false
+    },
+    {
+      "name": "acceptance_level",
+      "arity": 2,
+      "gloss": "position P has acceptance level L, where L is a measure of how widely accepted the position is",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause refers to a position's 'level of acceptance', so such a level must be attributable to positions",
+      "toggleable": false
+    },
+    {
+      "name": "evidential_support_level",
+      "arity": 2,
+      "gloss": "position P has evidential support level L, where L is a measure of the strength of evidence supporting the position",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause refers to a position's 'evidential support', so such a level must be attributable to positions",
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause's obligation concerns the assistant, so the assistant must be identified as the acting entity",
+      "toggleable": false,
+      "atom": "assistant(A)",
+      "gloss": "A is the assistant, the entity the end user or developer interacts with",
+      "body": "assistant_definition(A)"
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "presenting the strongest arguments for position % is preferred when addressing topic % with multiple perspectives",
+      "read_back_slots": ["P", "T"],
+      "licence": "textual",
+      "cites": "l2126_2404_n013",
+      "inference": null,
+      "toggleable": false,
+      "status": "prefer",
+      "act": "present_arguments(P)",
+      "body": "multiple_perspectives_topic(T), position(P, T), strongest_argument(A, P)"
+    },
+    {
+      "read_back": "allocating attention to position % proportionately to its acceptance and evidential support is preferred when addressing topic % with multiple perspectives",
+      "read_back_slots": ["P", "T"],
+      "licence": "textual",
+      "cites": "l2126_2404_n013",
+      "inference": null,
+      "toggleable": false,
+      "status": "prefer",
+      "act": "allocate_attention(P)",
+      "body": "multiple_perspectives_topic(T), position(P, T), acceptance_level(P, L1), evidential_support_level(P, L2)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "present_arguments",
+      "closure": "cepa",
+      "reason": "the clause states a preference for presenting the strongest arguments; it does not forbid or require any presentation, so silence leaves other presentations permitted"
+    },
+    {
+      "act_class": "allocate_attention",
+      "closure": "cepa",
+      "reason": "the clause states a preference for proportionate allocation; it does not forbid or require any allocation, so silence leaves other allocations permitted"
+    }
+  ],
+  "requires": ["assistant_definition/1", "user_authority/1"],
+  "inputs": ["multiple_perspectives_topic/1", "position/2", "strongest_argument/2", "acceptance_level/2", "evidential_support_level/2"],
+  "forbid_body": []
+}

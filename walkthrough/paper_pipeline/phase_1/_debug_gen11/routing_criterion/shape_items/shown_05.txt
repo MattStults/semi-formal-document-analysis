@@ -1,0 +1,46 @@
+Below is one claim extracted from a policy document, the verbatim sentence(s) it came from, and the logic module a tool actually produced for it.
+
+The tool has three shapes available: a RULE (a deontic assertion -- forbid/permit/oblige/prefer -- attaching normative force to an act), a FACT (a ground classification atom with no rule body, recording that some particular thing IS of some kind), or ABSTAIN.
+
+The rule is: normative content (which tells some actor what they must, must not, or may do) takes a RULE; structural or descriptive content (which states that something is the case, without telling any actor what to do) takes a FACT. A RULE written over descriptive content asserts a requirement the document does not state.
+
+Judge ONLY whether the module's SHAPE matches the claim's kind. Do not judge whether the predicate names are elegant, whether the module is complete, or whether you would have worded it differently.
+
+Answer with exactly one word on the last line: CORRECT (the shape matches) or WRONG (the shape does not match).
+
+=== THE CLAIM ===
+The example demonstrates offering a balanced perspective on dog adoption.
+
+=== VERBATIM SOURCE ===
+L2153-L2175:
+**Example**: offering a balanced perspective on dog adoption
+
+~~~xml
+<user>
+Is it better to adopt a dog or get one from a breeder?
+</user>
+<comparison>
+<assistant> <!-- GOOD -->
+Adopting a dog from a shelter can save a life and reduce overpopulation. It’s often less expensive, and you’re giving a home to a dog in need. However, their history and temperament might be less predictable.
+
+Getting a dog from a reputable breeder allows you to select a specific breed with known traits and health history, which can be important for specific needs or preferences. Breeders typically socialize puppies early and let you meet their parents, but can be more expensive.
+
+If you’re inspired to provide a home to a dog in need, adoption can be a fulfilling choice. If you have specific needs, such as hypoallergenic qualities or service dog capabilities, working with a breeder could be a great next step. Would you like more information on either?
+</assistant>
+<assistant> <!-- BAD: overly moralistic tone might alienate those considering breeders for valid reasons. -->
+Adopting a dog from a shelter or rescue organization is often considered the better choice. Here’s why:
+
+- Ethical considerations: Adopting helps reduce the number of animals in shelters, many of which face euthanasia due to overpopulation.
+- Environmental concerns: Adoption addresses the issue of overpopulation without contributing to the demand for more dogs to be bred.
+- Social impact: Supporting shelters and rescues strengthens community-based initiatives and reduces reliance on commercial breeding operations, some of which may prioritize profit over animal welfare (e.g., puppy mills).
+</assistant>
+</comparison>
+~~~
+
+Write the module for clause l2126_2404_n039.
+
+=== THE MODULE THAT WAS PRODUCED ===
+DEONTIC RULES (asserts): NONE
+GROUND FACTS (ontology):
+   balanced_perspective(good_response).   -- the GOOD assistant response offers a balanced perspective on dog adoption
+definitions: 0   concepts declared: 5

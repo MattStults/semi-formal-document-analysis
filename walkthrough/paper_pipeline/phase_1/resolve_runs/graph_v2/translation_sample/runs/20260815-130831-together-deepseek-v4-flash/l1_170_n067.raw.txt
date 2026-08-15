@@ -1,0 +1,112 @@
+{
+  "outcome": "translated",
+  "clause_id": "l1_170_n067",
+  "abstain_reason": null,
+  "claims": [
+    "C1 valid input to the model is a conversation",
+    "C2 a conversation consists of a list of messages",
+    "C3 every message contains a role and content"
+  ],
+  "acts": [],
+  "concepts": [
+    {
+      "name": "conversation_definition",
+      "arity": 1,
+      "gloss": "C is a conversation: a list of messages, each containing a role and content",
+      "licence": "textual",
+      "cites": "l1_170_n067",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "valid_input",
+      "arity": 1,
+      "gloss": "X is a valid input to the model",
+      "licence": "textual",
+      "cites": "l1_170_n067",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "message",
+      "arity": 1,
+      "gloss": "M is a message in a conversation",
+      "licence": "textual",
+      "cites": "l1_170_n067",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "message_role",
+      "arity": 2,
+      "gloss": "message M has role R",
+      "licence": "textual",
+      "cites": "l1_170_n067",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "message_content",
+      "arity": 2,
+      "gloss": "message M has content C",
+      "licence": "textual",
+      "cites": "l1_170_n067",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "message_in_conversation",
+      "arity": 2,
+      "gloss": "message M is an element of the list of messages making up conversation C",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the definition says a conversation consists of a list of messages, so a relation between a conversation and its member messages is needed",
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "l1_170_n067",
+      "inference": null,
+      "toggleable": false,
+      "atom": "valid_input(C)",
+      "gloss": "C is a valid input to the model because it is a conversation",
+      "body": "conversation_definition(C)"
+    },
+    {
+      "licence": "textual",
+      "cites": "l1_170_n067",
+      "inference": null,
+      "toggleable": false,
+      "atom": "message_in_conversation(M, C)",
+      "gloss": "M is one of the messages in conversation C",
+      "body": "conversation_definition(C), message(M)"
+    },
+    {
+      "licence": "textual",
+      "cites": "l1_170_n067",
+      "inference": null,
+      "toggleable": false,
+      "atom": "message_role(M, R)",
+      "gloss": "message M has role R",
+      "body": "message(M)"
+    },
+    {
+      "licence": "textual",
+      "cites": "l1_170_n067",
+      "inference": null,
+      "toggleable": false,
+      "atom": "message_content(M, C)",
+      "gloss": "message M has content C",
+      "body": "message(M)"
+    }
+  ],
+  "asserts": [],
+  "beats": [],
+  "defines": [],
+  "closure": [],
+  "requires": [],
+  "inputs": ["conversation_definition/1", "message/1", "message_role/2", "message_content/2"],
+  "forbid_body": []
+}

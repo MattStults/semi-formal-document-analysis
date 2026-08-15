@@ -1,0 +1,64 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1_170_n047",
+ "abstain_reason": null,
+ "claims": [
+  "C1 when two root-level principles conflict, the model should default to inaction"
+ ],
+ "acts": [
+  "default_to_inaction"
+ ],
+ "concepts": [
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "P is a root-level principle: a fundamental rule from the Model Spec or its detailed policies that cannot be overridden by system messages, developers or users",
+   "licence": "textual",
+   "cites": "l1_170_n047",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "conflicting_principles",
+   "arity": 2,
+   "gloss": "root-level principles P1 and P2 direct incompatible actions in the same situation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of two root-level principles conflicting; a relation identifying which pairs conflict is needed",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "when root-level principles % and % conflict, the model should default to inaction",
+   "read_back_slots": [
+    "P1",
+    "P2"
+   ],
+   "licence": "textual",
+   "cites": "l1_170_n047",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "default_to_inaction",
+   "body": "conflicting_principles(P1, P2), root_authority(P1), root_authority(P2)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "default_to_inaction",
+   "closure": "cepa",
+   "reason": "the clause states a default preference for inaction when root principles conflict; it does not forbid other responses, so silence leaves other responses permitted"
+  }
+ ],
+ "requires": [
+  "root_authority/1"
+ ],
+ "inputs": [
+  "conflicting_principles/2"
+ ],
+ "forbid_body": []
+}
