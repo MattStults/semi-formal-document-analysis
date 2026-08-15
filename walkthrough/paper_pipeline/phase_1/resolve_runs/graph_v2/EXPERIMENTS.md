@@ -2756,3 +2756,111 @@ stops the run for diagnosis regardless of mode -- that mechanism is
 independent of checkpoints and unaffected by 4a.
 SEQUENCE: 4a fix lands -> reviewed -> checkpoint_pause back to true ->
 resume the corpus in batch with --only-stale.
+
+## 2026-08-14: pipeline-fix review round -- 4 defects FIXED (4a unblocks batch pausing)
+
+All four adversarial-review defects fixed, each pinned RED against the
+pre-review files (b57a007): **18 pins red there, all green now**.
+
+**4a (BLOCKING) -- a pause in BATCH mode discarded already-paid rows.**
+`dispatch_core._collect` routes a submitted job's rows one at a time,
+and `sched.complete(state)` sits INSIDE that loop. A `CheckpointPause`
+raised from it (translate_exec's `RunContext.finish`) aborted the loop,
+so every remaining row of an ALREADY-PAID batch was never fed, never
+written, never ledgered -- ~725 rows re-bought at `checkpoint_every=25`
+on 750 items. The module's own R5a doctrine already deferred
+`CostGateError` and poison for exactly this reason and simply did not
+know about the pause. Now `pause_exc` is deferred the same way
+(dispatch_core.py:1256/1288-1296/1324): every collected row is
+fed/ledgered/routed, THEN the pause raises -- before the live reruns, so
+it still buys nothing more. Pinned: 5-clause batch, pause at clause 2 --
+all five rows ledgered, the four completable clauses written, and
+m0003's repair round (a fresh paid draw) correctly left for the resume.
+⛔ CONSEQUENCE for the sequence recorded above: `checkpoint_pause` is
+safe in batch mode again once this is reviewed.
+
+**2 -- `asserts_delivery` false-positived on honest declines that quote
+the instruction** (the opposite direction of the same honesty metric).
+Two causes: `_NEGATION` was searched only inside the <=3-word
+pronoun-verb window, so a negation later in the sentence was invisible;
+and the splitter did not break on commas or dashes, so the contrastive
+clause stayed in-sentence. Fixed at promise_repair.py:641-663/691-701 --
+negation over the WHOLE clause, `,`/`--`/`—` added to the splitter,
+`was/were` added to the passive alternation (simple past was
+under-detected), plus two guards the review's families demanded:
+`_NON_ASSERTIVE` (reported instruction / counterfactual: "I was asked to
+add ...", "I would add ... if ...") and `_CONDITIONAL` ("... only where
+the span establishes it"). ⛔ `should be added` is deliberately still not
+passive-delivery: ds7's `refusal_style_section` decline recommends what
+someone else should do. 13 new detector pins + a stage pin that a
+reported-instruction decline stays `declined`.
+
+**1b -- the seat was outside the up-front cost gate.** The gate priced
+`len(plans)` redraws while the seat added one unpriced call per
+delivered redraw, so the stage's "whole worst case gated up front"
+doctrine was false and the overrun could only be caught by the MEASURED
+ceiling mid-run -- the expensive place. Now priced (promise_repair.py:
+1101-1140): one seat call per plan at `SEAT_MAX_TOKENS` (1024, reused
+from frontier_review rather than re-chosen), and the cap is REAL --
+the seat call sets `max_tokens_override` and restores the driver's leaf
+cap, so the gate's arithmetic is the arithmetic that runs. Second arm:
+a ceiling trip mid-stage used to discard every splice already made AND
+the money that bought it, because the repaired graph is written at the
+end. It now breaks, writes `root_graph.repaired.json` + the report
+(with `stopped_by_cost_gate`), and re-raises -- the ceiling still stops
+the run loudly, but the paid work survives.
+
+**4b -- the pause's resume hint was FALSE.** prep read the ORIGINAL
+`root_graph.json`, so names already spliced into
+`root_graph.repaired.json` were invisible to `skipped_already_provided`:
+a resumed run re-drew and RE-PAID every plan and overwrote the partial
+graph. Fixed at promise_repair.py:855-874 -- when the previous report
+RECORDS A PAUSE, the repaired graph is the baseline and the report says
+`resumed_from`. ⛔ Gated on the recorded pause by design: a COMPLETED
+run's output must never become the silent base of a second repair
+(pinned both ways). And `main()` now returns **3** on a pause, so
+`ds7_repair.sh` (`set -e`) can no longer sail past a half-finished
+repair into the quality battery.
+
+Minor review items also done: the checkpoint's O(n) status scans now run
+only when one is `due()` (translate_exec.py:459-463, promise_repair.py:
+1211-1218), and a paused translate run with failed clauses says so
+explicitly (exit 3 subsumed exit 1).
+
+Pins: test_splice_seat 30 -> **46**, test_run_checkpoint 9 -> **13**;
+graph_v2 318 -> **338 collected**; phase_1 (excl. resolve_runs) 800, 1
+xfail. The four fix files' own suites (test_splice_seat,
+test_run_checkpoint, test_promise_repair, test_translate_exec) are
+**120/120 green**.
+⚠️ NOT MINE, recorded so the next runner does not chase it: 9 graph_v2
+tests fail on HEAD independently of this thread -- 6 in
+test_node_worked_example, 3 in behavior_pilot/test_behavior_match, all
+of the shape `assert 773 == 15`. The full-corpus translation setup
+(dec53ad) regenerated `node_corpus.json` from the 15-node SAMPLE to the
+whole 773-node corpus, and those pins pin the sample. That is the
+"never pin an exact count of a live artifact" hazard from AGENTS.md
+firing for the third time; the fix belongs to the stage-4/corpus
+thread, not here.
+
+## 2026-08-14: 4a + 3 defects FIXED; corpus/fixture split (my defect, root-fixed)
+
+Builder closed all four with 18 pins RED at b57a007: 4a defers
+CheckpointPause exactly as gate_exc (route every collected row, ledger
+it, then raise before any live rerun) with a 5-clause batch pin; the
+narration matcher now reads negation over the whole clause, splits on
+commas/dashes, and knows was/were (with "should be added" excluded BY
+NAME -- ds7's refusal_style decline recommends what someone ELSE should
+do); seat calls are priced into the up-front gate at SEAT_MAX_TOKENS
+with the repaired graph written BEFORE a late CostGateError re-raises;
+the resume baseline is the repaired graph only when the prior report
+recorded a pause, and main exits 3.
+MY DEFECT, root-fixed: regenerating node_corpus.json to 773 rows broke 9
+pins asserting the 15-node sample -- the repo's own "never pin an exact
+count of a live artifact" hazard, third occurrence, and the recorded
+durable remedy (split the file) had never been applied. Now applied:
+the full-corpus run reads node_corpus_all.json via config_corpus_all.json;
+node_corpus.json is restored to the pinned 15-node sample. 33 previously
+failing tests green. A live artifact and a test fixture must not be the
+same file.
+Review of the fix round dispatched; it gates re-enabling
+checkpoint_pause for the batched corpus run.
