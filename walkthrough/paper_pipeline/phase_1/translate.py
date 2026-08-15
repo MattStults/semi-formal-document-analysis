@@ -1238,20 +1238,31 @@ def run(cfg, args, client_factory=None):
             print("nothing is stale — nothing to translate, nothing sent.")
             return 0
 
-    # ⛔ TWICE `max_attempts`, because `repair_loop` may DISCARD a frozen
-    # transcript and redraw the clause once from attempt 1 (see its docstring).
-    # The worst case is therefore two chains of `max_attempts` calls, i.e. two
-    # `max_attempts` completions each billed at `max_tokens` — and the output
-    # term of `estimate_cost` is exactly linear in the turn count, so pricing
-    # one chain would have left the printed worst case 50% LOW. Feeding one
-    # chain of `2T` over-charges the two input terms (both are quadratic in the
-    # turn count, and two chains of T are cheaper than one of 2T) and is exact
-    # on the output term. That is the allowed direction, and it is the reason
-    # the restart does not re-base spend the way `dispatch_core` does: a gate
-    # that the loop can spend past is not a gate.
+    # ⛔ TWO CHAINS OF `max_attempts`, PRICED AS TWO CHAINS — never as one chain
+    # of `2·max_attempts`. `repair_loop` may DISCARD a frozen transcript and
+    # redraw the clause once from attempt 1 (see its docstring), so the worst
+    # case is two independent accumulating chains of `max_attempts` calls, and
+    # `estimate_cost`'s output term is exactly linear in the turn count —
+    # pricing one chain would have printed 50% LOW.
+    #
+    # ⚠️ AND THE OBVIOUS SHIM IS WRONG IN THE OTHER DIRECTION, EXECUTED: feeding
+    # `max_attempts * 2` looks conservative and is not survivable. The dominant
+    # term is `max_tokens · n · T(T-1)/2` — QUADRATIC in turns — so T=5→10
+    # multiplies it by 4.5× while the true worst case only doubles. Measured on
+    # the shipped configs, that over-charge REFUSED `config.json` against its
+    # own $0.25 ceiling ($0.2744 against an exact $0.1745) and cut the largest
+    # gate-passing `config_corpus_all` slice from 250 nodes to 71. "An estimate
+    # is allowed to be high" is true in general and FALSE here: this number is
+    # wired to a hard `CostGateError`, so a needless over-charge is a silent
+    # refusal of every live config. Doubling the RESULT is exact.
+    #
+    # This is also why the restart does not re-base per-clause spend the way
+    # `dispatch_core` does: a gate the loop can spend past is not a gate.
     est, in_tok, out_tok = estimate_cost(
         system, [j["user"] for j in jobs], prov, cfg,
-        max_attempts=_max_attempts * 2 if _max_attempts > 1 else 1)
+        max_attempts=_max_attempts)
+    if _max_attempts > 1:
+        est, in_tok, out_tok = est * 2, in_tok * 2, out_tok * 2
 
     print(f"provider     : {prov.name}  ({prov.model})")
     print(f"clauses      : {len(jobs)}  "

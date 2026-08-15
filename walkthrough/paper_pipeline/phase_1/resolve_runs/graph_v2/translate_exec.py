@@ -663,15 +663,19 @@ def prepare(cfg, args, client_factory=None):
             print("nothing is stale — nothing to translate, nothing sent.")
             return 0
 
-    # ⛔ TWICE `max_attempts`, byte-for-byte the reason translate.run() does it:
-    # `repair_loop` may discard a frozen transcript and redraw the clause once
-    # from attempt 1, so the worst case is two chains of `max_attempts` calls.
-    # This gate must not drift from serial mode's — a run that is refused in
-    # one mode and sent in the other is the failure the shared gate exists to
-    # prevent.
+    # ⛔ TWO CHAINS OF `max_attempts`, PRICED AS TWO CHAINS — byte-for-byte the
+    # arithmetic translate.run() uses, and for the reason written out there:
+    # `repair_loop` may discard a frozen transcript and redraw the clause once,
+    # and feeding `max_attempts * 2` instead of doubling the RESULT over-charges
+    # 4.5× (the resent-completion term is quadratic in turns) and refuses every
+    # shipped config at its own ceiling. This gate must not drift from serial
+    # mode's — a run refused in one mode and sent in the other is the failure
+    # the shared gate exists to prevent.
     est, in_tok, out_tok = T.estimate_cost(
         system, [j["user"] for j in jobs], prov, cfg,
-        max_attempts=max_attempts * 2 if max_attempts > 1 else 1)
+        max_attempts=max_attempts)
+    if max_attempts > 1:
+        est, in_tok, out_tok = est * 2, in_tok * 2, out_tok * 2
 
     ex = cfg.get("execution") or {}
     print(f"provider     : {prov.name}  ({prov.model})")

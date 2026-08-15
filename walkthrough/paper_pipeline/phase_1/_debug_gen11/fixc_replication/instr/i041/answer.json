@@ -3,18 +3,20 @@
   "clause_id": "l1_170_n050",
   "abstain_reason": null,
   "claims": [
-    "C1 the system authority level is positioned below root but above developer, user, and guideline in the instruction authority hierarchy",
-    "C2 system-level instructions can only be supplied by OpenAI",
-    "C3 system-level instructions may be supplied through the OpenAI Model Spec",
-    "C4 system-level instructions may be supplied through OpenAI detailed policies",
-    "C5 system-level instructions may be supplied through a system message"
+    "C1 the system level is below root in the authority hierarchy",
+    "C2 the system level is above developer in the authority hierarchy",
+    "C3 the system level is above user in the authority hierarchy",
+    "C4 the system level is above guideline in the authority hierarchy",
+    "C5 a system-level instruction may be supplied by OpenAI through this Model Spec or detailed policies",
+    "C6 a system-level instruction may be supplied by OpenAI via a system message",
+    "C7 supplying a system-level instruction in any other way is forbidden"
   ],
-  "acts": ["supply_system_instruction(I)"],
+  "acts": ["supply(I)"],
   "concepts": [
     {
       "name": "system_authority",
       "arity": 1,
-      "gloss": "I is an instruction that carries system-level authority",
+      "gloss": "L is the system level of instruction authority: rules set by OpenAI that can be transmitted or overridden through system messages, but cannot be overridden by developers or users",
       "licence": "textual",
       "cites": "l1_170_n050",
       "inference": null,
@@ -23,72 +25,27 @@
     {
       "name": "authority_levels_hierarchy",
       "arity": 2,
-      "gloss": "the authority level L1 ranks higher than level L2 in the instruction authority hierarchy",
+      "gloss": "L1 outranks L2 in the instruction-authority ordering root > system > developer > user > guideline > no authority",
       "licence": "textual",
       "cites": "l1_170_n050",
       "inference": null,
       "toggleable": false
     },
     {
-      "name": "supplied_via_model_spec",
+      "name": "system_level",
       "arity": 1,
-      "gloss": "instruction I is supplied through the OpenAI Model Spec document",
+      "gloss": "L is the system authority level described in this clause, positioned below root and above developer, user, and guideline",
       "licence": "textual",
       "cites": "l1_170_n050",
       "inference": null,
-      "toggleable": false
-    },
-    {
-      "name": "supplied_via_detailed_policies",
-      "arity": 1,
-      "gloss": "instruction I is supplied through OpenAI detailed policies",
-      "licence": "textual",
-      "cites": "l1_170_n050",
-      "inference": null,
-      "toggleable": false
-    },
-    {
-      "name": "supplied_via_system_message",
-      "arity": 1,
-      "gloss": "instruction I is supplied through a system message",
-      "licence": "textual",
-      "cites": "l1_170_n050",
-      "inference": null,
-      "toggleable": false
-    },
-    {
-      "name": "openai_authorized_supply",
-      "arity": 1,
-      "gloss": "instruction I is supplied via an OpenAI-authorized method: the Model Spec, detailed policies, or a system message",
-      "licence": "assumed",
-      "cites": null,
-      "inference": "to express the constraint that only OpenAI supplies system instructions via three specific methods, we need a positive predicate capturing their disjunction",
       "toggleable": false
     }
   ],
   "ontology": [
     {
-      "atom": "openai_authorized_supply(I)",
-      "body": "supplied_via_model_spec(I)",
-      "gloss": "instruction I is supplied through an OpenAI-authorized method (the Model Spec)",
-      "licence": "textual",
-      "cites": "l1_170_n050",
-      "inference": null,
-      "toggleable": false
-    },
-    {
-      "atom": "openai_authorized_supply(I)",
-      "body": "supplied_via_detailed_policies(I)",
-      "gloss": "instruction I is supplied through an OpenAI-authorized method (detailed policies)",
-      "licence": "textual",
-      "cites": "l1_170_n050",
-      "inference": null,
-      "toggleable": false
-    },
-    {
-      "atom": "openai_authorized_supply(I)",
-      "body": "supplied_via_system_message(I)",
-      "gloss": "instruction I is supplied through an OpenAI-authorized method (a system message)",
+      "atom": "system_level(L)",
+      "body": "system_authority(L), authority_levels_hierarchy(root, L), authority_levels_hierarchy(L, developer), authority_levels_hierarchy(L, user), authority_levels_hierarchy(L, guideline)",
+      "gloss": "L is the system authority level, sitting below root and above developer, user, and guideline",
       "licence": "textual",
       "cites": "l1_170_n050",
       "inference": null,
@@ -97,10 +54,21 @@
   ],
   "asserts": [
     {
-      "status": "forbid",
-      "act": "supply_system_instruction(I)",
-      "body": "system_authority(I), not openai_authorized_supply(I)",
-      "read_back": "supplying system-level instruction % is forbidden unless it comes through an OpenAI-authorized method",
+      "status": "permit",
+      "act": "supply(I)",
+      "body": "instruction_level(I, L), system_level(L), supplied_by_openai(I), supplied_via_model_spec_or_policies(I)",
+      "read_back": "supplying instruction % is permitted because it is a system-level instruction that OpenAI supplied through the Model Spec or detailed policies",
+      "read_back_slots": ["I"],
+      "licence": "textual",
+      "cites": "l1_170_n050",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "status": "permit",
+      "act": "supply(I)",
+      "body": "instruction_level(I, L), system_level(L), supplied_by_openai(I), supplied_via_system_message(I)",
+      "read_back": "supplying instruction % is permitted because it is a system-level instruction that OpenAI supplied via a system message",
       "read_back_slots": ["I"],
       "licence": "textual",
       "cites": "l1_170_n050",
@@ -112,12 +80,12 @@
   "defines": [],
   "closure": [
     {
-      "act_class": "supply_system_instruction",
+      "act_class": "supply",
       "closure": "cnpa",
-      "reason": "the clause forbids supplying system-level instructions outside of OpenAI-authorized methods; other instruction-supply acts are not governed"
+      "reason": "the clause permits supply of system-level instructions only through two OpenAI channels, so any supply outside those channels is prohibited"
     }
   ],
   "requires": ["system_authority/1", "authority_levels_hierarchy/2"],
-  "inputs": ["supplied_via_model_spec/1", "supplied_via_detailed_policies/1", "supplied_via_system_message/1"],
+  "inputs": ["instruction_level/2", "supplied_by_openai/1", "supplied_via_model_spec_or_policies/1", "supplied_via_system_message/1"],
   "forbid_body": []
 }

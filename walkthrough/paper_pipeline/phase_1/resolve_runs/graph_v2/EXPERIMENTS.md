@@ -3235,3 +3235,44 @@ null kills THE EVIDENCE OFFERED FOR Fix C, not Fix C (the CI admits up to
 The decision needs a DeepSeek A/B with this randomisation. Same warning
 before spending on experiment 2: check first whether Haiku reproduces
 undeclared-body-name on that cohort at all.
+
+## 2026-08-15: DC-1 UNTESTABLE WITH HAIKU -- the instrument gate did its job
+
+_debug_gen11/DC1_EXPERIMENT.md. Pre-registered gate (written to
+PREREG_dc1.txt BEFORE the first dispatch) required the target defect at
+>=15% with Wilson-lo >=8%. Measured over 51 isolated stock-prompt Haiku
+draws (3 per clause, 17-clause cohort, one subagent per draw, byte-identical
+stored prompts, scored through the exact checks.run_checks call
+translate.py:2557 makes): **undeclared-body-name at attempt 1 = 3/51 = 5.9%
+[2.0, 15.9], firing on only 2 of 17 clauses.** FAIL on both criteria; the
+entire CI sits at or below threshold. No A/B run; nothing edited.
+SECOND, INDEPENDENT DISQUALIFIER: **Haiku abstains on 17 of 51 draws (33%)**
+while DeepSeek produced a module on all 17 of these clauses. An abstaining
+draw never enters the region where the defect can occur, so arm B could have
+moved the endpoint by shifting draws between abstain and translate without
+touching DC-1's mechanism at all. Non-abstainers only: 3/34 = 8.8%.
+HARNESS VALIDATED FIRST (what makes the null informative rather than
+mysterious): all 17 stored DeepSeek attempt-1 drafts reproduce the target
+class, 17/17, and all 51 Haiku answers parsed -- the rate is not a
+malformed-output artefact.
+THE CONFOUND, ADDRESSED NOT INHERITED: the 60/38 figure reproduces (6/10 =
+60% vs 36%; n=10 by this definition, not the cited 15) -- but with 3 draws
+per clause, route choice varies WITHIN clause, and under clause-blocked
+permutation the association is +0.282, **p = 1.00**, on 3 discordant
+clauses. RULING: the 60/38 statistic is NOT evidence that the ontology route
+CAUSES first-try success and must not be cited as support. Same objection
+DC-2 raised against the "controlled pair", now applied to DC-1's own number.
+THE ARTEFACT IS SOUND, THE INSTRUMENT FAILED: the draft worked example
+re-validates clean (translated, 0 errors, 14 body-less ground atoms, clause
+in the pinned corpus), staged in _debug_gen11/ and NOT in any prompt --
+nothing lands on a null, and this is weaker than a null.
+WHY THE INSTRUMENT QUESTION MUST BE ASKED PER MODEL: DeepSeek's base rate on
+this class is 24%, FOUR TIMES Haiku's. A Haiku null would have been read as
+"the fix does not work" when it means "this model does not make the mistake".
+NEXT: a randomised DeepSeek A/B (this design's randomisation, not the
+original's batching). Costed: $0.18 (3 draws), **$0.30 (5 draws, the powered
+point for 24%->8% at 80%)**, $0.59 (10 draws). SEQUENCING: it must wait for
+translate.py to stabilise -- the chain policy is under a fix round there now.
+CAVEAT the agent raised against its own result: the 33% abstention may be an
+artefact of the one-shot subagent framing rather than a property of the
+model; free to test, does not change the gate, but changes how to read it.
