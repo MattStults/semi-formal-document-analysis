@@ -57,6 +57,7 @@ countable in the run report, and never set `repair_needed`.
 
 import dataclasses
 import os
+import re
 import sys
 import tempfile
 
@@ -82,6 +83,204 @@ SEVERITIES = ("error", "note")
 #: the discriminator. ⚠️ Consequence for anyone keying off this: assert the
 #: message fragment as well, never `check_id` alone.
 SCHEMA_CHECK_ID = "schema-breach"
+
+
+# ==========================================================================
+#  THE ARITY-AWARE HALF OF THE DECLARATION CHECK  (DC-5)
+# ==========================================================================
+#
+# ⭐ WHAT IS MISSING UPSTREAM. `schema.py`'s D4b declaration check matches by
+# NAME ONLY: `declared = {f.atom.split("(")[0] ...}` and `known = declared |
+# {p.split("/")[0] for p in requires + inputs}`. So a module that declares
+# `inputs: ['conflict/2']` and writes `conflict(P1, P2, C)` in a body passes
+# the module-level check with ZERO breaches — measured, on the stored module
+# for `l1_170_n047`. The mismatch surfaces one stage later as
+#
+#     `conflict/3` is used in a body, defined nowhere in this link scope, and
+#     declared neither in `%% inputs:` nor in `%% requires:` ...
+#
+# which reads like a MISSING UPSTREAM MODULE. It is not: the declaration is
+# right there in the module being repaired, at the wrong arity. The model
+# spends its repair rounds looking for someone else's export.
+#
+# ⚠️ AND IT IS NOT CHEAP. Exactly four instances corpus-wide (`l1_170_n047`
+# conflict 2→3, `l1_170_n087` output_consumed_by 2→1, `l1_170_n088`
+# sequence_of_messages 3→4, `l171_426_n024` user_request 1→2) and ALL FOUR sit
+# on `unrepaired` clauses — 16% of the 19 losses of prompt generation 11, more
+# than four other mechanisms combined. A tier analysis puts arity mismatch at
+# 0/11 first-try and 73% unrepaired (p=0.004).
+#
+# ⛔ THE PERMISSIVE READING IS NOT THE CONTRACT'S INTENT, and that was checked
+# before tightening rather than assumed. The contract says the opposite in
+# three places: the `requires`/`inputs` format guard refuses an entry that is
+# not `name/arity` because *"two predicates sharing a name but taking
+# different numbers of arguments are different predicates; without the arity
+# they link to each other silently"*; D4b's own message tells the model
+# "`{name}/N` must ALSO appear in one of those three"; and `link._atom_id`
+# exists precisely so a body atom can be compared to a header entry BY
+# IDENTITY, name and arity together. Name-only matching is an implementation
+# slip in one expression, not a designed tolerance.
+#
+# ⛔ IT DOES NOT MASK `undeclared-body-name`. It fires only when the name IS
+# declared somewhere in this module and no declaration carries the arity the
+# body uses. A name declared nowhere stays entirely with D4b — one act, one
+# message, and the model is never told two different things about one name.
+#
+# ⭐ WHY HERE AND NOT IN `schema.py`. This needs nothing but the module's own
+# declaration blocks and its bodies, so it runs identically from stage 2's
+# single entry point; `schema.py` is guard-watched and its D4b expression is
+# located by phrase by `mutate_schema.py`. Every gating path — `translate.py`'s
+# repair loop, `test_prompt_examples.py`'s check of the worked examples — goes
+# through `run_checks`, so nothing that decides an outcome escapes it. The one
+# residual is a DIRECT `schema.validate` caller (`seats.py`, some test
+# fixtures), which sees the module as clean; that is recorded, with the exact
+# one-line diff that would close it, in `_debug_gen11/PROPOSED_schema_arity.md`
+# — proposed, not applied.
+#
+# The finding is emitted with `origin="schema"` and the shared
+# `schema-breach` id ON PURPOSE. It is a module-level contract breach of
+# exactly D4b's species, and the two origins `translate.py` will disclose to a
+# repair prompt are fixed (`DISCLOSABLE_ORIGINS`) — a third origin invented
+# here would be WITHHELD from the very prompt this check exists to inform.
+
+#: The phrase that identifies this guard in a findings list. `schema.py`'s
+#: guards carry no per-guard id and are located by a distinctive PHRASE
+#: (`SCHEMA_CHECK_ID` above); this one is emitted under the same id, so it is
+#: located the same way, and anything keying off it keys off this constant
+#: rather than retyping the sentence.
+ARITY_MESSAGE_MARK = "but a body uses it at"
+
+
+def _arity_of(argstr):
+    """`'(P1, P2, C)'` -> 3, `''` -> 0. `link`'s own depth-aware splitter, so
+    `p(f(a,b), C)` counts 2 and not 3."""
+    inner = argstr.strip()[1:-1] if argstr.strip() else ""
+    return 0 if not inner.strip() else len(link._split_top(inner, ","))
+
+
+def _blocks(module):
+    """`(ontology_atoms, borrowed, bodies)` from a `schema.Module` OR the raw
+    module dict.
+
+    ⚠️ THE DICT PATH IS NOT A CONVENIENCE. The four real instances are stored
+    live-run modules, and one of them (`l1_170_n088`) no longer CONSTRUCTS
+    under today's contract — it trips D4b on a different, undeclared name. A
+    pin that could only run through `schema.Module` could not use it, and it
+    is the instance that proves the two checks coexist. Bodies are read from
+    `asserts`, `beats` and `ontology`: exactly D4b's population, so this check
+    can never see a name D4b does not.
+    """
+    def field(name):
+        return (module.get(name) or []) if isinstance(module, dict) \
+            else (getattr(module, name, None) or [])
+
+    def attr(item, name):
+        return item.get(name) if isinstance(item, dict) \
+            else getattr(item, name, None)
+
+    atoms = [attr(f, "atom") or "" for f in field("ontology")]
+    borrowed = [p for p in list(field("requires")) + list(field("inputs"))
+                if isinstance(p, str)]
+    bodies = []
+    for block in ("asserts", "beats", "ontology"):
+        for i, item in enumerate(field(block)):
+            bodies.append((f"{block}[{i}]", attr(item, "body") or ""))
+    return atoms, borrowed, bodies
+
+
+def declared_arities(module):
+    """`{name: {arity, ...}}` over the THREE declaration sites, with arity.
+
+    An `ontology` head declares at the arity it is written with; a `requires`
+    or `inputs` entry at the arity it names. A malformed borrow (no `/`, or a
+    non-integer arity) contributes the NAME with no arity — `schema.py`
+    already breaches on it, and swallowing it here would turn one defect into
+    two messages about the same line.
+    """
+    atoms, borrowed, _ = _blocks(module)
+    out = {}
+    for atom in atoms:
+        head = atom.strip()
+        name = head.split("(")[0].strip()
+        if not name:
+            continue
+        out.setdefault(name, set()).add(
+            _arity_of(head[len(name):]) if "(" in head else 0)
+    for p in borrowed:
+        name, _, ar = p.partition("/")
+        name = name.strip()
+        if not name:
+            continue
+        slot = out.setdefault(name, set())
+        if ar.strip().isdigit():
+            slot.add(int(ar.strip()))
+    return out
+
+
+def body_uses(body):
+    """`[(name, arity), ...]` for every predicate a body applies to arguments.
+
+    The name regex is D4b's, character for character, so the two checks range
+    over one population; the arity comes from matching the opening paren at
+    depth 0.
+    """
+    out = []
+    for hit in re.finditer(r"(?<![A-Za-z0-9_])([a-z][A-Za-z0-9_]*)\s*\(", body):
+        depth, start = 0, hit.end() - 1
+        for j in range(start, len(body)):
+            if body[j] == "(":
+                depth += 1
+            elif body[j] == ")":
+                depth -= 1
+                if depth == 0:
+                    out.append((hit.group(1), _arity_of(body[start:j + 1])))
+                    break
+        else:
+            continue          # unbalanced — `schema.py`'s parser owns that
+    return out
+
+
+def arity_mismatches(module):
+    """`[(where, name, sorted_declared_arities, used_arity), ...]`.
+
+    Pure, deterministic, and takes a `schema.Module` or the raw dict. Empty
+    for a module that declares every name it uses at the arity it uses it —
+    including one that declares the same name at two arities deliberately,
+    which is legal and is why membership is tested against the SET.
+    """
+    declared = declared_arities(module)
+    _, _, bodies = _blocks(module)
+    out = []
+    for where, body in bodies:
+        for name, arity in body_uses(body):
+            if name in schema.RESERVED:
+                continue
+            known = declared.get(name)
+            # not declared at all -> `undeclared-body-name` owns it, alone
+            if not known or arity in known:
+                continue
+            out.append((where, name, sorted(known), arity))
+    return out
+
+
+def arity_findings(module):
+    """`arity_mismatches`, rendered as stage-2 Findings. No fix in the text —
+    it names what is the case (declared at X, used at Y) and stops, under the
+    same denial as every other `Finding`."""
+    out = []
+    for where, name, known, arity in arity_mismatches(module):
+        shown = ", ".join(f"`{name}/{a}`" for a in known)
+        out.append(Finding(
+            SCHEMA_CHECK_ID, "error", where,
+            f"`{name}` is declared at {shown} {ARITY_MESSAGE_MARK} "
+            f"`{name}/{arity}`. A predicate's identity is its name AND its "
+            f"argument count, so those are two different predicates and only "
+            f"one of them is declared. Either the declaration in "
+            f"`ontology`/`requires`/`inputs` or the body atom has the wrong "
+            f"number of arguments — this is INSIDE this module, not a missing "
+            f"upstream clause",
+            "schema"))
+    return out
 
 
 @dataclasses.dataclass(frozen=True)
@@ -233,6 +432,13 @@ def run_checks(obj, clause, corpus_ids, concepts=None, lp_path=None,
 
     if mod.outcome == "abstained" and not findings:
         return CheckResult("abstained", mod, [], attempt, mod.abstain_reason)
+
+    # ⭐ The arity half of the declaration check, which `schema.py` matches by
+    # name only (DC-5; see the block at the top of this file). Deliberately
+    # AFTER the abstention return: an abstention is forced empty on every
+    # content field, so it has no bodies to check, and adding findings before
+    # that return could only ever turn a terminal outcome into a repair round.
+    findings += arity_findings(mod)
 
     if lp_path is None:
         tmp = tempfile.mkdtemp(prefix="stage2_checks_")

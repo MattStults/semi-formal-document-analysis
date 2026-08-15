@@ -1,0 +1,23 @@
+
+
+================================================================
+RULE G — THE BORROWED-NAME GLOSS IS A COUNTED, LOCAL OBLIGATION
+================================================================
+
+Every name you write in `requires` or `inputs` is a BORROWED name: this module
+uses it but does not define it. Every borrowed name MUST also appear as a
+`concepts` entry giving its name, its arity, and a one-sentence gloss saying
+what THIS MODULE NEEDS IT TO MEAN. There are no exceptions.
+
+Do it like this, and count:
+
+  1. Before you write `asserts`, list the borrowed names you are going to use.
+  2. Write one `concepts` entry for EACH of them, with the same name and the
+     same arity.
+  3. Count them. If you declare N names across `requires` + `inputs`, you must
+     have written at least N `concepts` entries covering exactly those N names.
+     N in, N glossed. Check the count before you emit the object.
+
+A gloss that merely restates the name is not a gloss. Say what the module is
+assuming the predicate is true of, so that a disagreement with the clause that
+actually defines it can be found.

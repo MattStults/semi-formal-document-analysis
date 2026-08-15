@@ -79,6 +79,25 @@ BROKEN = module_json(asserts=[fixtures.assertion(
     read_back="producing this is forbidden",   # 0 slots...
     read_back_slots=["M"])])                   # ...1 entry. A real breach.
 
+
+def broken(tag):
+    """A DIFFERENT broken module: the same breach, distinct bytes.
+
+    ⚠️ Needed by every test about transcript growth, and the need is itself a
+    contract. Since the freeze detector landed, a script that hands back the
+    same text twice no longer exercises the accumulating chain at all — it
+    exercises the RESTART. A test of turn structure that fed `BROKEN, BROKEN`
+    would be silently testing the other branch, so the scripts below hand back
+    a fresh breach each round and the repeat is written down only where it is
+    the subject.
+    """
+    return module_json(asserts=[fixtures.assertion(
+        read_back=f"producing this is forbidden ({tag})",
+        read_back_slots=["M"])])
+
+
+BROKEN2, BROKEN3, BROKEN4 = broken(2), broken(3), broken(4)
+
 ABSTAINED = fixtures.abstention_json()
 
 
@@ -93,7 +112,7 @@ def test_the_transcript_alternates_user_and_assistant():
     in as the next USER turn. That is the structure it was trained to repair in,
     and its own turns carry the reasoning a findings list cannot reconstruct.
     """
-    model = ScriptedModel(BROKEN, BROKEN, module_json())
+    model = ScriptedModel(BROKEN2, BROKEN3, module_json())
     T.repair_loop(BROKEN, clause={"id": "m0001", "quote": "Clause text."},
                   model=model, max_attempts=3)
     roles = [m["role"] for m in model.calls[-1][1]]
@@ -106,7 +125,7 @@ def test_the_transcript_PREFIX_is_byte_identical_as_it_grows():
     A loop that rebuilds the whole block each attempt re-sends the same tokens
     at full price. The only visible symptom is the bill.
     """
-    model = ScriptedModel(BROKEN, BROKEN, module_json())
+    model = ScriptedModel(BROKEN2, BROKEN3, module_json())
     T.repair_loop(BROKEN, clause={"id": "m0001", "quote": "Clause text."},
                   model=model, max_attempts=3)
     first, second = model.calls[0][1], model.calls[1][1]
@@ -118,7 +137,7 @@ def test_the_transcript_PREFIX_is_byte_identical_as_it_grows():
 def test_the_clause_is_in_the_transcript_exactly_once():
     """It is carried by the conversation, so re-stating it wastes tokens and
     invites the model to treat the repeat as a second, different clause."""
-    model = ScriptedModel(BROKEN, module_json())
+    model = ScriptedModel(BROKEN2, module_json())
     clause = {"id": "m0001",
               "quote": "The assistant must not produce disallowed material."}
     T.repair_loop(BROKEN, clause=clause, model=model, max_attempts=2)
@@ -133,7 +152,7 @@ def test_the_error_log_ACCUMULATES_across_attempts():
     a mistake it already made — which would make the loop look like it cannot
     converge when the real cause is that it was never told.
     """
-    model = ScriptedModel(BROKEN, BROKEN, module_json())
+    model = ScriptedModel(BROKEN2, BROKEN3, module_json())
     T.repair_loop(BROKEN, clause={"id": "m0001"}, model=model, max_attempts=3)
     whole = " ".join(m["content"] for m in model.calls[-1][1])
     assert whole.count("attempt 1") == 1
@@ -167,7 +186,7 @@ def test_the_log_carries_the_MODULE_as_well_as_the_finding():
     A finding alone is unactionable: `read_back has 0 slots but 1 entry` does
     not say WHICH read-back, and the model cannot see what it wrote last time.
     """
-    model = ScriptedModel(BROKEN, module_json())
+    model = ScriptedModel(BROKEN2, module_json())
     T.repair_loop(BROKEN, clause={"id": "m0001"}, model=model, max_attempts=2)
     repair_prompt = " ".join(m["content"] for m in model.calls[-1][1])
     assert "producing this is forbidden" in repair_prompt, \
@@ -176,7 +195,7 @@ def test_the_log_carries_the_MODULE_as_well_as_the_finding():
 
 def test_the_log_carries_the_REASON_not_just_the_verdict():
     """`this rule can never fire`, never `case C should have returned...`."""
-    model = ScriptedModel(BROKEN, module_json())
+    model = ScriptedModel(BROKEN2, module_json())
     T.repair_loop(BROKEN, clause={"id": "m0001"}, model=model, max_attempts=2)
     repair_prompt = " ".join(m["content"] for m in model.calls[-1][1])
     assert "slot" in repair_prompt.lower(), \
@@ -231,7 +250,7 @@ def test_an_abstention_AFTER_a_failed_attempt_is_reported_separately():
 
 
 def test_exhausting_max_attempts_is_RECORDED_not_raised_and_not_passed():
-    model = ScriptedModel(BROKEN, BROKEN, BROKEN)
+    model = ScriptedModel(BROKEN2, BROKEN3, BROKEN4)
     out = T.repair_loop(BROKEN, clause={"id": "m0001"}, model=model,
                         max_attempts=3)
     assert out.status == "unrepaired"
@@ -243,7 +262,7 @@ def test_green_on_attempt_3_is_distinguishable_from_green_on_attempt_1():
     """Two different facts about the model. Averaging them hides the second."""
     # attempt 1 is the argument; the model supplies attempts 2 and 3.
     slow = T.repair_loop(BROKEN, clause={"id": "m0001"},
-                         model=ScriptedModel(BROKEN, module_json()),
+                         model=ScriptedModel(BROKEN2, module_json()),
                          max_attempts=3)
     fast = T.repair_loop(module_json(), clause={"id": "m0001"},
                          model=ScriptedModel(module_json()), max_attempts=3)
@@ -257,7 +276,7 @@ def test_findings_per_attempt_is_recorded_so_NON_convergence_is_visIble():
     It has to be visible as data, not as a loop that quietly runs out.
     """
     out = T.repair_loop(BROKEN, clause={"id": "m0001"},
-                        model=ScriptedModel(BROKEN, BROKEN, BROKEN),
+                        model=ScriptedModel(BROKEN2, BROKEN3, BROKEN4),
                         max_attempts=3)
     assert len(out.per_attempt) == 3
     assert all(n > 0 for n in out.per_attempt)
@@ -438,7 +457,7 @@ def test_the_transcript_keeps_the_FINAL_assistant_turn():
     answer. That is the exchange someone reads first.
     """
     out = T.repair_loop(BROKEN, clause={"id": "m0001"},
-                        model=ScriptedModel(BROKEN), max_attempts=2)
+                        model=ScriptedModel(BROKEN2), max_attempts=2)
     assert out.status == "unrepaired"
     assert out.transcript[-1]["role"] == "assistant", \
         [m["role"] for m in out.transcript]
@@ -637,3 +656,304 @@ def test_a_log_of_only_notes_says_so_rather_than_looking_empty():
                            origin="link")
     log = T.render_error_log([("attempt 1", [note])])
     assert "no error-severity" in log.lower(), log
+
+
+# ==========================================================================
+#  The freeze detector and the one restart
+#  (`_debug_gen11/CHAIN_ANALYSIS.md`, 2026-08-15)
+# ==========================================================================
+#
+# 96 stored repair chains. A chain whose every reply differs from every earlier
+# reply ended `translated` 63 of 64 times (98%); a chain in which ANY reply
+# repeats an earlier one ended translated 3 of 32 times (9%). Nothing about the
+# defect predicts the outcome — not the number of round-1 findings, not the
+# check_id, not the finding class, not the output length. The separator is
+# whether the model is still producing answers it has not already produced.
+#
+# ⚠️ THE FIXTURES BELOW ARE FROZEN AND LOCAL, and no count of any live artifact
+# appears in this section (`AGENTS.md`: never pin a count of a live artifact).
+# `FROZEN_CHAIN` is a synthetic 5-turn chain whose reply 3 equals reply 1 —
+# the oscillating shape (A, B, A) that adjacent-identity misses and
+# repeat-of-any catches. It is not read from any run.
+
+#: reply 1 is `BROKEN` (passed in as attempt 1), then B, then A again.
+FROZEN_CHAIN = (BROKEN2, BROKEN, BROKEN3, BROKEN4)
+
+#: the same length, never repeating: the negative control.
+MOVING_CHAIN = (BROKEN2, BROKEN3, BROKEN4, broken(5))
+
+
+class SpendingModel(ScriptedModel):
+    """A ScriptedModel that also carries a per-clause spend counter.
+
+    `dispatch_core.ClauseState.feed` sets `self.spent = 0.0` on its restart.
+    Translation must NOT copy that: its gate is a run-level budget against a
+    per-clause estimate, and re-basing spend at the restart makes the printed
+    worst case a lie.
+    """
+
+    def __init__(self, *responses):
+        super().__init__(*responses)
+        self.spent_usd = 0.0
+
+    def complete_messages(self, system, messages):
+        env = super().complete_messages(system, messages)
+        self.spent_usd += 0.001
+        env["cost_usd"] = 0.001
+        return env
+
+
+def test_a_reply_that_REPEATS_AN_EARLIER_ONE_stops_the_chain():
+    """PRE-FIX BEHAVIOUR THIS CATCHES: the loop ran the accumulating chain to
+    `max_attempts` regardless, spending the whole budget on a model that had
+    stopped answering. Reply 3 = reply 1, and the loop must not simply carry on
+    to attempt 5 asking a frozen model a fourth time."""
+    model = ScriptedModel(*FROZEN_CHAIN)
+    out = T.repair_loop(BROKEN, clause={"id": "m0001"}, model=model,
+                        max_attempts=5)
+    assert out.restarted, "the repeat was not detected"
+    # the repeat is at the 2nd scripted reply (reply 3 of the chain), so the
+    # accumulating chain stopped there instead of running to attempt 5
+    assert out.pre_restart_per_attempt == [1, 1, 1], out.pre_restart_per_attempt
+
+
+def test_a_repeat_of_ANY_earlier_reply_counts_not_only_the_previous_one():
+    """PRE-FIX / MIS-PORT BEHAVIOUR THIS CATCHES: `recurse_driver` and
+    `dispatch_core` compare against `transcript[-2]` only. The attractor here
+    is a small CYCLE, not a fixed point — one lost chain replies A,B,C,A,D —
+    so adjacent identity caught 27 of the 29 lost gen-11 chains and
+    repeat-of-any caught 29 of 29. `FROZEN_CHAIN` never repeats ADJACENTLY."""
+    replies = (BROKEN,) + FROZEN_CHAIN
+    assert not any(a == b for a, b in zip(replies, replies[1:])), \
+        "the fixture must not repeat adjacently, or it tests nothing"
+    out = T.repair_loop(BROKEN, clause={"id": "m0001"},
+                        model=ScriptedModel(*FROZEN_CHAIN), max_attempts=5)
+    assert out.restarted
+
+
+def test_a_chain_that_KEEPS_MOVING_is_never_restarted():
+    """The negative control, and the expensive half of the trade. 98% of
+    chains whose replies keep changing converge; restarting one throws away a
+    transcript that was working. Without this test a detector that fires on
+    everything passes every other test in this section."""
+    model = ScriptedModel(*MOVING_CHAIN)
+    out = T.repair_loop(BROKEN, clause={"id": "m0001"}, model=model,
+                        max_attempts=5)
+    assert not out.restarted, "a moving chain was discarded"
+    assert out.status == "unrepaired" and out.attempts == 5
+    assert len(model.calls) == 4, "one call per repair round, no redraw"
+
+
+def test_the_restarted_chain_starts_from_a_ONE_TURN_TRANSCRIPT():
+    """The whole mechanism. The repair message was refuted as the cause (four
+    frozen transcripts were repaired in ONE turn by a stand-in model from the
+    exact accumulated bytes); what is left is the model anchoring on its own
+    prior answer. Carrying any of those answers into the redraw carries the
+    anchor with it, and the restart would be theatre."""
+    model = ScriptedModel(*FROZEN_CHAIN)
+    T.repair_loop(BROKEN, clause={"id": "m0001", "quote": "Clause text."},
+                  model=model, first_user="THE REAL FIRST PROMPT",
+                  max_attempts=5)
+    # calls[0..1] are the accumulating chain; calls[2] is the redraw
+    assert len(model.calls[1][1]) > 1, "the pre-restart chain did accumulate"
+    redraw = model.calls[2][1]
+    assert redraw == [{"role": "user", "content": "THE REAL FIRST PROMPT"}], \
+        redraw
+    sent = " ".join(m["content"] for c in model.calls[2:] for m in c[1])
+    for stale in FROZEN_CHAIN[:2]:
+        assert stale not in sent, "a discarded reply came back into context"
+
+
+def test_the_restart_happens_EXACTLY_ONCE_and_a_refreeze_is_ABANDONED():
+    """PRE-FIX BEHAVIOUR THIS CATCHES (the one the design most feared):
+    restart-on-every-repeat is an unbounded loop and a runaway bill. The cap is
+    one restart per clause, so the worst case stays 2 x max_attempts calls.
+    4 of the 19 measured clauses refroze on a fresh draw; that tail is a
+    translation defect, not a loop defect, and it is recorded rather than
+    re-attempted."""
+    # every reply the same after the redraw: it refreezes immediately
+    model = ScriptedModel(BROKEN2, BROKEN, BROKEN3, BROKEN3)
+    out = T.repair_loop(BROKEN, clause={"id": "m0001"}, model=model,
+                        max_attempts=5)
+    assert out.restarted
+    assert out.status == "unrepaired", out.status
+    assert "frozen" in out.flags, out.flags
+    assert len(model.calls) == 4, \
+        f"a second restart happened: {len(model.calls)} calls"
+
+
+def test_frozen_is_a_FLAG_and_the_status_is_still_unrepaired():
+    """`unrepaired` drives every downstream branch in `run()` and nothing about
+    this clause's disposition changed — but "froze twice" has to be separable
+    from "ran out of attempts" in later census work, and `graveyard.should_keep`
+    keeps every `unrepaired` clause already, so the flag needs no sampling
+    change to survive."""
+    import graveyard
+    out = T.repair_loop(BROKEN, clause={"id": "m0001"},
+                        model=ScriptedModel(BROKEN2, BROKEN, BROKEN3, BROKEN3),
+                        max_attempts=5)
+    assert out.status == "unrepaired" and "frozen" in out.flags
+    keep, why = graveyard.should_keep(out, 5, {}, clause_id="m0001")
+    assert keep, why
+    # and a chain that merely exhausted its attempts is NOT flagged frozen
+    plain = T.repair_loop(BROKEN, clause={"id": "m0001"},
+                          model=ScriptedModel(*MOVING_CHAIN), max_attempts=5)
+    assert plain.status == "unrepaired" and "frozen" not in plain.flags
+
+
+def test_a_restart_that_RECOVERS_is_reported_translated():
+    """~9-12% of repeating chains do recover on their own, which is why the
+    policy is stop-and-redraw and not stop-and-abandon: abandoning them saves
+    20% of the calls and loses real modules. On the 19 clauses the 08-14 loop
+    lost, continuing produced 0 modules in 95 calls and stop-and-restart
+    produced 14 in 99."""
+    out = T.repair_loop(BROKEN, clause={"id": "m0001"},
+                        model=ScriptedModel(BROKEN2, BROKEN, module_json()),
+                        max_attempts=5)
+    assert out.status == "translated", out.status
+    assert out.restarted
+    # RE-BASED, as the design requires: the redraw's own attempt number, so
+    # `should_keep`'s `attempts >= max_attempts` still means "this transcript
+    # had one attempt left"
+    assert out.attempts == 1, out.attempts
+
+
+def test_the_per_clause_SPEND_IS_NOT_ZEROED_by_a_restart():
+    """⛔ EXPLICITLY NOT COPIED from `dispatch_core.ClauseState.feed`, which
+    sets `self.spent = 0.0` on its restart. Translation's cost gate is a
+    run-level budget against a per-clause estimate; re-basing spend at the
+    restart would make the printed worst case a lie, and a gate the loop can
+    spend past is not a gate."""
+    model = SpendingModel(*FROZEN_CHAIN)
+    out = T.repair_loop(BROKEN, clause={"id": "m0001"}, model=model,
+                        max_attempts=5)
+    assert out.restarted
+    assert model.spent_usd == pytest.approx(0.001 * len(model.calls)), \
+        "spend was re-based across the restart"
+
+
+def test_the_run_level_estimate_PRICES_the_restart():
+    """The other half of the same contract. The restart makes the worst case
+    two chains of `max_attempts` calls, and `estimate_cost`'s OUTPUT term is
+    exactly linear in the turn count — so pricing one chain leaves the printed
+    worst case 50% low, against a hard ledger cap."""
+    cfg = T.load_config(str(HERE / "config.json"))
+    prov = T.Provider("p", "openai-compatible", "m", "u", "K", 0.2, 1000,
+                      [1.0, 1.0])
+    system, users = "s" * 33_506, ["u" * 5_341]
+    one, _, out_one = T.estimate_cost(system, users, prov, cfg,
+                                      max_attempts=3)
+    two, _, out_two = T.estimate_cost(system, users, prov, cfg,
+                                      max_attempts=6)
+    assert out_two == 2 * out_one, (out_one, out_two)
+    src = (HERE / "translate.py").read_text()
+    assert "max_attempts=_max_attempts * 2 if _max_attempts > 1 else 1" in src, \
+        "run() prices one chain; the restart can spend past the gate"
+
+
+def test_the_STORED_transcript_keeps_BOTH_segments_and_says_where_it_broke():
+    """A restart adds a second sampled draw to the clause's history. If the
+    stored transcript kept only the surviving segment it would stop being a
+    record of the exchange and become a fiction of it — the same failure the
+    synthesised first prompt caused, and the one an unrepaired clause's reader
+    hits first. What is SENT is clean; what is STORED is complete."""
+    out = T.repair_loop(BROKEN, clause={"id": "m0001"},
+                        model=ScriptedModel(*FROZEN_CHAIN), max_attempts=5)
+    texts = [t["content"] for t in out.transcript]
+    assert T.RESTART_MARKER_TEXT in texts, texts
+    cut = texts.index(T.RESTART_MARKER_TEXT)
+    assert BROKEN in texts[:cut], "the discarded segment was not kept"
+    assert out.transcript[cut + 1]["role"] == "user", "the redraw begins clean"
+    assert out.transcript[-1]["role"] == "assistant"
+    # ⚠️ every stored turn must stay WIRE-LEGAL: `self_diagnose.py` appends a
+    # question to a stored transcript and SENDS it, and `_body_messages` copies
+    # each turn verbatim, so an invented role or an extra key is a rejected
+    # request the day somebody diagnoses a restarted clause
+    for t in out.transcript:
+        assert set(t) == {"role", "content"}, t
+        assert t["role"] in ("user", "assistant"), t
+
+
+def test_an_abstention_AFTER_A_RESTART_is_not_counted_as_a_first_answer():
+    """`attempts` is re-based by the restart, so `n == 1` no longer means "the
+    model's first word on this clause". Without this the loop would report a
+    post-restart abstention as a first-class `abstained` — exactly the
+    accounting the abstained_under_repair split exists to prevent."""
+    out = T.repair_loop(BROKEN, clause={"id": "m0001"},
+                        model=ScriptedModel(BROKEN2, BROKEN, ABSTAINED),
+                        max_attempts=5)
+    assert out.restarted
+    assert out.status == "abstained_under_repair", out.status
+
+
+def test_the_loop_does_not_PARAPHRASE_or_RE_RENDER_to_break_a_freeze():
+    """⛔ REJECTED BY NAME, and the rejection is the finding: paraphrasing the
+    repair message, raising the temperature on repair rounds, and re-rendering
+    the full finding history. Four frozen transcripts were repaired in ONE turn
+    by a stand-in model from the exact accumulated bytes DeepSeek froze on, so
+    the message is sufficient and the defect is the CONTEXT IT ARRIVES IN. All
+    three vary the prompt — changing a measured artifact to fix an unmeasured
+    one. The redraw's first turn is therefore byte-identical to the original."""
+    model = ScriptedModel(*FROZEN_CHAIN)
+    T.repair_loop(BROKEN, clause={"id": "m0001"}, model=model,
+                  first_user="THE REAL FIRST PROMPT", system="SYS",
+                  max_attempts=5)
+    assert model.calls[2][1][0] == model.calls[0][1][0], \
+        "the redraw's first turn was rewritten"
+    assert len({c[0] for c in model.calls}) == 1, \
+        "the system block changed between rounds"
+    # attempt 1's error log and the redraw's carry the same rendering
+    logs = [m["content"] for c in model.calls for m in c[1]
+            if m["role"] == "user" and "failed these checks" in m["content"]]
+    bodies = {"\n".join(log.split("\n")[1:]) for log in logs}
+    assert len(bodies) == 1, bodies   # same findings, same rendering, verbatim
+
+
+# ==========================================================================
+#  The repair log repeats itself
+#  (`_debug_gen11/CHAIN_ANALYSIS.md` §4.6 — separate from the loop change,
+#   and deliberately so: bundled together neither could be attributed)
+# ==========================================================================
+
+def test_an_IDENTICAL_finding_is_shown_ONCE_with_a_count():
+    """PRE-FIX BEHAVIOUR THIS CATCHES: one name used at four body sites
+    produced four byte-identical lines. `where` is `<root>` for the declaration
+    checks, so these are not similar lines, they are the same line — a measured
+    log carried 6 lines for 4 distinct problems, another 9 for 3. The repeat
+    says nothing the first line did not, spends the repair-turn budget, and
+    makes a small defect look like a large one.
+
+    ⛔ NOT a rewording. Paraphrasing the repair message is rejected by name;
+    every finding's own text goes through verbatim.
+    """
+    def dup(name):
+        return T.RepairFinding(
+            check_id="schema-breach", severity="error", where="<root>",
+            message=f"body references `{name}` but nothing declares it",
+            origin="schema")
+
+    log = T.render_error_log([("attempt 1", [dup("a"), dup("b"), dup("a"),
+                                             dup("c"), dup("a")])])
+    lines = [ln for ln in log.split("\n") if ln.startswith("  - [")]
+    assert len(lines) == 3, lines
+    assert sum("`a`" in ln for ln in lines) == 1
+    assert "× 3" in " ".join(lines), lines
+    # the finding's own text is untouched, and the ORDER is the checks' order
+    assert lines[0].startswith(
+        "  - [schema-breach] <root>: body references `a` but nothing "
+        "declares it")
+    assert "`b`" in lines[1] and "`c`" in lines[2]
+
+
+def test_findings_that_DIFFER_ANYWHERE_are_never_collapsed():
+    """The negative control. `where` is what separates two real occurrences of
+    one check, and a dedupe on `message` alone would hide half the module."""
+    a = T.RepairFinding("schema-breach", "error", "asserts[0]", "same text",
+                        "schema")
+    b = T.RepairFinding("schema-breach", "error", "asserts[1]", "same text",
+                        "schema")
+    c = T.RepairFinding("link-missing", "error", "asserts[0]", "same text",
+                        "link")
+    log = T.render_error_log([("attempt 1", [a, b, c])])
+    assert len([ln for ln in log.split("\n") if ln.startswith("  - [")]) == 3
+    assert "×" not in log, log

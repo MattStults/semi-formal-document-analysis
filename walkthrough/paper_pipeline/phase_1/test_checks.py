@@ -429,3 +429,277 @@ def test_a_Finding_has_no_field_that_could_carry_an_expected_verdict():
     """
     fields = {f.name for f in dataclasses.fields(checks.Finding)}
     assert fields == {"check_id", "severity", "where", "message", "origin"}
+
+
+# ==========================================================================
+#  8. The declaration check is ARITY-AWARE  (DC-5)
+# ==========================================================================
+#
+# ⭐ THE DEFECT THIS SECTION PINS. `schema.py`'s D4b builds its declaration set
+# from predicate NAMES ONLY, so `inputs: ['conflict/2']` legalises a body atom
+# `conflict(P1, P2, C)` and the module passes stage 2's contract half with ZERO
+# breaches. The mismatch surfaces one stage later as a LINK finding — "`conflict/3`
+# is used in a body, defined nowhere in this link scope" — which reads like a
+# missing upstream module, and the repair rounds are spent looking for someone
+# else's export. Four instances corpus-wide, all four on `unrepaired` clauses.
+#
+# ⚠️ THE JUDGEMENT CALL, RECORDED. Tightening this was NOT assumed to be right;
+# the surrounding contract was read for a reason the permissive behaviour might
+# be deliberate, and it says the opposite three times over: the requires/inputs
+# format guard refuses an entry that is not `name/arity` *because* "two
+# predicates sharing a name but taking different numbers of arguments are
+# different predicates"; D4b's own message says "`{name}/N` must ALSO appear in
+# one of those three"; and `link._atom_id` exists so a body atom and a header
+# entry can be compared BY IDENTITY, name and arity together. No contract text,
+# fixture or ruling anywhere permits a module to declare one arity and use
+# another. It is an implementation slip in one expression, not a tolerance.
+
+ARITY_MARK = checks.ARITY_MESSAGE_MARK
+
+GRAVEYARD = (HERE / "resolve_runs" / "graph_v2" / "translation_sample"
+             / "repair_graveyard")
+
+
+def arity_errors(result):
+    return [f for f in result.findings if ARITY_MARK in f.message]
+
+
+def test_a_name_used_at_the_wrong_arity_is_an_ERROR_that_names_BOTH():
+    """The message has to carry the declared arity AND the used one.
+
+    "`new_material/2` is used in a body and declared nowhere" sends the model
+    hunting for another module. "declared at /1, used at /2" is repairable from
+    inside this module, which is where the defect actually is.
+    """
+    r = run(module(asserts=[dict(status="forbid", act="produce(M)",
+                                 body="new_material(M, sensitive)",
+                                 read_back="producing % is forbidden",
+                                 read_back_slots=["M"], **TEXTUAL)]))
+    assert r.outcome == "invalid"
+    f = one(r, "schema-breach", ARITY_MARK)
+    assert f.origin == "schema" and f.severity == "error"
+    assert "`new_material/1`" in f.message and "`new_material/2`" in f.message
+    assert f.where == "asserts[0]"
+    assert r.repair_needed is True
+
+
+def test_the_arity_check_is_SILENT_when_the_declared_arity_is_the_one_used():
+    """The negative control. A check that fires on every declared name would
+    pass the test above and reject every correct module in the corpus."""
+    r = run()
+    assert arity_errors(r) == []
+    assert r.outcome == "translated"
+
+
+def test_a_name_declared_at_TWO_arities_is_silent_at_both():
+    """The second control, and the reason membership is tested against a SET.
+
+    Declaring `new_material/1` and `new_material/2` and using both is legal —
+    they are two predicates, and both are declared.
+    """
+    obj = module(
+        inputs=["new_material/1", "new_material/2"],
+        concepts=[concept(), concept(arity=2)],
+        asserts=[dict(status="forbid", act="produce(M)",
+                      body="new_material(M), new_material(M, sensitive)",
+                      read_back="producing % is forbidden",
+                      read_back_slots=["M"], **TEXTUAL)])
+    r = run(obj)
+    assert arity_errors(r) == []
+    assert r.outcome == "translated", [f.message for f in r.errors]
+
+
+def test_an_UNDECLARED_name_still_gets_the_old_message_and_only_that_one():
+    """⛔ THE MASKING CONTROL. The new check must not take over
+    `undeclared-body-name`: a name declared NOWHERE is one defect and must
+    produce ONE message. If the arity check fired on it too, the model would be
+    told both "nothing declares it" and "declared at /1, used at /2" about a
+    single name, and the second would be a lie.
+    """
+    obj = module(inputs=[], concepts=[])
+    r = run(obj)
+    assert r.outcome == "invalid"
+    old = one(r, "schema-breach", "nothing declares it")
+    assert "new_material" in old.message
+    assert arity_errors(r) == []
+    # ⚠️ ASSERTED ON THE PURE FUNCTION TOO. A D4b breach means the module never
+    # CONSTRUCTS, so `run_checks` returns before the arity check runs and the
+    # line above would hold for an implementation that masks freely. This is
+    # the line that actually tests the rule.
+    assert checks.arity_mismatches(obj) == []
+
+
+def test_an_undeclared_name_used_at_a_second_arity_is_STILL_only_the_old_one():
+    """The sharper half of the masking control: the name is absent from every
+    declaration site AND the body uses two different arities of it. Still one
+    mechanism, still `undeclared-body-name`."""
+    obj = module(inputs=[], concepts=[],
+                 asserts=[dict(status="forbid", act="produce(M)",
+                               body="new_material(M), new_material(M, x)",
+                               read_back="producing % is forbidden",
+                               read_back_slots=["M"], **TEXTUAL)])
+    r = run(obj)
+    assert r.outcome == "invalid"
+    assert arity_errors(r) == []
+    # D4b reports the name once per occurrence; what matters is that EVERY
+    # message about it is the undeclared one and none is an arity claim.
+    assert all("nothing declares it" in f.message for f in r.findings)
+    assert checks.arity_mismatches(obj) == []
+
+
+def test_an_abstention_never_acquires_an_arity_finding():
+    """An abstention is forced empty on every content field, so it has no body
+    to check — and the check is placed AFTER the terminal return so it could
+    not turn one into a repair round even if it did."""
+    r = run(ABSTENTION)
+    assert r.outcome == "abstained" and r.findings == []
+
+
+def test_the_arity_finding_is_DISCLOSABLE_to_the_repair_prompt():
+    """⭐ The check exists to change what the model is TOLD. `translate.py`
+    filters the repair log by `origin`, and only `DISCLOSABLE_ORIGINS` reach
+    it — a new origin invented for this finding would be withheld from the one
+    prompt it is for, silently and with the test suite green.
+    """
+    import translate                       # read-only: the consumer's filter
+    r = run(module(asserts=[dict(status="forbid", act="produce(M)",
+                                 body="new_material(M, sensitive)",
+                                 read_back="producing % is forbidden",
+                                 read_back_slots=["M"], **TEXTUAL)]))
+    f = one(r, "schema-breach", ARITY_MARK)
+    assert f.origin in translate.DISCLOSABLE_ORIGINS
+    log = translate.render_error_log([("attempt 1", r.findings)])
+    assert ARITY_MARK in log and "new_material/2" in log
+
+
+# ---- the pure core, over the FOUR REAL INSTANCES -------------------------
+#
+# ⭐ READ-ONLY, FROM THE CORPUS, AND NOT THROUGH `schema.Module`. These are the
+# four stored modules the mechanism was measured on. Three of them validate
+# TODAY with zero breaches — which is the defect stated as an experiment — and
+# the fourth (`l1_170_n088`) no longer CONSTRUCTS, because it also trips D4b on
+# a different, undeclared name. That is exactly why `arity_mismatches` takes the
+# raw dict as well as a module: the instance that proves the two checks coexist
+# is one that cannot be built. Nothing under `resolve_runs/` is written.
+
+def stored(path):
+    import json
+    return json.loads((GRAVEYARD / path).read_text(encoding="utf-8"))
+
+
+def stored_last_attempt(path):
+    """The final assistant turn of a graveyard transcript, as the module dict."""
+    import json
+    turns = stored(path)
+    last = [t for t in turns if t.get("role") == "assistant"][-1]
+    return json.loads(last["content"])
+
+
+REAL = [
+    # clause                   file                                name                 declared used
+    ("l1_170_n047", "l1_170_n047-20260815-040445/module.json", "conflict", 2, 3),
+    ("l1_170_n087", "l1_170_n087-20260815-040444/module.json",
+     "output_consumed_by", 2, 1),
+    ("l171_426_n024", "l171_426_n024-20260815-073255/module.json",
+     "user_request", 1, 2),
+]
+
+
+@pytest.mark.parametrize("clause_id,path,name,declared,used", REAL)
+def test_the_real_corpus_instances_are_caught(clause_id, path, name,
+                                              declared, used):
+    obj = stored(path)
+    assert obj["clause_id"] == clause_id
+    hits = [h for h in checks.arity_mismatches(obj) if h[1] == name]
+    assert hits, f"{clause_id}: {name} mismatch not detected"
+    for _where, _n, known, got in hits:
+        assert known == [declared] and got == used
+    msgs = [f.message for f in checks.arity_findings(obj)]
+    assert any(f"`{name}/{declared}`" in m and f"`{name}/{used}`" in m
+               and ARITY_MARK in m for m in msgs), msgs
+
+
+def test_the_fourth_instance_n088_is_caught_on_a_module_that_cannot_be_BUILT():
+    """`l1_170_n088` declares `sequence_of_messages/3` and writes it at /4, and
+    separately references an undeclared name — so `schema.validate_all` returns
+    no module at all and reports only the undeclared one. The arity defect is
+    still there, still invisible, and still what the model was never told."""
+    obj = stored_last_attempt("l1_170_n088-20260815-040444/transcript.json")
+    mod, breaches = schema.validate_all(obj)
+    assert mod is None
+    assert any("nothing declares it" in b.message for b in breaches)
+    assert not any(ARITY_MARK in b.message for b in breaches), \
+        "schema.py grew the check; this pin now belongs there"
+    hits = checks.arity_mismatches(obj)
+    assert [(h[1], h[2], h[3]) for h in hits] == \
+        [("sequence_of_messages", [3], 4)]
+
+
+def test_the_three_buildable_instances_pass_schema_with_ZERO_breaches():
+    """⭐ THE DEFECT, STATED AS A MEASUREMENT. If this ever fails, the
+    name-only matching in `schema.py` was fixed and the check moved upstream —
+    which is the intended end state, not a regression. Read
+    `_debug_gen11/PROPOSED_schema_arity.md` before deleting anything here.
+    """
+    for _cid, path, _n, _d, _u in REAL:
+        mod, breaches = schema.validate_all(stored(path))
+        assert mod is not None and breaches == [], \
+            f"{path}: {[b.message for b in breaches]}"
+        assert checks.arity_mismatches(mod), \
+            f"{path}: the mismatch is invisible through the module object too"
+
+
+def test_the_corpus_instances_are_not_a_general_indictment():
+    """The control on the corpus pins. A detector that flagged every stored
+    module would satisfy every test above. Over the whole stored translation
+    sample the rate must be SMALL and the four known clauses must be the ones
+    it names.
+    """
+    import json
+    flagged = set()
+    scanned = 0
+    for path in sorted(GRAVEYARD.parent.rglob("*.json")):
+        if path.name in ("run.json", "concepts.json", "findings.json",
+                         "entry.json") or path.name.endswith(".version.json"):
+            continue
+        try:
+            obj = json.loads(path.read_text(encoding="utf-8"))
+        except (ValueError, OSError):
+            continue
+        if not isinstance(obj, dict) or "asserts" not in obj:
+            continue
+        scanned += 1
+        if checks.arity_mismatches(obj):
+            flagged.add(obj.get("clause_id"))
+    assert scanned > 100, f"only {scanned} stored modules found — path drift?"
+    assert flagged == {"l1_170_n047", "l1_170_n087", "l171_426_n024"}, flagged
+    # ⚠️ NOT pinned as a count of a live artifact — the SET is what is claimed,
+    # and `n088` is absent from it because its module was never stored.
+
+
+# ---- the two pure helpers, pinned on their own ---------------------------
+
+def test_body_uses_counts_arity_at_paren_depth_zero():
+    """`p(f(a, b), C)` is arity 2, not 3. Counting commas would make every
+    nested term a false mismatch, and the corpus is full of them."""
+    assert checks.body_uses("p(f(a, b), C)") == [("p", 2), ("f", 2)]
+    assert checks.body_uses("q(X), not r(X, Y)") == [("q", 1), ("r", 2)]
+    assert checks.body_uses("") == []
+
+
+def test_declared_arities_reads_all_three_sites_and_NOT_concepts():
+    """⛔ `concepts` is not a declaration site — the contract is explicit that a
+    concept says what a name MEANS, never that anything defines it. A version
+    that read arities off the concept table would silence the real instances,
+    every one of which declares its concept at the arity it uses.
+    """
+    obj = module(ontology=[dict(atom="restricted(csam)", body=None,
+                                gloss="the material is restricted", **TEXTUAL)],
+                 requires=["policy/2"], inputs=["new_material/1"])
+    got = checks.declared_arities(obj)
+    assert got["restricted"] == {1}
+    assert got["policy"] == {2}
+    assert got["new_material"] == {1}
+    # the module's concept table declares `new_material/1`; a concept-reading
+    # implementation would be indistinguishable here without this line
+    assert set(got) == {"restricted", "policy", "new_material"}

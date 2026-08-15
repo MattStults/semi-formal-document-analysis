@@ -1232,9 +1232,20 @@ def run(cfg, args, client_factory=None):
             print("nothing is stale — nothing to translate, nothing sent.")
             return 0
 
+    # ⛔ TWICE `max_attempts`, because `repair_loop` may DISCARD a frozen
+    # transcript and redraw the clause once from attempt 1 (see its docstring).
+    # The worst case is therefore two chains of `max_attempts` calls, i.e. two
+    # `max_attempts` completions each billed at `max_tokens` — and the output
+    # term of `estimate_cost` is exactly linear in the turn count, so pricing
+    # one chain would have left the printed worst case 50% LOW. Feeding one
+    # chain of `2T` over-charges the two input terms (both are quadratic in the
+    # turn count, and two chains of T are cheaper than one of 2T) and is exact
+    # on the output term. That is the allowed direction, and it is the reason
+    # the restart does not re-base spend the way `dispatch_core` does: a gate
+    # that the loop can spend past is not a gate.
     est, in_tok, out_tok = estimate_cost(
         system, [j["user"] for j in jobs], prov, cfg,
-        max_attempts=_max_attempts)
+        max_attempts=_max_attempts * 2 if _max_attempts > 1 else 1)
 
     print(f"provider     : {prov.name}  ({prov.model})")
     print(f"clauses      : {len(jobs)}  "
@@ -1405,6 +1416,13 @@ def run(cfg, args, client_factory=None):
             rec.update(attempts=out.attempts, per_attempt=out.per_attempt,
                        flags=out.flags, n_findings=len(out.findings),
                        unclear_closure_rate=out.unclear_closure_rate)
+            # A restart is not visible in `attempts` (which is re-based) or in
+            # `flags` (which means "a guard fired on the module"), so it has to
+            # be its own field or the run record cannot say how many calls the
+            # clause actually took.
+            if out.restarted:
+                rec.update(restarted=True,
+                           pre_restart_per_attempt=out.pre_restart_per_attempt)
             with open(os.path.join(outdir, f"{cid}.transcript.json"), "w",
                       encoding="utf-8") as fh:
                 json.dump(out.transcript, fh, indent=1)
@@ -1420,14 +1438,18 @@ def run(cfg, args, client_factory=None):
                                f"[{f.check_id}] {f.where}: {f.message}"
                                for f in out.findings])
                 print(f"  ⛔ {cid}: {out.status} after {out.attempts} "
-                      f"attempt(s), {len(out.findings)} finding(s) standing")
+                      f"attempt(s)"
+                      + (" (and one discarded transcript)"
+                         if out.restarted else "")
+                      + f", {len(out.findings)} finding(s) standing")
                 failures += 1
                 results.append(rec)
                 flush()
                 continue
             obj = out.module
-            if out.attempts > 1:
+            if out.attempts > 1 or out.restarted:
                 print(f"  ↻ {cid}: {out.status} on attempt {out.attempts}"
+                      + (" after a fresh restart" if out.restarted else "")
                       + (f"  ⚠️ {', '.join(out.flags)}" if out.flags else ""))
 
             # the object is the record; the .lp is a rendering of it
@@ -2446,6 +2468,19 @@ class RepairOutcome:
     flags: list = dataclasses.field(default_factory=list)
     unclear_closure_rate: float = 0.0
     transcript: list = dataclasses.field(default_factory=list)
+    #: The clause's transcript was discarded once and redrawn from attempt 1
+    #: (see `repair_loop`'s freeze detector). NOT a `flag`: `flags` means "a
+    #: guard fired on the module", and `graveyard.should_keep` keeps every
+    #: flagged clause — routing every restarted-and-recovered clause into the
+    #: graveyard would change that population for a reason that is not about
+    #: the module. `frozen` — the abandon case — IS a flag, because that clause
+    #: is `unrepaired` and therefore always kept anyway.
+    restarted: bool = False
+    #: `attempts` and `per_attempt` are RE-BASED by a restart, so they describe
+    #: the transcript that produced the result (which is what `should_keep`'s
+    #: `attempts >= max_attempts` means). The discarded segment's per-attempt
+    #: finding counts are kept here rather than thrown away.
+    pre_restart_per_attempt: list = dataclasses.field(default_factory=list)
 
 
 def render_error_log(attempts):
@@ -2456,12 +2491,28 @@ def render_error_log(attempts):
     5 holds attempt 2's, both still visible. Re-rendering the whole history into
     every turn would duplicate attempt 1 into every later turn and pay for it
     again, while adding nothing the conversation did not already carry.
+
+    ⭐ IDENTICAL FINDINGS ARE COLLAPSED WITH A COUNT. One name used at four body
+    sites produces four findings with the same `(check_id, where, message)` —
+    `where` is `<root>` for the declaration checks, so the lines are not merely
+    similar, they are byte-identical. A measured log showed 6 lines carrying 4
+    distinct problems and another 9 carrying 3. Repeating a line neither says
+    anything the first one did not nor tells the model where the other three
+    uses are; it spends the repair-turn budget and makes a small defect look
+    like a large one.
+
+    ⛔ THIS IS NOT A REWORDING, and must not become one. Paraphrasing the repair
+    message is REJECTED BY NAME in `repair_loop`'s docstring — the message was
+    measured sufficient, and varying it changes a measured artifact to fix an
+    unmeasured one. Collapsing exact duplicates removes repetition and changes
+    no finding's text.
     """
     out = []
     for label, findings in attempts:
         out.append(f"{label} failed these checks:")
         withheld = notes = 0
         shown = 0
+        seen = {}
         for f in findings:
             if f.origin not in DISCLOSABLE_ORIGINS:
                 withheld += 1
@@ -2478,6 +2529,18 @@ def render_error_log(attempts):
                 notes += 1
                 continue
             shown += 1
+            key = (f.check_id, f.where, f.message)
+            if key in seen:
+                # ⚠️ REWRITE THE FIRST LINE IN PLACE rather than append. The
+                # order of the findings is the order the checks produced them,
+                # and moving a line would change what a repair reads first.
+                idx, k = seen[key]
+                seen[key] = (idx, k + 1)
+                out[idx] = (f"  - [{f.check_id}] {f.where}: {f.message}"
+                            f"   (× {k + 1} — the same finding at "
+                            f"{k + 1} sites)")
+                continue
+            seen[key] = (len(out), 1)
             out.append(f"  - [{f.check_id}] {f.where}: {f.message}")
         if not shown:
             out.append("  (no error-severity findings — nothing here is yours "
@@ -2537,6 +2600,33 @@ def _diff_flags(before, after):
     return flags
 
 
+def _reply_hash(text):
+    """Identity of one assistant reply. `sha1` of the exact bytes — no
+    normalisation: two replies that differ by a space are two answers, and the
+    signal being measured is the model re-emitting what it already said."""
+    return hashlib.sha1((text or "").encode("utf-8")).hexdigest()
+
+
+#: Written into the STORED transcript where the discarded segment ends. The
+#: stored transcript must remain a record of the exchange — a restart that
+#: silently dropped the first segment would turn it into a fiction, the same
+#: failure the synthesised first prompt caused (see `repair_loop`'s first-turn
+#: comment).
+#:
+#: ⚠️ AN ORDINARY `user` TURN WITH NO EXTRA KEYS, and both halves of that are
+#: deliberate. A stored transcript is not only read: `self_diagnose.py` appends
+#: a question to one and SENDS it, and `Client._body_messages` copies every
+#: turn onto the wire verbatim — so an invented role (`"restart"`) or an extra
+#: key (`"restarted": true`) would be a provider-rejected request the day
+#: somebody diagnoses a restarted clause. Match on this exact string; the
+#: consecutive user turns it creates are the one cosmetic cost.
+RESTART_MARKER_TEXT = ("-- the transcript above was DISCARDED: the model "
+                       "repeated an earlier reply, so the clause was redrawn "
+                       "from attempt 1 with a clean transcript "
+                       "(repair_loop's freeze detector) --")
+RESTART_MARKER = {"role": "user", "content": RESTART_MARKER_TEXT}
+
+
 def repair_loop(initial_raw, clause, model, max_attempts=3, corpus_ids=None,
                 concepts=None, system="", first_user=None):
     """Attempt 1 is already in hand; call the model for attempts 2..N.
@@ -2544,6 +2634,64 @@ def repair_loop(initial_raw, clause, model, max_attempts=3, corpus_ids=None,
     `model` needs `complete_messages(system, messages)`. The transcript grows by
     two turns per attempt and its PREFIX never changes, so every call after the
     first is a cache hit.
+
+    ⭐ THE FREEZE DETECTOR AND THE ONE RESTART (`_debug_gen11/CHAIN_ANALYSIS.md`,
+    2026-08-15). Across 96 stored repair chains, a chain whose every reply
+    differs from every earlier reply ended `translated` 63 of 64 times (98%); a
+    chain in which any reply REPEATS an earlier one ended translated 3 of 32
+    times (9%). Nothing about the defect predicts the outcome — not the number
+    of round-1 findings, not the `check_id`, not the finding class, not the
+    output length, not whether the finding set grew. The separator is whether
+    the model is still producing answers it has not already produced.
+
+    What was ruled out before this was built, so nobody re-derives it:
+      * PROVIDER DETERMINISM — refuted. For all 19 clauses the 08-14 loop lost,
+        a later run issued a byte-identical first call (same `prompt_user.txt`,
+        `prompt_system.txt`, `system_sha`, `schema_sha`, `provenance_hash`,
+        model, `max_tokens`); 0 of 19 replies matched. Sampling is live at
+        `temperature: 0.2`. A model that answers differently every time it is
+        asked cold, and identically five times inside one transcript, is being
+        frozen BY THE TRANSCRIPT.
+      * THE REPAIR MESSAGE — refuted as the cause. Four frozen transcripts were
+        replayed to stand-in translators from the exact accumulated bytes
+        DeepSeek froze on; 4 of 4 performed the named repair in ONE turn and
+        validated through `checks.run_checks`. The message is sufficient.
+    What is left is the model anchoring on its own prior answer, and 9 of 19
+    lost chains first repeat at ROUND 1: one prior wrong answer in context is
+    already enough.
+
+    ⛔ REJECTED BY NAME, and none of them may be added later without new
+    evidence: PARAPHRASING THE REPAIR MESSAGE, RAISING THE TEMPERATURE ON
+    REPAIR ROUNDS, and RE-RENDERING THE FULL FINDING HISTORY into every turn.
+    All three vary the prompt. The message is sufficient (above); the defect is
+    the CONTEXT IT ARRIVES IN. Varying the prompt would also change a measured
+    artifact (`system_sha`, the transcript shape) to fix an unmeasured one, and
+    re-rendering the history is separately refused by `render_error_log`.
+
+    REPEAT-OF-ANY, NOT ADJACENT IDENTITY. The attractor is a small CYCLE over a
+    handful of answers, not a single fixed point: one lost chain replies
+    A,B,C,A,D and another A,B,A,A,A. Adjacent identity catches 27 of the 29
+    lost gen-11 chains, repeat-of-any catches 29 of 29, and the extra cost is
+    one `sha1` per turn. `recurse_driver.Driver.call` (~line 1460) and
+    `dispatch_core.ClauseState.feed` key on adjacent identity; this is a
+    deliberate divergence from them, not a port error.
+
+    WHY TRANSLATION LACKED THIS REMEDY. `translate_exec.ClauseState.can_restart`
+    returns a hard `False`, and on its own evidence that was right: it was
+    scoped to TRUNCATION, which translation already handles one level up and
+    twice over (`Client._retrying` resamples a truncated FIRST attempt under
+    `model.resample_truncation`, and a repair-round transport failure is
+    delivered into the clause body as data). FREEZING had never been measured
+    when that line was written. The restart therefore lives HERE, in the loop
+    that owns the transcript, not in the dispatch shim that does not.
+
+    ⚠️ Two things deliberately NOT copied from `dispatch_core.ClauseState`:
+      * it sets `self.spent = 0.0` on restart. Nothing here resets any spend:
+        translation's gate is a run-level budget against a per-clause estimate,
+        and re-basing spend at the restart would make the printed worst case a
+        lie. `run()` prices the restart instead (`estimate_cost` is called with
+        twice `max_attempts`).
+      * it keys on adjacent identity (see above).
     """
     import checks as _checks
     corpus_ids = corpus_ids if corpus_ids is not None else {clause.get("id")}
@@ -2564,13 +2712,21 @@ def repair_loop(initial_raw, clause, model, max_attempts=3, corpus_ids=None,
     # the cross-referenced clause texts — which stage 1 calls load-bearing — so
     # repair ran without the definitions AND the stored transcript was a
     # fiction of the exchange rather than a record of it.
-    transcript = [{"role": "user",
-                   "content": first_user if first_user is not None else
-                   f"CLAUSE {clause.get('id')}\n{clause.get('quote', '')}"}]
-    per_attempt, flags = [], []
+    def first_turn():
+        return {"role": "user",
+                "content": first_user if first_user is not None else
+                f"CLAUSE {clause.get('id')}\n{clause.get('quote', '')}"}
+
+    #: `transcript` is the LIVE segment — the only thing ever sent. `record`
+    #: holds the segments a restart discarded, so `out.transcript` stays a
+    #: record of the whole exchange while the model sees a clean one.
+    transcript, record = [first_turn()], []
+    per_attempt, flags, pre_restart = [], [], []
+    restarted = False
     res, found = look(initial_raw, 1)
     prev_shape = _shape(initial_raw)
     raw = initial_raw
+    seen = {_reply_hash(raw)}
 
     def close(status, **kw):
         kw.setdefault("findings", found)
@@ -2583,40 +2739,95 @@ def repair_loop(initial_raw, clause, model, max_attempts=3, corpus_ids=None,
         if not transcript or transcript[-1]["role"] != "assistant":
             transcript.append({"role": "assistant", "content": raw})
         return RepairOutcome(status=status, per_attempt=per_attempt,
-                             flags=flags, transcript=transcript, **kw)
+                             flags=flags, transcript=record + transcript,
+                             restarted=restarted,
+                             pre_restart_per_attempt=pre_restart, **kw)
 
-    for n in range(1, max_attempts + 1):
-        per_attempt.append(len(found))
-        if res is not None and res.outcome == "abstained":
-            # A model that says it cannot translate faithfully is not argued
-            # with — re-prompting produces exactly what abstention prevents.
-            # But an abstention AFTER a failed attempt is a repair-pressure
-            # artifact, and counting it with first-attempt abstentions is how a
-            # model abstains its way out of the hard clauses.
-            return close("abstained" if n == 1 else "abstained_under_repair",
-                         attempts=n, module=res.module)
-        if res is not None and not res.repair_needed:
-            return close("translated", attempts=n, module=res.module,
-                         unclear_closure_rate=_unclear_rate(res.module))
-        if n == max_attempts:
-            break
+    while True:
+        for n in range(1, max_attempts + 1):
+            per_attempt.append(len(found))
+            if res is not None and res.outcome == "abstained":
+                # A model that says it cannot translate faithfully is not
+                # argued with — re-prompting produces exactly what abstention
+                # prevents. But an abstention AFTER a failed attempt is a
+                # repair-pressure artifact, and counting it with first-attempt
+                # abstentions is how a model abstains its way out of the hard
+                # clauses.
+                return close(
+                    "abstained" if n == 1 and not restarted
+                    else "abstained_under_repair",
+                    attempts=n, module=res.module)
+            if res is not None and not res.repair_needed:
+                return close("translated", attempts=n, module=res.module,
+                             unclear_closure_rate=_unclear_rate(res.module))
+            if n == max_attempts:
+                return close("unrepaired", attempts=max_attempts,
+                             module=getattr(res, "module", None),
+                             findings=found,
+                             unclear_closure_rate=_unclear_rate(
+                                 getattr(res, "module", None)))
 
-        transcript.append({"role": "assistant", "content": raw})
-        transcript.append({"role": "user",
-                           "content": render_error_log([(f"attempt {n}", found)])})
-        env = model.complete_messages(system, transcript)
-        raw = env["text"]
-        res, found = look(raw, n + 1)
-        new_shape = _shape(raw)
-        for f in _diff_flags(prev_shape, new_shape):
-            if f not in flags:
-                flags.append(f)
-        prev_shape = new_shape or prev_shape
+            transcript.append({"role": "assistant", "content": raw})
+            transcript.append(
+                {"role": "user",
+                 "content": render_error_log([(f"attempt {n}", found)])})
+            env = model.complete_messages(system, transcript)
+            raw = env["text"]
+            res, found = look(raw, n + 1)
+            new_shape = _shape(raw)
+            for f in _diff_flags(prev_shape, new_shape):
+                if f not in flags:
+                    flags.append(f)
+            prev_shape = new_shape or prev_shape
 
-    return close("unrepaired", attempts=max_attempts,
-                 module=getattr(res, "module", None), findings=found,
-                 unclear_closure_rate=_unclear_rate(
-                     getattr(res, "module", None)))
+            if _reply_hash(raw) not in seen:
+                seen.add(_reply_hash(raw))
+                continue
+
+            # ⭐ THE MODEL RETURNED AN ANSWER IT HAS ALREADY GIVEN in this
+            # chain. On the measured population this chain converges 9% of the
+            # time, so continuing it buys almost nothing and costs the rest of
+            # the budget. See the docstring for what was ruled out first.
+            per_attempt.append(len(found))
+            if restarted:
+                # ⛔ IT REFROZE. Abandon rather than restart again: the cap is
+                # one restart per clause, so the worst case stays 2 ×
+                # max_attempts calls and a runaway is impossible. `frozen` is a
+                # FLAG on an `unrepaired` outcome, not a new status — the
+                # status drives every downstream branch in `run()` and nothing
+                # about this clause's disposition changed. The flag is what
+                # makes "froze twice" separable from "ran out of attempts" in
+                # later census work; 4 of the 19 measured clauses refroze on a
+                # fresh draw, and that tail is a translation defect, not a loop
+                # defect.
+                if "frozen" not in flags:
+                    flags.append("frozen")
+                return close("unrepaired", attempts=n + 1,
+                             module=getattr(res, "module", None),
+                             findings=found,
+                             unclear_closure_rate=_unclear_rate(
+                                 getattr(res, "module", None)))
+
+            # ⭐ DISCARD AND REDRAW, ONCE. Not "abandon": ~9–12% of repeating
+            # chains do recover on their own, and abandoning them loses real
+            # modules for a 20% saving. On the 19 clauses the 08-14 loop lost,
+            # continuing produced 0 modules in 95 calls and stop-and-restart
+            # produced 14 in 99 — the calls a stop would have saved are exactly
+            # the calls the redraw costs, so the trade is call-for-call.
+            transcript.append({"role": "assistant", "content": raw})
+            record.extend(transcript)
+            record.append(dict(RESTART_MARKER))
+            restarted = True
+            pre_restart, per_attempt = per_attempt, []
+            transcript = [first_turn()]
+            env = model.complete_messages(system, transcript)
+            raw = env["text"]
+            res, found = look(raw, 1)
+            prev_shape = _shape(raw) or prev_shape
+            # A fresh chain: the discarded segment's answers are no longer in
+            # context, so they are no longer anchors and must not stop it.
+            seen = {_reply_hash(raw)}
+            break                                # re-enter at attempt 1
 
 
 def _unclear_rate(mod):

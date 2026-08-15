@@ -261,8 +261,27 @@ class ClauseState(dc.DispatchState):
         self._req_ready.wait()
 
     def can_restart(self):
-        # translate.py has no fresh-restart path; a truncation failure goes
-        # to the clause body as data instead
+        """Still `False`, and now for a stated reason rather than a gap.
+
+        ⚠️ READ THIS BEFORE FLIPPING IT. This hook is the DISPATCH layer's
+        restart: `dispatch_core.Executor.run_one` calls it when a draw raises
+        TRUNCATED and then rebuilds `state.transcript` itself. That decision
+        was scoped to TRUNCATION and remains right here — translation handles a
+        truncated draw one level up and twice over (`Client._retrying` under
+        `model.resample_truncation`; a repair-round transport failure delivered
+        into the clause body as data by `feed_failure` below, which is why this
+        class overrides it) — and this shim OWNS NO TRANSCRIPT to rebuild: the
+        transcript lives inside `repair_loop`, running on the clause thread.
+        A dispatch-level restart here would reset a list nobody is reading.
+
+        The other failure — the model FREEZING on its own prior answer — had
+        simply never been measured when this returned a bare `False`
+        (`_debug_gen11/CHAIN_ANALYSIS.md`, 2026-08-15: 96 chains, 98% vs 9%).
+        It is now handled, in the only place that can see it: `repair_loop`
+        hashes every assistant turn, and on a repeat of ANY earlier reply it
+        discards the transcript and redraws the clause once. Both execution
+        modes get it for free, because both run that same loop.
+        """
         return False
 
     def bill(self, cost):
@@ -546,6 +565,12 @@ class RunContext:
         rec.update(attempts=out.attempts, per_attempt=out.per_attempt,
                    flags=out.flags, n_findings=len(out.findings),
                    unclear_closure_rate=out.unclear_closure_rate)
+        # mirrors translate.run(): a restart is not visible in `attempts`
+        # (re-based) or in `flags` (a guard on the module), so the record
+        # would otherwise understate how many calls the clause took
+        if out.restarted:
+            rec.update(restarted=True,
+                       pre_restart_per_attempt=out.pre_restart_per_attempt)
         with open(os.path.join(outdir, f"{cid}.transcript.json"), "w",
                   encoding="utf-8") as fh:
             json.dump(out.transcript, fh, indent=1)
@@ -638,9 +663,15 @@ def prepare(cfg, args, client_factory=None):
             print("nothing is stale — nothing to translate, nothing sent.")
             return 0
 
+    # ⛔ TWICE `max_attempts`, byte-for-byte the reason translate.run() does it:
+    # `repair_loop` may discard a frozen transcript and redraw the clause once
+    # from attempt 1, so the worst case is two chains of `max_attempts` calls.
+    # This gate must not drift from serial mode's — a run that is refused in
+    # one mode and sent in the other is the failure the shared gate exists to
+    # prevent.
     est, in_tok, out_tok = T.estimate_cost(
         system, [j["user"] for j in jobs], prov, cfg,
-        max_attempts=max_attempts)
+        max_attempts=max_attempts * 2 if max_attempts > 1 else 1)
 
     ex = cfg.get("execution") or {}
     print(f"provider     : {prov.name}  ({prov.model})")
