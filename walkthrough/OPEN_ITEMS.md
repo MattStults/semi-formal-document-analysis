@@ -33,7 +33,7 @@ review state; do not spend attention on an UNREVIEWED row.
 | id | item | why it needs you | source |
 |---|---|---|---|
 | M1 | Guard-accept the prompt diffs for translation fixes C/D/E | `prompt/00_task.md`, `10_output_format.md`, `20_worked_example.md`, `schema.py` are guard-watched; the fixes cannot land without your read | `TRANSLATION_FIX_PLAN.md` |
-| M2 | Ruling: is fix **F** (`undeclared-body-name`, 28 rounds, 32 pts of coverage) worth its own design cycle? | high risk, changes module shape; the money is small (~$1/corpus) but it drives the 52% repair-induced regression rate | `TRANSLATION_FIX_PLAN.md` §F |
+| ~~M2~~ | ~~Ruling on fix F~~ **WITHDRAWN 2026-08-15 (Matt):** everything lands in the same next generation, so waiting buys no information. Build F like the others, in its own commit; if it is not ready and reviewed at launch, shelve it. The calendar decides, not a prior judgement of value. | — | — |
 | M3 | Stage-4 client factory: build to the delivered spec? | the natural implementation destroys 4c's anchor property; spec exists, build does not | `STAGE4_DESIGN_REVIEW.md` |
 | M4 | `test_d4b_no_table_and_no_concepts_declared_is_silent` — held design tension | the red test is the only visible marker of an unresolved question | `WORK_ORDER_review_agent.md` §5 |
 | M5 | Behavior-pipeline design questions (6) | shape the ASP module for behaviours; no code hinges yet | `behavior_pilot/DESIGN.md` §6 |
@@ -49,9 +49,18 @@ review state; do not spend attention on an UNREVIEWED row.
 
 ## 3 · Designed, not built
 
+**Build policy (Matt 2026-08-15):** every fix gets its OWN commit with its own
+pins, so any one can be shelved at launch without disturbing the others. Build
+them all now in parallel with the corpus run; readiness at launch decides what
+ships. The gate is NOT the corpus run — it is the census review
+(`TRANSLATION_CENSUS_REVIEW.md`, in flight): all of these rest on its numbers,
+and if the class-subtraction simulation behind the 58% is overstated, the
+targets change before anything is built.
+
 | id | item | est. | source |
 |---|---|---|---|
-| D1 | Translation fixes **C, D, E** (ontology split; acts carry closure; requires/inputs carry name+arity+gloss) — 56% of the 58% | needs M1 | `TRANSLATION_FIX_PLAN.md` |
+| D1 | Translation fixes **C, D, E** (ontology split; acts carry closure; requires/inputs carry name+arity+gloss) — 56% of the 58%; SEPARATE COMMITS | needs M1 + census verdict | `TRANSLATION_FIX_PLAN.md` |
+| D1f | Translation fix **F** (body literals carry origin) — 32 more points; own commit, shelvable | census verdict; high risk → its own review round | `TRANSLATION_FIX_PLAN.md` §F |
 | D2 | Live validation of the prompt-side fixes: 15-clause held sample, 3 arms, pre-registered falsifier | **~$0.09** | `TRANSLATION_FIX_PLAN.md` §live |
 | D3 | Stage-4 evidential fixes: per-item echo stamp (F8/F1), 4c/4b independence (F2), layer-1 rendering reaching seats (F3) | — | `STAGE4_DESIGN_REVIEW.md` |
 | D4 | Stage-4 `seats.py` hardening: defensive reply parsing in `judge`; `run_clause` records a skipped seat | delegated | `WORK_ORDER_review_agent.md` §3.2 |
