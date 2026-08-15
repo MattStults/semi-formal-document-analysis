@@ -845,12 +845,23 @@ def test_d4b_no_table_and_no_concepts_declared_is_quiet(tmp_path):
     of the artifact — unrecorded, and silence is how the *other* half of this
     project's warning failures happened.
     """
-    p = render(tmp_path, "plain.lp")                   # module_dict: concepts=[]
+    # ⚠️ RAW, and this use says why (write_raw's contract): the schema-built
+    # fixture CANNOT produce this shape any more. `module_dict`'s body
+    # references reach `inputs`, and `_supplement_borrow_glosses` then
+    # declares a `concepts` entry for every borrow — so a module rendered
+    # through the contract always declares concepts, and the branch under
+    # test became unreachable. That staleness is exactly why the
+    # predecessor sat RED against a CLI that was behaving correctly.
+    p = write_raw(tmp_path, "plain.lp",
+                  "%% clause: t950   section: test   kind: conditional\n"
+                  "%% requires:\n%% inputs:\n"
+                  "#const onto = on.\no :- onto = on.\n"
+                  "defines(t950, term, x).\n")
+    assert not link.header(p)["concepts"], \
+        "fixture no longer declares zero concepts; the quiet branch is " \
+        "unreachable again — rebuild it rather than deleting the pin"
+
     found = by_id(link.collect([p]), "concept-table-absent")
-    # the guard is genuinely exercised: this fixture DOES reach the empty-
-    # concepts path (the predecessor failed here, which is the evidence)
-    assert found, "the empty-concepts path no longer reaches this guard; " \
-                  "rebuild the fixture rather than deleting the pin"
     assert all(f.severity == "note" for f in found), \
         f"a fact about the artifact must stay note-severity: {found}"
     r = subprocess.run([PY, "link.py", p], cwd=HERE,
@@ -859,6 +870,22 @@ def test_d4b_no_table_and_no_concepts_declared_is_quiet(tmp_path):
     assert "concept table" in first.lower(), r.stdout + r.stderr
     assert not re.search(r"⚠️|NO CONCEPT TABLE", first), (
         f"nothing here needs a concept table; a warning would be noise:\n{first}")
+
+
+def test_d4b_no_table_BUT_concepts_declared_does_shout(tmp_path):
+    """The other half of the loudness rule, and the reason the quiet branch
+    is not simply "never mention the table": when modules DO declare
+    concepts and no table exists, every one of them reads as undeclared —
+    that is actionable, so the CLI SHOULD shout. Pinning both branches is
+    what makes the rule a rule rather than a preference."""
+    p = render(tmp_path, "declaring.lp")     # contract-built: declares concepts
+    assert link.header(p)["concepts"], "fixture must declare concepts"
+    r = subprocess.run([PY, "link.py", p], cwd=HERE,
+                       capture_output=True, text=True)
+    first = (r.stdout.splitlines() or [""])[0]
+    assert re.search(r"⚠️|NO CONCEPT TABLE", first), (
+        "concepts are declared with no table, so every one reads as "
+        f"undeclared — that is actionable and must be loud:\n{first}")
 
 
 # ---- D4b-3, problem #1: referenced, but in no table ----------------------
