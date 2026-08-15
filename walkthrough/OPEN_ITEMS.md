@@ -34,7 +34,7 @@ review state; do not spend attention on an UNREVIEWED row.
 |---|---|---|---|
 | M1 | Guard-accept the prompt diffs for translation fixes C/D/E | `prompt/00_task.md`, `10_output_format.md`, `20_worked_example.md`, `schema.py` are guard-watched; the fixes cannot land without your read | `TRANSLATION_FIX_PLAN.md` |
 | ~~M2~~ | ~~Ruling on fix F~~ **WITHDRAWN 2026-08-15 (Matt):** everything lands in the same next generation, so waiting buys no information. Build F like the others, in its own commit; if it is not ready and reviewed at launch, shelve it. The calendar decides, not a prior judgement of value. | — | — |
-| M3 | Stage-4 client factory: build to the delivered spec? | the natural implementation destroys 4c's anchor property; spec exists, build does not | `STAGE4_DESIGN_REVIEW.md` |
+| ~~M3~~ | ~~Build the stage-4 client factory now?~~ **RULED 2026-08-15 (Matt, accepting the recommendation): DEFER.** Build order is F1/F2/F3 first, then the factory. Grounds: with the evidential stamp firing on ~0% of the corpus and 48% of 4c's denominator being text 4b sees verbatim, a working factory would produce authoritative-looking seat numbers nobody should trust. The two `seats.py` hardening items stay with the review agent (work order §3.2). The spec review continues (free, offline) so the spec is validated and amended for when the build happens. | — | — |
 | M4 | `test_d4b_no_table_and_no_concepts_declared_is_silent` — held design tension | the red test is the only visible marker of an unresolved question | `WORK_ORDER_review_agent.md` §5 |
 | M5 | Behavior-pipeline design questions (6) | shape the ASP module for behaviours; no code hinges yet | `behavior_pilot/DESIGN.md` §6 |
 | M6 | Backup: secrets to a password manager; second copy of the repo (R2/B2/Zenodo) | only unrecoverable asset is credentials; one GitHub account is the single copy | 2026-08-15 discussion |
@@ -62,7 +62,8 @@ targets change before anything is built.
 | D1 | Translation fixes **C, D, E** (ontology split; acts carry closure; requires/inputs carry name+arity+gloss) — 56% of the 58%; SEPARATE COMMITS | needs M1 + census verdict | `TRANSLATION_FIX_PLAN.md` |
 | D1f | Translation fix **F** (body literals carry origin) — 32 more points; own commit, shelvable | census verdict; high risk → its own review round | `TRANSLATION_FIX_PLAN.md` §F |
 | D2 | Live validation of the prompt-side fixes: 15-clause held sample, 3 arms, pre-registered falsifier | **~$0.09** | `TRANSLATION_FIX_PLAN.md` §live |
-| D3 | Stage-4 evidential fixes: per-item echo stamp (F8/F1), 4c/4b independence (F2), layer-1 rendering reaching seats (F3) | — | `STAGE4_DESIGN_REVIEW.md` |
+| D3 | Stage-4 evidential fixes: per-item echo stamp (F8/F1), 4c/4b independence (F2), layer-1 rendering reaching seats (F3) — **now the PREREQUISITE for the factory (M3 ruling)** | — | `STAGE4_DESIGN_REVIEW.md` |
+| D3f | Stage-4 client factory — build AFTER D3, to the spec as amended by `STAGE4_FACTORY_SPEC_REVIEW.md`; NEW FILES ONLY (`seats.py` belongs to the review agent) | after D3 | `STAGE4_DESIGN_REVIEW.md` |
 | D4 | Stage-4 `seats.py` hardening: defensive reply parsing in `judge`; `run_clause` records a skipped seat | delegated | `WORK_ORDER_review_agent.md` §3.2 |
 | D5 | D6 stages 2-3 (dense-leaf bisect) — superseded by the dense-leaf recursion ruling; keep or formally drop | — | `EXPERIMENTS.md` 2026-08-12 |
 
