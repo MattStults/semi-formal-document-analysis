@@ -15,9 +15,49 @@
 #
 # GUARD_STAGED_FILES overrides the staged list. It exists so this script can be
 # tested without staging anything or running a commit; leave it unset in use.
+# Either source is NEWLINE-separated, the shape of `git diff --cached
+# --name-only` — the only shape that can represent a path with a space.
 staged="${GUARD_STAGED_FILES-$(git diff --cached --name-only)}"
 [ -z "$staged" ] && exit 0
-python3 walkthrough/model/guard.py --watches $staged || exit 0
+
+# Split on NEWLINES only, so `a file.md` reaches the guard as ONE argument.
+# (G10, 2026-08-15: unquoted $staged word-split on spaces, so a staged path
+# with a space became two bogus paths, matched nothing, and the gate skipped
+# a file it was supposed to run for.)
+ifs_keep="$IFS"
+IFS='
+'
+set -f            # no pathname expansion of the split words either
+set -- $staged
+set +f
+IFS="$ifs_keep"
+
+# Ask the guard whether any staged file is watched. THREE outcomes, and they
+# must stay three (G2, 2026-08-15 — this line used to be
+# `python3 ... || exit 0`, so a missing python3 (127), a crashed guard (1)
+# and "nothing watched" all exited 0 and the commit went through; that is
+# the 2026-08-07 incident with the seeing removed):
+#   0  something is watched          -> run the gates below
+#   3  nothing is watched            -> silent exit (guard.py's reserved
+#                                       skip code; it is not 1, because 1 is
+#                                       also Python's crash exit)
+#   anything else                    -> the guard could NOT run. BLOCK.
+python3 walkthrough/model/guard.py --watches "$@"
+rc=$?
+if [ "$rc" -eq 3 ]; then
+  exit 0
+fi
+if [ "$rc" -ne 0 ]; then
+  echo "" >&2
+  echo "COMMIT BLOCKED. The staleness guard could not answer whether a staged" >&2
+  echo "file is watched (guard exited $rc): python3 missing from PATH, guard.py" >&2
+  echo "crashed, or the watch list is broken. 'Could not run' is not a pass —" >&2
+  echo "it is indistinguishable from 'no guard installed', the failure of" >&2
+  echo "2026-08-07. Fix the environment (python3 must resolve) and retry, or" >&2
+  echo "run the guard by hand:  python3 walkthrough/model/guard.py" >&2
+  echo "Bypass (records nothing, and nobody will know):  git commit --no-verify" >&2
+  exit 1
+fi
 
 echo "a watched file changed — checking the prompt's examples, then staleness"
 

@@ -21,6 +21,7 @@ exercised it are gone. What is left, and what has been widened, is the guard.
 
 import json
 import os
+import shutil
 import subprocess
 import sys
 
@@ -218,14 +219,22 @@ def test_watches_matches_on_the_whole_path_not_the_basename():
 # the pre-commit hook, exercised without running git
 # --------------------------------------------------------------------------
 
-def _run_hook(staged):
-    env = dict(os.environ, GUARD_STAGED_FILES=staged)
-    return subprocess.run(["sh", os.path.join(HERE, "hooks", "pre-commit")],
+def _run_hook(*staged, path=None):
+    """The hook, exercised without staging anything. Staged paths are joined
+    with NEWLINES — the shape of `git diff --cached --name-only` — which is
+    the only shape that can represent a path containing a space. `path`
+    replaces PATH entirely (the missing-interpreter cases)."""
+    env = dict(os.environ, GUARD_STAGED_FILES="\n".join(staged))
+    if path is not None:
+        env["PATH"] = path
+    # /bin/sh by absolute path: the missing-interpreter tests replace PATH,
+    # and a bare "sh" would then fail to resolve in the TEST, not the hook.
+    return subprocess.run(["/bin/sh", os.path.join(HERE, "hooks", "pre-commit")],
                           capture_output=True, text=True, cwd=REPO, env=env)
 
 
 def test_pre_commit_is_silent_when_nothing_watched_is_staged():
-    r = _run_hook("walkthrough/README.md walkthrough/link.py")
+    r = _run_hook("walkthrough/README.md", "walkthrough/link.py")
     assert r.returncode == 0
     assert r.stdout.strip() == "", f"hook spoke when it should not: {r.stdout}"
 
@@ -275,3 +284,94 @@ def test_pre_commit_self_test_passes():
                        capture_output=True, text=True, cwd=HERE)
     assert r.returncode == 0, r.stdout + r.stderr
     assert "FAIL" not in r.stdout, r.stdout
+
+
+# --------------------------------------------------------------------------
+# G2 (2026-08-15): the scoping gate must fail CLOSED. It used to read
+# `python3 guard.py --watches $staged || exit 0` — with no python3 on PATH
+# (127), a crashed guard (1), or guard.py gone, the hook exited 0 and the
+# commit went through: "could not run" shared an exit code with "nothing
+# watched is staged", the exact pass==did-not-run shape of 2026-08-07.
+# --------------------------------------------------------------------------
+
+def test_pre_commit_BLOCKS_when_the_interpreter_is_missing(tmp_path):
+    """⭐ THE G2 PIN (ran the review's repro and got exit 0). An empty PATH
+    means no python3; the staged file IS watched. The hook must block."""
+    empty = tmp_path / "empty_path"
+    empty.mkdir()
+    r = _run_hook("walkthrough/paper_pipeline/phase_1/schema.py",
+                  path=str(empty))
+    assert r.returncode != 0, "the hook passed a commit it could not check"
+    assert "COMMIT BLOCKED" in r.stdout + r.stderr
+
+
+def test_pre_commit_BLOCKS_when_the_guard_crashes(tmp_path):
+    """The crash variant is the same line: a fake python3 that always exits 1
+    stands in for a guard that dies. 1 is also Python's unhandled-exception
+    exit, which is why the hook's skip signal had to move off it."""
+    fake = tmp_path / "fake_bin"
+    fake.mkdir()
+    fake_python = fake / "python3"
+    fake_python.write_text("#!/bin/sh\nexit 1\n")
+    fake_python.chmod(0o755)
+    r = _run_hook("walkthrough/paper_pipeline/phase_1/schema.py",
+                  path=str(fake))
+    assert r.returncode != 0, "a crashed guard read as 'nothing watched'"
+    assert "COMMIT BLOCKED" in r.stdout + r.stderr
+
+
+def test_watches_cli_names_a_reserved_skip_code():
+    """The hook may silently skip ONLY on the guard's explicit 'nothing
+    watched' code (3). Not-watched used to exit 1 — indistinguishable from
+    a Python crash, which is what let the crash variant fail open."""
+    skip = subprocess.run(
+        [sys.executable, os.path.join(HERE, "guard.py"),
+         "--watches", "walkthrough/README.md"],
+        capture_output=True, text=True, cwd=REPO)
+    assert skip.returncode == 3, \
+        "the skip signal must not share Python's crash exit code"
+    fire = subprocess.run(
+        [sys.executable, os.path.join(HERE, "guard.py"),
+         "--watches", "walkthrough/paper_pipeline/phase_1/schema.py"],
+        capture_output=True, text=True, cwd=REPO)
+    assert fire.returncode == 0
+
+
+def _scratch_hook(tmp_path, watch_pattern, staged):
+    """A minimal tree (copies of hook + guard + a one-entry watch list), so a
+    WATCHED path containing a space — which the real watch list does not
+    carry — can be exercised end-to-end without touching real watch state.
+    The guard reads watch.json beside itself, so the copies are live."""
+    model = tmp_path / "walkthrough" / "model"
+    (model / "hooks").mkdir(parents=True)
+    shutil.copyfile(os.path.join(HERE, "guard.py"), model / "guard.py")
+    shutil.copyfile(os.path.join(HERE, "hooks", "pre-commit"),
+                    model / "hooks" / "pre-commit")
+    (model / "watch.json").write_text(json.dumps({"watch": [
+        {"path": watch_pattern,
+         "why": "test entry: a watched path with a space in its name"}]}))
+    env = dict(os.environ, GUARD_STAGED_FILES=staged)
+    return subprocess.run(["/bin/sh", str(model / "hooks" / "pre-commit")],
+                          capture_output=True, text=True, cwd=tmp_path,
+                          env=env)
+
+
+def test_a_staged_path_with_a_space_reaches_the_gate_as_one_path(tmp_path):
+    """⭐ The G10 quoting pin. Unquoted `$staged` word-split `my file.md`
+    into two paths that matched nothing, and the hook exited 0 — a watched
+    file staged, gate skipped. The scratch tree has no venv, so a hook that
+    REACHES the gate goes on to block there; reaching is the assertion."""
+    staged = "walkthrough/paper_pipeline/phase_1/prompt/my file.md"
+    r = _scratch_hook(tmp_path, "paper_pipeline/phase_1/prompt/my file.md",
+                      staged)
+    assert "a watched file changed" in r.stdout, \
+        "the spaced path word-split and the gate was skipped:\n" \
+        + r.stdout + r.stderr
+
+
+def test_two_unwatched_paths_are_still_silent_after_the_quoting_fix(tmp_path):
+    """Paired control for the newline split: nothing watched still exits 0
+    silently, even as several paths."""
+    r = _scratch_hook(tmp_path, "paper_pipeline/phase_1/prompt/my file.md",
+                      "walkthrough/README.md\nwalkthrough/link.py")
+    assert r.returncode == 0 and r.stdout.strip() == "", r.stdout

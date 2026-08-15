@@ -3,7 +3,9 @@
     python3 guard.py                    # check — non-zero if anything is stale
     python3 guard.py --accept PATH...   # record THOSE files as re-reviewed
     python3 guard.py --accept --all     # record every watched file (say why)
-    python3 guard.py --watches PATH...  # exit 0 if any path is watched (for hooks)
+    python3 guard.py --watches PATH...  # hooks: exit 0 any path watched,
+                                        # 3 nothing watched (the RESERVED skip
+                                        # code — see __main__), else "broken"
     python3 guard.py --self-test        # prove the guard still does work
 
 WHAT IT DETECTS. One thing, and it is the failure that cost the most: a file was
@@ -285,9 +287,11 @@ def accept(paths, who=None):
 
 
 def watches(paths):
-    """Exit 0 if any given path is one this guard watches. The hooks ask here
-    rather than keeping their own copy — the list lived in three places once,
-    which is how they drift apart.
+    """Return 0 if any given path is one this guard watches, else a non-zero
+    the caller maps to its skip code (the CLI maps it to exit 3, reserved
+    for exactly this — see __main__). The hooks ask here rather than keeping
+    their own copy — the list lived in three places once, which is how they
+    drift apart.
 
     ⚠️ Matches on the whole relative path, not the basename. `00_task.md`
     somewhere else in the tree is a different file."""
@@ -368,7 +372,17 @@ def self_test():
 if __name__ == "__main__":
     argv = sys.argv[1:]
     if "--watches" in argv:
-        raise SystemExit(watches(argv[argv.index("--watches") + 1:]))
+        # Exit codes the hook's scoping gate reads (G2, 2026-08-15):
+        #   0 a staged path is watched     -> run the gates
+        #   3 no staged path is watched    -> the RESERVED skip code
+        #   anything else is the hook's business to BLOCK on, because 1 is
+        # also Python's unhandled-exception exit: while "not watched" shared
+        # it, a crashed guard was indistinguishable from a clean skip, and
+        # the hook failed open. 3 cannot be produced by an interpreter that
+        # never ran guard.py at all.
+        # (watches() keeps the shell convention: 0 = watched, non-zero = not.)
+        watched = watches(argv[argv.index("--watches") + 1:])
+        raise SystemExit(0 if watched == 0 else 3)
     if "--self-test" in argv:
         raise SystemExit(self_test())
     if "--accept" in argv:
