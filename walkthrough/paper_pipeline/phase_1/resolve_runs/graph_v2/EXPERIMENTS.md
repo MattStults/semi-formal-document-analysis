@@ -2969,3 +2969,52 @@ still pass on old-shape fixtures). F REJECT / not ready.
 CONSEQUENCE FOR M1: the guard-accept request is WITHDRAWN pending rework --
 only C is close to landable, and the coverage claim it rests on is 43%, not
 58%, with 47 of 49 kills unmeasured.
+
+## 2026-08-15: stage-4 FACTORY SPEC review -- the central remedy does not work
+
+STAGE4_FACTORY_SPEC_REVIEW.md. Verdict SOUND WITH AMENDMENTS, but one
+amendment REVERSES the spec's central architectural move.
+* MECHANISM TRUE: _refuse has exactly 9 call sites, all inside the four
+  prompt builders; judge hands a list literal to a caller-supplied object
+  and never reads it again. A transport appending a turn to 4c's messages
+  delivered it, nothing raised.
+* JUSTIFICATION OVERSTATED: "the absent parameter IS the mechanism" is
+  false today -- plan_clause already holds the readback in scope four
+  lines above the 4c builder. What actually keeps renderings out is a
+  CONTENT scan (_RENDERING_PATTERNS) plus _item_text sourcing from the
+  module. The test the spec leans on is a substring scan of PARAMETER
+  NAMES whose own docstring wrongly claims it is structural.
+* REMEDY DEMONSTRATED NOT TO WORK: a factory taking EXACTLY the spec's
+  arguments, violating no MUST or MUST-NOT, globs run_dir, re-runs
+  render_module, and appends the full read-back to 4c's messages past
+  every fence. run_dir is a CAPABILITY, not a scalar. A signature fence
+  cannot close a hole located on the wire -- the fix is a WIRE fence (A1).
+* Property-breaking gaps: MUST 5 (rendering_sha(rb)) contradicts MUST-NOT
+  1 (no rb) -- unimplementable as written, and an implementer resolves it
+  by passing rb, causing the very failure the spec prevents; MUST 7 names
+  run_checkpoint.py, which is a progress reporter with no key/store, so
+  literal obedience gives ZERO idempotency and re-pays every resume; MUST
+  2's transport violates MUST 1/6 because OUR OWN identical-retry seam
+  guard appends a marker on any repeat of a failed body (arguably a §5.6
+  "zero bits" breach too); truncation is mis-routed as ProviderError so it
+  is retried and re-paid; the budget fence is blind because the flash
+  provider is defined INLINE (stage-4 flash spend invisible to the gate
+  forever); §7's frontier tier is UNREACHABLE through the mandated client
+  (fable is kind=anthropic, Client refuses it).
+* Ledger correction: $3.449/$8.50 -> $5.05 left by spend.py's own view
+  (the review's $6.44 was wrong) -- and this is the same G1 gauge defect
+  the guardrails review found, biting a second consumer.
+* §C4's split VERIFIED CORRECT (run_clause's skip cannot live in the
+  factory; reply parsing in judge does NOT create a second adjudicator).
+  Two amendments + a THIRD seats.py change the spec missed entirely: the
+  <=12-item 4c batch split belongs in plan_clause.
+* BUILD ORDER (refines Matt's M3 ruling): build the factory NOW, offline,
+  independently of F1/F2/F3 -- but let it make NO CALL until A1, F4, F7,
+  F5 land. F1/F2/F3 gate any run that says the word "faithful", not the
+  seam itself.
+* PILOT REALITY: only 6 distinct clause ids render today, so the
+  "<=10-clause pilot" is not available from the stored corpus. Its
+  deliverable is reply shapes, unclear rate, A1 sha-mismatch count,
+  normalisation rate and measured $/seat -- NEVER a faithfulness result.
+  A flash pilot also needs a written ruling exempting a reply-shape pilot
+  from §7's frontier mandate.
