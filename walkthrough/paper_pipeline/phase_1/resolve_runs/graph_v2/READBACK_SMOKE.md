@@ -103,27 +103,44 @@ node `.json` validates unchanged — `outcome`/`abstain_reason` keys included).
 
 ## Integration gaps before full step-4 on nodes, ranked
 
-1. **Seat item-id disclosure (NEW, blocks every live seat).** The live prompts
-   never show the seat the ids `validate_judgements` demands. Fix is small
-   and mechanical: enumerate prompt items by denominator id (or have the
-   brief define `item` as the shown index and map positionally in `judge`).
-   Until fixed, all four seats are live-unrunnable against their own
-   adjudicator — on any corpus, not just nodes.
-2. **Client seam for seats** (syntheses 2–3 above): no stage-owned factory
-   exists; a ~15-line blessed factory (json_object forcing, SEAT_MAX_TOKENS,
-   envelope→text) is needed somewhere config-driven.
-3. **Clause text for nodes** (readiness gap 4, confirmed live): the packed
-   `quote` must not reach RB4/seats; the narrowed-span extraction works and
-   should be promoted into the node corpus row (or read off `locator`).
-4. **Cross-node gloss context for seats** (readiness gap 2, now with live
-   evidence): with only the node span as clause text, the seat returns
-   `unclear` on every borrowed concept gloss. Cross-reference texts (the
-   provider nodes' spans) need to ride along once providers are translated.
-5. **Link-scope hygiene for R3** (untested here): shared-preamble dedup plus
-   `%!show_trace` stripping when `link_texts` is non-empty.
-6. **Inputs without glosses** (translation-side, surfaced by R3): stage 2
-   accepts inputs no concept row defines; R3 then blocks (n013). Either
-   stage 2 warns, or this stays a known stage-4 refusal class.
+Status as of 2026-08-15 (guardrails-fixes documentation-truth pass): gaps
+1, 3, 4, 5 are FIXED and pinned by `phase_1/test_stage4_node_plumbing.py`;
+gap 2 remains open; gap 6 resolved by its second branch.
+
+1. ✅ FIXED — **Seat item-id disclosure (NEW, blocks every live seat).** The
+   live prompts never show the seat the ids `validate_judgements` demands.
+   Fixed: prompt items are enumerated by denominator id, with numeric-index
+   and internal-id replies mapped where the prompt taught them. Pinned by
+   `test_stage4_node_plumbing.py` §1 ("the LIVE-SHAPED pin", per seat: the
+   prompt-displayed ids ARE the validator-accepted ids, and a reply shaped
+   exactly like what the prompt displays adjudicates).
+2. ⛔ OPEN — **Client seam for seats** (syntheses 2–3 above): no stage-owned
+   factory exists; a ~15-line blessed factory (json_object forcing,
+   SEAT_MAX_TOKENS, envelope→text) is still needed somewhere config-driven.
+   No pin exists for it; the smoke's factory was synthesized.
+3. ✅ FIXED — **Clause text for nodes** (readiness gap 4, confirmed live):
+   the packed `quote` no longer reaches RB4/seats; `readback.clause_text`
+   returns the narrowed span (or the verbatim span text) and never the
+   packed prompt. Pinned by `test_stage4_node_plumbing.py` §2, including a
+   subset check over the stored `node_corpus.json`.
+4. ✅ FIXED — **Cross-node gloss context for seats** (readiness gap 2, now
+   with live evidence): `link_nodes.merged_gloss` is the blessed gloss source
+   (definer-node wins on multi-gloss names) and `link_nodes.provider_texts`
+   carries the provider nodes' spans, never packed prompts. Pinned by
+   `test_stage4_node_plumbing.py` §3.
+5. ✅ FIXED — **Link-scope hygiene for R3** (untested in the smoke):
+   `readback_r3.hygienic_link_texts` dedupes the exact shared preamble to one
+   copy across the link scope and strips stored `%!show_trace` directives
+   while keeping trace rules; any OTHER `#const` collision survives to error
+   in clingo. Pinned by `test_stage4_node_plumbing.py` §4, including the
+   integration pin that captures the exact program xclingo receives.
+6. ✅ RESOLVED BY ITS SECOND BRANCH — **Inputs without glosses**
+   (translation-side, surfaced by R3): no stage-2 warning was built;
+   `readback-ungloss` stays a stage-4 refusal class, and that behaviour is
+   the one now pinned (see `test_readback.py`'s ungloss tests and
+   `test_seats.py`'s "gates BEFORE any model is called"). Recorded 2026-08-15
+   as the observed resolution of this entry's either/or; no stage-2-warning
+   work is on record.
 
 ## Verdict
 
@@ -133,3 +150,6 @@ modules today with zero code changes and zero synthesis. The one hard blocker
 — seat item-id disclosure — is a prompt/adjudication mismatch in `seats.py`
 itself, unrelated to node modules, and is a one-function fix. Everything else
 is plumbing already mapped by `STEPS34_READINESS.md`.
+
+(2026-08-15 addendum: the hard blocker named above is the gap 1 fix, now
+landed and pinned; the remaining open item is gap 2, the seat client seam.)

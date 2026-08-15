@@ -2,8 +2,11 @@
 
     python3 guard.py                    # check — non-zero if anything is stale
     python3 guard.py --accept PATH...   # record THOSE files as re-reviewed
-    python3 guard.py --accept --all     # record every watched file (say why)
-    python3 guard.py --watches PATH...  # exit 0 if any path is watched (for hooks)
+                                        # (per file; there is deliberately no
+                                        # accept-all — DESIGN NOTE below)
+    python3 guard.py --watches PATH...  # hooks: exit 0 any path watched,
+                                        # 3 nothing watched (the RESERVED skip
+                                        # code — see __main__), else "broken"
     python3 guard.py --self-test        # prove the guard still does work
 
 WHAT IT DETECTS. One thing, and it is the failure that cost the most: a file was
@@ -32,6 +35,22 @@ DESIGN NOTE — why per-file, and why an exact sha.
   when. Accepting the prompt after a typo fix must not silently accept an
   unreviewed change to schema.py that happened to be sitting in the same
   working tree. `--accept` with no arguments is refused for that reason.
+
+  RULING 2026-08-15 (G6) — there is deliberately no accept-all. The code
+  and REVIEW_QUEUE §1 contradicted each other ("Accepting is per file …
+  There is deliberately no accept-all" vs an `--accept --all` the docstring
+  even advertised). The doctrine wins and the code was wrong. Provenance:
+  the original guard (commit e29a55a) had no `--all`; the flag rode in on
+  5c020cf — the 2026-08-07 save point committed WITH --no-verify while this
+  very guard was RED — and no workflow need for it is recorded anywhere.
+  Sibling ruling, same grounds: the repair graveyard deliberately has no
+  clear-all — "a graveyard that gets bulk-emptied is worse than none: the
+  mechanism that worked … blocked and had to be answered case by case"
+  (paper_pipeline/phase_1/graveyard.py, pinned by test_graveyard.py).
+  Rejected alternative, by name: keep `--all` as an escape hatch for a
+  genuine whole-list re-read — the graveyard's answer is the answer here:
+  the bulk path exists exactly once, spelled one `--accept <file>` per file
+  actually re-read.
 
   Exact sha, deliberately, over the whole file. A whitespace-insensitive or
   section-scoped digest would cry wolf less — but the two error costs are not
@@ -234,17 +253,27 @@ def accept(paths, who=None):
         print(f"⛔ ERROR — {e}")
         return 2
 
-    if not paths:
-        print("⛔ --accept needs the paths you actually re-read.")
-        print("   Accepting the whole list at once is how an unreviewed change")
-        print("   rides in beside a typo fix. Use --accept --all only if you")
-        print("   genuinely re-read every file below:")
+    if paths == ["--all"]:
+        print("⛔ There is deliberately no accept-all (ruling 2026-08-15, G6).")
+        print("   A single command attesting every file is how an unreviewed")
+        print("   change rides in beside a typo fix — the exact failure the")
+        print("   per-file review point exists to prevent, performed by hand.")
+        print("   Sibling ruling, same grounds: the repair graveyard has no")
+        print("   clear-all — 'a graveyard that gets bulk-emptied is worse than")
+        print("   none' (graveyard.py). Accept the files you actually re-read,")
+        print("   ONE AT A TIME:")
         for k in sorted(now):
             print(f"      python3 guard.py --accept {k}")
         return 2
 
-    if paths == ["--all"]:
-        paths = sorted(now)
+    if not paths:
+        print("⛔ --accept needs the paths you actually re-read.")
+        print("   Accepting the whole list at once is how an unreviewed change")
+        print("   rides in beside a typo fix. Accept the files you re-read,")
+        print("   one at a time:")
+        for k in sorted(now):
+            print(f"      python3 guard.py --accept {k}")
+        return 2
 
     resolved, bad = [], []
     for p in paths:
@@ -284,10 +313,26 @@ def accept(paths, who=None):
     return 0
 
 
+def _glob_match(rel, pattern):
+    """glob semantics for one relative path: `*` and `?` stop at `/`.
+
+    resolve() watches with glob.glob; this matcher must agree with it, or
+    'what is watched' has two answers (G10, 2026-08-15 — fnmatch's `*`
+    crossed `/`, so a staged prompt/sub/x.md fired the hook for a file
+    resolve() does not watch). Same segment count, then fnmatch per
+    segment, which is glob's per-segment behaviour for `*`, `?` and [...]
+    (no `**` recursion — resolve() does not use recursive=True either)."""
+    rel_parts, pat_parts = rel.split("/"), pattern.split("/")
+    return len(rel_parts) == len(pat_parts) and all(
+        fnmatch.fnmatch(r, p) for r, p in zip(rel_parts, pat_parts))
+
+
 def watches(paths):
-    """Exit 0 if any given path is one this guard watches. The hooks ask here
-    rather than keeping their own copy — the list lived in three places once,
-    which is how they drift apart.
+    """Return 0 if any given path is one this guard watches, else a non-zero
+    the caller maps to its skip code (the CLI maps it to exit 3, reserved
+    for exactly this — see __main__). The hooks ask here rather than keeping
+    their own copy — the list lived in three places once, which is how they
+    drift apart.
 
     ⚠️ Matches on the whole relative path, not the basename. `00_task.md`
     somewhere else in the tree is a different file."""
@@ -302,7 +347,7 @@ def watches(paths):
                 rel = rel[len(prefix):]
                 break
         for e in entries:
-            if fnmatch.fnmatch(rel, e["path"]):
+            if _glob_match(rel, e["path"]):
                 return 0
     return 1
 
@@ -368,7 +413,17 @@ def self_test():
 if __name__ == "__main__":
     argv = sys.argv[1:]
     if "--watches" in argv:
-        raise SystemExit(watches(argv[argv.index("--watches") + 1:]))
+        # Exit codes the hook's scoping gate reads (G2, 2026-08-15):
+        #   0 a staged path is watched     -> run the gates
+        #   3 no staged path is watched    -> the RESERVED skip code
+        #   anything else is the hook's business to BLOCK on, because 1 is
+        # also Python's unhandled-exception exit: while "not watched" shared
+        # it, a crashed guard was indistinguishable from a clean skip, and
+        # the hook failed open. 3 cannot be produced by an interpreter that
+        # never ran guard.py at all.
+        # (watches() keeps the shell convention: 0 = watched, non-zero = not.)
+        watched = watches(argv[argv.index("--watches") + 1:])
+        raise SystemExit(0 if watched == 0 else 3)
     if "--self-test" in argv:
         raise SystemExit(self_test())
     if "--accept" in argv:

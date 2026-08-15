@@ -113,5 +113,20 @@
       0.05,
       0.2
     ]
+  },
+  {
+    "name": "together-deepseek-v4-flash",
+    "kind": "openai-compatible",
+    "base_url": "https://api.together.xyz/v1",
+    "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+    "api_key_env": "TOGETHER_API_KEY",
+    "temperature": 0.2,
+    "max_tokens": 16384,
+    "price_per_mtok": [
+      0.14,
+      0.28
+    ],
+    "cached_price_note": "G1 ruling 2026-08-15: the cached-input rate is KNOWN ($0.03/Mtok; together.ai model page fetched 2026-08-07, recorded at walkthrough/paper_pipeline/phase_1/config.json `_price_per_mtok`) and is deliberately NOT set as cached_input_per_mtok. The harness's own embedded cost_usd bills every input token at the FULL rate — config.json's doctrine: 'the conservative direction and is what a hard [...] ledger cap deserves' — and spend.py's recomputation must stay equal to the rows' own arithmetic. Rejected alternative, by name: adding cached_input_per_mtok 0.03 here.",
+    "batch_billing_note": "G1 ruling 2026-08-15: this model runs under together's Batch API (config execution.mode=batch), which bills at a ~50% discount whose applicability to this model was still UNRESOLVED in resolve_runs/graph_v2/BATCH_DESIGN.md when it was written. Batch-billed rows are NOT identifiable in usage.jsonl — dispatch_core's batch collector ledgers them through the same response_envelope as live calls, cost_usd at list price, no row field marks the billing path — so where batch billing applied, list-price totals like this one may OVERSTATE actual cost. Rejected alternatives, by name: pricing all rows at half list (unidentifiable rows would be under-priced, the wrong direction), and adding a batch marker to ledger rows (requires editing files another console owns, and cannot retro-mark rows already logged)."
   }
 ]

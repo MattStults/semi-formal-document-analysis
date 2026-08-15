@@ -1,6 +1,19 @@
 # Breadth-first batch execution (design, 2026-08-11)
 
-**Status: DESIGN — not yet built.** Matt's observation: together.ai degrades
+**Status 2026-08-11: DESIGN — not yet built.**
+**Status 2026-08-15 (documentation-truth pass): BUILT AND THE DEFAULT FOR THE
+CORPUS RUN.** The post-review resolution below is what was built: the shared
+core (DispatchState / Scheduler / in-flight manifest) plus the three executors
+selected by `execution.mode` live in `dispatch_core.py` (graph) and
+`translate_exec.py` (translation); there is no separate `batch_client.py`.
+`config_corpus_all.json` ships `execution.mode: batch, batch_min_pending: 8`
+(Matt, 2026-08-14: "wait for batching — 50% discount"), with the binding
+`checkpoint_pause: false` note beside it; review defect 4a (pause discarding
+already-paid collected rows) is fixed and pinned since, see EXPERIMENTS.md
+2026-08-14 "4a + 3 defects FIXED". The "What to build" list below is history:
+its step 1 (`batch_client.py`) was superseded by the executor design.
+
+Matt's observation: together.ai degrades
 under high-volume live traffic (tonight's 503s, timeouts, and stochastic
 truncations are consistent with that) but performs well on their Batch API,
 which also prices at a discount. The recursion can't submit the whole tree
@@ -98,7 +111,12 @@ layers (holds ready work on slow siblings).
 
 - Batch turnaround SLA on together (minutes vs hours) decides whether
   repair rounds stay batched or fall back to live for small layers.
-- Whether the ~50% batch discount applies to this model.
+- Whether the ~50% batch discount applies to this model. *(2026-08-15: still
+  UNRESOLVED as a fact. The campaign plans as if it applies — EXPERIMENTS.md
+  2026-08-14: "~$3 live vs ~$1.5 batched" — but batch-billed rows are NOT
+  identifiable in usage.jsonl, so spend.py prices this model at list and
+  prints a batch-billing caveat saying the total may OVERSTATE where batch
+  billing applied; see its providers.json row's `batch_billing_note`.)*
 
 ## Post-review resolution (2026-08-11, pending Matt's approval)
 

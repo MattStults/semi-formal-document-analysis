@@ -6,7 +6,19 @@ staging/commit is the coordinator's call, per the repo rule that the driver neve
 ## What is here
 
 - `EXPERIMENTS.md` — the running experiment log: decisions with grounds, run log,
-  pre-registered keys, Matt's rulings, test deviations. **Read this first.**
+  pre-registered keys, Matt's rulings, test deviations. ⚠️ ~2,900 lines,
+  chronological, and late entries RETRACT earlier ones (search "CORRECTION to
+  this log") — reading it front-to-back as current state will mislead you.
+  **Read the last six entries** (2026-08-14, from "ds7 PRODUCTION GRAPH --
+  CERTIFIED" to the end) plus the named reports below, and treat everything
+  earlier as history:
+  - `production_certification.md` — the independent certification pass over
+    `runs/ds7/root_graph.production.json` (offline, $0) and its numbered
+    conditions.
+  - `opus_recheck_report.md` — Opus recheck of the 61 quarantined ds7 verdicts
+    under evidence prompts (zero API spend).
+  - For the translation campaign that runs against this graph, the operating
+    runbook is `../../TRANSLATION_RUNBOOK.md` (phase_1).
 - `GRAPH_PROMPT_v2A..D.md` — single-agent prompt variants (v2D = final single-agent form).
 - `RECURSE_PROMPT.md` — the shared brief for the recursive divide/leaf/unwind design
   (Matt's architecture). This is the current best prompt.

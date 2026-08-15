@@ -19,9 +19,11 @@ Usage:
   python3 node_corpus.py --ids L1-170_n028 L4572-4691_n011
   python3 node_corpus.py --all                # every node of --graph
                                               # (default recurse/root/graph.json)
-Then:
-  VENV=../../../../../semi-formal-experiment/.venv/bin/python
-  $VENV ../../translate.py --config resolve_runs/graph_v2/config_graph_nodes.json --dry-run
+Then (run from phase_1/ — the --config path is relative to it; a bare run is
+a DRY RUN that sends nothing, --live spends; there is no --dry-run flag):
+  cd ../..                                     # phase_1
+  VENV=../../../semi-formal-experiment/.venv/bin/python
+  $VENV translate.py --config resolve_runs/graph_v2/config_graph_nodes.json
 """
 import argparse
 import hashlib
