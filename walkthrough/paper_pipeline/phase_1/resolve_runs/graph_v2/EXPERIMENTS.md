@@ -2864,3 +2864,38 @@ failing tests green. A live artifact and a test fixture must not be the
 same file.
 Review of the fix round dispatched; it gates re-enabling
 checkpoint_pause for the batched corpus run.
+
+## 2026-08-14: fix-round verified GO; corpus artifacts pinned; cadence corrected
+
+Review verdict: GO on 4a -- CLOSED, verified by re-running the
+reviewer's ORIGINAL failing probe (now: 4 of 4 rows routed, all
+ledgered) plus an attack pass over every other mid-collection abort
+path (second pause kept-first, precedence gate>poison>pause all AFTER
+the loop, propagation to exit 3 intact). Residual recorded: a pause from
+job 1 would abandon jobs 2..n -- UNREACHABLE here (translation flushes
+one job; FlatScheduler makes all clauses ready at once). Defects 2 and
+1b CLOSED (reviewer's own 16-decline/10-delivery corpus: 0 false
+positives, 0 false negatives; priced cap proven to be the cap that runs,
+restore exception-safe).
+NEW DEFECT recorded, promise_repair only, does NOT gate this run:
+:868's resume test reads `paused` alone, so a run stopped by the MID-RUN
+COST GATE (which writes paused=None + stopped_by_cost_gate) re-draws and
+re-pays every plan -- contradicting its own "the paid work survives"
+comment. One-line fix queued for the repair thread.
+CADENCE CORRECTED (my misreading): Matt's "stop every 10 and fix them"
+was about the GRAVEYARD CAP, not checkpoints. checkpoint_pause -> FALSE
+(record-only every 10: done/remaining, spend vs ceiling, failures by
+category, graveyard depth). Pausing every 10 clauses would have meant
+~77 manual restarts. The STOPS come from the graveyard cap of 10,
+checked in prepare -- so the run is SLICED and each slice re-checks it.
+CORPUS ARTIFACTS PINNED (the reviewer's sharpest catch: "the single
+artifact the paid run consumes is the one artifact with no pin") --
+test_corpus_artifacts.py asserts node_corpus_all.json's 773 ids match
+the config's selection exactly, that every row is a node of the
+CERTIFIED production graph and covers all of it, and that the sample
+fixture and the live corpus stay different files. 3 pins green.
+Also recorded, not blocking: node_corpus.py still has no --out (so the
+documented --all command would clobber the fixture a fourth time --
+detected by test_full_corpus_mode..., not prevented), and
+node_worked_example.md cites sample-corpus node ids that do not exist in
+the 773 -- harmless as pedagogy, but its pin now means less than it says.
