@@ -1,0 +1,112 @@
+{
+  "outcome": "translated",
+  "clause_id": "l171_426_n001",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the assistant must adhere to the Model Spec above all else",
+    "C2 much of the Model Spec consists of instructions at default authority levels (user-level or guideline-level)",
+    "C3 default-level spec instructions can be overridden by higher-authority instructions from users or developers"
+  ],
+  "acts": ["adhere_to(I)"],
+  "concepts": [
+    {
+      "name": "spec_instruction",
+      "arity": 1,
+      "gloss": "I is an instruction in the Model Spec",
+      "licence": "textual",
+      "cites": "l171_426_n001",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "default_level_instruction",
+      "arity": 1,
+      "gloss": "I is a spec instruction operating at default authority level (user or guideline level)",
+      "licence": "textual",
+      "cites": "l171_426_n001",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "instruction_authority",
+      "arity": 2,
+      "gloss": "instruction I is issued from authority level A",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "to determine overridability, each instruction must be associated with its authority level",
+      "toggleable": false
+    },
+    {
+      "name": "ranks_higher",
+      "arity": 2,
+      "gloss": "authority level A1 ranks higher than authority level A2 in the command hierarchy",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the authority hierarchy is used to determine which instructions take precedence",
+      "toggleable": false
+    },
+    {
+      "name": "overridable_by",
+      "arity": 2,
+      "gloss": "spec instruction I1 can be overridden by higher-authority instruction I2",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "instructions at default levels can be superseded by instructions from higher authority levels",
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "atom": "default_level_instruction(I)",
+      "body": "spec_instruction(I), instruction_authority(I, A), (A = user; A = guideline)",
+      "gloss": "I is a spec instruction at user or guideline authority level",
+      "licence": "textual",
+      "cites": "l171_426_n001",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "atom": "ranks_higher(A1, A2)",
+      "body": "authority_levels_hierarchy(A1, A2)",
+      "gloss": "A1 ranks higher in the chain of command than A2",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the authority hierarchy defines the ordering of authority levels",
+      "toggleable": false
+    },
+    {
+      "atom": "overridable_by(I1, I2)",
+      "body": "default_level_instruction(I1), instruction_authority(I1, A1), instruction_authority(I2, A2), ranks_higher(A2, A1)",
+      "gloss": "higher-authority instruction I2 can override lower-authority spec instruction I1",
+      "licence": "textual",
+      "cites": "l171_426_n001",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "asserts": [
+    {
+      "status": "oblige",
+      "act": "adhere_to(I)",
+      "body": "spec_instruction(I)",
+      "read_back": "adhering to instruction % from the Model Spec is obligatory",
+      "read_back_slots": ["I"],
+      "licence": "textual",
+      "cites": "l171_426_n001",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "adhere_to",
+      "closure": "cnpa",
+      "reason": "the clause obligates adherence to the Model Spec; instructions in the spec must be followed unless overridden by higher authority, so silence mandates compliance"
+    }
+  ],
+  "requires": ["assistant_definition/0", "authority_levels_hierarchy/2"],
+  "inputs": ["spec_instruction/1", "instruction_authority/2"],
+  "forbid_body": []
+}

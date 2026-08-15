@@ -1,0 +1,78 @@
+PRE-REGISTRATION — DC-1 (worked example for the body-less ground `ontology` route)
+Written 2026-08-15, BEFORE any draw was dispatched. Zero API spend; local Haiku only.
+
+--------------------------------------------------------------------------------
+STEP 1 — INSTRUMENT CHECK (hard gate)
+--------------------------------------------------------------------------------
+Cohort: the 17 clauses of the 08-14 pair whose attempt-1 defect set was exactly
+{undeclared-body-name} (reproduced by cohort.py).
+
+Draw: the stored byte-identical gen-11 system prompt (sha 5ff9daf7fe58845f) +
+the stored per-clause user prompt. 3 isolated Haiku subagents per clause = 51
+draws, one task per subagent, task ids shuffled under seed 20260815+7.
+
+Gate statistic: r = share of the 51 stock draws whose attempt-1 finding set
+(checks.run_checks(obj,row,KNOWN,concepts=None,attempt=1)) contains
+`undeclared-body-name`.
+
+GATE (declared now, before any result is seen):
+  PASS  iff r >= 0.15 (>= 8/51) AND the Wilson 95% lower bound on r >= 0.08.
+  FAIL  otherwise -> verdict UNTESTABLE-WITH-THIS-INSTRUMENT, no A/B, no edit.
+
+Rationale for the threshold. The example can at best remove this class. With
+51 draws per arm, a Fisher two-sided test of "class present" comparing r to 0
+reaches p<0.05 only at r >= ~0.12; the primary endpoint (clean rate) can only
+move by at most r, and 51/arm cannot resolve a shift below ~20pp at 80% power.
+r < 0.15 therefore means the design is underpowered by construction -- exactly
+the hole that hollowed out the Fix C replication (2/30 = 7%).
+
+--------------------------------------------------------------------------------
+STEP 2 — A/B (only if the gate passes)
+--------------------------------------------------------------------------------
+Arm A: stock system prompt. Arm B: identical except the embedded
+node_worked_example.md text is replaced by the version carrying the added
+glossary / body-less-ground-atom example (DRAFT_worked_example_section.md),
+re-validated through checks.run_checks before use.
+17 clauses x 2 arms x 3 draws = 102 tasks, one isolated Haiku subagent each,
+shuffled, arms interleaved.
+
+PRIMARY ENDPOINT: attempt-1 clean rate (run_checks outcome == "translated"),
+arm B minus arm A. Test: clause-blocked permutation on the arm label (the
+randomisation actually performed). Report effect with 95% CI.
+
+SECONDARY ENDPOINTS (pre-declared):
+  S1. rate of `undeclared-body-name` at attempt 1, A vs B.
+  S2. mechanism/uptake: share of drafts containing >=1 body-less ground
+      `ontology` atom, A vs B. (TIER §8 rank-2 falsifier: if uptake does not
+      rise above the ~7% baseline, the example did not teach the route.)
+  S3. defect trading: findings in classes OTHER than the target, A vs B --
+      does arm B introduce more than it removes (Fix C's arm B removed 2 and
+      introduced 5).
+
+FALSIFIERS (pre-declared):
+  F1. If arm B's clean rate does not exceed arm A's, or the clause-blocked
+      permutation p >= 0.05, the example did not move first-try -> NULL.
+  F2. If S2 uptake does not rise materially in arm B, the example was not read
+      -> NULL for a different reason (instruction not received), and the
+      instruction, not the hypothesis, is what failed.
+  F3. If S2 rises but the primary does not, the route was never the blocker
+      (TIER §8 rank 2's own wording) -> NULL, and DC-1's mechanism is refuted
+      rather than merely unmeasured.
+  F4. If arm B introduces more non-target findings than it removes target
+      findings, it has traded defects -> do not land regardless of F1.
+
+LANDING RULE: node_worked_example.md is edited ONLY if the primary endpoint
+moves with permutation p < 0.05 AND F4 does not fire. Nothing lands on a null.
+
+--------------------------------------------------------------------------------
+THE 60%-vs-38% CONFOUND
+--------------------------------------------------------------------------------
+DC-1's supporting statistic (drafts using the ontology route land first-try at
+60%, n=15, vs 38% overall) is CORRELATIONAL: route choice and outcome are two
+free choices on the same call, so the model may pick the route on easier
+clauses. Pre-declared test: within the 51 stock instrument draws, each clause
+is drawn 3 times, so route choice varies WITHIN clause. Compare clean rate of
+route-using vs non-route-using draws with the CLAUSE held fixed (clause-blocked
+permutation of the route indicator). If the association survives clause
+blocking it is not pure clause-difficulty selection; if it does not, the 60/38
+figure is not evidence and must not be cited as support.

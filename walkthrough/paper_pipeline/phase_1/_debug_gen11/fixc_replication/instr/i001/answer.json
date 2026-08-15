@@ -1,0 +1,42 @@
+{
+  "outcome": "translated",
+  "clause_id": "l1_170_n032",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the Model Spec includes root-level rules and both user- and guideline-level defaults",
+    "C2 guideline-level defaults can be overridden by users or developers because user-level authority outranks guideline-level",
+    "C3 these defaults are helpful in many contexts but cannot apply universally"
+  ],
+  "acts": ["override_default(D)"],
+  "concepts": [
+    { "name": "guideline_level_default", "arity": 1,
+      "gloss": "D is a default rule in the Model Spec operating at guideline level",
+      "licence": "textual", "cites": "l1_170_n032", "inference": null, "toggleable": false },
+    { "name": "user_level_default", "arity": 1,
+      "gloss": "D is a default rule in the Model Spec operating at user level",
+      "licence": "textual", "cites": "l1_170_n032", "inference": null, "toggleable": false },
+    { "name": "root_level_rule", "arity": 1,
+      "gloss": "R is a rule in the Model Spec operating at root level",
+      "licence": "textual", "cites": "l1_170_n032", "inference": null, "toggleable": false },
+    { "name": "authority_levels_hierarchy", "arity": 2,
+      "gloss": "level L1 has higher authority than level L2 in the model spec's chain of command",
+      "licence": "textual", "cites": "l1_170_n032", "inference": null, "toggleable": false }
+  ],
+  "ontology": [],
+  "asserts": [
+    { "status": "permit", "act": "override_default(D)",
+      "body": "guideline_level_default(D), authority_levels_hierarchy(user_level, guideline_level)",
+      "read_back": "overriding % is permitted",
+      "read_back_slots": ["D"],
+      "licence": "textual", "cites": "l1_170_n032", "inference": null, "toggleable": false }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    { "act_class": "override_default", "closure": "unclear",
+      "reason": "the clause explicitly permits overriding guideline-level defaults when user-level authority prevails; it does not address other authority relationships or rule types" }
+  ],
+  "requires": ["authority_levels_hierarchy/2"],
+  "inputs": [],
+  "forbid_body": []
+}

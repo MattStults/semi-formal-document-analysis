@@ -1,0 +1,143 @@
+{
+  "outcome": "translated",
+  "clause_id": "l171_426_n001",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the assistant must adhere to the Model Spec above all else",
+    "C2 default (user- or guideline-level) Model Spec instructions can be overridden by users or developers"
+  ],
+  "acts": [],
+  "concepts": [
+    {
+      "name": "model_spec_instruction",
+      "arity": 1,
+      "gloss": "I is an instruction that belongs to the Model Spec document",
+      "licence": "textual",
+      "cites": "l171_426_n001",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "default_level",
+      "arity": 1,
+      "gloss": "L is an authority level that the clause treats as default (user or guideline)",
+      "licence": "textual",
+      "cites": "l171_426_n001",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "user_or_developer_level",
+      "arity": 1,
+      "gloss": "L is an authority level corresponding to users or developers (user or developer)",
+      "licence": "textual",
+      "cites": "l171_426_n001",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "instruction_level",
+      "arity": 2,
+      "gloss": "instruction I has authority level L in the conflict-resolution hierarchy",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "instructions must carry an authority level for the hierarchy to determine which prevails in conflicts",
+      "toggleable": false
+    },
+    {
+      "name": "conflicting_instructions",
+      "arity": 2,
+      "gloss": "instructions I and J direct incompatible outcomes in the same situation",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "override and adherence 'above all else' only apply when two instructions actually conflict",
+      "toggleable": false
+    },
+    {
+      "name": "assistant_definition",
+      "arity": 1,
+      "gloss": "A is the assistant entity the end user or developer interacts with",
+      "licence": "textual",
+      "cites": "l171_426_n001",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "authority_levels_hierarchy",
+      "arity": 2,
+      "gloss": "authority level L1 outranks authority level L2 in the document's hierarchy",
+      "licence": "textual",
+      "cites": "l171_426_n001",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "atom": "default_level(user)",
+      "body": null,
+      "gloss": "user is a default authority level in the Model Spec",
+      "licence": "textual",
+      "cites": "l171_426_n001",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "atom": "default_level(guideline)",
+      "body": null,
+      "gloss": "guideline is a default authority level in the Model Spec",
+      "licence": "textual",
+      "cites": "l171_426_n001",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "atom": "user_or_developer_level(user)",
+      "body": null,
+      "gloss": "user is an authority level that can override default Model Spec instructions",
+      "licence": "textual",
+      "cites": "l171_426_n001",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "atom": "user_or_developer_level(developer)",
+      "body": null,
+      "gloss": "developer is an authority level that can override default Model Spec instructions",
+      "licence": "textual",
+      "cites": "l171_426_n001",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "asserts": [],
+  "beats": [
+    {
+      "winner": "I",
+      "loser": "J",
+      "body": "model_spec_instruction(I), instruction_level(I, L1), not default_level(L1), instruction_level(J, L2), conflicting_instructions(I, J)",
+      "read_back": "non-default Model Spec instruction % outranks conflicting instruction % because the Model Spec must be adhered to above all else",
+      "read_back_slots": ["I", "J"],
+      "licence": "textual",
+      "cites": "l171_426_n001",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "winner": "J",
+      "loser": "I",
+      "body": "model_spec_instruction(I), instruction_level(I, L1), default_level(L1), instruction_level(J, L2), user_or_developer_level(L2), authority_levels_hierarchy(L2, L1), conflicting_instructions(I, J)",
+      "read_back": "user- or developer-level instruction % outranks default Model Spec instruction %",
+      "read_back_slots": ["J", "I"],
+      "licence": "textual",
+      "cites": "l171_426_n001",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "closure": [],
+  "requires": ["assistant_definition/1", "authority_levels_hierarchy/2"],
+  "inputs": ["model_spec_instruction/1", "instruction_level/2", "conflicting_instructions/2"],
+  "forbid_body": []
+}
