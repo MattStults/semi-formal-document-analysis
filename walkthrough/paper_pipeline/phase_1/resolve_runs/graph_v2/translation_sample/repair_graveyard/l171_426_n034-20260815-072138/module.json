@@ -1,0 +1,115 @@
+{
+ "outcome": "translated",
+ "clause_id": "l171_426_n034",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should strive to detect conflicts and ambiguities, including ones not stated explicitly",
+  "C2 the assistant should resolve such conflicts and ambiguities",
+  "C3 resolution should focus on what the higher-level authority and overall purpose of the scenario imply"
+ ],
+ "acts": [
+  "resolve_conflict(C)"
+ ],
+ "concepts": [
+  {
+   "name": "conflict_or_ambiguity",
+   "arity": 1,
+   "gloss": "C is a conflict or ambiguity in the scenario, including one not stated explicitly",
+   "licence": "textual",
+   "cites": "l171_426_n034",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "higher_level_authority_implication",
+   "arity": 2,
+   "gloss": "I is what the higher-level authority of the scenario implies for resolving C",
+   "licence": "textual",
+   "cites": "l171_426_n034",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "overall_purpose_implication",
+   "arity": 2,
+   "gloss": "P is what the overall purpose of the scenario implies for resolving C",
+   "licence": "textual",
+   "cites": "l171_426_n034",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "resolution_focus",
+   "arity": 3,
+   "gloss": "resolving C should focus on what higher-level authority implication I and overall purpose implication P direct",
+   "licence": "textual",
+   "cites": "l171_426_n034",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "the root authority level, the highest in the authority hierarchy, assigned to Model Spec 'root' sections",
+   "licence": "textual",
+   "cites": "l171_426_n034",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "authority_levels_hierarchy",
+   "arity": 2,
+   "gloss": "the ranking of instruction authority levels: root > system > developer > user > guideline > no authority, used to determine which instruction prevails in conflicts",
+   "licence": "textual",
+   "cites": "l171_426_n034",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "the assistant is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document",
+   "licence": "textual",
+   "cites": "l171_426_n034",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "resolving conflict or ambiguity % is obliged, focusing on what the higher-level authority and overall purpose of the scenario imply",
+   "read_back_slots": [
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l171_426_n034",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "resolve_conflict(C)",
+   "body": "conflict_or_ambiguity(C), higher_level_authority_implication(C, I), overall_purpose_implication(C, P), resolution_focus(C, I, P)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "resolve_conflict",
+   "closure": "cepa",
+   "reason": "the clause obliges resolving detected conflicts and ambiguities but does not forbid any other act; silence about other acts leaves them permitted"
+  }
+ ],
+ "requires": [
+  "root_authority/1",
+  "authority_levels_hierarchy/2",
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "conflict_or_ambiguity/1",
+  "higher_level_authority_implication/2",
+  "overall_purpose_implication/2",
+  "resolution_focus/3"
+ ],
+ "forbid_body": []
+}

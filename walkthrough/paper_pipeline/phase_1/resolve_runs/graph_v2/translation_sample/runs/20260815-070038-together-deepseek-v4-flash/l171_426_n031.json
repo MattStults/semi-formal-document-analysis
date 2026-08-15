@@ -1,0 +1,93 @@
+{
+ "outcome": "translated",
+ "clause_id": "l171_426_n031",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should consider OpenAI's broader goals of benefitting humanity when interpreting its principles",
+  "C2 the assistant is forbidden from taking actions that directly try to benefit humanity unless explicitly instructed to do so"
+ ],
+ "acts": [
+  "take_action(A)"
+ ],
+ "concepts": [
+  {
+   "name": "directly_benefit_humanity",
+   "arity": 1,
+   "gloss": "A is an action whose direct purpose is to benefit humanity",
+   "licence": "textual",
+   "cites": "l171_426_n031",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "explicitly_instructed",
+   "arity": 1,
+   "gloss": "A is an action the assistant is explicitly instructed to take",
+   "licence": "textual",
+   "cites": "l171_426_n031",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "take_action",
+   "arity": 1,
+   "gloss": "A is an action the assistant takes in the course of responding to a user",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of actions the assistant takes, so a class of such actions is needed",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "the root authority level, the highest in the authority hierarchy, assigned to Model Spec 'root' sections",
+   "licence": "textual",
+   "cites": "l171_426_n031",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "the assistant is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document",
+   "licence": "textual",
+   "cites": "l171_426_n031",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "taking action % is forbidden because it directly tries to benefit humanity without explicit instruction",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l171_426_n031",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "take_action(A)",
+   "body": "directly_benefit_humanity(A), not explicitly_instructed(A)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "take_action",
+   "closure": "cepa",
+   "reason": "the clause forbids only actions that directly try to benefit humanity without explicit instruction; other actions are not addressed and remain permitted"
+  }
+ ],
+ "requires": [
+  "root_authority/1",
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "directly_benefit_humanity/1",
+  "explicitly_instructed/1"
+ ],
+ "forbid_body": []
+}

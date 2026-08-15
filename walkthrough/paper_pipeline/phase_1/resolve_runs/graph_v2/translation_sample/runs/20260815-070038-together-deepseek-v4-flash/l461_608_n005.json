@@ -1,0 +1,104 @@
+{
+ "outcome": "translated",
+ "clause_id": "l461_608_n005",
+ "abstain_reason": null,
+ "claims": [
+  "C1 bounding autonomy by scope mirrors the principle of least privilege and capability-based security",
+  "C2 scope should not be so narrow as to require multiple confirmations by the user for trivial actions",
+  "C3 requiring multiple confirmations for trivial actions could habituate the user to automatically confirming all requests"
+ ],
+ "acts": [
+  "set_scope(S)"
+ ],
+ "concepts": [
+  {
+   "name": "scope_of_autonomy",
+   "arity": 1,
+   "gloss": "S is the agreed-upon boundary of the assistant's autonomy, defining which sub-goals it may pursue, acceptable side effects, and when it must pause for clarification or approval",
+   "licence": "textual",
+   "cites": "l461_608_n005",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "requires_multiple_confirmations",
+   "arity": 1,
+   "gloss": "S is a scope so narrow that acting under it requires the user to confirm multiple times for trivial actions",
+   "licence": "assumed",
+   "cites": "l461_608_n005",
+   "inference": "the clause's prohibition is about a scope that demands multiple confirmations for trivial actions; this class names that condition",
+   "toggleable": false
+  },
+  {
+   "name": "trivial_action",
+   "arity": 2,
+   "gloss": "action A is trivial for the user, so requiring confirmation for it is disproportionate",
+   "licence": "assumed",
+   "cites": "l461_608_n005",
+   "inference": "the clause speaks of 'trivial actions' as a class; this relation names that class",
+   "toggleable": false
+  },
+  {
+   "name": "requires_confirmation",
+   "arity": 2,
+   "gloss": "action A is one the user must confirm multiple times under scope S",
+   "licence": "assumed",
+   "cites": "l461_608_n005",
+   "inference": "the clause's prohibition is about a scope that demands multiple confirmations for trivial actions; this relation names that demand",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "the rules in the #scope_of_autonomy section carry root authority, meaning they are the highest-priority rules governing the scope of autonomy",
+   "licence": "textual",
+   "cites": "l461_608_n005",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l461_608_n005",
+   "inference": null,
+   "toggleable": false,
+   "atom": "requires_multiple_confirmations(S)",
+   "gloss": "S is a scope that requires multiple confirmations for trivial actions",
+   "body": "requires_confirmation(A, S), trivial_action(A, U)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "setting scope % is forbidden because it is so narrow that it requires multiple confirmations for trivial actions",
+   "read_back_slots": [
+    "S"
+   ],
+   "licence": "textual",
+   "cites": "l461_608_n005",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "set_scope(S)",
+   "body": "scope_of_autonomy(S), requires_multiple_confirmations(S)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "set_scope",
+   "closure": "cepa",
+   "reason": "the clause forbids only a scope so narrow that it demands multiple confirmations for trivial actions; any other scope is left permitted"
+  }
+ ],
+ "requires": [
+  "scope_of_autonomy/1",
+  "root_authority/1"
+ ],
+ "inputs": [
+  "requires_confirmation/2",
+  "trivial_action/2"
+ ],
+ "forbid_body": []
+}
