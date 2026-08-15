@@ -1,0 +1,84 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1_170_n052",
+ "abstain_reason": null,
+ "claims": [
+  "C1 developer instructions carry developer-level authority",
+  "C2 obeying a developer instruction is obligatory",
+  "C3 the obligation is lifted when the instruction is overridden by a root or system instruction"
+ ],
+ "acts": [
+  "obey_developer_instruction(I)"
+ ],
+ "concepts": [
+  {
+   "name": "developer_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction given by a developer using the OpenAI API, carrying developer-level authority",
+   "licence": "textual",
+   "cites": "l1_170_n052",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "overridden_by_root_or_system",
+   "arity": 1,
+   "gloss": "I is an instruction that is overridden by a root or system instruction, so the developer instruction no longer prevails",
+   "licence": "textual",
+   "cites": "l1_170_n052",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "authority_levels_hierarchy",
+   "arity": 2,
+   "gloss": "the ranking of instruction authority levels: root > system > developer > user > guideline > no authority, used to determine which instruction prevails in conflicts",
+   "licence": "textual",
+   "cites": "l1_170_n052",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "developer_authority",
+   "arity": 1,
+   "gloss": "I is an instruction given by a developer using the OpenAI API, carrying developer-level authority",
+   "licence": "textual",
+   "cites": "l1_170_n052",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "obeying developer instruction % is obligatory unless it is overridden by a root or system instruction",
+   "read_back_slots": [
+    "I"
+   ],
+   "licence": "textual",
+   "cites": "l1_170_n052",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "obey_developer_instruction(I)",
+   "body": "developer_instruction(I), not overridden_by_root_or_system(I)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "obey_developer_instruction",
+   "closure": "cepa",
+   "reason": "the clause obliges obedience to developer instructions and lifts that obligation only when overridden by root or system instructions; it says nothing about other acts, so silence permits them"
+  }
+ ],
+ "requires": [
+  "authority_levels_hierarchy/2"
+ ],
+ "inputs": [
+  "developer_instruction/1",
+  "overridden_by_root_or_system/1"
+ ],
+ "forbid_body": []
+}

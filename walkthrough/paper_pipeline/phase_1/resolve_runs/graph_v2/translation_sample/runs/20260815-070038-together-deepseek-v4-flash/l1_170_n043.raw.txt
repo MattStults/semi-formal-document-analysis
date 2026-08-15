@@ -1,0 +1,137 @@
+{
+  "abstain_reason": null,
+  "acts": [],
+  "asserts": [],
+  "beats": [],
+  "claims": [
+    "C1 the root level is the highest level of instruction authority",
+    "C2 a root rule cannot be overridden by a system message",
+    "C3 a root rule cannot be overridden by a developer",
+    "C4 a root rule cannot be overridden by a user"
+  ],
+  "clause_id": "l1_170_n043",
+  "closure": [],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": "l1_170_n043",
+      "gloss": "R is a fundamental root rule of the instruction hierarchy",
+      "inference": null,
+      "licence": "textual",
+      "name": "root_rule",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": "l1_170_n043",
+      "gloss": "which of two instruction authority levels is the higher one, per the ranking root > system > developer > user > guideline > no authority",
+      "inference": null,
+      "licence": "textual",
+      "name": "authority_levels_hierarchy",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l1_170_n043",
+      "gloss": "I is an instruction issued at the root level of the authority hierarchy",
+      "inference": null,
+      "licence": "textual",
+      "name": "root_level_instruction",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l1_170_n043",
+      "gloss": "I is an instruction issued at the system level of the authority hierarchy",
+      "inference": null,
+      "licence": "textual",
+      "name": "system_level_instruction",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l1_170_n043",
+      "gloss": "I is an instruction issued at the developer level of the authority hierarchy",
+      "inference": null,
+      "licence": "textual",
+      "name": "developer_level_instruction",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l1_170_n043",
+      "gloss": "I is an instruction issued at the user level of the authority hierarchy",
+      "inference": null,
+      "licence": "textual",
+      "name": "user_level_instruction",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "instruction I was issued at authority level L",
+      "inference": "the clause says root rules cannot be overridden by system messages, developers or users, so each instruction must carry the level it was issued at for the comparison to range over",
+      "licence": "assumed",
+      "name": "instruction_level",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "instruction I would override instruction J if both were followed",
+      "inference": "'cannot be overridden' relates a root rule to a conflicting instruction from a lower level; which pairs conflict is a fact about the case",
+      "licence": "assumed",
+      "name": "overrides",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": [
+    "root_rule/1",
+    "instruction_level/2",
+    "overrides/2"
+  ],
+  "ontology": [
+    {
+      "atom": "root_level_instruction(I)",
+      "body": "root_rule(I), instruction_level(I, root)",
+      "cites": "l1_170_n043",
+      "gloss": "I is a root rule, hence an instruction at the root level",
+      "inference": null,
+      "licence": "textual",
+      "toggleable": false
+    },
+    {
+      "atom": "system_level_instruction(I)",
+      "body": "instruction_level(I, system)",
+      "cites": "l1_170_n043",
+      "gloss": "I is an instruction issued at the system level",
+      "inference": null,
+      "licence": "textual",
+      "toggleable": false
+    },
+    {
+      "atom": "developer_level_instruction(I)",
+      "body": "instruction_level(I, developer)",
+      "cites": "l1_170_n043",
+      "gloss": "I is an instruction issued at the developer level",
+      "inference": null,
+      "licence": "textual",
+      "toggleable": false
+    },
+    {
+      "atom": "user_level_instruction(I)",
+      "body": "instruction_level(I, user)",
+      "cites": "l1_170_n043",
+      "gloss": "I is an instruction issued at the user level",
+      "inference": null,
+      "licence": "textual",
+      "toggleable": false
+    }
+  ],
+  "outcome": "translated",
+  "requires": [
+    "authority_levels_hierarchy/2"
+  ]
+}

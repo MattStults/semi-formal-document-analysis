@@ -1,0 +1,79 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1_170_n040",
+ "abstain_reason": null,
+ "claims": [
+  "C1 instructions with higher authority override those with lower authority",
+  "C2 the chain-of-command principle is designed to maximize steerability and control for users and developers"
+ ],
+ "acts": [],
+ "concepts": [
+  {
+   "name": "chain_of_command_principle",
+   "arity": 1,
+   "gloss": "the principle that instructions with higher authority override those with lower authority, designed to maximize steerability and control",
+   "licence": "textual",
+   "cites": "l1_170_n040",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "authority_levels_hierarchy",
+   "arity": 2,
+   "gloss": "the ranking of instruction authority levels, root > system > developer > user > guideline > no authority, used to determine which instruction prevails in conflicts",
+   "licence": "textual",
+   "cites": "l1_170_n040",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "instruction_authority_level",
+   "arity": 2,
+   "gloss": "instruction I has a level of authority L",
+   "licence": "assumed",
+   "cites": "l1_170_n040",
+   "inference": "the clause assigns each instruction a level of authority, so a relation between an instruction and its level is needed",
+   "toggleable": false
+  },
+  {
+   "name": "overrides",
+   "arity": 2,
+   "gloss": "instruction I1 overrides instruction I2",
+   "licence": "assumed",
+   "cites": "l1_170_n040",
+   "inference": "the clause states that higher-authority instructions override lower-authority ones, so an override relation between instructions is needed",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1_170_n040",
+   "inference": null,
+   "toggleable": false,
+   "atom": "overrides(I1, I2)",
+   "gloss": "instruction I1 overrides instruction I2 because I1 has a higher authority level than I2",
+   "body": "instruction_authority_level(I1, L1), instruction_authority_level(I2, L2), authority_levels_hierarchy(L1, L2)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n040",
+   "inference": null,
+   "toggleable": false,
+   "atom": "chain_of_command_principle(chain_of_command)",
+   "gloss": "the chain-of-command principle holds: instructions with higher authority override those with lower authority",
+   "body": "overrides(I1, I2)"
+  }
+ ],
+ "asserts": [],
+ "beats": [],
+ "defines": [],
+ "closure": [],
+ "requires": [
+  "authority_levels_hierarchy/2"
+ ],
+ "inputs": [
+  "instruction_authority_level/2"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,137 @@
+{
+  "abstain_reason": null,
+  "acts": ["avoid_behavior(B)"],
+  "asserts": [
+    {
+      "act": "avoid_behavior(B)",
+      "body": "root_authority(R), root_instruction(R, I), behavior(B), contributes_to_catastrophic_risk(B)",
+      "cites": "l1_170_n044",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "a root-level instruction requires the model to avoid behavior % because it could contribute to catastrophic risks",
+      "read_back_slots": ["B"],
+      "status": "oblige",
+      "toggleable": false
+    },
+    {
+      "act": "avoid_behavior(B)",
+      "body": "root_authority(R), root_instruction(R, I), behavior(B), causes_direct_physical_harm(B)",
+      "cites": "l1_170_n044",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "a root-level instruction requires the model to avoid behavior % because it could cause direct physical harm to people",
+      "read_back_slots": ["B"],
+      "status": "oblige",
+      "toggleable": false
+    },
+    {
+      "act": "avoid_behavior(B)",
+      "body": "root_authority(R), root_instruction(R, I), behavior(B), violates_law(B)",
+      "cites": "l1_170_n044",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "a root-level instruction requires the model to avoid behavior % because it would violate laws",
+      "read_back_slots": ["B"],
+      "status": "oblige",
+      "toggleable": false
+    },
+    {
+      "act": "avoid_behavior(B)",
+      "body": "root_authority(R), root_instruction(R, I), behavior(B), undermines_chain_of_command(B)",
+      "cites": "l1_170_n044",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "a root-level instruction requires the model to avoid behavior % because it would undermine the chain of command",
+      "read_back_slots": ["B"],
+      "status": "oblige",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 root-level instructions are mostly prohibitive in character",
+    "C2 a root-level instruction obliges the model to avoid behavior that could contribute to catastrophic risks",
+    "C3 a root-level instruction obliges the model to avoid behavior that could cause direct physical harm to people",
+    "C4 a root-level instruction obliges the model to avoid behavior that would violate laws",
+    "C5 a root-level instruction obliges the model to avoid behavior that would undermine the chain of command"
+  ],
+  "clause_id": "l1_170_n044",
+  "closure": [
+    {
+      "act_class": "avoid_behavior",
+      "closure": "cepa",
+      "reason": "the clause obliges avoidance only for the four enumerated risk categories; it does not prohibit any other behavior, so silence leaves other behaviors permitted"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": "l1_170_n044",
+      "gloss": "R is the root level of instruction authority: fundamental root rules that cannot be overridden by system messages, developers or users",
+      "inference": null,
+      "licence": "textual",
+      "name": "root_authority",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": "l1_170_n044",
+      "gloss": "I is an instruction issued at the root level of authority R",
+      "inference": "the clause speaks of root-level instructions, so each such instruction must be tied to the root authority",
+      "licence": "assumed",
+      "name": "root_instruction",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l1_170_n044",
+      "gloss": "B is a behavior the model could exhibit",
+      "inference": "the clause directs the model to avoid behaviors, so a class of behaviors is presupposed",
+      "licence": "assumed",
+      "name": "behavior",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l1_170_n044",
+      "gloss": "B is a behavior that could contribute to catastrophic risks",
+      "inference": null,
+      "licence": "textual",
+      "name": "contributes_to_catastrophic_risk",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l1_170_n044",
+      "gloss": "B is a behavior that could cause direct physical harm to people",
+      "inference": null,
+      "licence": "textual",
+      "name": "causes_direct_physical_harm",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l1_170_n044",
+      "gloss": "B is a behavior that would violate laws",
+      "inference": null,
+      "licence": "textual",
+      "name": "violates_law",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l1_170_n044",
+      "gloss": "B is a behavior that would undermine the chain of command",
+      "inference": null,
+      "licence": "textual",
+      "name": "undermines_chain_of_command",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["root_instruction/2", "behavior/1", "contributes_to_catastrophic_risk/1", "causes_direct_physical_harm/1", "violates_law/1", "undermines_chain_of_command/1"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["root_authority/1"]
+}

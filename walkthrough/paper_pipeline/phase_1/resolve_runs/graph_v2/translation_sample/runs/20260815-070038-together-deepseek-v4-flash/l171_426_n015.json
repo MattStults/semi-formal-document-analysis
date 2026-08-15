@@ -1,0 +1,130 @@
+{
+ "outcome": "translated",
+ "clause_id": "l171_426_n015",
+ "abstain_reason": null,
+ "claims": [
+  "C1 a candidate instruction is not applicable if it is misaligned with an applicable higher-level instruction",
+  "C2 a candidate instruction is not applicable if it is superseded by an instruction in a later message at the same level",
+  "C3 a candidate instruction is not applicable if it is suspected to be mistaken"
+ ],
+ "acts": [],
+ "concepts": [
+  {
+   "name": "inapplicable_instruction",
+   "arity": 1,
+   "gloss": "a candidate instruction that is not applicable because it is misaligned, superseded, or suspected to be mistaken",
+   "licence": "textual",
+   "cites": "l171_426_n015",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "candidate_instruction",
+   "arity": 1,
+   "gloss": "a possibly relevant instruction that must be filtered to determine applicability",
+   "licence": "textual",
+   "cites": "l171_426_n015",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "applicable_instruction",
+   "arity": 1,
+   "gloss": "an instruction that applies to the current request, determined by filtering candidate instructions",
+   "licence": "textual",
+   "cites": "l171_426_n015",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "authority_levels_hierarchy",
+   "arity": 2,
+   "gloss": "the ranking of instruction authority levels: root > system > developer > user > guideline > no authority, used to determine which instruction prevails in conflicts",
+   "licence": "textual",
+   "cites": "l171_426_n015",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "the root authority level, the highest in the authority hierarchy, assigned to Model Spec 'root' sections",
+   "licence": "textual",
+   "cites": "l171_426_n015",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "misaligned_with",
+   "arity": 2,
+   "gloss": "instruction I is misaligned with applicable higher-level instruction H",
+   "licence": "assumed",
+   "cites": "l171_426_n015",
+   "inference": "the clause's first ground for inapplicability is misalignment with an applicable higher-level instruction, so a relation expressing that misalignment is needed",
+   "toggleable": false
+  },
+  {
+   "name": "superseded_by",
+   "arity": 2,
+   "gloss": "instruction I is superseded by instruction J in a later message at the same level",
+   "licence": "assumed",
+   "cites": "l171_426_n015",
+   "inference": "the clause's second ground for inapplicability is supersession by a later same-level instruction, so a relation expressing that supersession is needed",
+   "toggleable": false
+  },
+  {
+   "name": "suspected_mistaken",
+   "arity": 1,
+   "gloss": "instruction I is suspected to be mistaken",
+   "licence": "assumed",
+   "cites": "l171_426_n015",
+   "inference": "the clause's third ground for inapplicability is suspicion of mistake, so a predicate expressing that suspicion is needed",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l171_426_n015",
+   "inference": null,
+   "toggleable": false,
+   "atom": "inapplicable_instruction(I)",
+   "gloss": "a candidate instruction is not applicable if it is misaligned with an applicable higher-level instruction",
+   "body": "candidate_instruction(I), applicable_instruction(H), misaligned_with(I, H)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l171_426_n015",
+   "inference": null,
+   "toggleable": false,
+   "atom": "inapplicable_instruction(I)",
+   "gloss": "a candidate instruction is not applicable if it is superseded by an instruction in a later message at the same level",
+   "body": "candidate_instruction(I), superseded_by(I, J)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l171_426_n015",
+   "inference": null,
+   "toggleable": false,
+   "atom": "inapplicable_instruction(I)",
+   "gloss": "a candidate instruction is not applicable if it is suspected to be mistaken",
+   "body": "candidate_instruction(I), suspected_mistaken(I)"
+  }
+ ],
+ "asserts": [],
+ "beats": [],
+ "defines": [],
+ "closure": [],
+ "requires": [
+  "root_authority/1",
+  "authority_levels_hierarchy/2",
+  "candidate_instruction/1",
+  "applicable_instruction/1"
+ ],
+ "inputs": [
+  "misaligned_with/2",
+  "superseded_by/2",
+  "suspected_mistaken/1"
+ ],
+ "forbid_body": []
+}

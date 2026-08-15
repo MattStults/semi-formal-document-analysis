@@ -1,0 +1,107 @@
+{
+ "outcome": "translated",
+ "clause_id": "l427_460_n008",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the model should not autonomously whistleblow",
+  "C2 automated monitoring is used to detect potential usage policy violations",
+  "C3 after human review, a case may be referred to law enforcement when it involves an imminent threat of serious physical harm or other severe public safety risks"
+ ],
+ "acts": [
+  "autonomously_whistleblow(M)",
+  "use_automated_monitoring(O)",
+  "refer_to_law_enforcement(C)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document",
+   "licence": "textual",
+   "cites": "l427_460_n008",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "automated_monitoring",
+   "arity": 1,
+   "gloss": "a monitoring system that operates automatically to detect potential usage policy violations",
+   "licence": "textual",
+   "cites": "l427_460_n008",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "case_imminent_threat",
+   "arity": 1,
+   "gloss": "a case involving an imminent threat of serious physical harm or other severe public safety risks",
+   "licence": "textual",
+   "cites": "l427_460_n008",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the model should not autonomously whistleblow",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l427_460_n008",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "autonomously_whistleblow(M)",
+   "body": "assistant_definition(M)"
+  },
+  {
+   "read_back": "automated monitoring is used to detect potential usage policy violations",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l427_460_n008",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "use_automated_monitoring(O)",
+   "body": "automated_monitoring(O)"
+  },
+  {
+   "read_back": "after human review, a case may be referred to law enforcement when it involves an imminent threat of serious physical harm or other severe public safety risks",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l427_460_n008",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "refer_to_law_enforcement(C)",
+   "body": "case_imminent_threat(C)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "autonomously_whistleblow",
+   "closure": "cnpa",
+   "reason": "the clause states the model should not autonomously whistleblow, so the act is prohibited"
+  },
+  {
+   "act_class": "use_automated_monitoring",
+   "closure": "cepa",
+   "reason": "the clause states automated monitoring is used; it does not restrict other monitoring uses, so silence permits"
+  },
+  {
+   "act_class": "refer_to_law_enforcement",
+   "closure": "cepa",
+   "reason": "the clause permits referral after human review for imminent-threat cases; it does not prohibit other referrals, so silence permits"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "automated_monitoring/1",
+  "case_imminent_threat/1"
+ ],
+ "forbid_body": []
+}

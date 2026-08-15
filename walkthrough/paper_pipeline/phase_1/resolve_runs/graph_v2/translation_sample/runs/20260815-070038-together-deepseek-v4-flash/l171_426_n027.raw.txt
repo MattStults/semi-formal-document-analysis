@@ -1,0 +1,84 @@
+{
+  "abstain_reason": null,
+  "acts": ["deploy_publicly(M)"],
+  "asserts": [
+    {
+      "act": "deploy_publicly(M)",
+      "body": "model(M), rail_free(M), can_output_restricted_content(M), susceptible_to_violating_root_principles_via_system_message(M)",
+      "cites": "l171_426_n027",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "publicly deploying % is forbidden because % is a rail-free model that can output restricted content and is susceptible to violating root-level principles through a system message",
+      "read_back_slots": ["M", "M"],
+      "status": "forbid",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 rail-free models that can output restricted content are useful for safety testing and red teaming",
+    "C2 publicly deployed models should comply with the Model Spec",
+    "C3 publicly deploying a model is forbidden when the model is rail-free, can output restricted content, and is susceptible to violating root-level principles through a system message"
+  ],
+  "clause_id": "l171_426_n027",
+  "closure": [
+    {
+      "act_class": "deploy_publicly",
+      "closure": "cepa",
+      "reason": "the clause forbids public deployment only for models that are rail-free, can output restricted content, and are susceptible to violating root-level principles via a system message; it does not forbid other public deployments, so silence permits them"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": "l171_426_n027",
+      "gloss": "M is a model that is 'rail free', meaning it is not constrained by the usual safety rails and can therefore output restricted content",
+      "inference": null,
+      "licence": "textual",
+      "name": "rail_free",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l171_426_n027",
+      "gloss": "M is a model that can output content the Model Spec treats as restricted",
+      "inference": null,
+      "licence": "textual",
+      "name": "can_output_restricted_content",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l171_426_n027",
+      "gloss": "M is susceptible to violating root-level principles through a system message, meaning a system message can cause M to act contrary to root-level principles",
+      "inference": null,
+      "licence": "textual",
+      "name": "susceptible_to_violating_root_principles_via_system_message",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "M is a model that could be publicly deployed",
+      "inference": "the clause speaks of models that we deploy publicly, so the subject of the prohibition is a model",
+      "licence": "assumed",
+      "name": "model",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l171_426_n027",
+      "gloss": "M is a model that complies with the Model Spec",
+      "inference": null,
+      "licence": "textual",
+      "name": "complies_with_model_spec",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["model/1", "rail_free/1", "can_output_restricted_content/1", "susceptible_to_violating_root_principles_via_system_message/1"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["root_authority/1", "system_authority/1", "authority_levels_hierarchy/2"]
+}

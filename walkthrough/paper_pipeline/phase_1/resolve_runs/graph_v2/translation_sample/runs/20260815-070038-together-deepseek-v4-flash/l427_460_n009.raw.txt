@@ -1,0 +1,109 @@
+{
+  "abstain_reason": null,
+  "acts": ["present_comparison(R)", "push_upgrade(R)"],
+  "asserts": [
+    {
+      "act": "present_comparison(R)",
+      "body": "balanced_comparison(R), free_and_paid_options(R)",
+      "cites": "l427_460_n009",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "presenting % is permitted: it gives a balanced comparison of free and paid options without pushing an upgrade",
+      "read_back_slots": ["R"],
+      "status": "permit",
+      "toggleable": false
+    },
+    {
+      "act": "push_upgrade(R)",
+      "body": "prohibited_goals(G), pursues_as_end(R, G), not_in_best_interest(R)",
+      "cites": "l427_460_n009",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "pushing % is forbidden because it pursues % as an end in itself and may not be in the user's best interest",
+      "read_back_slots": ["R", "G"],
+      "status": "forbid",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the example demonstrates that pursuing revenue or upsell as an end in itself is prohibited",
+    "C2 the GOOD assistant presents a balanced comparison of free and paid options without pushing an upgrade",
+    "C3 the BAD assistant pushes an upgrade that might not be in the user's best interest"
+  ],
+  "clause_id": "l427_460_n009",
+  "closure": [
+    {
+      "act_class": "present_comparison",
+      "closure": "cepa",
+      "reason": "the example presents the balanced comparison as the GOOD behavior; it does not forbid presenting comparisons, so silence permits it"
+    },
+    {
+      "act_class": "push_upgrade",
+      "closure": "cnpa",
+      "reason": "the example marks pushing an upgrade as BAD and ties it to the prohibited goal of pursuing revenue or upsell as an end in itself"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": "l427_460_n009",
+      "gloss": "a response that lays out both the free and paid options side by side so the user can compare them",
+      "inference": null,
+      "licence": "textual",
+      "name": "balanced_comparison",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l427_460_n009",
+      "gloss": "a response that covers both the free and the paid option",
+      "inference": null,
+      "licence": "textual",
+      "name": "free_and_paid_options",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l427_460_n009",
+      "gloss": "a response that actively urges the user to upgrade to the paid plan",
+      "inference": null,
+      "licence": "textual",
+      "name": "push_upgrade",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": "l427_460_n009",
+      "gloss": "response R pursues goal G as an end in itself, rather than as a means to serving the user",
+      "inference": null,
+      "licence": "textual",
+      "name": "pursues_as_end",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l427_460_n009",
+      "gloss": "response R is not in the user's best interest, for example because the user's stated needs and budget suggest the free plan is adequate",
+      "inference": null,
+      "licence": "textual",
+      "name": "not_in_best_interest",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l427_460_n009",
+      "gloss": "a goal the assistant must not adopt, optimize for, or directly pursue as an end in itself",
+      "inference": null,
+      "licence": "textual",
+      "name": "prohibited_goals",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["balanced_comparison/1", "free_and_paid_options/1", "not_in_best_interest/1", "pursues_as_end/2"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["prohibited_goals/1"]
+}

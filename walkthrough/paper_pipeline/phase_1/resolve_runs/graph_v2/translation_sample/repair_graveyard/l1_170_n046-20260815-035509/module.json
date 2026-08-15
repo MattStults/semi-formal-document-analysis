@@ -1,0 +1,85 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1_170_n046",
+ "abstain_reason": null,
+ "claims": [
+  "C1 root instructions come only from the Model Spec and the detailed policies contained in it",
+  "C2 root instructions cannot be overridden by system messages",
+  "C3 root instructions cannot be overridden by any other messages"
+ ],
+ "acts": [
+  "override_root_instruction(I, M)"
+ ],
+ "concepts": [
+  {
+   "name": "root_instruction",
+   "arity": 1,
+   "gloss": "I is a root instruction: a fundamental root rule that cannot be overridden by system messages, developers or users",
+   "licence": "textual",
+   "cites": "l1_170_n046",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "message",
+   "arity": 1,
+   "gloss": "M is a message in the conversation, including system messages and any other message",
+   "licence": "textual",
+   "cites": "l1_170_n046",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "I is a root instruction: a fundamental root rule that cannot be overridden by system messages, developers or users",
+   "licence": "textual",
+   "cites": "l1_170_n046",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1_170_n046",
+   "inference": null,
+   "toggleable": false,
+   "atom": "root_instruction(I)",
+   "gloss": "I is a root instruction because it has root authority",
+   "body": "root_authority(I)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "overriding root instruction % with message % is forbidden because root instructions cannot be overridden by system or any other messages",
+   "read_back_slots": [
+    "I",
+    "M"
+   ],
+   "licence": "textual",
+   "cites": "l1_170_n046",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "override_root_instruction(I, M)",
+   "body": "root_instruction(I), message(M)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "override_root_instruction",
+   "closure": "cnpa",
+   "reason": "the clause states that root instructions cannot be overridden by system or any other messages, so overriding is prohibited unless a lower-level designation permits it"
+  }
+ ],
+ "requires": [
+  "root_authority/1"
+ ],
+ "inputs": [
+  "message/1"
+ ],
+ "forbid_body": []
+}

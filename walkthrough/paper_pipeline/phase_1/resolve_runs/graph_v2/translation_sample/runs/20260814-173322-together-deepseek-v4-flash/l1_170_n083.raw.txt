@@ -1,0 +1,94 @@
+{
+  "abstain_reason": null,
+  "acts": ["generate_action(A)"],
+  "asserts": [
+    {
+      "act": "generate_action(A)",
+      "body": "tool_call_side_effect(A), difficult_or_impossible_to_reverse(A), agentic_context(A)",
+      "cites": "l1_170_n083",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "generating action % is forbidden because it is a tool call with side-effects on the world that are difficult or impossible to reverse in an agentic context",
+      "read_back_slots": ["A"],
+      "status": "forbid",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 some tool calls cause side-effects on the world that are difficult or impossible to reverse",
+    "C2 the assistant should take extra care when generating actions in agentic contexts",
+    "C3 taking extra care means not generating an action that is a tool call with difficult-or-impossible-to-reverse side-effects in an agentic context"
+  ],
+  "clause_id": "l1_170_n083",
+  "closure": [
+    {
+      "act_class": "generate_action",
+      "closure": "cepa",
+      "reason": "the clause requires extra care only for actions with difficult-or-impossible-to-reverse side-effects in agentic contexts; it does not forbid other actions, so silence permits them"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": "l1_170_n083",
+      "gloss": "A is an action that is a tool call causing side-effects on the world",
+      "inference": null,
+      "licence": "textual",
+      "name": "tool_call_side_effect",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l1_170_n083",
+      "gloss": "the side-effects of action A are difficult or impossible to reverse",
+      "inference": null,
+      "licence": "textual",
+      "name": "difficult_or_impossible_to_reverse",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l1_170_n083",
+      "gloss": "A is an action taken in an agentic context, where the assistant acts on the world",
+      "inference": null,
+      "licence": "textual",
+      "name": "agentic_context",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l1_170_n083",
+      "gloss": "A is an action the assistant generates",
+      "inference": null,
+      "licence": "textual",
+      "name": "generated_action",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "T is a tool as defined in the document: a program that can be called by the assistant to perform a specific task",
+      "inference": null,
+      "licence": "textual",
+      "name": "tool_definition",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["tool_call_side_effect/1", "difficult_or_impossible_to_reverse/1", "agentic_context/1"],
+  "ontology": [
+    {
+      "atom": "generated_action(A)",
+      "body": "tool_call_side_effect(A), difficult_or_impossible_to_reverse(A), agentic_context(A)",
+      "cites": "l1_170_n083",
+      "gloss": "A is an action the assistant generates that is a tool call with difficult-or-impossible-to-reverse side-effects in an agentic context",
+      "inference": null,
+      "licence": "textual",
+      "toggleable": false
+    }
+  ],
+  "outcome": "translated",
+  "requires": ["tool_definition/1"]
+}

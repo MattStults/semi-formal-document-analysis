@@ -1,0 +1,80 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1_170_n070",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the developer role is defined as messages whose source is the application developer",
+  "C2 the application developer may also be OpenAI, so a message from OpenAI can also carry the developer role"
+ ],
+ "acts": [],
+ "concepts": [
+  {
+   "name": "message_role_definition",
+   "arity": 2,
+   "gloss": "the role of a message (system, developer, user, assistant, tool) specifies its source and determines authority in conflicts",
+   "licence": "textual",
+   "cites": "l1_170_n070",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "developer_role",
+   "arity": 1,
+   "gloss": "M is a message whose role is developer, meaning its source is the application developer",
+   "licence": "textual",
+   "cites": "l1_170_n070",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "from_application_developer",
+   "arity": 1,
+   "gloss": "M is a message that comes from the application developer",
+   "licence": "textual",
+   "cites": "l1_170_n070",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "from_openai",
+   "arity": 1,
+   "gloss": "M is a message that comes from OpenAI",
+   "licence": "textual",
+   "cites": "l1_170_n070",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1_170_n070",
+   "inference": null,
+   "toggleable": false,
+   "atom": "developer_role(M)",
+   "gloss": "M is a developer-role message because it comes from the application developer",
+   "body": "from_application_developer(M)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n070",
+   "inference": null,
+   "toggleable": false,
+   "atom": "developer_role(M)",
+   "gloss": "M is a developer-role message because it comes from OpenAI, which may be the application developer",
+   "body": "from_openai(M)"
+  }
+ ],
+ "asserts": [],
+ "beats": [],
+ "defines": [],
+ "closure": [],
+ "requires": [
+  "message_role_definition/2"
+ ],
+ "inputs": [
+  "from_application_developer/1",
+  "from_openai/1"
+ ],
+ "forbid_body": []
+}

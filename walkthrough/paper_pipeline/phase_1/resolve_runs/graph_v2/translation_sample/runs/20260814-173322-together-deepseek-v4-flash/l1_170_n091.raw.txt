@@ -1,0 +1,103 @@
+{
+  "abstain_reason": null,
+  "acts": [],
+  "asserts": [],
+  "beats": [],
+  "claims": [
+    "C1 user and developer messages are treated interchangeably",
+    "C2 when both are present in a conversation, developer messages have greater authority",
+    "C3 when user/developer conflicts are not relevant and there is no risk of confusion, the word 'user' is sometimes used as shorthand for 'user or developer'"
+  ],
+  "clause_id": "l1_170_n091",
+  "closure": [],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": "l1_170_n091",
+      "gloss": "M is a message supplied by a user of a product made by OpenAI or a third-party application built on the OpenAI API",
+      "inference": null,
+      "licence": "textual",
+      "name": "user_message",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l1_170_n091",
+      "gloss": "M is a message supplied by a developer, a customer of the OpenAI API who may add intelligence to software applications or create natural language interfaces consumed by end users",
+      "inference": null,
+      "licence": "textual",
+      "name": "developer_message",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": "l1_170_n091",
+      "gloss": "message M is present in conversation C",
+      "inference": null,
+      "licence": "assumed",
+      "name": "message_in_conversation",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": "l1_170_n091",
+      "gloss": "message M has greater authority than message N in the conversation",
+      "inference": null,
+      "licence": "textual",
+      "name": "greater_authority",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l1_170_n091",
+      "gloss": "a conversation in which at least one user message and at least one developer message are both present",
+      "inference": null,
+      "licence": "assumed",
+      "name": "conversation_with_both",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l1_170_n091",
+      "gloss": "a context in which user/developer conflicts are not relevant and there is no risk of confusion",
+      "inference": null,
+      "licence": "textual",
+      "name": "no_conflict_no_confusion",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l1_170_n091",
+      "gloss": "a use of the word 'user' in the spec that is shorthand for 'user or developer'",
+      "inference": null,
+      "licence": "textual",
+      "name": "user_shorthand",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["message_in_conversation/2"],
+  "ontology": [
+    {
+      "atom": "conversation_with_both(C)",
+      "body": "message_in_conversation(M1, C), user_message(M1), message_in_conversation(M2, C), developer_message(M2)",
+      "cites": "l1_170_n091",
+      "gloss": "C is a conversation containing both a user message and a developer message",
+      "inference": null,
+      "licence": "textual",
+      "toggleable": false
+    },
+    {
+      "atom": "user_shorthand(U)",
+      "body": "no_conflict_no_confusion(U)",
+      "cites": "l1_170_n091",
+      "gloss": "U is a use of the word 'user' that is shorthand for 'user or developer' because user/developer conflicts are not relevant and there is no risk of confusion",
+      "inference": null,
+      "licence": "textual",
+      "toggleable": false
+    }
+  ],
+  "outcome": "translated",
+  "requires": ["user_definition/1", "developer_definition/1", "authority_levels_hierarchy/2"]
+}

@@ -1,0 +1,75 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1_170_n081",
+ "abstain_reason": null,
+ "claims": [
+  "C1 a system or developer message lists the available tools",
+  "C2 each listed tool includes documentation of its functionality",
+  "C3 each listed tool includes the syntax to use in a message to that tool"
+ ],
+ "acts": [
+  "list_tools(M)"
+ ],
+ "concepts": [
+  {
+   "name": "system_or_developer_message",
+   "arity": 1,
+   "gloss": "a message that is either a system message or a developer message",
+   "licence": "textual",
+   "cites": "l1_170_n081",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "documented_in_message",
+   "arity": 2,
+   "gloss": "message M includes documentation of tool T's functionality and the syntax to use in a message to T",
+   "licence": "textual",
+   "cites": "l1_170_n081",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "tool_definition",
+   "arity": 1,
+   "gloss": "a program that can be called by the assistant to perform a specific task",
+   "licence": "textual",
+   "cites": "l1_170_n081",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "a system or developer message % lists the available tools, each with documentation of its functionality and the syntax to use in a message to that tool",
+   "read_back_slots": [
+    "M"
+   ],
+   "licence": "textual",
+   "cites": "l1_170_n081",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "list_tools(M)",
+   "body": "system_or_developer_message(M), tool_definition(T), documented_in_message(T, M)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "list_tools",
+   "closure": "cepa",
+   "reason": "the clause obliges a system or developer message to list tools with documentation; it does not forbid any other way of listing tools, so silence permits"
+  }
+ ],
+ "requires": [
+  "tool_definition/1"
+ ],
+ "inputs": [
+  "system_or_developer_message/1",
+  "documented_in_message/2"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,126 @@
+{
+  "abstain_reason": null,
+  "acts": [
+    "produce_response(R)"
+  ],
+  "asserts": [
+    {
+      "act": "produce_response(R)",
+      "body": "applicable_instruction(I), not overridden_instruction(I)",
+      "cites": "l171_426_n005",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "producing response % must strive to follow every applicable instruction % that is not overridden by a higher-authority or later same-authority instruction",
+      "read_back_slots": [
+        "R",
+        "I"
+      ],
+      "status": "oblige",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the assistant must strive to follow all applicable instructions when producing a response",
+    "C2 applicable instructions include all system, developer and user instructions",
+    "C3 an applicable instruction is excepted from the obligation when it conflicts with a higher-authority instruction",
+    "C4 an applicable instruction is excepted from the obligation when it conflicts with a later instruction at the same authority"
+  ],
+  "clause_id": "l171_426_n005",
+  "closure": [
+    {
+      "act_class": "produce_response",
+      "closure": "cepa",
+      "reason": "the clause obliges striving to follow applicable instructions but does not forbid producing a response that fails to follow one; it states a positive duty, not a prohibition, so silence about other responses leaves them permitted"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": "l171_426_n005",
+      "gloss": "an instruction that applies to the current request, determined by filtering candidate instructions",
+      "inference": null,
+      "licence": "textual",
+      "name": "applicable_instruction",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l171_426_n005",
+      "gloss": "an instruction that is overridden because it conflicts with a higher-authority instruction or with a later instruction at the same authority",
+      "inference": "the clause states the exception as 'except for those that conflict with a higher-authority instruction or a later instruction at the same authority'; the module needs a predicate for the excepted instructions",
+      "licence": "assumed",
+      "name": "overridden_instruction",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": "l171_426_n005",
+      "gloss": "instruction I conflicts with instruction J",
+      "inference": "the clause speaks of instructions that conflict with another instruction; a conflict relation between two instructions is needed",
+      "licence": "assumed",
+      "name": "conflicts_with",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": "l171_426_n005",
+      "gloss": "instruction I has authority level L",
+      "inference": "the clause compares authority levels of instructions; each instruction must carry an authority level",
+      "licence": "assumed",
+      "name": "instruction_authority",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": "l171_426_n005",
+      "gloss": "instruction I is later than instruction J in the same conversation",
+      "inference": "the clause refers to a later instruction at the same authority; instructions must be ordered in time",
+      "licence": "assumed",
+      "name": "later_instruction",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l171_426_n005",
+      "gloss": "instruction I is a system, developer, or user instruction",
+      "inference": "the clause says applicable instructions include all system, developer and user instructions; a class covering these three is needed",
+      "licence": "assumed",
+      "name": "system_developer_user_instruction",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": [
+    "conflicts_with/2",
+    "instruction_authority/2",
+    "later_instruction/2",
+    "system_developer_user_instruction/1"
+  ],
+  "ontology": [
+    {
+      "atom": "overridden_instruction(I)",
+      "body": "applicable_instruction(I), conflicts_with(I, J), instruction_authority(I, L1), instruction_authority(J, L2), authority_levels_hierarchy(L2, L1)",
+      "cites": "l171_426_n005",
+      "gloss": "I is an applicable instruction that conflicts with a higher-authority instruction J",
+      "inference": null,
+      "licence": "textual",
+      "toggleable": false
+    },
+    {
+      "atom": "overridden_instruction(I)",
+      "body": "applicable_instruction(I), conflicts_with(I, J), instruction_authority(I, L), instruction_authority(J, L), later_instruction(J, I)",
+      "cites": "l171_426_n005",
+      "gloss": "I is an applicable instruction that conflicts with a later instruction J at the same authority",
+      "inference": null,
+      "licence": "textual",
+      "toggleable": false
+    }
+  ],
+  "outcome": "translated",
+  "requires": [
+    "authority_levels_hierarchy/2",
+    "root_authority/0"
+  ]
+}

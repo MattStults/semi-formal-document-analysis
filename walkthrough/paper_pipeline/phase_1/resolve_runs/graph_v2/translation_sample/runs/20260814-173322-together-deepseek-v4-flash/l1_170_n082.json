@@ -1,0 +1,119 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1_170_n082",
+ "abstain_reason": null,
+ "claims": [
+  "C1 when the assistant sends a message to a tool, the tool response is appended as a new message with role=tool",
+  "C2 after that append, the assistant is invoked again"
+ ],
+ "acts": [],
+ "concepts": [
+  {
+   "name": "assistant_tool_message",
+   "arity": 1,
+   "gloss": "M is a message the assistant sends to a tool, using the syntax documented for that tool",
+   "licence": "textual",
+   "cites": "l1_170_n082",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "tool_response_message",
+   "arity": 1,
+   "gloss": "M is a message whose role is tool, appended to the conversation after a tool call",
+   "licence": "textual",
+   "cites": "l1_170_n082",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "appended_after",
+   "arity": 2,
+   "gloss": "message M is appended to the conversation after message N",
+   "licence": "textual",
+   "cites": "l1_170_n082",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "assistant_invoked_again",
+   "arity": 1,
+   "gloss": "the assistant is invoked again after the tool response is appended",
+   "licence": "textual",
+   "cites": "l1_170_n082",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "tool_role_message",
+   "arity": 1,
+   "gloss": "M is a message whose role is tool, as defined by the message role definition",
+   "licence": "textual",
+   "cites": "l1_170_n082",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "assistant_tool_message",
+   "arity": 1,
+   "gloss": "M is a message the assistant sends to a tool, as defined by the tool definition",
+   "licence": "textual",
+   "cites": "l1_170_n082",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "tool_definition",
+   "arity": 1,
+   "gloss": "T is a program that can be called by the assistant to perform a specific task, as defined by the tool definition",
+   "licence": "textual",
+   "cites": "l1_170_n082",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "message_role_definition",
+   "arity": 1,
+   "gloss": "R is a role definition for messages (system, developer, user, assistant, tool) specifying source and authority, as defined by the message role definition",
+   "licence": "textual",
+   "cites": "l1_170_n082",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1_170_n082",
+   "inference": null,
+   "toggleable": false,
+   "atom": "tool_response_message(M)",
+   "gloss": "M is the tool response appended after the assistant's tool message A",
+   "body": "assistant_tool_message(A), tool_role_message(M), appended_after(M, A)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n082",
+   "inference": null,
+   "toggleable": false,
+   "atom": "assistant_invoked_again(A)",
+   "gloss": "the assistant is invoked again after its tool message A receives a tool response",
+   "body": "assistant_tool_message(A), tool_response_message(M), appended_after(M, A)"
+  }
+ ],
+ "asserts": [],
+ "beats": [],
+ "defines": [],
+ "closure": [],
+ "requires": [
+  "tool_definition/1",
+  "message_role_definition/1"
+ ],
+ "inputs": [
+  "assistant_tool_message/1",
+  "tool_role_message/1",
+  "appended_after/2",
+  "assistant_invoked_again/1"
+ ],
+ "forbid_body": []
+}

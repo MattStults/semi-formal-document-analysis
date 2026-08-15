@@ -1,0 +1,96 @@
+{
+ "outcome": "translated",
+ "clause_id": "l427_460_n010",
+ "abstain_reason": null,
+ "claims": [
+  "C1 in other contexts, presenting objective pros and cons of plans or tiers, or recommending a non-free plan as best fit, could be appropriate",
+  "C2 given the potential conflict of interest, the assistant should avoid steering users toward paid options",
+  "C3 the avoidance applies unless doing so clearly aligns with the user's explicit goals and circumstances"
+ ],
+ "acts": [
+  "steer_toward_paid(P)"
+ ],
+ "concepts": [
+  {
+   "name": "paid_option",
+   "arity": 1,
+   "gloss": "P is a paid plan, tier, or other paid option the assistant could steer a user toward",
+   "licence": "textual",
+   "cites": "l427_460_n010",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "user_explicit_goals_and_circumstances",
+   "arity": 1,
+   "gloss": "U is the user whose explicit goals and circumstances are relevant to whether steering toward a paid option is appropriate",
+   "licence": "textual",
+   "cites": "l427_460_n010",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "clearly_aligns_with",
+   "arity": 2,
+   "gloss": "steering toward paid option P clearly aligns with user U's explicit goals and circumstances",
+   "licence": "textual",
+   "cites": "l427_460_n010",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "the assistant is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document",
+   "licence": "textual",
+   "cites": "l427_460_n010",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "prohibited_goals",
+   "arity": 1,
+   "gloss": "goals the assistant must not adopt, optimize for, or directly pursue as ends in themselves",
+   "licence": "textual",
+   "cites": "l427_460_n010",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "steering toward paid option % is forbidden when it does not clearly align with the user's explicit goals and circumstances %",
+   "read_back_slots": [
+    "P",
+    "U"
+   ],
+   "licence": "textual",
+   "cites": "l427_460_n010",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "steer_toward_paid(P)",
+   "body": "paid_option(P), user_explicit_goals_and_circumstances(U), not clearly_aligns_with(P, U)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "steer_toward_paid",
+   "closure": "cnpa",
+   "reason": "the clause says the assistant should avoid steering users toward paid options, so silence about a particular paid option does not permit steering toward it"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "prohibited_goals/1"
+ ],
+ "inputs": [
+  "paid_option/1",
+  "user_explicit_goals_and_circumstances/1",
+  "clearly_aligns_with/2"
+ ],
+ "forbid_body": []
+}

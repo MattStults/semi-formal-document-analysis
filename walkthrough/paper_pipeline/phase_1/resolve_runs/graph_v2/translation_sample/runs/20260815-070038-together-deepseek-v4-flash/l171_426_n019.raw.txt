@@ -1,0 +1,109 @@
+{
+  "abstain_reason": null,
+  "acts": ["ignore_instruction(I)"],
+  "asserts": [
+    {
+      "act": "ignore_instruction(I)",
+      "body": "inapplicable_instruction(I)",
+      "cites": "l171_426_n019",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "an instruction that is inapplicable should typically be ignored",
+      "read_back_slots": [],
+      "status": "prefer",
+      "toggleable": false
+    },
+    {
+      "act": "ignore_instruction(I)",
+      "body": "beyond_assistant_capabilities(I)",
+      "cites": "l171_426_n019",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "an instruction beyond the assistant's capabilities should be ignored",
+      "read_back_slots": [],
+      "status": "prefer",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 an inapplicable instruction should typically be ignored",
+    "C2 the only other reason an instruction should be ignored is that it is beyond the assistant's capabilities",
+    "C3 if an instruction cannot be fulfilled, the assistant should be explicit about this and then attempt to follow the remaining instructions, or refuse to comply if there is no way to proceed"
+  ],
+  "clause_id": "l171_426_n019",
+  "closure": [
+    {
+      "act_class": "ignore_instruction",
+      "closure": "cepa",
+      "reason": "the clause says inapplicable instructions should typically be ignored, which is a preference rather than a prohibition; it does not forbid ignoring instructions in other circumstances, so silence permits"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": "l171_426_n019",
+      "gloss": "I is a candidate instruction that is not applicable because it is misaligned, superseded, or suspected to be mistaken",
+      "inference": null,
+      "licence": "textual",
+      "name": "inapplicable_instruction",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l171_426_n019",
+      "gloss": "I is an instruction that the assistant cannot fulfill because it is beyond the assistant's capabilities",
+      "inference": "the clause says the only other reason an instruction should be ignored is if it is beyond the assistant's capabilities; this names that condition",
+      "licence": "assumed",
+      "name": "beyond_assistant_capabilities",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l171_426_n019",
+      "gloss": "I is an instruction that cannot be fulfilled by the assistant",
+      "inference": "the clause's third sentence speaks of an instruction that cannot be fulfilled, which is the same condition as being beyond the assistant's capabilities",
+      "licence": "assumed",
+      "name": "cannot_be_fulfilled",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l171_426_n019",
+      "gloss": "the assistant is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document",
+      "inference": null,
+      "licence": "textual",
+      "name": "assistant_definition",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l171_426_n019",
+      "gloss": "the root authority level, the highest in the authority hierarchy, assigned to Model Spec 'root' sections",
+      "inference": null,
+      "licence": "textual",
+      "name": "root_authority",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": [],
+  "ontology": [
+    {
+      "atom": "beyond_assistant_capabilities(I)",
+      "body": "cannot_be_fulfilled(I)",
+      "cites": "l171_426_n019",
+      "gloss": "an instruction is beyond the assistant's capabilities when it cannot be fulfilled",
+      "inference": "the clause equates 'beyond the assistant's capabilities' with 'cannot be fulfilled' in the following sentence",
+      "licence": "assumed",
+      "toggleable": false
+    }
+  ],
+  "outcome": "translated",
+  "requires": [
+    "inapplicable_instruction/1",
+    "assistant_definition/1",
+    "root_authority/1"
+  ]
+}

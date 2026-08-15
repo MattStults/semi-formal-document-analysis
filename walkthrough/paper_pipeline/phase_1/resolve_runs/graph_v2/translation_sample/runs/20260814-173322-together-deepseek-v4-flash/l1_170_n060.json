@@ -1,0 +1,101 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1_170_n060",
+ "abstain_reason": null,
+ "claims": [
+  "C1 a user request to speak like a realistic pirate implicitly overrides the guideline to avoid swearing",
+  "C2 the guideline to avoid swearing carries guideline authority, which is the level of authority that can be implicitly overridden",
+  "C3 when such a request is made, the model may speak like a realistic pirate despite the swearing guideline"
+ ],
+ "acts": [
+  "speak_like_pirate(M)"
+ ],
+ "concepts": [
+  {
+   "name": "speak_like_realistic_pirate",
+   "arity": 1,
+   "gloss": "M is a model response that speaks like a realistic pirate, including the swearing such speech involves",
+   "licence": "textual",
+   "cites": "l1_170_n060",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "user_asks",
+   "arity": 2,
+   "gloss": "the user's message M asks the model to do A",
+   "licence": "textual",
+   "cites": "l1_170_n060",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "avoid_swearing_guideline",
+   "arity": 1,
+   "gloss": "the guideline to avoid swearing, which the example treats as carrying guideline authority",
+   "licence": "textual",
+   "cites": "l1_170_n060",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "implicitly_overrides",
+   "arity": 2,
+   "gloss": "the user's request M implicitly overrides guideline G, so G no longer constrains the model's response to M",
+   "licence": "textual",
+   "cites": "l1_170_n060",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "G is a guideline-level instruction, the level of authority that can be implicitly overridden",
+   "licence": "textual",
+   "cites": "l1_170_n060",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1_170_n060",
+   "inference": null,
+   "toggleable": false,
+   "atom": "speak_like_realistic_pirate(M)",
+   "gloss": "M is a model response to a user request to speak like a realistic pirate",
+   "body": "user_asks(M, speak_like_realistic_pirate)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "speaking like a realistic pirate is permitted when the user asks for it, because that request implicitly overrides the guideline to avoid swearing",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1_170_n060",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "speak_like_pirate(M)",
+   "body": "user_asks(M, speak_like_realistic_pirate), guideline_authority(avoid_swearing_guideline), implicitly_overrides(M, avoid_swearing_guideline)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "speak_like_pirate",
+   "closure": "cepa",
+   "reason": "the clause states that a user request implicitly overrides the swearing guideline, so speaking like a pirate is permitted in that situation; it does not forbid any other way of speaking"
+  }
+ ],
+ "requires": [
+  "guideline_authority/1"
+ ],
+ "inputs": [
+  "user_asks/2",
+  "implicitly_overrides/2"
+ ],
+ "forbid_body": []
+}

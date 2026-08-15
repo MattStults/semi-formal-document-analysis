@@ -1,0 +1,169 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1_170_n087",
+ "abstain_reason": null,
+ "claims": [
+  "C1 a developer is a customer of the OpenAI API",
+  "C2 some developers use the API to add intelligence to their software applications, in which case the assistant's output is consumed by an application and is typically required to follow a precise format",
+  "C3 other developers use the API to create natural language interfaces that are then consumed by end users",
+  "C4 a developer may act as both a developer and an end user"
+ ],
+ "acts": [],
+ "concepts": [
+  {
+   "name": "developer_definition",
+   "arity": 1,
+   "gloss": "D is a customer of the OpenAI API who may add intelligence to software applications or create natural language interfaces consumed by end users",
+   "licence": "textual",
+   "cites": "l1_170_n087",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document",
+   "licence": "textual",
+   "cites": "l1_170_n087",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "customer_of_openai_api",
+   "arity": 1,
+   "gloss": "D is a customer of the OpenAI API",
+   "licence": "textual",
+   "cites": "l1_170_n087",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "application",
+   "arity": 1,
+   "gloss": "A is a software application that consumes the assistant's output",
+   "licence": "assumed",
+   "cites": "l1_170_n087",
+   "inference": "the text says the output of the assistant is consumed by an application, so a predicate for that application is needed",
+   "toggleable": false
+  },
+  {
+   "name": "end_user",
+   "arity": 1,
+   "gloss": "U is an end user who consumes a natural language interface created by a developer",
+   "licence": "assumed",
+   "cites": "l1_170_n087",
+   "inference": "the text distinguishes developers from end users and says interfaces are consumed by end users",
+   "toggleable": false
+  },
+  {
+   "name": "adds_intelligence_to",
+   "arity": 2,
+   "gloss": "developer D uses the OpenAI API to add intelligence to software application A",
+   "licence": "assumed",
+   "cites": "l1_170_n087",
+   "inference": "the text describes developers who use the API to add intelligence to their applications",
+   "toggleable": false
+  },
+  {
+   "name": "creates_interface",
+   "arity": 2,
+   "gloss": "developer D uses the OpenAI API to create natural language interface I",
+   "licence": "assumed",
+   "cites": "l1_170_n087",
+   "inference": "the text describes developers who use the API to create natural language interfaces",
+   "toggleable": false
+  },
+  {
+   "name": "interface_consumed_by",
+   "arity": 2,
+   "gloss": "natural language interface I is consumed by end user U",
+   "licence": "assumed",
+   "cites": "l1_170_n087",
+   "inference": "the text says interfaces are consumed by end users",
+   "toggleable": false
+  },
+  {
+   "name": "output_consumed_by",
+   "arity": 2,
+   "gloss": "the assistant's output is consumed by application A",
+   "licence": "assumed",
+   "cites": "l1_170_n087",
+   "inference": "the text says the output of the assistant is consumed by an application",
+   "toggleable": false
+  },
+  {
+   "name": "output_requires_precise_format",
+   "arity": 1,
+   "gloss": "the assistant's output is typically required to follow a precise format",
+   "licence": "assumed",
+   "cites": "l1_170_n087",
+   "inference": "the text says the output is typically required to follow a precise format",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1_170_n087",
+   "inference": null,
+   "toggleable": false,
+   "atom": "developer_definition(D)",
+   "gloss": "D is a developer because D is a customer of the OpenAI API",
+   "body": "customer_of_openai_api(D)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n087",
+   "inference": null,
+   "toggleable": false,
+   "atom": "developer_definition(D)",
+   "gloss": "D is a developer because D uses the API to add intelligence to software application A",
+   "body": "adds_intelligence_to(D, A), application(A)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n087",
+   "inference": null,
+   "toggleable": false,
+   "atom": "developer_definition(D)",
+   "gloss": "D is a developer because D uses the API to create natural language interface I consumed by end user U",
+   "body": "creates_interface(D, I), interface_consumed_by(I, U), end_user(U)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n087",
+   "inference": null,
+   "toggleable": false,
+   "atom": "output_consumed_by_application(A)",
+   "gloss": "the assistant's output is consumed by application A",
+   "body": "output_consumed_by(A)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n087",
+   "inference": null,
+   "toggleable": false,
+   "atom": "output_requires_precise_format(A)",
+   "gloss": "when the assistant's output is consumed by application A, it is typically required to follow a precise format",
+   "body": "output_consumed_by(A)"
+  }
+ ],
+ "asserts": [],
+ "beats": [],
+ "defines": [],
+ "closure": [],
+ "requires": [
+  "assistant_definition/1",
+  "customer_of_openai_api/1"
+ ],
+ "inputs": [
+  "application/1",
+  "end_user/1",
+  "adds_intelligence_to/2",
+  "creates_interface/2",
+  "interface_consumed_by/2",
+  "output_consumed_by/2",
+  "output_requires_precise_format/1"
+ ],
+ "forbid_body": []
+}

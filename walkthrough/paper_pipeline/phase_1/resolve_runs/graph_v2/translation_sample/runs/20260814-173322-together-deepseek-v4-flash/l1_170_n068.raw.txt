@@ -1,0 +1,101 @@
+{
+  "abstain_reason": null,
+  "acts": [],
+  "asserts": [],
+  "beats": [],
+  "claims": [
+    "C1 the role of a message specifies the source of that message",
+    "C2 the role of a message determines the authority of instructions in the case of conflicts, as described by the levels of authority and chain of command"
+  ],
+  "clause_id": "l1_170_n068",
+  "closure": [],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": "l1_170_n068",
+      "gloss": "the role of a message (system, developer, user, assistant, tool) specifies the source of that message",
+      "inference": null,
+      "licence": "textual",
+      "name": "message_role_definition",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": "l1_170_n068",
+      "gloss": "message M has role R, where R is one of system, developer, user, assistant, or tool",
+      "inference": null,
+      "licence": "textual",
+      "name": "message_role",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": "l1_170_n068",
+      "gloss": "message M originates from source S, as specified by its role",
+      "inference": null,
+      "licence": "textual",
+      "name": "message_source",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": "l1_170_n068",
+      "gloss": "instruction I is conveyed by message M",
+      "inference": null,
+      "licence": "assumed",
+      "name": "message_instruction",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": "l1_170_n068",
+      "gloss": "instruction I has authority level L, determined by the role of the message conveying it",
+      "inference": null,
+      "licence": "assumed",
+      "name": "instruction_authority",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": "l1_170_n068",
+      "gloss": "instruction I conflicts with instruction J",
+      "inference": null,
+      "licence": "assumed",
+      "name": "conflicting_instructions",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": [
+    "message_role/2",
+    "message_source/2",
+    "message_instruction/2",
+    "conflicting_instructions/2"
+  ],
+  "ontology": [
+    {
+      "atom": "message_role_definition(M)",
+      "body": "message_role(M, R), message_source(M, S)",
+      "cites": "l1_170_n068",
+      "gloss": "message M's role R specifies its source S",
+      "inference": null,
+      "licence": "textual",
+      "toggleable": false
+    },
+    {
+      "atom": "instruction_authority(I, L)",
+      "body": "message_instruction(I, M), message_role(M, R), authority_levels_hierarchy(R, L)",
+      "cites": "l1_170_n068",
+      "gloss": "instruction I has authority level L because its message has role R, which maps to L in the authority hierarchy",
+      "inference": null,
+      "licence": "textual",
+      "toggleable": false
+    }
+  ],
+  "outcome": "translated",
+  "requires": [
+    "authority_levels_hierarchy/2",
+    "chain_of_command_principle/2"
+  ]
+}

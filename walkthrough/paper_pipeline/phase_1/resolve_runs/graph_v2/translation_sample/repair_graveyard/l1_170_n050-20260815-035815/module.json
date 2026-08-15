@@ -1,0 +1,121 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1_170_n050",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the system level sits below root and above developer, user, and guideline in the authority hierarchy",
+  "C2 system-level instructions can only be supplied by OpenAI",
+  "C3 OpenAI may supply system-level instructions through this Model Spec or through detailed policies",
+  "C4 OpenAI may supply system-level instructions via a system message"
+ ],
+ "acts": [],
+ "concepts": [
+  {
+   "name": "system_level_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction at the system level of authority",
+   "licence": "textual",
+   "cites": "l1_170_n050",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "openai_supplied_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction whose source is the OpenAI organization, as opposed to a developer or user",
+   "licence": "textual",
+   "cites": "l1_170_n050",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "supplied_via_model_spec",
+   "arity": 1,
+   "gloss": "I is an instruction whose content is set out in the Model Spec document itself",
+   "licence": "textual",
+   "cites": "l1_170_n050",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "supplied_via_detailed_policy",
+   "arity": 1,
+   "gloss": "I is an instruction whose content is set out in a detailed policy document",
+   "licence": "textual",
+   "cites": "l1_170_n050",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "supplied_via_system_message",
+   "arity": 1,
+   "gloss": "I is an instruction whose content is conveyed in a system message",
+   "licence": "textual",
+   "cites": "l1_170_n050",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "authority_levels_hierarchy",
+   "arity": 2,
+   "gloss": "the ranking of instruction authority levels, used to determine which instruction prevails in conflicts",
+   "licence": "textual",
+   "cites": "l1_170_n050",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "system_authority",
+   "arity": 1,
+   "gloss": "the system level of instruction authority: rules set by OpenAI that can be transmitted or overridden through system messages, but cannot be overridden by developers or users",
+   "licence": "textual",
+   "cites": "l1_170_n050",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1_170_n050",
+   "inference": null,
+   "toggleable": false,
+   "atom": "system_level_instruction(I)",
+   "gloss": "I is a system-level instruction supplied by OpenAI through this Model Spec",
+   "body": "openai_supplied_instruction(I), supplied_via_model_spec(I)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n050",
+   "inference": null,
+   "toggleable": false,
+   "atom": "system_level_instruction(I)",
+   "gloss": "I is a system-level instruction supplied by OpenAI through a detailed policy",
+   "body": "openai_supplied_instruction(I), supplied_via_detailed_policy(I)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n050",
+   "inference": null,
+   "toggleable": false,
+   "atom": "system_level_instruction(I)",
+   "gloss": "I is a system-level instruction supplied by OpenAI via a system message",
+   "body": "openai_supplied_instruction(I), supplied_via_system_message(I)"
+  }
+ ],
+ "asserts": [],
+ "beats": [],
+ "defines": [],
+ "closure": [],
+ "requires": [
+  "system_authority/1",
+  "authority_levels_hierarchy/2"
+ ],
+ "inputs": [
+  "openai_supplied_instruction/1",
+  "supplied_via_model_spec/1",
+  "supplied_via_detailed_policy/1",
+  "supplied_via_system_message/1"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,119 @@
+{
+  "abstain_reason": null,
+  "acts": ["autonomously_pursue_goal(G)", "autonomously_message_peer(P)"],
+  "asserts": [
+    {
+      "act": "autonomously_pursue_goal(G)",
+      "body": "goal(G), not_directly_stated_or_logically_dictated(G)",
+      "cites": "l171_426_n030",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "autonomously pursuing goal % is forbidden because it is not directly stated or logically dictated by the instructions",
+      "read_back_slots": ["G"],
+      "status": "forbid",
+      "toggleable": false
+    },
+    {
+      "act": "autonomously_message_peer(P)",
+      "body": "peer(P), issue(I), resolve_issue(P, I)",
+      "cites": "l171_426_n030",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "autonomously messaging peer % to resolve issue % is forbidden",
+      "read_back_slots": ["P", "I"],
+      "status": "forbid",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the assistant should display big-picture thinking on how to help the user accomplish long-term goals",
+    "C2 the assistant must never autonomously pursue goals in ways not directly stated or logically dictated by the instructions",
+    "C3 the assistant may offer supportive advice and strategies to engage a peer",
+    "C4 the assistant must never autonomously message a peer to resolve an issue on its own"
+  ],
+  "clause_id": "l171_426_n030",
+  "closure": [
+    {
+      "act_class": "autonomously_pursue_goal",
+      "closure": "cnpa",
+      "reason": "the clause says the assistant should never autonomously pursue goals in ways not directly stated or logically dictated; silence about other autonomous goal pursuit is unsettled, but the clause's 'never overstep' language suggests a prohibition on autonomous pursuit generally"
+    },
+    {
+      "act_class": "autonomously_message_peer",
+      "closure": "cnpa",
+      "reason": "the clause says in no circumstances should the assistant autonomously message a peer to resolve an issue; this is an absolute prohibition on that act class"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": "l171_426_n030",
+      "gloss": "G is a goal the assistant might pursue on its own, not directly stated or logically dictated by the instructions",
+      "inference": null,
+      "licence": "textual",
+      "name": "goal",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l171_426_n030",
+      "gloss": "G is a goal that is not directly stated or logically dictated by the instructions",
+      "inference": null,
+      "licence": "textual",
+      "name": "not_directly_stated_or_logically_dictated",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l171_426_n030",
+      "gloss": "P is a peer of the user, a person the user is working through a difficult situation with",
+      "inference": null,
+      "licence": "textual",
+      "name": "peer",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l171_426_n030",
+      "gloss": "I is an issue the user is working through with a peer",
+      "inference": null,
+      "licence": "textual",
+      "name": "issue",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": "l171_426_n030",
+      "gloss": "the assistant autonomously messages peer P to resolve issue I on its own",
+      "inference": null,
+      "licence": "textual",
+      "name": "resolve_issue",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l171_426_n030",
+      "gloss": "the assistant is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous",
+      "inference": null,
+      "licence": "textual",
+      "name": "assistant_definition",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l171_426_n030",
+      "gloss": "the root authority level, the highest in the authority hierarchy, assigned to Model Spec 'root' sections",
+      "inference": null,
+      "licence": "textual",
+      "name": "root_authority",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["goal/1", "not_directly_stated_or_logically_dictated/1", "peer/1", "issue/1", "resolve_issue/2"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["assistant_definition/1", "root_authority/1"]
+}

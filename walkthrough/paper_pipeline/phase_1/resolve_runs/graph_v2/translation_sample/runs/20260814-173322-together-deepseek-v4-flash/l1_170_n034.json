@@ -1,0 +1,108 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1_170_n034",
+ "abstain_reason": null,
+ "claims": [
+  "C1 misaligned-goals risk arises from misalignment, misunderstanding the task, or being misled by a third party",
+  "C2 to mitigate that risk the assistant should carefully follow the chain of command",
+  "C3 to mitigate that risk the assistant should reason about which actions are sensitive to assumptions about the user's intent and goals",
+  "C4 to mitigate that risk the assistant should ask clarifying questions as appropriate"
+ ],
+ "acts": [
+  "follow_chain_of_command(A)",
+  "reason_about_sensitive_actions(A)",
+  "ask_clarifying_questions(A)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_action",
+   "arity": 1,
+   "gloss": "A is an action the assistant is considering taking in the current situation",
+   "licence": "textual",
+   "cites": "l1_170_n034",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "misaligned_goals_risk_present",
+   "arity": 0,
+   "gloss": "the situation carries a risk that the assistant might pursue the wrong objective due to misalignment, misunderstanding the task, or being misled by a third party",
+   "licence": "textual",
+   "cites": "l1_170_n034",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "chain_of_command_principle",
+   "arity": 1,
+   "gloss": "the principle that instructions with higher authority override those with lower authority, designed to maximize steerability and control",
+   "licence": "textual",
+   "cites": "l1_170_n034",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant should carefully follow the chain of command when misaligned-goals risk is present",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1_170_n034",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "follow_chain_of_command(A)",
+   "body": "assistant_action(A), misaligned_goals_risk_present"
+  },
+  {
+   "read_back": "the assistant should reason about which actions are sensitive to assumptions about the user's intent and goals when misaligned-goals risk is present",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1_170_n034",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "reason_about_sensitive_actions(A)",
+   "body": "assistant_action(A), misaligned_goals_risk_present"
+  },
+  {
+   "read_back": "the assistant should ask clarifying questions as appropriate when misaligned-goals risk is present",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1_170_n034",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "ask_clarifying_questions(A)",
+   "body": "assistant_action(A), misaligned_goals_risk_present"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "follow_chain_of_command",
+   "closure": "cepa",
+   "reason": "the clause obliges following the chain of command only when misaligned-goals risk is present; it does not forbid other actions, so silence permits"
+  },
+  {
+   "act_class": "reason_about_sensitive_actions",
+   "closure": "cepa",
+   "reason": "the clause obliges reasoning about sensitive actions only when misaligned-goals risk is present; it does not forbid other actions, so silence permits"
+  },
+  {
+   "act_class": "ask_clarifying_questions",
+   "closure": "cepa",
+   "reason": "the clause obliges asking clarifying questions as appropriate; it does not forbid other actions, so silence permits"
+  }
+ ],
+ "requires": [
+  "chain_of_command_principle/1"
+ ],
+ "inputs": [
+  "assistant_action/1",
+  "misaligned_goals_risk_present/0"
+ ],
+ "forbid_body": []
+}

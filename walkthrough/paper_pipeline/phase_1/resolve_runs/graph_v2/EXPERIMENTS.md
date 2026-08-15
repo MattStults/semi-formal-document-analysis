@@ -3018,3 +3018,38 @@ amendment REVERSES the spec's central architectural move.
   normalisation rate and measured $/seat -- NEVER a faithfulness result.
   A flash pilot also needs a written ruling exempting a reply-shape pilot
   from §7's frontier mandate.
+
+## 2026-08-15: COVERAGE is the real failure -- 19% unrepaired, one class
+
+Live gen-11 data (100 modules attempted): **69 translated, 19 UNREPAIRED,
+12 abstained** -> ~146 of 773 would fail entirely. Of 40 error findings on
+unrepaired modules, **32 are `undeclared-body-name`** ("body references X
+but nothing declares it"); the tail is 2 self-restating glosses, 2
+borrowed-without-gloss, 1 unsafe variable, 1 clingo refusal.
+THAT CLASS IS FIX F -- ranked SIXTH by the census, rated high risk, and
+REJECTED by review as not ready, with the census saying it "must keep
+costing a call". The inversion is a metric artifact: the fix plan ranked by
+REPAIR ROUNDS SAVED (a cost metric, and cost was never the problem at ~$4
+a corpus). Ranked by MODULES THAT NEVER TRANSLATE, F is first and A-E save
+none of the 19. Coverage, not spend, is what a graph corpus cannot lose --
+a missing module takes its concepts and edges with it.
+MATT'S RULINGS 2026-08-15:
+1. Let the RUNNING slice finish (more data), then STOP -- no further slices
+   until a fix exists. Recorded: this is a sample, not a full corpus.
+2. Reproduce the class on a SECOND MODEL and iterate there to find a
+   solution, then test the solution on DeepSeek -- distinguishing an
+   instruction/schema defect (reproduces) from a model-capability limit
+   (does not).
+3. At the end, RE-RUN EVERYTHING (not only the failures) so hashes match
+   and we can prove no pre-existing success was broken by the fix.
+4. Incorporate ALL fixes this round (A-F), not a filtered subset --
+   provided each is adversarially reviewed and validated INDEPENDENTLY, and
+   then again AS A GROUP before the run. (The group check matters: review
+   already found E silently no-oping three of A's rules while all 34 of A's
+   tests still passed.)
+BLOCKER SURFACED, NOT WORKED AROUND: Haiku is not reachable from the
+translation harness. `translate.Client` speaks **openai-compatible only**
+(translate.py:553-555 refuses any other kind), and providers.json carries
+no Haiku entry -- the only anthropic row is `fable`. Options are recorded
+in the conversation; this needs Matt's pick before the cross-model
+iteration starts.
