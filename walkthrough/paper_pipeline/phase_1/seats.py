@@ -363,6 +363,28 @@ _ANSWER = ('Answer with JSON: {{"judgements": [{{"item": "...", "verdict": '
            'once, each with a non-empty reason. "item" is {item_rule} — copy '
            'it EXACTLY as shown. Verdicts: {verdicts}.')
 
+#: ⛔ A MEASURED DEAD END FOR 4c, RECORDED HERE SO IT IS NOT RE-TRIED.
+#: 4c's dominant false positive is a reason of the form *"the cited clause does
+#: not DEFINE the term `sends_email`"* — 7 of 7 items on `l699_796_n022` in
+#: `_debug_gen11/seat_fix/out_h2`. The obvious repair is a paragraph telling
+#: 4c that identifiers are the translator's own coinage, that the clause need
+#: not define a term, and that an example or a heading can still license an
+#: item. IT WAS RUN, once, over the whole golden set
+#: (`_debug_gen11/seat_fix/out_h1r`, $0.033):
+#:
+#:      4c control FP    25/86 -> 11/86      <- the number that tempts
+#:      4c planted-site recall, three classes 3/3 -> 0/3, 2/2 -> 0/2, 1/2 -> 0/2
+#:      any-seat recall over the golden set   14/15 -> 11/15
+#:
+#: It did not become more precise; it became LENIENT, which is the one way
+#: this seat's precision number can be bought. Reverted the day it was
+#: measured. The residual FP is real and still open — but the fix for it is
+#: not a licence to pass, and any candidate has to be reported with the mutant
+#: column beside it, or it is not reported at all.
+#:
+#: ⚠️ THIS NOTE IS A COMMENT, NOT PART OF ANY BRIEF, ON PURPOSE: it names the
+#: planted-defect classes, and a brief that names them hands the seat the
+#: answer sheet.
 BRIEFS = {
     "4a": """\
 You wrote a formal module for one clause of a written specification. You are
@@ -401,6 +423,28 @@ not a faithful one, and saying so is more useful than a guess.
 ⚠️ The sentences are composed mechanically and read awkwardly. Awkward is not
 unfaithful. Judge the content.
 
+⚠️ Part of each sentence is MECHANICAL FRAME, not content: a clause id such as
+`l1_170_n001`, guillemets and brackets, and the fixed shape of the sentence.
+The clause will never contain the frame literally and you are not asked about
+it. Do not answer `unclear` because the clause does not name that id or does
+not use the sentence's wording.
+
+⭐ THE MODALITY IS CONTENT. `obliges`, `forbids`, `permits` and `prefers` each
+assert a different thing, and the clause has to support the one the sentence
+uses. So:
+
+  * a sentence that OBLIGES or FORBIDS something the clause only describes,
+    illustrates or allows is `unfaithful` — it asserts a requirement the
+    clause does not impose;
+  * a sentence that PERMITS or PREFERS something the clause marks as bad, or
+    that forbids something the clause calls for, is `unfaithful` — it asserts
+    the opposite of the clause;
+  * a sentence whose SUBJECT MATTER this clause never touches is `unclear` —
+    that is what `unclear` is for.
+
+If you can already say what the clause does and does not require, you can
+answer; abstaining at that point loses what you have read.
+
 """ + _ANSWER.format(verdicts="faithful, unfaithful, unclear",
                      item_rule="the id shown in [brackets] beside each "
                                "sentence"),
@@ -424,6 +468,16 @@ Two kinds of item are asked about differently, and each says which it is:
 ⭐ An item naming an entity, category or sibling policy the cited clause never
 introduces is `unlicensed`, however reasonable it sounds. That is the whole
 question you are here for.
+
+⚠️ The specification was split into parts and this is ONE part. Some concepts
+an item uses are established by a DIFFERENT part, and those are listed for you
+under CONCEPTS ESTABLISHED BY ANOTHER PART OF THE SPECIFICATION, each with the
+meaning that other part gives it. Using such a name is borrowing, not
+inventing: do not call an item `unlicensed` merely because the cited clause
+does not introduce a name on that list. Do call it `unlicensed` if it uses the
+name with a DIFFERENT meaning than the one listed, or if anything else in the
+item is unsupported. Names NOT on that list are judged against the cited
+clause exactly as above.
 
 """ + _ANSWER.format(verdicts="licensed, unlicensed, unclear",
                      item_rule='the id printed after "item " in each entry'),
@@ -784,7 +838,8 @@ def build_4b_prompt(clause_text, renderings, cross_reference_texts=(),
     return "\n".join(out)
 
 
-def build_4c_prompt(items, allow_missing_citations=False):
+def build_4c_prompt(items, allow_missing_citations=False,
+                    borrowed_concepts=()):
     """⭐ THE ANCHOR SEAT. Note the signature: there is NO PARAMETER through
     which a rendering could be passed (§4.1, enforced not stated). If 4r is
     systematically wrong — a mis-substituted gloss, a dropped condition, a
@@ -794,6 +849,22 @@ def build_4c_prompt(items, allow_missing_citations=False):
     ⭐ BATCHED PER CLAUSE, not per item (§7): the coverage rule requires the
     seat to see the whole denominator anyway, and per-item calls would multiply
     the clause context by the item count.
+
+    `borrowed_concepts` is `((name, prose), …)` — the judged node's own NEEDS
+    block, which is the DECOMPOSER'S instruction to the translator that a name
+    is established by another node and must be borrowed rather than defined
+    here. MEASURED, `_debug_gen11/stage4_golden`: without it 4c returns
+    `unlicensed` on 14/14 borrowed-name controls — items that are correct by
+    the pipeline's own instruction — because the question *"does the cited
+    clause contain this?"* is the wrong question for a name the pipeline told
+    the module to take from elsewhere. It is a JOIN, not a hint: nothing here
+    tells 4c to be more lenient about anything that is not on the list, and a
+    name on the list used with a different meaning is still `unlicensed`.
+
+    ⛔ STILL NOT A RENDERING SLOT (§4.1). The prose is the graph node's own
+    `needs[].prose`, written by the decomposer BEFORE any module existed, and
+    it goes through the same `_refuse` gauntlet as the cited clause text, so
+    4r's output cannot reach 4c through it either.
     """
     if not items:
         raise SeatRefused("4c with an empty denominator is a vacuous pass")
@@ -819,7 +890,20 @@ def build_4c_prompt(items, allow_missing_citations=False):
                 f"{it.item} cites {it.cites!r} and no text for it was "
                 f"supplied; asking whether an absent clause licenses an item "
                 f"buys an answer about nothing")
-    out = ["THE ITEMS AND THEIR SOURCES", ""]
+    out = []
+    borrowed = tuple(borrowed_concepts or ())
+    if borrowed:
+        for name, prose in borrowed:
+            where = f"the borrowed concept {name!r}"
+            _refuse(str(prose), where, _UNIVERSAL_PATTERNS)
+            _refuse(str(prose), where, _RENDERING_PATTERNS)
+        out += ["CONCEPTS ESTABLISHED BY ANOTHER PART OF THE SPECIFICATION",
+                "", "  (this part was told to use these names and not to "
+                "define them here)", ""]
+        for name, prose in borrowed:
+            out.append(f"  {name}: {str(prose).strip() or '(no gloss given)'}")
+        out.append("")
+    out += ["THE ITEMS AND THEIR SOURCES", ""]
     for it in items:
         q = "TEXTUAL" if it.licence == "textual" else "ASSUMED"
         out.append(f"  item {it.item}   [{q}]")
@@ -1573,7 +1657,8 @@ class ClausePlan:
 
 
 def plan_clause(mod, rb, clause_text, corpus_texts, forbid_body_claims=(),
-                cross_reference_texts=(), allow_missing_citations=False):
+                cross_reference_texts=(), allow_missing_citations=False,
+                borrowed_concepts=()):
     """Everything four seats need, built and fenced. NO MODEL CALL."""
     if not proceeds_to_a_seat(rb):
         raise SeatRefused(
@@ -1596,7 +1681,8 @@ def plan_clause(mod, rb, clause_text, corpus_texts, forbid_body_claims=(),
                               tuple(text_by_item[i] for i in d4b.ids),
                               cross_reference_texts, ids=d4b.ids),
         "4c": build_4c_prompt(items,
-                              allow_missing_citations=allow_missing_citations),
+                              allow_missing_citations=allow_missing_citations,
+                              borrowed_concepts=borrowed_concepts),
         "4d": build_4d_prompt(clause_text,
                               tuple(text_by_item[i] for i in d4a.ids),
                               d4d.ids, cross_reference_texts),

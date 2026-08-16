@@ -4476,3 +4476,190 @@ judge at all.**
 client and is NOT in `semi-formal-experiment/usage.jsonl`**, so `spend.py`
 cannot see it. Recorded here so the figure is not lost; the ledger's own
 integrity rule is that every artifact's model appears in the usage log.
+
+## 2026-08-16: THE FIX MATRIX -- best case 65% coverage, LARGEST class untouched
+
+`_debug_gen11/fix_matrix/`. 89 live calls, **MEASURED $0.0226** of a $0.50 cap.
+Two independent anchored populations; every cell a PAIR (detection AND FP on
+both control strata).
+
+⭐ **TWO HARNESS ERRORS THE AGENT CAUGHT IN ITSELF FIRST.** (1) Its first
+version scored 36 UNVETTED modules as clean controls and "found" 6 polarity
+false positives -- **all 6 of which the reference set independently labels
+`inverted-modality`, i.e. TRUE POSITIVES on unadjudicated text.** Only the 11
+believed-correct bases are controls now. (2) The sentence splitter broke on
+`:`, feeding the live judge fragments like `"Example:"` -- 4 of F2-live's 5
+extra flags were fragments. Both make a matrix look decisive while measuring
+nothing.
+
+⛔ **THE CEILING IS THE HEADLINE.** Of the reference set's 26 known edits: the
+offline stack reaches **12/26 (46%) MEASURED**; adding the seats **17/26 (65%)
+INFERRED**. Both are UPPER BOUNDS -- clause-level, so firing on the right
+clause for the wrong reason counts as covered. **11 of 26 are in classes
+NOTHING on the table targets**: `dropped-content` (6), `other` (4),
+`weakened-modality` (1). **`dropped-content` is the LARGEST class in the
+reference set and has no golden specimen, no check and no seat with a measured
+number. Perfect execution of all five fixes leaves it untouched.**
+
+**F1-GENERAL IS NOT WORTH ITS COST -- this corrects the coordinator's
+recommendation.** The general one-bit judge has an extension IDENTICAL to the
+regex on both populations (5/5, 2/4, 0 FP). Zero extra detections; costs one FP
+(`l2653_2820_n004.asserts[1]`, *"preferred only when uncertainty persists"* --
+status correct, restriction belongs in the body) plus a live call per assert.
+⚠️ **THE CAVEAT, and it is the owner's generalisation question exactly: the
+regex's 8/8 is IN-SAMPLE** (widened onto these very sentences 2026-08-16)
+**and the general judge's is OUT-OF-SAMPLE. That difference is real and NOT
+MEASURABLE with the anchors available -- it needs a SECOND DOCUMENT.**
+
+| interaction | verdict |
+|---|---|
+| F1 x F4 | REDUNDANT on detection, complementary on lifecycle. F4 PREVENTS what F1 DETECTS; F1 becomes F4's regression test and **a FALLING F1 count is the success signal** |
+| F1-regex x F1-general | REDUNDANT -- identical extension |
+| F2 x seats | **ADDITIVE** -- F2 is the only instrument running CRITERIA's bearer test; +2 detections, +0 FP both populations |
+| F2-offline x F2-live | the LIVE variant is strictly worse (1/2 vs 2/2) -- a model asked the mechanical question underperforms a regex asking it |
+
+**DEFECT TRADING: NONE** -- 0/25 and 0/11 at every rung. One fitted component
+DISCLOSED (F2's worked-example guard, added after seeing 2 FPs; its
+out-of-sample check is P-GOLD, recall 2/2, specificity 1.000).
+
+**F5 -- THE SEAT FIXES ARE WHERE THE POOLED NUMBER MOVES** (scored free from
+stored replies): baseline **+0.091**; **H1 (give 4c `PROVIDES`) -> +0.182**,
+4c control FP 48/86 -> 22/86, borrow FP 14/14 -> 10/14. H2 does not move the
+pool but has better recall (14/15 vs 12/15) and the lowest 4b FP.
+⚠️ **F1-F4 do NOT move the pooled seat discrimination at all** -- they are
+stage-2 mechanical, UPSTREAM of the seats. Reporting them against +0.091 would
+be a category error.
+
+**F3 -- MIS-ROUTING CAUSE FOUND; THE COORDINATOR'S COUNT WAS WRONG.** Not a
+model defect, not a `--clause` bug -- every draw answered the prompt it was
+handed (overlap 0.44-1.00 vs own prompt, corpus floor 0.06). **Cause: clause
+ids are POSITIONAL and the corpus is UNVERSIONED.** `node_corpus.py:53-63`
+builds `l{band}_n{index}` from POSITION; `:111` hardcodes
+`graph_v2@2026-08-10` for every vintage; `:147-149` records the DOCUMENT sha and
+no DECOMPOSITION identity; `:152` **overwrites `node_corpus.json` in place,
+destroying the vintage a prior run was drawn against.** Re-decomposition
+renumbers, and `l1_170` is the one band identical in every vintage -- which is
+why every affected clause is `l1_170_*`. The symptom is manufactured at
+`flip_classify/extract_flips.py:40-42`, pooling on bare clause id, while
+`d1_recruit/census.py:208` correctly keys on `(clause, system_sha, user_sha)`.
+**Correction: FIVE clauses, not four, and not the four named** (`n016`/`n028`
+real; `n017`/`n026`/`n060` new; the other three earlier INSTRUMENT-ARTIFACT
+verdicts differ only in `system_sha`, a different phenomenon). 2 of the 33 flips
+are pure pooling artefacts. Detector: **5/5 recall, 0 FP over 119 multi-draw
+clauses**; the tempting line-range signal is rejected BY NAME (merged nodes
+legitimately cite outside their band -> 1/5).
+
+**F4 -- NEGATIVE POLE.** Add `"disprefer"` to `STATUSES` and the
+`Assertion.status` Literal. Rejected by name: a sign field on `prefer` (it
+reintroduces a two-field redundancy whose fields are NOT independently
+authored) and a comparative two-act form (right for GOOD/BAD examples, cannot
+express the plain case).
+⭐ **THE BLAST RADIUS GREPS ITSELF rather than trusting memory, catching 2
+errors in the coordinator's brief and 6 in the agent's own draft**: `link.py`
+DOES NOT EXIST; `link_nodes.py` touches no status word; and
+**`behavior_match.py` contains exactly ONE (`asserts(S, forbid, A)`) -- so
+BEHAVIOUR MATCHING WOULD SILENTLY IGNORE EVERY DISPREFERENCE until a rule is
+added.** Act on that before shipping a pole.
+
+⛔ **THE ANTI-RULE, NOW WITH MEASURED PROOF.** Do not machine-render `read_back`
+from `status` -- the polarity check has evidentiary content ONLY because the two
+fields are independently authored. **Golden items GS11 and GS12 flip BOTH fields
+together, and every polarity detector, regex and general-model alike, scores
+0/2 on them.** A preview of what a rendered read-back does to the whole corpus.
+
+OVERFITTING, STATED: single-digit denominators throughout (5 inverted-modality
+edits, 2 fact-as-deontic, 15 unarguable mutants); mitigated only by the two
+populations being independent BY CONSTRUCTION and every fix scored on both.
+
+## 2026-08-16: SEAT FIXES -- H1 and H2 kept, H1r measured and REVERTED, H3 refuted for $0
+
+`_debug_gen11/seat_fix/`. **4 scoring runs, 446 calls, $0.1295 MEASURED** of a
+$0.40 cap. Gates: 229 seat tests, full suite 1238 passed / 1 xfailed,
+`mutate_seats.py` **103 killed, 0 survivors**, `--verify-sites` 31/31.
+
+| | base | **H1** | **H2** | H2b (repl.) | H1r (reverted) |
+|---|---|---|---|---|---|
+| 4c borrow-control FP | 14/14 | **10/14** | 11/14 | 10/14 | 9/14 |
+| 4c control FP (11 clean) | 48/86 | **22/86** | 25/86 | 22/86 | 11/86 |
+| 4c detections at planted sites | 9/12 | 9/12 | 11/12 | 10/12 | **5/12** |
+| 4b control FP | 3/86 | 5/86 | **1/86** | 2/86 | 1/86 |
+| 4b inverted-modality | 0/2 (both `unclear`) | 0/2 | **1/2** | 1/2 | 1/2 |
+| 4b fact-as-deontic / invented-obl | 0/1, 0/1 | 0/1, 0/1 | **1/1, 1/1** | 1/1, 1/1 | 1/1, 1/1 |
+| any-seat recall (15 unarguable) | 13/15 | 13/15 | **14/15** | 14/15 | **11/15** |
+
+**H1 (give 4c the node's NEEDS block + provider prose) -- PARTIALLY met.**
+Borrow FP 14/14 -> 10/14, control FP HALVED, and planted-site detections NOT
+lost. Mechanism confirmed rather than inferred: `l461_608_n015` went **18/18 ->
+1/18**, and the items that flipped are exactly the ones whose names are on its
+NEEDS list. The residual is a DIFFERENT failure, legible in 4c's own text --
+*"the cited clause does not DEFINE the term `sends_email`"*, 7 of 7 items on
+one clause. `l2126_2404_n026` has an EMPTY NEEDS block, so H1 cannot reach it
+by construction.
+
+**H2 (4b briefing: the frame is mechanical; the MODALITY is content) -- MET,
+and better than asked: 4b's FP went DOWN, 3/86 -> 1-2/86, not up.** Its
+abstentions MIGRATED to the borrowed-name stratum, where abstention is the
+right answer (0/14 flagged, 14/14 `unclear`). Mechanism explains it: 4b's
+`unclear` reasons were *"the clause does not mention any clause identifier"* --
+it was abstaining over the FRAME after already stating the substantive mismatch
+in the same sentence. Scope-drift-widen stayed 0/3, as predicted (the defect
+lives in an `ontology` body, which an `asserts` rendering never shows).
+
+⛔ **H1r IS A CLEAN, DECISIVE NEGATIVE -- the exact failure the brief warned
+about.** The obvious wording fix for H1's residual ("a name is a label, not a
+claim; the clause need not define a term") cut 4c's control FP 25/86 -> **11/86**
+-- and detections collapsed 11/12 -> **5/12** (widen 3/3->0/3, disjunction
+2/2->0/2, polarity 1/2->0/2), any-seat recall 14/15 -> 11/15. **It bought
+precision with leniency.** REVERTED. ⭐ And the measurement was written into
+`seats.py` as a COMMENT, not as brief prose, **because a brief that names the
+planted-defect classes hands 4c the answer sheet** -- the agent caught that
+after first writing it into the brief and verified the shipped prompts
+byte-identical to the arms that measured them.
+
+⭐ **H3'S PREMISE IS FALSE, AND CHECKING IT COST $0. The coordinator forwarded
+it; it was wrong.** Seat prompts ALREADY receive the narrowed span
+(`link_nodes.node_clause_texts` -> `readback.clause_text`, which prefers
+`[node narrows this span to: "..."]`, `readback.py:472`). Verified over the
+whole graph: **575 nodes with narrows, 542 exact matches**, the 33 "mismatches"
+being the documented partially-narrowed multi-span rule. All three forwarded
+specimens get exactly their title lines. **No change to make** -- and if those
+modules are defective while 4c passes them, the cause is not the artefact.
+
+⭐ **THE `status`/`act`-beside-each-sentence PROPOSAL IS UNNECESSARY AND
+PROHIBITED.** The modality is ALREADY in 4b's rendering (`clause ... permits
+<<...>>`, verbatim), and `act` is a PREDICATE NAME: `build_4b_prompt` is fenced
+by `_MODULE_PATTERNS` and pinned by
+`test_11_a_4b_prompt_carrying_the_logic_is_refused` and
+`test_no_real_prompt_ever_carries_the_modules_own_predicate_names_to_4b`.
+Implementing the coordinator's forwarded suggestion would have broken two pins.
+4b's miss was a READING failure, not blindness -- which is why briefing fixed it.
+
+⚠️ **NOISE FLOOR, and read every delta against it.** H2 and H2b are the same
+code and prompts, different sampling: 4b's seven mutant cells IDENTICAL, 4c
+control FP 25 vs 22, borrow 11 vs 10. Independently, H1 changed only 4c's prompt
+yet 4b's control FP moved 3->5. **So +/-1 per mutant-class cell and +/-3/86 on a
+control column is NOISE.** H1's 48->22 and H2's four 4b cells are far outside
+it; every +/-1 mutant delta in the table is not.
+
+⛔ **THE POOLED NUMBER WAS DELIBERATELY NOT HEADLINED**, and should not be: it
+ran +0.091 / +0.182 / +0.091 / +0.273 / +0.123 across five runs of largely
+improving seats. **Arithmetic, not a measurement.**
+
+STOPPED AT FOUR RUNS ON PURPOSE. Both kept changes have a mechanism visible in
+the seats' own reasons AND numbers that agree; H2 replicated; H1r was a
+pre-registered test of a named mechanism that failed and was reverted. The agent
+declines to claim 4c is FIXED (10/14 borrow FP is still bad), that the +/-1 4c
+deltas mean anything, or that any of it generalises past DeepSeek-Flash on 11
+base modules.
+
+STILL OPEN, untouched by design: the **JSON-fence bug in `seats.judge`** (bare
+`json.loads`, so no Claude judge can be heard at all), and two 4d
+`ProviderError` truncations (`finish_reason=length`) recorded honestly as
+`seat-refused`.
+NEXT, in the agent's order: (1) nothing more on 4b -- it is now both the precise
+and the sensitive seat; (2) 4c's residual needs an ARTEFACT not wording (show
+it, per item, WHICH WORDS of the cited clause the translator claims support it,
+from `read_back`/`cites`); (3) 4d's `claims`-list coverage mapping, the only
+seat with purchase on dropped-obligation; (4) re-run the golden set against a
+frontier judge once the fence bug is fixed -- every number here is one
+provider's.
