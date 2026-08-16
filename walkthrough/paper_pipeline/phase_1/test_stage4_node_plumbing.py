@@ -198,6 +198,80 @@ def test_a_claim_with_edge_whitespace_still_adjudicates():
     assert seats._reply_item("claim x", dup) == "claim x"  # refused by name
 
 
+#: ⭐ TWO REAL REFUSED 4d REPLIES, copied verbatim out of the first stage-4
+#: baseline (`_debug_gen11/stage4_baseline/out/raw/<clause>.4d.json`). 57 of
+#: 57 of that run's 4d refusals — its ENTIRE 70.4 % refusal rate — are this
+#: one shape: the prompt displays the claim with its author-written label,
+#: the seat replies with the claim sentence and drops the label, and
+#: `_reply_item` matched neither, so every reply was NotAdjudicated. Both
+#: label spellings in the corpus are represented (56 bare, 1 colon).
+_REFUSED_4D = {
+    # the colon spelling — and the clause of the independent dropped-content
+    # finding, so this is the reply 4d must be able to give at all
+    "l1_170_n056": (
+        ("C1: honoring a user request is the default expectation",
+         "C2: honoring a user request is forbidden when that request "
+         "conflicts with a developer-level instruction"),
+        ("honoring a user request is the default expectation",
+         "honoring a user request is forbidden when that request conflicts "
+         "with a developer-level instruction"),
+    ),
+    # the bare spelling, the other 56
+    "l171_426_n001": (
+        ("C1 the assistant must adhere to the Model Spec above all else",
+         "C2 much of the Model Spec consists of default instructions at user "
+         "or guideline level"),
+        ("the assistant must adhere to the Model Spec above all else",
+         "much of the Model Spec consists of default instructions at user or "
+         "guideline level"),
+    ),
+}
+
+
+@pytest.mark.parametrize("clause_id", sorted(_REFUSED_4D))
+def test_a_stored_refused_4d_reply_now_adjudicates(clause_id):
+    """RED WITHOUT THE FIX. A live 4d reply that names the claim the prompt
+    displayed, minus its `C<n>` label, maps to the denominator item."""
+    ids, replied = _REFUSED_4D[clause_id]
+    for shown, said in zip(ids, replied):
+        assert seats._reply_item(said, ids, "4d") == shown
+
+
+def test_the_label_tolerance_does_not_reach_the_other_three_seats():
+    """⛔ SCOPED BY SEAT, like the digit fallback. 4d is the only seat whose
+    denominator is claim sentences; a de-labelled reply anywhere else is the
+    seat inventing a shape it was never shown."""
+    ids, replied = _REFUSED_4D["l171_426_n001"]
+    for seat in ("4a", "4b", "4c", None):
+        assert seats._reply_item(replied[0], ids, seat) == replied[0]
+
+
+def test_an_ambiguous_de_labelled_claim_is_still_refused_by_name():
+    """⚠️ PAIRED CONTROL. If two labelled claims de-label to the SAME text the
+    reply names no unique item, and a tolerance that picked one would silently
+    widen what counts as an answer. It is refused, exactly as the duplicate
+    denominator above is."""
+    dup = ("C1 the same claim", "C2 the same claim")
+    assert seats._reply_item("the same claim", dup, "4d") == "the same claim"
+    # and an unlabelled id is never reached by the tolerance
+    mixed = ("C1 a claim", "a different claim")
+    assert seats._reply_item("nothing like it", mixed, "4d") == "nothing like it"
+
+
+def test_a_whole_de_labelled_4d_reply_passes_the_coverage_rule():
+    """The end-to-end shape: every claim answered label-dropped adjudicates,
+    through `judge`, against the real 4d denominator."""
+    plan = _plan()
+    ids = plan.ids["4d"]
+    assert all(re.match(r"^C\d+", i) for i in ids), (
+        "fixture claims must carry the author-written label this pins")
+    stub = Stub({"judgements": [
+        {"item": re.sub(r"^C\d+[.:)\]]?\s+", "", i), "verdict": "covered",
+         "reason": "r"} for i in ids]})
+    js = seats.judge("4d", plan.prompts["4d"], ids, client_factory=lambda: stub)
+    assert sorted(j.item for j in js) == sorted(ids)
+
+
 def test_a_hallucinated_item_is_still_refused_by_name():
     """⚠️ PAIRED CONTROL: the reply-shape tolerance must not have widened the
     coverage rule. An id matching nothing is still NOT ADJUDICATED."""

@@ -1467,6 +1467,14 @@ def proceeds_to_a_seat(rb):
     return rb.outcome == "rendered"
 
 
+#: ⭐ THE AUTHOR-WRITTEN CLAIM LABEL. A graph-node module's `claims` entries
+#: carry their own ordinal label — `C1 the goals ...`, `C4: honoring ...` —
+#: and that label is part of the denominator id, because the id IS the claim
+#: sentence as written. Both spellings occur in the corpus (57 of 57 refused
+#: 4d replies in the first stage-4 baseline; 56 bare, 1 colon).
+_CLAIM_LABEL = re.compile(r"^C\d+[.:)\]]?\s+")
+
+
 def _reply_item(raw, ids, seat=None):
     """The denominator id a reply names — in any shape the prompt displays.
 
@@ -1475,7 +1483,9 @@ def _reply_item(raw, ids, seat=None):
     adjudicate: the id itself (what every mock speaks), the id wrapped in the
     `[brackets]` the prompt prints it in, or — FOR 4a/4b ONLY — the 0-based
     index of the entry, the shape their pre-fix prompts taught, kept so a
-    stored reply replayed through `judge` still adjudicates.
+    stored reply replayed through `judge` still adjudicates, or — FOR 4d
+    ONLY — the claim sentence with its author-written `C<n>` label dropped,
+    the shape 57 of 57 refused live 4d replies spoke.
 
     ⛔ The digit fallback is SCOPED BY SEAT (consolidated_fix_review.md F1,
     2026-08-12): 4d's prompt numbers the SENTENCES, not the claims — a digit
@@ -1498,6 +1508,33 @@ def _reply_item(raw, ids, seat=None):
         return stripped[s]
     if len(s) >= 2 and s[0] == "[" and s[-1] == "]" and s[1:-1].strip() in ids:
         return s[1:-1].strip()
+    # ⭐ THE LABEL-DROPPED CLAIM — 57 of 57 of 4d's refusals in the first
+    # stage-4 baseline, i.e. the whole 70.4 % refusal rate, one mechanical
+    # cause. 4d's prompt prints each claim as the author wrote it, LABEL
+    # INCLUDED (`  C1 the goals ...`), and the seat replies with the claim
+    # SENTENCE, label dropped. The reply names exactly the item the prompt
+    # displayed, so refusing it is the same class of defect the LIVE SHAPE
+    # pin was written for — the seat is not skipping the hard items, the
+    # matcher cannot see the answer.
+    #
+    # ⛔ SCOPED THREE WAYS, because a loose prefix tolerance would widen what
+    # counts as an answer:
+    #   * SEAT — 4d only, the one seat whose denominator is claim sentences
+    #     (same precedent as the digit fallback above);
+    #   * SHAPE — only ids that literally carry a `C<n>` label are de-labelled,
+    #     so nothing else in any denominator becomes reachable by a new name;
+    #   * AMBIGUITY — if two labelled claims de-label to the same text the
+    #     reply maps to NOTHING and is refused by name, exactly as a duplicate
+    #     denominator is refused above. Never resolve an ambiguous match.
+    if seat == "4d":
+        delabelled = {}
+        for i in ids:
+            m = _CLAIM_LABEL.match(i)
+            if m:
+                delabelled.setdefault(i[m.end():].strip(), []).append(i)
+        hits = delabelled.get(s, ())
+        if len(hits) == 1:
+            return hits[0]
     if (seat in ("4a", "4b")
             and s.isdigit() and int(s) < len(ids) and s not in ids):
         return ids[int(s)]
