@@ -33,6 +33,10 @@ for _p in (PHASE1, WALK):
 
 import link  # noqa: E402  (walkthrough/link.py)
 
+if HERE not in sys.path:
+    sys.path.insert(0, HERE)
+import corpus_exclusions  # noqa: E402
+
 RUNS = os.path.join(HERE, "translation_sample", "runs")
 REPORT = os.path.join(HERE, "link_nodes_report.json")
 #: run-dir names start with a sortable timestamp (YYYYMMDD-HHMMSS-...)
@@ -47,7 +51,21 @@ def norm_id(node_id):
 
 
 def gather():
-    """One (lp_path, json_obj, run_dir) per node -- newest translated wins."""
+    """One (lp_path, json_obj, run_dir) per node -- newest translated wins.
+
+    ⭐ Minus the artifacts `corpus_exclusions.EXCLUSIONS` names, each with an
+    adjudicated verdict and a content digest. That check runs FIRST, before the
+    outcome/`.lp` filters, so an excluded artifact cannot win the newest-wins
+    dedupe; and it is keyed to one file in one run, so a LATER run's module for
+    the same node is unaffected and enters normally.
+
+    ⚠️ It refuses rather than guesses: if a named artifact is missing, has a
+    different digest, or no longer carries the assert the verdict was about,
+    `verified()` raises and this read stops. Silently dropping whatever now sits
+    at that path would apply a verdict to an artifact nobody judged.
+    """
+    excluded = corpus_exclusions.verified()
+    hit = set()
     selected = {}
     for run in sorted(d for d in os.listdir(RUNS) if RUN_DIR.match(d)):
         rdir = os.path.join(RUNS, run)
@@ -56,6 +74,9 @@ def gather():
                     "run.json", "concepts.json") or f.endswith(
                     (".transcript.json", ".version.json")):
                 continue
+            if (run, f) in excluded:
+                hit.add((run, f))
+                continue
             obj = json.load(open(os.path.join(rdir, f), encoding="utf-8"))
             if obj.get("outcome") != "translated":
                 continue
@@ -63,6 +84,7 @@ def gather():
             if not os.path.isfile(lp):
                 continue
             selected[norm_id(obj["clause_id"])] = (lp, obj, rdir)
+    corpus_exclusions.assert_all_applied(excluded, hit)
     return selected
 
 

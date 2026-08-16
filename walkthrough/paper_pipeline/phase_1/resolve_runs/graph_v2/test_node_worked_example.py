@@ -4,7 +4,8 @@ Mirror of phase_1/test_prompt_examples.py for the graph-node pipeline: every
 good example is validated by the same checks the model's real replies face
 (an example that would fail our own checks teaches the failure as acceptable,
 in the most credible form available). The good/bad split is the
-'## The five bad ones' heading, same shape-matched regex as phase_1's.
+'## The N bad ones' heading, same shape-matched regex as phase_1's -- the
+count in the heading is deliberately NOT pinned, only its shape.
 """
 import json
 import os
@@ -104,6 +105,21 @@ def test_requires_and_inputs_are_shown_together_and_abstention_is_shown():
     assert any(m["outcome"] == "abstained" for m in mods)
 
 
+def _contract_block(quote, label):
+    """The `- name: gloss` names inside one block of a node's contract.
+
+    `label` is "PROVIDES" or "NEEDS". A block with no entries renders as
+    `  (none)` and yields the empty set.
+    """
+    if label == "PROVIDES":
+        m = re.search(r"^PROVIDES \(.*?\):\n(.*?)\n\nNEEDS", quote, re.S | re.M)
+    else:
+        m = re.search(r"^NEEDS --.*?:\n(.*?)\n\nCITATION", quote, re.S | re.M)
+    assert m, f"no {label} block in the node contract; the corpus format moved"
+    return {ln.strip()[2:].split(":")[0].strip()
+            for ln in m.group(1).splitlines() if ln.strip().startswith("- ")}
+
+
 def test_needs_names_are_required_verbatim(corpus):
     """The adapter's core contract: the flagship example's requires carries
     the node's NEEDS names exactly (with a chosen arity)."""
@@ -111,6 +127,85 @@ def test_needs_names_are_required_verbatim(corpus):
                     if m["clause_id"] == "l527_796_n012")
     req_names = {r.split("/")[0] for r in flagship["requires"]}
     assert req_names == {"authority_levels_hierarchy", "best_intentions_bias"}
+
+
+def test_every_translated_example_requires_exactly_its_needs(corpus):
+    """Contract 2 of the file, checked on EVERY translated example, not only
+    the flagship.
+
+    Both directions, and each has cost us a demonstration that taught the
+    opposite of the prose:
+
+    * NEEDS -> `requires`. `l4251_4571_n029` shipped `"requires": []` while
+      its contract carried `NEEDS: voice_turn_taking_rule` -- failure mode #2
+      (missing cross-reference), demonstrated in the file that forbids it.
+    * `requires` -> NEEDS. `l3995_4164_n001` shipped
+      `"requires": ["rule_under_heading/2"]` for a node whose NEEDS is
+      *(none)*, so the rule's body waited on a definition no node supplies and
+      the head derived nothing -- failure mode #3 (a rule that can never fire).
+      A name the NEEDS block does not list is either this module's own or a
+      fact about the case; it is not something to borrow.
+
+    Abstentions are excluded by contract: an abstention carries every list
+    empty, and that rule wins over this one.
+    """
+    for obj in _good_modules():
+        if obj["outcome"] != "translated":
+            continue
+        cid = obj["clause_id"]
+        needs = _contract_block(corpus[cid]["quote"], "NEEDS")
+        req = {r.split("/")[0] for r in obj["requires"]}
+        assert req == needs, (
+            f"{cid}: `requires` names {sorted(req)} but the node's NEEDS block "
+            f"is {sorted(needs)}. Missing names are failure mode #2; extra "
+            f"names are failure mode #3 -- a body waiting on a provider that "
+            f"does not exist.")
+
+
+def test_a_provides_name_is_actually_made_derivable(corpus):
+    """A node's PROVIDES is a promise other nodes are waiting on.
+
+    `l3995_4164_n001` PROVIDES `guideline_authority` and many nodes NEED it.
+    A translated module for a providing node must put that predicate at the
+    HEAD of an ontology entry -- naming it in `concepts` only declares what it
+    would mean, and derives nothing.
+    """
+    checked = 0
+    for obj in _good_modules():
+        if obj["outcome"] != "translated":
+            continue
+        cid = obj["clause_id"]
+        provides = _contract_block(corpus[cid]["quote"], "PROVIDES")
+        if not provides:
+            continue
+        heads = {e["atom"].split("(")[0].strip()
+                 for e in (obj.get("ontology") or [])}
+        heads |= {d.get("name") for d in (obj.get("defines") or [])}
+        missing = provides - heads
+        assert not missing, (
+            f"{cid} promises {sorted(missing)} in PROVIDES and no ontology "
+            f"entry derives it; every node NEEDing the name gets nothing")
+        checked += 1
+    assert checked, "no providing node is demonstrated at all"
+
+
+def test_the_structural_fact_route_is_demonstrated():
+    """Finding 2's resolution, pinned.
+
+    The file offers three routes, not two: a norm goes to `asserts`, a
+    structural fact goes to `ontology` with `asserts` empty, and only a node
+    establishing neither abstains. If the middle route stops being
+    demonstrated, "establishes no obligation" collapses back into "abstain"
+    and heading nodes stop providing the authority 100+ nodes borrow.
+    """
+    mods = _good_modules()
+    structural = [m for m in mods
+                  if m["outcome"] == "translated"
+                  and not m.get("asserts")
+                  and (m.get("ontology") or [])]
+    assert structural, (
+        "no translated example with an empty `asserts` and a non-empty "
+        "`ontology`; the structural-fact route is undemonstrated")
 
 
 def test_full_corpus_mode_covers_every_node_and_sample_is_unchanged():

@@ -176,8 +176,8 @@ section metadata yields a classification, not obligations. Do not inflate it.
       "licence": "textual", "cites": "l3995_4164_n001", "inference": null, "toggleable": false }
   ],
   "asserts": [], "beats": [], "defines": [], "closure": [],
-  "requires": ["rule_under_heading/2"],
-  "inputs": [],
+  "requires": [],
+  "inputs": ["rule_under_heading/2"],
   "forbid_body": []
 }
 ```
@@ -199,6 +199,9 @@ preference, so `prefer` is the status — collapsing it into `forbid` would be a
   ],
   "acts": ["respond_with(R)"],
   "concepts": [
+    { "name": "voice_turn_taking_rule", "arity": 1,
+      "gloss": "R must fit an iterative, turn-taking exchange and adapt as the conversation shifts",
+      "licence": "textual", "cites": "l4251_4571_n029", "inference": null, "toggleable": false },
     { "name": "brief_overview", "arity": 1,
       "gloss": "a response that gives a short overview and offers to elaborate, rather than listing all details at once",
       "licence": "assumed", "cites": null,
@@ -228,7 +231,7 @@ preference, so `prefer` is the status — collapsing it into `forbid` would be a
     { "act_class": "respond_with", "closure": "cepa",
       "reason": "the example states a preference between two permitted responses; it forbids nothing, so silence leaves responses permitted" }
   ],
-  "requires": [],
+  "requires": ["voice_turn_taking_rule/1"],
   "inputs": ["brief_overview/1", "open_question/1", "answers_question/2"],
   "forbid_body": []
 }
