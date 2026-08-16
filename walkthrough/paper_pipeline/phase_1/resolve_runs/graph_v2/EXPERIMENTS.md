@@ -4017,3 +4017,138 @@ passed schema, clingo, link checks and read-back. This entry establishes that
 the CONTRACT moved the rate. It establishes nothing about whether the extra
 modules are TRUE, and the 18 newly-recovered clauses are precisely the
 population nobody has read.
+
+## 2026-08-15: ⛔ SINGLE-DRAW COHORT RECRUITMENT IS MIS-POWERED BY CONSTRUCTION
+
+D1(a) and D2 both closed at the instrument check; **arm B was never sent**.
+$0.0895 of $0.40. `_debug_gen11/prompt_ab/` (PREREG written before any draw).
+
+| experiment | arm A reproduces target | pre-registered floor |
+|---|---|---|
+| D1 `prefer`-polarity | **3/21 = 14.3%** [5.0, 34.6] | 8/21 |
+| D2 fact-as-obligation | **10/24 = 41.7%** [24.5, 61.2] | 17/24 |
+| control (3 NORM clauses) | **9/9 = 100% deontic** | — |
+
+The control is what makes this interpretable: **the endpoint metric is sound
+and discriminating.** No abstentions, no unparsed draws, in any cell. At 3/21
+even a PERFECT arm B (0/21) gives Fisher p = 0.23 -- the D1 design could not
+have returned a significant result whatever arm B did.
+
+**THE FINDING, and it generalises past these two experiments: both defect
+cohorts were recruited by selecting clauses on a SINGLE DRAW'S OUTCOME, and
+neither defect survives re-drawing.** Four of the seven D1 clauses reproduced
+0/3; four of the eight D2 clauses reproduced 0/3, against a historical record
+of 8/8 deontic at attempt 1.
+
+PROMPT DRIFT IS RULED OUT, not assumed: the assembled system block has been
+**byte-identical (`5ff9daf7...`, 36,605 chars) across every run since
+20260810-225427**, including all five runs that produced the flagged polarity
+entries and the runs behind the routing study. The variance is per-draw
+stochasticity at temperature 0.2.
+
+⭐ **WHAT STANDS AND WHAT DOES NOT.** Corpus-level PREVALENCE stands -- the bad
+artifacts on disk are really bad, and `l1974_2125_n019.lp:57` really does say
+escalating emotional closeness is preferred. **Per-clause ATTRIBUTION does
+not.** "This clause has this defect" is a statement about one draw, not about
+the clause. **Any A/B cohort recruited from a single-draw census in this
+project is mis-powered by construction**, and that is a standing methodological
+rule from here on: recruit by drawing the corpus TWICE and keeping only clauses
+that trip the detector BOTH times.
+
+⛔ **THIS RETROACTIVELY REFRAMES THE FOUR INSTRUMENT-CHECK FAILURES** (DC-1
+Haiku 3/51; IC-1 1/17; IC-3 1/9; IC-4 0/8) and the 2026-08-15 entry that read
+them as "DeepSeek is the outlier; other model classes do not make these
+mistakes". **That reading is now only partly supported.** Those cohorts were
+ALSO single-draw recruited, and we now know DeepSeek does not reliably
+reproduce its OWN defects on those clauses -- 14.3% and 41.7%, not the ~100%
+the single-draw census implied. So an unknown part of what looked like a
+CROSS-MODEL asymmetry is really WITHIN-MODEL non-reproducibility. The
+cross-model gap is not refuted (DeepSeek's 14-42% still exceeds Haiku's 5.9%
+and Qwen's 0-11%), but it is smaller than stated and the "DeepSeek is the
+outlier" framing must be qualified wherever it is cited.
+
+SECONDARY, FREE, AND ITS OWN PROBLEM: on the D1 clauses arm A emitted **no
+`prefer` at all in 7/21 draws** and a hard `forbid`/`permit`/`oblige` in 8/21.
+Conditional on a `prefer` existing, the inversion rate is 3/14 = 21%. **The
+polarity inversion is a sub-case of broader instability in STATUS SELECTION**,
+and fixing polarity alone would not touch that.
+
+DISPOSITION -- FILE NEITHER YET. Neither is refuted; both are UNTESTED, and the
+wordings are kept (`promptsB_d1/`, `promptsB_d2/`, both shas recorded).
+* **D2 is close to testable**: at the MEASURED 41.7%, 12 draws/cell = 132 calls
+  = **$0.22** detects a drop to <=3/24 (p = 0.049). Worth doing, under a NEW
+  pre-registration -- the post-hoc power observation is grounds for a new
+  prereg, not for continuing a run that failed its own gate.
+* **D1 is not testable until its cohort is re-recruited** by the double-draw
+  rule above. No number of draws rescues a cohort whose members mostly lack the
+  defect.
+* CONFOUND RECORDED for whoever picks up D2: arm B bundles the one-sentence
+  DESIGN CHANGE with the transcription correction, so a positive result would
+  attach to the block, not the sentence.
+
+## 2026-08-15: FIRST STAGE-4 BASELINE ON THE GRAPH CORPUS -- and the instrument needs three fixes before its numbers mean anything
+
+Driver built at `_debug_gen11/stage4_baseline/stage4_driver.py` (it owns the
+seat client seam `READBACK_SMOKE.md` gap 2 says nobody owns). Without `--live`
+there is no client factory at all, so `judge` raises by construction; `--live`
+gates on the WORST case and refuses over `--budget`. **Spend $0.083144 over 324
+calls**, against a printed estimate of $0.4182 worst / $0.0711 likely -- the
+likely-case model is accurate to 17%.
+
+88 attempted -> 87 on disk (`l1_170_n034` unrepaired) -> 82 translated (5
+abstained) -> **81 reached a seat** (`l1_170_n083` refused at `plan_clause`).
+**Of the 81: 15 clean, 66 carrying at least one defect verdict.**
+
+| seat | judged | pass | defect | unclear |
+|---|---|---|---|---|
+| 4a (advisory) | 651 | 644 as-meant | 7 not-as-meant | 0 |
+| 4b | 651 | 452 faithful | 70 unfaithful | 129 (19.8%) |
+| 4c | 651 | 347 licensed | **264 unlicensed** | 40 (6.1%) |
+| 4d | 72 | 71 covered | 1 not-conveyed | 0 |
+
+⛔ **DO NOT QUOTE 66/81 AS A DEFECT RATE.** Three instrument problems, all
+found and reported by the agent that ran it rather than by a later reviewer:
+
+1. **4d REFUSED ON 57 OF 81 CLAUSES (70.4%)**, single cause, 57/57: the model
+   drops the `C1 ` claim label the prompt displays, and `seats._reply_item` has
+   no prefix tolerance. **4d's 24 surviving clauses are a
+   reply-format-selected subsample, so its numbers are not rates.** Deliberately
+   NOT patched -- it is a one-line change to `seats._reply_item` and belongs in
+   its own reviewed cycle. All 57 refused replies are saved for free validation.
+   ⚠️ 4d is the seat that looks for DROPPED CONTENT, so its collapse removes
+   the only seat positioned to catch the class the Opus read found (`l1_170_n056`,
+   an obligation kept only as its exception).
+2. **4c's 264 `unlicensed` is INFLATED by the node decomposition** -- an
+   estimated 179 are concept glosses legitimately borrowed from provider nodes
+   via `merged_gloss`. **INFERRED, not measured**; separating them needs a free
+   `PROVIDES` check that does not exist yet.
+3. **THE JUDGE IS THE SAME MODEL THAT WROTE THE TRANSLATIONS.** The seat's
+   small-model/frontier parity was validated on CLAUSE modules, never on node
+   modules and never same-model-as-author.
+
+⭐ **THE POLARITY PREDICTION HOLDS, AND THE MECHANISM IS WORSE THAN PREDICTED.**
+`checks.polarity_findings` over these 81 fires once (`l1_170_n053` asserts[0]).
+**Stage 4 caught 0 of 1. Overlap: zero.** And it is NOT that the seats could not
+see it: `readback` renders the STATUS field, so the seats were shown
+`clause l1_170_n053 prefers <act impose_restrictive_rules(D)>` -- the inverted
+claim, in plain English -- and **4c and 4a each wrote a reason stating the
+correct OPPOSITE meaning ("a preference AGAINST imposing overly restrictive
+rules") and then PASSED the item.** The seats read the polarity, restated it
+correctly, and did not notice it contradicted the item in front of them. That
+is a stronger justification for the mechanical detector than the argument that
+motivated it -- the defect survives a reader who has already understood it.
+⚠️ **n = 1.** Six of the seven corpus-wide polarity clauses fall outside this
+run's line ranges; stage 4 over them costs ~$0.006 and would settle it.
+
+CROSS-CHECK vs the Opus read (13/25 defective, run `124836`, different
+clauses): **the classes DO resemble each other.** Scope drift / content sourced
+outside the narrowed span is dominant in both. Stage 4 independently found
+inverted modality (`l1_170_n088` PERMITS `receive_hidden_chain_of_thought`
+where the clause DENIES it), invented obligation (`l1_170_n075`), and scope
+drift on asserts (`l1_170_n052`). Dropped content is where stage 4 is weakest,
+and 4d's refusal removed the only seat that looks for it.
+
+HARNESS BUG FOUND IN PASSING, worth fixing wherever it appears:
+`translate._check_envelope` STRIPS `usage`, so any caller reading
+`env["usage"]["cost_usd"]` reports **$0.00 over real billed calls**. A harness
+doing that under-reports spend to zero.
