@@ -290,13 +290,22 @@ def arity_findings(module):
 POLARITY_CHECK_ID = "prefer-polarity"
 POLARITY_MESSAGE_MARK = "but its own read-back calls it"
 
+#: ⚠️ WIDENED 2026-08-16 after the Opus reference set measured this pattern's
+#: RECALL AT 4 OF 5 real inversions. It carried `should be avoided` and missed
+#: `l4252_4482_n016`, whose read-backs say "is to be avoided" / "is to be
+#: minimized" -- one alternation short. That clause is the worst instance in
+#: the corpus: ALL THREE of its asserts are inverted, so the compiled module
+#: PREFERS including redundant phrases from a span saying to minimize them.
+#: A near-miss regex reads as a working check, which is why its recall was
+#: measured against a set with a known answer rather than assumed.
 #: Words a read-back uses when it means the act is to be AVOIDED. Deliberately
 #: narrow: this fires only when the read-back SAYS SO, never on a guess about
 #: what the clause meant. A wider net here would be a semantic judgement, and
 #: semantic judgement is stage 4's job, not stage 2's.
 _DISFAVOURED = re.compile(
     r"\b(dispreferred|disprefer|not preferred|discouraged|"
-    r"should be avoided|is worse|undesirable)\b", re.I)
+    r"(?:should|is to|are to) be (?:avoided|minimi[sz]ed|reduced|limited)|"
+    r"is worse|undesirable)\b", re.I)
 
 
 def polarity_mismatches(module):

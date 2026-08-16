@@ -2,7 +2,11 @@
 
 Your input is a **graph node**, not a bare clause: it arrives with `ESTABLISHES` (the one
 claim), `PROVIDES` / `NEEDS` (assigned predicate names with their meanings), a `CITATION`
-contract, and the verbatim `SOURCE TEXT`. The examples below are real nodes of this corpus.
+contract, and the verbatim `SOURCE TEXT`. The examples below are real nodes — real
+`ESTABLISHES` / `NEEDS` / `PROVIDES` contracts, verbatim source text from this document. Their
+**ids are the ids of the node sample this file was written against; the segmentation has moved
+since, so they may not be ids you are handed** — cite the id in your own input, never one of
+these (contract 1).
 
 Three contracts the node shape adds, before anything else:
 
@@ -141,11 +145,32 @@ can exhibit a derivation that never happens. Both slots are bare predicate names
 `permit(A)` (a term), never `permit/1` (a reference). Most nodes leave this list empty;
 reach for it only when the text forbids a *kind of rule*, not a kind of act.
 
-## A heading-authority node — small is correct
+## A heading-authority node — a structural fact is translatable
 
 Node `l3995_4164_n001` establishes only that the rules under a heading carry
-guideline authority. The module is tiny, and that is right — a node that establishes
-section metadata yields a classification, not obligations. Do not inflate it.
+guideline authority. NEEDS: none. PROVIDES: `guideline_authority`.
+
+**This node obliges nobody, and it is still a translation, not an abstention.** There are three
+routes: a node stating a norm goes to `asserts`; a node stating a **structural fact**
+about the document — which authority a section carries, what class a thing falls in — goes to
+`ontology` with `asserts` empty; only a node that establishes *neither* is an abstention. An empty
+`asserts` list is not an empty module.
+
+Here the third route is not available anyway: the node's `PROVIDES` names
+`guideline_authority`, so other nodes are waiting on this module to make that predicate
+derivable, and abstaining would strand every one of them. The module is tiny, and that is right.
+Do not inflate it — but do deliver what `PROVIDES` promises.
+
+`rule_under_heading` is in **`inputs`, not `requires`**, and the node's own contract is what
+decides that: `requires` is for the names in the `NEEDS` block, and this node's `NEEDS` is
+*(none)* — so no other node owns `rule_under_heading`. It is a fact about the material being
+judged, which the module identifies itself. Had it been declared in `requires`, the rule's body
+would wait forever on a definition no node ever supplies, and the head would derive nothing while
+looking like it enforced something.
+
+⚠️ **This is not a licence to move a borrowed name into `inputs` to make a module look clean.** The
+discriminator is the `NEEDS` block, never "no provider turned up" — a genuine `NEEDS` name whose
+provider is missing stays in `requires`, and the missing link is the finding.
 
 ```json
 {
@@ -182,12 +207,15 @@ section metadata yields a classification, not obligations. Do not inflate it.
 }
 ```
 
-No acts, so no closure entry is due.
+No acts, so no closure entry is due. And `asserts` is empty because the node states no norm —
+`outcome` is still `translated`, because the `ontology` entry says something the document says.
 
 ## A worked-example node — translate the lesson, not the dialog
 
 Node `l4251_4571_n029` is a document example (a good/bad response pair). Its lesson is a
 preference, so `prefer` is the status — collapsing it into `forbid` would be a hollow stub.
+NEEDS: `voice_turn_taking_rule` (*"voice responses must align with iterative, turn-taking
+conversation structure and adapt to conversational shifts"*). PROVIDES: none.
 
 ```json
 {
@@ -200,7 +228,7 @@ preference, so `prefer` is the status — collapsing it into `forbid` would be a
   "acts": ["respond_with(R)"],
   "concepts": [
     { "name": "voice_turn_taking_rule", "arity": 1,
-      "gloss": "R must fit an iterative, turn-taking exchange and adapt as the conversation shifts",
+      "gloss": "R is subject to the requirement that a voice response fit an iterative, turn-taking exchange and adapt as the conversation shifts",
       "licence": "textual", "cites": "l4251_4571_n029", "inference": null, "toggleable": false },
     { "name": "brief_overview", "arity": 1,
       "gloss": "a response that gives a short overview and offers to elaborate, rather than listing all details at once",
@@ -237,6 +265,12 @@ preference, so `prefer` is the status — collapsing it into `forbid` would be a
 }
 ```
 
+**The NEEDS name went to `requires` even though the module never uses it.** Nothing in this
+birthday example turns on voice turn-taking; the graph linked the node to that concept anyway.
+Contract 2 is not conditional on your judgment of relevance — record the name, with the gloss the
+node handed you, and let the link be inspected. Dropping it is the one outcome that cannot be
+inspected: the module then looks complete and the missing cross-reference is invisible.
+
 ## A commentary node — abstaining is a real answer
 
 Node `l1799_1974_n009` is a definitional analogy. It imposes nothing; encoding it would
@@ -255,9 +289,12 @@ translation, and is rejected.
 }
 ```
 
-Many graph nodes are commentary, headings, or document examples. A hollow-but-honest
-module (like the heading node above) or a clean abstention (like this one) are both
-better than an invented obligation.
+Many graph nodes are commentary, headings, or document examples. The two honest answers are a
+small module that records only what the node actually establishes (like the heading node above,
+which states a structural fact and asserts nothing) and a clean abstention (like this one, where
+the node establishes nothing at all). Both are better than an invented obligation. What decides
+between them is whether the node establishes anything the document says — not what KIND of
+passage it is.
 
 ## The six bad ones
 
@@ -299,8 +336,10 @@ it. (And `provide_steps` without an argument cannot join the query side — inde
 ```json
 { "outcome": "abstained", "claims": ["C1 ..."], "asserts": [ { "status": "forbid" } ] }
 ```
-Neither an abstention nor a translation. Pick: if the node establishes an obligation,
-translate it; if it establishes none, abstain with every list empty.
+Neither an abstention nor a translation. Pick, on the three-way route: a norm the node states
+goes to `asserts`; a structural fact it states goes to `ontology` with `asserts` empty; a node
+that establishes neither is an abstention with **every** list empty. "It states no obligation" is
+not on its own grounds to abstain — the heading node above states none and is translated.
 
 **5 — citing the line markers instead of the node.**
 ```json

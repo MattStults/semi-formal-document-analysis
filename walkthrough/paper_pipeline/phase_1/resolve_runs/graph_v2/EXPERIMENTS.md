@@ -4152,3 +4152,327 @@ HARNESS BUG FOUND IN PASSING, worth fixing wherever it appears:
 `translate._check_envelope` STRIPS `usage`, so any caller reading
 `env["usage"]["cost_usd"]` reports **$0.00 over real billed calls**. A harness
 doing that under-reports spend to zero.
+
+## 2026-08-16: ⛔ THE `66 of 81` HEADLINE HAS A DISCRIMINATION OF +0.091
+
+First scoring of stage 4 against ANCHORED items -- 42 planted/control items
+where the right answer is known by construction, not by a judge's opinion.
+`_debug_gen11/stage4_golden/`. 4 arms, 112 calls, **$0.030092**. All 31 planted
+sites verified to reach a seat's denominator BEFORE scoring; the scorer refuses
+rather than printing zeros for a judge with no stored run.
+
+**THE HEADLINE RESULT, and it is the one that matters:**
+
+| loose measure -- ANY defect verdict anywhere in the clause (the exact shape of `66 of 81`) | |
+|---|---|
+| known-defective mutants flagged | **17/17** |
+| known-CLEAN controls flagged | **10/11** |
+| **discrimination** | **+0.091** |
+
+**The measure that produced every correctness number we have is very nearly a
+constant function.** It says "defect" about 17 of 17 modules that are defective
+and about 10 of 11 that a careful reader called faithful. 66/81, 59/81 and 56/81
+are all readings of this instrument, and none of them is evidence about the
+corpus.
+
+**WHY: 4c FLAGS ALMOST EVERYTHING.** Per-seat false positives on the 11 modules
+an independent reader called FAITHFUL:
+
+| seat | FP on faithful modules | FP on borrowed-name controls |
+|---|---|---|
+| 4a (advisory) | **0/86** | 0/14 |
+| 4b | **3/86** | 2/14 |
+| **4c** | **48/86 = 56%** | **14/14 = 100%** |
+| 4d | 1/33 | n/a (site-absent) |
+
+⇒ **4c's apparent per-class recall is its base rate, not detection.** It
+"detects" scope-drift-widen 3/3, inverted-modality 2/2, fact-as-deontic 1/1,
+invented-obligation 1/1 -- while flagging 56% of known-good items and **100% of
+legitimately borrowed concepts**. The borrowed stratum is the clean proof,
+because those items are correct BY THE PIPELINE'S OWN INSTRUCTION: the graph
+hands the node the name, and 4c is never shown `PROVIDES`.
+
+**THE PER-CLASS PROFILE, strict (defect verdict AT the planted site), 15
+unarguable mutants; 2 ARGUABLE excluded from every cell:**
+
+| class | 4a (adv) | 4b | 4c | 4d |
+|---|---|---|---|---|
+| scope-drift-widen | 0/3 | 0/3 | 3/3 | n/a |
+| scope-drift-narrow | 0/2 | **2/2** | 1/2 | n/a |
+| inverted-modality | 1/2 | 0/2 (both unclear) | 2/2 | n/a |
+| disjunction-as-conjunction | 0/2 | 0/2 | 1/2 | n/a |
+| **dropped-obligation** | n/a | n/a | n/a | **1/2 -- THE ONLY SEAT** |
+| fact-as-deontic | 0/1 | 0/1 (unclear) | 1/1 | n/a |
+| invented-obligation | 0/1 | 0/1 (unclear) | 1/1 | n/a |
+| prefer-polarity | 1/2 | 1/2 | **0/2** | n/a |
+
+READ WITH THE FP COLUMN OR NOT AT ALL. **4b is PRECISE BUT INSENSITIVE** (3/86
+FP; catches narrow 2/2 and polarity 1/2, but 0/3 on widen and returns `unclear`
+on inverted-modality, fact-as-deontic and invented-obligation). **4a is clean
+but advisory** (0/86 FP). **4d is the most valuable seat on this evidence** --
+1/33 FP and the ONLY seat that catches dropped-obligation, the class an
+independent reader found and every other seat is structurally blind to -- **and
+it was 70% offline until today's fix.**
+
+⚠️ **PREFER-POLARITY: 4c SCORES 0/2 HERE**, against the "5/6" it appeared to
+score in the offline pass. Both are consistent: the offline 5/6 was 4c
+returning `unlicensed` on 9 of 9 `asserts` items, i.e. lift +0.00. **Anchored
+scoring turns an apparent 83% detection into a measured zero.** This is the
+mechanism by which a defect-count headline flatters.
+
+WHAT THIS DOES AND DOES NOT SETTLE. It settles that stage 4's aggregate number
+is uninterpretable and that 4c must not be pooled with the others. It does NOT
+say the corpus is fine -- the independent reader's 13-of-25 defects were found
+by reading, and the ~30% deontic-shape instability on re-draw is untouched by
+any of this. **The corpus may well be as bad as feared; what is now established
+is that stage 4 as pooled cannot tell us.**
+
+## 2026-08-16: THE 29.5% IS RETIRED. Contradictions are 6.2%, and the predictor is free
+
+Owner challenge: *"why do we care about stability instead of some accurate
+format"*. Correct, and the 29.5% shape-flip figure conflated contradictions with
+defensible variation. All 33 flipping clauses re-read against their spans,
+every call anchored to quoted wording. `_debug_gen11/flip_classify/`
+(re-runnable, zero spend; imports `d1_recruit/census.py` so the headline and the
+dump cannot drift -- reproduces 33/112 exactly).
+
+⛔ **FIRST: 4 OF THE 33 ARE NOT SAMPLING VARIANCE AT ALL -- THEY ARE
+MIS-ROUTING.** No `(system_sha, user_sha)` cell for them holds two draws of
+differing shape. Two are outright: **`l1_170_n016` draw 1 answers a clause about
+"targeted or scaled exclusion" while its own span reads *"commentary ... will be
+placed in blocks like this one"*; `l1_170_n028` has FIVE draws answering the
+authority-hierarchy clause under a node whose ESTABLISHES is *"Users can always
+access a transparent experience"*** (its two correctly-routed draws are stable).
+**Clauses are being handed another clause's prompt.** This is a pipeline defect,
+not a model defect, and it inflates every instability figure computed without
+the same-instrument restriction. Fix before any further re-draw statistic.
+
+Genuine re-draw flips: **29/112 = 25.9%** [18.7, 34.7].
+
+| class | n/29 | 95% CI |
+|---|---|---|
+| **CONTRADICTION** | 7 | 24.1% [12.2, 42.1] |
+| STRENGTH-UNDERDETERMINED | 6 | 20.7% [9.8, 38.4] |
+| **COVERAGE** | **15** | 51.7% [34.4, 68.6] |
+| DEFENSIBLE-OTHER | 0 | [0.0, 11.7] |
+| UNSURE | 1 | 3.4% |
+
+⭐ **HEADLINE: contradictions are 7/112 = 6.2% [3.1, 12.3], NOT 29.5%. The
+coordinator overstated the corpus-reliability problem by roughly five-fold and
+recommended the wrong next experiment on the strength of it.** The unsure pile
+is 1 -- the spans were more decisive than expected.
+
+**THE DOMINANT BUCKET IS NOT AN INSTABILITY CLASS AT ALL.** 12 of the 15
+COVERAGE flips are **OVER-ASSERTION** -- one draw invents a norm on text that
+states none: *"**We** are committed to safeguarding individuals' privacy"*,
+*"**The spec treats** user and developer messages interchangeably"*, *"A system
+or developer message **will list** the available tools"*, *"**we aim to**
+maximize users' autonomy"*. **12/29 = 41.4%** [25.5, 59.3] of genuine flips, the
+single largest failure mode -- and it is CRITERIA's `fact-as-deontic` /
+`invented-obligation` class, detectable from ONE draw.
+
+**6 OF THE 7 CONTRADICTIONS ARE ONE DEFECT: NO NEGATIVE POLE.** The model wants
+"dispreferred", cannot say it, and emits `prefer <the BAD act>` with a
+read_back that negates it -- so the compiled module states a preference FOR the
+thing the document marks BAD (`l3954_4251_n010`, `l796_1000_n034`,
+`l1707_1973_n006`, `l1108_1367_n027`, `l2405_2473_n001`, `l1_170_n053`). The
+7th is its own shape and worth recording: `l1_170_n083`, *"should take extra
+care when generating"*, produced `forbid generate_action` in one draw and
+`prefer generate_action` in the other -- one bans the act, the other recommends
+it, **and the span licenses NEITHER**, because the schema has no "do X
+carefully" construct. Same root as the defeasibility gap (E-2): **a force the
+target language cannot represent gets rounded to an adjacent one, and the
+rounding direction is a coin flip.** No prompt change reaches this.
+
+⭐ **THE PREDICTOR, AND IT IS ALREADY COMMITTED AND FREE.**
+`checks.polarity_mismatches` separates the classes almost perfectly:
+
+| class | clauses with >=1 tripping draw |
+|---|---|
+| **CONTRADICTION** | **6 / 7** |
+| STRENGTH-UNDERDETERMINED | 0 / 6 |
+| COVERAGE | 0 / 15 |
+| unsure / mis-routed | 0 / 5 |
+
+**86% sensitivity, 100% specificity.** Secondary: presence of a GOOD/BAD-marked
+worked example -- 4/7 contradictions, **0/22** everything else (perfect
+specificity, half sensitivity); `kind == meta` gives the same 4/7. **Span length
+is NOT a predictor** (medians 2092 / 2203 / 2360) -- do not use it.
+⇒ **The contradictions are findable from a SINGLE DRAW.** Re-draws are not
+needed to detect them, which removes the premise that instability is the
+instrument.
+
+⛔ **TEMPERATURE-0 IS RETIRED, on three grounds.** (1) **It cannot fix one of
+the 7** -- each is a coin flip between two encodings of an inexpressible force;
+determinism picks one, not the RIGHT one, and if it lands on `prefer
+refuse_or_evade` the corpus becomes deterministically wrong. (2) **It destroys a
+working free detector** -- re-draw disagreement is the cheapest signal we have
+and 20 of 29 flips point at real defects; determinism converts a visible 25.9%
+into an invisible constant error rate. (3) It answers a question the census
+already answered.
+
+RUN INSTEAD, in order: (1) add a negative pole (`disprefer`, or a sign on
+`prefer`) -- the only change that reaches the class; (2) promote
+`polarity_mismatches` from diagnostic to GATE on any draw containing a
+GOOD/BAD worked example -- 6/7 at 0/22 FP beats anything the seats achieve;
+(3) attack OVER-ASSERTION (12/29) with CRITERIA's mechanical test, *"is the
+subject of the main verb the model/assistant?"* -- single-draw, no seat runs it;
+(4) fix the mis-routing first.
+
+<!-- RECOVERED 2026-08-16: the two entries below were written earlier the same day but
+     landed in a stray EXPERIMENTS.md at the REPO ROOT -- a `cat >>` run from the wrong
+     working directory. Content is verbatim and unedited; only the position is late, so
+     they sit AFTER entries they chronologically precede. The stray file was deleted
+     after this recovery. Recorded rather than silently re-ordered. -->
+
+## 2026-08-16: ⛔ A QUARTER TO A THIRD OF CLAUSES CHANGE DEONTIC SHAPE ON RE-DRAW
+
+Free census of every stored draw (`_debug_gen11/d1_recruit/census.py`). Draw =
+one clause, one run chain, final module; the 143 chains with >1 attempt collapse
+to one draw each, because repair attempts inside a chain share the transcript
+and are not independent. **421 draws over 219 distinct clauses, 0 unparsed;
+112 clauses have >=2 draws.**
+
+**THE HEADLINE, and it is not D1:**
+
+| measure, over the 112 multi-draw clauses | rate | 95% CI |
+|---|---|---|
+| **deontic SHAPE differs across draws** (hard `forbid`/`permit`/`oblige` vs `prefer` vs neither) | **33/112 = 29.5%** | [21.8, 38.5] |
+| status multiset differs | 46/112 = 41.1% | [32.4, 50.3] |
+| same act name, different status | 11/46 = 23.9% | — |
+
+Restricted to **instrument-identical** cells -- same `system_sha` AND same
+`user_sha`, i.e. a genuine re-draw of the byte-identical question, measured
+from `run.json`, not assumed -- the numbers barely move: 29/116 = 25.0% shape,
+44/116 = 37.9% multiset. **So this is not prompt drift between runs. It is the
+same question, asked twice, answered differently.**
+
+Observed flips include `generate_content(C)` **forbid vs permit**,
+`override_instruction(I,J)` **oblige vs permit**, `respond_with(R)` forbid vs
+prefer, `refuse_request(R)` forbid vs prefer.
+
+⛔ **WHAT THIS MEANS FOR "A VALID CORPUS".** Roughly a quarter to a third of
+clauses compile as a PROHIBITION in one draw and a PREFERENCE (or a permission)
+in the next, from identical bytes -- **and both pass every stage-2 check and
+every stage-4 seat.** A corpus whose modules flip modality on re-draw is not
+merely defective in places; it is not REPRODUCIBLE at the level of what it
+asserts. Note that `generate_content(C)` forbid-vs-permit is the erotica/gore
+case (`l1108_1367_n014`, D5): that `permit` may be a coin flip rather than a
+misreading.
+
+⚠️ **AND IT SUBSUMES D1 AND D2.** Polarity inversion is **14/421 draws =
+3.33%** [1.99, 5.50] -- a small, visible sub-case of a ~30% instability.
+D1 and D2 are prompt patches aimed at the visible 3%. A prompt patch cannot be
+cleanly evaluated against a 30% noise floor, and the likely root cause is
+structural -- the missing negative pole in `status` plus no tie-break rule for
+hard-vs-soft -- not the wording of a worked example.
+⭐ FIRST THING TO TEST, and it is cheap and arm-independent: `temperature` is
+**0.2** in every config. Sampling variance is the mechanism this census
+measures. A temperature-0 re-draw of the 112 multi-draw clauses would separate
+"the model is guessing" from "the instruction underdetermines the answer", and
+it needs no prompt edit, no schema change, and no owner ruling.
+
+D1'S COHORT: I TOLD THE OWNER NEW DRAWS WERE NEEDED. **Wrong -- the double-draw
+rule was satisfiable for free.** Only **8** of the 219 clauses have EVER tripped
+the polarity detector, and all 8 already had >=2 draws, so all 8 were eligible
+for confirmation. **Four confirm** (trip >=2): `l1707_1973_n006`,
+`l1974_2125_n019`, `l2405_2473_n001`, `l4251_4571_n029`. The stricter
+same-instrument rule returns the SAME four. Three of the original seven are
+dropped as unconfirmed and `l796_1000_n034` (D2's) stays out; the rule was NOT
+relaxed to >=1. The original 7-clause recruitment is confirmed single-draw: 6 of
+7 from one run, one draw each.
+Pooled arm-A rate on the confirmed 4 is **10/21 = 47.6%** [28.3, 67.6] against
+3/21 for the old 7 -- clears an 8/21 floor comfortably. ⚠️ **WINNER'S CURSED**
+(selected BECAUSE they tripped twice): plan against the lower CI. Honest costed
+design is **8 draws x 4 clauses = 32 per arm**, not the 12 the point estimate
+would allow.
+CORPUS-LEVEL ALTERNATIVE, unbiased, with a legitimate denominator: conditioning
+on "the draw emitted a `prefer`" is **INADMISSIBLE** -- arm B changes whether
+`prefer` is emitted at all, which is exactly what the instrument check saw.
+Arm-independent document-side enrichment (source text contains
+avoidance/comparative language) hits 343/773 clauses and enriches the trip rate
+**11.1% inside vs 1.47% outside, ~7.5x**, catching 6 of the 8 ever-trippers ->
+N=66/arm. The strongest sequence is the 4-clause A/B plus a pre-registered
+enriched-corpus replication.
+
+## 2026-08-16: 4c CORRECTED (264 -> 188), and the judge is LENIENT ON ITS OWN WORK
+
+`_debug_gen11/stage4_interpret/`. PREREG written before any classification and
+before the first paid call.
+
+**JOB 1 -- the PROVIDES check now exists, and the earlier estimate was ~3x
+wrong in the CONVENIENT direction.** Rule, pre-registered: an item is BORROWED
+iff its predicate name is in the judged node's graph `needs` AND some OTHER
+node's `provides` carries it. Soundness gate passed at **56/56 = 100%** (every
+module with a non-empty graph `needs` carries >=1 concept row matching a
+`needs` name exactly).
+
+| | n |
+|---|---|
+| BORROWED (provider exists; 0 dangling) | 82 |
+| — of which DRIFTED (borrowed name, changed meaning) — NOT exonerated | 6 |
+| UNLICENSED-REAL | 182 |
+
+**Corrected 4c: 188 real of 651, not 264 -- 76 (29%) are licensed borrowing.**
+The earlier "~179 are borrowing" inference over-attributed by roughly 3x: of
+the 179 concept-level items only 63 are borrowing. **A reminder that an
+INFERRED correction flatters in the direction its author expects, which is why
+it was marked inferred and then measured.**
+
+| headline over the same 81 clauses | defective | clean |
+|---|---|---|
+| as published | 66 | 15 |
+| **4c corrected** | **59** | **22** |
+| + 4b corrected (post-hoc, not pre-registered) | 56 | 25 |
+
+⚠️ **59/81 IS A FLOOR, NOT AN ESTIMATE.** 4d's 70% refusal is fixed in
+`seats.py` but the baseline was NOT re-run, so DROPPED CONTENT remains
+unmeasured. GRAPH DEFECT SPOTTED IN PASSING: **15 of the graph's 97 distinct
+`needs` names have NO provider anywhere**; 3 judged items name
+`applicable_instruction`, which nothing provides.
+
+**JOB 2 -- PARITY: the other model finds MORE defects, one-way.** Judge B =
+`claude-sonnet-4-5` (Sonnet not Haiku: a weaker judge would confound "found
+fewer" with "out of its depth", the exact pair this test must separate). n
+amended 24 -> 10 BEFORE any call on a measured over-cap estimate. Byte-identical
+stored prompts. **$0.193296 over 20 calls.**
+
+| | n | agreement | Cohen's kappa | defects DS -> Claude |
+|---|---|---|---|---|
+| 4b (3-way) | 61 | 0.557 | **0.294** | 12 -> 27 |
+| 4c (3-way) | 61 | 0.738 | **0.514** | 24 -> 30 |
+| pooled 3-way | 122 | 0.648 | 0.401 | 36 -> 57 |
+| pooled binary | 122 | 0.664 | 0.309 | .295 -> .467 |
+
+**Every disagreement class points the same way** (`faithful`->`unfaithful` 10,
+`unclear`->`unfaithful` 10, `licensed`->`unlicensed` 6, `unclear`->`unlicensed`
+5; all reverse directions total 11). DeepSeek uses `unclear` 18x to Claude's 7
+and most of that mass becomes a defect under Claude. On the 10 sampled clauses
+DeepSeek calls 7 defective, Claude calls **10**.
+⇒ **THIS IS THE LENIENT-ON-ITS-OWN-WORK DIRECTION.** 4b (0.294) and the binary
+collapse (0.309) fall below the pre-registered 0.4, so **neither 66/81 nor
+59/81 is quotable as a point estimate.** What survives is DIRECTIONAL: 59/81 is
+a floor, and a frontier judge on identical prompts moved every sampled clause
+into the defective column.
+
+⭐ **ONE RESULT SURVIVES THE JUDGE CHANGE, and it is the load-bearing one:** of
+11 sampled BORROWED items, Claude ALSO returns `unlicensed` on 10. **The
+borrowing blindness is a property of 4c's DESIGN -- it is shown the item and
+its cited clause, never `PROVIDES` -- not of the DeepSeek judge.** So the Job 1
+correction is the robust number here and should be applied to every future 4c
+column.
+
+⛔ **THIRD INSTRUMENT FINDING, SAME FAMILY AS THE 4d REFUSAL: `seats.judge`
+REFUSED ALL 20 CLAUDE REPLIES.** Every one came back wrapped in a ```json
+markdown fence, and `judge` does a bare `json.loads`. **The seat's reply
+contract is tighter than a real frontier model's habit, and mock replies in the
+tests can never expose it** -- the same structural blindness that hid 4d's
+label-prefix refusal behind 103 green tests. Stripped offline, with the
+IDENTICAL strip applied to the DeepSeek replies (a no-op there), 0 items
+dropped. **Unfixed in `seats.py`: as it stands, stage 4 cannot use a Claude
+judge at all.**
+
+⛔ **LEDGER GAP: the $0.193296 went through a self-contained stdlib `urllib`
+client and is NOT in `semi-formal-experiment/usage.jsonl`**, so `spend.py`
+cannot see it. Recorded here so the figure is not lost; the ledger's own
+integrity rule is that every artifact's model appears in the usage log.

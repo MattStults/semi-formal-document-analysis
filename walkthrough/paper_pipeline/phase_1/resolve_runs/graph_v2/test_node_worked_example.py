@@ -208,6 +208,37 @@ def test_the_structural_fact_route_is_demonstrated():
         "`ontology`; the structural-fact route is undemonstrated")
 
 
+def test_exemplar_ids_exist_in_the_corpus_the_config_runs():
+    """Finding 4, pinned as a RELATION and never as a count.
+
+    `node_worked_example.md:5` makes a claim about its exemplars, and the
+    claim went false once without anything noticing: the review found all four
+    ids absent from `node_corpus_all.json` (they had been re-segmented), while
+    this test file read the frozen fixture and passed blind.
+
+    So the pin is: for the config that actually SHIPS this file as system
+    prompt (`config_graph_nodes.json`), every exemplar `clause_id` resolves in
+    the corpus that config points at -- whichever corpus that is, and however
+    many rows it has. Repoint the config at a corpus the exemplars are not in
+    and this fails, which is the failure the file's line 5 describes.
+
+    It does NOT pin which corpus, a row count, or the ids themselves; the
+    sample is free to move as long as the file moves with it.
+    """
+    cfg_path = os.path.join(HERE, "config_graph_nodes.json")
+    cfg = json.load(open(cfg_path))
+    corpus_path = os.path.join(os.path.dirname(cfg_path),
+                               cfg["corpus"]["path"])
+    ids = {c["id"] for c in json.load(open(corpus_path))["clauses"]}
+    missing = sorted(m["clause_id"] for m in _good_modules()
+                     if m["clause_id"] not in ids)
+    assert not missing, (
+        f"{missing} are shown as worked examples but are not in "
+        f"{cfg['corpus']['path']}, the corpus config_graph_nodes.json runs. "
+        f"Either the exemplars or the file's line-5 claim about them is "
+        f"stale -- the segmentation moved and the file did not.")
+
+
 def test_full_corpus_mode_covers_every_node_and_sample_is_unchanged():
     """`node_corpus.py --all` must emit one row per graph node; the DEFAULT
     selection must stay exactly the 15-sample already on disk (no count pin

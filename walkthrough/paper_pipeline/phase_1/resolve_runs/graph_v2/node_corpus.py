@@ -201,25 +201,9 @@ def main():
     # (0.89x-1.28x of the old policy, since the truncated chain nearly pays
     # for the redraw) — but a gate is priced on the worst case, not the mean.
     _CEILING_NOTE = (
-        "RAISED 1.00 -> 2.00 by the human, 2026-08-15, and the raise is "
-        "MINIMAL BY RULING. Stage 2's repair loop may DISCARD a frozen "
-        "transcript and redraw the clause once from attempt 1, so a clause's "
-        "worst case is TWO chains of max_attempts, and run() prices it by "
-        "doubling the single-chain estimate. This selection prices $0.9970 "
-        "single-chain and $1.9940 doubled, so the old $1.00 ceiling refused "
-        "it with a CostGateError before a single call. The doubling is REAL "
-        "COST -- a second sampled draw that is actually paid for -- not an "
-        "estimation artefact, so the answer is a ceiling that admits it and "
-        "not a cheaper estimate. 2.00 exactly, NOT 2.50 and not 'with "
-        "headroom': a ceiling with slack is a ceiling that has stopped being "
-        "a constraint, and this one must still bite the next time the worst "
-        "case moves (16 nodes already prices $2.1267 and is refused). "
-        "Grounds and the measured figures: the 2026-08-15 chain-policy "
-        "adversarial-review entry in EXPERIMENTS.md (finding P5), and the "
-        "generator-erasure finding F-A in the same file."
-    )
+        "RAISED 2.00 -> 3.00 by the human, 2026-08-16, +$1.00 as instructed. The 2026-08-15 raise to 2.00 was MINIMAL BY RULING and it worked exactly as intended: it bit. node_worked_example.md was found STALE on five counts -- including an exemplar teaching a violation of the file's own NEEDS->requires contract, and a self-contradiction on abstain-vs-translate -- and the prose repair measured +3,323 bytes, pricing the selection at $2.0460 against the $2.00 ceiling. cost_gate refused it. So the ceiling was blocking a REPAIR of the instruction file, not a growth in scope, which is the one case where the answer is to raise it rather than to cut. Raised past the measured $2.0460 with deliberate room this time, because the previous 383 bytes of headroom were consumed by two JSON fixes alone (277 of them) and a ceiling that has to be re-litigated for every prose correction taxes exactly the work we most want done. It still bites: the selection is priced on the doubled two-chain worst case, and growth in NODE COUNT remains gated. Grounds: EXPERIMENTS.md 2026-08-15/16, findings P5, F-A, and the D3 worked-example repair.")
     cfg["cost"] = dict(cfg["cost"], _ceiling_note=_CEILING_NOTE,
-                       max_cost_usd=2.00)
+                       max_cost_usd=3.00)
     # run-5 evidence: the residual failures are single-instance craft slips,
     # not classes; the honest lever is repair budget (each attempt costs
     # ~$0.001-0.004), not more prompt prose
