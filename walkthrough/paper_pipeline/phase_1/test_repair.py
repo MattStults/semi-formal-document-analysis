@@ -980,8 +980,20 @@ _SLICED_BY_DESIGN = {"config_corpus_all.json"}
 #: Output snapshots, not shipped configurations. A config copied into a run
 #: directory records what a past run was sent and must not be re-gated against
 #: today's corpus.
+#: ⛔ `_debug_gen11` ADDED 2026-08-15, and only after it actually bit. The
+#: fix-round review asked whether this glob could CATCH files that are not
+#: shipped configs, and cleared it because nothing then matched. Then an A/B
+#: experiment wrote `_debug_gen11/prompt_ab/config_arm_b_d{1,2}.json` — arm-B
+#: copies carrying a DELIBERATELY enlarged prompt — and both failed this pin,
+#: which was measuring a scratch artifact against a ceiling it was never
+#: shipped under. An experiment must be able to build an over-ceiling arm
+#: without reddening the suite; that is what an arm is for.
+#: ⚠️ SCOPED TO THE SCRATCH DIRECTORY, NOT TO A NAME PATTERN. Skipping
+#: `*_arm_*` or `*_b_*` would hide a genuinely shipped config that happened to
+#: be named that way — `config_arm_head.json` and friends ARE shipped and ARE
+#: pinned here. The rule is WHERE it lives, not what it is called.
 _NOT_A_SHIPPED_CONFIG = ("runs", "repair_graveyard", "translation_sample",
-                         "__pycache__")
+                         "__pycache__", "_debug_gen11")
 
 
 def _shipped_configs():
