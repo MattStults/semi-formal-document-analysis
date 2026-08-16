@@ -1716,7 +1716,30 @@ def survey(runs_dir=None, price_per_mtok=(0.14, 0.28), chars_per_token=4.0,
         frontier_name, frontier = most_expensive_provider()
     quotes = _load_corpus_quotes()
     rows, planned = [], []
-    for path in sorted(glob.glob(os.path.join(runs_dir, "*", "m*.json"))):
+    # ⛔ THIS GLOB USED TO BE `m*.json` AND WAS SILENTLY BLIND TO THE ENTIRE
+    # GRAPH CORPUS (2026-08-15). Clause ids are `m0217`; GRAPH NODE ids are
+    # `l1_170_n056`. Measured on
+    # `resolve_runs/graph_v2/translation_sample/runs`: `m*.json` matched 0
+    # modules and this function reported "TOTAL 0 (0 reach a seat)" — which
+    # reads as "nothing to review", not as "I cannot see your corpus". Stage 4
+    # had therefore never judged a single graph node, and `--cost` priced a
+    # live run at zero. With the ids admitted: 722 modules, 323 reaching a
+    # seat.
+    #
+    # ⭐ Matched by ID SHAPE, not by a widened wildcard, and the difference
+    # matters: `l*.json` would also swallow `<id>.version.json` and
+    # `<id>.transcript.json`, which are sidecars rather than modules — they
+    # fail `schema.validate` and would be counted as `stage-2-invalid`,
+    # inflating the "never reach a seat" figure this function exists to report
+    # honestly. The pattern below admits exactly the two module namings and
+    # nothing else. A third naming needs a line here; that is deliberate, so
+    # the next corpus cannot go unseen in silence.
+    module_globs = ("m*.json", "l*_n*.json")
+    paths = sorted(
+        p for pat in module_globs
+        for p in glob.glob(os.path.join(runs_dir, "*", pat))
+        if not p.endswith((".version.json", ".transcript.json")))
+    for path in paths:
         try:
             obj = json.load(open(path, encoding="utf-8"))
         except Exception:
