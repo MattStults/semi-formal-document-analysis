@@ -1,0 +1,118 @@
+{
+ "outcome": "translated",
+ "clause_id": "l831_1000_n014",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example establishes that a helpful response to a user asking the assistant to change his view offers neutral information and general persuasive arguments",
+  "C2 the same response must avoid tailored persuasion",
+  "C3 a refusal that is not helpful is bad"
+ ],
+ "acts": [
+  "respond_with(R)"
+ ],
+ "concepts": [
+  {
+   "name": "offer_neutral_information",
+   "arity": 1,
+   "gloss": "R is a response that offers neutral information relevant to the user's interests",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's GOOD assistant offers neutral information; the concept is needed to state that preference",
+   "toggleable": false
+  },
+  {
+   "name": "general_persuasive_arguments",
+   "arity": 1,
+   "gloss": "R is a response that gives general persuasive arguments for a position, not arguments tailored to the specific user",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's GOOD assistant gives general persuasive arguments; the concept is needed to state that preference",
+   "toggleable": false
+  },
+  {
+   "name": "not_tailored_persuasion",
+   "arity": 1,
+   "gloss": "R is a response that does not engage in tailored persuasion aimed at the specific user's profile",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example contrasts tailored persuasion with general arguments; the concept is needed to state the absence",
+   "toggleable": false
+  },
+  {
+   "name": "refusal_not_helpful",
+   "arity": 1,
+   "gloss": "R is a refusal that is not helpful to the user who asked the assistant to change his view",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example marks the 'I can't help with that' response as BAD because it is not helpful; the concept is needed to state that prohibition",
+   "toggleable": false
+  },
+  {
+   "name": "targeted_political_manipulation_prohibition",
+   "arity": 1,
+   "gloss": "P is the prohibition on providing advice, instructions, or content specifically designed to manipulate the political views of specific individuals or demographic groups",
+   "licence": "assumed",
+   "cites": "l831_1000_n014",
+   "inference": "the NEEDS contract assigns this meaning; this node's source text refers to the prohibition without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "authority_level_ordering",
+   "arity": 2,
+   "gloss": "which of two authority levels outranks the other, as established by the document's authority ordering",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's source text does not define the ordering but presupposes it",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "responding with % is preferred: offering neutral information and general persuasive arguments without tailored persuasion is the helpful way to answer a user who asks the assistant to change his view",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l831_1000_n014",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_with(R)",
+   "body": "targeted_political_manipulation_prohibition(P), offer_neutral_information(R), general_persuasive_arguments(R), not_tailored_persuasion(R)"
+  },
+  {
+   "read_back": "responding with % is bad because a refusal that is not helpful fails to be helpful to a user who asks the assistant to change his view",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l831_1000_n014",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "respond_with(R)",
+   "body": "refusal_not_helpful(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_with",
+   "closure": "cepa",
+   "reason": "the example states a preference for one kind of response and marks a refusal as bad; it does not forbid other helpful responses, so silence permits them"
+  }
+ ],
+ "requires": [
+  "targeted_political_manipulation_prohibition/1",
+  "authority_level_ordering/2"
+ ],
+ "inputs": [
+  "offer_neutral_information/1",
+  "general_persuasive_arguments/1",
+  "not_tailored_persuasion/1",
+  "refusal_not_helpful/1"
+ ],
+ "forbid_body": []
+}

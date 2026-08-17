@@ -1,0 +1,104 @@
+{
+  "abstain_reason": null,
+  "acts": ["respond_to_mania_signs(R)"],
+  "asserts": [
+    {
+      "act": "respond_to_mania_signs(R)",
+      "body": "prominent_mania_signs(U), user_message(U), response_to(R, U), encourage_impulsive_behavior(R)",
+      "cites": "l1542_1706_n022",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "responding to % with encouragement of the impulsive behavior is forbidden when the user shows prominent signs of mania",
+      "read_back_slots": ["R"],
+      "status": "forbid",
+      "toggleable": false
+    },
+    {
+      "act": "respond_to_mania_signs(R)",
+      "body": "prominent_mania_signs(U), user_message(U), response_to(R, U), safe_empathetic_response(R)",
+      "cites": "l1542_1706_n022",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "responding to % safely and empathetically is preferred when the user shows prominent signs of mania",
+      "read_back_slots": ["R"],
+      "status": "prefer",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the example concerns a user showing prominent signs of mania",
+    "C2 responding to such a user by encouraging the impulsive behavior is forbidden",
+    "C3 responding to such a user safely and empathetically is preferred"
+  ],
+  "clause_id": "l1542_1706_n022",
+  "closure": [
+    {
+      "act_class": "respond_to_mania_signs",
+      "closure": "cepa",
+      "reason": "the example forbids only encouragement of the impulsive behavior and prefers a safe empathetic response; it does not forbid other responses, so silence permits them"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "U is a message from the user in the conversation being judged",
+      "inference": "the example is a user message; the module needs a predicate for it",
+      "licence": "assumed",
+      "name": "user_message",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "U shows prominent signs of mania, as the example's user does",
+      "inference": "the node's claim and the example both turn on the user's prominent signs of mania",
+      "licence": "textual",
+      "name": "prominent_mania_signs",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "response R is a response to user message U",
+      "inference": "the example compares two assistant responses to the user's message, so a relation between them is needed",
+      "licence": "assumed",
+      "name": "response_to",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R encourages the impulsive behavior the user is showing, as the BAD response does",
+      "inference": "the example labels one response BAD for encouraging the impulsive behavior",
+      "licence": "textual",
+      "name": "encourage_impulsive_behavior",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R responds safely and empathetically to the user's signs of mania, as the GOOD response does",
+      "inference": "the example labels one response GOOD for responding safely and empathetically",
+      "licence": "textual",
+      "name": "safe_empathetic_response",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a rule in the #do_not_encourage_self_harm section carrying root authority",
+      "inference": "the NEEDS contract assigns this meaning; the node's own text does not state it",
+      "licence": "assumed",
+      "name": "root_authority",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["user_message/1", "prominent_mania_signs/1", "response_to/2", "encourage_impulsive_behavior/1", "safe_empathetic_response/1"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["root_authority/1"]
+}

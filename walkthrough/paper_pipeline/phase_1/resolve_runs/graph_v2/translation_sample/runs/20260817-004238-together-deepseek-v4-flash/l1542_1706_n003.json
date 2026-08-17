@@ -1,0 +1,237 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1542_1706_n003",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the refusal to help with illicit behavior covers guidance",
+  "C2 the refusal to help with illicit behavior covers instructions",
+  "C3 the refusal to help with illicit behavior covers actionable steps",
+  "C4 the refusal to help with illicit behavior covers improvements to user-provided plans"
+ ],
+ "acts": [
+  "provide_help(H)"
+ ],
+ "concepts": [
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R carries the root level of instruction authority, the highest level not overridable by system, developer or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's source text does not itself define root authority",
+   "toggleable": false
+  },
+  {
+   "name": "message_role_definition",
+   "arity": 2,
+   "gloss": "message M has role R, where R is one of system, developer, user, assistant or tool",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the shared-name contract assigns; this node's source text does not define message roles",
+   "toggleable": false
+  },
+  {
+   "name": "asks_to_facilitate_illicit_behavior",
+   "arity": 1,
+   "gloss": "R is a request that asks the assistant to facilitate illicit behavior",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's source text does not define the predicate",
+   "toggleable": false
+  },
+  {
+   "name": "help_for_request",
+   "arity": 2,
+   "gloss": "H is help provided in response to request R",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's source text does not define the predicate",
+   "toggleable": false
+  },
+  {
+   "name": "illicit_behavior_request",
+   "arity": 1,
+   "gloss": "R is a request from the user or developer asking the assistant to facilitate illicit behavior",
+   "licence": "textual",
+   "cites": "l1542_1706_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "help_contains_guidance",
+   "arity": 1,
+   "gloss": "H is help that consists of guidance for the illicit behavior",
+   "licence": "textual",
+   "cites": "l1542_1706_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "help_contains_instructions",
+   "arity": 1,
+   "gloss": "H is help that consists of instructions for the illicit behavior",
+   "licence": "textual",
+   "cites": "l1542_1706_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "help_contains_actionable_steps",
+   "arity": 1,
+   "gloss": "H is help that consists of actionable steps for the illicit behavior",
+   "licence": "textual",
+   "cites": "l1542_1706_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "help_improves_user_plan",
+   "arity": 1,
+   "gloss": "H is help that improves a plan the user provided for the illicit behavior",
+   "licence": "textual",
+   "cites": "l1542_1706_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "illicit_behavior",
+   "arity": 1,
+   "gloss": "B is behavior that is illicit, i.e. behavior the assistant is asked to facilitate and that falls under the prohibition",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of 'illicit behavior' without defining it; the term is presupposed",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1542_1706_n003",
+   "inference": null,
+   "toggleable": false,
+   "atom": "illicit_behavior_request(R)",
+   "gloss": "R is a request from the user or developer asking the assistant to facilitate illicit behavior",
+   "body": "message_role_definition(R, user), asks_to_facilitate_illicit_behavior(R)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1542_1706_n003",
+   "inference": null,
+   "toggleable": false,
+   "atom": "illicit_behavior_request(R)",
+   "gloss": "R is a request from the user or developer asking the assistant to facilitate illicit behavior",
+   "body": "message_role_definition(R, developer), asks_to_facilitate_illicit_behavior(R)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1542_1706_n003",
+   "inference": null,
+   "toggleable": false,
+   "atom": "help_contains_guidance(H)",
+   "gloss": "H is help that consists of guidance for the illicit behavior",
+   "body": "help_for_request(H, R), illicit_behavior_request(R)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1542_1706_n003",
+   "inference": null,
+   "toggleable": false,
+   "atom": "help_contains_instructions(H)",
+   "gloss": "H is help that consists of instructions for the illicit behavior",
+   "body": "help_for_request(H, R), illicit_behavior_request(R)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1542_1706_n003",
+   "inference": null,
+   "toggleable": false,
+   "atom": "help_contains_actionable_steps(H)",
+   "gloss": "H is help that consists of actionable steps for the illicit behavior",
+   "body": "help_for_request(H, R), illicit_behavior_request(R)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1542_1706_n003",
+   "inference": null,
+   "toggleable": false,
+   "atom": "help_improves_user_plan(H)",
+   "gloss": "H is help that improves a plan the user provided for the illicit behavior",
+   "body": "help_for_request(H, R), illicit_behavior_request(R)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "providing help % is forbidden because it is guidance for the illicit behavior requested by %",
+   "read_back_slots": [
+    "H",
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l1542_1706_n003",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "provide_help(H)",
+   "body": "illicit_behavior_request(R), help_contains_guidance(H), help_for_request(H, R)"
+  },
+  {
+   "read_back": "providing help % is forbidden because it is instructions for the illicit behavior requested by %",
+   "read_back_slots": [
+    "H",
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l1542_1706_n003",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "provide_help(H)",
+   "body": "illicit_behavior_request(R), help_contains_instructions(H), help_for_request(H, R)"
+  },
+  {
+   "read_back": "providing help % is forbidden because it is actionable steps for the illicit behavior requested by %",
+   "read_back_slots": [
+    "H",
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l1542_1706_n003",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "provide_help(H)",
+   "body": "illicit_behavior_request(R), help_contains_actionable_steps(H), help_for_request(H, R)"
+  },
+  {
+   "read_back": "providing help % is forbidden because it improves the user-provided plan for the illicit behavior requested by %",
+   "read_back_slots": [
+    "H",
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l1542_1706_n003",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "provide_help(H)",
+   "body": "illicit_behavior_request(R), help_improves_user_plan(H), help_for_request(H, R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "provide_help",
+   "closure": "cepa",
+   "reason": "the clause forbids help only when it falls into one of the enumerated categories (guidance, instructions, actionable steps, improvements to user-provided plans); help outside those categories is not covered by this clause, so silence permits it"
+  }
+ ],
+ "requires": [
+  "root_authority/1",
+  "message_role_definition/2",
+  "asks_to_facilitate_illicit_behavior/1",
+  "help_for_request/2"
+ ],
+ "inputs": [],
+ "forbid_body": []
+}

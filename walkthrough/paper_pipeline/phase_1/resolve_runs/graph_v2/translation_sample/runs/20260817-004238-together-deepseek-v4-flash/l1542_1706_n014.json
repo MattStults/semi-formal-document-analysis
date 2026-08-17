@@ -1,0 +1,90 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1542_1706_n014",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should convey that the user is not alone and that people and resources care and can help",
+  "C2 this support is in addition to the guidance in the support mental health policy",
+  "C3 the assistant should always advise that immediate help be sought if the user is in imminent danger"
+ ],
+ "acts": [
+  "convey_support(M)",
+  "advise_immediate_help(M)"
+ ],
+ "concepts": [
+  {
+   "name": "mental_health_discussion",
+   "arity": 1,
+   "gloss": "M is a conversation or message in which the user is discussing mental health",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of the assistant's conduct in mental health discussions, so a class of such discussions is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "support_mental_health",
+   "arity": 1,
+   "gloss": "P is the policy section on supporting users in mental health discussions, referenced by the self-harm rule",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to it as 'the guidance in support_mental_health' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "imminent_danger",
+   "arity": 1,
+   "gloss": "M is a mental health discussion in which the user is in imminent danger",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause conditions the advice to seek immediate help on the user being in imminent danger, so a class of such situations is presupposed",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "in a mental health discussion, the assistant should convey that the user is not alone and that people and resources care and can help",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1542_1706_n014",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "convey_support(M)",
+   "body": "mental_health_discussion(M), support_mental_health(P)"
+  },
+  {
+   "read_back": "in a mental health discussion where the user is in imminent danger, the assistant should always advise that immediate help be sought",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1542_1706_n014",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "advise_immediate_help(M)",
+   "body": "mental_health_discussion(M), imminent_danger(M)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "convey_support",
+   "closure": "cepa",
+   "reason": "the clause obliges conveying support in mental health discussions but does not address other acts, so silence permits them"
+  },
+  {
+   "act_class": "advise_immediate_help",
+   "closure": "cepa",
+   "reason": "the clause obliges advising immediate help only when the user is in imminent danger; other advising acts are not addressed and remain permitted"
+  }
+ ],
+ "requires": [
+  "support_mental_health/1"
+ ],
+ "inputs": [
+  "mental_health_discussion/1",
+  "imminent_danger/1"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,84 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1001_1107_n010",
+ "abstain_reason": null,
+ "claims": [
+  "C1 when citations are possible, the assistant should use them to validate provided personal data",
+  "C2 the preference applies to data that is provided personal data",
+  "C3 the preference applies only when citations are possible"
+ ],
+ "acts": [
+  "validate_with_citations(D)"
+ ],
+ "concepts": [
+  {
+   "name": "provided_personal_data",
+   "arity": 1,
+   "gloss": "D is personal data that the assistant provides in response to a request",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text speaks of 'provided personal data'; the notion of data being provided is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "citation_available",
+   "arity": 1,
+   "gloss": "D is data for which a citation is available to validate it",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "'when possible' in the source text means a citation is available for the data",
+   "toggleable": false
+  },
+  {
+   "name": "validate_with_citations",
+   "arity": 1,
+   "gloss": "D is data that is validated by citing a source",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text says citations should be used to validate data; this is the act of validating with citations",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule that carries the root level of instruction authority, the highest level in the hierarchy",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the source text does not define it",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "validating provided personal data % with citations is preferred when citations are available",
+   "read_back_slots": [
+    "D"
+   ],
+   "licence": "textual",
+   "cites": "l1001_1107_n010",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "validate_with_citations(D)",
+   "body": "provided_personal_data(D), citation_available(D)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "validate_with_citations",
+   "closure": "cepa",
+   "reason": "the clause states a preference for using citations when possible; it does not forbid providing personal data without citations, so silence permits"
+  }
+ ],
+ "requires": [
+  "root_authority/1"
+ ],
+ "inputs": [
+  "provided_personal_data/1",
+  "citation_available/1"
+ ],
+ "forbid_body": []
+}

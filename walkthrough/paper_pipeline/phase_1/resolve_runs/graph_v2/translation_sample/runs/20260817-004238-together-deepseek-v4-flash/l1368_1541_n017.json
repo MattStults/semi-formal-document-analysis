@@ -1,0 +1,144 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1368_1541_n017",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should proactively try to prevent imminent real-world harm when it identifies a dangerous situation",
+  "C2 the assistant should avoid providing advice that if improper could result in immediate physical harm to an individual"
+ ],
+ "acts": [
+  "prevent_imminent_harm(H)",
+  "avoid_advice(A)"
+ ],
+ "concepts": [
+  {
+   "name": "imminent_real_world_harm",
+   "arity": 1,
+   "gloss": "H is a situation that poses imminent real-world harm",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text speaks of preventing imminent real-world harm when a dangerous situation is identified; the harm is the object of prevention",
+   "toggleable": false
+  },
+  {
+   "name": "dangerous_situation",
+   "arity": 1,
+   "gloss": "H is a situation the assistant identifies as dangerous",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text says 'when it identifies a dangerous situation'; the identification is a fact about the case",
+   "toggleable": false
+  },
+  {
+   "name": "improper_advice",
+   "arity": 1,
+   "gloss": "A is advice that, if improper, could result in immediate physical harm to an individual",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text says 'advice that if improper could result in immediate physical harm to an individual'; the condition is part of the advice's character",
+   "toggleable": false
+  },
+  {
+   "name": "immediate_physical_harm",
+   "arity": 1,
+   "gloss": "A is advice that could result in immediate physical harm to an individual",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text says 'advice that if improper could result in immediate physical harm to an individual'; the harm is the consequence of the advice",
+   "toggleable": false
+  },
+  {
+   "name": "advice",
+   "arity": 1,
+   "gloss": "A is advice the assistant might provide",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text says 'avoid providing advice'; the advice is the object of the avoidance",
+   "toggleable": false
+  },
+  {
+   "name": "prevent_imminent_harm_rule",
+   "arity": 1,
+   "gloss": "R is the rule that the assistant should proactively try to prevent imminent real-world harm when it identifies a dangerous situation, and avoid providing advice that if improper could result in immediate physical harm",
+   "licence": "textual",
+   "cites": "l1368_1541_n017",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R carries the root level of instruction authority (highest; not overridable by system, developer or user instructions)",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's text does not state the authority level",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1368_1541_n017",
+   "inference": null,
+   "toggleable": false,
+   "atom": "prevent_imminent_harm_rule(R)",
+   "gloss": "R is the rule in the #prevent_imminent_harm section and carries root authority",
+   "body": "root_authority(R)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "the assistant should proactively try to prevent % when it identifies % as a dangerous situation",
+   "read_back_slots": [
+    "H",
+    "H"
+   ],
+   "licence": "textual",
+   "cites": "l1368_1541_n017",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "prevent_imminent_harm(H)",
+   "body": "dangerous_situation(H), imminent_real_world_harm(H)"
+  },
+  {
+   "read_back": "the assistant should avoid providing % because % is advice that if improper could result in immediate physical harm to an individual",
+   "read_back_slots": [
+    "A",
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l1368_1541_n017",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "avoid_advice(A)",
+   "body": "advice(A), improper_advice(A), immediate_physical_harm(A)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "prevent_imminent_harm",
+   "closure": "cepa",
+   "reason": "the clause obliges proactive prevention only when a dangerous situation is identified; it does not forbid other acts, so silence permits"
+  },
+  {
+   "act_class": "avoid_advice",
+   "closure": "cepa",
+   "reason": "the clause obliges avoiding only advice that if improper could result in immediate physical harm; it does not forbid other acts, so silence permits"
+  }
+ ],
+ "requires": [
+  "root_authority/1"
+ ],
+ "inputs": [
+  "dangerous_situation/1",
+  "imminent_real_world_harm/1",
+  "advice/1",
+  "improper_advice/1",
+  "immediate_physical_harm/1"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,83 @@
+{
+  "abstain_reason": null,
+  "acts": [
+    "interject(A)"
+  ],
+  "asserts": [
+    {
+      "act": "interject(A)",
+      "body": "streaming_video(U), on_camera_imminent_harm_identified(A, U)",
+      "cites": "l1368_1541_n022",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "the assistant should interject when the user is streaming video and the assistant identifies something on camera that could cause imminent bodily harm or death to the user",
+      "read_back_slots": [],
+      "status": "oblige",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the assistant should interject when the user is streaming video",
+    "C2 the assistant should interject when it identifies something on camera that could cause imminent bodily harm or death to the user",
+    "C3 the obligation to interject applies when both conditions hold"
+  ],
+  "clause_id": "l1368_1541_n022",
+  "closure": [
+    {
+      "act_class": "interject",
+      "closure": "cepa",
+      "reason": "the clause obliges interjection only in the specific streaming-video imminent-harm situation; it does not address other interjections, so silence leaves them permitted"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "U is a user who is currently streaming video",
+      "inference": "the source text speaks of 'the user is streaming video', so a predicate for that situation is needed",
+      "licence": "assumed",
+      "name": "streaming_video",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": "l1368_1541_n022",
+      "gloss": "assistant A has identified something on camera that could cause imminent bodily harm or death to user U",
+      "inference": null,
+      "licence": "textual",
+      "name": "on_camera_imminent_harm_identified",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "A is the assistant as the Model Spec defines it",
+      "inference": "the source text refers to 'the assistant' without defining it; the shared-name contract supplies the meaning",
+      "licence": "assumed",
+      "name": "assistant_definition",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is the rule that the assistant should proactively try to prevent imminent real-world harm when it identifies a dangerous situation, and avoid providing advice that if improper could result in immediate physical harm",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's own text does not state the prevention rule",
+      "licence": "assumed",
+      "name": "prevent_imminent_harm_rule",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": [
+    "streaming_video/1",
+    "on_camera_imminent_harm_identified/2"
+  ],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": [
+    "prevent_imminent_harm_rule/1",
+    "assistant_definition/1"
+  ]
+}

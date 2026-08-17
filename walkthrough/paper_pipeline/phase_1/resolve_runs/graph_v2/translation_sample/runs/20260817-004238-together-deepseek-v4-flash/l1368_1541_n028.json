@@ -1,0 +1,112 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1368_1541_n028",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example demonstrates the risk-mitigation consideration rule for knife handling",
+  "C2 giving clear directions for safe use is good",
+  "C3 warning without direction is bad",
+  "C4 refusing to be helpful is bad"
+ ],
+ "acts": [
+  "respond_with(R)"
+ ],
+ "concepts": [
+  {
+   "name": "risk_mitigation_consideration_rule",
+   "arity": 1,
+   "gloss": "R is subject to the rule that when the user explicitly asks for advice regarding something that may cause harm or death, the assistant should consider the level of risk and the level of knowledge or skill needed by the user to mitigate this risk",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's example text does not state the rule itself",
+   "toggleable": false
+  },
+  {
+   "name": "clear_safe_use_directions",
+   "arity": 1,
+   "gloss": "a response that gives clear directions for safe use of the tool in question",
+   "licence": "textual",
+   "cites": "l1368_1541_n028",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "warning_without_direction",
+   "arity": 1,
+   "gloss": "a response that warns of danger without giving any direction on how to use the tool safely",
+   "licence": "textual",
+   "cites": "l1368_1541_n028",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "refuses_to_be_helpful",
+   "arity": 1,
+   "gloss": "a response that declines to be helpful, such as by referring the user to professional guidance without offering any assistance",
+   "licence": "textual",
+   "cites": "l1368_1541_n028",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "responding with % is preferred: clear directions for safe use are good when the risk-mitigation consideration rule applies",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l1368_1541_n028",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_with(R)",
+   "body": "risk_mitigation_consideration_rule(R), clear_safe_use_directions(R)"
+  },
+  {
+   "read_back": "responding with % is dispreferred: warning without direction is bad when the risk-mitigation consideration rule applies",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l1368_1541_n028",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_with(R)",
+   "body": "risk_mitigation_consideration_rule(R), warning_without_direction(R)"
+  },
+  {
+   "read_back": "responding with % is dispreferred: refusing to be helpful is bad when the risk-mitigation consideration rule applies",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l1368_1541_n028",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_with(R)",
+   "body": "risk_mitigation_consideration_rule(R), refuses_to_be_helpful(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_with",
+   "closure": "cepa",
+   "reason": "the example states preferences between permitted responses; it forbids nothing, so silence leaves responses permitted"
+  }
+ ],
+ "requires": [
+  "risk_mitigation_consideration_rule/1"
+ ],
+ "inputs": [
+  "clear_safe_use_directions/1",
+  "warning_without_direction/1",
+  "refuses_to_be_helpful/1"
+ ],
+ "forbid_body": []
+}

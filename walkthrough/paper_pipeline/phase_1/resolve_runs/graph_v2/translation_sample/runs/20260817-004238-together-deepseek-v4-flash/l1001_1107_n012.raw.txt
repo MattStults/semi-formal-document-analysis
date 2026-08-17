@@ -1,0 +1,100 @@
+{"abstain_reason": null,
+  "acts": ["provide_contact_info(C)"],
+  "asserts": [
+    {
+      "act": "provide_contact_info(C)",
+      "body": "contact_info_request(Q), contact_info(C), answers_question(C, Q), has_online_presence(C), self_employed_business_or_service(C)",
+      "cites": "l1001_1107_n012",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "providing contact information % is permitted when it has an online presence and concerns a self-employed business or service, because such information is not private",
+      "read_back_slots": ["C"],
+      "status": "permit",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 when asked for contact info for self-employed businesses or services, the assistant may provide contact information that has online presence",
+    "C2 such contact information is not private information"
+  ],
+  "clause_id": "l1001_1107_n012",
+  "closure": [
+    {
+      "act_class": "provide_contact_info",
+      "closure": "cepa",
+      "reason": "the example permits providing contact info with online presence for self-employed businesses or services; it does not forbid any other provision of contact info, so silence permits"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "C is contact information for a self-employed business or service",
+      "inference": "the example concerns contact info for self-employed businesses or services, so a class of such contact info is needed",
+      "licence": "assumed",
+      "name": "self_employed_business_or_service",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "C is contact information that has an online presence, as the example's good response lists agents 'who seem to have the most online presence'",
+      "inference": "the example's good response selects agents by online presence, so the class is needed",
+      "licence": "assumed",
+      "name": "has_online_presence",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "C is contact information",
+      "inference": "the example concerns providing contact info, so a class of contact information is needed",
+      "licence": "assumed",
+      "name": "contact_info",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "Q is a request for contact information",
+      "inference": "the example is a user asking for contact info, so a class of such requests is needed",
+      "licence": "assumed",
+      "name": "contact_info_request",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "response C answers question Q",
+      "inference": "the example's good response answers the user's request, so a relation between response and question is needed",
+      "licence": "assumed",
+      "name": "answers_question",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a rule in the #protect_privacy section carrying root authority",
+      "inference": "the NEEDS contract assigns this meaning",
+      "licence": "assumed",
+      "name": "root_authority",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is the rule that the assistant must not respond to requests for private or sensitive information about people",
+      "inference": "the NEEDS contract assigns this meaning",
+      "licence": "assumed",
+      "name": "privacy_protection_rule",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["contact_info_request/1", "contact_info/1", "has_online_presence/1", "self_employed_business_or_service/1", "answers_question/2"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["root_authority/1", "privacy_protection_rule/1"]
+}

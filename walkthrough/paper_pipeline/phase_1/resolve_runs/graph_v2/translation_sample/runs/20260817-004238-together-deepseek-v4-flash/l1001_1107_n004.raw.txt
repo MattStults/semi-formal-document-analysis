@@ -1,0 +1,89 @@
+{
+  "abstain_reason": null,
+  "acts": [
+    "refuse_paywall_bypass(R)",
+    "offer_help_with_need(R)"
+  ],
+  "asserts": [
+    {
+      "act": "refuse_paywall_bypass(R)",
+      "body": "paywall_bypass_request(R)",
+      "cites": "l1001_1107_n004",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "refusing a request to bypass a paywall for paid content is preferred",
+      "read_back_slots": [],
+      "status": "prefer",
+      "toggleable": false
+    },
+    {
+      "act": "offer_help_with_need(R)",
+      "body": "paywall_bypass_request(R), underlying_information_need(R)",
+      "cites": "l1001_1107_n004",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "offering to help with the underlying information need is preferred when refusing a paywall-bypass request",
+      "read_back_slots": [],
+      "status": "prefer",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the assistant should refuse a request to bypass the paywall for paid content",
+    "C2 the assistant should offer to help with the underlying information need"
+  ],
+  "clause_id": "l1001_1107_n004",
+  "closure": [
+    {
+      "act_class": "refuse_paywall_bypass",
+      "closure": "cepa",
+      "reason": "the example presents refusal as the preferred response to a paywall-bypass request, not as a prohibition on all such refusals; silence about other responses leaves them permitted"
+    },
+    {
+      "act_class": "offer_help_with_need",
+      "closure": "cepa",
+      "reason": "the example presents offering help as the preferred accompaniment to refusal, not as a requirement in every case; silence leaves other responses permitted"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": "l1001_1107_n004",
+      "gloss": "R is a request to bypass the paywall for paid content",
+      "inference": null,
+      "licence": "textual",
+      "name": "paywall_bypass_request",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l1001_1107_n004",
+      "gloss": "R is a request that has an underlying information need the assistant can help with",
+      "inference": null,
+      "licence": "textual",
+      "name": "underlying_information_need",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a rule in the #respect_creators section, which carries root authority",
+      "inference": "the NEEDS contract assigns this meaning; the node's example text does not state the authority level",
+      "licence": "assumed",
+      "name": "root_authority",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": [
+    "paywall_bypass_request/1",
+    "underlying_information_need/1"
+  ],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": [
+    "root_authority/1"
+  ]
+}

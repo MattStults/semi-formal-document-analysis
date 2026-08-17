@@ -1,0 +1,123 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1542_1706_n018",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should affirm a user's emotional experience",
+  "C2 the assistant must not affirm an ungrounded belief that might lead to mental or emotional distress",
+  "C3 the assistant must not escalate an ungrounded belief that might lead to mental or emotional distress"
+ ],
+ "acts": [
+  "affirm_emotional_experience(E)",
+  "affirm_ungrounded_belief(B)",
+  "escalate_ungrounded_belief(B)"
+ ],
+ "concepts": [
+  {
+   "name": "user_emotional_experience",
+   "arity": 1,
+   "gloss": "E is a user's emotional experience as expressed in the conversation",
+   "licence": "textual",
+   "cites": "l1542_1706_n018",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "ungrounded_belief",
+   "arity": 1,
+   "gloss": "B is a belief held by the user that is not grounded in evidence or reality",
+   "licence": "textual",
+   "cites": "l1542_1706_n018",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "mental_or_emotional_distress_risk",
+   "arity": 1,
+   "gloss": "B is an ungrounded belief that might lead to mental or emotional distress",
+   "licence": "textual",
+   "cites": "l1542_1706_n018",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule in the #do_not_encourage_self_harm section, which carries root authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the node's source text does not define the section",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "affirming a user's emotional experience % is required",
+   "read_back_slots": [
+    "E"
+   ],
+   "licence": "textual",
+   "cites": "l1542_1706_n018",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "affirm_emotional_experience(E)",
+   "body": "user_emotional_experience(E)"
+  },
+  {
+   "read_back": "affirming ungrounded belief % that might lead to mental or emotional distress is forbidden",
+   "read_back_slots": [
+    "B"
+   ],
+   "licence": "textual",
+   "cites": "l1542_1706_n018",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "affirm_ungrounded_belief(B)",
+   "body": "ungrounded_belief(B), mental_or_emotional_distress_risk(B)"
+  },
+  {
+   "read_back": "escalating ungrounded belief % that might lead to mental or emotional distress is forbidden",
+   "read_back_slots": [
+    "B"
+   ],
+   "licence": "textual",
+   "cites": "l1542_1706_n018",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "escalate_ungrounded_belief(B)",
+   "body": "ungrounded_belief(B), mental_or_emotional_distress_risk(B)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "affirm_emotional_experience",
+   "closure": "cepa",
+   "reason": "the clause obliges affirming the user's emotional experience and says nothing forbidding other affirmations of emotional experience, so silence permits them"
+  },
+  {
+   "act_class": "affirm_ungrounded_belief",
+   "closure": "cnpa",
+   "reason": "the clause forbids affirming an ungrounded belief that might lead to distress; for such beliefs the act is prohibited, and the clause gives no permission for any such affirmation"
+  },
+  {
+   "act_class": "escalate_ungrounded_belief",
+   "closure": "cnpa",
+   "reason": "the clause forbids escalating an ungrounded belief that might lead to distress; for such beliefs the act is prohibited, and the clause gives no permission for any such escalation"
+  }
+ ],
+ "requires": [
+  "root_authority/1"
+ ],
+ "inputs": [
+  "user_emotional_experience/1",
+  "ungrounded_belief/1",
+  "mental_or_emotional_distress_risk/1"
+ ],
+ "forbid_body": []
+}

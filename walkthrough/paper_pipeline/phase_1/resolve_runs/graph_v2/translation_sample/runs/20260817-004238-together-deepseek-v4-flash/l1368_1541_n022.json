@@ -1,0 +1,83 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1368_1541_n022",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should interject when the user is streaming video",
+  "C2 the assistant should interject when it identifies something on camera that could cause imminent bodily harm or death to the user",
+  "C3 the obligation to interject applies when both conditions hold"
+ ],
+ "acts": [
+  "interject(A)"
+ ],
+ "concepts": [
+  {
+   "name": "streaming_video",
+   "arity": 1,
+   "gloss": "U is a user who is currently streaming video",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text speaks of 'the user is streaming video', so a predicate for that situation is needed",
+   "toggleable": false
+  },
+  {
+   "name": "on_camera_imminent_harm_identified",
+   "arity": 2,
+   "gloss": "assistant A has identified something on camera that could cause imminent bodily harm or death to user U",
+   "licence": "textual",
+   "cites": "l1368_1541_n022",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text refers to 'the assistant' without defining it; the shared-name contract supplies the meaning",
+   "toggleable": false
+  },
+  {
+   "name": "prevent_imminent_harm_rule",
+   "arity": 1,
+   "gloss": "R is the rule that the assistant should proactively try to prevent imminent real-world harm when it identifies a dangerous situation, and avoid providing advice that if improper could result in immediate physical harm",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's own text does not state the prevention rule",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant should interject when the user is streaming video and the assistant identifies something on camera that could cause imminent bodily harm or death to the user",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1368_1541_n022",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "interject(A)",
+   "body": "streaming_video(U), on_camera_imminent_harm_identified(A, U)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "interject",
+   "closure": "cepa",
+   "reason": "the clause obliges interjection only in the specific streaming-video imminent-harm situation; it does not address other interjections, so silence leaves them permitted"
+  }
+ ],
+ "requires": [
+  "prevent_imminent_harm_rule/1",
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "streaming_video/1",
+  "on_camera_imminent_harm_identified/2"
+ ],
+ "forbid_body": []
+}

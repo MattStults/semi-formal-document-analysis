@@ -1,0 +1,143 @@
+{
+  "abstain_reason": null,
+  "acts": ["equip_with_information(U)", "provide_definitive_advice(U)", "include_disclaimer(R)"],
+  "asserts": [
+    {
+      "act": "equip_with_information(U)",
+      "body": "sensitive_or_important_topic(T), advice_requested(U, T)",
+      "cites": "l1707_1973_n002",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "equipping the user with information on a sensitive or important topic is required",
+      "read_back_slots": ["U"],
+      "status": "oblige",
+      "toggleable": false
+    },
+    {
+      "act": "provide_definitive_advice(U)",
+      "body": "sensitive_or_important_topic(T), advice_requested(U, T), definitive_advice(A), advice_best_given_by_licensed_professional(A)",
+      "cites": "l1707_1973_n002",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "providing definitive advice that would be best given by a licensed professional is forbidden",
+      "read_back_slots": ["U"],
+      "status": "forbid",
+      "toggleable": false
+    },
+    {
+      "act": "include_disclaimer(R)",
+      "body": "sensitive_or_important_topic(T), advice_requested(U, T), response_given(R, U)",
+      "cites": "l1707_1973_n002",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "including a concise disclaimer that the assistant is not a professional in that domain is required",
+      "read_back_slots": ["R"],
+      "status": "oblige",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 for advice on sensitive or important topics, the assistant should equip the user with information",
+    "C2 the assistant should not provide definitive advice that would be best given by a licensed professional",
+    "C3 a concise disclaimer should be included stating the assistant is not a professional in that domain and/or recommending qualified licensed help"
+  ],
+  "clause_id": "l1707_1973_n002",
+  "closure": [
+    {
+      "act_class": "equip_with_information",
+      "closure": "cepa",
+      "reason": "the clause requires equipping the user with information on sensitive topics; it does not forbid other forms of response, so silence permits them"
+    },
+    {
+      "act_class": "provide_definitive_advice",
+      "closure": "cnpa",
+      "reason": "the clause explicitly forbids providing definitive advice that would be best given by a licensed professional on sensitive topics"
+    },
+    {
+      "act_class": "include_disclaimer",
+      "closure": "cepa",
+      "reason": "the clause requires a disclaimer when advice is given on sensitive topics; it does not forbid other content, so silence permits it"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "the rule that the assistant should equip users with information without providing definitive regulated advice and include a disclaimer",
+      "inference": "the meaning is the one the PROVIDES contract assigns; this node's source text states the rule's content",
+      "licence": "assumed",
+      "name": "avoid_regulated_advice_rule",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "the rule carries the developer level of instruction authority",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's source text does not state the authority level",
+      "licence": "assumed",
+      "name": "developer_authority",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "A is the assistant as the Model Spec defines it",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's source text does not define the assistant",
+      "licence": "assumed",
+      "name": "assistant_definition",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l1707_1973_n002",
+      "gloss": "T is a topic on which advice is sensitive or important, such as legal, medical, or financial matters",
+      "inference": null,
+      "licence": "textual",
+      "name": "sensitive_or_important_topic",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "the user has asked for advice on topic T",
+      "inference": "the clause speaks of 'advice on' topics, so a relation between a user and a topic must exist",
+      "licence": "assumed",
+      "name": "advice_requested",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l1707_1973_n002",
+      "gloss": "A is advice that is definitive and would be best given by a licensed professional",
+      "inference": null,
+      "licence": "textual",
+      "name": "definitive_advice",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l1707_1973_n002",
+      "gloss": "A is advice that would be best given by a licensed professional",
+      "inference": null,
+      "licence": "textual",
+      "name": "advice_best_given_by_licensed_professional",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "response R is given to user U",
+      "inference": "the disclaimer is included in a response to the user, so a relation between a response and a user must exist",
+      "licence": "assumed",
+      "name": "response_given",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["sensitive_or_important_topic/1", "advice_requested/2", "definitive_advice/1", "advice_best_given_by_licensed_professional/1", "response_given/2"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["avoid_regulated_advice_rule/1", "developer_authority/1", "assistant_definition/1"]
+}

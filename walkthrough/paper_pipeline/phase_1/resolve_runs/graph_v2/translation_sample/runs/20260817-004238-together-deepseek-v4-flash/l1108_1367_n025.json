@@ -1,0 +1,127 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1108_1367_n025",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example shows the assistant should respond empathetically to a user expressing frustration with a coworker",
+  "C2 the example shows the assistant should not respond sarcastically to such a user",
+  "C3 the example shows the assistant should not respond abusively to such a user"
+ ],
+ "acts": [
+  "respond_empathetically(R)",
+  "respond_sarcastically(R)",
+  "respond_abusively(R)"
+ ],
+ "concepts": [
+  {
+   "name": "user_frustration_with_coworker",
+   "arity": 1,
+   "gloss": "U is a message from the user expressing frustration with a coworker",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's user message expresses frustration with a coworker; the class is needed to state the example's lesson",
+   "toggleable": false
+  },
+  {
+   "name": "user_message",
+   "arity": 1,
+   "gloss": "U is a message with the user role in the conversation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example is a user message; the role is presupposed by the example",
+   "toggleable": false
+  },
+  {
+   "name": "assistant_response",
+   "arity": 1,
+   "gloss": "R is a response produced by the assistant in the conversation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example compares two assistant responses; the class is needed to state the example's lesson",
+   "toggleable": false
+  },
+  {
+   "name": "addresses_frustration",
+   "arity": 2,
+   "gloss": "response R addresses the frustration expressed in user message U",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's GOOD and BAD responses both respond to the user's frustration; the relation is needed to state the lesson",
+   "toggleable": false
+  },
+  {
+   "name": "user_authority",
+   "arity": 1,
+   "gloss": "R is an instruction that carries the user level of instruction authority, as defined by the document-wide authority hierarchy",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's text does not define the authority level",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "responding to a user's frustration with a coworker empathetically is required",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1108_1367_n025",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "respond_empathetically(R)",
+   "body": "user_frustration_with_coworker(U), user_message(U), assistant_response(R), addresses_frustration(R, U)"
+  },
+  {
+   "read_back": "responding to a user's frustration with a coworker sarcastically is forbidden",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1108_1367_n025",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "respond_sarcastically(R)",
+   "body": "user_frustration_with_coworker(U), user_message(U), assistant_response(R), addresses_frustration(R, U)"
+  },
+  {
+   "read_back": "responding to a user's frustration with a coworker abusively is forbidden",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1108_1367_n025",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "respond_abusively(R)",
+   "body": "user_frustration_with_coworker(U), user_message(U), assistant_response(R), addresses_frustration(R, U)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_empathetically",
+   "closure": "cepa",
+   "reason": "the example only requires an empathetic response when the user expresses frustration with a coworker; it does not forbid empathetic responses in other situations, so silence permits them"
+  },
+  {
+   "act_class": "respond_sarcastically",
+   "closure": "cnpa",
+   "reason": "the example marks sarcastic responses as BAD in this situation, so silence about sarcasm elsewhere is unsettled by this clause"
+  },
+  {
+   "act_class": "respond_abusively",
+   "closure": "cnpa",
+   "reason": "the example marks abusive responses as BAD in this situation, so silence about abuse elsewhere is unsettled by this clause"
+  }
+ ],
+ "requires": [
+  "user_authority/1"
+ ],
+ "inputs": [
+  "user_frustration_with_coworker/1",
+  "user_message/1",
+  "assistant_response/1",
+  "addresses_frustration/2"
+ ],
+ "forbid_body": []
+}

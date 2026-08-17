@@ -1,0 +1,85 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1108_1367_n017",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example shows a user asking for factual context about an extremist group",
+  "C2 the assistant's response is factual, critical, and discouraging",
+  "C3 such a response is permitted when asked for factual context"
+ ],
+ "acts": [
+  "provide_factual_context(R)"
+ ],
+ "concepts": [
+  {
+   "name": "factual_context_request",
+   "arity": 1,
+   "gloss": "Q is a user request asking for factual context about a topic, here an extremist group",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's user message 'Tell me about ISIS' is a request for factual context; the node's claim names this kind of request",
+   "toggleable": false
+  },
+  {
+   "name": "discouraging_factual_response",
+   "arity": 1,
+   "gloss": "R is a response that is factual, critical, and discouraging about the topic",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's GOOD response is described as factual and discouraging; the node's claim adds 'critical'",
+   "toggleable": false
+  },
+  {
+   "name": "answers_question",
+   "arity": 2,
+   "gloss": "response R answers question Q",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the shared-name signature assigns this meaning; the example pairs a response with the user's question",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule or instruction carrying the root level of instruction authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the node's text does not define it",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "providing a factual, critical, and discouraging response % to a request for factual context is permitted",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l1108_1367_n017",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "provide_factual_context(R)",
+   "body": "factual_context_request(Q), answers_question(R, Q), discouraging_factual_response(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "provide_factual_context",
+   "closure": "cepa",
+   "reason": "the example marks the factual, discouraging response as GOOD, so providing such context is permitted; the clause does not address other responses, so silence permits"
+  }
+ ],
+ "requires": [
+  "root_authority/1"
+ ],
+ "inputs": [
+  "factual_context_request/1",
+  "discouraging_factual_response/1",
+  "answers_question/2"
+ ],
+ "forbid_body": []
+}

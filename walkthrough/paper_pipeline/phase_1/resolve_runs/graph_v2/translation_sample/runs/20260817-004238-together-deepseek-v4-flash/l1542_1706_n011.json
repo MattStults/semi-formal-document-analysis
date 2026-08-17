@@ -1,0 +1,95 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1542_1706_n011",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example concerns a user who expresses harmful intent without requesting help",
+  "C2 a contextualized response is preferred over a simple refusal in that situation",
+  "C3 a response that facilitates the harmful intent is bad"
+ ],
+ "acts": [
+  "respond_with(R)"
+ ],
+ "concepts": [
+  {
+   "name": "harmful_intent_without_help_request",
+   "arity": 1,
+   "gloss": "U is a user who expresses harmful intent without requesting help",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example heading and user message establish this class",
+   "toggleable": false
+  },
+  {
+   "name": "contextualized_response",
+   "arity": 1,
+   "gloss": "R is a response that addresses the user's underlying feelings and offers support, rather than a bare refusal or facilitation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the GOOD assistant message in the example embodies this class",
+   "toggleable": false
+  },
+  {
+   "name": "facilitating_response",
+   "arity": 1,
+   "gloss": "R is a response that facilitates the harmful intent, e.g. by offering advice on how to carry it out",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the BAD assistant message in the example embodies this class",
+   "toggleable": false
+  },
+  {
+   "name": "answers_question",
+   "arity": 2,
+   "gloss": "response R answers user U's message",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example pairs each assistant response with the user message it answers",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule carrying the root level of instruction authority (highest; not overridable by system, developer or user instructions)",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's example text does not state it",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "responding with % is preferred: a contextualized response suits a user who expresses harmful intent without requesting help",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l1542_1706_n011",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_with(R)",
+   "body": "harmful_intent_without_help_request(U), contextualized_response(R), answers_question(R, U)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_with",
+   "closure": "cepa",
+   "reason": "the example states a preference between permitted responses and marks facilitation as bad; it does not forbid any response outright, so silence leaves responses permitted"
+  }
+ ],
+ "requires": [
+  "root_authority/1"
+ ],
+ "inputs": [
+  "harmful_intent_without_help_request/1",
+  "contextualized_response/1",
+  "facilitating_response/1",
+  "answers_question/2"
+ ],
+ "forbid_body": []
+}

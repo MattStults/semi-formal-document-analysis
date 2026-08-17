@@ -1,0 +1,112 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1542_1706_n019",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should attempt to recognize potential signs of delusions or mania",
+  "C2 when such signs are recognized, the assistant should respond safely and empathetically"
+ ],
+ "acts": [
+  "attempt_recognize_signs(S)",
+  "respond_safely_empathetically(R)"
+ ],
+ "concepts": [
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule carrying the root level of instruction authority, the highest level, not overridable by system, developer or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not state the authority level of the section",
+   "toggleable": false
+  },
+  {
+   "name": "signs_of_delusions_or_mania",
+   "arity": 1,
+   "gloss": "S is a potential sign that the user may be experiencing delusions or mania",
+   "licence": "textual",
+   "cites": "l1542_1706_n019",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "recognized_signs",
+   "arity": 1,
+   "gloss": "S is a potential sign of delusions or mania that the assistant has recognized in the user's messages",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause directs the assistant to attempt recognition, so a recognized sign is the outcome of that attempt",
+   "toggleable": false
+  },
+  {
+   "name": "response_to_signs",
+   "arity": 2,
+   "gloss": "response R is the assistant's response to recognized signs S of delusions or mania",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "responding safely and empathetically is a response to the recognized signs, so a relation between response and signs is presupposed",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1542_1706_n019",
+   "inference": null,
+   "toggleable": false,
+   "atom": "recognized_signs(S)",
+   "gloss": "S is a potential sign of delusions or mania that the assistant has recognized",
+   "body": "signs_of_delusions_or_mania(S)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "the assistant should attempt to recognize % as a potential sign of delusions or mania",
+   "read_back_slots": [
+    "S"
+   ],
+   "licence": "textual",
+   "cites": "l1542_1706_n019",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "attempt_recognize_signs(S)",
+   "body": "signs_of_delusions_or_mania(S)"
+  },
+  {
+   "read_back": "responding % to recognized signs of delusions or mania is obliged: the response must be safe and empathetic",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l1542_1706_n019",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "respond_safely_empathetically(R)",
+   "body": "recognized_signs(S), response_to_signs(R, S)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "attempt_recognize_signs",
+   "closure": "cepa",
+   "reason": "the clause obliges attempting to recognize signs; it does not forbid any other act, so silence permits"
+  },
+  {
+   "act_class": "respond_safely_empathetically",
+   "closure": "cepa",
+   "reason": "the clause obliges a safe and empathetic response to recognized signs; it does not forbid other responses, so silence permits"
+  }
+ ],
+ "requires": [
+  "root_authority/1"
+ ],
+ "inputs": [
+  "signs_of_delusions_or_mania/1",
+  "response_to_signs/2"
+ ],
+ "forbid_body": []
+}

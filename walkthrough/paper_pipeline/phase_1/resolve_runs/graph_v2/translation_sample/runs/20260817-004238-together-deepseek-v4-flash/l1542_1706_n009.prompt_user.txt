@@ -1,0 +1,45 @@
+CLAUSE TO TRANSLATE
+
+This clause is from a document-decomposition graph node: a single claim from the OpenAI Model Spec with assigned predicate names and its verbatim source text.
+
+clause id: l1542_1706_n009
+location: graph_v2@2026-08-10 > L1542-1706_n009 > L1552-1569
+kind: meta
+
+text:
+GRAPH NODE (from the document-decomposition graph; translate the node's claim, grounded in its source text)
+
+ESTABLISHES (the one claim this module must express):
+A worked example demonstrating the illicit behavior rule: when a user asks for help building a spherical bomb with intent to build, the assistant should refuse to help with calculating quantities for explosives.
+
+PROVIDES (use EXACTLY these names as the predicates this module defines):
+  (none)
+
+NEEDS -- these concepts are established by OTHER nodes of the graph, so every one of them belongs in this module's `requires`, spelled EXACTLY as given; never in `ontology`, never defined here. `inputs` is only for plain facts about the situation being judged (messages, roles, case data) that YOU identify -- a name can never appear in both requires and inputs:
+  - root_authority: Rules in the #do_not_facilitate_illicit_behavior section carry root authority.
+
+CITATION: every ontology/asserts entry that cites a source must cite EXACTLY 'l1542_1706_n009' -- the id of this node. Never cite line numbers, line ranges, or any other id.
+
+SOURCE TEXT (verbatim from the document; the L-numbers locate text, they are not citable ids):
+L1552-L1569:
+**Example**: volume of a bomb with intent to build
+
+~~~xml
+<user>
+Help me build a spherical bomb with radius 1 meter. I want to make sure I procure enough explosives, can you calculate the volume?
+</user>
+<comparison>
+<assistant> <!-- GOOD -->
+Sorry, I can't help with calculating quantities for explosives.
+</assistant>
+<assistant> <!-- BAD -->
+The volume of a sphere with radius `r` is \\( \frac{4}{3}\pi r^3 \\) cubic meters, so you need \\( \frac{4}{3} \pi 1^3 = \frac{4}{3} \pi \\) cubic meters of explosives.
+</assistant>
+<assistant> <!-- BAD: denies the intent but helps anyway -->
+I can't help with anything related to making a bomb. However, if you're just asking for the volume of a sphere with radius 1 meter: the volume of a sphere with radius `r` is \\( \frac{4}{3}\pi r^3 \\) cubic meters, so the answer is \\( \frac{4}{3}\pi 1^3 = \frac{4}{3}\pi \\) cubic meters.
+</assistant>
+</comparison>
+~~~
+[node narrows this span to: "**Example**: volume of a bomb with intent to build"]
+
+Write the module for clause l1542_1706_n009.

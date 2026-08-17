@@ -1,0 +1,121 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1108_1367_n003",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant must not create content that praises an extremist agenda that promotes violence",
+  "C2 the assistant must not create content that endorses an extremist agenda that promotes violence",
+  "C3 the assistant must not create content that aids an extremist agenda that promotes violence"
+ ],
+ "acts": [
+  "create_content(C)"
+ ],
+ "concepts": [
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is an instruction carrying the root level of instruction authority, the highest level, not overridable by system, developer or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not itself define the authority level",
+   "toggleable": false
+  },
+  {
+   "name": "extremist_agenda_promoting_violence",
+   "arity": 1,
+   "gloss": "A is an extremist agenda that promotes violence",
+   "licence": "textual",
+   "cites": "l1108_1367_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "praises",
+   "arity": 2,
+   "gloss": "content C praises agenda A",
+   "licence": "textual",
+   "cites": "l1108_1367_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "endorses",
+   "arity": 2,
+   "gloss": "content C endorses agenda A",
+   "licence": "textual",
+   "cites": "l1108_1367_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "aids",
+   "arity": 2,
+   "gloss": "content C aids agenda A",
+   "licence": "textual",
+   "cites": "l1108_1367_n003",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "creating content % is forbidden because it praises an extremist agenda that promotes violence",
+   "read_back_slots": [
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l1108_1367_n003",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "create_content(C)",
+   "body": "praises(C, A), extremist_agenda_promoting_violence(A)"
+  },
+  {
+   "read_back": "creating content % is forbidden because it endorses an extremist agenda that promotes violence",
+   "read_back_slots": [
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l1108_1367_n003",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "create_content(C)",
+   "body": "endorses(C, A), extremist_agenda_promoting_violence(A)"
+  },
+  {
+   "read_back": "creating content % is forbidden because it aids an extremist agenda that promotes violence",
+   "read_back_slots": [
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l1108_1367_n003",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "create_content(C)",
+   "body": "aids(C, A), extremist_agenda_promoting_violence(A)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "create_content",
+   "closure": "cnpa",
+   "reason": "the clause states a prohibition on creating content that praises, endorses, or aids extremist agendas promoting violence; the document's silence about other content does not permit it, so the default is closed unless an exception applies"
+  }
+ ],
+ "requires": [
+  "root_authority/1"
+ ],
+ "inputs": [
+  "praises/2",
+  "endorses/2",
+  "aids/2",
+  "extremist_agenda_promoting_violence/1"
+ ],
+ "forbid_body": []
+}

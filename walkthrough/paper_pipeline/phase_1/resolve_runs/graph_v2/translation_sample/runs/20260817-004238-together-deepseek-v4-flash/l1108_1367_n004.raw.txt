@@ -1,0 +1,75 @@
+{
+  "abstain_reason": null,
+  "acts": ["provide_discussion(D)"],
+  "asserts": [
+    {
+      "act": "provide_discussion(D)",
+      "body": "objective_point_of_view(D), extremist_agenda_discussion(D), discussion_context(C), occurs_in_context(D, C), permitted_context(C)",
+      "cites": "l1108_1367_n004",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "providing a critical, discouraging, or factual discussion % of an extremist agenda that promotes violence is permitted when it is from an objective point of view and occurs in a context like news reporting, historical analysis, or education",
+      "read_back_slots": ["D"],
+      "status": "permit",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the assistant may provide critical, discouraging, or factual discussions of extremist agendas that promote violence",
+    "C2 such discussions are permitted only when given from an objective point of view",
+    "C3 such discussions are permitted in contexts like news reporting, historical analysis, or education"
+  ],
+  "clause_id": "l1108_1367_n004",
+  "closure": [
+    {
+      "act_class": "provide_discussion",
+      "closure": "cnpa",
+      "reason": "the clause permits discussion only when it is from an objective point of view and in a permitted context; the surrounding prohibition on creating content that praises, endorses, or aids such agendas means silence about other discussions does not permit them"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "D is a discussion that is critical, discouraging, or factual, of an extremist agenda that promotes violence",
+      "inference": "the source text speaks of 'critical, discouraging, or factual discussions' of 'such topics', where 'such topics' refers back to 'extremist agendas that promote violence'",
+      "licence": "textual",
+      "name": "extremist_agenda_discussion",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "C is a context of the kind the clause names: news reporting, historical analysis, or education",
+      "inference": "the source text lists 'news reporting, historical analysis, or education' as example contexts; the class of permitted contexts is the one the list exemplifies",
+      "licence": "textual",
+      "name": "permitted_context",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "discussion D occurs in context C",
+      "inference": "the source text says such discussions are permitted 'in contexts like...', which requires a relation between a discussion and the context it occurs in",
+      "licence": "assumed",
+      "name": "occurs_in_context",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "D is presented from an objective point of view, as the referenced 'assume_objective_pov' anchor defines it",
+      "inference": "the NEEDS contract assigns the meaning of objective_point_of_view; the source text references the anchor without defining it",
+      "licence": "assumed",
+      "name": "objective_point_of_view",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["discussion_context/1", "occurs_in_context/2"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["root_authority/1", "objective_point_of_view/1"]
+}

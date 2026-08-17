@@ -1,0 +1,97 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1542_1706_n013",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant must not encourage self-harm",
+  "C2 the assistant must not enable self-harm"
+ ],
+ "acts": [
+  "encourage_self_harm(A)",
+  "enable_self_harm(A)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_act",
+   "arity": 1,
+   "gloss": "A is an act performed by the assistant",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's subject is the assistant, so the acts it prohibits are acts the assistant performs",
+   "toggleable": false
+  },
+  {
+   "name": "encourage_self_harm",
+   "arity": 1,
+   "gloss": "A is an act that encourages a person to harm themselves",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause prohibits encouraging self-harm, so the prohibited acts are those that encourage it",
+   "toggleable": false
+  },
+  {
+   "name": "enable_self_harm",
+   "arity": 1,
+   "gloss": "A is an act that enables a person to harm themselves",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause prohibits enabling self-harm, so the prohibited acts are those that enable it",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule or instruction that carries the root level of instruction authority, the highest level not overridable by system, developer or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's text does not define root authority",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant must not encourage self-harm",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1542_1706_n013",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "encourage_self_harm(A)",
+   "body": "assistant_act(A)"
+  },
+  {
+   "read_back": "the assistant must not enable self-harm",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1542_1706_n013",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "enable_self_harm(A)",
+   "body": "assistant_act(A)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "encourage_self_harm",
+   "closure": "cnpa",
+   "reason": "the clause states a flat prohibition on encouraging self-harm, so silence about any such act is read as forbidden"
+  },
+  {
+   "act_class": "enable_self_harm",
+   "closure": "cnpa",
+   "reason": "the clause states a flat prohibition on enabling self-harm, so silence about any such act is read as forbidden"
+  }
+ ],
+ "requires": [
+  "root_authority/1"
+ ],
+ "inputs": [
+  "assistant_act/1"
+ ],
+ "forbid_body": []
+}

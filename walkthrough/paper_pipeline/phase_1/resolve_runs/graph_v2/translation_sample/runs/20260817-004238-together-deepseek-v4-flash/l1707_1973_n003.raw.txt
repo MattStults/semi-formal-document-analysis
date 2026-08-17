@@ -1,0 +1,129 @@
+{
+  "abstain_reason": null,
+  "acts": ["include_disclaimer(D)"],
+  "asserts": [
+    {
+      "act": "include_disclaimer(D)",
+      "body": "sensitive_or_important_topic(T), advice_on_topic(A, T), assistant_response(R), includes(R, A), disclaimer(D), disclaimer_states_not_professional(D), disclaimer_recommends_licensed_help(D), disclaimer_in_response(D, R)",
+      "cites": "l1707_1973_n003",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "including a concise disclaimer in the response is obligatory when the response gives advice on a sensitive or important topic, because the disclaimer states the assistant is not a professional in that domain and/or recommends seeking qualified, licensed help",
+      "read_back_slots": ["D"],
+      "status": "oblige",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the assistant should equip the user with information on sensitive or important topics without providing definitive advice best given by a licensed professional",
+    "C2 a concise disclaimer should also be included in such responses",
+    "C3 the disclaimer states that the assistant is not a professional in that domain and/or recommends seeking qualified, licensed help when appropriate"
+  ],
+  "clause_id": "l1707_1973_n003",
+  "closure": [
+    {
+      "act_class": "include_disclaimer",
+      "closure": "cepa",
+      "reason": "the clause obliges including a disclaimer when giving advice on sensitive or important topics; it does not forbid anything, so silence about other responses leaves them permitted"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "T is a topic on which advice is sensitive or important, such as legal, medical, or financial matters",
+      "inference": "the source text lists legal, medical, and financial matters as examples of sensitive or important topics",
+      "licence": "textual",
+      "name": "sensitive_or_important_topic",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "A is advice given on topic T",
+      "inference": "the source text speaks of advice on topics, so a relation between advice and topic is needed",
+      "licence": "assumed",
+      "name": "advice_on_topic",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a response produced by the assistant",
+      "inference": "the source text speaks of the assistant equipping the user, which occurs through a response",
+      "licence": "assumed",
+      "name": "assistant_response",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "response R includes advice A",
+      "inference": "the source text says the assistant should equip the user with information, which is done through a response that includes the advice",
+      "licence": "assumed",
+      "name": "includes",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "D is a concise disclaimer included in a response",
+      "inference": "the source text requires a concise disclaimer to be included",
+      "licence": "textual",
+      "name": "disclaimer",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "D states that the assistant is not a professional in the relevant domain",
+      "inference": "the source text says the disclaimer should state that the assistant is not a professional in that domain",
+      "licence": "textual",
+      "name": "disclaimer_states_not_professional",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "D recommends that the user seek qualified, licensed help when appropriate",
+      "inference": "the source text says the disclaimer should recommend seeking qualified, licensed help when appropriate",
+      "licence": "textual",
+      "name": "disclaimer_recommends_licensed_help",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "disclaimer D is included in response R",
+      "inference": "the source text says a disclaimer should be included in the response, so a relation between disclaimer and response is needed",
+      "licence": "assumed",
+      "name": "disclaimer_in_response",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a rule carrying developer authority, as established by the avoid_regulated_advice section",
+      "inference": "the NEEDS contract assigns this meaning; the source text does not define developer authority",
+      "licence": "assumed",
+      "name": "developer_authority",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": [
+    "sensitive_or_important_topic/1",
+    "advice_on_topic/2",
+    "assistant_response/1",
+    "includes/2",
+    "disclaimer/1",
+    "disclaimer_states_not_professional/1",
+    "disclaimer_recommends_licensed_help/1",
+    "disclaimer_in_response/2"
+  ],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["developer_authority/1"]
+}

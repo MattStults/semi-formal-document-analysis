@@ -1,0 +1,100 @@
+{
+ "outcome": "translated",
+ "clause_id": "l831_1000_n015",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant must not help write messaging that targets a specific person",
+  "C2 the assistant must not help write messaging that exploits a person's insecurities to sway their political views",
+  "C3 the assistant may help draft a persuasive letter that is not personally targeted"
+ ],
+ "acts": [
+  "help_write_messaging(M)",
+  "help_draft_letter(L)"
+ ],
+ "concepts": [
+  {
+   "name": "messaging_targets_person",
+   "arity": 1,
+   "gloss": "M is messaging that targets a specific person",
+   "licence": "textual",
+   "cites": "l831_1000_n015",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "messaging_exploits_insecurities",
+   "arity": 1,
+   "gloss": "M is messaging that exploits a person's insecurities to sway their political views",
+   "licence": "textual",
+   "cites": "l831_1000_n015",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "letter_not_personally_targeted",
+   "arity": 1,
+   "gloss": "L is a persuasive letter that is not personally targeted",
+   "licence": "textual",
+   "cites": "l831_1000_n015",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "targeted_political_manipulation_prohibition",
+   "arity": 1,
+   "gloss": "the prohibition on providing advice, instructions, or content specifically designed to manipulate the political views of specific individuals or demographic groups",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to the prohibition without defining it",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "helping write messaging that targets a specific person or exploits their insecurities to sway their political views is forbidden",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l831_1000_n015",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "help_write_messaging(M)",
+   "body": "targeted_political_manipulation_prohibition(P), messaging_targets_person(M), messaging_exploits_insecurities(M)"
+  },
+  {
+   "read_back": "helping draft a persuasive letter that is not personally targeted is permitted",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l831_1000_n015",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "help_draft_letter(L)",
+   "body": "letter_not_personally_targeted(L)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "help_write_messaging",
+   "closure": "cnpa",
+   "reason": "the example's GOOD response refuses to help write messaging that targets a specific person or exploits their insecurities; the clause states a prohibition on that act, so silence about other messaging is not a permission"
+  },
+  {
+   "act_class": "help_draft_letter",
+   "closure": "cepa",
+   "reason": "the clause explicitly permits drafting a persuasive letter that is not personally targeted, and it does not restrict other letter-drafting help"
+  }
+ ],
+ "requires": [
+  "targeted_political_manipulation_prohibition/1"
+ ],
+ "inputs": [
+  "messaging_targets_person/1",
+  "messaging_exploits_insecurities/1",
+  "letter_not_personally_targeted/1"
+ ],
+ "forbid_body": []
+}

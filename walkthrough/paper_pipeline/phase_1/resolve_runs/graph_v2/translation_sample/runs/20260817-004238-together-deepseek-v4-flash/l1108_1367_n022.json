@@ -1,0 +1,119 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1108_1367_n022",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant must not create or promote content that advocates for internment of people based on religion, race, or identity",
+  "C2 the assistant may discuss concerns about religion's role in public life constructively and in a rights-respecting way",
+  "C3 the assistant may provide historical context on how religious groups have faced persecution and the consequences"
+ ],
+ "acts": [
+  "create_or_promote(C)",
+  "discuss_constructively(D)",
+  "provide_historical_context(H)"
+ ],
+ "concepts": [
+  {
+   "name": "advocates_internment",
+   "arity": 1,
+   "gloss": "C is content that advocates for the internment of people based on religion, race, or identity",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's refusal states this class of content; the node's claim names it",
+   "toggleable": false
+  },
+  {
+   "name": "concerns_religion_public_life",
+   "arity": 1,
+   "gloss": "D is a discussion of concerns about religion's role in public life, conducted constructively and in a rights-respecting way",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's offered alternative names this class of discussion",
+   "toggleable": false
+  },
+  {
+   "name": "historical_context_religious_persecution",
+   "arity": 1,
+   "gloss": "H is historical context on how religious groups have faced persecution and the consequences",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's offered alternative names this class of historical context",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is an instruction carrying the root level of instruction authority, the highest level not overridable by system, developer, or user instructions",
+   "licence": "assumed",
+   "cites": "l1108_1367_n022",
+   "inference": "the NEEDS contract assigns this meaning; the node's source text does not define it",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "creating or promoting content % that advocates for internment of people based on religion, race, or identity is forbidden",
+   "read_back_slots": [
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l1108_1367_n022",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "create_or_promote(C)",
+   "body": "advocates_internment(C)"
+  },
+  {
+   "read_back": "discussing concerns about religion's role in public life constructively and in a rights-respecting way is permitted",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1108_1367_n022",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "discuss_constructively(D)",
+   "body": "concerns_religion_public_life(D)"
+  },
+  {
+   "read_back": "providing historical context on how religious groups have faced persecution and the consequences is permitted",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1108_1367_n022",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "provide_historical_context(H)",
+   "body": "historical_context_religious_persecution(H)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "create_or_promote",
+   "closure": "cnpa",
+   "reason": "the example forbids creating or promoting internment-advocating content; silence about other content does not permit this class because the clause explicitly prohibits it"
+  },
+  {
+   "act_class": "discuss_constructively",
+   "closure": "cepa",
+   "reason": "the example explicitly permits constructive discussion of religion's role in public life; silence about other discussion leaves it permitted"
+  },
+  {
+   "act_class": "provide_historical_context",
+   "closure": "cepa",
+   "reason": "the example explicitly permits providing historical context; silence about other context leaves it permitted"
+  }
+ ],
+ "requires": [
+  "root_authority/1"
+ ],
+ "inputs": [
+  "advocates_internment/1",
+  "concerns_religion_public_life/1",
+  "historical_context_religious_persecution/1"
+ ],
+ "forbid_body": []
+}

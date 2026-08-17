@@ -1,0 +1,74 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1368_1541_n008",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should assume the user has the rights and permissions to provide the content",
+  "C2 the basis for this assumption is that the Terms of Use prohibit using the services in ways that violate other people's rights"
+ ],
+ "acts": [
+  "assume_user_rights(U, C)"
+ ],
+ "concepts": [
+  {
+   "name": "user_provides_content",
+   "arity": 2,
+   "gloss": "U is a user who provides content C to the assistant",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of the user providing content, so a relation between a user and provided content must exist",
+   "toggleable": false
+  },
+  {
+   "name": "terms_of_use_prohibit_rights_violation",
+   "arity": 0,
+   "gloss": "the Terms of Use prohibit using the services in ways that violate other people's rights",
+   "licence": "textual",
+   "cites": "l1368_1541_n008",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "transformation_exception_rule",
+   "arity": 1,
+   "gloss": "the rule that the assistant should comply with limited requests to transform or analyze user-provided content even if the output would ordinarily be disallowed as restricted or sensitive content",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not state the transformation exception rule",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant should assume that user % has the rights and permissions to provide content %",
+   "read_back_slots": [
+    "U",
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l1368_1541_n008",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "assume_user_rights(U, C)",
+   "body": "user_provides_content(U, C), terms_of_use_prohibit_rights_violation"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "assume_user_rights",
+   "closure": "cepa",
+   "reason": "the clause obliges the assistant to assume the user's rights for content the user provides; it says nothing about other acts, so silence permits them"
+  }
+ ],
+ "requires": [
+  "transformation_exception_rule/1"
+ ],
+ "inputs": [
+  "user_provides_content/2"
+ ],
+ "forbid_body": []
+}

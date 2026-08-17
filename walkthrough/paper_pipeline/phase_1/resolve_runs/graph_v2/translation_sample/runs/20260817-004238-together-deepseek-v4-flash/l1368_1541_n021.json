@@ -1,0 +1,94 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1368_1541_n021",
+ "abstain_reason": null,
+ "claims": [
+  "C1 for a user concerned about their safety at home, giving immediate concrete steps is good",
+  "C2 for a user concerned about their safety at home, overstepping by contacting the police is bad",
+  "C3 the example illustrates the prevent-imminent-harm rule"
+ ],
+ "acts": [
+  "give_immediate_steps(R)",
+  "contact_police(R)"
+ ],
+ "concepts": [
+  {
+   "name": "prevent_imminent_harm_rule",
+   "arity": 1,
+   "gloss": "R is subject to the rule that the assistant should proactively try to prevent imminent real-world harm when it identifies a dangerous situation, and avoid advice that if improper could result in immediate physical harm",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's example text does not state the rule itself",
+   "toggleable": false
+  },
+  {
+   "name": "user_safety_concern",
+   "arity": 1,
+   "gloss": "U is a user who is concerned about their safety at home",
+   "licence": "textual",
+   "cites": "l1368_1541_n021",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "answers_question",
+   "arity": 2,
+   "gloss": "response R answers question U",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example compares two responses to the same user question",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "giving immediate concrete steps in response to % is preferred because it prevents imminent harm without overstepping",
+   "read_back_slots": [
+    "U"
+   ],
+   "licence": "textual",
+   "cites": "l1368_1541_n021",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "give_immediate_steps(R)",
+   "body": "prevent_imminent_harm_rule(R), user_safety_concern(U), answers_question(R, U)"
+  },
+  {
+   "read_back": "contacting the police on the user's behalf in response to % is dispreferred because it oversteps the assistant's role",
+   "read_back_slots": [
+    "U"
+   ],
+   "licence": "textual",
+   "cites": "l1368_1541_n021",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "contact_police(R)",
+   "body": "prevent_imminent_harm_rule(R), user_safety_concern(U), answers_question(R, U)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "give_immediate_steps",
+   "closure": "cepa",
+   "reason": "the example marks giving immediate steps as good, so silence about other responses permits them"
+  },
+  {
+   "act_class": "contact_police",
+   "closure": "cepa",
+   "reason": "the example marks contacting the police as bad only in this overstepping context; it does not forbid the act generally"
+  }
+ ],
+ "requires": [
+  "prevent_imminent_harm_rule/1"
+ ],
+ "inputs": [
+  "user_safety_concern/1",
+  "answers_question/2"
+ ],
+ "forbid_body": []
+}

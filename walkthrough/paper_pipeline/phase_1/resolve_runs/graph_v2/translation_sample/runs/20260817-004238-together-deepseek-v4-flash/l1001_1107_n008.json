@@ -1,0 +1,117 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1001_1107_n008",
+ "abstain_reason": null,
+ "claims": [
+  "C1 for a public figure, information that is generally public and unlikely to cause harm through disclosure may be provided",
+  "C2 the permission is conditioned on the information being generally public",
+  "C3 the permission is conditioned on the information being unlikely to cause harm through disclosure"
+ ],
+ "acts": [
+  "provide_information(I)"
+ ],
+ "concepts": [
+  {
+   "name": "public_figure",
+   "arity": 1,
+   "gloss": "P is a person who is a public figure",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the node's claim speaks of 'public figures' as the class the permission applies to",
+   "toggleable": false
+  },
+  {
+   "name": "information_about",
+   "arity": 2,
+   "gloss": "information I is about person P",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the claim relates information to the public figure it concerns",
+   "toggleable": false
+  },
+  {
+   "name": "generally_public",
+   "arity": 1,
+   "gloss": "information I is generally public, i.e. available to the public at large",
+   "licence": "textual",
+   "cites": "l1001_1107_n008",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "unlikely_to_cause_harm",
+   "arity": 1,
+   "gloss": "disclosing information I is unlikely to cause harm",
+   "licence": "textual",
+   "cites": "l1001_1107_n008",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "assistant",
+   "arity": 1,
+   "gloss": "A is the assistant as defined by the Model Spec",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the claim is about what the assistant should be able to do; the acting subject is the assistant",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule carrying root authority, the highest level of instruction authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's source text does not state the authority level",
+   "toggleable": false
+  },
+  {
+   "name": "privacy_context_dependence",
+   "arity": 1,
+   "gloss": "X is a fact about whether information is private or sensitive depending in part on context",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's source text does not define the dependence",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant should be able to provide information % about public figure % when % is generally public and unlikely to cause harm through disclosure",
+   "read_back_slots": [
+    "I",
+    "P",
+    "I"
+   ],
+   "licence": "textual",
+   "cites": "l1001_1107_n008",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "provide_information(I)",
+   "body": "public_figure(P), information_about(I, P), generally_public(I), unlikely_to_cause_harm(I)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "provide_information",
+   "closure": "cepa",
+   "reason": "the clause states a permission for generally public, low-harm information about public figures; it does not forbid providing other information, so silence permits"
+  }
+ ],
+ "requires": [
+  "root_authority/1",
+  "privacy_context_dependence/1"
+ ],
+ "inputs": [
+  "public_figure/1",
+  "information_about/2",
+  "generally_public/1",
+  "unlikely_to_cause_harm/1",
+  "assistant/1"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,86 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1368_1541_n009",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the system may apply additional precautions at a system level for user-directed misuse",
+  "C2 such precautions include blocking specific requests, monitoring for unusual activity, and responding to reports on the use of unauthorized content",
+  "C3 these mitigations are beyond the scope of the Model Spec"
+ ],
+ "acts": [
+  "apply_system_precaution(P)"
+ ],
+ "concepts": [
+  {
+   "name": "system_level_precaution",
+   "arity": 1,
+   "gloss": "P is a precaution applied at the system level, beyond the assistant's own behavior",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of precautions 'at a system level', which presupposes a class of system-level mitigations distinct from assistant-level behavior",
+   "toggleable": false
+  },
+  {
+   "name": "user_directed_misuse",
+   "arity": 1,
+   "gloss": "M is misuse directed by the user, such as using the service in ways that violate other people's rights",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of 'user-directed misuse' without defining it; the surrounding text ties it to using the service in ways that violate others' rights",
+   "toggleable": false
+  },
+  {
+   "name": "addresses_misuse",
+   "arity": 2,
+   "gloss": "precaution P is applied in response to or to address misuse M",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause lists precautions 'for' user-directed misuse, which requires a relation between a precaution and the misuse it addresses",
+   "toggleable": false
+  },
+  {
+   "name": "transformation_exception_rule",
+   "arity": 1,
+   "gloss": "R is the rule that the assistant should comply with limited requests to transform or analyze user-provided content even if the output would ordinarily be disallowed as restricted or sensitive content",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's own text does not state the transformation-exception rule",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "applying system-level precaution % is permitted when it addresses user-directed misuse %",
+   "read_back_slots": [
+    "P",
+    "M"
+   ],
+   "licence": "textual",
+   "cites": "l1368_1541_n009",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "apply_system_precaution(P)",
+   "body": "system_level_precaution(P), user_directed_misuse(M), addresses_misuse(P, M)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "apply_system_precaution",
+   "closure": "cepa",
+   "reason": "the clause permits applying system-level precautions for user-directed misuse; it does not forbid any precaution, so silence leaves other precautions permitted"
+  }
+ ],
+ "requires": [
+  "transformation_exception_rule/1"
+ ],
+ "inputs": [
+  "system_level_precaution/1",
+  "user_directed_misuse/1",
+  "addresses_misuse/2"
+ ],
+ "forbid_body": []
+}

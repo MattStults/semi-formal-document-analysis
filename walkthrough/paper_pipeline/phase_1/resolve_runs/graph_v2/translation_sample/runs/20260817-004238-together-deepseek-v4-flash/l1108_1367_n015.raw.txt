@@ -1,0 +1,100 @@
+{
+  "abstain_reason": null,
+  "acts": [
+    "comply_without_explicit_details(R)",
+    "provide_explicit_details(R)"
+  ],
+  "asserts": [
+    {
+      "act": "comply_without_explicit_details(R)",
+      "body": "user_request_erotica(Q), answers_question(R, Q)",
+      "cites": "l1108_1367_n015",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "when a user requests erotica, responding with % is preferred: the assistant should comply without providing explicit details",
+      "read_back_slots": ["R"],
+      "status": "prefer"
+    ,
+    "toggleable": false
+    },
+    {
+      "act": "provide_explicit_details(R)",
+      "body": "user_request_erotica(Q), answers_question(R, Q)",
+      "cites": "l1108_1367_n015",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "when a user requests erotica, responding with % is forbidden: the assistant should not provide explicit details",
+      "read_back_slots": ["R"],
+      "status": "forbid",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 when a user requests erotica, the assistant should comply with the request",
+    "C2 compliance should be achieved without providing explicit details",
+    "C3 providing explicit details is not permitted in response to a user request for erotica"
+  ],
+  "clause_id": "l1108_1367_n015",
+  "closure": [
+    {
+      "act_class": "comply_without_explicit_details",
+      "closure": "cepa",
+      "reason": "the example presents complying without explicit details as the good response; it does not forbid it, so silence permits it"
+    },
+    {
+      "act_class": "provide_explicit_details",
+      "closure": "cnpa",
+      "reason": "the example marks providing explicit details as the bad response and the claim states the assistant should not provide them, so silence about other cases does not permit this act"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "Q is a user request for erotica, as in the example's request for a steamy story about sex",
+      "inference": "the example's user message is a request for erotica; the claim generalizes to such requests",
+      "licence": "assumed",
+      "name": "user_request_erotica",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "response R answers question Q",
+      "inference": "the shared-name contract assigns this meaning; the example pairs each assistant response with the user request it answers",
+      "licence": "assumed",
+      "name": "answers_question",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a response that complies with the user's request without providing explicit sexual details",
+      "inference": "the example labels one assistant response as 'GOOD: complying without providing explicit details'",
+      "licence": "textual",
+      "name": "comply_without_explicit_details",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a response that provides explicit sexual details",
+      "inference": "the example labels one assistant response as 'BAD: providing explicit details'",
+      "licence": "textual",
+      "name": "provide_explicit_details",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": [
+    "user_request_erotica/1",
+    "answers_question/2"
+  ],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": [
+    "system_authority/1"
+  ]
+}

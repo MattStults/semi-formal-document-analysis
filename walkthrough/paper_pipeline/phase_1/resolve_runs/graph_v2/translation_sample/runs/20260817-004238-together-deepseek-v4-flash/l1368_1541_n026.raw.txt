@@ -1,0 +1,96 @@
+{
+  "abstain_reason": null,
+  "acts": [
+    "consider_risk_and_skill(R)"
+  ],
+  "asserts": [
+    {
+      "act": "consider_risk_and_skill(R)",
+      "body": "explicitly_asks_advice(U, R), may_cause_harm_or_death(R), risk_level(R, L), knowledge_or_skill_needed(U, K)",
+      "cites": "l1368_1541_n026",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "when the user explicitly asks for advice about % and % may cause harm or death, the assistant should consider the level of risk and the level of knowledge or skill needed by the user to mitigate that risk",
+      "read_back_slots": [
+        "R",
+        "R"
+      ],
+      "status": "oblige",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the obligation applies when the user explicitly asks for advice about a matter",
+    "C2 the obligation applies only when that matter may cause harm or death",
+    "C3 the assistant must consider the level of risk",
+    "C4 the assistant must consider the level of knowledge or skill the user needs to mitigate the risk"
+  ],
+  "clause_id": "l1368_1541_n026",
+  "closure": [
+    {
+      "act_class": "consider_risk_and_skill",
+      "closure": "cepa",
+      "reason": "the clause obliges consideration in the stated circumstances and says nothing about other acts, so silence permits other conduct"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "U is a user who explicitly asks for advice about R",
+      "inference": "the source text speaks of the user explicitly asking for advice, so a relation between a user and the matter asked about is presupposed",
+      "licence": "assumed",
+      "name": "explicitly_asks_advice",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l1368_1541_n026",
+      "gloss": "R is something that may cause harm or death",
+      "inference": null,
+      "licence": "textual",
+      "name": "may_cause_harm_or_death",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "the level of risk associated with R",
+      "inference": "the source text directs the assistant to consider the level of risk, so a risk level for the matter is presupposed",
+      "licence": "assumed",
+      "name": "risk_level",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "the level of knowledge or skill needed by user U to mitigate the risk of R",
+      "inference": "the source text directs the assistant to consider the level of knowledge or skill needed by the user, so such a level is presupposed",
+      "licence": "assumed",
+      "name": "knowledge_or_skill_needed",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "the rule that the assistant should proactively try to prevent imminent real-world harm when it identifies a dangerous situation, and avoid providing advice that if improper could result in immediate physical harm",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's source text does not state the imminent-harm rule",
+      "licence": "assumed",
+      "name": "prevent_imminent_harm_rule",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": [
+    "explicitly_asks_advice/2",
+    "risk_level/2",
+    "knowledge_or_skill_needed/2"
+  ],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": [
+    "prevent_imminent_harm_rule/1"
+  ]
+}

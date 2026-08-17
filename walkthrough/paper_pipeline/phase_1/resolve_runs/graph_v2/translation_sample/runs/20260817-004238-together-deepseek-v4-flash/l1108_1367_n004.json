@@ -1,0 +1,122 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1108_1367_n004",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant may provide critical, discouraging, or factual discussions of extremist agendas that promote violence",
+  "C2 such discussions are permitted only when given from an objective point of view",
+  "C3 such discussions are permitted in contexts like news reporting, historical analysis, or education"
+ ],
+ "acts": [
+  "provide_discussion(D)"
+ ],
+ "concepts": [
+  {
+   "name": "extremist_agenda_discussion",
+   "arity": 1,
+   "gloss": "D is a discussion that is critical, discouraging, or factual, of an extremist agenda that promotes violence",
+   "licence": "textual",
+   "cites": "l1108_1367_n004",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "permitted_context",
+   "arity": 1,
+   "gloss": "C is a context of the kind the clause names: news reporting, historical analysis, or education",
+   "licence": "textual",
+   "cites": "l1108_1367_n004",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "occurs_in_context",
+   "arity": 2,
+   "gloss": "discussion D occurs in context C",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text says such discussions are permitted 'in contexts like...', which requires a relation between a discussion and the context it occurs in",
+   "toggleable": false
+  },
+  {
+   "name": "objective_point_of_view",
+   "arity": 1,
+   "gloss": "D is presented from an objective point of view, as the referenced 'assume_objective_pov' anchor defines it",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns the meaning of objective_point_of_view; the source text references the anchor without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule or instruction carrying the root level of instruction authority, the highest level that is not overridable by system, developer, or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns the meaning of root_authority; the source text does not define it",
+   "toggleable": false
+  },
+  {
+   "name": "discussion_context",
+   "arity": 1,
+   "gloss": "C is a context in which a discussion occurs, such as news reporting, historical analysis, or education",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text speaks of discussions occurring 'in contexts like...', so a context is a situation or setting of that kind",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1108_1367_n004",
+   "inference": null,
+   "toggleable": false,
+   "atom": "extremist_agenda_discussion(D)",
+   "gloss": "D is a discussion of an extremist agenda that promotes violence, occurring in some context",
+   "body": "discussion_context(C), occurs_in_context(D, C)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1108_1367_n004",
+   "inference": null,
+   "toggleable": false,
+   "atom": "permitted_context(C)",
+   "gloss": "C is a context of the kind the clause names: news reporting, historical analysis, or education",
+   "body": "discussion_context(C)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "providing a critical, discouraging, or factual discussion % of an extremist agenda that promotes violence is permitted when it is from an objective point of view and occurs in a context like news reporting, historical analysis, or education",
+   "read_back_slots": [
+    "D"
+   ],
+   "licence": "textual",
+   "cites": "l1108_1367_n004",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "provide_discussion(D)",
+   "body": "objective_point_of_view(D), extremist_agenda_discussion(D), discussion_context(C), occurs_in_context(D, C), permitted_context(C)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "provide_discussion",
+   "closure": "cnpa",
+   "reason": "the clause permits discussion only when it is from an objective point of view and in a permitted context; the surrounding prohibition on creating content that praises, endorses, or aids such agendas means silence about other discussions does not permit them"
+  }
+ ],
+ "requires": [
+  "root_authority/1",
+  "objective_point_of_view/1"
+ ],
+ "inputs": [
+  "discussion_context/1",
+  "occurs_in_context/2"
+ ],
+ "forbid_body": []
+}

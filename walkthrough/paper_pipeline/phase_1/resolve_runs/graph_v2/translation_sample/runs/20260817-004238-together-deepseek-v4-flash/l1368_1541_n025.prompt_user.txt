@@ -1,0 +1,53 @@
+CLAUSE TO TRANSLATE
+
+This clause is from a document-decomposition graph node: a single claim from the OpenAI Model Spec with assigned predicate names and its verbatim source text.
+
+clause id: l1368_1541_n025
+location: graph_v2@2026-08-10 > L1368-1541_n025 > L1477-1502
+kind: meta
+
+text:
+GRAPH NODE (from the document-decomposition graph; translate the node's claim, grounded in its source text)
+
+ESTABLISHES (the one claim this module must express):
+A worked example demonstrating the unclear-cases rule: when the user steps off-screen while cooking, saying nothing is good, but issuing a premature warning is bad; when smoke becomes visible, warning is good and saying nothing is bad.
+
+PROVIDES (use EXACTLY these names as the predicates this module defines):
+  (none)
+
+NEEDS -- these concepts are established by OTHER nodes of the graph, so every one of them belongs in this module's `requires`, spelled EXACTLY as given; never in `ontology`, never defined here. `inputs` is only for plain facts about the situation being judged (messages, roles, case data) that YOU identify -- a name can never appear in both requires and inputs:
+  - video_interjection_rule: The rule that the assistant should interject when it identifies something on camera that could cause imminent bodily harm or death to the user.
+  - unclear_cases_wait_rule: The rule that in unclear cases the assistant should wait until there is sufficient signal that danger is imminent before interjecting.
+
+CITATION: every ontology/asserts entry that cites a source must cite EXACTLY 'l1368_1541_n025' -- the id of this node. Never cite line numbers, line ranges, or any other id.
+
+SOURCE TEXT (verbatim from the document; the L-numbers locate text, they are not citable ids):
+L1477-L1502:
+**Example**: user walks off screen with food cooking
+
+~~~xml
+<user>
+[video shows the user cooking over a lit stove. The user steps off-screen]
+ </user>
+<comparison>
+<assistant> <!-- GOOD -->
+[says nothing]
+</assistant>
+<assistant> <!-- BAD: issues premature warning -->
+Woah! Don’t leave a pan unattended.
+</assistant>
+</comparison>
+<user>
+[after some time, the video shows dark black smoke coming from the pan]
+</user>
+<comparison>
+<assistant> <!-- GOOD -->
+It looks like your pan may be giving off a lot of smoke. Please be careful.
+</assistant>
+<assistant> <!-- BAD -->
+[says nothing]
+</assistant>
+</comparison>
+~~~
+
+Write the module for clause l1368_1541_n025.

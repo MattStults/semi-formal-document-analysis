@@ -1,0 +1,87 @@
+{
+ "abstain_reason": null,
+ "acts": ["help_with(C)"],
+ "asserts": [
+  {
+   "act": "help_with(C)",
+   "body": "targeted_political_manipulation_prohibition(P), content_intended_to_influence_demographic_political_views(C)",
+   "cites": "l831_1000_n016",
+   "inference": null,
+   "licence": "textual",
+   "read_back": "helping with % is forbidden because % is content intended to influence a specific demographic group's political views",
+   "read_back_slots": ["C", "C"],
+   "status": "forbid"
+  ,
+  "toggleable": false
+  },
+  {
+   "act": "help_with(C)",
+   "body": "broad_audience_content(C), personal_finance_or_uk_economy_content(C)",
+   "cites": "l831_1000_n016",
+   "inference": null,
+   "licence": "textual",
+   "read_back": "helping with % is permitted because % is about personal finance or the UK economy for a broad audience",
+   "read_back_slots": ["C", "C"],
+   "status": "permit"
+  ,
+  "toggleable": false
+  }
+ ],
+ "beats": [],
+ "claims": [
+  "C1 the assistant must not help with content intended to influence a specific demographic group's political views",
+  "C2 the assistant may help with posts about personal finance and the UK economy for a broad audience"
+ ],
+ "clause_id": "l831_1000_n016",
+ "closure": [
+  {
+   "act_class": "help_with",
+   "closure": "cepa",
+   "reason": "the clause explicitly permits help with broad-audience personal finance and UK economy posts, and forbids only content intended to influence a specific demographic group's political views; silence about other content leaves it permitted"
+  }
+ ],
+ "concepts": [
+  {
+   "arity": 1,
+   "cites": null,
+   "gloss": "C is content intended to influence the political views of a specific demographic group",
+   "inference": "the example's refusal states this class; the node's claim describes it as 'content intended to influence a specific demographic group's political views'",
+   "licence": "assumed",
+   "name": "content_intended_to_influence_demographic_political_views",
+   "toggleable": false
+  },
+  {
+   "arity": 1,
+   "cites": null,
+   "gloss": "C is content about personal finance or the UK economy",
+   "inference": "the example's offer states this class; the node's claim describes it as 'posts about personal finance and the UK economy'",
+   "licence": "assumed",
+   "name": "personal_finance_or_uk_economy_content",
+   "toggleable": false
+  },
+  {
+   "arity": 1,
+   "cites": null,
+   "gloss": "C is content intended for a broad audience rather than a specific demographic group",
+   "inference": "the example's offer states this class; the node's claim describes it as 'for a broad audience'",
+   "licence": "assumed",
+   "name": "broad_audience_content",
+   "toggleable": false
+  },
+  {
+   "arity": 1,
+   "cites": null,
+   "gloss": "P is the prohibition on providing advice, instructions, or content specifically designed to manipulate the political views of specific individuals or demographic groups",
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to the prohibition without defining it",
+   "licence": "assumed",
+   "name": "targeted_political_manipulation_prohibition",
+   "toggleable": false
+  }
+ ],
+ "defines": [],
+ "forbid_body": [],
+ "inputs": ["content_intended_to_influence_demographic_political_views/1", "personal_finance_or_uk_economy_content/1", "broad_audience_content/1"],
+ "ontology": [],
+ "outcome": "translated",
+ "requires": ["targeted_political_manipulation_prohibition/1"]
+}

@@ -1,0 +1,96 @@
+{"abstain_reason": null,
+  "acts": ["respond_to_suicide_request(R)"],
+  "asserts": [
+    {
+      "act": "respond_to_suicide_request(R)",
+      "body": "suicide_advice_request(Q), answers_question(R, Q), gives_suicide_advice(R)",
+      "cites": "l1542_1706_n016",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "responding % to a request for suicide methods is forbidden because % gives advice on committing suicide",
+      "read_back_slots": ["R", "R"],
+      "status": "forbid"
+   
+    ,
+    "toggleable": false
+    },
+    {
+      "act": "respond_to_suicide_request(R)",
+      "body": "suicide_advice_request(Q), answers_question(R, Q), supportive_response(R)",
+      "cites": "l1542_1706_n016",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "responding % to a request for suicide methods is preferred because % responds supportively",
+      "read_back_slots": ["R", "R"],
+      "status": "prefer"
+    ,
+    "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 when a user asks for ways to commit suicide, the assistant should refuse to give advice",
+    "C2 when a user asks for ways to commit suicide, the assistant should respond supportively"
+  ],
+  "clause_id": "l1542_1706_n016",
+  "closure": [
+    {
+      "act_class": "respond_to_suicide_request",
+      "closure": "cepa",
+      "reason": "the example forbids only responses that give suicide advice and prefers supportive responses; it does not forbid other responses, so silence permits"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "Q is a user question asking for ways to commit suicide",
+      "inference": "the example's user message asks for painless ways to commit suicide; the class of such requests is needed to state the example's lesson",
+      "licence": "assumed",
+      "name": "suicide_advice_request",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a response that gives advice on how to commit suicide",
+      "inference": "the BAD assistant response in the example gives such advice; the class is needed to mark that response as the negative case",
+      "licence": "assumed",
+      "name": "gives_suicide_advice",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a response that offers support, care, and resources rather than advice on suicide methods",
+      "inference": "the GOOD assistant response in the example is supportive; the class is needed to mark that response as the positive case",
+      "licence": "assumed",
+      "name": "supportive_response",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "response R answers question Q",
+      "inference": "the shared-name contract assigns this meaning; the example relates each assistant response to the user's question",
+      "licence": "assumed",
+      "name": "answers_question",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a rule carrying the root level of instruction authority, the highest level not overridable by system, developer or user instructions",
+      "inference": "the NEEDS contract assigns this meaning; this node's example text does not state the authority level",
+      "licence": "assumed",
+      "name": "root_authority",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["suicide_advice_request/1", "gives_suicide_advice/1", "supportive_response/1", "answers_question/2"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["root_authority/1"]
+}

@@ -1,0 +1,94 @@
+{
+  "abstain_reason": null,
+  "acts": ["interject()"],
+  "asserts": [
+    {
+      "act": "interject()",
+      "body": "unclear_cases_wait_rule(R), video_interjection_rule(V), root_authority(R), root_authority(V), applies_to(R, S), applies_to(V, S), danger_imminent(S)",
+      "cites": "l1368_1541_n024",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "interjecting in situation % is forbidden while the danger is not yet imminent, because the unclear-cases rule requires waiting for sufficient signal of imminent danger",
+      "read_back_slots": ["S"],
+      "status": "forbid",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 in unclear cases the assistant should wait before interjecting",
+    "C2 the wait lasts until there is sufficient signal that danger is imminent",
+    "C3 the rule applies to situations where the video interjection rule also applies",
+    "C4 the rule carries root authority, so it outranks the video interjection rule's default to interject"
+  ],
+  "clause_id": "l1368_1541_n024",
+  "closure": [
+    {
+      "act_class": "interject",
+      "closure": "cnpa",
+      "reason": "the clause directs the assistant to wait in unclear cases, so interjecting before sufficient signal of imminent danger is prohibited"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "S is a situation in which the danger is not yet clearly imminent but the video interjection rule would otherwise call for interjection",
+      "inference": "the clause speaks of unclear cases where the video interjection rule applies; the situation must be one where that rule would otherwise trigger",
+      "licence": "assumed",
+      "name": "unclear_case",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "S is a situation in which there is sufficient signal that danger is imminent",
+      "inference": "the clause's condition for ending the wait is that sufficient signal of imminent danger exists",
+      "licence": "assumed",
+      "name": "danger_imminent",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "rule R applies to situation S",
+      "inference": "the clause's directive concerns situations in which the interjection rule applies",
+      "licence": "assumed",
+      "name": "applies_to",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l1368_1541_n024",
+      "gloss": "R is the rule that in unclear cases the assistant should wait until there is sufficient signal that danger is imminent before interjecting",
+      "inference": null,
+      "licence": "textual",
+      "name": "unclear_cases_wait_rule",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is the rule that the assistant should interject when it identifies something on camera that could cause imminent bodily harm or death to the user",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define the video interjection rule",
+      "licence": "assumed",
+      "name": "video_interjection_rule",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R carries the root level of instruction authority, the highest level not overridable by system, developer or user instructions",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define root authority",
+      "licence": "assumed",
+      "name": "root_authority",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["unclear_case/1", "danger_imminent/1", "applies_to/2"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["unclear_cases_wait_rule/1", "video_interjection_rule/1", "root_authority/1"]
+}

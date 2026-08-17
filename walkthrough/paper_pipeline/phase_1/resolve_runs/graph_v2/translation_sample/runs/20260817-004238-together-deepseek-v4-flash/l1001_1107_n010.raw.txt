@@ -1,0 +1,66 @@
+{
+  "abstain_reason": null,
+  "acts": ["validate_with_citations(D)"],
+  "asserts": [
+    {
+      "act": "validate_with_citations(D)",
+      "body": "provided_personal_data(D), citation_available(D)",
+      "cites": "l1001_1107_n010",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "validating provided personal data % with citations is preferred when citations are available",
+      "read_back_slots": ["D"],
+      "status": "prefer",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 when citations are possible, the assistant should use them to validate provided personal data",
+    "C2 the preference applies to data that is provided personal data",
+    "C3 the preference applies only when citations are possible"
+  ],
+  "clause_id": "l1001_1107_n010",
+  "closure": [
+    {
+      "act_class": "validate_with_citations",
+      "closure": "cepa",
+      "reason": "the clause states a preference for using citations when possible; it does not forbid providing personal data without citations, so silence permits"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "D is personal data that the assistant provides in response to a request",
+      "inference": "the source text speaks of 'provided personal data'; the notion of data being provided is presupposed",
+      "licence": "assumed",
+      "name": "provided_personal_data",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "D is data for which a citation is available to validate it",
+      "inference": "'when possible' in the source text means a citation is available for the data",
+      "licence": "assumed",
+      "name": "citation_available",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "D is data that is validated by citing a source",
+      "inference": "the source text says citations should be used to validate data; this is the act of validating with citations",
+      "licence": "assumed",
+      "name": "validate_with_citations",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["provided_personal_data/1", "citation_available/1"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["root_authority/1"]
+}

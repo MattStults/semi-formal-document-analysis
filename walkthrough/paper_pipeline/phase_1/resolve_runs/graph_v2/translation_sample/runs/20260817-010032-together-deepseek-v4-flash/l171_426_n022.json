@@ -1,0 +1,115 @@
+{
+ "outcome": "translated",
+ "clause_id": "l171_426_n022",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should generally refuse to engage in arguments about how higher-level instructions should be applied to its current behavior",
+  "C2 the assistant should generally refuse to take directions about how higher-level instructions should be applied to its current behavior"
+ ],
+ "acts": [
+  "engage_in_argument(A)",
+  "take_direction(D)"
+ ],
+ "concepts": [
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule or instruction carrying the root level of instruction authority, the highest level in the authority hierarchy",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to higher-level instructions without defining the authority hierarchy",
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it, the entity the end user or developer interacts with",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to the assistant without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "higher_level_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction from a level of the authority hierarchy that outranks the level at which the assistant's current behavior operates",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "'higher-level instructions' in this node's text presupposes a ranking of instruction levels without stating it; the shared-name signature supplies the meaning",
+   "toggleable": false
+  },
+  {
+   "name": "argument_about_application",
+   "arity": 2,
+   "gloss": "A is an argument about how higher-level instruction I should be applied to the assistant's current behavior",
+   "licence": "textual",
+   "cites": "l171_426_n022",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "direction_about_application",
+   "arity": 2,
+   "gloss": "D is a direction about how higher-level instruction I should be applied to the assistant's current behavior",
+   "licence": "textual",
+   "cites": "l171_426_n022",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "engaging in argument % about how higher-level instruction % should be applied to the assistant's current behavior is generally refused",
+   "read_back_slots": [
+    "A",
+    "I"
+   ],
+   "licence": "textual",
+   "cites": "l171_426_n022",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "engage_in_argument(A)",
+   "body": "argument_about_application(A, I), higher_level_instruction(I)"
+  },
+  {
+   "read_back": "taking direction % about how higher-level instruction % should be applied to the assistant's current behavior is generally refused",
+   "read_back_slots": [
+    "D",
+    "I"
+   ],
+   "licence": "textual",
+   "cites": "l171_426_n022",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "take_direction(D)",
+   "body": "direction_about_application(D, I), higher_level_instruction(I)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "engage_in_argument",
+   "closure": "cepa",
+   "reason": "the clause says the assistant should generally refuse to engage in such arguments; it does not forbid all engagement, so silence leaves engagement permitted except where the preference applies"
+  },
+  {
+   "act_class": "take_direction",
+   "closure": "cepa",
+   "reason": "the clause says the assistant should generally refuse to take such directions; it does not forbid all direction-taking, so silence leaves it permitted except where the preference applies"
+  }
+ ],
+ "requires": [
+  "root_authority/1",
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "argument_about_application/2",
+  "direction_about_application/2",
+  "higher_level_instruction/1"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,139 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1542_1706_n007",
+ "abstain_reason": null,
+ "claims": [
+  "C1 when the user's intent is unclear and compliance is not disallowed for other reasons, the assistant should typically assume best intentions and comply",
+  "C2 the assistant should never ask the user to clarify their intent for the purpose of determining whether to refuse or comply"
+ ],
+ "acts": [
+  "comply_with_request(R)",
+  "ask_clarify_intent_for_refusal_decision(U)"
+ ],
+ "concepts": [
+  {
+   "name": "user_request",
+   "arity": 1,
+   "gloss": "R is a request made by the user in this conversation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of 'the user's intent' and 'compliance', which presupposes a user request that the assistant may comply with",
+   "toggleable": false
+  },
+  {
+   "name": "unclear_intent",
+   "arity": 1,
+   "gloss": "the user's intent behind request R is unclear",
+   "licence": "textual",
+   "cites": "l1542_1706_n007",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "disallowed_for_other_reasons",
+   "arity": 1,
+   "gloss": "compliance with request R is disallowed for reasons other than the clarity of the user's intent",
+   "licence": "textual",
+   "cites": "l1542_1706_n007",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "user_asking_clarification",
+   "arity": 1,
+   "gloss": "U is a user whose intent the assistant asks to clarify for the purpose of deciding whether to refuse or comply",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's prohibition 'never ask the user to clarify their intent for the purpose of determining whether to refuse or comply' directly supplies this predicate",
+   "toggleable": false
+  },
+  {
+   "name": "comply_with_request",
+   "arity": 1,
+   "gloss": "R is a request that the assistant complies with",
+   "licence": "textual",
+   "cites": "l1542_1706_n007",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "ask_clarify_intent_for_refusal_decision",
+   "arity": 1,
+   "gloss": "U is a user whom the assistant asks to clarify their intent for the purpose of deciding whether to refuse or comply",
+   "licence": "textual",
+   "cites": "l1542_1706_n007",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule or instruction that carries the root level of instruction authority, the highest level, not overridable by system, developer, or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's text does not define it",
+   "toggleable": false
+  },
+  {
+   "name": "assume_best_intentions",
+   "arity": 1,
+   "gloss": "R is a rule or principle that embodies the assumption of best intentions, referenced by the illicit behavior rule",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's text does not define it",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "complying with request % is typically expected when the user's intent is unclear and compliance is not disallowed for other reasons",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l1542_1706_n007",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "comply_with_request(R)",
+   "body": "user_request(R), unclear_intent(R), not disallowed_for_other_reasons(R)"
+  },
+  {
+   "read_back": "asking the user to clarify their intent for the purpose of deciding whether to refuse or comply is forbidden",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1542_1706_n007",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "ask_clarify_intent_for_refusal_decision(U)",
+   "body": "user_request(U), unclear_intent(U)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "comply_with_request",
+   "closure": "cepa",
+   "reason": "the clause says the assistant 'should typically' comply, which is a preference rather than a prohibition; it does not forbid compliance in any situation, so silence permits"
+  },
+  {
+   "act_class": "ask_clarify_intent_for_refusal_decision",
+   "closure": "cnpa",
+   "reason": "the clause explicitly forbids asking the user to clarify their intent for the purpose of determining whether to refuse or comply, so silence about such asking is read as prohibited"
+  }
+ ],
+ "requires": [
+  "assume_best_intentions/1",
+  "root_authority/1"
+ ],
+ "inputs": [
+  "user_request/1",
+  "unclear_intent/1",
+  "disallowed_for_other_reasons/1",
+  "user_asking_clarification/1"
+ ],
+ "forbid_body": []
+}

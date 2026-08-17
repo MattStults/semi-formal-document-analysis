@@ -1,0 +1,84 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1001_1107_n006",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant must not respond to a request for private or sensitive information about a person",
+  "C2 this prohibition holds even when the information is available somewhere online"
+ ],
+ "acts": [
+  "respond_to_request(R)"
+ ],
+ "concepts": [
+  {
+   "name": "request_for_private_or_sensitive_info",
+   "arity": 1,
+   "gloss": "R is a request for private or sensitive information about a person",
+   "licence": "textual",
+   "cites": "l1001_1107_n006",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "information_available_online",
+   "arity": 1,
+   "gloss": "the information requested by R is available somewhere online",
+   "licence": "textual",
+   "cites": "l1001_1107_n006",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule carrying the root level of instruction authority, the highest level not overridable by system, developer or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define root authority",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1001_1107_n006",
+   "inference": null,
+   "toggleable": false,
+   "atom": "privacy_protection_rule(R)",
+   "gloss": "R is the privacy protection rule, which carries root authority",
+   "body": "root_authority(R)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "responding to request % is forbidden because it is a request for private or sensitive information about a person, even if the information is available online",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l1001_1107_n006",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "respond_to_request(R)",
+   "body": "request_for_private_or_sensitive_info(R), information_available_online(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_to_request",
+   "closure": "cepa",
+   "reason": "the clause forbids responding only to requests for private or sensitive information about people; it does not forbid responding to other requests, so silence permits them"
+  }
+ ],
+ "requires": [
+  "root_authority/1"
+ ],
+ "inputs": [
+  "request_for_private_or_sensitive_info/1",
+  "information_available_online/1"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,113 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1001_1107_n003",
+ "abstain_reason": null,
+ "claims": [
+  "C1 when asked for lyrics of a song not in the public domain, the assistant should decline to provide the full lyrics",
+  "C2 in that situation the assistant should instead offer an analysis of the key themes"
+ ],
+ "acts": [
+  "provide_full_lyrics(S)",
+  "offer_analysis(S)"
+ ],
+ "concepts": [
+  {
+   "name": "song_not_public_domain",
+   "arity": 1,
+   "gloss": "S is a song that is not in the public domain",
+   "licence": "textual",
+   "cites": "l1001_1107_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "requested_lyrics",
+   "arity": 1,
+   "gloss": "the user has asked for the lyrics of song S",
+   "licence": "textual",
+   "cites": "l1001_1107_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "provide_full_lyrics",
+   "arity": 1,
+   "gloss": "the assistant provides the full lyrics of song S",
+   "licence": "textual",
+   "cites": "l1001_1107_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "offer_analysis",
+   "arity": 1,
+   "gloss": "the assistant offers an analysis of the key themes of song S",
+   "licence": "textual",
+   "cites": "l1001_1107_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule that carries the root level of instruction authority, the highest level not overridable by system, developer, or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define root authority",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "providing the full lyrics of % is forbidden because % is not in the public domain and its lyrics were requested",
+   "read_back_slots": [
+    "S",
+    "S"
+   ],
+   "licence": "textual",
+   "cites": "l1001_1107_n003",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "provide_full_lyrics(S)",
+   "body": "song_not_public_domain(S), requested_lyrics(S)"
+  },
+  {
+   "read_back": "offering an analysis of the key themes of % is preferred when % is not in the public domain and its lyrics were requested",
+   "read_back_slots": [
+    "S",
+    "S"
+   ],
+   "licence": "textual",
+   "cites": "l1001_1107_n003",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "offer_analysis(S)",
+   "body": "song_not_public_domain(S), requested_lyrics(S)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "provide_full_lyrics",
+   "closure": "cnpa",
+   "reason": "the example marks providing full lyrics as BAD and the assistant's refusal as GOOD, so the clause prohibits providing full lyrics for a non-public-domain song"
+  },
+  {
+   "act_class": "offer_analysis",
+   "closure": "cepa",
+   "reason": "the example only prefers offering an analysis in this situation; it does not prohibit or require anything else about offering analysis"
+  }
+ ],
+ "requires": [
+  "root_authority/1"
+ ],
+ "inputs": [
+  "song_not_public_domain/1",
+  "requested_lyrics/1"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,90 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1542_1706_n021",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example concerns a delusion expressed with indicators of distress",
+  "C2 the assistant should respond supportively and address the distress",
+  "C3 the assistant should not affirm or escalate the ungrounded belief"
+ ],
+ "acts": [
+  "respond_to_delusion(D, U)"
+ ],
+ "concepts": [
+  {
+   "name": "delusion_with_distress",
+   "arity": 1,
+   "gloss": "D is a delusion expressed by a user with indicators of distress",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's title and the user message's 'beginning to stress me out' establish the distress indicator",
+   "toggleable": false
+  },
+  {
+   "name": "user_instruction",
+   "arity": 1,
+   "gloss": "U is an instruction issued at the user authority level",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract supplies the meaning of user_instruction; the example's user message is a user instruction",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule that carries the root level of instruction authority, the highest level that cannot be overridden by system, developer, or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract supplies the meaning of root_authority; this module needs it to know that the delusions rule carries root authority",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "responding to a delusion % that carries indicators of distress % is forbidden from affirming or escalating the ungrounded belief",
+   "read_back_slots": [
+    "D",
+    "U"
+   ],
+   "licence": "textual",
+   "cites": "l1542_1706_n021",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "respond_to_delusion(D, U)",
+   "body": "delusion_with_distress(D), user_instruction(U)"
+  },
+  {
+   "read_back": "responding to a delusion % that carries indicators of distress % is obliged to be supportive and to address the distress",
+   "read_back_slots": [
+    "D",
+    "U"
+   ],
+   "licence": "textual",
+   "cites": "l1542_1706_n021",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "respond_to_delusion(D, U)",
+   "body": "delusion_with_distress(D), user_instruction(U)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_to_delusion",
+   "closure": "cepa",
+   "reason": "the example contrasts good, ok, and bad responses; it does not forbid responding to a delusion without distress indicators, so silence permits"
+  }
+ ],
+ "requires": [
+  "root_authority/1"
+ ],
+ "inputs": [
+  "delusion_with_distress/1",
+  "user_instruction/1"
+ ],
+ "forbid_body": []
+}

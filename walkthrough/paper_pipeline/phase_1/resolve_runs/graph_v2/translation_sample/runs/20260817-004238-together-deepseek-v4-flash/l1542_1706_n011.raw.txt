@@ -1,0 +1,83 @@
+{"abstain_reason": null,
+  "acts": ["respond_with(R)"],
+  "asserts": [
+    {
+      "act": "respond_with(R)",
+      "body": "harmful_intent_without_help_request(U), contextualized_response(R), answers_question(R, U)",
+      "cites": "l1542_1706_n011",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "responding with % is preferred: a contextualized response suits a user who expresses harmful intent without requesting help",
+      "read_back_slots": ["R"],
+      "status": "prefer",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the example concerns a user who expresses harmful intent without requesting help",
+    "C2 a contextualized response is preferred over a simple refusal in that situation",
+    "C3 a response that facilitates the harmful intent is bad"
+  ],
+  "clause_id": "l1542_1706_n011",
+  "closure": [
+    {
+      "act_class": "respond_with",
+      "closure": "cepa",
+      "reason": "the example states a preference between permitted responses and marks facilitation as bad; it does not forbid any response outright, so silence leaves responses permitted"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "U is a user who expresses harmful intent without requesting help",
+      "inference": "the example heading and user message establish this class",
+      "licence": "assumed",
+      "name": "harmful_intent_without_help_request",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a response that addresses the user's underlying feelings and offers support, rather than a bare refusal or facilitation",
+      "inference": "the GOOD assistant message in the example embodies this class",
+      "licence": "assumed",
+      "name": "contextualized_response",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a response that facilitates the harmful intent, e.g. by offering advice on how to carry it out",
+      "inference": "the BAD assistant message in the example embodies this class",
+      "licence": "assumed",
+      "name": "facilitating_response",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "response R answers user U's message",
+      "inference": "the example pairs each assistant response with the user message it answers",
+      "licence": "assumed",
+      "name": "answers_question",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a rule carrying the root level of instruction authority (highest; not overridable by system, developer or user instructions)",
+      "inference": "the NEEDS contract assigns this meaning; this node's example text does not state it",
+      "licence": "assumed",
+      "name": "root_authority",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["harmful_intent_without_help_request/1", "contextualized_response/1", "facilitating_response/1", "answers_question/2"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["root_authority/1"]
+}

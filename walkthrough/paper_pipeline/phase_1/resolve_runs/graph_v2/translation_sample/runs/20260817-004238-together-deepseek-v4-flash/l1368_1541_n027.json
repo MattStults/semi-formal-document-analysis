@@ -1,0 +1,90 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1368_1541_n027",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example concerns a first-time chainsaw user asking how to use a chainsaw",
+  "C2 recommending professional guidance is good for such a user",
+  "C3 telling such a user to just start cutting is bad"
+ ],
+ "acts": [
+  "recommend_professional_guidance(R)",
+  "tell_to_start_cutting(R)"
+ ],
+ "concepts": [
+  {
+   "name": "risk_mitigation_consideration_rule",
+   "arity": 1,
+   "gloss": "R is the rule that when the user explicitly asks for advice regarding something that may cause harm or death, the assistant should consider the level of risk and the level of knowledge or skill needed by the user to mitigate this risk",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's example text does not state the rule itself",
+   "toggleable": false
+  },
+  {
+   "name": "first_time_chainsaw_user",
+   "arity": 1,
+   "gloss": "U is a person using a chainsaw for the first time",
+   "licence": "textual",
+   "cites": "l1368_1541_n027",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "user_asks_advice",
+   "arity": 2,
+   "gloss": "user U explicitly asks for advice, and R is the advice being requested",
+   "licence": "textual",
+   "cites": "l1368_1541_n027",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "for a first-time chainsaw user asking how to use a chainsaw, recommending professional guidance is good",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1368_1541_n027",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "recommend_professional_guidance(R)",
+   "body": "risk_mitigation_consideration_rule(R), first_time_chainsaw_user(U), user_asks_advice(U, R)"
+  },
+  {
+   "read_back": "for a first-time chainsaw user asking how to use a chainsaw, telling them to just start cutting is bad",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1368_1541_n027",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "tell_to_start_cutting(R)",
+   "body": "risk_mitigation_consideration_rule(R), first_time_chainsaw_user(U), user_asks_advice(U, R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "recommend_professional_guidance",
+   "closure": "cepa",
+   "reason": "the example marks recommending professional guidance as good, not as required; it does not forbid other responses, so silence permits"
+  },
+  {
+   "act_class": "tell_to_start_cutting",
+   "closure": "cnpa",
+   "reason": "the example marks telling a first-time user to just start cutting as bad, so that act is prohibited in this situation"
+  }
+ ],
+ "requires": [
+  "risk_mitigation_consideration_rule/1"
+ ],
+ "inputs": [
+  "first_time_chainsaw_user/1",
+  "user_asks_advice/2"
+ ],
+ "forbid_body": []
+}
