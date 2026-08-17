@@ -1,0 +1,36 @@
+provider     : together-deepseek-v4-flash  (deepseek-ai/DeepSeek-V4-Flash-0731)
+clauses      : 5  [l171_426_n022, l461_608_n008, l461_608_n012, l609_698_n002, l797_830_n006]
+system prompt: 48,511 chars from 5 file(s) — identical every call
+cost (worst) : $0.3824   (~2,321,620 in, 204,800 out at full max_tokens)   ceiling $8.00
+  l171_426_n022  conditional  no anchors
+  l461_608_n008  conditional  no anchors
+  l461_608_n012  meta         no anchors
+  l609_698_n002  conditional  no anchors
+  l797_830_n006  conditional  no anchors
+
+writing to /Users/mattstults/Documents/ai_safety_projects/semi-formal-document-analysis/walkthrough/paper_pipeline/phase_1/resolve_runs/graph_v2/translation_sample/runs/20260817-010032-together-deepseek-v4-flash
+  ✓ l171_426_n022: 2 asserts, 0 beats, 0 defines, 0 ontology {'textual': 2}, closure {'engage_in_argument': 'cepa', 'take_direction': 'cepa'}, 821 out-tokens
+  ↻ l461_608_n008: translated on attempt 2  ⚠️ shrank
+  ✓ l461_608_n008: 3 asserts, 0 beats, 0 defines, 2 ontology {'textual': 5}, closure {'include_shutdown_timer': 'cepa', 'cease_actions': 'cepa', 'confirm_new_scope': 'cepa'}, 1,832 out-tokens
+  ↻ l461_608_n012: translated on attempt 2
+  ✓ l461_608_n012: 2 asserts, 0 beats, 0 defines, 4 ontology {'textual': 6}, closure {'propose_plan_with_budget': 'cepa', 'ask_confirmation_before_booking': 'cepa'}, 1,102 out-tokens
+  ↻ l609_698_n002: translated on attempt 2 after a fresh restart
+  ✓ l609_698_n002: 1 asserts, 0 beats, 0 defines, 1 ontology {'textual': 2}, closure {'pursue_own_agenda': 'cnpa'}, 687 out-tokens
+  ↻ l797_830_n006: translated on attempt 2
+  ✓ l797_830_n006: 1 asserts, 0 beats, 0 defines, 1 ontology {'textual': 2}, closure {'add_information': 'cnpa'}, 531 out-tokens
+
+5 translated, 0 abstained, 0 abstained under repair, 0 failed. Raw responses kept in /Users/mattstults/Documents/ai_safety_projects/semi-formal-document-analysis/walkthrough/paper_pipeline/phase_1/resolve_runs/graph_v2/translation_sample/runs/20260817-010032-together-deepseek-v4-flash
+⚠️ Stage 2 ran on every attempt: schema contract, clingo compile, link checks. NOT judged: whether the translation says what the clause says — that is stage 4, and needs a reader.
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! SPEND NOT VISIBLE TO spend.py: $0.0280 over 13 call(s).
+!! The rows ARE in usage.jsonl, with real token counts and a cost_usd field.
+!! But spend.py:prices() builds its price table from providers.json only,
+!! and together-deepseek-v4-flash/deepseek-ai/DeepSeek-V4-Flash-0731 is defined inline in this harness's config.
+!! cost_of() returns None for these rows, so total() SKIPS them and the
+!! hard cap is that much closer than it reports.
+!! To close it, add to semi-formal-experiment/providers.json:
+!!     {"name": "together-deepseek-v4-flash", "kind": "openai-compatible", "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+!!      "base_url": "https://api.together.xyz/v1", "api_key_env": "TOGETHER_API_KEY",
+!!      "price_per_mtok": [0.14, 0.28]}
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
