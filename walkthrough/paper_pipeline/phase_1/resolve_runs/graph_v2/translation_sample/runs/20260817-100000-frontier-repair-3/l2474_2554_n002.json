@@ -41,11 +41,11 @@
   },
   {
    "name": "higher_authority_instruction",
-   "arity": 1,
-   "gloss": "I is an instruction from a higher authority level than the assistant's own level",
+   "arity": 2,
+   "gloss": "instruction I is issued at an authority level that outranks the authority level of party P, the party who would be misled; argument order is instruction first, misled party second",
    "licence": "assumed",
    "cites": null,
-   "inference": "the clause refers to a higher authority; the ranking of authority levels is supplied by the NEEDS contract",
+   "inference": "'a higher authority' licensing misleading is higher relative to the misled party — a developer-level instruction can license misleading a user but a user-level instruction cannot license misleading a developer; the ranking itself is supplied by the NEEDS contract",
    "toggleable": false
   },
   {
@@ -55,6 +55,15 @@
    "licence": "assumed",
    "cites": null,
    "inference": "the exception requires an explicit instruction to mislead; the relation between instruction, actor and target is needed to express it",
+   "toggleable": false
+  },
+  {
+   "name": "explicitly_instructed_by_higher_authority",
+   "arity": 2,
+   "gloss": "A has been explicitly instructed to mislead P by an instruction whose authority level outranks P's own level",
+   "licence": "textual",
+   "cites": "l2474_2554_n002",
+   "inference": null,
    "toggleable": false
   },
   {
@@ -76,12 +85,12 @@
    "toggleable": false
   },
   {
-   "name": "assistant_level",
-   "arity": 1,
-   "gloss": "L is the authority level of the assistant itself",
+   "name": "party_level",
+   "arity": 2,
+   "gloss": "party P, the user or developer who would be misled, holds authority level L in the authority_levels_hierarchy",
    "licence": "assumed",
    "cites": null,
-   "inference": "the clause refers to a higher authority relative to the assistant; the assistant's own level must be identified for the comparison",
+   "inference": "'higher authority' is relative to the misled party, so each party's place in the authority_levels_hierarchy must be a fact of the case for the comparison to range over",
    "toggleable": false
   }
  ],
@@ -91,14 +100,23 @@
    "cites": "l2474_2554_n002",
    "inference": null,
    "toggleable": false,
-   "atom": "higher_authority_instruction(I)",
-   "gloss": "I is an instruction from a level that outranks the assistant's level",
-   "body": "authority_levels_hierarchy(H, L), instruction_level(I, H), assistant_level(L)"
+   "atom": "higher_authority_instruction(I, P)",
+   "gloss": "instruction I is issued at a level that outranks the authority level of party P, the party who would be misled",
+   "body": "instruction_level(I, H), party_level(P, L), authority_levels_hierarchy(H, L)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l2474_2554_n002",
+   "inference": null,
+   "toggleable": false,
+   "atom": "explicitly_instructed_by_higher_authority(A, P)",
+   "gloss": "A has been explicitly instructed to mislead P by an instruction whose authority level outranks P's own level",
+   "body": "explicitly_instructs(I, A, P), higher_authority_instruction(I, P)"
   }
  ],
  "asserts": [
   {
-   "read_back": "A misleading % is permitted when a higher authority has explicitly instructed A to do so",
+   "read_back": "A misleading % is permitted when an authority higher than that party has explicitly instructed A to do so",
    "read_back_slots": [
     "P"
    ],
@@ -108,10 +126,10 @@
    "toggleable": false,
    "status": "permit",
    "act": "mislead(A, P)",
-   "body": "higher_authority_instruction(I), explicitly_instructs(I, A, P)"
+   "body": "higher_authority_instruction(I, P), explicitly_instructs(I, A, P)"
   },
   {
-   "read_back": "A should not mislead % by making intentionally untrue statements",
+   "read_back": "A should not mislead % by making intentionally untrue statements, unless explicitly instructed to do so by an authority higher than that party",
    "read_back_slots": [
     "P"
    ],
@@ -121,10 +139,10 @@
    "toggleable": false,
    "status": "forbid",
    "act": "mislead(A, P)",
-   "body": "misleading_by_commission(A, P)"
+   "body": "misleading_by_commission(A, P), not explicitly_instructed_by_higher_authority(A, P)"
   },
   {
-   "read_back": "A should not mislead % by deliberately withholding information that would materially change the user's understanding of the truth",
+   "read_back": "A should not mislead % by deliberately withholding information that would materially change the user's understanding of the truth, unless explicitly instructed to do so by an authority higher than that party",
    "read_back_slots": [
     "P"
    ],
@@ -134,7 +152,7 @@
    "toggleable": false,
    "status": "forbid",
    "act": "mislead(A, P)",
-   "body": "misleading_by_omission(A, P)"
+   "body": "misleading_by_omission(A, P), not explicitly_instructed_by_higher_authority(A, P)"
   }
  ],
  "beats": [],
@@ -154,7 +172,7 @@
   "misleading_by_omission/2",
   "explicitly_instructs/3",
   "instruction_level/2",
-  "assistant_level/1"
+  "party_level/2"
  ],
  "forbid_body": []
 }
