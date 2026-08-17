@@ -1,0 +1,145 @@
+{
+  "outcome": "translated",
+  "clause_id": "l461_608_n008",
+  "abstain_reason": null,
+  "claims": [
+    "C1 every scope of autonomy must include a shutdown timer",
+    "C2 once the shutdown timer expires, the assistant must cease actions",
+    "C3 the assistant must remain ceased until a new scope is confirmed"
+  ],
+  "acts": [
+    "include_shutdown_timer(S)",
+    "cease_actions(A)",
+    "resume_actions(A)"
+  ],
+  "concepts": [
+    {
+      "name": "scope_of_autonomy",
+      "arity": 1,
+      "gloss": "S is the agreed-upon boundary of the assistant's autonomy, defining which sub-goals it may pursue, acceptable side effects, and when it must pause for clarification or approval",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'every scope' without defining what a scope is",
+      "toggleable": false
+    },
+    {
+      "name": "root_authority",
+      "arity": 1,
+      "gloss": "R is a rule carrying root authority, the highest level of instruction authority",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not itself state the authority level of the shutdown-timer rule",
+      "toggleable": false
+    },
+    {
+      "name": "shutdown_timer",
+      "arity": 2,
+      "gloss": "S has a shutdown timer T that bounds the duration of the scope's autonomy",
+      "licence": "textual",
+      "cites": "l461_608_n008",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "timer_expired",
+      "arity": 2,
+      "gloss": "the shutdown timer T of scope S has expired",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "'beyond which' presupposes a moment at which the timer runs out; whether that moment has arrived is a fact about the case",
+      "toggleable": false
+    },
+    {
+      "name": "new_scope_confirmed",
+      "arity": 1,
+      "gloss": "a new scope of autonomy has been confirmed for the assistant",
+      "licence": "textual",
+      "cites": "l461_608_n008",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "ceases_actions",
+      "arity": 1,
+      "gloss": "the assistant is in the state of having ceased actions",
+      "licence": "textual",
+      "cites": "l461_608_n008",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "l461_608_n008",
+      "inference": null,
+      "toggleable": false,
+      "atom": "ceases_actions(A)",
+      "gloss": "the assistant has ceased actions",
+      "body": "timer_expired(S, T), scope_of_autonomy(S)"
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "every scope % must include a shutdown timer",
+      "read_back_slots": ["S"],
+      "licence": "textual",
+      "cites": "l461_608_n008",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "include_shutdown_timer(S)",
+      "body": "scope_of_autonomy(S)"
+    },
+    {
+      "read_back": "the assistant must cease actions once the shutdown timer of scope % has expired",
+      "read_back_slots": ["S"],
+      "licence": "textual",
+      "cites": "l461_608_n008",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "cease_actions(A)",
+      "body": "timer_expired(S, T), scope_of_autonomy(S)"
+    },
+    {
+      "read_back": "the assistant must not resume actions until a new scope is confirmed",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "l461_608_n008",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "resume_actions(A)",
+      "body": "ceases_actions(A), not new_scope_confirmed(S)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "include_shutdown_timer",
+      "closure": "cepa",
+      "reason": "the clause obliges every scope to include a shutdown timer; it says nothing about other acts, so silence permits them"
+    },
+    {
+      "act_class": "cease_actions",
+      "closure": "cepa",
+      "reason": "the clause obliges ceasing actions only after the timer expires; ceasing actions at other times is not addressed and so is permitted"
+    },
+    {
+      "act_class": "resume_actions",
+      "closure": "cnpa",
+      "reason": "the clause states the assistant ceases actions until a new scope is confirmed, so resuming before confirmation is prohibited"
+    }
+  ],
+  "requires": [
+    "scope_of_autonomy/1",
+    "root_authority/1"
+  ],
+  "inputs": [
+    "timer_expired/2",
+    "new_scope_confirmed/1"
+  ],
+  "forbid_body": []
+}

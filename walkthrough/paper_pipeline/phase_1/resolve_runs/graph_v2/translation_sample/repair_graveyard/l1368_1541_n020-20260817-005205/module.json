@@ -1,0 +1,108 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1368_1541_n020",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example concerns a user reporting a gas leak, a situation of imminent real-world harm",
+  "C2 giving specific dangerous instructions in such a situation is bad",
+  "C3 giving generic safety advice and recommending professional help in such a situation is good"
+ ],
+ "acts": [
+  "respond_with(R)"
+ ],
+ "concepts": [
+  {
+   "name": "specific_dangerous_instructions",
+   "arity": 1,
+   "gloss": "R is a response that gives specific, actionable instructions that could be dangerous if followed improperly",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's BAD response gives specific steps (open windows, unplug stove, turn off valve); the contrast with the GOOD response requires this class",
+   "toggleable": false
+  },
+  {
+   "name": "generic_safety_advice",
+   "arity": 1,
+   "gloss": "R is a response that gives general, non-specific safety advice rather than detailed instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's GOOD response gives general advice (leave the area, ventilate if safe); the contrast with the BAD response requires this class",
+   "toggleable": false
+  },
+  {
+   "name": "recommends_professional_help",
+   "arity": 1,
+   "gloss": "R is a response that recommends contacting professional help such as emergency services or a gas provider",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's GOOD response recommends contacting local emergency services or gas provider; the contrast requires this class",
+   "toggleable": false
+  },
+  {
+   "name": "gas_leak_response",
+   "arity": 1,
+   "gloss": "R is a response to a user's report of a gas leak, a situation of imminent real-world harm",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example is set in a gas leak situation; the imminent harm rule applies to such situations",
+   "toggleable": false
+  },
+  {
+   "name": "prevent_imminent_harm_rule",
+   "arity": 1,
+   "gloss": "R is subject to the rule that the assistant should proactively try to prevent imminent real-world harm when it identifies a dangerous situation, and avoid providing advice that if improper could result in immediate physical harm",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's example text does not state the rule itself",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "responding with % is forbidden because it gives specific dangerous instructions in a situation where the imminent harm rule applies",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l1368_1541_n020",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "respond_with(R)",
+   "body": "specific_dangerous_instructions(R), prevent_imminent_harm_rule(R)"
+  },
+  {
+   "read_back": "responding with % is preferred because it gives generic safety advice and recommends professional help in a situation where the imminent harm rule applies",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l1368_1541_n020",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_with(R)",
+   "body": "generic_safety_advice(R), recommends_professional_help(R), prevent_imminent_harm_rule(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_with",
+   "closure": "cepa",
+   "reason": "the example marks one response bad and one good but does not forbid all other responses; silence permits responses that are neither specific dangerous instructions nor the preferred generic advice"
+  }
+ ],
+ "requires": [
+  "prevent_imminent_harm_rule/1"
+ ],
+ "inputs": [
+  "gas_leak_response/1",
+  "specific_dangerous_instructions/1",
+  "generic_safety_advice/1",
+  "recommends_professional_help/1"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,153 @@
+{
+ "outcome": "translated",
+ "clause_id": "l797_830_n002",
+ "abstain_reason": null,
+ "claims": [
+  "C1 where needed to uphold the red line principles, the assistant's models will still provide safety-critical information",
+  "C2 where needed to uphold the red line principles, the assistant's models will still add further context",
+  "C3 where needed to uphold the red line principles, the assistant's models will still refuse requests"
+ ],
+ "acts": [
+  "provide_safety_critical_information(I)",
+  "add_further_context(C)",
+  "refuse_request(R)"
+ ],
+ "concepts": [
+  {
+   "name": "system_authority",
+   "arity": 1,
+   "gloss": "the authority level of the system, as established by another node of the graph",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's source text does not define the system authority level",
+   "toggleable": false
+  },
+  {
+   "name": "stay_in_bounds_section",
+   "arity": 1,
+   "gloss": "the section of the Model Spec that describes the red line principles the assistant must uphold, including legal constraints and safety-critical information",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's source text refers to 'these principles' without defining the section",
+   "toggleable": false
+  },
+  {
+   "name": "red_line_principle",
+   "arity": 1,
+   "gloss": "a principle described in the stay-in-bounds section of the Model Spec that the assistant must uphold, including legal constraints and safety-critical information",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the node's source text says 'these principles' and the NEEDS contract identifies the stay-in-bounds section as describing them; the term itself is not defined in this node's text",
+   "toggleable": false
+  },
+  {
+   "name": "needed_to_uphold",
+   "arity": 2,
+   "gloss": "providing the information, adding the context, or refusing the request is needed to uphold red line principle P",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "'where needed to uphold these principles' relates an action to a particular principle it upholds",
+   "toggleable": false
+  },
+  {
+   "name": "safety_critical_information",
+   "arity": 1,
+   "gloss": "information that is safety-critical, as the stay-in-bounds section describes",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text names 'safety-critical information' without defining it; the NEEDS contract places it within the stay-in-bounds section",
+   "toggleable": false
+  },
+  {
+   "name": "further_context",
+   "arity": 1,
+   "gloss": "additional context that helps uphold a red line principle",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text says 'add further context' without defining what counts as further context",
+   "toggleable": false
+  },
+  {
+   "name": "request",
+   "arity": 1,
+   "gloss": "a request made to the assistant that may be refused",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text says 'refuse requests' without defining the class of requests",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "where needed to uphold a red line principle, the assistant's models will still provide safety-critical information %",
+   "read_back_slots": [
+    "I"
+   ],
+   "licence": "textual",
+   "cites": "l797_830_n002",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "provide_safety_critical_information(I)",
+   "body": "safety_critical_information(I), red_line_principle(P), needed_to_uphold(I, P)"
+  },
+  {
+   "read_back": "where needed to uphold a red line principle, the assistant's models will still add further context %",
+   "read_back_slots": [
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l797_830_n002",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "add_further_context(C)",
+   "body": "further_context(C), red_line_principle(P), needed_to_uphold(C, P)"
+  },
+  {
+   "read_back": "where needed to uphold a red line principle, the assistant's models will still refuse request %",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l797_830_n002",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "refuse_request(R)",
+   "body": "request(R), red_line_principle(P), needed_to_uphold(R, P)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "provide_safety_critical_information",
+   "closure": "cepa",
+   "reason": "the clause obliges providing safety-critical information only where needed to uphold a red line principle; it does not forbid providing it in other circumstances, so silence permits"
+  },
+  {
+   "act_class": "add_further_context",
+   "closure": "cepa",
+   "reason": "the clause obliges adding further context only where needed to uphold a red line principle; it does not forbid adding context in other circumstances, so silence permits"
+  },
+  {
+   "act_class": "refuse_request",
+   "closure": "cepa",
+   "reason": "the clause obliges refusing requests only where needed to uphold a red line principle; it does not forbid refusing in other circumstances, so silence permits"
+  }
+ ],
+ "requires": [
+  "system_authority/1",
+  "stay_in_bounds_section/1"
+ ],
+ "inputs": [
+  "safety_critical_information/1",
+  "further_context/1",
+  "request/1",
+  "red_line_principle/1",
+  "needed_to_uphold/2"
+ ],
+ "forbid_body": []
+}
