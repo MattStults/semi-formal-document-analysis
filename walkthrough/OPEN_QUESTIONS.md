@@ -575,7 +575,18 @@ scales to roughly $3 for 593 clauses, which is. §7 now carries the measured tab
 
 ---
 
-## Q-4 · `dryrun.txt` is stale and is the one failing self-test check
+## Q-4 · `dryrun.txt` is stale and is the one failing self-test check — RESOLVED 2026-08-16: regenerated
+
+**Resolution (2026-08-16): "regenerate it."** The prompt stopped being in flux the moment the
+licence ruling landed (`phase_1/DECISION_licence_textual.md`): `00_task.md`,
+`10_output_format.md` and `node_worked_example.md` were edited under an owner ruling, accepted by
+the guard by name, and `dryrun.txt` was regenerated in the same change (inputs-sha
+`90761bc6d85aa000`) so the artifact attests the post-ruling prompt — a green that means what it
+says, not the invisible-green this entry feared. The strict xfail on
+`test_translate_self_test_runs_to_completion` did its job (XPASSed and blocked the commit) and is
+removed in the same change. Original entry kept below for the record.
+
+
 
 `translate.py --self-test` reports **51 passed / 1 failed** (this said 52; measured 2026-08-07).
 The failure predates today.

@@ -16,7 +16,10 @@ Three contracts the node shape adds, before anything else:
 2. **Every `NEEDS` name goes in `requires`, spelled exactly as given** (you choose the
    arity: `authority_levels_hierarchy` becomes `authority_levels_hierarchy/2`). Never
    define a NEEDS name in your `ontology` — another node owns it. Give it a `concepts`
-   entry carrying the meaning the node text hands you.
+   entry carrying the meaning the node text hands you — and that entry's licence is
+   **`assumed`**, with the `inference` naming the `NEEDS` contract as its origin, unless
+   this node's own SOURCE TEXT itself states the meaning. The `NEEDS` block is the graph
+   speaking, not the document: `textual` means the source text says it.
 3. **`inputs` is only for case-side facts you identify** — which messages exist, what an
    instruction says here. A name can never appear in both `requires` and `inputs`.
 
@@ -43,10 +46,14 @@ instructions provided by higher levels of the chain of command."*
   "concepts": [
     { "name": "best_intentions_bias", "arity": 1,
       "gloss": "D is one of the implicit-bias defaults the 'Assume best intentions' section describes",
-      "licence": "textual", "cites": "l527_796_n012", "inference": null, "toggleable": false },
+      "licence": "assumed", "cites": null,
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'these implicit biases' without defining them",
+      "toggleable": false },
     { "name": "authority_levels_hierarchy", "arity": 2,
       "gloss": "which of two levels of the chain of command is the higher one",
-      "licence": "textual", "cites": "l527_796_n012", "inference": null, "toggleable": false },
+      "licence": "assumed", "cites": null,
+      "inference": "the meaning is the one the NEEDS contract assigns; 'higher levels' in this node's text presupposes the ranking without stating it",
+      "toggleable": false },
     { "name": "higher_level_instruction", "arity": 1,
       "gloss": "I is an instruction from a level of the chain of command above the level at which the defaults operate",
       "licence": "textual", "cites": "l527_796_n012", "inference": null, "toggleable": false },
@@ -131,7 +138,9 @@ Writing `apply_default/1` in `closure`, or `apply_default(D)` in `forbid_body.he
 
 **The NEEDS names went to `requires` verbatim, with the arity you chose.** And each also
 has a `concepts` entry restating the meaning the node handed you — that prose, not the
-name, is what links your module to the provider node.
+name, is what links your module to the provider node. Both are `assumed`, naming the
+NEEDS contract in the inference: the contract handed you the meaning, the source text
+did not state it.
 
 **The case-side vocabulary went to `inputs`.** Which instructions exist, at what level,
 and which pairs conflict are facts about the conversation being judged — not things any
@@ -229,7 +238,9 @@ conversation structure and adapt to conversational shifts"*). PROVIDES: none.
   "concepts": [
     { "name": "voice_turn_taking_rule", "arity": 1,
       "gloss": "R is subject to the requirement that a voice response fit an iterative, turn-taking exchange and adapt as the conversation shifts",
-      "licence": "textual", "cites": "l4251_4571_n029", "inference": null, "toggleable": false },
+      "licence": "assumed", "cites": null,
+      "inference": "the meaning is the one the NEEDS contract assigns; nothing in this node's own example text states the turn-taking requirement",
+      "toggleable": false },
     { "name": "brief_overview", "arity": 1,
       "gloss": "a response that gives a short overview and offers to elaborate, rather than listing all details at once",
       "licence": "assumed", "cites": null,
@@ -268,7 +279,8 @@ conversation structure and adapt to conversational shifts"*). PROVIDES: none.
 **The NEEDS name went to `requires` even though the module never uses it.** Nothing in this
 birthday example turns on voice turn-taking; the graph linked the node to that concept anyway.
 Contract 2 is not conditional on your judgment of relevance — record the name, with the gloss the
-node handed you, and let the link be inspected. Dropping it is the one outcome that cannot be
+node handed you (licensed `assumed`, since the contract and not this node's text supplies it), and
+let the link be inspected. Dropping it is the one outcome that cannot be
 inspected: the module then looks complete and the missing cross-reference is invisible.
 
 ## A commentary node — abstaining is a real answer

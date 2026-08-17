@@ -19,9 +19,15 @@ Every fact you write carries one of three licences:
 
 | licence | meaning | what you must also give |
 |---|---|---|
-| `textual` | the cited clause says this | `cites` — the clause id it comes from |
+| `textual` | the cited clause's **source text states this** | `cites` — the clause id it comes from |
 | `assumed` | an inference the document licenses but does not state | `inference` — the step, named in one sentence |
 | `world` | knowledge from outside the document entirely | `toggleable: true` — a result resting on it is a different claim |
+
+**`textual` is a claim about the source text, nothing else.** The test is: could a reader put the
+gloss beside the cited clause's own words and see it stated? A meaning that reaches you any other
+way — a cross-reference contract, an assigned predicate name's description, your reading of what
+the section must intend — is `assumed`, with the `inference` naming where it came from. It is not
+a lesser licence; it is the accurate one.
 
 **Do not manufacture a citation to make a fact look textual.** Citing a plausible-looking clause for
 something the clause does not actually say is the single worst failure available here: it creates an
@@ -108,10 +114,13 @@ annotation. Licences are for the facts your module asserts.
 
 ## Abstention is a real answer
 
-If you cannot translate this clause faithfully — it is a section heading, it states a goal rather
-than a condition, it is an example, or its content is not expressible as rules — **abstain and give
-the reason**. Producing something that looks like a translation is worse than declining. The
-abstention rate is a signal we want, not a failure we penalise.
+If this clause **establishes nothing the document says** — no norm and no structural fact — **abstain
+and give the reason**. What decides is whether the clause establishes anything, **not what kind of
+passage it is**: a heading often states a structural fact (which rules carry which authority), an
+example often states a lesson (usually a preference), and both of those are translations. A passage
+that only comments, motivates, or analogizes establishes nothing and is an abstention. Producing
+something that looks like a translation is worse than declining. The abstention rate is a signal we
+want, not a failure we penalise.
 
 ## What you are not given, deliberately
 

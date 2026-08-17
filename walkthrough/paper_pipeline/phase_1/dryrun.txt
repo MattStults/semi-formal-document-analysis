@@ -1,13 +1,13 @@
 # phase_1/translate.py — DRY RUN artifact
-# inputs-sha: 0679c21503c10ee1   (config.json + every prompt file)
+# inputs-sha: 90761bc6d85aa000   (config.json + every prompt file)
 # Regenerate with: translate.py --write-artifact
 # Nothing was sent. This is the complete prompt that WOULD be sent.
 
 ############ default config ############
 provider     : together-deepseek-v4-flash  (deepseek-ai/DeepSeek-V4-Flash-0731)
 clauses      : 3  [m0252, m0253, m0255]
-system prompt: 28,091 chars from 4 file(s) — identical every call
-cost (worst) : $0.0604   (~136,687 in, 147,456 out at full max_tokens)   ceiling $0.25
+system prompt: 39,035 chars from 4 file(s) — identical every call
+cost (worst) : $0.1759   (~666,782 in, 294,912 out at full max_tokens)   ceiling $0.25
    m0252  conditional  2 xref(s)
    m0253  conditional  5 xref(s)
    m0255  conditional  2 xref(s)
@@ -17,8 +17,8 @@ DRY RUN — nothing was sent. Add --live to spend.
 ############ --section definitions --kinds definitional --limit 4 ############
 provider     : together-deepseek-v4-flash  (deepseek-ai/DeepSeek-V4-Flash-0731)
 clauses      : 4  [m0053, m0054, m0055, m0056]
-system prompt: 28,091 chars from 4 file(s) — identical every call
-cost (worst) : $0.0795   (~174,808 in, 196,608 out at full max_tokens)   ceiling $0.25
+system prompt: 39,035 chars from 4 file(s) — identical every call
+cost (worst) : $0.2325   (~874,160 in, 393,216 out at full max_tokens)   ceiling $0.25
    m0053  definitional no anchors
    m0054  definitional no anchors
    m0055  definitional no anchors
@@ -29,8 +29,8 @@ DRY RUN — nothing was sent. Add --live to spend.
 ############ --clause m0255 --show-prompt 1 ############
 provider     : together-deepseek-v4-flash  (deepseek-ai/DeepSeek-V4-Flash-0731)
 clauses      : 1  [m0255]
-system prompt: 28,091 chars from 4 file(s) — identical every call
-cost (worst) : $0.0200   (~44,785 in, 49,152 out at full max_tokens)   ceiling $0.25
+system prompt: 39,035 chars from 4 file(s) — identical every call
+cost (worst) : $0.0584   (~220,706 in, 98,304 out at full max_tokens)   ceiling $0.25
    m0255  conditional  2 xref(s)
 
 ========================================================================
@@ -52,16 +52,20 @@ and priority orderings between them. What the document IS arrives with the claus
 
 ## Every fact declares its licence
 
-This is the most important rule here, and it is **not** "only write what the text says".
-
-A faithful translation often needs a fact the clause does not literally state. That is allowed.
-What is **not** allowed is leaving it unmarked. Every fact you write carries one of three licences:
+A faithful translation often needs a fact the clause does not literally state. That is allowed, but it must be marked.
+Every fact you write carries one of three licences:
 
 | licence | meaning | what you must also give |
 |---|---|---|
-| `textual` | the cited clause says this | `cites` — the clause id it comes from |
+| `textual` | the cited clause's **source text states this** | `cites` — the clause id it comes from |
 | `assumed` | an inference the document licenses but does not state | `inference` — the step, named in one sentence |
 | `world` | knowledge from outside the document entirely | `toggleable: true` — a result resting on it is a different claim |
+
+**`textual` is a claim about the source text, nothing else.** The test is: could a reader put the
+gloss beside the cited clause's own words and see it stated? A meaning that reaches you any other
+way — a cross-reference contract, an assigned predicate name's description, your reading of what
+the section must intend — is `assumed`, with the `inference` naming where it came from. It is not
+a lesser licence; it is the accurate one.
 
 **Do not manufacture a citation to make a fact look textual.** Citing a plausible-looking clause for
 something the clause does not actually say is the single worst failure available here: it creates an
@@ -128,7 +132,12 @@ annotation. Licences are for the facts your module asserts.
    Getting this wrong is what makes "a name nothing defines" indistinguishable from "a name supplied
    at query time", and then either every translation looks broken or every one looks fine.
 
-10. **Include arity everywhere** a predicate is named: `forbids/2`, never `forbids`.
+10. **Include arity everywhere a predicate is named as a reference** — in `requires`, in
+    `inputs`, and when prose mentions one: `forbids/2`, never `forbids`. ⚠️ The `/arity`
+    notation never enters a value slot: a `concepts` entry's `name` is the bare name (its
+    arity is the entry's own `arity` field), an `acts` entry is a term with its variable
+    (`forbids(P, M)`), and `closure.act_class` / `forbid_body` slots take the bare functor
+    name. Writing `assistant/1` as a concept `name` is rejected.
 
 11. **Every assertion and superiority carries a read-back annotation** — the sentence a reader sees
     *instead of* the formal item. Write it as the clause's own claim, not as a description of the
@@ -143,10 +152,13 @@ annotation. Licences are for the facts your module asserts.
 
 ## Abstention is a real answer
 
-If you cannot translate this clause faithfully — it is a section heading, it states a goal rather
-than a condition, it is an example, or its content is not expressible as rules — **abstain and give
-the reason**. Producing something that looks like a translation is worse than declining. The
-abstention rate is a signal we want, not a failure we penalise.
+If this clause **establishes nothing the document says** — no norm and no structural fact — **abstain
+and give the reason**. What decides is whether the clause establishes anything, **not what kind of
+passage it is**: a heading often states a structural fact (which rules carry which authority), an
+example often states a lesson (usually a preference), and both of those are translations. A passage
+that only comments, motivates, or analogizes establishes nothing and is an abstention. Producing
+something that looks like a translation is worse than declining. The abstention rate is a signal we
+want, not a failure we penalise.
 
 ## What you are not given, deliberately
 
@@ -220,27 +232,42 @@ fire.
 `ontology`, in `requires` (another clause defines it), or in `inputs` (a fact about the case). An
 undeclared name cannot be told apart from a typo.
 
+⭐ **And every `requires` entry must also have a `concepts` entry saying what you need it to MEAN.**
+Declaring the name says where it comes from; the `concepts` gloss says what you are assuming it is.
+Both are needed, for two different readers:
+
+- a person is shown test cases built out of these predicates, and a bare name like `policy_class/2`
+  tells them nothing they can check the clause against;
+- and the only way another clause's definition can ever be matched to your need is by comparing what
+  each one SAYS. The name you invent cannot do that job — two translations of one clause pick
+  different names almost every time, while they describe the same idea in nearly the same words.
+
+⚠️ **You are not defining the term.** You are recording what this clause has to assume about it. If
+another clause turns out to mean something different by the same name, that disagreement is worth
+finding, and it can only be found if you wrote your assumption down.
+
+⚠️ **And because it is an assumption, its licence is `assumed`** — with the `inference` naming where
+the meaning came from (the cross-reference contract, the assigned name's description) — unless your
+own clause's source text itself states the meaning. Marking a borrowed name's gloss `textual`
+against your own clause manufactures a citation: it makes the reviewer grade your clause for words
+another clause said.
+
+⛔ **A gloss that restates the name is rejected.** `pasted_text/1` glossed *"pasted text"*, or
+`supersedes/2` glossed *"J supersedes I"*, passes no useful information to either reader. Say what
+makes it true — *"text the user pasted in without reading it carefully"*.
+
 ## Fields
 
-| field | |
-|---|---|
-| `outcome` | `"translated"` or `"abstained"` |
-| `clause_id` | the id you were given, exactly |
-| `abstain_reason` | one sentence when abstaining; `null` otherwise |
-| `claims` | the clause's distinct claims, one string each |
-| `acts` | every act term this clause governs, declared once: `["produce(M)"]` |
-| `concepts` | predicates this clause INTRODUCES: name, arity, and what each MEANS |
-| `ontology` | non-deontic classification facts |
-| `asserts` | the deontic assertions. Each has a `body`: the conditions under which it holds, or **`null` when it holds unconditionally**. ⚠️ Not `""` — an empty string is rejected |
-| `beats` | superiority claims **this clause states** |
-| `defines` | extensions this clause fixes |
-| `closure` | one per act class — see below, it is required |
-| `requires` | predicates another clause must define, `name/arity` |
-| `inputs` | facts about the case, supplied at query time, `name/arity` |
-| `forbid_body` | claims about the rule set: `[{"head": "permit", "banned": "purpose"}]` |
+⭐ **Each field is described in the schema itself, on that field.** The schema is part of this
+request; read the `description` on a field rather than looking for a second copy here. There is no
+second copy on purpose — two descriptions of one field drift, and the drift is invisible.
 
-`requires` and `inputs` must be **disjoint**. A predicate cannot both need another clause to define
-it and be a fact about the case being judged. That distinction is what makes linking possible.
+What follows is only what **no single field can carry**: rules that hold *between* fields.
+
+### `requires` and `inputs` must be disjoint
+
+A predicate cannot both need another clause to define it and be a fact about the case being judged.
+That distinction is what makes linking possible.
 
 ### Acts are indexed
 
@@ -250,16 +277,16 @@ joins nothing — silently, with no error and no conflict ever derived.
 
 Declare each act once in `acts`, then refer to it.
 
-### Every fact declares its licence
+### Every fact declares its licence, and the licence decides what else is required
 
-On `asserts`, `beats`, `defines` and every `ontology` entry:
+`asserts`, `beats`, `defines`, `concepts` and every `ontology` entry carry `licence` together with
+`cites`, `inference` and `toggleable`. **These four fields are one obligation, not four
+independent ones:** the value you put in `licence` decides which of the other three you must fill
+and which must be left empty. Each of those fields states its own condition in the schema; satisfy
+all of them together, because they are checked together and a mismatch is rejected outright.
 
-- `licence` — `textual` · `assumed` · `world`
-- `cites` — **required and non-empty when `textual`**, else `null`
-- `inference` — **required and non-empty when `assumed`**: name the step in one sentence
-- `toggleable` — **must be `true` when `world`**, else `false`
-
-These are checked when your answer is read, and a violation is rejected outright.
+Marking a fact `assumed` or `world` is always available. Reach for it rather than for a citation
+that merely looks plausible — an invented entity behind a passed check is the worse outcome.
 
 ### Read-backs
 
@@ -288,19 +315,14 @@ perfectly good read-back and is not an error:
 The count must match: N slots, N arguments. Because `%` is reserved for substitution you cannot use
 it to mean *per cent* — write the words instead.
 
-One line only: no quotes, braces, backslashes or newlines.
-
 ### `closure` is required, not optional
 
-For **every act class you govern**, say what the document's silence about that act means:
+For **every act class you govern** — every distinct functor appearing in `acts` — add one `closure`
+entry, with a one-sentence reason drawn from the clause. Which of the three readings each value
+stands for is on the `closure` field itself.
 
-- `cepa` — silence **permits** it (whatever is not forbidden is permitted)
-- `cnpa` — silence **prohibits** it
-- `unclear` — the clause does not settle it
-
-with a one-sentence reason from the clause. This is forced because an absent declaration reads as
-`cepa` silently, and that reading changes downstream verdicts with nothing recording that a
-commitment was ever made.
+It is forced, not optional. An absent declaration reads as `cepa` silently, and that reading
+changes downstream verdicts with nothing recording that a commitment was ever made.
 
 A clause governing no acts — a pure definition — needs no closure entry.
 
@@ -311,7 +333,7 @@ with content in it is neither an abstention nor a translation, and is rejected.
 
 ---
 
-# Worked examples — one good, five bad
+# Worked examples — the good ones, then five bad
 
 The good one is transcribed from `contradiction_probe/doc.lp`, which is 14 clauses hand-encoded in
 this vocabulary and which runs.
@@ -353,6 +375,31 @@ clause, while naming no individual clause and editing no module. That is what `b
       "gloss": "the clause whose subject is the named policy",
       "licence": "assumed", "cites": null,
       "inference": "identifying which clause states which policy is what 'other policies' ranges over",
+      "toggleable": false },
+    { "name": "policy_class", "arity": 2,
+      "gloss": "the category a named policy belongs to, as this document groups them",
+      "licence": "assumed", "cites": null,
+      "inference": "the clause speaks of policies by category, so the grouping must exist",
+      "toggleable": false },
+    { "name": "scope", "arity": 2,
+      "gloss": "what a stated exception reaches",
+      "licence": "assumed", "cites": null,
+      "inference": "an exception that 'does not apply' to something must have a reach",
+      "toggleable": false },
+    { "name": "out_of_scope", "arity": 2,
+      "gloss": "the named exception does not reach the category given",
+      "licence": "assumed", "cites": null,
+      "inference": "the clause's whole point is that the exception stops somewhere",
+      "toggleable": false },
+    { "name": "disallowed", "arity": 1,
+      "gloss": "the material may not be produced under some policy of this document",
+      "licence": "assumed", "cites": null,
+      "inference": "the clause says the other policies still bind, which is what being barred means",
+      "toggleable": false },
+    { "name": "new_material", "arity": 1,
+      "gloss": "content the assistant originates rather than reworks from what it was given",
+      "licence": "textual", "cites": "m0255",
+      "inference": null,
       "toggleable": false }
   ],
   "ontology": [
@@ -443,7 +490,129 @@ attaches no status; fixes the extension another clause quantifies over.
   "closure": [], "requires": [], "inputs": [], "forbid_body": [] }
 ```
 
-No acts, so no closure declaration is due. A definitional clause is the easy end of this task.
+No acts, so no closure declaration is due. That one is easy because the term has a fixed
+extension. Most definitions do not.
+
+### A definitional clause that needs RULES, which is the common case
+
+Clause `m0088`: *"a candidate instruction is not applicable to the request if it is misaligned with
+an applicable higher-level instruction, superseded by an instruction in a later message at the same
+level, or suspected to be mistaken."*
+
+This term has no fixed extension. It is defined by three conditions, any one of which is enough. So
+it is not a `defines` entry — it is three `ontology` entries.
+
+```json
+{ "outcome": "translated", "clause_id": "m0088", "abstain_reason": null,
+  "claims": ["C1 not applicable if misaligned with an applicable higher-level instruction",
+             "C2 not applicable if a later message at the same level supersedes it",
+             "C3 not applicable if it is suspected to be mistaken"],
+  "acts": [], "asserts": [], "beats": [], "defines": [], "closure": [],
+  "concepts": [
+    { "name": "not_applicable", "arity": 2, "gloss": "candidate instruction I is not applicable to request R",
+      "licence": "textual", "cites": "m0088", "inference": null, "toggleable": false },
+    { "name": "candidate_instruction", "arity": 2, "gloss": "I is a candidate instruction for request R",
+      "licence": "textual", "cites": "m0088", "inference": null, "toggleable": false },
+    { "name": "misaligned_with_higher_level", "arity": 1, "gloss": "I is misaligned with an applicable higher-level instruction",
+      "licence": "textual", "cites": "m0088", "inference": null, "toggleable": false },
+    { "name": "supersedes", "arity": 2, "gloss": "the later instruction displaces the earlier one, so the earlier stops applying",
+      "licence": "textual", "cites": "m0088", "inference": null, "toggleable": false },
+    { "name": "later_message", "arity": 2, "gloss": "J appears in a later message than I",
+      "licence": "textual", "cites": "m0088", "inference": null, "toggleable": false },
+    { "name": "same_level", "arity": 2, "gloss": "J and I carry the same authority level",
+      "licence": "textual", "cites": "m0088", "inference": null, "toggleable": false },
+    { "name": "suspected_mistaken", "arity": 1, "gloss": "I looks like it was written in error rather than intended",
+      "licence": "textual", "cites": "m0088", "inference": null, "toggleable": false } ],
+  "ontology": [
+    { "atom": "not_applicable(I, R)",
+      "body": "candidate_instruction(I, R), misaligned_with_higher_level(I)",
+      "gloss": "not applicable because it is misaligned with an applicable higher-level instruction",
+      "licence": "textual", "cites": "m0088", "inference": null, "toggleable": false },
+    { "atom": "not_applicable(I, R)",
+      "body": "candidate_instruction(I, R), supersedes(J, I), later_message(J, I), same_level(J, I)",
+      "gloss": "not applicable because a later message at the same level supersedes it",
+      "licence": "textual", "cites": "m0088", "inference": null, "toggleable": false },
+    { "atom": "not_applicable(I, R)",
+      "body": "candidate_instruction(I, R), suspected_mistaken(I)",
+      "gloss": "not applicable because it is suspected to be mistaken",
+      "licence": "textual", "cites": "m0088", "inference": null, "toggleable": false } ],
+  "requires": ["misaligned_with_higher_level/1", "supersedes/2", "same_level/2"],
+  "inputs": ["candidate_instruction/2", "later_message/2", "suspected_mistaken/1"],
+  "forbid_body": [] }
+```
+
+It renders as three rules that share a head:
+
+```
+not_applicable(I, R) :- o, candidate_instruction(I, R), misaligned_with_higher_level(I).
+not_applicable(I, R) :- o, candidate_instruction(I, R), supersedes(J, I), later_message(J, I), same_level(J, I).
+not_applicable(I, R) :- o, candidate_instruction(I, R), suspected_mistaken(I).
+```
+
+**A condition goes in `body`, never in `atom`.** `atom` holds one term — a functor and its
+arguments. The rule arrow lives between the two fields, not inside either of them.
+
+```json
+{ "atom": "not_applicable(I, R) :- suspected_mistaken(I)" }
+```
+is rejected. So is `{ "atom": "not_applicable(I, R)", "body": null }` on its own — an atom with a
+variable and no body is not a fact, and the solver refuses the whole file.
+
+**Alternatives are written by repeating the atom.** Three sufficient conditions means three entries
+with the same `atom` and different bodies. Conditions written side by side in one body are joined
+with `and` — the second entry above needs all four of its conditions to hold at once.
+
+⚠️ **`;` in a body does NOT mean "or".** This is the one place ASP is likely to mislead you. Writing
+
+```json
+{ "atom": "not_applicable(I, R)", "body": "misaligned_with_higher_level(I) ; suspected_mistaken(I)" }
+```
+
+is accepted, compiles, and means **and** — clingo reads `;` in a rule body exactly as it reads `,`.
+The rule you get is strictly narrower than the clause you were given, it passes every check, and
+nothing downstream can tell. If you mean "either one is enough", write two entries.
+
+**Where `;` IS the right tool: pooling inside an argument, in brackets.**
+
+```json
+{ "atom": "privileged_information(X)",
+  "body": "message_kind(X, (system;developer;hidden_cot))",
+  "gloss": "X is a system, developer or hidden chain-of-thought message" }
+```
+
+That one does mean "or": `(a;b;c)` in an argument position expands into one rule per value, so it
+is a real shorthand for three near-identical entries.
+
+⚠️ **The brackets are load-bearing.** `message_kind(X, system;developer)` without them splits the
+whole literal instead of the argument, and clingo rejects the file with *"'X' is unsafe"*. So:
+
+| where the `;` is | what it means |
+|---|---|
+| between literals — `a(X) ; b(X)` | **and**. Almost never what you want |
+| inside an argument, bracketed — `p(X, (a;b))` | **or**, expanded into separate rules |
+| inside an argument, unbracketed — `p(X, a;b)` | a parse error further out; the file is refused |
+
+**Every predicate a body names is declared**, and each has a `concepts` entry giving its gloss. A
+body predicate that is declared nowhere cannot be told from a typo.
+
+⭐ **Look at WHICH field each one went in — this is the distinction, drawn.** Rule 9 asks one
+question of every borrowed predicate: *is its meaning fixed by the document, or by the case in front
+of you?*
+
+| | | why |
+|---|---|---|
+| `misaligned_with_higher_level/1` | `requires` | you cannot tell what "higher level" means without the chain of command. **Another clause owns it** |
+| `supersedes/2` | `requires` | the superseding relation is the spec's, not this conversation's |
+| `same_level/2` | `requires` | authority levels are established by the document |
+| `candidate_instruction/2` | `inputs` | which instructions are actually present is a fact about this case |
+| `later_message/2` | `inputs` | message order is a fact about this conversation |
+| `suspected_mistaken/1` | `inputs` | whether this instruction looks mistaken here |
+
+⛔ **Putting a document-side predicate in `inputs` is the error to avoid.** It reads as harmless —
+both fields declare the name, so the module still validates — but the two fields mean opposite
+things. `inputs` says *"supply this with the case"*; `requires` says *"another clause defines this,
+go find it"*. Get it wrong and a predicate whose meaning the spec fixes gets asserted freely by a
+test case, or a fact about the conversation is left waiting for a definition that will never come.
 
 ## The five bad ones
 

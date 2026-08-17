@@ -77,6 +77,12 @@ Both are needed, for two different readers:
 another clause turns out to mean something different by the same name, that disagreement is worth
 finding, and it can only be found if you wrote your assumption down.
 
+⚠️ **And because it is an assumption, its licence is `assumed`** — with the `inference` naming where
+the meaning came from (the cross-reference contract, the assigned name's description) — unless your
+own clause's source text itself states the meaning. Marking a borrowed name's gloss `textual`
+against your own clause manufactures a citation: it makes the reviewer grade your clause for words
+another clause said.
+
 ⛔ **A gloss that restates the name is rejected.** `pasted_text/1` glossed *"pasted text"*, or
 `supersedes/2` glossed *"J supersedes I"*, passes no useful information to either reader. Say what
 makes it true — *"text the user pasted in without reading it carefully"*.

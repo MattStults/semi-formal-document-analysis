@@ -190,11 +190,6 @@ def test_a_simple_act_list_is_unchanged(tmp_path):
 # translate.py --self-test must RUN. It was the only self-test not in pytest.
 # ==========================================================================
 
-@pytest.mark.xfail(strict=True, reason=(
-    "OPEN_QUESTIONS.md Q-4: `dryrun.txt` is stale and is deliberately NOT "
-    "regenerated — that is Matt's ruling to make. The self-test therefore "
-    "exits 1. STRICT so this flips to a FAILURE the day Q-4 is resolved and "
-    "the xfail stops being true."))
 def test_translate_self_test_runs_to_completion():
     """⛔ THE GAP THIS CLOSES. `link.py --self-test` and `guard.py --self-test`
     are both driven from pytest. `translate.py --self-test` was not — so when a
@@ -219,13 +214,11 @@ def test_translate_self_test_runs_to_completion():
     The anti-pinning rule is not in tension with this: `returncode == 0` pins
     no count, so a cycle that legitimately adds a check still passes.
 
-    ⚠️ XFAIL(strict), NOT a skip and NOT a deletion. The one failing check is
-    `dryrun.txt is missing or STALE`, which is **`OPEN_QUESTIONS.md` Q-4** —
-    Matt's call, and deliberately NOT regenerated, because regenerating bakes
-    today's prompt into the artifact and turns a visible red into an invisible
-    green while changing what the artifact attests. `strict=True` means this
-    test FAILS the moment the self-test goes green, so the xfail cannot outlive
-    the ruling that justifies it.
+    Q-4 HISTORY: while `dryrun.txt` was stale-by-ruling this test carried
+    xfail(strict) naming OPEN_QUESTIONS.md Q-4. Q-4 was resolved 2026-08-16
+    ("regenerate it", alongside the licence ruling in
+    DECISION_licence_textual.md); the strict xfail XPASSed, blocked the commit
+    as designed, and was removed. The self-test is expected green from here on.
     """
     import subprocess
     r = subprocess.run(
@@ -239,9 +232,9 @@ def test_translate_self_test_runs_to_completion():
         + out[-2000:])
     assert r.returncode == 0, (
         "translate.py --self-test reported a FAILING check and pytest was "
-        "green anyway. Expected while Q-4 is open (`dryrun.txt` is stale and "
-        "must not be regenerated without a ruling); this assertion is what "
-        "makes the red visible and tracked instead of hidden.\n" + out[-2000:])
+        "green anyway. If the failing check is `dryrun.txt is missing or "
+        "STALE`, a prompt file changed without `--write-artifact` being run "
+        "in the same change (Q-4's resolution, 2026-08-16).\n" + out[-2000:])
 
 
 def test_every_json_block_in_the_prompt_is_valid_json():
