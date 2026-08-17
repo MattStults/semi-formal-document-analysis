@@ -20,6 +20,6 @@ EXPERIMENTS.md with their grounds.
 
 ---
 
-⭐ **Series state: `SERIES_HANDOFF.md` in this directory.** Read it
+⭐ **Series PARKED 2026-08-16; artifacts live at commit `06e2050`.** Series state: `SERIES_HANDOFF.md` in this directory. Read it
 before using anything here. It carries the arm table, the measured mechanisms,
 the confound list, and a table of PREVIOUSLY PUBLISHED NUMBERS THAT ARE WRONG.

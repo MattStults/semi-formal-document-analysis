@@ -1,10 +1,34 @@
 # SERIES HANDOFF — the critic-loop arm series (2026-08-15 → 2026-08-16)
 
-**Read this before touching anything under `_debug_gen11/`.** It is the state of
-the whole arm series as of the last coordinator turn, written into the repo
-because transcript-only procedure is a review finding (`REPRODUCIBILITY.md`).
+> ⭐ **SERIES PARKED — 2026-08-16 (owner call).** Its question is answered well
+> enough to act on (§1), and none of the remaining arms produce a validated
+> corpus. The artifact directories this file cites were **deleted from the
+> working tree** after being committed in full at snapshot commit **`06e2050`**
+> — retrieve any of them with `git show 06e2050:<path>` or check out that
+> commit. What survived, and where it went:
+> * slice3's `mech.py` + `cross.py` → **`resolve_runs/graph_v2/corpus_gate.py`**
+>   (the single operational defect definition, run corpus-wide).
+> * the licence question (§7) → **RULED**: `textual` = "the source text says
+>   this" — `phase_1/DECISION_licence_textual.md`, prompt conformed at commit
+>   `713f8ae`, corpus mechanically salvaged (`licence_fixup.py`, 38→178/203
+>   hard-clean with redraws).
+> * the abstention contradiction (§7) → RULED in the same commit
+>   (establishes-test replaces the kind-of-passage triggers in 00_task.md).
+> * the spend gauge (§6) → RESTORED (`providers.json` priced the embedding
+>   row; TOTAL $13.69/$20).
+> * the fast path onward → `resolve_runs/graph_v2/behavior_pilot/`
+>   (`PILOT_SUBSET.md`, `live_pilot.py`, `live_run1/`), and the campaign log
+>   entry "THE PIVOT BACK TO THE DELIVERABLE" in `graph_v2/EXPERIMENTS.md`.
+> * NOT resurrected, still open: the seam identity contract (arity/sort/gloss
+>   per shared name), the review-list fold, CHEAP_ALARM, F2-PRESERVE
+>   replication, the `unclear`-vs-`cepa`/`cnpa` code question (§8).
 
-Companion records, none superseded by this file:
+**Read this before touching anything that WAS under `_debug_gen11/`.** It is
+the state of the whole arm series as of the last coordinator turn, written into
+the repo because transcript-only procedure is a review finding
+(`REPRODUCIBILITY.md`).
+
+Companion records (all at `06e2050`, none superseded by this file):
 `arms_review/` (shared measures) · `independent_review/` · `ds_critic_arm/` (E) ·
 `ds_critic_format_arm/` (F) · `triage/` · `triage/prospective/` ·
 `translate_opus/REVIEW_LIST.md` + `PROCEDURE.md` · `opus_pairs/slice{1..5}/`.

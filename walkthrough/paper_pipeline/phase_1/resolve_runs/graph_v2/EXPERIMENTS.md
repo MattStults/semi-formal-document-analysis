@@ -5171,3 +5171,68 @@ all** — the un-escalated remainder still ships the cheap critic's repairs.
 unpriced (`text-embedding-3-small`). There is no authoritative series total until
 `providers.json` gains that price. Do not substitute a partial sum — that is the
 G1 failure.
+
+---
+
+## 2026-08-16 — THE PIVOT BACK TO THE DELIVERABLE: ruling, gate, salvage, pilot
+
+The critic-loop series above was PARKED (owner call, 2026-08-16): its question
+is answered well enough to act on, and none of its remaining arms produce a
+validated corpus. Everything below is the fast path to validating behavior
+relevance + contradiction matching. Full state at the pivot: the snapshot
+commit ("snapshot: critic-loop series measurements of record") and
+`_debug_gen11/SERIES_HANDOFF.md`.
+
+**1. THE LICENCE RULING (owner, 2026-08-16), `phase_1/DECISION_licence_textual.md`:**
+`licence: "textual"` means **"the source text says this"** — the slice-5
+critic's open question that the whole borrowed-gloss thread was downstream of.
+The rejected alternative ("this node's contract says this") is named in the
+decision record. Prompt edits in the same commit: 00_task.md's licence table
+and abstention triggers (kind-of-passage triggers → the establishes-test),
+10_output_format.md's requires-gloss rule, node_worked_example.md's three
+manufactured citations corrected to `assumed` naming the NEEDS contract.
+Also resolved Q-4 ("regenerate dryrun.txt"); self-test 52/52.
+
+**2. THE CORPUS GATE, `corpus_gate.py`** — slice3's end-of-run sweep
+(mech.py M1–M24 + cross.py X1–X5) promoted to the ONE operational defect
+definition, tiered hard/review/info, newest-artifact-per-node. First run over
+203 translated modules: **38/203 hard-clean**, of which 260 hard hits were the
+manufactured-citation class.
+
+**3. MECHANICAL SALVAGE, `licence_fixup.py`** — 240 borrowed-NEEDS glosses
+across 144 modules rewritten textual→assumed per the ruling, into a
+newest-wins fixup run dir, every module re-validated (0 breaches). Gate:
+**38 → 173/203 hard-clean**, $0.
+
+**4. REDRAWS** — the 14 modules with real hard hits redrawn through the
+production serial harness under the corrected prompt ($0.0468): 13 clean,
+1 graveyarded. Gate: **178/203**. ⭐ The 8 residual `provides_defined` hits
+are a GRAPH-LAYER finding, not a drafting defect: redrafted modules decline
+to fabricate derivations for PROVIDES names their node text never establishes
+(`l1_170_n017` / `red_line_principles_section` is the type case). Fix is a
+graph-side PROVIDES reassignment.
+
+**5. CROSS-MODULE SEAM, measured corpus-wide:** 14 shared names with arity
+disagreements + 3 section-local gloss splits, concentrated in the authority
+vocabulary (`root_authority` split across 12 modules). The borrowing seam
+still has NO identity contract (arity + argument sort + one global gloss per
+shared name) — named as the next design step, accepted as a known bound for
+the pilot.
+
+**6. PILOT SUBSET FROZEN, `behavior_pilot/PILOT_SUBSET.md`:** coverage
+re-measured against the grown corpus (`coverage_translated.py`) — all five
+originally selected behaviors at lift ≥0.97 (tradeoffs 1.88); the "only one
+concentrates" finding was an artifact of the 15-node sample. 107 nodes.
+DESIGN.md open question 1 → "accept the 5".
+
+**7. LIVE PILOT (`live_pilot.py`, artifacts in `behavior_pilot/live_run1/`)**
+run in the pre-registered cheapest-falsifier order; results in the artifacts
+and the cycle summary. Refinement (stage 4) deliberately left user-in-loop.
+
+**8. SPEND GAUGE RESTORED:** `text-embedding-3-small` priced in
+providers.json (the gauge's own prescribed fix). `spend.py` TOTAL:
+**$13.69 of $20.00 (68%)**, with its two standing overstatement caveats.
+
+**Cleanup:** `_debug_gen11/` arm directories deleted from the working tree
+after the snapshot commit; SERIES_HANDOFF.md + README.md remain as the
+summary of record with pointers into history.
