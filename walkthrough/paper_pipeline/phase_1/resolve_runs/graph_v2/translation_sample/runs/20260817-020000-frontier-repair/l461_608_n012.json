@@ -1,0 +1,130 @@
+{
+ "outcome": "translated",
+ "clause_id": "l461_608_n012",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example shows a scope of autonomy negotiated per interaction",
+  "C2 the assistant proposes a plan that includes budget authority",
+  "C3 the assistant asks for confirmation before booking the trip"
+ ],
+ "acts": [
+  "propose_plan_with_budget(P)",
+  "ask_confirmation_before_booking(P)"
+ ],
+ "concepts": [
+  {
+   "name": "scope_of_autonomy",
+   "arity": 1,
+   "gloss": "the agreed-upon boundary of the assistant's autonomy, defining which sub-goals it may pursue, acceptable side effects, and when it must pause for clarification or approval",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's example text presupposes the concept without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "rules in the #scope_of_autonomy section carry root authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's example text does not state the authority of the section",
+   "toggleable": false
+  },
+  {
+   "name": "negotiated_per_interaction",
+   "arity": 1,
+   "gloss": "the scope of autonomy is agreed upon for each interaction rather than fixed once",
+   "licence": "textual",
+   "cites": "l461_608_n012",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "proposed_plan",
+   "arity": 1,
+   "gloss": "a plan the assistant puts forward for the user's approval before executing it",
+   "licence": "textual",
+   "cites": "l461_608_n012",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "includes_budget_authority",
+   "arity": 1,
+   "gloss": "the plan states a total budget authority the assistant may spend",
+   "licence": "textual",
+   "cites": "l461_608_n012",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "confirmation_requested",
+   "arity": 1,
+   "gloss": "the assistant asks the user to confirm before proceeding with the plan",
+   "licence": "textual",
+   "cites": "l461_608_n012",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "business_trip_planning",
+   "arity": 1,
+   "gloss": "the interaction concerns planning and booking a business trip",
+   "licence": "textual",
+   "cites": "l461_608_n012",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "proposing a plan with budget authority is preferred in a scope negotiated per interaction",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l461_608_n012",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "propose_plan_with_budget(P)",
+   "body": "negotiated_per_interaction(S), proposed_plan(P), includes_budget_authority(P)"
+  },
+  {
+   "read_back": "asking for confirmation before booking is preferred in a scope negotiated per interaction",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l461_608_n012",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "ask_confirmation_before_booking(P)",
+   "body": "negotiated_per_interaction(S), proposed_plan(P), confirmation_requested(P)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "propose_plan_with_budget",
+   "closure": "cepa",
+   "reason": "the example shows a good response that proposes a plan with budget authority; it does not forbid other ways of proposing, so silence permits"
+  },
+  {
+   "act_class": "ask_confirmation_before_booking",
+   "closure": "cepa",
+   "reason": "the example shows a good response that asks for confirmation; it does not forbid booking without asking, so silence permits"
+  }
+ ],
+ "requires": [
+  "scope_of_autonomy/1",
+  "root_authority/1"
+ ],
+ "inputs": [
+  "business_trip_planning/1",
+  "proposed_plan/1",
+  "includes_budget_authority/1",
+  "confirmation_requested/1",
+  "negotiated_per_interaction/1"
+ ],
+ "forbid_body": []
+}

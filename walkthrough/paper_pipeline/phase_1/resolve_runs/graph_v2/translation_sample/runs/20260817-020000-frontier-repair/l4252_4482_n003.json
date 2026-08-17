@@ -1,0 +1,131 @@
+{
+ "outcome": "translated",
+ "clause_id": "l4252_4482_n003",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the voice style guidelines apply to both standard voice mode and advanced voice mode",
+  "C2 instructions that discuss nuances of audio or video inputs or outputs are relevant only to advanced voice mode"
+ ],
+ "acts": [
+  "apply_instruction(I)"
+ ],
+ "concepts": [
+  {
+   "name": "voice_style_guidelines",
+   "arity": 1,
+   "gloss": "G is a guideline in the voice_style section of this document",
+   "licence": "textual",
+   "cites": "l4252_4482_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "standard_voice_mode",
+   "arity": 1,
+   "gloss": "M is standard voice mode, where automatic speech recognition transcribes the user's voice into text and the assistant's textual responses are converted to speech via a separate text-to-speech system",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the node's NEEDS contract assigns (mechanical licence correction under DECISION_licence_textual.md, 2026-08-16)",
+   "toggleable": false
+  },
+  {
+   "name": "advanced_voice_mode",
+   "arity": 1,
+   "gloss": "M is advanced voice mode, where the assistant natively receives audio input and produces audio output, and the user may choose to share video with the assistant",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the node's NEEDS contract assigns (mechanical licence correction under DECISION_licence_textual.md, 2026-08-16)",
+   "toggleable": false
+  },
+  {
+   "name": "audio_video_nuance_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction that discusses the nuances of audio or video inputs or outputs",
+   "licence": "textual",
+   "cites": "l4252_4482_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "applies_to_mode",
+   "arity": 2,
+   "gloss": "guideline or instruction X applies to mode M",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause says guidelines apply to systems and instructions are relevant to a mode; both are expressed as an applicability relation between the content and the mode",
+   "toggleable": false
+  },
+  {
+   "name": "apply_instruction",
+   "arity": 1,
+   "gloss": "the assistant applies instruction I to its behaviour in the current voice mode",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause says nuance instructions are 'only relevant to' Advanced voice; relevance to a mode is expressed as applying the instruction while operating in that mode",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l4252_4482_n003",
+   "inference": null,
+   "toggleable": false,
+   "atom": "applies_to_mode(G, M)",
+   "gloss": "a voice style guideline applies to a mode that is either standard or advanced voice",
+   "body": "voice_style_guidelines(G), standard_voice_mode(M)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l4252_4482_n003",
+   "inference": null,
+   "toggleable": false,
+   "atom": "applies_to_mode(G, M)",
+   "gloss": "a voice style guideline applies to a mode that is either standard or advanced voice",
+   "body": "voice_style_guidelines(G), advanced_voice_mode(M)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l4252_4482_n003",
+   "inference": null,
+   "toggleable": false,
+   "atom": "applies_to_mode(I, M)",
+   "gloss": "an audio/video nuance instruction applies only to advanced voice mode",
+   "body": "audio_video_nuance_instruction(I), advanced_voice_mode(M)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "applying instruction % which discusses the nuances of audio or video inputs or outputs is forbidden while in standard voice mode %, since such instructions are only relevant to advanced voice",
+   "read_back_slots": [
+    "I",
+    "M"
+   ],
+   "licence": "textual",
+   "cites": "l4252_4482_n003",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "apply_instruction(I)",
+   "body": "audio_video_nuance_instruction(I), standard_voice_mode(M)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "apply_instruction",
+   "closure": "cepa",
+   "reason": "the clause applies the section's guidelines to both systems and excludes only audio/video nuance instructions from standard voice, so silence permits applying instructions outside that exclusion"
+  }
+ ],
+ "requires": [
+  "standard_voice_mode/1",
+  "advanced_voice_mode/1"
+ ],
+ "inputs": [
+  "voice_style_guidelines/1",
+  "audio_video_nuance_instruction/1"
+ ],
+ "forbid_body": []
+}
