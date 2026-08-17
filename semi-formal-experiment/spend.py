@@ -31,11 +31,15 @@ USAGE = os.path.join(HERE, "usage.jsonl")
 #:          EXPERIMENTS.md:1291 "Matt extended the campaign authorization")
 #:   $20.00 2026-08-14, "+$5" for the full-corpus translation (EXPERIMENTS.md
 #:          "Budget raised to $20.00 (Matt +$5)", ~line 2712)
+#:   $25.00 2026-08-16, Matt: "spend up to $25 if necessary" (decision D6,
+#:          bulk-completion run before the DeepSeek price change; session
+#:          record in graph_v2/EXPERIMENTS.md "THE PIVOT BACK TO THE
+#:          DELIVERABLE" era)
 #: G9 (2026-08-13 review): this constant had fallen behind the live
 #: authorization twice; the gauge printed percentages against $8.50 while
 #: $9.20 had been spent with authorization to $20. A cap change updates THIS
 #: constant and the documents that quote it — nothing else.
-BUDGET = 20.00
+BUDGET = 25.00
 
 
 def prices(path=os.path.join(HERE, "providers.json")):

@@ -54,7 +54,14 @@ NODE_CORPUS_ALL = os.path.join(GRAPH_V2, "node_corpus_all.json")
 QUERY_DEFS = os.path.join(EXP, "behaviours_query.json")
 SLUGS = ["helpfulness", "harm-avoidance-to-third-parties",
          "avoiding-over-and-under-caution"]
-TOP_K = 8
+#: D5 matching fix (Matt-authorized 2026-08-16), FROZEN before the
+#: PREREG_panel_equivalence scoring run: the 2026-08-16 adjudication found
+#: the seat's misses concentrated where retrieval never surfaced a
+#: panel-warm node (8/11 missed nodes were real). Wider beam + fuller atom
+#: decomposition is the fix; per the prereg, no matching parameter may be
+#: tuned against equivalence numbers after this point.
+TOP_K = 12
+MAX_ATOMS = 10
 
 
 def _write(name, obj):
@@ -99,7 +106,7 @@ def step_match():
         try:
             atoms = [a for a in json.loads(env.get("text", ""))["atoms"]
                      if re.fullmatch(r"[a-z][a-z0-9_]+", str(a.get("name", "")))
-                     and str(a.get("gloss", "")).strip()][:8]
+                     and str(a.get("gloss", "")).strip()][:MAX_ATOMS]
         except Exception as ex:              # noqa: BLE001
             print(f"  !! {slug}: unparseable decomposition {ex!r}")
             atoms = []

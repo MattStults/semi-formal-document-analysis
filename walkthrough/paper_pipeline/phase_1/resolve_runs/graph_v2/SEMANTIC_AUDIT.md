@@ -6,8 +6,11 @@ confidence in the translations the bulk run is mass-producing? This audit is
 the answer, run while chunk 0 sat in the batch queue, with the pre-declared
 rule: **new-prompt cohort ≥85% faithful with no dropped obligations in the
 faithful set → bulk continues; below → pause and wait for the owner.**
-(Threshold proposed to Matt as default D1 before he went AFK; not yet
-countersigned — flagged, not hidden.)
+**COUNTERSIGNED (Matt, 2026-08-16), with one amendment: a breach does not
+end in a parked pause. The standing rule is investigate → verify a fix on
+the failing sample → restart.** A pause is the state while the fix is being
+verified, not the destination; only a fix that cannot be verified leaves the
+run stopped for the owner.
 
 Protocol: blind Fable-tier auditors, one per cohort, never shown gate
 results or each other's work. Per module: read the module JSON and its span
@@ -51,5 +54,7 @@ gate is confirmed on real traffic: all three defects passed every check.
 
 Per-chunk sampling continues through the bulk run: each completed chunk gets
 a fresh blind audit of ~6 sampled modules under the same rule. A chunk
-falling below the floor pauses the run (`pkill -f bulk_run.sh`) pending the
-owner. Audit records append to `semantic_audit.json`.
+falling below the floor stops the run (`pkill -f bulk_run.sh`) while the
+failure is diagnosed; a fix verified on the failing sample restarts the
+remaining chunks (Matt's D1 amendment); an unverifiable fix leaves the run
+stopped for the owner. Audit records append to `semantic_audit.json`.
