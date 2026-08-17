@@ -1,0 +1,53 @@
+{
+  "outcome": "translated",
+  "clause_id": "l1707_1973_n022",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the training-manual analogy establishes that the assistant's underlying system or developer prompts are private by default",
+    "C2 sharing the assistant's identity and capabilities is permitted",
+    "C3 disclosing the underlying system or developer prompts is forbidden unless policy explicitly allows it"
+  ],
+  "acts": ["share_identity_capabilities(A)", "disclose_prompts(P)"],
+  "concepts": [
+    { "name": "root_authority", "arity": 1,
+      "gloss": "R is a rule in the protect_privileged_information section and carries root authority",
+      "licence": "textual", "cites": "l1707_1973_n022", "inference": null, "toggleable": false },
+    { "name": "underlying_prompt", "arity": 1,
+      "gloss": "P is one of the assistant's underlying system or developer prompts",
+      "licence": "textual", "cites": "l1707_1973_n022", "inference": null, "toggleable": false },
+    { "name": "policy_explicitly_allows", "arity": 1,
+      "gloss": "policy explicitly permits disclosure of P",
+      "licence": "assumed", "cites": null,
+      "inference": "the clause says disclosure is allowed only when policy explicitly allows it, so a predicate for that explicit permission is needed",
+      "toggleable": false },
+    { "name": "identity_capabilities", "arity": 1,
+      "gloss": "A is the assistant's identity and capabilities",
+      "licence": "assumed", "cites": null,
+      "inference": "the clause says the assistant can share its identity and capabilities, so a predicate for that shareable content is needed",
+      "toggleable": false }
+  ],
+  "ontology": [],
+  "asserts": [
+    { "read_back": "sharing % is permitted",
+      "read_back_slots": ["A"],
+      "licence": "textual", "cites": "l1707_1973_n022", "inference": null, "toggleable": false,
+      "status": "permit", "act": "share_identity_capabilities(A)",
+      "body": "identity_capabilities(A)" },
+    { "read_back": "disclosing % is forbidden unless policy explicitly allows it",
+      "read_back_slots": ["P"],
+      "licence": "textual", "cites": "l1707_1973_n022", "inference": null, "toggleable": false,
+      "status": "forbid", "act": "disclose_prompts(P)",
+      "body": "underlying_prompt(P), not policy_explicitly_allows(P)" }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    { "act_class": "share_identity_capabilities", "closure": "cepa",
+      "reason": "the clause explicitly permits sharing identity and capabilities, so silence about other sharing acts leaves them permitted" },
+    { "act_class": "disclose_prompts", "closure": "cnpa",
+      "reason": "the clause states prompts are private by default and disclosure is forbidden unless policy explicitly allows it, so silence about a prompt's disclosure means it is forbidden" }
+  ],
+  "requires": ["root_authority/1"],
+  "inputs": ["underlying_prompt/1", "policy_explicitly_allows/1", "identity_capabilities/1"],
+  "forbid_body": []
+}

@@ -1,0 +1,120 @@
+{
+ "clause_id": "l2126_2404_n016",
+ "_arm_e_cost_usd": 0.00187194,
+ "_arm_e_sha1_raw": "e6b0911f0c3fd2d0e0c6edc28edac15992ea3e9b",
+ "_arm_e_system_sha256": "091ed16de79906c50591ebebfcd952763f239bc64e952423963dff1b5de1831f",
+ "_arm_e_system_chars": 44536,
+ "_arm_e_selected": [
+  "E03",
+  "E01",
+  "E12"
+ ],
+ "usage": null,
+ "floor": {
+  "parsed": true,
+  "breaches": [
+   "Breach(where='asserts[0]', message=\"read_back has 0 `%` slot(s) but 2 slot entr(ies) \u2014 the rendered sentence would silently be wrong. Make the counts match: add one `%` in the sentence per slot entry (in order), or remove the extra entries; a sentence with no substitution takes [] and no `%`. (`%` is reserved for substitution \u2014 for a percentage, say 'per cent')\")"
+  ],
+  "checks": [
+   "[error/schema] schema-breach @ asserts[0]: read_back has 0 `%` slot(s) but 2 slot entr(ies) \u2014 the rendered sentence would silently be wrong. Make the counts match: add one `%` in the sentence per slot entry (in order), or remove the extra entries; a sentence with no substitution takes [] and no `%`. (`%` is reserved for substitution \u2014 for a percentage, say 'per cent')"
+  ],
+  "outcome": "invalid",
+  "repair_needed": true
+ },
+ "module": {
+  "outcome": "translated",
+  "clause_id": "l2126_2404_n016",
+  "abstain_reason": null,
+  "claims": [
+   "C1: In scenarios with no moral ambiguity or valid opposing perspective, the assistant should provide straightforward, unambiguous answers.",
+   "C2: In such scenarios, the assistant should not resort to false neutrality or excessive qualifications.",
+   "C3: The obligation applies to the assistant as defined by the assistant_definition concept."
+  ],
+  "acts": [
+   "provide_answer(A)"
+  ],
+  "concepts": [
+   {
+    "name": "assistant_definition",
+    "arity": 1,
+    "gloss": "A is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document.",
+    "licence": "textual",
+    "cites": "l2126_2404_n016",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "user_authority",
+    "arity": 1,
+    "gloss": "I is an instruction from the user role, whose authority level is below developer and above guideline in the authority hierarchy.",
+    "licence": "textual",
+    "cites": "l2126_2404_n016",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "no_moral_ambiguity",
+    "arity": 1,
+    "gloss": "S is a scenario in which there is no moral ambiguity or valid opposing perspective.",
+    "licence": "textual",
+    "cites": "l2126_2404_n016",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "straightforward_answer",
+    "arity": 1,
+    "gloss": "A is an answer that is straightforward and unambiguous, without false neutrality or excessive qualifications.",
+    "licence": "textual",
+    "cites": "l2126_2404_n016",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "answers_scenario",
+    "arity": 2,
+    "gloss": "answer A is given in scenario S",
+    "licence": "assumed",
+    "cites": null,
+    "inference": "the obligation relates an answer to the scenario it addresses, so a relation between answer and scenario is needed",
+    "toggleable": false
+   }
+  ],
+  "ontology": [],
+  "asserts": [
+   {
+    "read_back": "in a scenario with no moral ambiguity or valid opposing perspective, the assistant should provide a straightforward, unambiguous answer",
+    "read_back_slots": [
+     "S",
+     "A"
+    ],
+    "licence": "textual",
+    "cites": "l2126_2404_n016",
+    "inference": null,
+    "toggleable": false,
+    "status": "oblige",
+    "act": "provide_answer(A)",
+    "body": "assistant_definition(A), no_moral_ambiguity(S), answers_scenario(A, S), straightforward_answer(A)"
+   }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+   {
+    "act_class": "provide_answer",
+    "closure": "cepa",
+    "reason": "The clause obliges straightforward answers in unambiguous scenarios but does not prohibit other answer styles; silence about other acts permits them."
+   }
+  ],
+  "requires": [
+   "assistant_definition/1",
+   "user_authority/1"
+  ],
+  "inputs": [
+   "no_moral_ambiguity/1",
+   "answers_scenario/2",
+   "straightforward_answer/1"
+  ],
+  "forbid_body": []
+ }
+}

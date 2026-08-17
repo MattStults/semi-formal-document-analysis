@@ -1,0 +1,522 @@
+{
+ "additionalProperties": false,
+ "description": "Everything one clause translates to \u2014 or a refusal to translate it.\n\nOne clause, one module. Modules are combined by linking, never by copying\ntext between them, so that each formal item stays traceable to the clause it\ncame from and an amended clause changes exactly one file.\n\n\u26a0\ufe0f `abstained` is a real answer, not a failure. A clause that cannot be\ntranslated faithfully \u2014 a heading, a goal with no trigger, an example \u2014\nshould be declined with a reason rather than turned into something that\npasses the checks. The rate at which that happens is a signal worth reading:\nwithout it, \"we translated the document\" cannot be told apart from \"we\ntranslated the easy parts of it\".",
+ "properties": {
+  "outcome": {
+   "description": "`translated` if you wrote a module for this clause; `abstained` if you declined to",
+   "enum": [
+    "translated",
+    "abstained"
+   ],
+   "title": "Outcome",
+   "type": "string"
+  },
+  "clause_id": {
+   "description": "the clause id you were given, exactly",
+   "title": "Clause Id",
+   "type": "string"
+  },
+  "abstain_reason": {
+   "type": [
+    "string",
+    "null"
+   ],
+   "description": "one sentence when abstaining; null when translating",
+   "title": "Abstain Reason"
+  },
+  "claims": {
+   "description": "the clause's distinct claims, one string each",
+   "items": {
+    "type": "string"
+   },
+   "title": "Claims",
+   "type": "array"
+  },
+  "acts": {
+   "description": "every act term this clause governs, each declared once here, e.g. [\"produce(M)\"]",
+   "items": {
+    "type": "string"
+   },
+   "title": "Acts",
+   "type": "array"
+  },
+  "concepts": {
+   "description": "the predicates this clause INTRODUCES: name, arity, and what each one MEANS. Asserts nothing",
+   "items": {
+    "additionalProperties": false,
+    "description": "A concept declaration, carrying its licence and citation like any fact.",
+    "properties": {
+     "name": {
+      "description": "the predicate name, e.g. restricted",
+      "title": "Name",
+      "type": "string"
+     },
+     "arity": {
+      "description": "how many arguments it takes",
+      "title": "Arity",
+      "type": "integer"
+     },
+     "gloss": {
+      "description": "one sentence saying what the PREDICATE means \u2014 not what any instance of it asserts. This sentence is the written definition the concept table carries",
+      "title": "Gloss",
+      "type": "string"
+     },
+     "licence": {
+      "enum": [
+       "textual",
+       "assumed",
+       "world"
+      ],
+      "title": "Licence",
+      "type": "string"
+     },
+     "cites": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "clause id \u2014 REQUIRED and non-empty when textual",
+      "title": "Cites"
+     },
+     "inference": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "the step named in one sentence \u2014 REQUIRED when assumed",
+      "title": "Inference"
+     },
+     "toggleable": {
+      "description": "MUST be true when licence is world, else false",
+      "title": "Toggleable",
+      "type": "boolean"
+     }
+    },
+    "required": [
+     "name",
+     "arity",
+     "gloss",
+     "licence",
+     "cites",
+     "inference",
+     "toggleable"
+    ],
+    "title": "Concepts",
+    "type": "object"
+   },
+   "title": "Concepts",
+   "type": "array"
+  },
+  "ontology": {
+   "description": "the clause's non-deontic classification facts \u2014 what something IS, never what may be done about it",
+   "items": {
+    "additionalProperties": false,
+    "description": "A classification fact \u2014 this thing is of that kind. No deontic content.\n\n`restricted(new_bioweapon_step)`: it says what something IS, never what may\nor must be done about it.\n\n\u26a0\ufe0f Kept in its own block, and switchable as a group, because measurement has\nshown the downstream results rest almost entirely on this layer rather than\non the deontic one. Separating it is what makes that testable \u2014 mixing a\nstatus in here would make the two indistinguishable.\n\nUse this for an INSTANCE. To introduce a predicate and say what it means,\nuse `Concept`, which asserts nothing.",
+    "properties": {
+     "licence": {
+      "enum": [
+       "textual",
+       "assumed",
+       "world"
+      ],
+      "title": "Licence",
+      "type": "string"
+     },
+     "cites": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "clause id \u2014 REQUIRED and non-empty when textual",
+      "title": "Cites"
+     },
+     "inference": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "the step named in one sentence \u2014 REQUIRED when assumed",
+      "title": "Inference"
+     },
+     "toggleable": {
+      "description": "MUST be true when licence is world, else false",
+      "title": "Toggleable",
+      "type": "boolean"
+     },
+     "atom": {
+      "description": "e.g. restricted(new_bioweapon_step). NON-deontic",
+      "title": "Atom",
+      "type": "string"
+     },
+     "gloss": {
+      "description": "one sentence saying what this PREDICATE means \u2014 not what this particular instance of it asserts. For `prohibited(csam)`, gloss `prohibited/1`, not the fact about csam",
+      "title": "Gloss",
+      "type": "string"
+     },
+     "body": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "ASP conditions, or null for a ground fact",
+      "title": "Body"
+     }
+    },
+    "required": [
+     "licence",
+     "cites",
+     "inference",
+     "toggleable",
+     "atom",
+     "gloss",
+     "body"
+    ],
+    "title": "OntologyFact",
+    "type": "object"
+   },
+   "title": "Ontology",
+   "type": "array"
+  },
+  "asserts": {
+   "description": "the deontic assertions: one status attached to one act",
+   "items": {
+    "additionalProperties": false,
+    "description": "One deontic status attached to one act: `asserts(Clause, Status, Act)`.\n\n`body` holds the conditions under which it applies, or null if it always\ndoes. Where a clause gives distinct grounds for the same conclusion, each\ngets its own assertion with its own positive condition \u2014 deriving a verdict\nfrom the mere ABSENCE of something produces a right answer with a reason the\nprogram cannot support.",
+    "properties": {
+     "read_back": {
+      "description": "one English sentence, with % where each argument is substituted. No quotes, braces, backslashes or newlines",
+      "title": "Read Back",
+      "type": "string"
+     },
+     "read_back_slots": {
+      "description": "ONE ENTRY PER `%` IN read_back, in order \u2014 the variable each `%` is replaced by. EMPTY when read_back contains no `%`. This is not the list of the rule's variables: a read-back with no substitution point is a good read-back and takes an empty list",
+      "items": {
+       "type": "string"
+      },
+      "title": "Read Back Slots",
+      "type": "array"
+     },
+     "licence": {
+      "enum": [
+       "textual",
+       "assumed",
+       "world"
+      ],
+      "title": "Licence",
+      "type": "string"
+     },
+     "cites": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "clause id \u2014 REQUIRED and non-empty when textual",
+      "title": "Cites"
+     },
+     "inference": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "the step named in one sentence \u2014 REQUIRED when assumed",
+      "title": "Inference"
+     },
+     "toggleable": {
+      "description": "MUST be true when licence is world, else false",
+      "title": "Toggleable",
+      "type": "boolean"
+     },
+     "status": {
+      "enum": [
+       "forbid",
+       "permit",
+       "oblige",
+       "prefer"
+      ],
+      "title": "Status",
+      "type": "string"
+     },
+     "act": {
+      "description": "the ACT TERM, e.g. produce(M) or interject(user). Acts are indexed: an act, never a material",
+      "title": "Act",
+      "type": "string"
+     },
+     "body": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "the ASP conditions under which this assertion holds, one line \u2014 or null when it holds unconditionally. Null, never an empty string: an empty string is rejected",
+      "title": "Body"
+     }
+    },
+    "required": [
+     "read_back",
+     "read_back_slots",
+     "licence",
+     "cites",
+     "inference",
+     "toggleable",
+     "status",
+     "act",
+     "body"
+    ],
+    "title": "Assertion",
+    "type": "object"
+   },
+   "title": "Asserts",
+   "type": "array"
+  },
+  "beats": {
+   "description": "the superiority claims THIS clause states",
+   "items": {
+    "additionalProperties": false,
+    "description": "One clause outranks another: `beats(Sayer, Winner, Loser)`.\n\n\u2b50 It records WHO SAYS SO. A clause that states an override is itself the\nsource of that override, and without the sayer there is no way to trace the\nranking back to the text that established it.\n\nThis is also what lets an exception live in its own file. Encoding one as a\nnegated condition inside the general rule means every new exception edits\nthe general clause's module \u2014 merging clauses instead of linking them.\n\n`body` is for a clause that ranks a whole CLASS of other clauses without\nnaming its members; it binds `winner` or `loser` as a variable.",
+    "properties": {
+     "read_back": {
+      "description": "one English sentence, with % where each argument is substituted. No quotes, braces, backslashes or newlines",
+      "title": "Read Back",
+      "type": "string"
+     },
+     "read_back_slots": {
+      "description": "ONE ENTRY PER `%` IN read_back, in order \u2014 the variable each `%` is replaced by. EMPTY when read_back contains no `%`. This is not the list of the rule's variables: a read-back with no substitution point is a good read-back and takes an empty list",
+      "items": {
+       "type": "string"
+      },
+      "title": "Read Back Slots",
+      "type": "array"
+     },
+     "licence": {
+      "enum": [
+       "textual",
+       "assumed",
+       "world"
+      ],
+      "title": "Licence",
+      "type": "string"
+     },
+     "cites": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "clause id \u2014 REQUIRED and non-empty when textual",
+      "title": "Cites"
+     },
+     "inference": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "the step named in one sentence \u2014 REQUIRED when assumed",
+      "title": "Inference"
+     },
+     "toggleable": {
+      "description": "MUST be true when licence is world, else false",
+      "title": "Toggleable",
+      "type": "boolean"
+     },
+     "sayer": {
+      "description": "the clause id asserting this superiority \u2014 normally this module's own clause_id",
+      "title": "Sayer",
+      "type": "string"
+     },
+     "winner": {
+      "description": "clause id, or a variable bound by body",
+      "title": "Winner",
+      "type": "string"
+     },
+     "loser": {
+      "description": "clause id, or a variable bound by body",
+      "title": "Loser",
+      "type": "string"
+     },
+     "body": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "conditions, when the clause ranks a whole CLASS of other clauses without naming its members; else null",
+      "title": "Body"
+     }
+    },
+    "required": [
+     "read_back",
+     "read_back_slots",
+     "licence",
+     "cites",
+     "inference",
+     "toggleable",
+     "sayer",
+     "winner",
+     "loser",
+     "body"
+    ],
+    "title": "Superiority",
+    "type": "object"
+   },
+   "title": "Beats",
+   "type": "array"
+  },
+  "defines": {
+   "description": "the extensions this clause fixes",
+   "items": {
+    "additionalProperties": false,
+    "description": "What a class covers: `defines(Clause, Kind, Term)`.\n\nA definitional clause attaches no status. It fixes the extension that other\nclauses quantify over \u2014 \"only sexual content involving minors is considered\nprohibited\" defines what `prohibited` reaches, and some other clause is what\nforbids producing it.",
+    "properties": {
+     "licence": {
+      "enum": [
+       "textual",
+       "assumed",
+       "world"
+      ],
+      "title": "Licence",
+      "type": "string"
+     },
+     "cites": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "clause id \u2014 REQUIRED and non-empty when textual",
+      "title": "Cites"
+     },
+     "inference": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "the step named in one sentence \u2014 REQUIRED when assumed",
+      "title": "Inference"
+     },
+     "toggleable": {
+      "description": "MUST be true when licence is world, else false",
+      "title": "Toggleable",
+      "type": "boolean"
+     },
+     "kind": {
+      "description": "the class being defined, e.g. prohibited",
+      "title": "Kind",
+      "type": "string"
+     },
+     "term": {
+      "description": "the term brought under it, e.g. csam",
+      "title": "Term",
+      "type": "string"
+     }
+    },
+    "required": [
+     "licence",
+     "cites",
+     "inference",
+     "toggleable",
+     "kind",
+     "term"
+    ],
+    "title": "Definition",
+    "type": "object"
+   },
+   "title": "Defines",
+   "type": "array"
+  },
+  "closure": {
+   "description": "one entry per act class this module governs",
+   "items": {
+    "additionalProperties": false,
+    "description": "What the document's SILENCE about an act means. Required, not optional.\n\nIf a clause says nothing about some act, does that permit it or forbid it?\nWritten in plain logic the question never gets asked: the absence of a rule\nreads as \"permitted\", and nothing anywhere records that a choice was made.\n\n    cepa      silence permits  \u2014 whatever is not forbidden is allowed\n    cnpa      silence prohibits \u2014 whatever is not allowed is forbidden\n    unclear   this clause does not settle it\n\n\u26a0\ufe0f Required for EVERY act class a module governs, because measurement shows\nthe downstream verdict flips depending on the answer, while the \"no\ndeclaration\" and \"silence permits\" cases are byte-identical in the output.\nAn optional declaration is therefore the same as no declaration.\n\nPer act class rather than global: a document can be permissive about one\nkind of act and restrictive about another.",
+    "properties": {
+     "act_class": {
+      "description": "the act functor this covers, e.g. produce or interject",
+      "title": "Act Class",
+      "type": "string"
+     },
+     "closure": {
+      "description": "cepa = the document's silence PERMITS this act; cnpa = its silence PROHIBITS it; unclear = the clause does not settle it",
+      "enum": [
+       "cepa",
+       "cnpa",
+       "unclear"
+      ],
+      "title": "Closure",
+      "type": "string"
+     },
+     "reason": {
+      "description": "one sentence, from the clause, for this reading",
+      "title": "Reason",
+      "type": "string"
+     }
+    },
+    "required": [
+     "act_class",
+     "closure",
+     "reason"
+    ],
+    "title": "Closure",
+    "type": "object"
+   },
+   "title": "Closure",
+   "type": "array"
+  },
+  "requires": {
+   "description": "predicates another clause must define, as name/arity",
+   "items": {
+    "type": "string"
+   },
+   "title": "Requires",
+   "type": "array"
+  },
+  "inputs": {
+   "description": "facts about the CASE, supplied at query time, name/arity",
+   "items": {
+    "type": "string"
+   },
+   "title": "Inputs",
+   "type": "array"
+  },
+  "forbid_body": {
+   "description": "claims about the rule set that no situation can exhibit",
+   "items": {
+    "additionalProperties": false,
+    "description": "A claim about the RULES THEMSELVES, which no test case can exhibit.\n\n\"Purpose never creates an exemption\" is not about any situation \u2014 it says no\nrule of a certain shape may exist. There is nothing to test, because the\nclaim is that a derivation never happens.\n\nWritten instead as a constraint over facts nothing produces, such a rule is\ndead: it can never fire, the solver says so on every run, and it looks like\nan enforced claim while enforcing nothing. Declared here, it is checked by\ninspecting the program rather than by running it.",
+    "properties": {
+     "head": {
+      "description": "the derived relation as a BARE predicate name, e.g. permit \u2014 never a term with arguments, never name/arity",
+      "title": "Head",
+      "type": "string"
+     },
+     "banned": {
+      "description": "the predicate that may not appear in its body, as a bare name, e.g. purpose \u2014 never a term, never name/arity",
+      "title": "Banned",
+      "type": "string"
+     }
+    },
+    "required": [
+     "head",
+     "banned"
+    ],
+    "title": "ForbidBody",
+    "type": "object"
+   },
+   "title": "Forbid Body",
+   "type": "array"
+  }
+ },
+ "required": [
+  "outcome",
+  "clause_id",
+  "abstain_reason",
+  "claims",
+  "acts",
+  "concepts",
+  "ontology",
+  "asserts",
+  "beats",
+  "defines",
+  "closure",
+  "requires",
+  "inputs",
+  "forbid_body"
+ ],
+ "title": "Module",
+ "type": "object"
+}

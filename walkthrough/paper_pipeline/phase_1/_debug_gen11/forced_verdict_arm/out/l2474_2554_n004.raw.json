@@ -1,0 +1,217 @@
+{
+  "outcome": "translated",
+  "clause_id": "l2474_2554_n004",
+  "abstain_reason": null,
+  "claims": [
+    "C1: When interacting with third parties on behalf of the user, the assistant must not lie by commission unless the user explicitly instructed it to do so.",
+    "C2: Lies of omission on behalf of the user may be acceptable when they align with general social norms and expectations.",
+    "C3: The assistant is expected to be honest and forthright, clarifying uncertainty whenever needed and avoiding deceptive behavior."
+  ],
+  "acts": [
+    "lie_by_commission(A)",
+    "lie_by_omission(A)",
+    "clarify_uncertainty(A)"
+  ],
+  "concepts": [
+    {
+      "name": "third_party_interaction",
+      "arity": 1,
+      "gloss": "A is an interaction with a third party on behalf of the user, such as a tool call or an artifact",
+      "licence": "textual",
+      "cites": "l2474_2554_n004",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "on_behalf_of_user",
+      "arity": 1,
+      "gloss": "A is an action taken on behalf of the user",
+      "licence": "textual",
+      "cites": "l2474_2554_n004",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "explicit_user_instruction",
+      "arity": 1,
+      "gloss": "the user explicitly instructed the assistant to perform act A",
+      "licence": "textual",
+      "cites": "l2474_2554_n004",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "aligns_with_social_norms",
+      "arity": 1,
+      "gloss": "A aligns with general social norms and expectations",
+      "licence": "textual",
+      "cites": "l2474_2554_n004",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "deceptive_behavior",
+      "arity": 1,
+      "gloss": "A is deceptive behavior beyond the specific lies of commission and omission addressed by this clause",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause separately prohibits deceptive behavior after addressing lies of commission and omission, so a distinct class is needed",
+      "toggleable": false
+    },
+    {
+      "name": "uncertainty_present",
+      "arity": 1,
+      "gloss": "in act A there is uncertainty that the assistant should clarify",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause says to clarify uncertainty whenever needed, which presupposes a condition of uncertainty",
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "l2474_2554_n004",
+      "inference": null,
+      "toggleable": false,
+      "atom": "third_party_interaction(A)",
+      "gloss": "A is an interaction with a third party on behalf of the user",
+      "body": "on_behalf_of_user(A)"
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "lying by commission in % is forbidden unless the user explicitly instructed it",
+      "read_back_slots": ["A"],
+      "licence": "textual",
+      "cites": "l2474_2554_n004",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "lie_by_commission(A)",
+      "body": "third_party_interaction(A), not explicit_user_instruction(lie_by_commission(A))"
+    },
+    {
+      "read_back": "lying by omission in % is permitted when it aligns with general social norms and expectations",
+      "read_back_slots": ["A"],
+      "licence": "textual",
+      "cites": "l2474_2554_n004",
+      "inference": null,
+      "toggleable": false,
+      "status": "permit",
+      "act": "lie_by_omission(A)",
+      "body": "third_party_interaction(A), aligns_with_social_norms(lie_by_omission(A))"
+    },
+    {
+      "read_back": "clarifying uncertainty in % is obliged whenever uncertainty is present",
+      "read_back_slots": ["A"],
+      "licence": "textual",
+      "cites": "l2474_2554_n004",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "clarify_uncertainty(A)",
+      "body": "uncertainty_present(A)"
+    },
+    {
+      "read_back": "engaging in deceptive behavior in % is forbidden",
+      "read_back_slots": ["A"],
+      "licence": "textual",
+      "cites": "l2474_2554_n004",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "deceptive_behavior(A)",
+      "body": "third_party_interaction(A)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "lie_by_commission",
+      "closure": "cnpa",
+      "reason": "the clause states the assistant should not lie by commission unless explicitly instructed, so silence about a lie of commission is not permitted; only the explicit-instruction exception permits it."
+    },
+    {
+      "act_class": "lie_by_omission",
+      "closure": "cepa",
+      "reason": "the clause says lies of omission may be acceptable if they align with social norms, implying they are not categorically forbidden and silence leaves them permitted."
+    },
+    {
+      "act_class": "clarify_uncertainty",
+      "closure": "cnpa",
+      "reason": "the clause says the assistant is expected to clarify uncertainty whenever needed, so failing to clarify when uncertainty is present is not permitted."
+    },
+    {
+      "act_class": "deceptive_behavior",
+      "closure": "cnpa",
+      "reason": "the clause says the assistant should avoid deceptive behavior, so deceptive acts are prohibited unless an exception applies."
+    }
+  ],
+  "requires": [],
+  "inputs": [
+    "on_behalf_of_user/1",
+    "explicit_user_instruction/1",
+    "aligns_with_social_norms/1",
+    "uncertainty_present/1"
+  ],
+  "forbid_body": []
+  ,
+  "checks": [
+    {
+      "entry_id": "C1",
+      "evidence": "L2486: 'the assistant should not lie by commission unless explicitly instructed to do so by the user.'",
+      "verdict": "applies_and_handled"
+    ,
+    "action": "asserts forbid with exception"
+    ,
+    "excluded_case": "explicit_user_instruction"
+    }
+  ,
+    {
+      "entry_id": "C2",
+      "evidence": "L2486: 'lies of omission on behalf of the user may be acceptable if they align to general social norms and expectations.'",
+      "verdict": "applies_and_handled",
+      "action": "asserts permit with condition"
+    ,
+    "excluded_case": null
+    }
+  ,
+    {
+      "entry_id": "C3",
+      "evidence": "L2486: 'The assistant is expected to be honest and forthright, clarifying uncertainty whenever needed and avoiding deceptive behavior.'",
+      "verdict": "applies_and_handled",
+      "action": "asserts oblige and forbid"
+    ,
+    "excluded_case": null
+    }
+  ,
+    {
+      "entry_id": "C4",
+      "evidence": "L2486: 'When interacting with third parties on behalf of the user (e.g., tool calls, artifacts)'",
+      "verdict": "applies_and_handled",
+      "action": "ontology third_party_interaction"
+    ,
+    "excluded_case": null
+    }
+  ,
+    {
+      "entry_id": "C5",
+      "evidence": "L2486: 'unless explicitly instructed to do so by the user'",
+      "verdict": "applies_and_handled",
+      "action": "exception to forbid"
+    ,
+    "excluded_case": "explicit_user_instruction"
+    }
+  ,
+    {
+      "entry_id": "C6",
+      "evidence": "L2486: 'if they align to general social norms and expectations'",
+      "verdict": "applies_and_handled",
+      "action": "condition for permit"
+    ,
+    "excluded_case": null
+    }
+  ]
+}

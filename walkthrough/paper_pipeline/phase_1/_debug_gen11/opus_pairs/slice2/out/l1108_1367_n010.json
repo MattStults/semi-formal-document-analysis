@@ -1,0 +1,84 @@
+{
+  "outcome": "translated",
+  "clause_id": "l1108_1367_n010",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the document labels the heading #no_erotica_or_gore with the authority level system",
+    "C2 every rule located in the section that heading opens therefore carries system authority"
+  ],
+  "acts": [],
+  "concepts": [
+    {
+      "name": "system_authority",
+      "arity": 1,
+      "gloss": "R is an instruction that carries the system level of the document's chain of command, the level the inline label authority=system assigns to the section R sits in",
+      "licence": "textual",
+      "cites": "l1108_1367_n010",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "heading_authority_label",
+      "arity": 2,
+      "gloss": "heading_authority_label(H, L) holds when the document prints an inline attribute of the form authority=L on heading H; the FIRST argument is the heading and the SECOND is the authority level it assigns to the instructions the section H opens contains",
+      "licence": "textual",
+      "cites": "l1108_1367_n010",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "no_erotica_or_gore_heading",
+      "arity": 0,
+      "gloss": "the document heading whose text is Don't respond with erotica or gore and whose anchor is no_erotica_or_gore",
+      "licence": "textual",
+      "cites": "l1108_1367_n010",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "rule_under_heading",
+      "arity": 2,
+      "gloss": "rule R is printed in the stretch of the document that heading H opens, so H is the nearest heading governing R",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the label is scoped to the rules of the section rather than to the heading line itself, which requires a relation locating a rule under a heading; the heading line does not supply one",
+      "toggleable": false
+    },
+    {
+      "name": "authority_levels_hierarchy",
+      "arity": 2,
+      "gloss": "authority_levels_hierarchy(Higher, Lower) holds when level Higher outranks level Lower in the document's ranking root then system then developer then user then guideline then no authority; the FIRST argument is the stronger level and the second the weaker one, and it is this ordering that decides which instruction prevails in a conflict",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the ranking of authority levels is established by another node and handed to this one in its NEEDS block; the narrowed heading line states no ordering at all, so a citation to it would not support this content",
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "atom": "heading_authority_label(no_erotica_or_gore_heading, system)",
+      "body": null,
+      "gloss": "heading_authority_label(H, L) holds when the document prints an inline attribute of the form authority=L on heading H, the first argument being the heading and the second the level it assigns",
+      "licence": "textual",
+      "cites": "l1108_1367_n010",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "atom": "system_authority(R)",
+      "body": "rule_under_heading(R, no_erotica_or_gore_heading), heading_authority_label(no_erotica_or_gore_heading, system)",
+      "gloss": "R is an instruction that carries the system level of the document's chain of command",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the line attaches authority=system to the heading itself; that the label reaches every rule in the section the heading opens is the document's heading-attribute convention, not something this line states",
+      "toggleable": false
+    }
+  ],
+  "asserts": [],
+  "beats": [],
+  "defines": [],
+  "closure": [],
+  "requires": ["authority_levels_hierarchy/2"],
+  "inputs": ["rule_under_heading/2"],
+  "forbid_body": []
+}

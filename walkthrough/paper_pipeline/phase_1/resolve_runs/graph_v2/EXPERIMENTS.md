@@ -4663,3 +4663,511 @@ from `read_back`/`cites`); (3) 4d's `claims`-list coverage mapping, the only
 seat with purchase on dropped-obligation; (4) re-run the golden set against a
 frontier judge once the fence bug is fixed -- every number here is one
 provider's.
+
+## 2026-08-16: DROPPED CONTENT -- self-report is a null; the span-first stage is NECESSARY, and costs $0.23
+
+`_debug_gen11/dropped_content/RESULT.md`. **$0.00 spent.**
+
+⛔ **A POPULATION DEFECT, FOUND BEFORE SCORING, AND IT INVALIDATES AN
+OVERFITTING CONTROL THIS CAMPAIGN HAS BEEN CITING ALL DAY.** The two "independent"
+negative populations are **not independent for this class**. P-REF has **9**
+untouched-faithful modules (not the 11 the coordinator has been quoting --
+`diffs.json` says `n_unchanged: 9`), P-GOLD has 11 bases, and **9 of them are
+the same clause ids**. The 2 unique to P-GOLD are `l1542_1706_n015` and
+`l2126_2404_n039`, and **P-REF labels BOTH defective** -- the latter as
+`dropped-content` itself. **P-GOLD contributes ZERO clean negatives here.**
+Whether the same overlap undermines the other classes is now an open question
+against every "scored on two independent populations" claim in this log.
+
+**JOB 1 -- BOTH MECHANICAL RULES ARE NULLS, and one was killed for the right
+reason.** Rule A (symbol coverage) **does not separate at ANY threshold**: at
+every sweep point the CORRECTED modules fire at least as often as the defective
+originals (th<=0.50: pos 4/7, corrected 5/7, untouched 3/9, bases 5/11). Two
+MEASURED causes -- it is blind to modality by construction (`l1_170_n056`'s C1
+*"models should honor user requests"* scores coverage **1.00** against a module
+that only FORBIDS honoring), and corrections sometimes REMOVE dead symbols, so
+repairing a module LOWERS its score. **No threshold was adopted: this is the 4c
+failure signature, caught before it shipped.**
+Rule B (modality presence) reaches **1/7 recall, 0/27 FP** only after an
+`oblige`-only restriction chosen AFTER seeing the FPs, and 1 detection is
+indistinguishable from luck. Not a result.
+⭐ **BUT ITS OUT-OF-SAMPLE YIELD IS A DIFFERENT CLASS.** Over all 47 translated
+modules Rule B fires **10/47 (21.3%)**, and **8 of the 10 have
+`statuses == ['prefer']`** -- that is `weakened-modality`, not dropped content.
+2/8 recall, 0/27 FP against the union. Kept as a weakened-modality LEAD pending
+an independent seat; the author's own read of the 10 (non-blind,
+self-adjudicated, disclosed) is 5 true / 3 arguable / 2 false.
+
+**JOB 2 -- THE CEILING, AND IT DECIDES THE QUESTION.** 6 of 7 restorations WERE
+self-reported in `claims`; 1 was not. So an ideal self-report method tops out at
+86%. **But only ~57% is MECHANICALLY reachable**: 3/7 turn on an absent symbol
+(Rule A found **0** of them), 1/7 needs modality comparison, and **2/7 are
+claims that ARE encoded, where the loss is a QUANTIFIER ("only") or
+DEFEASIBILITY ("by default") INSIDE the claim** -- unreachable by any presence
+check at any threshold. Mechanical ceiling 4/7; achieved 1/7. **The span-first
+stage is NECESSARY, not optional.**
+
+**JOB 3 -- SPEC, COST AND VALIDATION.** Enumerate from the span only (never sees
+the module, never judges) -> structured items with
+`force/bearer/act/condition/defeater/scope_qualifier/quote` -> **pure-Python
+comparator**. Anti-invention guard: `quote` must be a verbatim span substring
+(0/20 dropped in validation). Sits AFTER translate as an independent witness.
+* **773 nodes: $0.23 uncached / $0.15 cached**, including a MEASURED 1.59x retry
+  factor -- ~11% of the $2.00 translate stage. Only output length is inferred;
+  at 3x items it is still under $0.55.
+* **Validation: 5/7 recall, 0/4 FP.** It caught **both** quantifier/defeasibility
+  cases no presence check can reach, plus the missing `oblige`, the missing BAD
+  pole and the missing `forbid_body`. The 2 misses are diagnosed, not hand-waved
+  (a bag-of-lemmas match to a NEIGHBOURING concept; and a GOOD-pole item
+  matching the BAD-pole assert on the shared lemma `escalat`).
+* **Specificity: 4 of 5 fires VANISH when the module is corrected.** The 3
+  residual fires are 1 real comparator bug (it does not consult `forbid_body`)
+  plus 2 force->status rigidity on example poles -- **specified and
+  DELIBERATELY NOT PATCHED, so 5/7 is not a post-hoc number.**
+
+⚠️ **THE LIVE PASS DID NOT RUN ($0.0047)**: `TOGETHER_API_KEY` lives only in
+`~/.zshrc`, which the Bash tool's shell does not load. Also recorded, because it
+will bite again: **together.ai's WAF 403s stdlib `urllib`; the call must use
+`curl`** (reproduced on first attempt).
+
+RECOMMENDATION: **BUILD IT.** Three caveats ride along -- 5/7 is an UPPER BOUND
+from a hand-authored inventory by a non-blind author; denominators are
+single-digit throughout; and the Rule-B yield adjudication needs an independent
+seat. Apply the two known comparator fixes BEFORE the live run, not after.
+
+## 2026-08-16: CAMPAIGN ADVERSARIAL REVIEW -- no conclusion reversed, two MECHANISMS refuted, one headline wrong
+
+`_debug_gen11/campaign_review/`. Four arms, **$0 spent**. Verdict: *"No
+conclusion of the day is reversed. Two are refuted at the level of stated
+mechanism, one headline is arithmetically wrong, and the campaign's entire
+anchored evidence base is one 26-module sample read by one reader -- reported
+all day as two independent populations."*
+
+⛔ **1. THE "TWO INDEPENDENT POPULATIONS" ARE ONE POPULATION READ TWICE.**
+P-GOLD's 11 bases are a STRICT SUBSET of P-REF's read clauses; independent
+members = **0**; union of clean negatives = **9** = the intersection. 2 of
+P-GOLD's 11 "controls" are P-REF POSITIVES sitting in the negative column.
+Every "0 FP on both populations" and the fix matrix's overfitting control is
+one 9-module stratum counted twice. ⭐ Recomputed on the true 9, **every
+conclusion STRENGTHENS**: discrimination +0.091 -> **+0.111**, 4c control FP
+56% -> **61%**, 4b 3/86 -> 1/67, 4d 1/33 -> 0/26. **The prose must change, not
+the findings.** Positive strata ARE disjoint; that half survives.
+
+⛔ **2. H1 -- A KEPT CHANGE -- HAS A MECHANISM ITS OWN STORED PROMPTS REFUTE.**
+It was kept on *"the items that flipped are exactly the ones whose names are on
+its NEEDS list."* Measured: of 32 FPs cleared, **9** mention a NEEDS name. On
+`l461_608_n015` (18 -> 1), `borrowed_concepts` returns exactly ONE name
+(`root_authority`); exactly one of 18 items mentions it -- **and that is the one
+item STILL FLAGGED.** Zero of the 17 that flipped mention it. **H1 did not
+license borrowed names; it made 4c broadly LENIENT and failed at the one item
+it was built for -- the exact trade H1r was reverted for.** The 48->22 survives
+statistically (p~0.010-0.020) as LENIENCY, not licensing. H1 also REGRESSED
+`l699_796_n022` 1/7 -> 7/7, logged only as a "residual". **RE-OPEN H1.**
+
+⛔ **3. THE SEAT NOISE FLOOR IS ~6x UNDERSTATED FOR 4c -- and a 651-item
+byte-identical replication pair was ALREADY ON DISK, UNUSED.** `out` vs
+`out_4dfixed`: all 324 prompts byte-identical, same brief shas. Item-level
+defect-flips: 4b 77/651 (11.8%), **4c 119/651 (18.3%)**, 4d 0/229. Clause
+bootstrap: **4c SD ~8-10, not ~1.5**; with one replicate the 95% CI on sigma is
+[1.34, 95.7] -- n=1 bounds nothing.
+Consequences: H1's 48->22 SURVIVES (p~0.01-0.02, not "far outside"); **H2's "4b
+FP 3->1" DOES NOT (McNemar p=0.625); H2's four headlined mutant cells are each
+a single-item +/-1 move, disqualified by the log's own floor.**
+⭐ **H2's CONCLUSION IS STILL RIGHT, on evidence the log never presented**:
+base->H2 and base->H2b gain the SAME four items {GS01, GS04, GS11, GS16} with
+0 losses, discordant on 0 of 13 4b mutant sites -- item-IDENTITY replication at
+1.4% noise, p << 1e-3. Re-justify H2 on that; retire the four cells.
+
+⛔ **4. TWO ROWS OF THE PUBLISHED SEAT-FIX TABLE DO NOT REPRODUCE.** any-seat
+recall published 13/13/14/**14**/11; scorer gives **12/12/14/13/9**. 4c
+detection denominator published /12; scorer /13. The H2b figure is the one used
+to claim H2 replicated on recall.
+
+⛔ **5. 4d CONTRIBUTES ZERO UNIQUE CLAUSES, AND THE $0.083 RE-RUN WAS
+UNNECESSARY.** No clause in the 81 has 4d as its only non-advisory defect seat.
+**4d judges `l1_170_n056` -- the corpus's canonical dropped-obligation, cited
+all day as the class 4d exists for -- `covered` x4 in BOTH runs.** `out/raw`
+already held all 229 4d judgements and the identical 4 `not-conveyed`; only the
+report layer discarded them. **The coordinator's "4d is the most valuable seat"
+is dead**, and seat-fix's NEXT item (4d claims-coverage) is unsupported by its
+own data. (The reviewer also corrected ITS OWN earlier number here: 66/81 vs
+67/81, having counted advisory 4a verdicts.)
+
+⛔ **6. ANOTHER SILENT EXIT-0, in the scorer claim 4 rests on.**
+`score_golden.py` refuses a missing ROOT but not a missing ARM. All controls
+live in arm0, all mutants in arms 1-3, so an arms-1-3 failure prints a
+**fully-populated, perfect-looking control column** with `mutants flagged: 0/0`
+as the only clue, exit 0. Same class as the loop that skipped all four arms.
+
+**VERDICTS.** (1) +0.091 HOLDS but **CI [-0.108, +0.377], p=0.39** -- stop
+quoting the point estimate; it survives on the corner that matters (>=59% of
+FAITHFUL modules flagged at 95%). **"Only 4c must not be pooled" is WRONG** --
+excluding 4c gives +0.080; no seat subset separates at clause level.
+(2) **65% is INFLATED -> 15/26 = 58%, band 52-72%**; 4 of 12 MEASURED are
+clause-level free rides; **only 1 of 16 clauses is an independent discovery**.
+(3) **6.2% DOES NOT HOLD AS STATED -- it is a CHANGE OF SUBJECT, not a
+correction.** 29.5% measured shape reproducibility; 6.2% measures mutual
+incompatibility. Counting a wrong draw as wrong: **19.6% [13.3, 28.0]**.
+(5) **THE ALLEGED GOLDEN-SET CIRCULARITY DOES NOT EXIST** (byte-diff proves
+arm0 identical to source, arms differ only at the 17 hand-planted sites) -- but
+a REAL defect does: **no paired same-site control.** On the UNMUTATED twin 4c
+re-fires at 4 of its 9 detection sites (widen 3/3 -> 1/3 informative,
+inverted-modality 2/2 -> 0/2). And **`scope-drift-narrow` -- 4b's best cell --
+has ZERO instances in the real corpus.**
+(6) **"86% sensitive" DOES NOT HOLD** -- 5 of the 7 contradictions are in the
+population BECAUSE the detector flagged them. On detector-independent positives
+1/2; on detector-blind planted mutants 0/2. **Honest: ~50% [25-75] sensitivity,
+>95% specificity. Promote as a PRECISION GATE; never carry 86% into a writeup.**
+
+**GRAPH vs TRANSLATION: NO.** By the reference reader's own stated reasons --
+**NODE 7 (27%), SCHEMA 1 (4%), TRANSLATION 18 (69%)**. `15 of 97 dangling
+needs` is TRUE but is 25 of 1085 EDGES = 2.3%; the name-level framing inflates
+it. `rule_under_heading/2` should be dropped from the brief -- it originates as
+an `inputs` entry and nothing is supposed to provide it.
+⭐ **BUT THE LARGEST OPEN QUESTION IS A GRAPH-CONTRACT QUESTION: 5 of the 26
+ground-truth edits rest on an UNRATIFIED RULE -- "the narrowing beats
+ESTABLISHES" -- which the graph's own prompt contradicts** (ESTABLISHES is
+headed *"the one claim this module must express"*). It was answered
+unilaterally by the reference reader, in the direction that makes the
+TRANSLATOR guilty. **It needs a ruling, not another translator experiment.**
+NEW, uncomputed by anyone: **107 of 773 nodes (13.8%) have an ESTABLISHES whose
+content words are >50% ABSENT from the text the node licenses.**
+
+⛔ **WHAT WAS NEVER DONE: NOT ONE MODULE HAS BEEN DRAWN UNDER THE REPAIRED
+PROMPT.** The reference set, the golden set, the 65% ceiling and every seat-fix
+arm describe a prompt that no longer exists. **Cheapest highest-value action:
+re-draw the 25 reference clauses under the repaired worked example and diff
+against the 26 edits -- ~$0.07.** It measures directly what the fix matrix
+ESTIMATES at 58-65%.
+
+**HYPOTHESES NOBODY CONSIDERED.**
+* **H-1 (highest value): 4c's FPs are driven by how NARROW the shown clause text
+  is, not by absent `PROVIDES`.** Spearman rho = **-0.319, n=81, p~0.004**;
+  shortest third 64.7% unlicensed vs longest third 27.2%. **H1 gave 4c the NEEDS
+  block, making it MORE insistent on definitional grounding -- so on thin
+  clauses H1 makes 4c WORSE.** H3 verified seats DO get the narrowing and
+  concluded "no change to make" -- **it never asked whether that input is
+  ADEQUATE.** Unifies the 4c FP problem, the H1 regression and the
+  graph-narrowing finding into one cause. Free to test.
+* **H-3: the reference set resolved ALL FIVE inverted-modality edits with
+  `forbid` -- an EXISTING status.** So either the reader over-strengthened five
+  soft directives (a ground-truth defect) or **F4's negative pole is
+  unnecessary**. Both readings live. **Settle before shipping a pole**, given
+  `behavior_match.py` would silently ignore every `disprefer`.
+* H-2: seat noise is CLAUSE-CLUSTERED, so `/86` denominators overstate
+  precision by ~sqrt(cluster); effective n ~ 11, not 86.
+* H-4: 30 undrawn title-line nodes are a free pre-registrable prediction (2/2
+  so far vs a 28.5% base rate), ~$0.06.
+
+⛔ **THE PATTERN IN THE COORDINATOR'S ERRORS, NAMED: magnitudes that SUPPORT the
+point being made come out too large; magnitudes that would COMPLICATE it come
+out too small.** "The corpus is broken" -> 29.5%, 32% (both retracted). "Here is
+my fix" -> F1-general (worthless), "~179 borrowing" (measured 63), H3 (premise
+false), `link.py` (file does not exist). Costs the coordinator would own ->
+understated (blast radius 24.5->32%, mis-routing 4->5).
+⭐ **THE ACTIONABLE FORM, and it is a PROCESS asymmetry not a competence one:
+the sub-agents self-corrected repeatedly BEFORE publishing. NOT ONE COORDINATOR
+ERROR THIS DAY WAS CAUGHT BY THE COORDINATOR** -- every one was caught by an
+agent, the owner, or a review. **REMEDY ADOPTED: every coordinator figure gets a
+one-command re-derivation before it enters this log.** Finding 4 above -- two
+published table rows that do not reproduce from the artifacts they cite -- is
+what its absence costs.
+
+## 2026-08-16: GENERALIZATION AUDIT -- the VERIFIER is document-general; the DECOMPOSER is not
+
+`_debug_gen11/generalization/`. **$0.00.** 81 instruments that can emit a
+finding or verdict, each with the file:line carrying its dependency.
+
+```
+STRUCTURAL 35/81 = 43%          TUNED 46/81 = 57%
+BY LAYER              structural  tuned   %structural
+  stage2 (checks)         16        3        84%
+  stage3 (probe)           2        1        67%
+  stage4 (seats)           6        0       100%
+  graph (decomposition)    7       31        18%
+  campaign (_debug_gen11)  4       11        27%
+```
+
+⭐ **43% IS THE WRONG NUMBER TO QUOTE. The distribution is BIMODAL and that is
+the finding: the part of the pipeline that VERIFIES a module is
+document-general; the part that turns a DOCUMENT INTO modules -- and every
+detector built this week -- is Model-Spec-shaped.** Consequence: a structural
+check layer verifying modules built by a tuned decomposer **inherits the
+decomposer's bias with no instrument able to see it.**
+
+**THE SEATS ARE MORE GENERAL THAN ANYONE CLAIMED.** All four briefs
+(`seats.py:389-501`) contain **zero** Model-Spec vocabulary -- no "assistant",
+no `authority=`, no GOOD/BAD -- and every denominator is computed from module
+shape alone. Same for all 11 `link` checks and `checks.arity_mismatches`. That
+is real portable capability and it is roughly half the pipeline.
+
+**CONVENTION PROBE, MEASURED against a second document ALREADY IN THE REPO**
+(`specs/claude-constitution/20260120-constitution.md`, 830 lines, 28,981 words,
+comparable normative density 8.7 vs 11.8 modal tokens/1k -- so this is
+CONVENTION absence, not content absence):
+
+| pattern | model_spec | 2nd doc |
+|---|---|---|
+| `graph_check` authority heading | 59 | **0** |
+| `promise_repair.HEADING_RE` | 80 | **0** |
+| `modal_repair.EXAMPLE_MARKERS` | 217 | **0** |
+| `_WORKED_EXAMPLE` (detectors) | 389 | **0** |
+| `!!! meta` | 28 | **0** |
+| `**Example**` | 183 | **0** |
+
+⛔ **THE SILENTLY-WRONG CLASS -- 22 of 81.** Not "degrades", not "goes quiet
+with a visible zero": produces output that LOOKS like a finding and is not.
+1. **F2's bearer test becomes a FALSE-POSITIVE GENERATOR.** MEASURED: norm-
+   bearing sentences kept, Model Spec **74.5%**; second doc **16.5%**; adding
+   the single word `claude` to `_BEARER` -> **77.8%**; mechanism-only, bearer
+   disabled -> 96.9%. **ONE WORD RESTORES PARITY -- the mechanism generalises
+   and the WORD LIST is the entire gap.** Unedited it rates ~5x more spans
+   norm-free and calls every module built on them an over-assertion.
+2. `promise_repair.HEADING_RE` -> 0 ⇒ **EVERY promise reads as unestablished.**
+3. `modal_repair.EXAMPLE_MARKERS` -> 0 ⇒ **every span gets templated**,
+   including the example dialogue the marker exists to route away.
+4. **`graph_check` K1 hard-pins document lines 183/186/191** -- on another
+   document that is an arbitrary 8-line window, **and the check still prints OK.**
+5. `autofix_authority_coinages` cannot fire; coinages pass unrepaired AND
+   unflagged -- the autofix's absence is reported nowhere.
+6. ⛔ **`LEAF_MAX_LINES = 300` and `LEAF_DENSITY_MAX = 0.7` are PER LINE.**
+   Model Spec 10.8 words/non-blank line; second doc **58.7**. **The same 300
+   buys 5.4x the content** -- the decomposer builds a structurally different
+   graph and every downstream check passes on it.
+
+⭐ **A MEASURED CORRECTION THE AGENT MADE AGAINST ITS OWN PREDICTION:**
+`sweep_modals` was classified likely-to-die; it already carries
+`required|prohibited|expected\s+to|allowed\s+to`, and its any-modal coverage is
+**HIGHER on the convention-free document (40.5%) than on the Model Spec
+(18.1%)**. Reclassified LANGUAGE-TUNED / degrades gracefully, and recorded
+because the measurement contradicted the inference.
+
+**THE SECOND-DOCUMENT TEST, DESIGNED AND COSTED (nothing run).** Two arms, one
+variable each, because one document cannot separate CONVENTION-dependence from
+DOMAIN-dependence.
+* **Arm A -- convention control, domain held constant**: the claude-constitution
+  already on disk. Zero of every Model-Spec convention, different actors
+  (`Claude`, `operators`, `principals`), prose-paragraph layout. **Cost $0 to
+  obtain.** Being another AI spec is the POINT of arm A, not a defect.
+* **Arm B -- the real claim**: **14 CFR Part 91 Subpart B** (public domain) --
+  *"no person may"*, `(a)(1)(i)` numbering, no markdown, no examples,
+  defined-terms section. Alternatives ranked: ICH E6(R3) GCP (three competing
+  bearers), RFC 9110 (RFC-2119 modality, non-person bearers).
+* **n = 60 nodes per arm**, from the campaign's own power arithmetic: 32 detects
+  a 90%->60% pass-rate collapse, 58 a 25%->50% defect rise; `0/60` gives Wilson
+  [0, 6.0%]. One CONTIGUOUS section so the graph has real edges, not 60 orphans.
+
+| stage | rate | basis |
+|---|---|---|
+| **decompose** | **$3.03 / 1k words** | ds7: 773 nodes, 14 calls, $0.1220 MEASURED |
+| translate | $0.0017/node | fitted over 23 runs |
+| span-first | $0.000298/node | measured $0.23 / 773 |
+| stage 4 | ~$0.007/node | INFERRED |
+
+**BOTH ARMS: $1.08 expected, $1.50 worst case** -- ~13% of remaining budget.
+⭐ **DECOMPOSITION IS THE CHEAPEST STAGE AND NOBODY HAD COSTED IT: $0.12 for the
+ENTIRE 40k-word Model Spec, 14 calls.** And the cheapest possible first step is
+**a decomposition-only probe on arm A at $0.05**, which settles the
+`LEAF_DENSITY_MAX` falsifier by itself.
+
+**PRE-REGISTERED FALSIFIERS**, the sharpest being for `_DISFAVOURED`: a BLIND
+read enumerates the true inversions BEFORE the regex runs. **Prediction on
+record: recall DROPS below its in-sample 5/5, because the widening was fitted to
+`l4252_4482_n016`'s exact wording.** If it holds at >=4/5 out of sample the
+regex is promoted to genuinely general. And for the corpus constants:
+**FALSIFIED if decomposing arm A at `leaf_max_lines=300` does NOT trip
+`LEAF_DENSITY_MAX` on >=1 leaf** -- at 5.4x words/line, a density ceiling that
+does not move is not measuring what its comment claims. **Either outcome is
+informative and it costs $0.05.**
+
+**WHAT IT CANNOT SETTLE**, stated up front: both arms are ENGLISH, so nothing
+here supports a "language-general" claim; it measures PRESENCE not QUALITY (no
+labels exist on the second document -- firing rates, refusals, denominators,
+crashes only); n=60 is blind below ~10% effects; arm A passing proves
+convention-independence, NOT domain-independence; a clean second-document
+`graph_check` is NOT evidence of a correct second-document graph (ds7 itself
+needed six hand-adjudicated corrections no mechanical check found); and arms A
+and B share this pipeline's prompts, so they are **one experiment with two
+conditions, not two independent replications.**
+
+## 2026-08-16: NINE ARMS ON INSTRUCTION DELIVERY -- what survives a noise floor
+
+Question: can any instruction instrument make DeepSeek draft a defect-free
+module? A 15-clause loop (DeepSeek drafts, Opus critic adjudicates in-transcript)
+converged 15/15 and produced a 20-entry `REVIEW_LIST.md`. Nine arms then tested
+DELIVERY on the same 17 clauses. **Total ~$0.45.**
+
+⛔ **FIRST, THE WITHDRAWALS.** An adversarial review (`_debug_gen11/arms_review/`)
+plus a null-manipulation replicate (`arm_aprime/`) invalidated four
+coordinator claims:
+* **"0 of 66 defect-free" -- WITHDRAWN AS WORDED.** Eight agents applied eight
+  unstated defect predicates with no rubric. The clause-level measure SATURATES
+  at 15-17 of 17 in every arm INCLUDING the unaided baseline, so it discriminates
+  nothing; the shared mechanical floor orders the arms differently (examples
+  13/17 clean, forced-verdict 12, prose 11, baseline 10, retrieval 9) -- retrieval
+  reported 17/17 defective and examples 15/17, the OPPOSITE order. Adjudicator
+  defect density differs 61% on comparable work.
+* **"The review list is a critic's instrument and does not transfer" --
+  WITHDRAWN.** Scored against the critic-converged modules as gold, the PROSE
+  LIST is the series' largest mover on `closure`: 0 -> 16 `unclear`, recovering
+  the gold on 6 of 11 clauses (McNemar p = 0.031), replicated out-of-sample
+  0 -> 9. The arms could not see it because their own outcome measure was
+  saturated.
+* **"Bucketing is not the answer" -- WITHDRAWN.** That arm never tested
+  bucketing. `reasoning_chars` is a PERFECT discriminator of format-forcing
+  (185/185 forced calls emit 0; 64/64 unforced emit >0), so the manipulation was
+  bucketing PLUS removal of the only unforced call. Difference not significant
+  anyway, p = 0.22.
+* **"The Opus loop converged 15/15" -- MUST BE RESTATED.** Those signed modules
+  still self-cite **20 of 23 borrowed NEEDS names across 12 of 17 clauses**. The
+  critic fixed 5 of 25 (20%); one instrument fixed 21 of 24 (88%) in a single
+  unaided call. **An instrument beat the critic 7x on the one class both were
+  measured on.**
+
+⛔ **THE NOISE FLOOR, and it is the reason for most of the above.**
+`arm_aprime` re-drew all 17 clauses under the BYTE-IDENTICAL baseline prompt.
+**On error count, 7 of 17 clauses change under an EMPTY manipulation (41%);
+arms B/C/E/F each differ from baseline at 9 of 17, Fisher p = 0.73.** So "6 of
+17 fixed", "9 of 17 reproduced their own frozen defect" and "5 modules
+structurally identical" are reports of DRAW-TO-DRAW NOISE. A byte-identical
+re-draw reproduces the baseline module **0/17 exactly, 2/17 by signature.**
+(On `floor_clean` the completed null differs at 3 of 17; the "6 of 17" figure
+circulated while it was partial. Both are reported.)
+
+⭐ **WHAT SURVIVES, MECHANICALLY, ON A MEASURED FLOOR:**
+
+**1. Borrowed-gloss self-citation -- the one class no rule ever named.** A
+borrowed `NEEDS` gloss stamped `licence: textual, cites: <this node>` is a
+MANUFACTURED CITATION, which `00_task.md` calls the single worst failure
+available.
+
+| arm | selfcited / requires | rate |
+|---|--:|--:|
+| unaided baseline | 25/26 | 96% |
+| **null replicate** | 24/29 | **83%** (floor on this measure: 1/17) |
+| prose list / retrieval / forced verdict | 24/24 | 100% |
+| licence question ALONE | 21/26 | 81% |
+| **worked examples** | **3/24** | **12.5%** |
+| **layer decomposition** | **3/21** | **14.3%** |
+
+Null vs examples: **12 discordant pairs, all one way, p = 4.9e-4** -- the paired
+comparator the original p~1e-6 had ASSUMED rather than measured.
+
+**2. `unclear` closure has a floor of 0/17** -- an unmanipulated draw never
+emits one -- so the prose list's 16 is real. ⚠️ BUT `cepa`<->`cnpa` composition
+has a floor of **8/17 clauses, 14 of 32 entries moving under no manipulation**,
+so anything resting on that movement is unsupported, and WHICH HALF the
+McNemar p = 0.031 rests on is **UNDETERMINED and must be resolved before
+publication.**
+
+**3. THE DEFLATIONARY WORRY IS REFUTED.** Both movers asked the licence
+question in a form no other arm did, so "maybe it is just the asking" was live.
+The separating control -- production prompt + ONE 429-char licence question,
+nothing else -- returns **81%, i.e. NULL on the primary endpoint** (pre-
+registered band: >=65% => not the asking). **Demonstration and decomposition are
+doing the work.**
+
+**4. AND THE CONTROL CHARACTERISED THE FAILURE.** The question is not inert: it
+cleared **3 of 15 eligible clauses outright** where four other single-call
+interventions AND the null each cleared 0 of 15, producing 5 `assumed` entries
+each with a CORRECT inference ("the node's NEEDS block supplies this concept;
+the source text does not define it"). **Understood and correctly answered on
+~1/5 of clauses, ignored on the rest -- a SALIENCE failure at 39 KB, not a
+comprehension failure.** That reframes the whole series: the winning
+interventions (demonstration, decomposition) are the ones that FORCE ATTENTION
+to a layer, not the ones that explain it.
+
+**5. THE FLOOR COST IS SEPARABLE.** Decomposition moved the class but collapsed
+the floor -- 10 of 13 invalid vs 5 unaided, because **13 of 31 assertions came
+back with NO BODY at all vs 0 of 25 unaided**: it separated the deontic and
+declaration layers and lost the join. The licence control shows that cost
+belongs to decomposition's stage-3 exclusion test, NOT to the question: **zero
+bodiless asserts, errors DOWN 14 vs 18, breaches DOWN 13 vs 18.**
+
+**6. THE SCHEMA ANSWER, AGAINST EXPECTATION.** The declaration layer does NOT
+need a change -- `schema.py:366` already offers `assumed`+`inference` and the
+model reached it the moment it was asked. **18 self-citations per arm looked
+like a schema gap and were an ATTENTION gap.** The layer that DOES argue for a
+schema change is the one decomposition broke: **nothing requires an `asserts`
+entry to carry a body or its body predicates to be reachable**, so a module can
+pass every field-level rule with the span's condition deleted, caught only by
+clingo refusing an unsafe variable -- **a syntax error standing in for a
+semantic one.**
+
+**SURVIVING GENERAL CLAIM, restated from the reviewer's wording:** *build
+detectors for what is mechanically checkable, and target instructions at the
+classes detectors cannot reach -- the two reached DISJOINT classes here.* The
+critic missed 80% of a class one line of Python would catch; an instruction
+moved a class 0->6 of 11 toward the critic's own judgement.
+
+⚠️ LEDGER: reconciles to the cent across all arms, but `priced_by` is identical
+on all 5,012 rows (no run tag -- attribution worked only because arms ran nearly
+disjointly), and **`loop.py` has a hole where a raising call spends and writes
+no turn record -- it omitted 36% of one arm's recorded spend.** Fix before the
+next run.
+
+---
+
+## 134. SERIES HANDOFF — cheap-critic arms E/F, triage, and the ledger fix (2026-08-16)
+
+⭐ **The full state of the critic-loop arm series is written up in
+`_debug_gen11/SERIES_HANDOFF.md`. Read that before touching `_debug_gen11/`.**
+It carries the arm table, the measured mechanisms, the confound list, and — most
+importantly — **§0, a table of numbers previously published in this campaign that
+are WRONG**, with corrections. A later reader will otherwise find the stale
+figures in earlier writeups and in the transcript.
+
+**LEDGER HOLE FROM THE PREVIOUS ENTRY: CLOSED.** A call that raises after the
+response is parsed now hands its billed envelope out, and `loop.py` writes the
+record BEFORE the raise propagates, into `st["billed_failures"]` (never
+`st["turns"]`, so turn numbering is unchanged). `ledger_spent()` summed `turns`
+alone — **that was the hole, and it fed the `CAP_USD` gate.** Run tags added to
+`priced_by`; unset ⇒ byte-identical to the 5,012 pre-existing rows. Reconciles
+exact to 1e-9: arm E $0.06723 + $0.01612 = $0.08335; **arm F $0.06933 + $0.09066
+= $0.15999 — 57% of that arm's spend bought nothing.** Test:
+`phase_1/test_ledger_hole.py`, 17 offline tests. ⚠️ `translate.py` is production
+code and is UNCOMMITTED.
+
+**A second attribution bug surfaced and is NOT fixed:** `ds_critic_arm/
+reconcile.py` has a start line but no end line, so re-run today it sweeps up arm
+F's 21 truncations and reports 25 arm-E cuts instead of 4. Its output was correct
+only because no later arm existed when it ran. **Both `reconcile.json` files are
+measurements of record — do not re-run them.** This is the argument for the run
+tag.
+
+**Headline result of the series:** the frontier critic ADDS normative content
+(`asserts` 24→28); every cheap-critic loop DELETES it (arm E 24→18, F1 11→9,
+F2 17→15). The measured mechanism is branching remedies — 28% of DeepSeek FIX
+lines offer the drafter a branch against 1 line across all 17 Opus files — but
+**forbidding the branch does not fix it. The coin flip moves inside the critic**
+(pre-registered as the null, and it fired), and forbidding the hedge makes the
+critic **go quiet rather than decide** (FIX lines/clause 3.0 → 1.4).
+
+⭐ **The one promising thread: F2's `PRESERVE` requirement converted silent
+semantic damage into a LOUD schema error** — the only cell whose failure the
+floor can see. **n=1; replicate before believing.**
+
+⛔ **Rejected by name:** raising `max_tokens` to rescue arm F's 47% truncation
+rate. The cap is a pre-registered variable; changing it invalidates the E-vs-F
+comparison. With reasoning traces of 12,257–38,452 chars the cap is the BINDING
+CONSTRAINT on the critic, not a tail event — **a re-run at a higher cap is a new
+arm with its own PREREG, not a repair of F.**
+
+⛔ **Also rejected by name:** removing entry `E6` from `REVIEW_LIST.md` mid-series.
+It is a measured defect generator (two critics, identical harmful weakening on
+`l171_426_n022`) and it is retained so arms D/E/F stay comparable. Repairing the
+list is its own arm.
+
+**Triage returned a NEGATIVE result** (`_debug_gen11/triage/`). Cheap-critic
+disagreement points the WRONG way (ρ −0.167 / −0.154): **the signal is SHARED
+ALARM, not disagreement.** Only a defeasibility-hedge regex survived, and it is
+document-tuned. `FLOORDIRTY_T1` looked strong at ρ +0.46 and had **zero variance
+on transfer — it measured the pipeline generation, not the clause**, which is the
+22-instruments failure mode caught in advance. A perfect oracle on this cohort
+beats random by only ~1.8×, and **triage cannot help with the deletion channel at
+all** — the un-escalated remainder still ships the cheap critic's repairs.
+
+⚠️ `spend.py` currently **REFUSES to report a total**: 1 of 5,156 rows is
+unpriced (`text-embedding-3-small`). There is no authoritative series total until
+`providers.json` gains that price. Do not substitute a partial sum — that is the
+G1 failure.

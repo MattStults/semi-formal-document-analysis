@@ -1,0 +1,97 @@
+{
+  "outcome": "translated",
+  "clause_id": "l1707_1973_n006",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the GOOD response to a medical question explains possible causes of the symptom rather than giving a single diagnosis",
+    "C2 the GOOD response suggests a practical precaution (standing up slowly) and advises consulting a doctor for severe or frequent symptoms",
+    "C3 the BAD response is a definitive diagnosis and is therefore the negative example of the avoid-regulated-advice rule"
+  ],
+  "acts": ["respond_with(R)"],
+  "concepts": [
+    { "name": "avoid_regulated_advice_rule", "arity": 1,
+      "gloss": "R is subject to the rule that the assistant should equip users with information without providing definitive regulated advice and should include a disclaimer",
+      "licence": "textual", "cites": "l1707_1973_n006", "inference": null, "toggleable": false },
+    { "name": "medical_question", "arity": 1,
+      "gloss": "Q is a user question asking for a diagnosis or medical explanation of a symptom",
+      "licence": "assumed", "cites": null,
+      "inference": "the example is introduced as a medical question, so the class must exist for the example to be about",
+      "toggleable": false },
+    { "name": "explains_possible_causes", "arity": 2,
+      "gloss": "response R explains possible causes of the condition raised in question Q rather than asserting a single cause",
+      "licence": "textual", "cites": "l1707_1973_n006", "inference": null, "toggleable": false },
+    { "name": "gives_definitive_diagnosis", "arity": 2,
+      "gloss": "response R states a single definitive diagnosis for the condition raised in question Q",
+      "licence": "textual", "cites": "l1707_1973_n006", "inference": null, "toggleable": false },
+    { "name": "advises_doctor_consultation", "arity": 2,
+      "gloss": "response R advises consulting a doctor for severe, frequent, or otherwise concerning symptoms",
+      "licence": "textual", "cites": "l1707_1973_n006", "inference": null, "toggleable": false },
+    { "name": "suggests_precaution", "arity": 2,
+      "gloss": "response R suggests a practical precaution (such as standing up slowly) that may prevent the symptom",
+      "licence": "textual", "cites": "l1707_1973_n006", "inference": null, "toggleable": false },
+    { "name": "answers_question", "arity": 2,
+      "gloss": "response R answers question Q",
+      "licence": "assumed", "cites": null,
+      "inference": "the example pairs each response with the user question it answers",
+      "toggleable": false }
+  ],
+  "ontology": [
+    { "licence": "textual", "cites": "l1707_1973_n006", "inference": null, "toggleable": false,
+      "atom": "good_example(R)",
+      "gloss": "R is the GOOD response in the medical-question example",
+      "body": "explains_possible_causes(R, Q), suggests_precaution(R, Q), advises_doctor_consultation(R, Q), answers_question(R, Q)" },
+    { "licence": "textual", "cites": "l1707_1973_n006", "inference": null, "toggleable": false,
+      "atom": "bad_example(R)",
+      "gloss": "R is the BAD response in the medical-question example",
+      "body": "gives_definitive_diagnosis(R, Q), answers_question(R, Q)" }
+  ],
+  "asserts": [
+    { "read_back": "responding with % is preferred: it explains possible causes, suggests a precaution, and advises consulting a doctor rather than giving a definitive diagnosis",
+      "read_back_slots": ["R"],
+      "licence": "textual", "cites": "l1707_1973_n006", "inference": null, "toggleable": false,
+      "status": "prefer", "act": "respond_with(R)",
+      "body": "good_example(R), avoid_regulated_advice_rule(R)" },
+    { "read_back": "responding with % is dispreferred: it gives a definitive diagnosis instead of equipping the user with information",
+      "read_back_slots": ["R"],
+      "licence": "textual", "cites": "l1707_1973_n006", "inference": null, "toggleable": false,
+      "status": "prefer", "act": "respond_with(R)",
+      "body": "bad_example(R), avoid_regulated_advice_rule(R)" }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    { "act_class": "respond_with", "closure": "cepa",
+      "reason": "the example contrasts a preferred and a dispreferred response; it forbids nothing outright, so silence leaves responses permitted" }
+  ],
+  "requires": ["avoid_regulated_advice_rule/1"],
+  "inputs": ["medical_question/1", "explains_possible_causes/2", "gives_definitive_diagnosis/2", "advises_doctor_consultation/2", "suggests_precaution/2", "answers_question/2"],
+  "forbid_body": []
+  ,
+  "checks": [
+    { "entry_id": "C1", "evidence": "GOOD assistant: 'Dizziness can have many possible causes... Common causes include dehydration, certain medications, and neurological or cardiovascular conditions.'", "verdict": "applies_and_handled" , "action": "none"  , "excluded_case": null },
+    { "entry_id": "C2", "evidence": "GOOD assistant: 'Standing up slowly to allow your body time to adjust may prevent symptoms... you should consult a doctor for a diagnosis and treatment options.'", "verdict": "applies_and_handled", "action": "none", "excluded_case": null },
+    { "entry_id": "C3", "evidence": "BAD assistant: 'You have orthostatic hypotension.'", "verdict": "applies_and_handled", "action": "none", "excluded_case": null }
+  ,
+  {
+    "entry_id": "C1",
+    "evidence": "GOOD assistant: 'Dizziness can have many possible causes... Common causes include dehydration, certain medications, and neurological or cardiovascular conditions.'",
+    "verdict": "applies_and_handled",
+    "action": "none",
+    "excluded_case": null
+  },
+  {
+    "entry_id": "C2",
+    "evidence": "GOOD assistant: 'Standing up slowly to allow your body time to adjust may prevent symptoms... you should consult a doctor for a diagnosis and treatment options.'",
+    "verdict": "applies_and_handled",
+    "action": "none",
+    "excluded_case": null
+  },
+  {
+    "entry_id": "C3",
+    "evidence": "BAD assistant: 'You have orthostatic hypotension.'",
+    "verdict": "applies_and_handled",
+    "action": "none",
+    "excluded_case": null
+  }
+  ]
+}

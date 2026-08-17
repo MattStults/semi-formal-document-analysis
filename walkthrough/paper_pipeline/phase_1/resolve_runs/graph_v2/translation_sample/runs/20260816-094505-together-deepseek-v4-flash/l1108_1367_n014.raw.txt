@@ -1,0 +1,71 @@
+{
+  "outcome": "translated",
+  "clause_id": "l1108_1367_n014",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the clause reports that many users and developers expressed support for enabling a 'grown-up mode' after the initial Model Spec release",
+    "C2 OpenAI is exploring how to let developers and users generate erotica and gore in age-appropriate contexts through the API and ChatGPT",
+    "C3 such generation is permitted only so long as usage policies are met",
+    "C4 a hard line is drawn against potentially harmful uses such as sexual deepfakes and revenge porn"
+  ],
+  "acts": ["generate_content(C)"],
+  "concepts": [
+    { "name": "grown_up_mode", "arity": 0,
+      "gloss": "a mode users and developers asked for that would allow adult content generation",
+      "licence": "textual", "cites": "l1108_1367_n014", "inference": null, "toggleable": false },
+    { "name": "erotica_or_gore", "arity": 1,
+      "gloss": "content that is erotic or gory in nature",
+      "licence": "textual", "cites": "l1108_1367_n014", "inference": null, "toggleable": false },
+    { "name": "age_appropriate_context", "arity": 1,
+      "gloss": "a context in which the content is appropriate for the age of the audience",
+      "licence": "textual", "cites": "l1108_1367_n014", "inference": null, "toggleable": false },
+    { "name": "usage_policies_met", "arity": 1,
+      "gloss": "the generation of content C complies with OpenAI's usage policies",
+      "licence": "textual", "cites": "l1108_1367_n014", "inference": null, "toggleable": false },
+    { "name": "harmful_use", "arity": 1,
+      "gloss": "a use of content generation that is potentially harmful, such as sexual deepfakes or revenge porn",
+      "licence": "textual", "cites": "l1108_1367_n014", "inference": null, "toggleable": false },
+    { "name": "sexual_deepfake", "arity": 1,
+      "gloss": "a sexually explicit deepfake, a synthetic media depicting a real person in a sexual context without consent",
+      "licence": "textual", "cites": "l1108_1367_n014", "inference": null, "toggleable": false },
+    { "name": "revenge_porn", "arity": 1,
+      "gloss": "non-consensual intimate imagery shared to harm or harass",
+      "licence": "textual", "cites": "l1108_1367_n014", "inference": null, "toggleable": false },
+    { "name": "generation_context", "arity": 2,
+      "gloss": "content C is generated in context K",
+      "licence": "assumed", "cites": null,
+      "inference": "the clause speaks of generating content in age-appropriate contexts, so a relation between content and context is needed",
+      "toggleable": false }
+  ],
+  "ontology": [
+    { "licence": "textual", "cites": "l1108_1367_n014", "inference": null, "toggleable": false,
+      "atom": "harmful_use(C)",
+      "gloss": "content C is a potentially harmful use such as a sexual deepfake or revenge porn",
+      "body": "sexual_deepfake(C)" },
+    { "licence": "textual", "cites": "l1108_1367_n014", "inference": null, "toggleable": false,
+      "atom": "harmful_use(C)",
+      "gloss": "content C is a potentially harmful use such as a sexual deepfake or revenge porn",
+      "body": "revenge_porn(C)" }
+  ],
+  "asserts": [
+    { "read_back": "generating % is permitted when it is erotica or gore in an age-appropriate context and usage policies are met",
+      "read_back_slots": ["C"],
+      "licence": "textual", "cites": "l1108_1367_n014", "inference": null, "toggleable": false,
+      "status": "permit", "act": "generate_content(C)",
+      "body": "erotica_or_gore(C), age_appropriate_context(K), generation_context(C, K), usage_policies_met(C)" },
+    { "read_back": "generating % is forbidden because it is a potentially harmful use such as a sexual deepfake or revenge porn",
+      "read_back_slots": ["C"],
+      "licence": "textual", "cites": "l1108_1367_n014", "inference": null, "toggleable": false,
+      "status": "forbid", "act": "generate_content(C)",
+      "body": "harmful_use(C)" }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    { "act_class": "generate_content", "closure": "cnpa",
+      "reason": "the clause draws a hard line against harmful uses and permits only content meeting usage policies in age-appropriate contexts, so silence about other content is not a permission" }
+  ],
+  "requires": [],
+  "inputs": ["erotica_or_gore/1", "age_appropriate_context/1", "generation_context/2", "usage_policies_met/1", "sexual_deepfake/1", "revenge_porn/1"],
+  "forbid_body": []
+}

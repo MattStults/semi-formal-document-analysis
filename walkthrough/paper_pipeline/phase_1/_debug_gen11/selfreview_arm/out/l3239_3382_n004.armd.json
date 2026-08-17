@@ -1,0 +1,40 @@
+{
+ "clause_id": "l3239_3382_n004",
+ "calls": [
+  {
+   "phase": "identify",
+   "raw": "E1: PASS\nE2: PASS\nE3: PASS\nE4: PASS\nE5: FIX \u2014 remove the ontology entries for transformation_task and interactive_setting; they are unbound and already in inputs.\nE6: PASS\nE7: PASS\nE8: PASS\nE9: FIX \u2014 in the gloss for changes_warranted/2, state that the second argument is the assistant who judges.\nE10: PASS\nE11: PASS",
+   "sha1": "342a403a49a3d68f9bfb8fc55d4a6f65df6db6eb",
+   "cost_usd": 0.0028235200000000004,
+   "usage": null,
+   "messages_sent": 3,
+   "floor": null
+  },
+  {
+   "phase": "repair",
+   "raw": "{\n  \"outcome\": \"translated\",\n  \"clause_id\": \"l3239_3382_n004\",\n  \"abstain_reason\": null,\n  \"claims\": [\n    \"C1: In an interactive setting, when the assistant is given a transformation task, the assistant may want to alert the user that changes to the text are warranted.\"\n  ],\n  \"acts\": [\"alert_user_about_changes(A)\"],\n  \"concepts\": [\n    {\n      \"name\": \"assistant_definition\",\n      \"arity\": 1,\n      \"gloss\": \"A is the assistant entity that the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document.\",\n      \"licence\": \"textual\",\n      \"cites\": \"l3239_3382_n004\",\n      \"inference\": null,\n      \"toggleable\": false\n    },\n    {\n      \"name\": \"interactive_vs_programmatic_setting\",\n      \"arity\": 1,\n      \"gloss\": \"S is an interactive setting where the assistant is interacting with a human in real time, as opposed to a programmatic setting where output is consumed programmatically.\",\n      \"licence\": \"textual\",\n      \"cites\": \"l3239_3382_n004\",\n      \"inference\": null,\n      \"toggleable\": false\n    },\n    {\n      \"name\": \"user_authority\",\n      \"arity\": 1,\n      \"gloss\": \"I is an instruction carrying user-level authority, as established by the #avoid_overstepping section.\",\n      \"licence\": \"textual\",\n      \"cites\": \"l3239_3382_n004\",\n      \"inference\": null,\n      \"toggleable\": false\n    },\n    {\n      \"name\": \"transformation_task\",\n      \"arity\": 1,\n      \"gloss\": \"T is a task asking the assistant to transform text, such as translating between languages, adding annotations, or changing formatting.\",\n      \"licence\": \"textual\",\n      \"cites\": \"l3239_3382_n004\",\n      \"inference\": null,\n      \"toggleable\": false\n    },\n    {\n      \"name\": \"changes_warranted\",\n      \"arity\": 2,\n      \"gloss\": \"For transformation task T, changes to the text are warranted, meaning the assistant judges that the text should be altered beyond what was explicitly requested; the second argument is the assistant who makes that judgment.\",\n      \"licence\": \"assumed\",\n      \"cites\": null,\n      \"inference\": \"The clause says the assistant 'may want to alert the user that changes to the text are warranted'; this presupposes a condition under which such changes are warranted, which is a fact about the situation.\",\n      \"toggleable\": false\n    },\n    {\n      \"name\": \"interactive_setting\",\n      \"arity\": 1,\n      \"gloss\": \"S is an interactive setting where the assistant is interacting with a human in real time.\",\n      \"licence\": \"textual\",\n      \"cites\": \"l3239_3382_n004\",\n      \"inference\": null,\n      \"toggleable\": false\n    }\n  ],\n  \"ontology\": [],\n  \"asserts\": [\n    {\n      \"read_back\": \"In an interactive setting, when given transformation task %, the assistant may want to alert the user that changes to the text are warranted.\",\n      \"read_back_slots\": [\"T\"],\n      \"licence\": \"textual\",\n      \"cites\": \"l3239_3382_n004\",\n      \"inference\": null,\n      \"toggleable\": false,\n      \"status\": \"permit\",\n      \"act\": \"alert_user_about_changes(A)\",\n      \"body\": \"assistant_definition(A), interactive_setting(S), transformation_task(T), changes_warranted(T, A)\"\n    }\n  ],\n  \"beats\": [],\n  \"defines\": [],\n  \"closure\": [\n    {\n      \"act_class\": \"alert_user_about_changes\",\n      \"closure\": \"cepa\",\n      \"reason\": \"The clause states that the assistant 'may want to alert' the user, which is a permission to alert, not a prohibition; silence about other alert behaviors leaves them permitted.\"\n    }\n  ],\n  \"requires\": [\"assistant_definition/1\", \"interactive_vs_programmatic_setting/1\", \"user_authority/1\"],\n  \"inputs\": [\"transformation_task/1\", \"interactive_setting/1\", \"changes_warranted/2\"],\n  \"forbid_body\": []\n}",
+   "sha1": "eeb4de241370b41688beb7def2c37ffcf3b76f10",
+   "cost_usd": 0.00233926,
+   "usage": null,
+   "messages_sent": 5,
+   "floor": {
+    "parsed": true,
+    "breaches": [],
+    "checks": [
+     "[note/link] requires-unprovided @ l3239_3382_n004.lp: `assistant_definition/1` is declared in `%% requires:` and no module in this link scope defines it",
+     "[note/link] requires-unprovided @ l3239_3382_n004.lp: `interactive_vs_programmatic_setting/1` is declared in `%% requires:` and no module in this link scope defines it",
+     "[note/link] requires-unprovided @ l3239_3382_n004.lp: `user_authority/1` is declared in `%% requires:` and no module in this link scope defines it",
+     "[note/link] concept-declared @ l3239_3382_n004.lp: `assistant_definition/1` is head-less and declared in the concept table by l3239_3382_n004",
+     "[note/link] concept-declared @ l3239_3382_n004.lp: `changes_warranted/2` is head-less and declared in the concept table by l3239_3382_n004",
+     "[note/link] concept-declared @ l3239_3382_n004.lp: `interactive_setting/1` is head-less and declared in the concept table by l3239_3382_n004",
+     "[note/link] concept-declared @ l3239_3382_n004.lp: `transformation_task/1` is head-less and declared in the concept table by l3239_3382_n004",
+     "[note/link] situation-input @ l3239_3382_n004.lp: `changes_warranted/2` is head-less and declared as a situation input",
+     "[note/link] situation-input @ l3239_3382_n004.lp: `interactive_setting/1` is head-less and declared as a situation input",
+     "[note/link] situation-input @ l3239_3382_n004.lp: `transformation_task/1` is head-less and declared as a situation input"
+    ],
+    "outcome": "translated",
+    "repair_needed": false
+   }
+  }
+ ]
+}

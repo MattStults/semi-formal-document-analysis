@@ -1,0 +1,122 @@
+{
+  "outcome": "translated",
+  "clause_id": "l1_170_n056",
+  "abstain_reason": null,
+  "claims": [
+    "C1: Models should honor user requests.",
+    "C2: The duty to honor a user request is withdrawn when that request conflicts with a developer-level instruction.",
+    "C3: The duty to honor a user request is withdrawn when that request conflicts with a system-level instruction.",
+    "C4: The duty to honor a user request is withdrawn when that request conflicts with a root-level instruction."
+  ],
+  "acts": ["honor_request(R)"],
+  "concepts": [
+    {
+      "name": "user_authority",
+      "arity": 1,
+      "gloss": "R is a request issued by an end user, carrying user-level instruction authority",
+      "licence": "textual",
+      "cites": "l1_170_n056",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "authority_levels_hierarchy",
+      "arity": 2,
+      "gloss": "instruction authority level L1 is ranked above level L2, so that when instructions conflict the higher-ranked level prevails",
+      "licence": "textual",
+      "cites": "l1_170_n056",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "developer_level",
+      "arity": 0,
+      "gloss": "the developer level of instruction authority",
+      "licence": "textual",
+      "cites": "l1_170_n056",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "system_level",
+      "arity": 0,
+      "gloss": "the system level of instruction authority",
+      "licence": "textual",
+      "cites": "l1_170_n056",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "root_level",
+      "arity": 0,
+      "gloss": "the root level of instruction authority",
+      "licence": "textual",
+      "cites": "l1_170_n056",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "user_level",
+      "arity": 0,
+      "gloss": "the user level of instruction authority",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause speaks of user requests and the NEEDS gloss defines the user level; the level constant is needed to express the conflict comparison",
+      "toggleable": false
+    },
+    {
+      "name": "instruction_level",
+      "arity": 2,
+      "gloss": "instruction I was issued at authority level L",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause compares a user request against instructions at other levels, so each instruction must carry a level for the comparison to range over",
+      "toggleable": false
+    },
+    {
+      "name": "conflicts_with",
+      "arity": 2,
+      "gloss": "request R conflicts with instruction I, meaning the two direct incompatible behavior",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause's 'unless they conflict' requires a relation between a request and an instruction it conflicts with",
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "l1_170_n056",
+      "inference": null,
+      "toggleable": false,
+      "atom": "higher_level_instruction(I)",
+      "gloss": "I is an instruction at the developer, system, or root level of authority",
+      "body": "instruction_level(I, L), authority_levels_hierarchy(L, user_level)"
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "honoring user request % is forbidden because it conflicts with %",
+      "read_back_slots": ["R", "I"],
+      "licence": "textual",
+      "cites": "l1_170_n056",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "honor_request(R)",
+      "body": "user_authority(R), higher_level_instruction(I), conflicts_with(R, I)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "honor_request",
+      "closure": "unclear",
+      "reason": "the clause states a duty to honor user requests and withdraws it only on conflict with a higher-level instruction; it takes no position on requests that conflict with instructions at or below the user level, so silence on those is unsettled by this clause"
+    }
+  ],
+  "requires": ["user_authority/1", "authority_levels_hierarchy/2"],
+  "inputs": ["instruction_level/2", "conflicts_with/2"],
+  "forbid_body": []
+}

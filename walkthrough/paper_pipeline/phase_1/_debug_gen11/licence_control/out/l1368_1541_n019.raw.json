@@ -1,0 +1,136 @@
+{
+  "outcome": "translated",
+  "clause_id": "l1368_1541_n019",
+  "abstain_reason": null,
+  "claims": [
+    "C1 when responding to a dangerous situation, the assistant should provide a disclaimer acknowledging a lack of expertise or proper training in the relevant domain",
+    "C2 when responding to a dangerous situation, the assistant should suggest that the user take safety precautions",
+    "C3 when responding to a dangerous situation, the assistant should provide generic advice that is common knowledge or a general best practice without detailing what the advice should be used for"
+  ],
+  "acts": [
+    "provide_disclaimer(D)",
+    "suggest_safety_precautions(S)",
+    "provide_generic_advice(A)"
+  ],
+  "concepts": [
+    {
+      "name": "prevent_imminent_harm_rule",
+      "arity": 1,
+      "gloss": "R is the rule that the assistant should proactively try to prevent imminent real-world harm when it identifies a dangerous situation, and avoid providing advice that if improper could result in immediate physical harm",
+      "licence": "textual",
+      "cites": "l1368_1541_n019",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "dangerous_situation",
+      "arity": 1,
+      "gloss": "S is a situation in which there is a risk of imminent real-world harm, as identified by the assistant",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause speaks of 'a dangerous situation' and the NEEDS gloss ties it to imminent real-world harm; the concept of a dangerous situation is presupposed",
+      "toggleable": false
+    },
+    {
+      "name": "disclaimer_acknowledging_lack",
+      "arity": 1,
+      "gloss": "D is a disclaimer that acknowledges a lack of expertise or proper training in the relevant domain",
+      "licence": "textual",
+      "cites": "l1368_1541_n019",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "safety_precaution_suggestion",
+      "arity": 1,
+      "gloss": "S is a suggestion that the user take safety precautions",
+      "licence": "textual",
+      "cites": "l1368_1541_n019",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "generic_advice",
+      "arity": 1,
+      "gloss": "A is advice that is common knowledge or a general best practice, given without detailing what the advice should be used for",
+      "licence": "textual",
+      "cites": "l1368_1541_n019",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "response_to_dangerous_situation",
+      "arity": 2,
+      "gloss": "R is a response by the assistant to dangerous situation S",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause describes what the assistant should do 'when responding to a dangerous situation', so a relation between a response and a situation is needed",
+      "toggleable": false
+    }
+  ],
+  "ontology": [],
+  "asserts": [
+    {
+      "read_back": "when responding to dangerous situation %, the assistant should provide a disclaimer % that acknowledges a lack of expertise or proper training in the relevant domain",
+      "read_back_slots": ["S", "D"],
+      "licence": "textual",
+      "cites": "l1368_1541_n019",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "provide_disclaimer(D)",
+      "body": "response_to_dangerous_situation(R, S), dangerous_situation(S), disclaimer_acknowledging_lack(D), part_of_response(D, R)"
+    },
+    {
+      "read_back": "when responding to dangerous situation %, the assistant should suggest % that the user take safety precautions",
+      "read_back_slots": ["S", "Sug"],
+      "licence": "textual",
+      "cites": "l1368_1541_n019",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "suggest_safety_precautions(Sug)",
+      "body": "response_to_dangerous_situation(R, S), dangerous_situation(S), safety_precaution_suggestion(Sug), part_of_response(Sug, R)"
+    },
+    {
+      "read_back": "when responding to dangerous situation %, the assistant should provide generic advice % that is common knowledge or a general best practice without detailing what the advice should be used for",
+      "read_back_slots": ["S", "A"],
+      "licence": "textual",
+      "cites": "l1368_1541_n019",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "provide_generic_advice(A)",
+      "body": "response_to_dangerous_situation(R, S), dangerous_situation(S), generic_advice(A), part_of_response(A, R)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "provide_disclaimer",
+      "closure": "cepa",
+      "reason": "the clause obliges a disclaimer in dangerous situations but does not address other situations; silence about other contexts permits them"
+    },
+    {
+      "act_class": "suggest_safety_precautions",
+      "closure": "cepa",
+      "reason": "the clause obliges suggesting safety precautions in dangerous situations but does not address other situations; silence about other contexts permits them"
+    },
+    {
+      "act_class": "provide_generic_advice",
+      "closure": "cepa",
+      "reason": "the clause obliges generic advice in dangerous situations but does not address other situations; silence about other contexts permits them"
+    }
+  ],
+  "requires": ["prevent_imminent_harm_rule/1"],
+  "inputs": [
+    "dangerous_situation/1",
+    "disclaimer_acknowledging_lack/1",
+    "safety_precaution_suggestion/1",
+    "generic_advice/1",
+    "response_to_dangerous_situation/2",
+    "part_of_response/2"
+  ],
+  "forbid_body": []
+}

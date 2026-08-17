@@ -1,0 +1,139 @@
+{
+ "clause_id": "l4252_4482_n005",
+ "_lc_cost_usd": 0.00169022,
+ "_lc_sha1_raw": "2bb14ee522749f1da3bd888f82489e4d12fc2c4a",
+ "_lc_t_start": 1786929197.895551,
+ "_lc_t_end": 1786929201.840231,
+ "usage": null,
+ "floor": {
+  "parsed": true,
+  "breaches": [],
+  "checks": [
+   "[note/link] requires-unprovided @ l4252_4482_n005.lp: `user_authority/1` is declared in `%% requires:` and no module in this link scope defines it",
+   "[error/link] clingo-error @ l4252_4482_n005.lp: clingo refused this program, so nothing below was actually analysed: /var/folders/jh/ym8tv1sn29dbxk49v5wbp4s40000gn/T/stage2_checks_0aq70rrp/l4252_4482_n005.lp:48:1-105: error: unsafe variables in: | /var/folders/jh/ym8tv1sn29dbxk49v5wbp4s40000gn/T/stage2_checks_0aq70rrp/l4252_4482_n005.lp:48:50-51: note: 'A' is unsafe"
+  ],
+  "outcome": "invalid",
+  "repair_needed": true
+ },
+ "module": {
+  "outcome": "translated",
+  "clause_id": "l4252_4482_n005",
+  "abstain_reason": null,
+  "claims": [
+   "C1 the assistant should be willing to speak in all types of accents",
+   "C2 the assistant should be culturally sensitive when speaking in accents",
+   "C3 the assistant should avoid exaggerated portrayals or stereotypes when speaking in accents"
+  ],
+  "acts": [
+   "speak_in_accent(A)"
+  ],
+  "concepts": [
+   {
+    "name": "user_authority",
+    "arity": 1,
+    "gloss": "the user authority level assigned to rules in the 'Use accents respectfully' section",
+    "licence": "assumed",
+    "cites": null,
+    "inference": "the node's NEEDS block supplies this name and meaning; the node's own source text does not define it",
+    "toggleable": false
+   },
+   {
+    "name": "accent_type",
+    "arity": 1,
+    "gloss": "a type of accent the assistant may be asked to speak in",
+    "licence": "assumed",
+    "cites": null,
+    "inference": "'all types of accents' ranges over a class of accent types",
+    "toggleable": false
+   },
+   {
+    "name": "culturally_sensitive",
+    "arity": 1,
+    "gloss": "the assistant's speaking in accent A is culturally sensitive, respecting the culture associated with the accent",
+    "licence": "textual",
+    "cites": "l4252_4482_n005",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "exaggerated_portrayal",
+    "arity": 1,
+    "gloss": "speaking in accent A involves an exaggerated portrayal of the accent or its associated culture",
+    "licence": "textual",
+    "cites": "l4252_4482_n005",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "stereotype",
+    "arity": 1,
+    "gloss": "speaking in accent A involves a stereotype of the accent or its associated culture",
+    "licence": "textual",
+    "cites": "l4252_4482_n005",
+    "inference": null,
+    "toggleable": false
+   }
+  ],
+  "ontology": [],
+  "asserts": [
+   {
+    "read_back": "speaking in accent % is preferred when the assistant is willing to speak in all types of accents",
+    "read_back_slots": [
+     "A"
+    ],
+    "licence": "textual",
+    "cites": "l4252_4482_n005",
+    "inference": null,
+    "toggleable": false,
+    "status": "prefer",
+    "act": "speak_in_accent(A)",
+    "body": "accent_type(A)"
+   },
+   {
+    "read_back": "speaking in accent % is preferred when it is culturally sensitive",
+    "read_back_slots": [
+     "A"
+    ],
+    "licence": "textual",
+    "cites": "l4252_4482_n005",
+    "inference": null,
+    "toggleable": false,
+    "status": "prefer",
+    "act": "speak_in_accent(A)",
+    "body": "culturally_sensitive(A)"
+   },
+   {
+    "read_back": "speaking in accent % is preferred when it avoids exaggerated portrayals and stereotypes",
+    "read_back_slots": [
+     "A"
+    ],
+    "licence": "textual",
+    "cites": "l4252_4482_n005",
+    "inference": null,
+    "toggleable": false,
+    "status": "prefer",
+    "act": "speak_in_accent(A)",
+    "body": "not exaggerated_portrayal(A), not stereotype(A)"
+   }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+   {
+    "act_class": "speak_in_accent",
+    "closure": "cepa",
+    "reason": "the clause expresses a willingness and a preference, not a prohibition; silence about any particular accent leaves it permitted"
+   }
+  ],
+  "requires": [
+   "user_authority/1"
+  ],
+  "inputs": [
+   "accent_type/1",
+   "culturally_sensitive/1",
+   "exaggerated_portrayal/1",
+   "stereotype/1"
+  ],
+  "forbid_body": []
+ }
+}

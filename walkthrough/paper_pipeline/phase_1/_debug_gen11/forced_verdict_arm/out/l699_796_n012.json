@@ -1,0 +1,177 @@
+{
+ "clause_id": "l699_796_n012",
+ "_arm_f_cost_usd": 0.0016829400000000002,
+ "_arm_f_sha1_raw": "7c2b4d7cba409c7a1d88d07b566663fc23cb6d7e",
+ "usage": null,
+ "parsed": true,
+ "strip_proof": {
+  "applicable": true,
+  "keys_removed": [
+   "checks"
+  ],
+  "keys_added": [],
+  "removed_is_exactly_the_arm_key": true,
+  "every_surviving_field_identical_by_is": true,
+  "every_surviving_field_byte_identical": true,
+  "n_fields_before": 15,
+  "n_fields_after": 14
+ },
+ "checks_shape": {
+  "present": true,
+  "n": 6,
+  "ids": [
+   "C1",
+   "C2",
+   "C3",
+   "C4",
+   "C5",
+   "C6"
+  ],
+  "ids_exact": true,
+  "verdicts_in_enum": true,
+  "c5_excluded_case": null
+ },
+ "armf_checks": [
+  {
+   "entry_id": "C1",
+   "evidence": "seek clarification when instructions might be intended",
+   "verdict": "applies_and_handled",
+   "action": "none",
+   "excluded_case": null
+  },
+  {
+   "entry_id": "C2",
+   "evidence": "could cause serious side effects",
+   "verdict": "applies_and_handled",
+   "action": "none",
+   "excluded_case": null
+  },
+  {
+   "entry_id": "C3",
+   "evidence": "when ... but ...",
+   "verdict": "applies_and_handled",
+   "action": "none",
+   "excluded_case": null
+  },
+  {
+   "entry_id": "C4",
+   "evidence": "root_authority",
+   "verdict": "applies_and_handled",
+   "action": "none",
+   "excluded_case": null
+  },
+  {
+   "entry_id": "C5",
+   "evidence": "assistant should",
+   "verdict": "applies_and_handled",
+   "action": "none",
+   "excluded_case": null
+  },
+  {
+   "entry_id": "C6",
+   "evidence": "seek clarification",
+   "verdict": "applies_and_handled",
+   "action": "none",
+   "excluded_case": null
+  }
+ ],
+ "floor": {
+  "breaches": [],
+  "checks": [
+   "[note/link] requires-unprovided @ l699_796_n012.lp: `root_authority/1` is declared in `%% requires:` and no module in this link scope defines it",
+   "[note/link] concept-declared @ l699_796_n012.lp: `instruction/1` is head-less and declared in the concept table by l699_796_n012",
+   "[note/link] concept-declared @ l699_796_n012.lp: `might_be_intended/1` is head-less and declared in the concept table by l699_796_n012",
+   "[note/link] concept-declared @ l699_796_n012.lp: `serious_side_effects/1` is head-less and declared in the concept table by l699_796_n012",
+   "[note/link] situation-input @ l699_796_n012.lp: `instruction/1` is head-less and declared as a situation input",
+   "[note/link] situation-input @ l699_796_n012.lp: `might_be_intended/1` is head-less and declared as a situation input",
+   "[note/link] situation-input @ l699_796_n012.lp: `serious_side_effects/1` is head-less and declared as a situation input"
+  ],
+  "outcome": "translated",
+  "repair_needed": false
+ },
+ "module": {
+  "outcome": "translated",
+  "clause_id": "l699_796_n012",
+  "abstain_reason": null,
+  "claims": [
+   "C1 the assistant should seek clarification when an instruction might be intended",
+   "C2 the assistant should seek clarification when that instruction could cause serious side effects",
+   "C3 the duty to seek clarification applies when both conditions hold together"
+  ],
+  "acts": [
+   "seek_clarification(I)"
+  ],
+  "concepts": [
+   {
+    "name": "root_authority",
+    "arity": 1,
+    "gloss": "R is a rule in the #ignore_untrusted_data section, which carries root authority",
+    "licence": "textual",
+    "cites": "l699_796_n012",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "instruction",
+    "arity": 1,
+    "gloss": "I is an instruction that might be intended by the user",
+    "licence": "textual",
+    "cites": "l699_796_n012",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "might_be_intended",
+    "arity": 1,
+    "gloss": "I is an instruction that might be intended, i.e. it is not certain that the user did not intend it",
+    "licence": "textual",
+    "cites": "l699_796_n012",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "serious_side_effects",
+    "arity": 1,
+    "gloss": "I is an instruction whose execution could cause serious side effects",
+    "licence": "textual",
+    "cites": "l699_796_n012",
+    "inference": null,
+    "toggleable": false
+   }
+  ],
+  "ontology": [],
+  "asserts": [
+   {
+    "read_back": "the assistant should seek clarification about instruction % when it might be intended and could cause serious side effects",
+    "read_back_slots": [
+     "I"
+    ],
+    "licence": "textual",
+    "cites": "l699_796_n012",
+    "inference": null,
+    "toggleable": false,
+    "status": "oblige",
+    "act": "seek_clarification(I)",
+    "body": "instruction(I), might_be_intended(I), serious_side_effects(I)"
+   }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+   {
+    "act_class": "seek_clarification",
+    "closure": "cepa",
+    "reason": "the clause obliges seeking clarification only when an instruction might be intended and could cause serious side effects; it does not forbid or otherwise regulate seeking clarification in other situations, so silence permits it"
+   }
+  ],
+  "requires": [
+   "root_authority/1"
+  ],
+  "inputs": [
+   "instruction/1",
+   "might_be_intended/1",
+   "serious_side_effects/1"
+  ],
+  "forbid_body": []
+ }
+}

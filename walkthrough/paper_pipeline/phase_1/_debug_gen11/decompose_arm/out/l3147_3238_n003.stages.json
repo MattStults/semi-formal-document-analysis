@@ -1,0 +1,68 @@
+{
+ "clause_id": "l3147_3238_n003",
+ "stages": [
+  {
+   "stage": 1,
+   "name": "s1_enumerate",
+   "raw": "**1. THE NARROWING.** Narrowing: \"If the assistant lacks sufficient confidence in its response, it should use a tool to gather more information, hedge its answer appropriately (see [express uncertainty](#express_uncertainty)), or explain that it can't give a confident answer.\" EXCLUDED: \"This is especially important when the stakes are high and an error could lead to real-world harm\u2026 If uncertain about a detail that's not essential in the response, the assistant should omit the detail. Note that the assistant *should* be willing to say things that aren't true in situations where a reasonable user would not expect veracity (e.g., creative writing, roleplaying, or counterfactual reasoning).\"\n\n**2. THE ITEMS.**\n- quote: \"use a tool to gather more information\"; bearer: the assistant; force: required \u2014 carried by \"should\"; condition: \"If the assistant lacks sufficient confidence in its response\".\n- quote: \"hedge its answer appropriately\"; bearer: the assistant; force: required \u2014 carried by \"should\"; condition: same.\n- quote: \"explain that it can't give a confident answer\"; bearer: the assistant; force: required \u2014 carried by \"should\"; condition: same.\n\n**3. ALTERNATIVES OR ALL-REQUIRED.** Alternatives \u2014 the word \"or\" between the three options; doing one satisfies the span.\n\n**4. AVOIDANCE.** None. All three items are positive \"should\" obligations; the narrowing contains no negative force.\n\n**5. THE CONDITIONS, TESTED.** Condition \"lacks sufficient confidence in its response\" excludes the case of an assistant that is sufficiently confident \u2014 the obligation does not attach there.\n\n**6. THE BORROWED NAMES.** Neither assistant_definition nor user_authority is established by the narrowing \u2014 it uses the word \"assistant\" but never defines it, and never mentions user authority. Both are handed in from other nodes.",
+   "cost_usd": 0.00063112,
+   "usage": null,
+   "truncated": false,
+   "attempts": 1,
+   "out_tokens": 1625,
+   "system_sha256": "9b70a691859c45e424e356142f0504ae5b592432e5bae3d4a0271c7745714494",
+   "in_chars": 5211
+  },
+  {
+   "stage": 2,
+   "name": "s2_deontic",
+   "raw": "1. status: prefer  \n   act: use_tool(R)  \n   body: lacks_sufficient_confidence(R)  \n   read_back: If the assistant lacks sufficient confidence in its response, it should use a tool to gather more information.\n\n2. status: prefer  \n   act: hedge_answer(R)  \n   body: lacks_sufficient_confidence(R)  \n   read_back: If the assistant lacks sufficient confidence in its response, it should hedge its answer appropriately.\n\n3. status: prefer  \n   act: explain_cannot_answer(R)  \n   body: lacks_sufficient_confidence(R)  \n   read_back: If the assistant lacks sufficient confidence in its response, it should explain that it can't give a confident answer.\n\n**Q1.** R appears once in each body, so it binds nothing.\n\n**Q2.** Yes, all three share status and body. That is not what the span means; I changed status to `prefer` to reflect the \"or\" alternatives.\n\n**Q3.** Not applicable.\n\n**Q4.** No, read_back says \"should\" (oblige) but status is `prefer`; they differ because the \"or\" makes each a preference.\n\n**Q5.** use_tool: cepa \u2014 the span explicitly lists it as an option. hedge_answer: cepa \u2014 same. explain_cannot_answer: cepa \u2014 same.",
+   "max_tokens": 6400,
+   "cost_usd": 0.00090846,
+   "usage": null,
+   "truncated": false,
+   "attempts": 2,
+   "out_tokens": 2038,
+   "system_sha256": "73012f5cf433d197c12c501fda13aca6a96d1916a0318e13932f70a8a16559d5",
+   "in_chars": 9607
+  },
+  {
+   "stage": 3,
+   "name": "s3_declare",
+   "raw": "**Placement:**\n- ontology: use_tool/1, hedge_answer/1, explain_cannot_answer/1 \u2014 ground atoms, no body\n- requires: assistant_definition/1, user_authority/1\n- inputs: lacks_sufficient_confidence/1\n\n**Q1.** No ontology entry has a body, so the exclusion test does not apply.\n\n**Q2.** No two ontology entries share a body (none have bodies), so this does not apply.\n\n**Q3.** (a) assistant_definition/1: licence = assumed. Inference: \"The document uses 'assistant' and 'model' interchangeably to refer to the entity the user interacts with.\" (b) user_authority/1: licence = assumed. Inference: \"The document's section markers indicate that rules marked authority=user carry user-level instruction authority.\" (c) Neither is textual because the narrowing does not establish them.\n\n**Q4.** Glosses:\n- use_tool/1: \"the assistant employs an external tool to obtain additional information\" \u2014 true when the assistant uses a tool to gather more information.\n- hedge_answer/1: \"the assistant qualifies its response to express uncertainty\" \u2014 true when the assistant hedges its answer.\n- explain_cannot_answer/1: \"the assistant states that it cannot provide a confident response\" \u2014 true when the assistant explains it can't give a confident answer.\n- lacks_sufficient_confidence/1: \"the assistant does not have enough certainty about the correctness of its response\" \u2014 true when the assistant lacks sufficient confidence.\n- assistant_definition/1: \"the assistant is the entity the end user or developer interacts with\" \u2014 true when the document defines the assistant as such.\n- user_authority/1: \"rules in sections marked authority=user carry user-level instruction authority\" \u2014 true when a rule is marked with authority=user.\n\n**Q5.** lacks_sufficient_confidence/1 \u2192 inputs.",
+   "max_tokens": 6000,
+   "cost_usd": 0.00207144,
+   "usage": null,
+   "truncated": false,
+   "attempts": 1,
+   "out_tokens": 5587,
+   "system_sha256": "22dc7a97f298f9e82bdee975c624720d12a3ee31874ee0876f3eeb062839ac7f",
+   "in_chars": 14329
+  },
+  {
+   "stage": 4,
+   "name": "s4_assemble",
+   "raw": "{\n  \"outcome\": \"translated\",\n  \"clause_id\": \"l3147_3238_n003\",\n  \"abstain_reason\": null,\n  \"claims\": [\n    \"C1: If the assistant lacks sufficient confidence in its response, it should use a tool to gather more information.\",\n    \"C2: If the assistant lacks sufficient confidence in its response, it should hedge its answer appropriately.\",\n    \"C3: If the assistant lacks sufficient confidence in its response, it should explain that it can't give a confident answer.\"\n  ],\n  \"acts\": [\"use_tool(R)\", \"hedge_answer(R)\", \"explain_cannot_answer(R)\"],\n  \"concepts\": [\n    {\n      \"name\": \"assistant_definition\",\n      \"arity\": 1,\n      \"gloss\": \"the assistant is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document\",\n      \"licence\": \"assumed\",\n      \"cites\": null,\n      \"inference\": \"the narrowing uses the word 'assistant' but does not define it; the definition is supplied by another node\",\n      \"toggleable\": false\n    },\n    {\n      \"name\": \"user_authority\",\n      \"arity\": 1,\n      \"gloss\": \"rules in sections marked authority=user carry user-level instruction authority\",\n      \"licence\": \"assumed\",\n      \"cites\": null,\n      \"inference\": \"the narrowing does not mention user authority; the concept is supplied by another node\",\n      \"toggleable\": false\n    },\n    {\n      \"name\": \"lacks_sufficient_confidence\",\n      \"arity\": 1,\n      \"gloss\": \"the assistant does not have enough certainty about the correctness of its response\",\n      \"licence\": \"textual\",\n      \"cites\": \"l3147_3238_n003\",\n      \"inference\": null,\n      \"toggleable\": false\n    },\n    {\n      \"name\": \"use_tool\",\n      \"arity\": 1,\n      \"gloss\": \"the assistant employs an external tool to obtain additional information\",\n      \"licence\": \"textual\",\n      \"cites\": \"l3147_3238_n003\",\n      \"inference\": null,\n      \"toggleable\": false\n    },\n    {\n      \"name\": \"hedge_answer\",\n      \"arity\": 1,\n      \"gloss\": \"the assistant qualifies its response to express uncertainty\",\n      \"licence\": \"textual\",\n      \"cites\": \"l3147_3238_n003\",\n      \"inference\": null,\n      \"toggleable\": false\n    },\n    {\n      \"name\": \"explain_cannot_answer\",\n      \"arity\": 1,\n      \"gloss\": \"the assistant states that it cannot provide a confident response\",\n      \"licence\": \"textual\",\n      \"cites\": \"l3147_3238_n003\",\n      \"inference\": null,\n      \"toggleable\": false\n    }\n  ],\n  \"ontology\": [\n    {\n      \"licence\": \"textual\",\n      \"cites\": \"l3147_3238_n003\",\n      \"inference\": null,\n      \"toggleable\": false,\n      \"atom\": \"use_tool(R)\",\n      \"gloss\": \"the assistant uses a tool to gather more information\",\n      \"body\": \"lacks_sufficient_confidence(R)\"\n    },\n    {\n      \"licence\": \"textual\",\n      \"cites\": \"l3147_3238_n003\",\n      \"inference\": null,\n      \"toggleable\": false,\n      \"atom\": \"hedge_answer(R)\",\n      \"gloss\": \"the assistant hedges its answer appropriately\",\n      \"body\": \"lacks_sufficient_confidence(R)\"\n    },\n    {\n      \"licence\": \"textual\",\n      \"cites\": \"l3147_3238_n003\",\n      \"inference\": null,\n      \"toggleable\": false,\n      \"atom\": \"explain_cannot_answer(R)\",\n      \"gloss\": \"the assistant explains that it can't give a confident answer\",\n      \"body\": \"lacks_sufficient_confidence(R)\"\n    }\n  ],\n  \"asserts\": [\n    {\n      \"read_back\": \"If the assistant lacks sufficient confidence in its response, it should use a tool to gather more information.\",\n      \"read_back_slots\": [],\n      \"licence\": \"textual\",\n      \"cites\": \"l3147_3238_n003\",\n      \"inference\": null,\n      \"toggleable\": false,\n      \"status\": \"prefer\",\n      \"act\": \"use_tool(R)\",\n      \"body\": \"lacks_sufficient_confidence(R)\"\n    },\n    {\n      \"read_back\": \"If the assistant lacks sufficient confidence in its response, it should hedge its answer appropriately.\",\n      \"read_back_slots\": [],\n      \"licence\": \"textual\",\n      \"cites\": \"l3147_3238_n003\",\n      \"inference\": null,\n      \"toggleable\": false,\n      \"status\": \"prefer\",\n      \"act\": \"hedge_answer(R)\",\n      \"body\": \"lacks_sufficient_confidence(R)\"\n    },\n    {\n      \"read_back\": \"If the assistant lacks sufficient confidence in its response, it should explain that it can't give a confident answer.\",\n      \"read_back_slots\": [],\n      \"licence\": \"textual\",\n      \"cites\": \"l3147_3238_n003\",\n      \"inference\": null,\n      \"toggleable\": false,\n      \"status\": \"prefer\",\n      \"act\": \"explain_cannot_answer(R)\",\n      \"body\": \"lacks_sufficient_confidence(R)\"\n    }\n  ],\n  \"beats\": [],\n  \"defines\": [],\n  \"closure\": [\n    {\n      \"act_class\": \"use_tool\",\n      \"closure\": \"cepa\",\n      \"reason\": \"the span explicitly lists using a tool as one of the preferred options, so silence about other uses permits them\"\n    },\n    {\n      \"act_class\": \"hedge_answer\",\n      \"closure\": \"cepa\",\n      \"reason\": \"the span explicitly lists hedging as one of the preferred options, so silence about other hedges permits them\"\n    },\n    {\n      \"act_class\": \"explain_cannot_answer\",\n      \"closure\": \"cepa\",\n      \"reason\": \"the span explicitly lists explaining inability as one of the preferred options, so silence about other explanations permits them\"\n    }\n  ],\n  \"requires\": [\"assistant_definition/1\", \"user_authority/1\"],\n  \"inputs\": [\"lacks_sufficient_confidence/1\"],\n  \"forbid_body\": []\n}",
+   "max_tokens": 4096,
+   "cost_usd": 0.0022743000000000004,
+   "usage": null,
+   "truncated": false,
+   "attempts": 1,
+   "out_tokens": 1439,
+   "system_sha256": "3a66c5f54277fbea1c6a8f030435f0c3083d480954b2f6ee3aeef5f1f4e4c34c",
+   "in_chars": 53408
+  }
+ ],
+ "floor": {
+  "parsed": true,
+  "breaches": [],
+  "checks": [
+   "[note/link] requires-unprovided @ l3147_3238_n003.lp: `assistant_definition/1` is declared in `%% requires:` and no module in this link scope defines it",
+   "[note/link] requires-unprovided @ l3147_3238_n003.lp: `user_authority/1` is declared in `%% requires:` and no module in this link scope defines it",
+   "[note/link] concept-declared @ l3147_3238_n003.lp: `lacks_sufficient_confidence/1` is head-less and declared in the concept table by l3147_3238_n003",
+   "[note/link] situation-input @ l3147_3238_n003.lp: `lacks_sufficient_confidence/1` is head-less and declared as a situation input"
+  ],
+  "outcome": "translated",
+  "repair_needed": false
+ }
+}

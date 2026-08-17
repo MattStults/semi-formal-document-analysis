@@ -1,0 +1,165 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1707_1973_n006",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the GOOD assistant explains possible causes of dizziness",
+  "C2 the GOOD assistant suggests standing up slowly",
+  "C3 the GOOD assistant advises consulting a doctor for severe symptoms",
+  "C4 the BAD assistant gives a definitive diagnosis",
+  "C5 the example demonstrates the avoid-regulated-advice rule"
+ ],
+ "acts": [
+  "explain_possible_causes(A)",
+  "suggest_standing_slowly(A)",
+  "advise_consult_doctor(A)",
+  "give_definitive_diagnosis(A)"
+ ],
+ "concepts": [
+  {
+   "name": "explain_possible_causes",
+   "arity": 1,
+   "gloss": "assistant lists multiple possible causes for the symptom",
+   "licence": "textual",
+   "cites": "l1707_1973_n006",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "suggest_standing_slowly",
+   "arity": 1,
+   "gloss": "assistant recommends a specific precaution",
+   "licence": "textual",
+   "cites": "l1707_1973_n006",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "advise_consult_doctor",
+   "arity": 1,
+   "gloss": "assistant tells user to seek professional care under stated conditions",
+   "licence": "textual",
+   "cites": "l1707_1973_n006",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "give_definitive_diagnosis",
+   "arity": 1,
+   "gloss": "assistant states a single condition as fact",
+   "licence": "textual",
+   "cites": "l1707_1973_n006",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "severe_symptoms",
+   "arity": 1,
+   "gloss": "symptoms described as severe in the case",
+   "licence": "textual",
+   "cites": "l1707_1973_n006",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "avoid_regulated_advice_rule",
+   "arity": 0,
+   "gloss": "rule that assistant equips users with information without definitive regulated advice and includes disclaimer",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example demonstrates this rule, so the rule is presupposed",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant explains possible causes of dizziness",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1707_1973_n006",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "explain_possible_causes(A)",
+   "body": null
+  },
+  {
+   "read_back": "the assistant suggests standing up slowly",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1707_1973_n006",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "suggest_standing_slowly(A)",
+   "body": null
+  },
+  {
+   "read_back": "the assistant advises consulting a doctor for severe symptoms",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1707_1973_n006",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "advise_consult_doctor(A)",
+   "body": "severe_symptoms(S)"
+  },
+  {
+   "read_back": "the assistant must not give a definitive diagnosis",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1707_1973_n006",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "give_definitive_diagnosis(A)",
+   "body": null
+  }
+ ],
+ "beats": [],
+ "defines": [
+  {
+   "licence": "textual",
+   "cites": "l1707_1973_n006",
+   "inference": null,
+   "toggleable": false,
+   "kind": "example",
+   "term": "avoid_regulated_advice_rule"
+  }
+ ],
+ "closure": [
+  {
+   "act_class": "explain_possible_causes",
+   "closure": "cepa",
+   "reason": "the span shows the GOOD assistant doing it and is silent on prohibition"
+  },
+  {
+   "act_class": "suggest_standing_slowly",
+   "closure": "cepa",
+   "reason": "the span shows the GOOD assistant doing it and is silent on prohibition"
+  },
+  {
+   "act_class": "advise_consult_doctor",
+   "closure": "cepa",
+   "reason": "the span shows the GOOD assistant doing it and is silent on prohibition"
+  },
+  {
+   "act_class": "give_definitive_diagnosis",
+   "closure": "cnpa",
+   "reason": "the span explicitly marks it BAD, so silence on permission means prohibition"
+  }
+ ],
+ "requires": [
+  "avoid_regulated_advice_rule/0"
+ ],
+ "inputs": [
+  "explain_possible_causes/1",
+  "suggest_standing_slowly/1",
+  "advise_consult_doctor/1",
+  "give_definitive_diagnosis/1",
+  "severe_symptoms/1"
+ ],
+ "forbid_body": []
+}

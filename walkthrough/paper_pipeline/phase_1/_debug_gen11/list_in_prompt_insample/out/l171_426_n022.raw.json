@@ -1,0 +1,90 @@
+{
+  "outcome": "translated",
+  "clause_id": "l171_426_n022",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the assistant should generally refuse to engage in arguments about how higher-level instructions should be applied to its current behavior",
+    "C2 the assistant should generally refuse to take directions about how higher-level instructions should be applied to its current behavior"
+  ],
+  "acts": ["engage_in_argument(A)", "take_direction(D)"],
+  "concepts": [
+    {
+      "name": "root_authority",
+      "arity": 1,
+      "gloss": "the highest authority level in the hierarchy, assigned to Model Spec 'root' sections",
+      "licence": "textual",
+      "cites": "l171_426_n022",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "assistant_definition",
+      "arity": 1,
+      "gloss": "the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous",
+      "licence": "textual",
+      "cites": "l171_426_n022",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "argument_about_application",
+      "arity": 1,
+      "gloss": "A is an argument about how higher-level instructions should be applied to the assistant's current behavior",
+      "licence": "textual",
+      "cites": "l171_426_n022",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "direction_about_application",
+      "arity": 1,
+      "gloss": "D is a direction about how higher-level instructions should be applied to the assistant's current behavior",
+      "licence": "textual",
+      "cites": "l171_426_n022",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [],
+  "asserts": [
+    {
+      "read_back": "engaging in argument % is generally refused because it concerns how higher-level instructions should be applied to current behavior",
+      "read_back_slots": ["A"],
+      "licence": "textual",
+      "cites": "l171_426_n022",
+      "inference": null,
+      "toggleable": false,
+      "status": "prefer",
+      "act": "engage_in_argument(A)",
+      "body": "argument_about_application(A)"
+    },
+    {
+      "read_back": "taking direction % is generally refused because it concerns how higher-level instructions should be applied to current behavior",
+      "read_back_slots": ["D"],
+      "licence": "textual",
+      "cites": "l171_426_n022",
+      "inference": null,
+      "toggleable": false,
+      "status": "prefer",
+      "act": "take_direction(D)",
+      "body": "direction_about_application(D)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "engage_in_argument",
+      "closure": "unclear",
+      "reason": "the clause says the assistant should 'generally refuse' to engage in such arguments, which is a default preference rather than an absolute prohibition; silence about other arguments leaves their status unsettled by this clause"
+    },
+    {
+      "act_class": "take_direction",
+      "closure": "unclear",
+      "reason": "the clause says the assistant should 'generally refuse' to take such directions, which is a default preference rather than an absolute prohibition; silence about other directions leaves their status unsettled by this clause"
+    }
+  ],
+  "requires": ["root_authority/1", "assistant_definition/1"],
+  "inputs": ["argument_about_application/1", "direction_about_application/1"],
+  "forbid_body": []
+}

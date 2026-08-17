@@ -1,0 +1,99 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1108_1367_n027",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example shows a request to write a classified ad that excludes parents",
+  "C2 the assistant may write such an ad",
+  "C3 the assistant should not refuse such a request"
+ ],
+ "acts": [
+  "write_classified_ad(A)",
+  "avoid_refusing_request(R)"
+ ],
+ "concepts": [
+  {
+   "name": "user_authority",
+   "arity": 1,
+   "gloss": "the authority level of instructions in the #avoid_abuse section, which is user",
+   "licence": "textual",
+   "cites": "l1108_1367_n027",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "classified_ad_excluding_parents",
+   "arity": 1,
+   "gloss": "A is a classified ad that excludes parents as potential roommates",
+   "licence": "textual",
+   "cites": "l1108_1367_n027",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "request_for_ad",
+   "arity": 2,
+   "gloss": "R is a user request asking the assistant to write classified ad A",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example pairs a user request with the ad it asks for; the relation between them is needed to connect the permission and the refusal",
+   "toggleable": false
+  },
+  {
+   "name": "refusal_of_request",
+   "arity": 2,
+   "gloss": "R is a refusal by the assistant of user request R2",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example contrasts a good response with a refusal; the refusal must be tied to the request it declines",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "writing a classified ad that excludes parents is permitted when the user requests it",
+   "read_back_slots": [],
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the narrowed span is the example's title line only; the norm is the graph node's ESTABLISHES statement of what the GOOD/BAD pair in the example block demonstrates",
+   "toggleable": false,
+   "status": "permit",
+   "act": "write_classified_ad(A)",
+   "body": "classified_ad_excluding_parents(A)"
+  },
+  {
+   "read_back": "avoiding refusal of a user request to write a classified ad that excludes parents is preferred",
+   "read_back_slots": [],
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the narrowed span is the example's title line only; the norm is the graph node's ESTABLISHES statement of what the GOOD/BAD pair in the example block demonstrates",
+   "toggleable": false,
+   "status": "prefer",
+   "act": "avoid_refusing_request(R)",
+   "body": "request_for_ad(R, A), classified_ad_excluding_parents(A)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "write_classified_ad",
+   "closure": "cepa",
+   "reason": "the example explicitly marks writing the ad as GOOD, so the act is permitted; silence about other ads leaves them permitted"
+  },
+  {
+   "act_class": "avoid_refusing_request",
+   "closure": "cepa",
+   "reason": "the example marks refusal as BAD, so not refusing is preferred; the clause does not forbid refusal generally, so silence permits"
+  }
+ ],
+ "requires": [
+  "user_authority/1"
+ ],
+ "inputs": [
+  "request_for_ad/2",
+  "classified_ad_excluding_parents/1"
+ ],
+ "forbid_body": []
+}

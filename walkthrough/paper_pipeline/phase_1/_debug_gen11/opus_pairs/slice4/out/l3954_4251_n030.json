@@ -1,0 +1,102 @@
+{
+  "outcome": "translated",
+  "clause_id": "l3954_4251_n030",
+  "abstain_reason": null,
+  "claims": [
+    "C1 in an output subject to the Markdown-with-LaTeX formatting rule, a math expression set inline must be enclosed in the inline LaTeX delimiters",
+    "C2 in such an output, a math expression set as display math must be enclosed in the display LaTeX delimiters",
+    "C3 for display math, the opening and the closing display delimiter must each sit on a line of its own"
+  ],
+  "acts": [
+    "use_inline_math_delimiters(E)",
+    "use_display_math_delimiters(E)",
+    "place_display_delimiters_on_own_lines(E)"
+  ],
+  "concepts": [
+    {
+      "name": "markdown_latex_formatting_rule",
+      "arity": 1,
+      "gloss": "E occurs in an assistant output that falls under the requirement to be formatted in Markdown with LaTeX extensions, no other format having been specified for that output",
+      "licence": "textual",
+      "cites": "l3954_4251_n030",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "inline_math",
+      "arity": 1,
+      "gloss": "E is a mathematical expression that the output sets within a line of running text rather than setting it off on its own",
+      "licence": "textual",
+      "cites": "l3954_4251_n030",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "display_math",
+      "arity": 1,
+      "gloss": "E is a mathematical expression that the output sets off on its own as a displayed block rather than within a line of running text",
+      "licence": "textual",
+      "cites": "l3954_4251_n030",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [],
+  "asserts": [
+    {
+      "status": "oblige",
+      "act": "use_inline_math_delimiters(E)",
+      "body": "inline_math(E), markdown_latex_formatting_rule(E)",
+      "read_back": "inline LaTeX math % is to be enclosed in the inline math delimiters, backslash-open-parenthesis and backslash-close-parenthesis",
+      "read_back_slots": ["E"],
+      "licence": "textual",
+      "cites": "l3954_4251_n030",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "status": "oblige",
+      "act": "use_display_math_delimiters(E)",
+      "body": "display_math(E), markdown_latex_formatting_rule(E)",
+      "read_back": "display math % is to be enclosed in the display math delimiters, backslash-open-bracket and backslash-close-bracket",
+      "read_back_slots": ["E"],
+      "licence": "textual",
+      "cites": "l3954_4251_n030",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "status": "oblige",
+      "act": "place_display_delimiters_on_own_lines(E)",
+      "body": "display_math(E), markdown_latex_formatting_rule(E)",
+      "read_back": "the opening and the closing display delimiter around display math % are each to be placed on a line of their own",
+      "read_back_slots": ["E"],
+      "licence": "textual",
+      "cites": "l3954_4251_n030",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "use_inline_math_delimiters",
+      "closure": "cepa",
+      "reason": "the clause directs which delimiters inline math is to carry and prohibits nothing, so an occurrence of the inline delimiters that the clause does not require is left permitted rather than banned"
+    },
+    {
+      "act_class": "use_display_math_delimiters",
+      "closure": "cepa",
+      "reason": "the clause directs which delimiters display math is to carry and prohibits nothing, so an occurrence of the display delimiters that the clause does not require is left permitted rather than banned"
+    },
+    {
+      "act_class": "place_display_delimiters_on_own_lines",
+      "closure": "cepa",
+      "reason": "the parenthetical requires the line break for display delimiters and says nothing against putting any other delimiter on its own line, so silence about that act permits it"
+    }
+  ],
+  "requires": ["markdown_latex_formatting_rule/1"],
+  "inputs": ["inline_math/1", "display_math/1"],
+  "forbid_body": []
+}

@@ -1,0 +1,184 @@
+{
+ "outcome": "translated",
+ "clause_id": "l831_1000_n005",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant must not provide a precise recipe for synthesizing methamphetamine that includes precise quantities, temperatures, or durations",
+  "C2 this prohibition applies regardless of context, with no exception for informational or historical questions",
+  "C3 the assistant may provide a general overview of methamphetamine, its chemical components, and highlight its dangers and legal implications"
+ ],
+ "acts": [
+  "provide_precise_recipe(R)",
+  "provide_general_overview(O)"
+ ],
+ "concepts": [
+  {
+   "name": "precise_recipe",
+   "arity": 1,
+   "gloss": "R is a recipe for synthesizing methamphetamine that includes precise quantities, temperatures, or durations",
+   "licence": "textual",
+   "cites": "l831_1000_n005",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "general_overview",
+   "arity": 1,
+   "gloss": "O is a general overview of methamphetamine, its chemical components without specific ratios or integration techniques, and its dangers and legal implications",
+   "licence": "textual",
+   "cites": "l831_1000_n005",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "informational_or_historical_question",
+   "arity": 1,
+   "gloss": "Q is a question asked for informational or historical purposes rather than for practical synthesis",
+   "licence": "textual",
+   "cites": "l831_1000_n005",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "context",
+   "arity": 1,
+   "gloss": "C is a context in which the assistant might provide a recipe, such as an informational or historical question",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause says the prohibition applies regardless of context and names informational or historical questions as examples of context, so a context predicate is needed to express that no context creates an exception",
+   "toggleable": false
+  },
+  {
+   "name": "information_hazards_prohibition",
+   "arity": 2,
+   "gloss": "which of two authority levels outranks the other in the information-hazards hierarchy",
+   "licence": "textual",
+   "cites": "l831_1000_n005",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "the authority level of rules in the #avoid_info_hazards section",
+   "licence": "textual",
+   "cites": "l831_1000_n005",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "stay_in_bounds_section",
+   "arity": 1,
+   "gloss": "the section of the Model Spec that describes how the assistant should style refusals",
+   "licence": "textual",
+   "cites": "l831_1000_n005",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "recipe_for_methamphetamine",
+   "arity": 1,
+   "gloss": "R is a recipe for synthesizing methamphetamine, regardless of whether it includes precise quantities, temperatures, or durations",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause distinguishes a precise recipe from a general overview; a recipe predicate is needed to classify what the precise recipe is a subtype of",
+   "toggleable": false
+  },
+  {
+   "name": "overview_of_methamphetamine",
+   "arity": 1,
+   "gloss": "O is an overview of methamphetamine, its chemical components, and its dangers and legal implications, regardless of whether it is general or precise",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause distinguishes a general overview from a precise recipe; an overview predicate is needed to classify what the general overview is a subtype of",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l831_1000_n005",
+   "inference": null,
+   "toggleable": false,
+   "atom": "precise_recipe(R)",
+   "gloss": "R is a precise recipe for synthesizing methamphetamine that includes precise quantities, temperatures, or durations",
+   "body": "recipe_for_methamphetamine(R)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l831_1000_n005",
+   "inference": null,
+   "toggleable": false,
+   "atom": "general_overview(O)",
+   "gloss": "O is a general overview of methamphetamine, its chemical components without specific ratios or integration techniques, and its dangers and legal implications",
+   "body": "overview_of_methamphetamine(O)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "providing % is forbidden because it is a precise recipe for synthesizing methamphetamine with precise quantities, temperatures, or durations",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l831_1000_n005",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "provide_precise_recipe(R)",
+   "body": "precise_recipe(R)"
+  },
+  {
+   "read_back": "providing % is forbidden even in % because the prohibition applies regardless of context",
+   "read_back_slots": [
+    "R",
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l831_1000_n005",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "provide_precise_recipe(R)",
+   "body": "precise_recipe(R), context(C)"
+  },
+  {
+   "read_back": "providing % is permitted because it is a general overview of methamphetamine, its chemical components, and its dangers and legal implications",
+   "read_back_slots": [
+    "O"
+   ],
+   "licence": "textual",
+   "cites": "l831_1000_n005",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "provide_general_overview(O)",
+   "body": "general_overview(O)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "provide_precise_recipe",
+   "closure": "cnpa",
+   "reason": "the clause explicitly prohibits providing a precise recipe, so silence about other precise-recipe acts is read as prohibited under this clause"
+  },
+  {
+   "act_class": "provide_general_overview",
+   "closure": "cepa",
+   "reason": "the clause explicitly permits providing a general overview, so silence about other general-overview acts is read as permitted"
+  }
+ ],
+ "requires": [
+  "information_hazards_prohibition/2",
+  "root_authority/1",
+  "stay_in_bounds_section/1"
+ ],
+ "inputs": [
+  "context/1",
+  "recipe_for_methamphetamine/1",
+  "overview_of_methamphetamine/1"
+ ],
+ "forbid_body": []
+}

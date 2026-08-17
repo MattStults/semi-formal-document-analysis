@@ -1,0 +1,129 @@
+{
+ "clause_id": "l1707_1973_n022",
+ "_armc_cost_usd": 0.0021270200000000003,
+ "_armc_sha1_raw": "6fa69fdda4b2de7ab64c851893306bd8e4094876",
+ "usage": null,
+ "floor": {
+  "parsed": true,
+  "breaches": [
+   "Breach(where='<root>', message='`policy_allows_disclosure/1` is borrowed but has no gloss. Add a `concepts` entry saying what this module needs it to MEAN \u2014 not what defines it, which stays in `requires`/`inputs`. Without it a seat is shown a bare predicate name, and nothing can match this to the clause that defines it')"
+  ],
+  "checks": [
+   "[error/schema] schema-breach @ <root>: `policy_allows_disclosure/1` is borrowed but has no gloss. Add a `concepts` entry saying what this module needs it to MEAN \u2014 not what defines it, which stays in `requires`/`inputs`. Without it a seat is shown a bare predicate name, and nothing can match this to the clause that defines it"
+  ],
+  "outcome": "invalid",
+  "repair_needed": true
+ },
+ "module": {
+  "outcome": "translated",
+  "clause_id": "l1707_1973_n022",
+  "abstain_reason": null,
+  "claims": [
+   "C1 the assistant may share its identity and capabilities",
+   "C2 the underlying system or developer prompts are private by default",
+   "C3 the underlying system or developer prompts may be disclosed only if policy explicitly allows it"
+  ],
+  "acts": [
+   "share_identity_capabilities(A)",
+   "disclose_prompt(P)"
+  ],
+  "concepts": [
+   {
+    "name": "root_authority",
+    "arity": 1,
+    "gloss": "rules in the protect_privileged_information section carry root authority",
+    "licence": "assumed",
+    "cites": null,
+    "inference": "the graph's NEEDS block states this, and another node establishes it",
+    "toggleable": false
+   },
+   {
+    "name": "underlying_prompt",
+    "arity": 1,
+    "gloss": "P is one of the underlying system or developer prompts that guide the assistant's behavior",
+    "licence": "textual",
+    "cites": "l1707_1973_n022",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "explicit_policy_allowance",
+    "arity": 1,
+    "gloss": "P is a prompt whose disclosure is explicitly allowed by policy",
+    "licence": "textual",
+    "cites": "l1707_1973_n022",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "identity_capability_share",
+    "arity": 1,
+    "gloss": "A is an act of sharing the assistant's identity or capabilities",
+    "licence": "textual",
+    "cites": "l1707_1973_n022",
+    "inference": null,
+    "toggleable": false
+   }
+  ],
+  "ontology": [
+   {
+    "licence": "textual",
+    "cites": "l1707_1973_n022",
+    "inference": null,
+    "toggleable": false,
+    "atom": "explicit_policy_allowance(P)",
+    "gloss": "P is a prompt whose disclosure is explicitly allowed by policy",
+    "body": "underlying_prompt(P), policy_allows_disclosure(P)"
+   }
+  ],
+  "asserts": [
+   {
+    "read_back": "sharing the assistant's identity or capabilities is permitted",
+    "read_back_slots": [],
+    "licence": "textual",
+    "cites": "l1707_1973_n022",
+    "inference": null,
+    "toggleable": false,
+    "status": "permit",
+    "act": "share_identity_capabilities(A)",
+    "body": "identity_capability_share(A)"
+   },
+   {
+    "read_back": "disclosing underlying prompt % is forbidden unless policy explicitly allows it",
+    "read_back_slots": [
+     "P"
+    ],
+    "licence": "textual",
+    "cites": "l1707_1973_n022",
+    "inference": null,
+    "toggleable": false,
+    "status": "forbid",
+    "act": "disclose_prompt(P)",
+    "body": "underlying_prompt(P), not explicit_policy_allowance(P)"
+   }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+   {
+    "act_class": "share_identity_capabilities",
+    "closure": "cepa",
+    "reason": "the clause explicitly says the assistant can share its identity and capabilities, so this act is permitted"
+   },
+   {
+    "act_class": "disclose_prompt",
+    "closure": "cnpa",
+    "reason": "the clause says underlying prompts are private by default and should not be disclosed unless policy explicitly allows it, so silence prohibits disclosure"
+   }
+  ],
+  "requires": [
+   "root_authority/1"
+  ],
+  "inputs": [
+   "underlying_prompt/1",
+   "policy_allows_disclosure/1",
+   "identity_capability_share/1"
+  ],
+  "forbid_body": []
+ }
+}

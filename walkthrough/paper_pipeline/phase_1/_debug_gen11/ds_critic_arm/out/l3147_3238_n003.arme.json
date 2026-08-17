@@ -1,0 +1,36 @@
+{
+ "clause_id": "l3147_3238_n003",
+ "calls": [
+  {
+   "phase": "critic",
+   "raw": "E1: PASS\nE2: FIX \u2014 In `closure`, change all three `\"closure\": \"cepa\"` values to `\"unclear\"`, because the clause obliges these acts only when confidence is lacking and takes no position outside that trigger.\nE3: PASS\nE4: PASS\nE5: PASS\nE6: PASS\nE7: PASS\nE8: PASS\nE9: PASS\nE10: PASS\nE11: FIX \u2014 In `asserts`, replace the three separate `oblige` entries on the identical body `lacks_sufficient_confidence(R)` with one act over a disjunction, since satisfying one disjunct (tool, hedge, or explain) satisfies the span.",
+   "sha1": "3fa90d41d15cea45ec1094b2b48ab50329c77c4a",
+   "cost_usd": 0.00292334,
+   "usage": null,
+   "sent_chars": 17894,
+   "error": null,
+   "floor": null
+  },
+  {
+   "phase": "repair",
+   "raw": "{\n  \"outcome\": \"translated\",\n  \"clause_id\": \"l3147_3238_n003\",\n  \"abstain_reason\": null,\n  \"claims\": [\n    \"C1: If the assistant lacks sufficient confidence in its response, it should use a tool to gather more information.\",\n    \"C2: If the assistant lacks sufficient confidence in its response, it should hedge its answer appropriately.\",\n    \"C3: If the assistant lacks sufficient confidence in its response, it should explain that it can't give a confident answer.\",\n    \"C4: The obligation in C1-C3 applies when the assistant lacks sufficient confidence in its response.\"\n  ],\n  \"acts\": [\n    \"use_tool_to_gather_info(R)\",\n    \"hedge_answer(R)\",\n    \"explain_cannot_answer_confidently(R)\"\n  ],\n  \"concepts\": [\n    {\n      \"name\": \"assistant_definition\",\n      \"arity\": 1,\n      \"gloss\": \"A is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document.\",\n      \"licence\": \"textual\",\n      \"cites\": \"l3147_3238_n003\",\n      \"inference\": null,\n      \"toggleable\": false\n    },\n    {\n      \"name\": \"user_authority\",\n      \"arity\": 1,\n      \"gloss\": \"R is a rule in a section marked authority=user, carrying user-level instruction authority.\",\n      \"licence\": \"textual\",\n      \"cites\": \"l3147_3238_n003\",\n      \"inference\": null,\n      \"toggleable\": false\n    },\n    {\n      \"name\": \"lacks_sufficient_confidence\",\n      \"arity\": 1,\n      \"gloss\": \"The assistant does not have enough confidence in its response to give it without qualification.\",\n      \"licence\": \"textual\",\n      \"cites\": \"l3147_3238_n003\",\n      \"inference\": null,\n      \"toggleable\": false\n    },\n    {\n      \"name\": \"response\",\n      \"arity\": 1,\n      \"gloss\": \"R is a response the assistant is considering giving to the user.\",\n      \"licence\": \"assumed\",\n      \"cites\": null,\n      \"inference\": \"The clause speaks of 'its response'; a response term is needed to index the acts.\",\n      \"toggleable\": false\n    }\n  ],\n  \"ontology\": [],\n  \"asserts\": [\n    {\n      \"read_back\": \"If the assistant lacks sufficient confidence in response %, it should use a tool to gather more information, hedge its answer appropriately, or explain that it can't give a confident answer.\",\n      \"read_back_slots\": [\"R\"],\n      \"licence\": \"textual\",\n      \"cites\": \"l3147_3238_n003\",\n      \"inference\": null,\n      \"toggleable\": false,\n      \"status\": \"oblige\",\n      \"act\": \"use_tool_to_gather_info(R)\",\n      \"body\": \"lacks_sufficient_confidence(R)\"\n    }\n  ],\n  \"beats\": [],\n  \"defines\": [],\n  \"closure\": [\n    {\n      \"act_class\": \"use_tool_to_gather_info\",\n      \"closure\": \"unclear\",\n      \"reason\": \"The clause obliges using a tool only when confidence is lacking; it takes no position outside that trigger.\"\n    },\n    {\n      \"act_class\": \"hedge_answer\",\n      \"closure\": \"unclear\",\n      \"reason\": \"The clause obliges hedging only when confidence is lacking; it takes no position outside that trigger.\"\n    },\n    {\n      \"act_class\": \"explain_cannot_answer_confidently\",\n      \"closure\": \"unclear\",\n      \"reason\": \"The clause obliges explaining inability only when confidence is lacking; it takes no position outside that trigger.\"\n    }\n  ],\n  \"requires\": [\n    \"assistant_definition/1\",\n    \"user_authority/1\"\n  ],\n  \"inputs\": [\n    \"lacks_sufficient_confidence/1\",\n    \"response/1\"\n  ],\n  \"forbid_body\": []\n}",
+   "sha1": "ce4b948cb2f7597ee3bc46a3d7d8769f5045f7ed",
+   "cost_usd": 0.00192486,
+   "usage": null,
+   "sent_chars": 7572,
+   "error": null,
+   "floor": {
+    "parsed": true,
+    "breaches": [],
+    "checks": [
+     "[note/link] requires-unprovided @ l3147_3238_n003.lp: `assistant_definition/1` is declared in `%% requires:` and no module in this link scope defines it",
+     "[note/link] requires-unprovided @ l3147_3238_n003.lp: `user_authority/1` is declared in `%% requires:` and no module in this link scope defines it",
+     "[note/link] concept-declared @ l3147_3238_n003.lp: `lacks_sufficient_confidence/1` is head-less and declared in the concept table by l3147_3238_n003",
+     "[note/link] situation-input @ l3147_3238_n003.lp: `lacks_sufficient_confidence/1` is head-less and declared as a situation input"
+    ],
+    "outcome": "translated",
+    "repair_needed": false
+   }
+  }
+ ]
+}

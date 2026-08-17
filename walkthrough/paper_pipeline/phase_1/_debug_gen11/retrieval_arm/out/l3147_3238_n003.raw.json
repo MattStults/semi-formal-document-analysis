@@ -1,0 +1,135 @@
+{
+  "outcome": "translated",
+  "clause_id": "l3147_3238_n003",
+  "abstain_reason": null,
+  "claims": [
+    "C1: If the assistant lacks sufficient confidence in its response, it should use a tool to gather more information.",
+    "C2: If the assistant lacks sufficient confidence in its response, it should hedge its answer appropriately.",
+    "C3: If the assistant lacks sufficient confidence in its response, it should explain that it can't give a confident answer.",
+    "C4: The three options are alternatives: the assistant should do at least one of them, not all of them."
+  ],
+  "acts": [
+    "use_tool_to_gather_info(A)",
+    "hedge_answer(A)",
+    "explain_cannot_answer_confidently(A)"
+  ],
+  "concepts": [
+    {
+      "name": "assistant_definition",
+      "arity": 1,
+      "gloss": "A is the assistant entity that the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document.",
+      "licence": "textual",
+      "cites": "l3147_3238_n003",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "user_authority",
+      "arity": 1,
+      "gloss": "R is a rule that carries user-level instruction authority because it is in a section marked authority=user.",
+      "licence": "textual",
+      "cites": "l3147_3238_n003",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "lacks_sufficient_confidence",
+      "arity": 1,
+      "gloss": "A lacks sufficient confidence in its response, meaning it is not sufficiently sure that its response is correct or appropriate.",
+      "licence": "textual",
+      "cites": "l3147_3238_n003",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "use_tool_to_gather_info",
+      "arity": 1,
+      "gloss": "A uses a tool to gather more information before responding.",
+      "licence": "textual",
+      "cites": "l3147_3238_n003",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "hedge_answer",
+      "arity": 1,
+      "gloss": "A hedges its answer appropriately, expressing uncertainty or qualification in its response.",
+      "licence": "textual",
+      "cites": "l3147_3238_n003",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "explain_cannot_answer_confidently",
+      "arity": 1,
+      "gloss": "A explains that it cannot give a confident answer.",
+      "licence": "textual",
+      "cites": "l3147_3238_n003",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [],
+  "asserts": [
+    {
+      "read_back": "if the assistant lacks sufficient confidence in its response, it should use a tool to gather more information",
+      "read_back_slots": ["A"],
+      "licence": "textual",
+      "cites": "l3147_3238_n003",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "use_tool_to_gather_info(A)",
+      "body": "assistant_definition(A), lacks_sufficient_confidence(A)"
+    },
+    {
+      "read_back": "if the assistant lacks sufficient confidence in its response, it should hedge its answer appropriately",
+      "read_back_slots": ["A"],
+      "licence": "textual",
+      "cites": "l3147_3238_n003",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "hedge_answer(A)",
+      "body": "assistant_definition(A), lacks_sufficient_confidence(A)"
+    },
+    {
+      "read_back": "if the assistant lacks sufficient confidence in its response, it should explain that it can't give a confident answer",
+      "read_back_slots": ["A"],
+      "licence": "textual",
+      "cites": "l3147_3238_n003",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "explain_cannot_answer_confidently(A)",
+      "body": "assistant_definition(A), lacks_sufficient_confidence(A)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "use_tool_to_gather_info",
+      "closure": "cepa",
+      "reason": "The clause obliges using a tool when confidence is lacking, but is silent about using a tool when confidence is sufficient; silence permits that act."
+    },
+    {
+      "act_class": "hedge_answer",
+      "closure": "cepa",
+      "reason": "The clause obliges hedging when confidence is lacking, but is silent about hedging when confidence is sufficient; silence permits that act."
+    },
+    {
+      "act_class": "explain_cannot_answer_confidently",
+      "closure": "cepa",
+      "reason": "The clause obliges explaining inability when confidence is lacking, but is silent about explaining when confidence is sufficient; silence permits that act."
+    }
+  ],
+  "requires": [
+    "assistant_definition/1",
+    "user_authority/1"
+  ],
+  "inputs": [
+    "lacks_sufficient_confidence/1"
+  ],
+  "forbid_body": []
+}

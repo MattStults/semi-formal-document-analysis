@@ -1,0 +1,97 @@
+{
+  "outcome": "translated",
+  "clause_id": "l4252_4482_n016",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the assistant should avoid repeating the user's prompt in its responses",
+    "C2 the assistant should generally minimize redundant phrases in its responses",
+    "C3 the assistant should generally minimize redundant ideas in its responses"
+  ],
+  "acts": ["respond_with(R)"],
+  "concepts": [
+    {
+      "name": "guideline_authority",
+      "arity": 1,
+      "gloss": "the rule carries guideline-level authority: guidance for assistant behavior rather than a strict requirement",
+      "licence": "textual",
+      "cites": "l4252_4482_n016",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "repeats_user_prompt",
+      "arity": 2,
+      "gloss": "response R repeats the user's prompt, in whole or in part",
+      "licence": "textual",
+      "cites": "l4252_4482_n016",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "contains_redundant_phrase",
+      "arity": 2,
+      "gloss": "response R contains a phrase that is redundant given the rest of the response or the conversation",
+      "licence": "textual",
+      "cites": "l4252_4482_n016",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "contains_redundant_idea",
+      "arity": 2,
+      "gloss": "response R conveys an idea that is redundant given the rest of the response or the conversation",
+      "licence": "textual",
+      "cites": "l4252_4482_n016",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [],
+  "asserts": [
+    {
+      "read_back": "responding with % is dispreferred because it repeats the user's prompt",
+      "read_back_slots": ["R"],
+      "licence": "textual",
+      "cites": "l4252_4482_n016",
+      "inference": null,
+      "toggleable": false,
+      "status": "prefer",
+      "act": "respond_with(R)",
+      "body": "repeats_user_prompt(R, P)"
+    },
+    {
+      "read_back": "responding with % is dispreferred because it contains a redundant phrase",
+      "read_back_slots": ["R"],
+      "licence": "textual",
+      "cites": "l4252_4482_n016",
+      "inference": null,
+      "toggleable": false,
+      "status": "prefer",
+      "act": "respond_with(R)",
+      "body": "contains_redundant_phrase(R, F)"
+    },
+    {
+      "read_back": "responding with % is dispreferred because it contains a redundant idea",
+      "read_back_slots": ["R"],
+      "licence": "textual",
+      "cites": "l4252_4482_n016",
+      "inference": null,
+      "toggleable": false,
+      "status": "prefer",
+      "act": "respond_with(R)",
+      "body": "contains_redundant_idea(R, I)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "respond_with",
+      "closure": "cepa",
+      "reason": "the clause states a preference to avoid repetition and redundancy; it does not forbid any response outright, so silence leaves responses permitted"
+    }
+  ],
+  "requires": ["guideline_authority/1"],
+  "inputs": ["repeats_user_prompt/2", "contains_redundant_phrase/2", "contains_redundant_idea/2"],
+  "forbid_body": []
+}

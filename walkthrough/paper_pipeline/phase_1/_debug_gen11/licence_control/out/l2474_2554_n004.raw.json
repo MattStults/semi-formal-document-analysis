@@ -1,0 +1,173 @@
+{
+  "outcome": "translated",
+  "clause_id": "l2474_2554_n004",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the assistant must not lie by commission when interacting with third parties on the user's behalf, unless the user explicitly instructed that lie",
+    "C2 lies of omission on the user's behalf may be acceptable when they align with general social norms and expectations",
+    "C3 the assistant is expected to be honest and forthright, clarifying uncertainty whenever needed and avoiding deceptive behavior"
+  ],
+  "acts": [
+    "lie_by_commission(L)",
+    "lie_by_omission(L)",
+    "clarify_uncertainty(U)"
+  ],
+  "concepts": [
+    {
+      "name": "third_party_interaction",
+      "arity": 1,
+      "gloss": "an interaction the assistant conducts with a third party on behalf of the user, such as a tool call or an artifact exchange",
+      "licence": "textual",
+      "cites": "l2474_2554_n004",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "lie_by_commission",
+      "arity": 1,
+      "gloss": "an act of stating something false to a third party as part of an interaction on the user's behalf",
+      "licence": "textual",
+      "cites": "l2474_2554_n004",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "lie_by_omission",
+      "arity": 1,
+      "gloss": "an act of withholding information from a third party as part of an interaction on the user's behalf",
+      "licence": "textual",
+      "cites": "l2474_2554_n004",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "explicit_user_instruction",
+      "arity": 2,
+      "gloss": "the user explicitly instructed the assistant to perform this specific act in this interaction",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the exception to the lie-by-commission prohibition requires a user instruction that explicitly covers the act; the clause names the condition without defining its shape",
+      "toggleable": false
+    },
+    {
+      "name": "aligns_with_social_norms",
+      "arity": 1,
+      "gloss": "the lie of omission conforms to general social norms and expectations for such interactions",
+      "licence": "textual",
+      "cites": "l2474_2554_n004",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "uncertainty",
+      "arity": 1,
+      "gloss": "a point of uncertainty in the assistant's knowledge or in the information being conveyed that the assistant should clarify",
+      "licence": "textual",
+      "cites": "l2474_2554_n004",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "deceptive_behavior",
+      "arity": 1,
+      "gloss": "behavior that is deceptive beyond the specific lies of commission or omission addressed by the clause",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause prohibits deceptive behavior generally after addressing two specific forms; this general class is needed to capture the residual prohibition",
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "l2474_2554_n004",
+      "inference": null,
+      "toggleable": false,
+      "atom": "third_party_interaction(I)",
+      "gloss": "I is an interaction with a third party on behalf of the user",
+      "body": null
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "lying by commission in interaction % is forbidden unless the user explicitly instructed that lie",
+      "read_back_slots": ["I"],
+      "licence": "textual",
+      "cites": "l2474_2554_n004",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "lie_by_commission(L)",
+      "body": "third_party_interaction(I), lie_by_commission(L), occurs_in(L, I), not explicit_user_instruction(L, I)"
+    },
+    {
+      "read_back": "lying by omission in interaction % is permitted when it aligns with general social norms and expectations",
+      "read_back_slots": ["I"],
+      "licence": "textual",
+      "cites": "l2474_2554_n004",
+      "inference": null,
+      "toggleable": false,
+      "status": "permit",
+      "act": "lie_by_omission(L)",
+      "body": "third_party_interaction(I), lie_by_omission(L), occurs_in(L, I), aligns_with_social_norms(L)"
+    },
+    {
+      "read_back": "clarifying uncertainty % is expected whenever the uncertainty arises",
+      "read_back_slots": ["U"],
+      "licence": "textual",
+      "cites": "l2474_2554_n004",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "clarify_uncertainty(U)",
+      "body": "uncertainty(U)"
+    },
+    {
+      "read_back": "engaging in deceptive behavior % is forbidden",
+      "read_back_slots": ["D"],
+      "licence": "textual",
+      "cites": "l2474_2554_n004",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "deceptive_behavior(D)",
+      "body": "deceptive_behavior(D)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "lie_by_commission",
+      "closure": "cnpa",
+      "reason": "the clause states a prohibition on lies of commission with a narrow exception, so silence about a particular lie does not permit it"
+    },
+    {
+      "act_class": "lie_by_omission",
+      "closure": "cepa",
+      "reason": "the clause permits lies of omission when they align with social norms, and does not prohibit them otherwise, so silence permits"
+    },
+    {
+      "act_class": "clarify_uncertainty",
+      "closure": "cepa",
+      "reason": "the clause obliges clarifying uncertainty whenever needed but does not forbid other responses to uncertainty, so silence permits"
+    },
+    {
+      "act_class": "deceptive_behavior",
+      "closure": "cnpa",
+      "reason": "the clause prohibits deceptive behavior generally, so silence about a particular deceptive act does not permit it"
+    }
+  ],
+  "requires": [],
+  "inputs": [
+    "third_party_interaction/1",
+    "lie_by_commission/1",
+    "lie_by_omission/1",
+    "occurs_in/2",
+    "explicit_user_instruction/2",
+    "aligns_with_social_norms/1",
+    "uncertainty/1",
+    "deceptive_behavior/1"
+  ],
+  "forbid_body": []
+}

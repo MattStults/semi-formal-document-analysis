@@ -1,0 +1,58 @@
+{
+  "outcome": "translated",
+  "clause_id": "l1707_1973_n022",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the training-manual analogy establishes that the manual itself should not be disclosed unless policy explicitly allows it",
+    "C2 the same default applies to the assistant: the underlying system or developer prompts are kept private by default",
+    "C3 the assistant can share its identity and capabilities",
+    "C4 the exception to non-disclosure is an explicit policy allowance"
+  ],
+  "acts": ["disclose(D)", "share(S)"],
+  "concepts": [
+    { "name": "root_authority", "arity": 1,
+      "gloss": "the rule carries root authority: it is a top-level rule of the protect_privileged_information section",
+      "licence": "textual", "cites": "l1707_1973_n022", "inference": null, "toggleable": false },
+    { "name": "underlying_prompt", "arity": 1,
+      "gloss": "P is the underlying system or developer prompt of the assistant, as opposed to the assistant's identity or capabilities",
+      "licence": "textual", "cites": "l1707_1973_n022", "inference": null, "toggleable": false },
+    { "name": "identity_or_capability", "arity": 1,
+      "gloss": "S is information about the assistant's identity or capabilities",
+      "licence": "textual", "cites": "l1707_1973_n022", "inference": null, "toggleable": false },
+    { "name": "policy_explicitly_allows", "arity": 1,
+      "gloss": "policy explicitly allows disclosure of the underlying prompt P",
+      "licence": "textual", "cites": "l1707_1973_n022", "inference": null, "toggleable": false },
+    { "name": "training_manual_analogy", "arity": 0,
+      "gloss": "the analogy of a customer-service agent studying a training manual, used to illustrate the default privacy of the underlying prompts",
+      "licence": "textual", "cites": "l1707_1973_n022", "inference": null, "toggleable": false }
+  ],
+  "ontology": [
+    { "licence": "textual", "cites": "l1707_1973_n022", "inference": null, "toggleable": false,
+      "atom": "underlying_prompt(P)",
+      "gloss": "P is an underlying system or developer prompt of the assistant",
+      "body": "underlying_prompt(P)" }
+  ],
+  "asserts": [
+    { "read_back": "disclosing underlying prompt % is forbidden unless policy explicitly allows it",
+      "read_back_slots": ["P"],
+      "licence": "textual", "cites": "l1707_1973_n022", "inference": null, "toggleable": false,
+      "status": "forbid", "act": "disclose(P)",
+      "body": "underlying_prompt(P), not policy_explicitly_allows(P)" },
+    { "read_back": "sharing % is permitted because it concerns the assistant's identity or capabilities",
+      "read_back_slots": ["S"],
+      "licence": "textual", "cites": "l1707_1973_n022", "inference": null, "toggleable": false,
+      "status": "permit", "act": "share(S)",
+      "body": "identity_or_capability(S)" }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    { "act_class": "disclose", "closure": "cnpa",
+      "reason": "the clause states that the underlying prompts should not be disclosed unless policy explicitly allows it, so silence about a particular prompt does not permit disclosure" },
+    { "act_class": "share", "closure": "cepa",
+      "reason": "the clause explicitly permits sharing identity and capabilities, and does not restrict other sharing" }
+  ],
+  "requires": ["root_authority/1"],
+  "inputs": ["underlying_prompt/1", "identity_or_capability/1", "policy_explicitly_allows/1"],
+  "forbid_body": []
+}

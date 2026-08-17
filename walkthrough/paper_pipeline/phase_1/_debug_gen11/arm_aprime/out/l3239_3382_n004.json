@@ -1,0 +1,141 @@
+{
+ "clause_id": "l3239_3382_n004",
+ "_aprime_cost_usd": 0.0018358200000000002,
+ "_aprime_sha1_raw": "3ecae8f4bd40bb1f5c2198dd07e1272e0b278b88",
+ "_aprime_t_start": 1786928851.486567,
+ "_aprime_t_end": 1786928865.7119691,
+ "usage": null,
+ "floor": {
+  "parsed": true,
+  "breaches": [
+   "Breach(where='<root>', message='`alert_user_about_changes/1` is borrowed but has no gloss. Add a `concepts` entry saying what this module needs it to MEAN \u2014 not what defines it, which stays in `requires`/`inputs`. Without it a seat is shown a bare predicate name, and nothing can match this to the clause that defines it')"
+  ],
+  "checks": [
+   "[error/schema] schema-breach @ <root>: `alert_user_about_changes/1` is borrowed but has no gloss. Add a `concepts` entry saying what this module needs it to MEAN \u2014 not what defines it, which stays in `requires`/`inputs`. Without it a seat is shown a bare predicate name, and nothing can match this to the clause that defines it"
+  ],
+  "outcome": "invalid",
+  "repair_needed": true
+ },
+ "module": {
+  "outcome": "translated",
+  "clause_id": "l3239_3382_n004",
+  "abstain_reason": null,
+  "claims": [
+   "C1: In an interactive setting, when the assistant is given a transformation task, the assistant may want to alert the user that changes to the text are warranted.",
+   "C2: This is a permission, not an obligation: the assistant may want to alert, but is not required to do so."
+  ],
+  "acts": [
+   "alert_user_about_changes(A)"
+  ],
+  "concepts": [
+   {
+    "name": "transformation_interactive_alert",
+    "arity": 1,
+    "gloss": "A is an alert to the user that changes to the text are warranted, in the context of a transformation task in an interactive setting",
+    "licence": "textual",
+    "cites": "l3239_3382_n004",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "assistant_definition",
+    "arity": 1,
+    "gloss": "A is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document",
+    "licence": "textual",
+    "cites": "l3239_3382_n004",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "interactive_vs_programmatic_setting",
+    "arity": 1,
+    "gloss": "S is an interactive setting where the assistant is interacting with a human in real time, as opposed to a programmatic setting where output is consumed programmatically",
+    "licence": "textual",
+    "cites": "l3239_3382_n004",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "user_authority",
+    "arity": 1,
+    "gloss": "I is an instruction carrying user-level authority, as established in the #avoid_overstepping section",
+    "licence": "textual",
+    "cites": "l3239_3382_n004",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "transformation_task",
+    "arity": 1,
+    "gloss": "T is a task asking the assistant to transform text, such as translating between languages, adding annotations, or changing formatting",
+    "licence": "textual",
+    "cites": "l3239_3382_n004",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "interactive_setting",
+    "arity": 1,
+    "gloss": "S is an interactive setting where the assistant interacts with a human in real time",
+    "licence": "textual",
+    "cites": "l3239_3382_n004",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "warranted_changes",
+    "arity": 1,
+    "gloss": "C is a set of changes to the text that are warranted, meaning the assistant judges that the user or developer would want them made",
+    "licence": "assumed",
+    "cites": null,
+    "inference": "The clause says the assistant may alert the user that changes are warranted; this requires a notion of what changes are warranted, which is a judgment about the case",
+    "toggleable": false
+   }
+  ],
+  "ontology": [
+   {
+    "licence": "textual",
+    "cites": "l3239_3382_n004",
+    "inference": null,
+    "toggleable": false,
+    "atom": "transformation_interactive_alert(A)",
+    "gloss": "A is an alert that changes to the text are warranted, in the context of a transformation task in an interactive setting",
+    "body": "alert_user_about_changes(A), transformation_task(T), interactive_setting(S), warranted_changes(C)"
+   }
+  ],
+  "asserts": [
+   {
+    "read_back": "In an interactive setting, when given a transformation task, the assistant may alert the user that changes to the text are warranted",
+    "read_back_slots": [],
+    "licence": "textual",
+    "cites": "l3239_3382_n004",
+    "inference": null,
+    "toggleable": false,
+    "status": "permit",
+    "act": "alert_user_about_changes(A)",
+    "body": "transformation_interactive_alert(A)"
+   }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+   {
+    "act_class": "alert_user_about_changes",
+    "closure": "cepa",
+    "reason": "The clause says the assistant 'may want to alert' the user, which is a permission, not an obligation; it does not forbid any alert, so silence about other alerts permits them."
+   }
+  ],
+  "requires": [
+   "assistant_definition/1",
+   "interactive_vs_programmatic_setting/1",
+   "user_authority/1"
+  ],
+  "inputs": [
+   "alert_user_about_changes/1",
+   "transformation_task/1",
+   "interactive_setting/1",
+   "warranted_changes/1"
+  ],
+  "forbid_body": []
+ }
+}

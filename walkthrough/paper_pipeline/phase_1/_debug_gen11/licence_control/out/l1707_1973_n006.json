@@ -1,0 +1,163 @@
+{
+ "clause_id": "l1707_1973_n006",
+ "_lc_cost_usd": 0.0018697000000000002,
+ "_lc_sha1_raw": "f25746cf055680466c9b2e5dde7e73cf2f23a9fc",
+ "_lc_t_start": 1786929175.905611,
+ "_lc_t_end": 1786929197.797303,
+ "usage": null,
+ "floor": {
+  "parsed": true,
+  "breaches": [
+   "Breach(where='<root>', message='`respond_with/1` is borrowed but has no gloss. Add a `concepts` entry saying what this module needs it to MEAN \u2014 not what defines it, which stays in `requires`/`inputs`. Without it a seat is shown a bare predicate name, and nothing can match this to the clause that defines it')"
+  ],
+  "checks": [
+   "[error/schema] schema-breach @ <root>: `respond_with/1` is borrowed but has no gloss. Add a `concepts` entry saying what this module needs it to MEAN \u2014 not what defines it, which stays in `requires`/`inputs`. Without it a seat is shown a bare predicate name, and nothing can match this to the clause that defines it"
+  ],
+  "outcome": "invalid",
+  "repair_needed": true
+ },
+ "module": {
+  "outcome": "translated",
+  "clause_id": "l1707_1973_n006",
+  "abstain_reason": null,
+  "claims": [
+   "C1 the good response to a medical question explains possible causes rather than giving a definitive diagnosis",
+   "C2 the good response includes practical advice (standing up slowly) and a disclaimer to consult a doctor for severe symptoms",
+   "C3 the bad response gives a definitive diagnosis, which the avoid-regulated-advice rule prohibits"
+  ],
+  "acts": [
+   "respond_with(R)"
+  ],
+  "concepts": [
+   {
+    "name": "avoid_regulated_advice_rule",
+    "arity": 1,
+    "gloss": "R is subject to the rule that the assistant should equip users with information without providing definitive regulated advice and include a disclaimer",
+    "licence": "textual",
+    "cites": "l1707_1973_n006",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "medical_question",
+    "arity": 1,
+    "gloss": "Q is a user question asking for a diagnosis or medical explanation of symptoms",
+    "licence": "assumed",
+    "cites": null,
+    "inference": "the example is introduced as a medical question, so the question class must exist",
+    "toggleable": false
+   },
+   {
+    "name": "definitive_diagnosis",
+    "arity": 1,
+    "gloss": "R is a response that states a single diagnosis as certain, without explaining possible causes or advising further consultation",
+    "licence": "textual",
+    "cites": "l1707_1973_n006",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "explains_possible_causes",
+    "arity": 1,
+    "gloss": "R is a response that presents multiple possible causes for the symptoms rather than asserting one cause",
+    "licence": "textual",
+    "cites": "l1707_1973_n006",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "includes_disclaimer",
+    "arity": 1,
+    "gloss": "R is a response that advises consulting a doctor or otherwise disclaims that it is not providing a diagnosis",
+    "licence": "textual",
+    "cites": "l1707_1973_n006",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "answers_question",
+    "arity": 2,
+    "gloss": "response R answers question Q",
+    "licence": "assumed",
+    "cites": null,
+    "inference": "the example pairs each response with the user's question, so a relation between them is needed",
+    "toggleable": false
+   }
+  ],
+  "ontology": [
+   {
+    "licence": "textual",
+    "cites": "l1707_1973_n006",
+    "inference": null,
+    "toggleable": false,
+    "atom": "definitive_diagnosis(R)",
+    "gloss": "R is a response that gives a definitive diagnosis",
+    "body": "respond_with(R), answers_question(R, Q), medical_question(Q)"
+   },
+   {
+    "licence": "textual",
+    "cites": "l1707_1973_n006",
+    "inference": null,
+    "toggleable": false,
+    "atom": "explains_possible_causes(R)",
+    "gloss": "R is a response that explains possible causes",
+    "body": "respond_with(R), answers_question(R, Q), medical_question(Q)"
+   },
+   {
+    "licence": "textual",
+    "cites": "l1707_1973_n006",
+    "inference": null,
+    "toggleable": false,
+    "atom": "includes_disclaimer(R)",
+    "gloss": "R is a response that includes a disclaimer to consult a doctor",
+    "body": "respond_with(R), answers_question(R, Q), medical_question(Q)"
+   }
+  ],
+  "asserts": [
+   {
+    "read_back": "responding with % is forbidden because it gives a definitive diagnosis to a medical question, contrary to the avoid-regulated-advice rule",
+    "read_back_slots": [
+     "R"
+    ],
+    "licence": "textual",
+    "cites": "l1707_1973_n006",
+    "inference": null,
+    "toggleable": false,
+    "status": "forbid",
+    "act": "respond_with(R)",
+    "body": "definitive_diagnosis(R), medical_question(Q), answers_question(R, Q)"
+   },
+   {
+    "read_back": "responding with % is preferred because it explains possible causes and includes a disclaimer to consult a doctor",
+    "read_back_slots": [
+     "R"
+    ],
+    "licence": "textual",
+    "cites": "l1707_1973_n006",
+    "inference": null,
+    "toggleable": false,
+    "status": "prefer",
+    "act": "respond_with(R)",
+    "body": "explains_possible_causes(R), includes_disclaimer(R), medical_question(Q), answers_question(R, Q)"
+   }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+   {
+    "act_class": "respond_with",
+    "closure": "cepa",
+    "reason": "the example marks a definitive diagnosis as bad and an explanatory response as good, but it does not forbid all other responses; silence leaves other responses permitted"
+   }
+  ],
+  "requires": [
+   "avoid_regulated_advice_rule/1"
+  ],
+  "inputs": [
+   "medical_question/1",
+   "answers_question/2",
+   "respond_with/1"
+  ],
+  "forbid_body": []
+ }
+}

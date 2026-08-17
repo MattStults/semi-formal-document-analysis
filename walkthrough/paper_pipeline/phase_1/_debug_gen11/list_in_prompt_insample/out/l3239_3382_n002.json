@@ -1,0 +1,201 @@
+{
+ "clause_id": "l3239_3382_n002",
+ "_insample_cost_usd": 0.00230006,
+ "_insample_sha1_raw": "8c4e1c5db2438583e29d1884d2959aa449527b29",
+ "usage": null,
+ "floor": {
+  "parsed": true,
+  "breaches": [
+   "Breach(where='<root>', message=\"body references `explicit_instruction` but nothing declares it. Put it in this module's `ontology`, in `requires` (another clause defines it), or in `inputs` (a fact about the case). \u26a0\ufe0f A `concepts` entry alone does NOT declare it \u2014 concepts carry meaning, not provenance; `explicit_instruction/N` must ALSO appear in one of those three. An undeclared name cannot be told apart from a typo\")",
+   "Breach(where='<root>', message=\"body references `implied_intent` but nothing declares it. Put it in this module's `ontology`, in `requires` (another clause defines it), or in `inputs` (a fact about the case). \u26a0\ufe0f A `concepts` entry alone does NOT declare it \u2014 concepts carry meaning, not provenance; `implied_intent/N` must ALSO appear in one of those three. An undeclared name cannot be told apart from a typo\")",
+   "Breach(where='<root>', message='`developer/1` is borrowed but has no gloss. Add a `concepts` entry saying what this module needs it to MEAN \u2014 not what defines it, which stays in `requires`/`inputs`. Without it a seat is shown a bare predicate name, and nothing can match this to the clause that defines it')",
+   "Breach(where='<root>', message='`user/1` is borrowed but has no gloss. Add a `concepts` entry saying what this module needs it to MEAN \u2014 not what defines it, which stays in `requires`/`inputs`. Without it a seat is shown a bare predicate name, and nothing can match this to the clause that defines it')",
+   "Breach(where='<root>', message='`instruction_from/2` is borrowed but has no gloss. Add a `concepts` entry saying what this module needs it to MEAN \u2014 not what defines it, which stays in `requires`/`inputs`. Without it a seat is shown a bare predicate name, and nothing can match this to the clause that defines it')",
+   "Breach(where='<root>', message='`intent_from/2` is borrowed but has no gloss. Add a `concepts` entry saying what this module needs it to MEAN \u2014 not what defines it, which stays in `requires`/`inputs`. Without it a seat is shown a bare predicate name, and nothing can match this to the clause that defines it')"
+  ],
+  "checks": [
+   "[error/schema] schema-breach @ <root>: body references `explicit_instruction` but nothing declares it. Put it in this module's `ontology`, in `requires` (another clause defines it), or in `inputs` (a fact about the case). \u26a0\ufe0f A `concepts` entry alone does NOT declare it \u2014 concepts carry meaning, not provenance; `explicit_instruction/N` must ALSO appear in one of those three. An undeclared name cannot be told apart from a typo",
+   "[error/schema] schema-breach @ <root>: body references `implied_intent` but nothing declares it. Put it in this module's `ontology`, in `requires` (another clause defines it), or in `inputs` (a fact about the case). \u26a0\ufe0f A `concepts` entry alone does NOT declare it \u2014 concepts carry meaning, not provenance; `implied_intent/N` must ALSO appear in one of those three. An undeclared name cannot be told apart from a typo",
+   "[error/schema] schema-breach @ <root>: `developer/1` is borrowed but has no gloss. Add a `concepts` entry saying what this module needs it to MEAN \u2014 not what defines it, which stays in `requires`/`inputs`. Without it a seat is shown a bare predicate name, and nothing can match this to the clause that defines it",
+   "[error/schema] schema-breach @ <root>: `user/1` is borrowed but has no gloss. Add a `concepts` entry saying what this module needs it to MEAN \u2014 not what defines it, which stays in `requires`/`inputs`. Without it a seat is shown a bare predicate name, and nothing can match this to the clause that defines it",
+   "[error/schema] schema-breach @ <root>: `instruction_from/2` is borrowed but has no gloss. Add a `concepts` entry saying what this module needs it to MEAN \u2014 not what defines it, which stays in `requires`/`inputs`. Without it a seat is shown a bare predicate name, and nothing can match this to the clause that defines it",
+   "[error/schema] schema-breach @ <root>: `intent_from/2` is borrowed but has no gloss. Add a `concepts` entry saying what this module needs it to MEAN \u2014 not what defines it, which stays in `requires`/`inputs`. Without it a seat is shown a bare predicate name, and nothing can match this to the clause that defines it"
+  ],
+  "outcome": "invalid",
+  "repair_needed": true
+ },
+ "module": {
+  "outcome": "translated",
+  "clause_id": "l3239_3382_n002",
+  "abstain_reason": null,
+  "claims": [
+   "C1 the assistant should help the developer and user",
+   "C2 the assistant should follow explicit instructions",
+   "C3 the assistant should reasonably address implied intent",
+   "C4 the assistant should do so without overstepping"
+  ],
+  "acts": [
+   "help_developer_and_user(A)",
+   "follow_explicit_instruction(A, I)",
+   "address_implied_intent(A, I)",
+   "overstep(A)"
+  ],
+  "concepts": [
+   {
+    "name": "assistant_definition",
+    "arity": 1,
+    "gloss": "A is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document",
+    "licence": "textual",
+    "cites": "l3239_3382_n002",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "user_authority",
+    "arity": 1,
+    "gloss": "R is a rule in the #avoid_overstepping section and carries user-level instruction authority",
+    "licence": "textual",
+    "cites": "l3239_3382_n002",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "explicit_instruction",
+    "arity": 1,
+    "gloss": "I is an instruction stated explicitly by the developer or user",
+    "licence": "assumed",
+    "cites": null,
+    "inference": "the clause says the assistant follows explicit instructions; an instruction must be identifiable as explicit and as coming from the developer or user",
+    "toggleable": false
+   },
+   {
+    "name": "implied_intent",
+    "arity": 1,
+    "gloss": "I is an intent implied by the developer or user rather than stated explicitly",
+    "licence": "assumed",
+    "cites": null,
+    "inference": "the clause says the assistant reasonably addresses implied intent; an intent must be identifiable as implied",
+    "toggleable": false
+   },
+   {
+    "name": "overstepping",
+    "arity": 1,
+    "gloss": "A is an action that goes beyond what the developer or user asked for or intended",
+    "licence": "assumed",
+    "cites": null,
+    "inference": "the clause says the assistant should help without overstepping; overstepping must be identifiable as a kind of action",
+    "toggleable": false
+   },
+   {
+    "name": "developer_or_user",
+    "arity": 1,
+    "gloss": "X is either the developer or the user of the assistant",
+    "licence": "assumed",
+    "cites": null,
+    "inference": "the clause names both developer and user; a single predicate covers either party",
+    "toggleable": false
+   }
+  ],
+  "ontology": [
+   {
+    "licence": "assumed",
+    "cites": null,
+    "inference": "the clause names both developer and user; a single predicate covers either party",
+    "toggleable": false,
+    "atom": "developer_or_user(X)",
+    "gloss": "X is the developer or the user",
+    "body": "developer(X)"
+   },
+   {
+    "licence": "assumed",
+    "cites": null,
+    "inference": "the clause names both developer and user; a single predicate covers either party",
+    "toggleable": false,
+    "atom": "developer_or_user(X)",
+    "gloss": "X is the developer or the user",
+    "body": "user(X)"
+   }
+  ],
+  "asserts": [
+   {
+    "read_back": "the assistant should help the developer or user",
+    "read_back_slots": [],
+    "licence": "textual",
+    "cites": "l3239_3382_n002",
+    "inference": null,
+    "toggleable": false,
+    "status": "oblige",
+    "act": "help_developer_and_user(A)",
+    "body": "assistant_definition(A)"
+   },
+   {
+    "read_back": "the assistant should follow explicit instructions",
+    "read_back_slots": [],
+    "licence": "textual",
+    "cites": "l3239_3382_n002",
+    "inference": null,
+    "toggleable": false,
+    "status": "oblige",
+    "act": "follow_explicit_instruction(A, I)",
+    "body": "assistant_definition(A), explicit_instruction(I), developer_or_user(X), instruction_from(I, X)"
+   },
+   {
+    "read_back": "the assistant should reasonably address implied intent",
+    "read_back_slots": [],
+    "licence": "textual",
+    "cites": "l3239_3382_n002",
+    "inference": null,
+    "toggleable": false,
+    "status": "oblige",
+    "act": "address_implied_intent(A, I)",
+    "body": "assistant_definition(A), implied_intent(I), developer_or_user(X), intent_from(I, X)"
+   },
+   {
+    "read_back": "the assistant should not overstep",
+    "read_back_slots": [],
+    "licence": "textual",
+    "cites": "l3239_3382_n002",
+    "inference": null,
+    "toggleable": false,
+    "status": "forbid",
+    "act": "overstep(A)",
+    "body": "assistant_definition(A)"
+   }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+   {
+    "act_class": "help_developer_and_user",
+    "closure": "cepa",
+    "reason": "the clause obliges helping the developer and user; it does not restrict other forms of help, so silence permits them"
+   },
+   {
+    "act_class": "follow_explicit_instruction",
+    "closure": "cepa",
+    "reason": "the clause obliges following explicit instructions; it does not restrict other actions, so silence permits them"
+   },
+   {
+    "act_class": "address_implied_intent",
+    "closure": "cepa",
+    "reason": "the clause obliges reasonably addressing implied intent; it does not restrict other actions, so silence permits them"
+   },
+   {
+    "act_class": "overstep",
+    "closure": "cnpa",
+    "reason": "the clause says the assistant should help without overstepping, so overstepping is prohibited; silence about other actions does not permit overstepping"
+   }
+  ],
+  "requires": [
+   "assistant_definition/1",
+   "user_authority/1"
+  ],
+  "inputs": [
+   "developer/1",
+   "user/1",
+   "instruction_from/2",
+   "intent_from/2"
+  ],
+  "forbid_body": []
+ }
+}

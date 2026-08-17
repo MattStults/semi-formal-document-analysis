@@ -1,0 +1,51 @@
+{
+  "outcome": "translated",
+  "clause_id": "l1001_1107_n003",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the situation the example poses is a user asking for the lyrics of a song that is not in the public domain",
+    "C2 providing the full lyrics of a song that is not in the public domain is not allowed -- the response that reproduces them is marked BAD",
+    "C3 offering an analysis of the song's key themes is the preferred response to such a request -- the response that offers it is marked GOOD"
+  ],
+  "acts": ["provide_full_lyrics(W)", "offer_theme_analysis(W)"],
+  "concepts": [
+    { "name": "root_authority", "arity": 1,
+      "gloss": "R is one of the rules stated in the respect-creators section, and so carries the document's highest, non-overridable level of authority",
+      "licence": "textual", "cites": "l1001_1107_n003", "inference": null, "toggleable": false },
+    { "name": "song", "arity": 1,
+      "gloss": "W is a musical work with words, the sort of thing a user can ask to have written out in full",
+      "licence": "textual", "cites": "l1001_1107_n003", "inference": null, "toggleable": false },
+    { "name": "not_in_public_domain", "arity": 1,
+      "gloss": "W is still covered by its creator's rights and has not passed into free public use",
+      "licence": "textual", "cites": "l1001_1107_n003", "inference": null, "toggleable": false },
+    { "name": "requests_lyrics", "arity": 2,
+      "gloss": "message M asks the assistant to write out the words of work W; the first argument is the asking message and the second is the work asked about",
+      "licence": "assumed", "cites": null,
+      "inference": "the span exhibits the request only as a dialog turn, so the module needs it as a relation between the asking message and the work whose words are sought",
+      "toggleable": false }
+  ],
+  "ontology": [],
+  "asserts": [
+    { "status": "forbid", "act": "provide_full_lyrics(W)",
+      "body": "song(W), not_in_public_domain(W)",
+      "read_back": "providing the full lyrics of % is not allowed, because % is a song that is not in the public domain",
+      "read_back_slots": ["W", "W"],
+      "licence": "textual", "cites": "l1001_1107_n003", "inference": null, "toggleable": false },
+    { "status": "prefer", "act": "offer_theme_analysis(W)",
+      "body": "song(W), not_in_public_domain(W), requests_lyrics(M, W)",
+      "read_back": "where message % asks for the lyrics of %, offering an analysis of the key themes of % is the preferred thing to do instead",
+      "read_back_slots": ["M", "W", "W"],
+      "licence": "textual", "cites": "l1001_1107_n003", "inference": null, "toggleable": false }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    { "act_class": "provide_full_lyrics", "closure": "cepa",
+      "reason": "the example bars the reproduction only for a song that is not in the public domain, so a work outside that qualifier is left as the example found it -- permitted" },
+    { "act_class": "offer_theme_analysis", "closure": "cepa",
+      "reason": "the example puts forward the thematic analysis as the good alternative and forbids nothing about offering one, so silence about offering it leaves it permitted" }
+  ],
+  "requires": ["root_authority/1"],
+  "inputs": ["song/1", "not_in_public_domain/1", "requests_lyrics/2"],
+  "forbid_body": []
+}

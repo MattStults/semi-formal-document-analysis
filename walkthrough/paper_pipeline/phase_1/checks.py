@@ -308,6 +308,14 @@ _DISFAVOURED = re.compile(
     r"is worse|undesirable)\b", re.I)
 
 
+#: An act term that is ITSELF an avoidance. `prefer avoid_x(R)` with a
+#: disfavour read-back is the CORRECT encoding, not an inversion -- see the
+#: block inside `polarity_mismatches`.
+_AVOIDANCE_ACT = re.compile(
+    r"(?:avoid|minimi[sz]e|reduce|limit|refrain|withhold|decline|omit)_",
+    re.I)
+
+
 def polarity_mismatches(module):
     """Yield (where, act, phrase) for every `prefer` assert whose own
     read-back says the act is disfavoured.
@@ -335,9 +343,23 @@ def polarity_mismatches(module):
     for i, a in enumerate(getattr(module, "asserts", None) or []):
         if getattr(a, "status", None) != "prefer":
             continue
+        act = str(getattr(a, "act", "") or "")
+        # ⛔ THE ACT'S OWN POLARITY DECIDES WHETHER THIS IS A MISMATCH.
+        # MEASURED 2026-08-16: without this the check fired 3/3 on a module an
+        # adjudicator had just judged CORRECT -- one that applied the review
+        # list's own remedy verbatim (`prefer avoid_repeating_prompt(R)`, with a
+        # read-back saying "repeating the prompt is to be avoided"). The act is
+        # the AVOIDANCE, the read-back describes the underlying BEHAVIOUR, and
+        # the two agree. Firing there punishes the exact fix we prescribe, which
+        # is a worse failure than the one this check was written for: a
+        # translator who obeys the guidance is told it broke something.
+        # A disfavour read-back is CONTRADICTORY only when the act is the thing
+        # to be avoided, and CONSISTENT when the act IS the avoidance.
+        if _AVOIDANCE_ACT.match(act):
+            continue
         m = _DISFAVOURED.search(str(getattr(a, "read_back", "") or ""))
         if m:
-            out.append((f"asserts[{i}]", getattr(a, "act", "?"), m.group(0)))
+            out.append((f"asserts[{i}]", act, m.group(0)))
     return out
 
 
@@ -364,7 +386,28 @@ def polarity_findings(module):
     then it detects and reports and does not touch the loop.
     """
     return [Finding(
-        POLARITY_CHECK_ID, "error", where,
+        # ⛔ `note`, NOT `error`, AND THE COMBINATION I FIRST WROTE WAS
+        # INCOHERENT (measured 2026-08-16). I emitted `error` with a
+        # NON-DISCLOSABLE origin. `repair_needed` is "any error", so the loop
+        # demanded a fix; the origin filter withheld the finding, so the repair
+        # prompt read:
+        #     "attempt 1 failed these checks:
+        #      (no error-severity findings — nothing here is yours to fix)
+        #      (3 finding(s) withheld: they come from a later stage ...)
+        #      Fix every one of them."
+        # The model returned an identical reply, the freeze detector discarded
+        # the transcript, the restart hit the same wall, attempts exhausted ->
+        # `unrepaired`. **MEASURED COST: 2 of 25 clauses (8%) dropped out of the
+        # corpus entirely, and their withheld final drafts still carried the
+        # very inversion this check exists to catch.** A clause whose ONLY
+        # fault is a polarity inversion was strictly worse off than before the
+        # check existed.
+        # This file's own ruling at the top says what to use: "ONLY `error`
+        # DRIVES A REPAIR. `note` is reported, counted and inert." That is
+        # exactly the semantics the docstring below already claimed -- detect
+        # and report, never touch the loop. The intent was right and the
+        # severity was wrong.
+        POLARITY_CHECK_ID, "note", where,
         f"`{act}` is asserted with status `prefer` {POLARITY_MESSAGE_MARK} "
         f"'{phrase}'. The compiled rule therefore states a PREFERENCE FOR an "
         f"act this module's own rendering describes as one to avoid, and the "

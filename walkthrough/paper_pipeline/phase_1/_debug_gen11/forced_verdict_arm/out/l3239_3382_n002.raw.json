@@ -1,0 +1,99 @@
+{
+  "outcome": "translated",
+  "clause_id": "l3239_3382_n002",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the assistant should help the developer and user by following explicit instructions",
+    "C2 the assistant should help the developer and user by reasonably addressing implied intent",
+    "C3 this help must not overstep the bounds of the assistant's role"
+  ],
+  "acts": ["follow_instruction(I)", "address_implied_intent(I)"],
+  "concepts": [
+    { "name": "assistant_definition", "arity": 1,
+      "gloss": "A is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document",
+      "licence": "textual", "cites": "l3239_3382_n002", "inference": null, "toggleable": false },
+    { "name": "user_authority", "arity": 1,
+      "gloss": "rules in the #avoid_overstepping section carry user-level instruction authority",
+      "licence": "textual", "cites": "l3239_3382_n002", "inference": null, "toggleable": false },
+    { "name": "explicit_instruction", "arity": 1,
+      "gloss": "I is an instruction stated outright by the developer or user",
+      "licence": "textual", "cites": "l3239_3382_n002", "inference": null, "toggleable": false },
+    { "name": "implied_intent", "arity": 1,
+      "gloss": "I is an intent conveyed by the developer or user without being stated outright, which the assistant can reasonably infer",
+      "licence": "textual", "cites": "l3239_3382_n002", "inference": null, "toggleable": false },
+    { "name": "overstepping", "arity": 1,
+      "gloss": "A is an action that goes beyond the bounds of the assistant's role or the scope of the request",
+      "licence": "textual", "cites": "l3239_3382_n002", "inference": null, "toggleable": false },
+    { "name": "assistant", "arity": 1,
+      "gloss": "A is the assistant entity that interacts with the end user or developer",
+      "licence": "textual", "cites": "l3239_3382_n002", "inference": null, "toggleable": false },
+    { "name": "developer_or_user", "arity": 1,
+      "gloss": "P is either the developer or the end user of the assistant",
+      "licence": "textual", "cites": "l3239_3382_n002", "inference": null, "toggleable": false },
+    { "name": "instruction_from", "arity": 2,
+      "gloss": "instruction I was issued by party P (developer or user)",
+      "licence": "assumed", "cites": null,
+      "inference": "the clause says the assistant helps the developer and user by following their instructions, so each instruction must be attributable to one of them",
+      "toggleable": false },
+    { "name": "intent_from", "arity": 2,
+      "gloss": "implied intent I originates from party P (developer or user)",
+      "licence": "assumed", "cites": null,
+      "inference": "the clause says the assistant helps the developer and user by addressing their implied intent, so each intent must be attributable to one of them",
+      "toggleable": false },
+    { "name": "reasonable_to_address", "arity": 1,
+      "gloss": "I is an implied intent that the assistant can reasonably address without overstepping",
+      "licence": "textual", "cites": "l3239_3382_n002", "inference": null, "toggleable": false },
+    { "name": "does_not_overstep", "arity": 1,
+      "gloss": "A is an action that does not go beyond the bounds of the assistant's role or the scope of the request",
+      "licence": "textual", "cites": "l3239_3382_n002", "inference": null, "toggleable": false }
+  ],
+  "ontology": [
+    { "licence": "textual", "cites": "l3239_3382_n002", "inference": null, "toggleable": false,
+      "atom": "assistant(A)",
+      "gloss": "A is the assistant entity that interacts with the end user or developer",
+      "body": "assistant_definition(A)" },
+    { "licence": "textual", "cites": "l3239_3382_n002", "inference": null, "toggleable": false,
+      "atom": "developer_or_user(P)",
+      "gloss": "P is either the developer or the end user of the assistant",
+      "body": "assistant_definition(A), interacts_with(A, P)" },
+    { "licence": "assumed", "cites": null, "inference": "the clause says the assistant helps the developer and user, so a relation between the assistant and those parties must exist", "toggleable": false,
+      "atom": "interacts_with(A, P)",
+      "gloss": "assistant A interacts with party P (developer or user)",
+      "body": "assistant_definition(A)" }
+  ],
+  "asserts": [
+    { "read_back": "the assistant % is obliged to follow explicit instruction % from %",
+      "read_back_slots": ["A", "I", "P"],
+      "licence": "textual", "cites": "l3239_3382_n002", "inference": null, "toggleable": false,
+      "status": "oblige", "act": "follow_instruction(I)",
+      "body": "assistant(A), explicit_instruction(I), instruction_from(I, P), developer_or_user(P), does_not_overstep(follow_instruction(I))" },
+    { "read_back": "the assistant % is obliged to reasonably address implied intent % from %",
+      "read_back_slots": ["A", "I", "P"],
+      "licence": "textual", "cites": "l3239_3382_n002", "inference": null, "toggleable": false,
+      "status": "oblige", "act": "address_implied_intent(I)",
+      "body": "assistant(A), implied_intent(I), intent_from(I, P), developer_or_user(P), reasonable_to_address(I), does_not_overstep(address_implied_intent(I))" }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    { "act_class": "follow_instruction", "closure": "cepa",
+      "reason": "the clause obliges following explicit instructions but does not forbid other actions; silence about other acts leaves them permitted" },
+    { "act_class": "address_implied_intent", "closure": "cepa",
+      "reason": "the clause obliges reasonably addressing implied intent but does not forbid other actions; silence about other acts leaves them permitted" }
+  ],
+  "requires": ["assistant_definition/1", "user_authority/1"],
+  "inputs": ["explicit_instruction/1", "implied_intent/1", "instruction_from/2", "intent_from/2", "reasonable_to_address/1", "does_not_overstep/1", "interacts_with/2"],
+  "forbid_body": []
+  ,
+  "checks": [
+    { "entry_id": "C1", "evidence": "The clause states 'The assistant should help the developer and user by following explicit instructions'", "verdict": "applies_and_handled" , "action": "none" , "excluded_case": null },
+    { "entry_id": "C2", "evidence": "The clause states 'and reasonably addressing implied intent'", "verdict": "applies_and_handled", "action": "none", "excluded_case": null },
+    { "entry_id": "C3", "evidence": "The clause states 'without overstepping'", "verdict": "applies_and_handled", "action": "none", "excluded_case": null }
+  ,
+  { "entry_id": "C4", "evidence": "The clause references 'letter_and_spirit' but that clause is not resolvable in the corpus", "verdict": "applies_and_handled", "action": "none", "excluded_case": null }
+  ,
+  { "entry_id": "C5", "evidence": "The clause references 'letter_and_spirit' but that clause is not resolvable in the corpus", "verdict": "applies_and_handled", "action": "none", "excluded_case": null }
+  ,
+  { "entry_id": "C6", "evidence": "The clause references 'letter_and_spirit' but that clause is not resolvable in the corpus", "verdict": "applies_and_handled", "action": "none", "excluded_case": null }
+  ]
+}

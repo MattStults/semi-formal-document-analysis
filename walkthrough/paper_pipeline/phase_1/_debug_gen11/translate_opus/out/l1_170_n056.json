@@ -1,0 +1,60 @@
+{
+  "outcome": "translated",
+  "clause_id": "l1_170_n056",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the model should honor a user request",
+    "C2 that obligation lapses where the request conflicts with an instruction issued at developer, system or root level"
+  ],
+  "acts": ["honor_request(Q)"],
+  "concepts": [
+    { "name": "user_authority", "arity": 0,
+      "gloss": "the user level of the chain of command: the standing carried by instructions coming from an end user of the product",
+      "licence": "textual", "cites": "l1_170_n056", "inference": null, "toggleable": false },
+    { "name": "authority_levels_hierarchy", "arity": 2,
+      "gloss": "the first level ranks above the second in the chain of command root then system then developer then end user then guideline then none, which is what settles whose instruction prevails when two of them cannot both be followed",
+      "licence": "textual", "cites": "l1_170_n056", "inference": null, "toggleable": false },
+    { "name": "user_request", "arity": 1,
+      "gloss": "Q is something an end user of this conversation has asked the model to do",
+      "licence": "textual", "cites": "l1_170_n056", "inference": null, "toggleable": false },
+    { "name": "instruction_at_level", "arity": 2,
+      "gloss": "instruction I was issued at level L of the chain of command",
+      "licence": "assumed", "cites": null,
+      "inference": "the span sorts instructions by the level that issued them (developer, system, root), so each instruction must carry a level for that sorting to range over",
+      "toggleable": false },
+    { "name": "conflicts_with", "arity": 2,
+      "gloss": "honoring request Q would go against what instruction I directs, so the two cannot both be complied with here",
+      "licence": "assumed", "cites": null,
+      "inference": "the span makes the exception turn on a relation between a request and an instruction; which pairs stand in it is a fact about the case, not about the document",
+      "toggleable": false },
+    { "name": "higher_authority_conflict", "arity": 1,
+      "gloss": "request Q is one the model cannot honor without going against an instruction issued above the end user in the chain of command",
+      "licence": "assumed", "cites": null,
+      "inference": "the span names developer, system and root, which are exactly the levels the chain of command places above the end user; the class is written that way so it tracks the ranking the graph supplies",
+      "toggleable": false }
+  ],
+  "ontology": [
+    { "atom": "higher_authority_conflict(Q)",
+      "body": "user_request(Q), conflicts_with(Q, I), instruction_at_level(I, L), authority_levels_hierarchy(L, user_authority)",
+      "gloss": "Q is a user request that conflicts with an instruction issued at a level ranking above the end user level",
+      "licence": "assumed", "cites": null,
+      "inference": "the span names developer, system and root level instructions; those are exactly the levels the supplied hierarchy ranks above the user level, so the class is derived from that ranking rather than by listing the three names",
+      "toggleable": false }
+  ],
+  "asserts": [
+    { "status": "oblige", "act": "honor_request(Q)",
+      "body": "user_request(Q), not higher_authority_conflict(Q)",
+      "read_back": "the model should honor user request % unless honoring it would conflict with a developer, system or root level instruction",
+      "read_back_slots": ["Q"],
+      "licence": "textual", "cites": "l1_170_n056", "inference": null, "toggleable": false }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    { "act_class": "honor_request", "closure": "unclear",
+      "reason": "the span requires honoring a user request and withdraws that requirement where the request conflicts with a developer, system or root level instruction, but it does not say whether honoring such a conflicting request is then permitted or forbidden, so this clause does not settle what its silence means" }
+  ],
+  "requires": ["user_authority/0", "authority_levels_hierarchy/2"],
+  "inputs": ["user_request/1", "instruction_at_level/2", "conflicts_with/2"],
+  "forbid_body": []
+}

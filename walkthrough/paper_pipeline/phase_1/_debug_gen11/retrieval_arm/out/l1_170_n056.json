@@ -1,0 +1,127 @@
+{
+ "clause_id": "l1_170_n056",
+ "_arm_e_cost_usd": 0.0018401600000000002,
+ "_arm_e_sha1_raw": "5b5b0fb6496a5f8c5630a2315f08769da7b3e42b",
+ "_arm_e_system_sha256": "ee8b2d1a9c2645a1182a502cc6d307b376b29320ed3a658513952f3c5236a94c",
+ "_arm_e_system_chars": 43426,
+ "_arm_e_selected": [
+  "E02",
+  "E09"
+ ],
+ "usage": null,
+ "floor": {
+  "parsed": true,
+  "breaches": [
+   "Breach(where='<root>', message='`instruction_level/2` is borrowed but has no gloss. Add a `concepts` entry saying what this module needs it to MEAN \u2014 not what defines it, which stays in `requires`/`inputs`. Without it a seat is shown a bare predicate name, and nothing can match this to the clause that defines it')"
+  ],
+  "checks": [
+   "[error/schema] schema-breach @ <root>: `instruction_level/2` is borrowed but has no gloss. Add a `concepts` entry saying what this module needs it to MEAN \u2014 not what defines it, which stays in `requires`/`inputs`. Without it a seat is shown a bare predicate name, and nothing can match this to the clause that defines it"
+  ],
+  "outcome": "invalid",
+  "repair_needed": true
+ },
+ "module": {
+  "outcome": "translated",
+  "clause_id": "l1_170_n056",
+  "abstain_reason": null,
+  "claims": [
+   "C1: Models should honor user requests.",
+   "C2: The obligation to honor a user request is withdrawn when that request conflicts with a developer-, system-, or root-level instruction."
+  ],
+  "acts": [
+   "honor_request(R)"
+  ],
+  "concepts": [
+   {
+    "name": "user_authority",
+    "arity": 1,
+    "gloss": "the level of instruction authority held by instructions from end users",
+    "licence": "textual",
+    "cites": "l1_170_n056",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "authority_levels_hierarchy",
+    "arity": 2,
+    "gloss": "the ranking of instruction authority levels, ordered from higher to lower: root > system > developer > user > guideline > no authority",
+    "licence": "textual",
+    "cites": "l1_170_n056",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "user_request",
+    "arity": 1,
+    "gloss": "R is a request made by an end user",
+    "licence": "assumed",
+    "cites": null,
+    "inference": "the clause speaks of 'user requests', so a class of requests made by end users is presupposed",
+    "toggleable": false
+   },
+   {
+    "name": "higher_level_instruction",
+    "arity": 1,
+    "gloss": "I is an instruction at the developer, system, or root level of the authority hierarchy",
+    "licence": "textual",
+    "cites": "l1_170_n056",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "conflicts_with",
+    "arity": 2,
+    "gloss": "request R and instruction I direct incompatible behavior, so that honoring R would violate I",
+    "licence": "assumed",
+    "cites": null,
+    "inference": "the clause's 'unless they conflict' requires a relation between a request and an instruction that makes them incompatible",
+    "toggleable": false
+   }
+  ],
+  "ontology": [
+   {
+    "licence": "textual",
+    "cites": "l1_170_n056",
+    "inference": null,
+    "toggleable": false,
+    "atom": "higher_level_instruction(I)",
+    "gloss": "I is an instruction at the developer, system, or root level of the authority hierarchy",
+    "body": "instruction_level(I, L), authority_levels_hierarchy(L, user_authority)"
+   }
+  ],
+  "asserts": [
+   {
+    "read_back": "honoring user request % is obliged unless it conflicts with a developer-, system-, or root-level instruction",
+    "read_back_slots": [
+     "R"
+    ],
+    "licence": "textual",
+    "cites": "l1_170_n056",
+    "inference": null,
+    "toggleable": false,
+    "status": "oblige",
+    "act": "honor_request(R)",
+    "body": "user_request(R), not higher_level_instruction(I), not conflicts_with(R, I)"
+   }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+   {
+    "act_class": "honor_request",
+    "closure": "unclear",
+    "reason": "The clause states an obligation to honor user requests and withdraws it only when a conflict with a higher-level instruction exists; it takes no position on requests that are not user requests or on other acts, so silence on those is unsettled by this clause."
+   }
+  ],
+  "requires": [
+   "user_authority/1",
+   "authority_levels_hierarchy/2"
+  ],
+  "inputs": [
+   "user_request/1",
+   "instruction_level/2",
+   "conflicts_with/2"
+  ],
+  "forbid_body": []
+ }
+}

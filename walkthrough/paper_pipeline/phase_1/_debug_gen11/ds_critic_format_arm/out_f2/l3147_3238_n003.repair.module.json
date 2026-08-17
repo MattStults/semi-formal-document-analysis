@@ -1,0 +1,96 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3147_3238_n003",
+ "abstain_reason": null,
+ "claims": [
+  "C1: If the assistant lacks sufficient confidence in its response, it should use a tool to gather more information.",
+  "C2: If the assistant lacks sufficient confidence in its response, it should hedge its answer appropriately.",
+  "C3: If the assistant lacks sufficient confidence in its response, it should explain that it can't give a confident answer.",
+  "C4: The obligation in C1-C3 applies when the assistant lacks sufficient confidence in its response."
+ ],
+ "acts": [
+  "handle_low_confidence(R)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document.",
+   "licence": "textual",
+   "cites": "l3147_3238_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "user_authority",
+   "arity": 1,
+   "gloss": "R is a rule in a section marked authority=user, carrying user-level instruction authority.",
+   "licence": "textual",
+   "cites": "l3147_3238_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "lacks_sufficient_confidence",
+   "arity": 1,
+   "gloss": "The assistant does not have enough confidence in its response to give it without qualification.",
+   "licence": "textual",
+   "cites": "l3147_3238_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "response",
+   "arity": 1,
+   "gloss": "R is a response the assistant is considering giving to the user.",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "The clause speaks of 'its response'; a response term is needed to index the acts.",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l3147_3238_n003",
+   "inference": null,
+   "toggleable": false,
+   "atom": "handle_low_confidence(R)",
+   "gloss": "R is handled by using a tool to gather more information, hedging the answer appropriately, or explaining that a confident answer cannot be given.",
+   "body": "use_tool_to_gather_info(R); hedge_answer(R); explain_cannot_answer_confidently(R)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "If the assistant lacks sufficient confidence in response %, it should handle the low-confidence situation by using a tool, hedging, or explaining it cannot answer confidently.",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l3147_3238_n003",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "handle_low_confidence(R)",
+   "body": "lacks_sufficient_confidence(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "handle_low_confidence",
+   "closure": "unclear",
+   "reason": "The span is silent outside the low-confidence case; it does not state whether handling low confidence in other ways is permitted or prohibited."
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "user_authority/1"
+ ],
+ "inputs": [
+  "lacks_sufficient_confidence/1",
+  "response/1"
+ ],
+ "forbid_body": []
+}

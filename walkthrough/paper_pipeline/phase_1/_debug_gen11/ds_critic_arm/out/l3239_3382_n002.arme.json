@@ -1,0 +1,35 @@
+{
+ "clause_id": "l3239_3382_n002",
+ "calls": [
+  {
+   "phase": "critic",
+   "raw": "E1: FIX \u2014 ontology entry for overstepping(A) has its head in its own body; remove overstepping(A) from the body.\nE2: FIX \u2014 set closure for follow_instruction and address_implied_intent to \"unclear\" with a reason drawn from the span, not from silence.\nE3: FIX \u2014 overstepping is not in the narrowed text; mark it assumed with inference from ESTABLISHES or remove it.\nE4: FIX \u2014 the forbid overstep assert is not supported by the narrowed text; delete it or mark it assumed with inference from ESTABLISHES.\nE5: FIX \u2014 ontology entry for overstepping(A) has a circular body (overstepping(A) in its own body) and cannot be derived; remove the self-reference and bind A from a situation fact.\nE6: FIX \u2014 C3's forbid overstep cannot fire because overstepping(A) is circular/unsupported; delete C3 or fix the definition.\nE7: PASS\nE8: PASS\nE9: PASS\nE10: PASS\nE11: PASS",
+   "sha1": "4e5570934cb6bdb64519f486edc4af8227956cde",
+   "cost_usd": 0.0033089,
+   "usage": null,
+   "sent_chars": 17873,
+   "error": null,
+   "floor": null
+  },
+  {
+   "phase": "repair",
+   "raw": "{\n  \"outcome\": \"translated\",\n  \"clause_id\": \"l3239_3382_n002\",\n  \"abstain_reason\": null,\n  \"claims\": [\n    \"C1 the assistant should help the developer and user by following explicit instructions\",\n    \"C2 the assistant should help the developer and user by reasonably addressing implied intent\",\n    \"C3 the assistant should do so without overstepping\"\n  ],\n  \"acts\": [\"follow_instruction(I)\", \"address_implied_intent(I)\"],\n  \"concepts\": [\n    {\n      \"name\": \"assistant_definition\",\n      \"arity\": 1,\n      \"gloss\": \"A is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document\",\n      \"licence\": \"textual\",\n      \"cites\": \"l3239_3382_n002\",\n      \"inference\": null,\n      \"toggleable\": false\n    },\n    {\n      \"name\": \"user_authority\",\n      \"arity\": 1,\n      \"gloss\": \"R is a rule in the #avoid_overstepping section carrying user-level instruction authority\",\n      \"licence\": \"textual\",\n      \"cites\": \"l3239_3382_n002\",\n      \"inference\": null,\n      \"toggleable\": false\n    },\n    {\n      \"name\": \"explicit_instruction\",\n      \"arity\": 1,\n      \"gloss\": \"I is an instruction stated explicitly by the developer or user\",\n      \"licence\": \"assumed\",\n      \"cites\": null,\n      \"inference\": \"the clause speaks of 'explicit instructions' without defining them; the natural reading is instructions stated outright by the developer or user\",\n      \"toggleable\": false\n    },\n    {\n      \"name\": \"implied_intent\",\n      \"arity\": 1,\n      \"gloss\": \"I is an intent conveyed by the developer or user without being stated explicitly\",\n      \"licence\": \"assumed\",\n      \"cites\": null,\n      \"inference\": \"the clause speaks of 'implied intent' without defining it; the natural reading is intent conveyed without being stated explicitly\",\n      \"toggleable\": false\n    },\n    {\n      \"name\": \"overstepping\",\n      \"arity\": 1,\n      \"gloss\": \"A is an action that goes beyond what the assistant is authorized to do, as defined by the avoid_overstepping policy section\",\n      \"licence\": \"assumed\",\n      \"cites\": null,\n      \"inference\": \"the narrowed text says 'without overstepping' but does not define the term; the ESTABLISHES claim supplies the meaning of overstepping as going beyond the assistant's bounds\",\n      \"toggleable\": false\n    },\n    {\n      \"name\": \"avoid_overstepping\",\n      \"arity\": 1,\n      \"gloss\": \"R is a rule in the policy section on avoiding overstepping, referenced by the imminent harm rule\",\n      \"licence\": \"textual\",\n      \"cites\": \"l3239_3382_n002\",\n      \"inference\": null,\n      \"toggleable\": false\n    }\n  ],\n  \"ontology\": [\n    {\n      \"licence\": \"assumed\",\n      \"cites\": null,\n      \"inference\": \"the narrowed text says 'without overstepping' but does not define the term; the ESTABLISHES claim supplies the meaning of overstepping as going beyond the assistant's bounds\",\n      \"toggleable\": false,\n      \"atom\": \"overstepping(A)\",\n      \"gloss\": \"A is an action that oversteps the assistant's bounds\",\n      \"body\": \"avoid_overstepping(R), user_authority(R)\"\n    }\n  ],\n  \"asserts\": [\n    {\n      \"read_back\": \"the assistant should follow explicit instruction %\",\n      \"read_back_slots\": [\"I\"],\n      \"licence\": \"textual\",\n      \"cites\": \"l3239_3382_n002\",\n      \"inference\": null,\n      \"toggleable\": false,\n      \"status\": \"oblige\",\n      \"act\": \"follow_instruction(I)\",\n      \"body\": \"assistant_definition(A), explicit_instruction(I)\"\n    },\n    {\n      \"read_back\": \"the assistant should reasonably address implied intent %\",\n      \"read_back_slots\": [\"I\"],\n      \"licence\": \"textual\",\n      \"cites\": \"l3239_3382_n002\",\n      \"inference\": null,\n      \"toggleable\": false,\n      \"status\": \"oblige\",\n      \"act\": \"address_implied_intent(I)\",\n      \"body\": \"assistant_definition(A), implied_intent(I)\"\n    }\n  ],\n  \"beats\": [],\n  \"defines\": [],\n  \"closure\": [\n    {\n      \"act_class\": \"follow_instruction\",\n      \"closure\": \"unclear\",\n      \"reason\": \"the narrowed text obliges following explicit instructions but does not state whether other actions are permitted or prohibited; the clause is silent on the default for actions not covered by the obligation\"\n    },\n    {\n      \"act_class\": \"address_implied_intent\",\n      \"closure\": \"unclear\",\n      \"reason\": \"the narrowed text obliges reasonably addressing implied intent but does not state whether other actions are permitted or prohibited; the clause is silent on the default for actions not covered by the obligation\"\n    }\n  ],\n  \"requires\": [\"assistant_definition/1\", \"user_authority/1\", \"avoid_overstepping/1\"],\n  \"inputs\": [\"explicit_instruction/1\", \"implied_intent/1\"],\n  \"forbid_body\": []\n}",
+   "sha1": "c4212ec54f60b1516eae1c72611ca4712b32e52c",
+   "cost_usd": 0.00203448,
+   "usage": null,
+   "sent_chars": 7903,
+   "error": null,
+   "floor": {
+    "parsed": true,
+    "breaches": [
+     "Breach(where='ontology[0]', message=\"ontology atom: 'overstepping(A)' carries the variable 'A' but the body never mentions it, so nothing binds it. The solver refuses the WHOLE FILE for an unsafe variable \u2014 bind it in the body, or drop it from the head\")"
+    ],
+    "checks": [
+     "[error/schema] schema-breach @ ontology[0]: ontology atom: 'overstepping(A)' carries the variable 'A' but the body never mentions it, so nothing binds it. The solver refuses the WHOLE FILE for an unsafe variable \u2014 bind it in the body, or drop it from the head"
+    ],
+    "outcome": "invalid",
+    "repair_needed": true
+   }
+  }
+ ]
+}

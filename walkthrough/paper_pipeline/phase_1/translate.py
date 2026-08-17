@@ -56,6 +56,46 @@ import version                                                 # noqa: E402
 #: across runs — never comments inside the logic files.
 CONCEPT_TABLE = "concepts.json"
 
+#: The string every row this harness prices carries in `priced_by`.  It names
+#: the pricer, because `spend.py:prices()` cannot price these rows itself
+#: (see `spend_invisibility_warning`).
+PRICED_BY = "walkthrough/paper_pipeline/phase_1/config.json"
+
+#: ⚠️ LEDGER ATTRIBUTION (EXPERIMENTS.md 2026-08-16).  `priced_by` was
+#: IDENTICAL on all 5,012 rows, so an arm's spend could only be recovered from
+#: `usage.jsonl` by a time-window join — arms E and F both had to reconstruct
+#: attribution from timestamps, and that only worked because the arms happened
+#: to run nearly disjointly.  A run tag makes the row say which arm bought it.
+#: Set it with `set_run_tag()` or the `PHASE1_RUN_TAG` environment variable;
+#: unset means the bare `PRICED_BY` string exactly as before, so nothing that
+#: already reads these rows changes.
+_RUN_TAG = None
+
+
+def set_run_tag(tag):
+    """Tag every row this process prices from here on. Returns the tag."""
+    global _RUN_TAG
+    _RUN_TAG = (str(tag).strip() or None) if tag is not None else None
+    return _RUN_TAG
+
+
+def run_tag():
+    return _RUN_TAG or (os.environ.get("PHASE1_RUN_TAG") or "").strip() or None
+
+
+def priced_by(tag=None):
+    """`PRICED_BY`, plus `#run=<tag>` when a run tag is in force."""
+    t = tag or run_tag()
+    return f"{PRICED_BY}#run={t}" if t else PRICED_BY
+
+
+def run_tag_of(row):
+    """The run tag a ledger row was written with, or None. The inverse of
+    `priced_by` — so a reconciliation joins on a stamped fact rather than on
+    a timestamp window."""
+    pb = (row or {}).get("priced_by") or ""
+    return pb.split("#run=", 1)[1] or None if "#run=" in pb else None
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_CONFIG = os.path.join(HERE, "config.json")
 
@@ -573,6 +613,11 @@ class Client:
         self._failed_body_hashes = set()
         #: telemetry: how many sends were varied by the guard
         self.retry_variations = 0
+        #: The last envelope this client was BILLED for, guard-raise included.
+        #: `_send` also hangs it on the exception (`exc.billed`); this is the
+        #: same object, for a caller that catches somewhere the exception
+        #: object is no longer in hand.
+        self.last_billed = None
 
     def _body(self, system, user):
         p = self.p
@@ -731,8 +776,27 @@ class Client:
             # Log BEFORE the truncation/emptiness guards: a truncated or
             # empty completion is billed exactly like a good one, and the
             # guards raise.
-            self._log_usage(full)
-            env = _check_envelope(full)
+            self.last_billed = full
+            try:
+                self._log_usage(full)
+                env = _check_envelope(full)
+            except Exception as exc:
+                # ⚠️ THE LEDGER HOLE (EXPERIMENTS.md 2026-08-16, measured
+                # three times: 36% of arm D's spend, $0.01612/$0.08335 of
+                # arm E's, $0.09066/$0.15999 -- 57% -- of arm F's).  Money
+                # was spent the instant `data` came back; every raise from
+                # here on is a BILLED failure.  Callers wrote no record for
+                # it because they had no envelope to write, so every arm on
+                # this harness under-reported, and the under-report was
+                # CORRELATED with the outcome (the calls that raise are the
+                # long reasoners, i.e. the hard clauses).  The billed
+                # envelope now rides ON the exception -- token counts,
+                # finish reason, `truncated`, `requested_max_tokens`,
+                # `usage.cost_usd` -- so a caller can write a complete turn
+                # record BEFORE the raise propagates.  Read it with
+                # `translate.billed_envelope(exc)`.
+                exc.billed = full
+                raise
             env["cost_usd"] = (full.get("usage") or {}).get("cost_usd") or 0.0
             return env
         except Exception:
@@ -776,6 +840,62 @@ class Client:
                 f"ceiling ${self.max_cost_usd:.2f} (cost.max_cost_usd) -- "
                 f"artifacts so far are kept; resume raises again unless the "
                 f"ceiling is raised")
+
+
+def billed_envelope(exc):
+    """The envelope a raising call was BILLED for, or None.
+
+    `Client._send` attaches it as `exc.billed` for every raise that happens
+    AFTER the response was parsed — truncation, emptiness, the measured cost
+    gate. A transport or HTTP failure carries None, because no token counts
+    ever arrived: unknown spend is reported as unknown, never as zero.
+    """
+    return getattr(exc, "billed", None)
+
+
+def billed_record(exc, **extra):
+    """The turn record a caller must write when a call spends and then raises.
+
+    THE CONTRACT (EXPERIMENTS.md 2026-08-16): a call that spends writes a
+    record BEFORE the raise propagates. The record carries the money, the
+    token counts, the finish reason, the truncation flag with the count at
+    cut, and the fact that it raised — so `ledger_spent()`-style totals built
+    from an arm's own records match `usage.jsonl` instead of under-counting by
+    exactly the hard clauses.
+
+    `billed=False` means the numbers are UNKNOWN, not zero: a caller totalling
+    cost must treat such a record as an un-priced call, never as a free one.
+    """
+    full = billed_envelope(exc) or {}
+    usage = full.get("usage") or {}
+    cut = is_truncation(exc) if full else None
+    rec = {
+        "raised": repr(exc),
+        "billed": bool(full),
+        "cost_usd": float(usage.get("cost_usd") or 0.0) if full else None,
+        "usage": usage or None,
+        "finish_reason": full.get("finish_reason"),
+        "truncated": cut,
+        "requested_max_tokens": full.get("requested_max_tokens"),
+        "completion_tokens_at_cut": (usage.get("completion_tokens")
+                                     if cut else None),
+        "priced_by": usage.get("priced_by"),
+        "run_tag": run_tag_of(usage),
+        "text": full.get("text") or "",
+    }
+    rec.update(extra)
+    return rec
+
+
+def is_truncation(exc):
+    """True when this raise was a cap cut — from the billed envelope when
+    there is one, from the message otherwise."""
+    full = billed_envelope(exc)
+    if full is not None:
+        return bool(full.get("truncated")) or (
+            (full.get("usage") or {}).get("completion_tokens") or 0
+        ) >= (full.get("requested_max_tokens") or float("inf"))
+    return "TRUNCATED" in str(exc)
 
 
 def normalize_usage(raw):
@@ -839,7 +959,9 @@ def response_envelope(prov, data):
     #: `cost_of()` returns None for this row and `total()` skips it. The row
     #: therefore carries the arithmetic itself, and `spend_invisibility_
     #: warning()` says out loud how much the ledger will not add up.
-    usage["priced_by"] = "walkthrough/paper_pipeline/phase_1/config.json"
+    #: …and `#run=<tag>` when one is set, so an arm's rows are attributable
+    #: without a timestamp join (see `set_run_tag`).
+    usage["priced_by"] = priced_by()
     return {"text": msg.get("content") or "", "finish_reason": finish,
             "reasoning": reasoning, "usage": usage,
             "provider": prov.name, "model": prov.model,
@@ -909,10 +1031,18 @@ def _check_envelope(env):
     at_cap_null_finish = (not finish and req_max and out_toks >= req_max)
     if env.get("truncated") or at_cap_null_finish or finish in (
             "length", "max_tokens", "max_output_tokens"):
+        # The token count AT CUT rides in the message (2026-08-16): arms E
+        # and F both had to go to usage.jsonl to learn how much output the
+        # cut cost them, and a bare "TRUNCATED" hides whether the cap was
+        # missed by a hair or by a mile. The leading sentence is unchanged --
+        # `_retrying` and four test modules key off "TRUNCATED".
         raise ProviderError(
             "completion was TRUNCATED (finish_reason=length). A cut-off module "
             "can be syntactically fine and semantically half a clause. Raise "
-            "--max-tokens rather than keeping this.")
+            "--max-tokens rather than keeping this. "
+            f"[cut at {out_toks} completion tokens"
+            + (f" against a cap of {req_max}" if req_max else "")
+            + f"; finish_reason={env.get('finish_reason')!r}]")
     text = env.get("text")
     if text is None or not str(text).strip():
         raise ProviderError("empty response")

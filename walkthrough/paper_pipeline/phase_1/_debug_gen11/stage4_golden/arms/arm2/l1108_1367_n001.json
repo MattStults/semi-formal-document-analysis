@@ -1,0 +1,151 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1108_1367_n001",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant is forbidden from generating erotica",
+  "C2 the assistant is forbidden from generating depictions of illegal or non-consensual sexual activities",
+  "C3 the assistant is forbidden from generating extreme gore",
+  "C4 the prohibition does not apply in scientific, historical, news, artistic or other contexts where sensitive content is appropriate"
+ ],
+ "acts": [
+  "generate(M)"
+ ],
+ "concepts": [
+  {
+   "name": "sensitive_content",
+   "arity": 1,
+   "gloss": "content such as erotica or gore that may only be generated under specific circumstances (e.g., educational, medical, or historical contexts, or transformations of user-provided sensitive content)",
+   "licence": "textual",
+   "cites": "l1108_1367_n001",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "system_authority",
+   "arity": 0,
+   "gloss": "the authority level of instructions in the #no_erotica_or_gore section, which is system",
+   "licence": "textual",
+   "cites": "l1108_1367_n001",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "erotica",
+   "arity": 1,
+   "gloss": "material that is erotic in nature, as the clause's first prohibited category",
+   "licence": "textual",
+   "cites": "l1108_1367_n001",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "illegal_or_nonconsensual_sexual_activity",
+   "arity": 1,
+   "gloss": "depiction of sexual activity that is illegal or non-consensual, the clause's second prohibited category",
+   "licence": "textual",
+   "cites": "l1108_1367_n001",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "extreme_gore",
+   "arity": 1,
+   "gloss": "material depicting extreme gore, the clause's third prohibited category",
+   "licence": "textual",
+   "cites": "l1108_1367_n001",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "appropriate_context",
+   "arity": 1,
+   "gloss": "a scientific, historical, news, artistic or other context in which sensitive content is appropriate",
+   "licence": "textual",
+   "cites": "l1108_1367_n001",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "sensitive_content_appropriate",
+   "arity": 1,
+   "gloss": "context C is one where sensitive content is appropriate, as the clause's exception clause describes",
+   "licence": "textual",
+   "cites": "l1108_1367_n001",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1108_1367_n001",
+   "inference": null,
+   "toggleable": false,
+   "atom": "appropriate_context(C)",
+   "gloss": "C is a scientific, historical, news, artistic or other context where sensitive content is appropriate",
+   "body": "sensitive_content_appropriate(C)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "generating % is forbidden because it is erotica and no appropriate context applies",
+   "read_back_slots": [
+    "M"
+   ],
+   "licence": "textual",
+   "cites": "l1108_1367_n001",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "generate(M)",
+   "body": "erotica(M), not appropriate_context(M)"
+  },
+  {
+   "read_back": "generating % is forbidden because it depicts illegal or non-consensual sexual activity and no appropriate context applies",
+   "read_back_slots": [
+    "M"
+   ],
+   "licence": "textual",
+   "cites": "l1108_1367_n001",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "generate(M)",
+   "body": "illegal_or_nonconsensual_sexual_activity(M), not appropriate_context(M)"
+  },
+  {
+   "read_back": "generating % is forbidden because it is extreme gore and no appropriate context applies",
+   "read_back_slots": [
+    "M"
+   ],
+   "licence": "textual",
+   "cites": "l1108_1367_n001",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "generate(M)",
+   "body": "extreme_gore(M), not appropriate_context(M)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "generate",
+   "closure": "cepa",
+   "reason": "the clause forbids generating only the three listed categories of sensitive content; generating anything else is not addressed and therefore remains permitted"
+  }
+ ],
+ "requires": [
+  "sensitive_content/1",
+  "system_authority/0"
+ ],
+ "inputs": [
+  "erotica/1",
+  "illegal_or_nonconsensual_sexual_activity/1",
+  "extreme_gore/1",
+  "sensitive_content_appropriate/1"
+ ],
+ "forbid_body": []
+}

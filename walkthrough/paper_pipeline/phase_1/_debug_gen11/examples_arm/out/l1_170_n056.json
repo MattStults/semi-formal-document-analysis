@@ -1,0 +1,179 @@
+{
+ "clause_id": "l1_170_n056",
+ "_armc_cost_usd": 0.00223986,
+ "_armc_sha1_raw": "7f45af0a633148c5c7e5df06d66a970aeb502ca6",
+ "usage": null,
+ "floor": {
+  "parsed": true,
+  "breaches": [],
+  "checks": [
+   "[note/link] requires-unprovided @ l1_170_n056.lp: `authority_levels_hierarchy/2` is declared in `%% requires:` and no module in this link scope defines it",
+   "[note/link] requires-unprovided @ l1_170_n056.lp: `user_authority/1` is declared in `%% requires:` and no module in this link scope defines it",
+   "[note/link] concept-declared @ l1_170_n056.lp: `conflicts_with/2` is head-less and declared in the concept table by l1_170_n056",
+   "[note/link] concept-declared @ l1_170_n056.lp: `developer_instruction/1` is head-less and declared in the concept table by l1_170_n056",
+   "[note/link] concept-declared @ l1_170_n056.lp: `root_instruction/1` is head-less and declared in the concept table by l1_170_n056",
+   "[note/link] concept-declared @ l1_170_n056.lp: `system_instruction/1` is head-less and declared in the concept table by l1_170_n056",
+   "[note/link] concept-declared @ l1_170_n056.lp: `user_request/1` is head-less and declared in the concept table by l1_170_n056",
+   "[note/link] situation-input @ l1_170_n056.lp: `conflicts_with/2` is head-less and declared as a situation input",
+   "[note/link] situation-input @ l1_170_n056.lp: `developer_instruction/1` is head-less and declared as a situation input",
+   "[note/link] situation-input @ l1_170_n056.lp: `root_instruction/1` is head-less and declared as a situation input",
+   "[note/link] situation-input @ l1_170_n056.lp: `system_instruction/1` is head-less and declared as a situation input",
+   "[note/link] situation-input @ l1_170_n056.lp: `user_request/1` is head-less and declared as a situation input"
+  ],
+  "outcome": "translated",
+  "repair_needed": false
+ },
+ "module": {
+  "outcome": "translated",
+  "clause_id": "l1_170_n056",
+  "abstain_reason": null,
+  "claims": [
+   "C1: Models should honor user requests.",
+   "C2: The obligation to honor a user request is withdrawn when the request conflicts with a developer-level instruction.",
+   "C3: The obligation to honor a user request is withdrawn when the request conflicts with a system-level instruction.",
+   "C4: The obligation to honor a user request is withdrawn when the request conflicts with a root-level instruction."
+  ],
+  "acts": [
+   "honor_request(R)"
+  ],
+  "concepts": [
+   {
+    "name": "user_authority",
+    "arity": 1,
+    "gloss": "I is an instruction from an end user, carrying user-level authority",
+    "licence": "assumed",
+    "cites": null,
+    "inference": "the graph's NEEDS block states this meaning, and another node establishes it",
+    "toggleable": false
+   },
+   {
+    "name": "authority_levels_hierarchy",
+    "arity": 2,
+    "gloss": "authority level L1 outranks authority level L2 in the ranking root > system > developer > user > guideline > no authority",
+    "licence": "assumed",
+    "cites": null,
+    "inference": "the graph's NEEDS block states this meaning, and another node establishes it",
+    "toggleable": false
+   },
+   {
+    "name": "user_request",
+    "arity": 1,
+    "gloss": "R is a request made by an end user",
+    "licence": "textual",
+    "cites": "l1_170_n056",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "developer_instruction",
+    "arity": 1,
+    "gloss": "I is an instruction issued at the developer level of authority",
+    "licence": "textual",
+    "cites": "l1_170_n056",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "system_instruction",
+    "arity": 1,
+    "gloss": "I is an instruction issued at the system level of authority",
+    "licence": "textual",
+    "cites": "l1_170_n056",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "root_instruction",
+    "arity": 1,
+    "gloss": "I is an instruction issued at the root level of authority",
+    "licence": "textual",
+    "cites": "l1_170_n056",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "conflicts_with",
+    "arity": 2,
+    "gloss": "request R conflicts with instruction I, so that honoring R would contradict what I directs",
+    "licence": "assumed",
+    "cites": null,
+    "inference": "the clause's 'unless they conflict with' requires a relation between a request and an instruction",
+    "toggleable": false
+   },
+   {
+    "name": "overridden_by_higher_instruction",
+    "arity": 1,
+    "gloss": "request R is overridden by a developer-, system-, or root-level instruction that conflicts with it",
+    "licence": "textual",
+    "cites": "l1_170_n056",
+    "inference": null,
+    "toggleable": false
+   }
+  ],
+  "ontology": [
+   {
+    "licence": "textual",
+    "cites": "l1_170_n056",
+    "inference": null,
+    "toggleable": false,
+    "atom": "overridden_by_higher_instruction(R)",
+    "gloss": "request R is overridden by a developer-level instruction that conflicts with it",
+    "body": "user_request(R), developer_instruction(I), conflicts_with(R, I)"
+   },
+   {
+    "licence": "textual",
+    "cites": "l1_170_n056",
+    "inference": null,
+    "toggleable": false,
+    "atom": "overridden_by_higher_instruction(R)",
+    "gloss": "request R is overridden by a system-level instruction that conflicts with it",
+    "body": "user_request(R), system_instruction(I), conflicts_with(R, I)"
+   },
+   {
+    "licence": "textual",
+    "cites": "l1_170_n056",
+    "inference": null,
+    "toggleable": false,
+    "atom": "overridden_by_higher_instruction(R)",
+    "gloss": "request R is overridden by a root-level instruction that conflicts with it",
+    "body": "user_request(R), root_instruction(I), conflicts_with(R, I)"
+   }
+  ],
+  "asserts": [
+   {
+    "read_back": "honoring user request % is obliged unless it is overridden by a higher-level instruction",
+    "read_back_slots": [
+     "R"
+    ],
+    "licence": "textual",
+    "cites": "l1_170_n056",
+    "inference": null,
+    "toggleable": false,
+    "status": "oblige",
+    "act": "honor_request(R)",
+    "body": "user_request(R), not overridden_by_higher_instruction(R)"
+   }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+   {
+    "act_class": "honor_request",
+    "closure": "unclear",
+    "reason": "the clause obliges honoring user requests except when overridden, and takes no position on what is permitted in the excepted branch"
+   }
+  ],
+  "requires": [
+   "user_authority/1",
+   "authority_levels_hierarchy/2"
+  ],
+  "inputs": [
+   "user_request/1",
+   "developer_instruction/1",
+   "system_instruction/1",
+   "root_instruction/1",
+   "conflicts_with/2"
+  ],
+  "forbid_body": []
+ }
+}

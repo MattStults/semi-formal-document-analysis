@@ -17,3 +17,9 @@ Rules for these files:
 
 Not for permanent record — findings that survive get promoted into
 EXPERIMENTS.md with their grounds.
+
+---
+
+⭐ **Series state: `SERIES_HANDOFF.md` in this directory.** Read it
+before using anything here. It carries the arm table, the measured mechanisms,
+the confound list, and a table of PREVIOUSLY PUBLISHED NUMBERS THAT ARE WRONG.

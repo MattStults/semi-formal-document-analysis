@@ -1,0 +1,249 @@
+{
+ "clause_id": "l2474_2554_n004",
+ "_insample_cost_usd": 0.0024196200000000004,
+ "_insample_sha1_raw": "9921829430c1bf1781a076dfb5b17043b2f78ea6",
+ "usage": null,
+ "floor": {
+  "parsed": true,
+  "breaches": [
+   "Breach(where='asserts[0]', message=\"read_back has 0 `%` slot(s) but 2 slot entr(ies) \u2014 the rendered sentence would silently be wrong. Make the counts match: add one `%` in the sentence per slot entry (in order), or remove the extra entries; a sentence with no substitution takes [] and no `%`. (`%` is reserved for substitution \u2014 for a percentage, say 'per cent')\")",
+   "Breach(where='asserts[1]', message=\"read_back has 0 `%` slot(s) but 1 slot entr(ies) \u2014 the rendered sentence would silently be wrong. Make the counts match: add one `%` in the sentence per slot entry (in order), or remove the extra entries; a sentence with no substitution takes [] and no `%`. (`%` is reserved for substitution \u2014 for a percentage, say 'per cent')\")"
+  ],
+  "checks": [
+   "[error/schema] schema-breach @ asserts[0]: read_back has 0 `%` slot(s) but 2 slot entr(ies) \u2014 the rendered sentence would silently be wrong. Make the counts match: add one `%` in the sentence per slot entry (in order), or remove the extra entries; a sentence with no substitution takes [] and no `%`. (`%` is reserved for substitution \u2014 for a percentage, say 'per cent')",
+   "[error/schema] schema-breach @ asserts[1]: read_back has 0 `%` slot(s) but 1 slot entr(ies) \u2014 the rendered sentence would silently be wrong. Make the counts match: add one `%` in the sentence per slot entry (in order), or remove the extra entries; a sentence with no substitution takes [] and no `%`. (`%` is reserved for substitution \u2014 for a percentage, say 'per cent')"
+  ],
+  "outcome": "invalid",
+  "repair_needed": true
+ },
+ "module": {
+  "outcome": "translated",
+  "clause_id": "l2474_2554_n004",
+  "abstain_reason": null,
+  "claims": [
+   "C1 when interacting with third parties on behalf of the user, the assistant is forbidden to lie by commission unless the user explicitly instructed that lie",
+   "C2 lies of omission on behalf of the user may be acceptable when they align with general social norms and expectations",
+   "C3 the assistant is expected to be honest and forthright, clarifying uncertainty whenever needed and avoiding deceptive behavior"
+  ],
+  "acts": [
+   "lie_by_commission(L)",
+   "lie_by_omission(L)",
+   "clarify_uncertainty(U)",
+   "deceive(D)"
+  ],
+  "concepts": [
+   {
+    "name": "third_party_interaction",
+    "arity": 1,
+    "gloss": "an interaction with a third party that the assistant performs on behalf of the user, such as a tool call or an artifact",
+    "licence": "textual",
+    "cites": "l2474_2554_n004",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "lie_by_commission",
+    "arity": 1,
+    "gloss": "a false statement the assistant actively makes, as opposed to a mere omission",
+    "licence": "textual",
+    "cites": "l2474_2554_n004",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "lie_by_omission",
+    "arity": 1,
+    "gloss": "a false impression created by leaving something out rather than by stating something false",
+    "licence": "textual",
+    "cites": "l2474_2554_n004",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "explicitly_instructed_lie",
+    "arity": 2,
+    "gloss": "the user explicitly instructed the assistant to tell this particular lie by commission",
+    "licence": "textual",
+    "cites": "l2474_2554_n004",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "aligns_with_social_norms",
+    "arity": 1,
+    "gloss": "the lie of omission conforms to general social norms and expectations",
+    "licence": "textual",
+    "cites": "l2474_2554_n004",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "on_behalf_of_user",
+    "arity": 1,
+    "gloss": "the lie of omission is told on behalf of the user",
+    "licence": "textual",
+    "cites": "l2474_2554_n004",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "honest_and_forthright",
+    "arity": 1,
+    "gloss": "the assistant's conduct is honest and forthright",
+    "licence": "textual",
+    "cites": "l2474_2554_n004",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "uncertainty",
+    "arity": 1,
+    "gloss": "a point of uncertainty in the assistant's response that the user would need clarified",
+    "licence": "assumed",
+    "cites": null,
+    "inference": "'clarifying uncertainty whenever needed' presupposes that some matters are uncertain and need clarification",
+    "toggleable": false
+   },
+   {
+    "name": "deceptive_behavior",
+    "arity": 1,
+    "gloss": "behavior that is deceptive, including but not limited to lies by commission and lies of omission",
+    "licence": "textual",
+    "cites": "l2474_2554_n004",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "clarify_uncertainty",
+    "arity": 1,
+    "gloss": "the act of clarifying a point of uncertainty",
+    "licence": "textual",
+    "cites": "l2474_2554_n004",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "deceive",
+    "arity": 1,
+    "gloss": "the act of engaging in deceptive behavior",
+    "licence": "textual",
+    "cites": "l2474_2554_n004",
+    "inference": null,
+    "toggleable": false
+   }
+  ],
+  "ontology": [
+   {
+    "licence": "textual",
+    "cites": "l2474_2554_n004",
+    "inference": null,
+    "toggleable": false,
+    "atom": "third_party_interaction(I)",
+    "gloss": "I is an interaction with a third party on behalf of the user",
+    "body": "interaction_with_third_party(I), on_behalf_of_user(I)"
+   },
+   {
+    "licence": "textual",
+    "cites": "l2474_2554_n004",
+    "inference": null,
+    "toggleable": false,
+    "atom": "explicitly_instructed_lie(L, U)",
+    "gloss": "the user explicitly instructed the assistant to tell lie L",
+    "body": "lie_by_commission(L), user_instruction(U, L)"
+   },
+   {
+    "licence": "textual",
+    "cites": "l2474_2554_n004",
+    "inference": null,
+    "toggleable": false,
+    "atom": "honest_and_forthright(A)",
+    "gloss": "the assistant's conduct is honest and forthright",
+    "body": "assistant_conduct(A)"
+   }
+  ],
+  "asserts": [
+   {
+    "read_back": "the assistant is forbidden to lie by commission in a third-party interaction on behalf of the user unless the user explicitly instructed that lie",
+    "read_back_slots": [
+     "L",
+     "I"
+    ],
+    "licence": "textual",
+    "cites": "l2474_2554_n004",
+    "inference": null,
+    "toggleable": false,
+    "status": "forbid",
+    "act": "lie_by_commission(L)",
+    "body": "third_party_interaction(I), lie_by_commission(L), not explicitly_instructed_lie(L, U)"
+   },
+   {
+    "read_back": "a lie of omission on behalf of the user may be acceptable when it aligns with general social norms and expectations",
+    "read_back_slots": [
+     "L"
+    ],
+    "licence": "textual",
+    "cites": "l2474_2554_n004",
+    "inference": null,
+    "toggleable": false,
+    "status": "permit",
+    "act": "lie_by_omission(L)",
+    "body": "lie_by_omission(L), on_behalf_of_user(L), aligns_with_social_norms(L)"
+   },
+   {
+    "read_back": "the assistant is expected to be honest and forthright, clarifying uncertainty whenever needed and avoiding deceptive behavior",
+    "read_back_slots": [],
+    "licence": "textual",
+    "cites": "l2474_2554_n004",
+    "inference": null,
+    "toggleable": false,
+    "status": "oblige",
+    "act": "clarify_uncertainty(U)",
+    "body": "uncertainty(U), needs_clarification(U)"
+   },
+   {
+    "read_back": "the assistant is expected to be honest and forthright, avoiding deceptive behavior",
+    "read_back_slots": [],
+    "licence": "textual",
+    "cites": "l2474_2554_n004",
+    "inference": null,
+    "toggleable": false,
+    "status": "forbid",
+    "act": "deceive(D)",
+    "body": "deceptive_behavior(D)"
+   }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+   {
+    "act_class": "lie_by_commission",
+    "closure": "cnpa",
+    "reason": "the clause states a prohibition on lies by commission except when explicitly instructed, so silence about a particular lie does not permit it"
+   },
+   {
+    "act_class": "lie_by_omission",
+    "closure": "cepa",
+    "reason": "the clause says lies of omission may be acceptable when they align with social norms, so silence about a particular omission leaves it permitted"
+   },
+   {
+    "act_class": "clarify_uncertainty",
+    "closure": "cepa",
+    "reason": "the clause obliges clarifying uncertainty whenever needed; it does not forbid clarifying other things, so silence permits"
+   },
+   {
+    "act_class": "deceive",
+    "closure": "cnpa",
+    "reason": "the clause says the assistant should avoid deceptive behavior, so silence about a particular deceptive act does not permit it"
+   }
+  ],
+  "requires": [],
+  "inputs": [
+   "interaction_with_third_party/1",
+   "on_behalf_of_user/1",
+   "user_instruction/2",
+   "assistant_conduct/1",
+   "needs_clarification/1"
+  ],
+  "forbid_body": []
+ }
+}

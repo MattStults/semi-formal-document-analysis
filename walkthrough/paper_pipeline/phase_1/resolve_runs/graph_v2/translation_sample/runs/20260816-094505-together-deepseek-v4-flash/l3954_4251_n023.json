@@ -1,0 +1,154 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3954_4251_n023",
+ "abstain_reason": null,
+ "claims": [
+  "C1 models starting with GPT-5 prefer Safe Completions over hard refusals in most cases",
+  "C2 older models typically provide neutral and concise refusals instead of Safe Completions"
+ ],
+ "acts": [
+  "respond_with(R)"
+ ],
+ "concepts": [
+  {
+   "name": "safe_complete_rule",
+   "arity": 1,
+   "gloss": "R is a rule directing the assistant to typically Safe Complete when a direct response would contain prohibited or restricted elements",
+   "licence": "textual",
+   "cites": "l3954_4251_n023",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "model_generation",
+   "arity": 2,
+   "gloss": "model M belongs to generation G, where G is either the GPT-5-and-later generation or the older generation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause contrasts models starting with GPT-5 with older models, so a generation classification of models is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "gpt5_or_later",
+   "arity": 0,
+   "gloss": "the generation of models starting with GPT-5",
+   "licence": "textual",
+   "cites": "l3954_4251_n023",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "older_generation",
+   "arity": 0,
+   "gloss": "the generation of models older than GPT-5",
+   "licence": "textual",
+   "cites": "l3954_4251_n023",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "safe_completion_response",
+   "arity": 1,
+   "gloss": "R is a response that Safe Completes rather than refusing outright",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause contrasts Safe Completions with hard refusals, so a class of responses that Safe Complete is needed",
+   "toggleable": false
+  },
+  {
+   "name": "hard_refusal_response",
+   "arity": 1,
+   "gloss": "R is a response that refuses the request outright",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause contrasts Safe Completions with hard refusals, so a class of responses that hard-refuse is needed",
+   "toggleable": false
+  },
+  {
+   "name": "neutral_concise_refusal_response",
+   "arity": 1,
+   "gloss": "R is a response that refuses neutrally and concisely, for example with a short statement that the assistant cannot help",
+   "licence": "textual",
+   "cites": "l3954_4251_n023",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "most_cases",
+   "arity": 1,
+   "gloss": "the situation S is one of the most cases in which the preference holds",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause says in most cases, so a class of situations where the preference applies is presupposed",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l3954_4251_n023",
+   "inference": null,
+   "toggleable": false,
+   "atom": "prefer_safe_completion_over_hard_refusal(M)",
+   "gloss": "model M is a GPT-5-or-later model, for which Safe Completions are preferred over hard refusals in most cases",
+   "body": "model_generation(M, gpt5_or_later)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l3954_4251_n023",
+   "inference": null,
+   "toggleable": false,
+   "atom": "prefer_neutral_refusal_over_safe_completion(M)",
+   "gloss": "model M is an older model, for which neutral and concise refusals are typically provided instead of Safe Completions",
+   "body": "model_generation(M, older_generation)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "model % is preferred to respond with a Safe Completion rather than a hard refusal, in most cases",
+   "read_back_slots": [
+    "M"
+   ],
+   "licence": "textual",
+   "cites": "l3954_4251_n023",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_with(R)",
+   "body": "prefer_safe_completion_over_hard_refusal(M), safe_completion_response(R), most_cases(S)"
+  },
+  {
+   "read_back": "model % is preferred to respond with a neutral and concise refusal rather than a Safe Completion",
+   "read_back_slots": [
+    "M"
+   ],
+   "licence": "textual",
+   "cites": "l3954_4251_n023",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_with(R)",
+   "body": "prefer_neutral_refusal_over_safe_completion(M), neutral_concise_refusal_response(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_with",
+   "closure": "cepa",
+   "reason": "the clause states a preference between permitted response styles; it forbids nothing, so silence leaves responses permitted"
+  }
+ ],
+ "requires": [
+  "safe_complete_rule/1"
+ ],
+ "inputs": [
+  "model_generation/2",
+  "safe_completion_response/1",
+  "hard_refusal_response/1",
+  "neutral_concise_refusal_response/1",
+  "most_cases/1"
+ ],
+ "forbid_body": []
+}

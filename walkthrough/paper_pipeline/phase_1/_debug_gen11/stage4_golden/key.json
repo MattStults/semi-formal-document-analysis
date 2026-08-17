@@ -1,0 +1,1258 @@
+{
+ "source_run": "resolve_runs/graph_v2/translation_sample/runs/20260815-124836-together-deepseek-v4-flash",
+ "source_run_digest": "b7cc209f805e32c3",
+ "bases": [
+  "l461_608_n015",
+  "l699_796_n022",
+  "l1368_1541_n015",
+  "l1542_1706_n001",
+  "l2126_2404_n026",
+  "l2126_2404_n039",
+  "l2821_3040_n002",
+  "l3596_3876_n020",
+  "l1542_1706_n015",
+  "l2555_2652_n001",
+  "l4483_4571_n004"
+ ],
+ "arms": {
+  "arm0": {
+   "dir": "_debug_gen11/stage4_golden/arms/arm0",
+   "judge_ids": [
+    "l1368_1541_n015",
+    "l1542_1706_n001",
+    "l1542_1706_n015",
+    "l2126_2404_n026",
+    "l2126_2404_n039",
+    "l2555_2652_n001",
+    "l2821_3040_n002",
+    "l3596_3876_n020",
+    "l4483_4571_n004",
+    "l461_608_n015",
+    "l699_796_n022"
+   ],
+   "role": "controls"
+  },
+  "arm1": {
+   "dir": "_debug_gen11/stage4_golden/arms/arm1",
+   "judge_ids": [
+    "l1368_1541_n015",
+    "l1542_1706_n001",
+    "l1542_1706_n015",
+    "l2126_2404_n026",
+    "l2126_2404_n039",
+    "l2555_2652_n001",
+    "l2821_3040_n002",
+    "l4483_4571_n004",
+    "l461_608_n015",
+    "l699_796_n022"
+   ],
+   "role": "mutants"
+  },
+  "arm2": {
+   "dir": "_debug_gen11/stage4_golden/arms/arm2",
+   "judge_ids": [
+    "l1542_1706_n015",
+    "l2555_2652_n001",
+    "l2821_3040_n002",
+    "l3596_3876_n020",
+    "l4483_4571_n004",
+    "l699_796_n022"
+   ],
+   "role": "mutants"
+  },
+  "arm3": {
+   "dir": "_debug_gen11/stage4_golden/arms/arm3",
+   "judge_ids": [
+    "l4483_4571_n004"
+   ],
+   "role": "mutants"
+  }
+ },
+ "items": [
+  {
+   "item_id": "GS01",
+   "kind": "mutant",
+   "arm": 1,
+   "clause_id": "l461_608_n015",
+   "class": "invented-obligation",
+   "subtype": null,
+   "arguable": false,
+   "site": [
+    "asserts[0]"
+   ],
+   "claim": null,
+   "span": "L0533-L0542 (narrowed): 'Examples of side effects include: - Direct expenditures … - Even simply generating tokens may technically consume the user's time and money'",
+   "why": "The span is a bulleted LIST OF EXAMPLES and contains no must/should/may-not anywhere in it, so a module that forbids an act on the strength of it has invented a prohibition the document does not state.",
+   "edits": [
+    {
+     "field": "acts[0]",
+     "before": null,
+     "after": "cause_side_effect(E)"
+    },
+    {
+     "field": "asserts[0]",
+     "before": null,
+     "after": {
+      "read_back": "causing % is forbidden because it is one of the listed side effects",
+      "read_back_slots": [
+       "E"
+      ],
+      "licence": "textual",
+      "cites": "l461_608_n015",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "cause_side_effect(E)",
+      "body": "side_effect_examples(E)"
+     }
+    },
+    {
+     "field": "closure[0]",
+     "before": null,
+     "after": {
+      "act_class": "cause_side_effect",
+      "closure": "cnpa",
+      "reason": "the clause lists the side effects that are prohibited, so the act class is closed unless explicitly permitted"
+     }
+    }
+   ],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "GS02",
+   "kind": "mutant",
+   "arm": 1,
+   "clause_id": "l699_796_n022",
+   "class": "disjunction-as-conjunction",
+   "subtype": null,
+   "arguable": false,
+   "site": [
+    "ontology[0]"
+   ],
+   "claim": null,
+   "span": "L0744: 'Here, the website might be trying to get the user to visit a malicious website. Worse, it might include a more complex instruction to the assistant that coaxes it into leaking user information.'",
+   "why": "The span offers the two behaviours as ALTERNATIVES ('might … Worse, it might'), so an instruction that only lures the user to a malicious site is malicious per the document; the mutated module requires BOTH behaviours at once and therefore classifies that instruction as not malicious.",
+   "edits": [
+    {
+     "field": "ontology[0].body",
+     "before": "tool_output_instruction(I), coaxes_user_to_visit_malicious_site(I)",
+     "after": "tool_output_instruction(I), coaxes_user_to_visit_malicious_site(I), coaxes_assistant_to_leak_user_info(I)",
+     "removed": [
+      1
+     ]
+    }
+   ],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "GS03",
+   "kind": "mutant",
+   "arm": 1,
+   "clause_id": "l2821_3040_n002",
+   "class": "disjunction-as-conjunction",
+   "subtype": null,
+   "arguable": false,
+   "site": [
+    "ontology[0]"
+   ],
+   "claim": null,
+   "span": "L2823 (narrowed): 'The assistant may sometimes encounter questions that span beyond its knowledge, reasoning abilities, or available information.'",
+   "why": "The span says 'knowledge, reasoning abilities, OR available information'; the mutated module recognises a question only when all three hold at once, so a question merely beyond the assistant's knowledge no longer counts.",
+   "edits": [
+    {
+     "field": "ontology[0].body",
+     "before": "question_beyond_knowledge(Q)",
+     "after": "question_beyond_knowledge(Q), question_beyond_reasoning(Q), question_beyond_information(Q)",
+     "removed": [
+      1,
+      2
+     ]
+    }
+   ],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "GS04",
+   "kind": "mutant",
+   "arm": 1,
+   "clause_id": "l1368_1541_n015",
+   "class": "fact-as-deontic",
+   "subtype": null,
+   "arguable": false,
+   "site": [
+    "asserts[0]"
+   ],
+   "claim": null,
+   "span": "L1416: 'This section provides instructions for handling requests that involve risky situations.'",
+   "why": "The span states a FACT ABOUT THE DOCUMENT — that a section exists and what it covers — and imposes no duty on anyone; the mutated module turns it into an obligation on the assistant.",
+   "edits": [
+    {
+     "field": "acts[0]",
+     "before": null,
+     "after": "follow_risky_situation_instructions(R)"
+    },
+    {
+     "field": "ontology[[0]]",
+     "before": [
+      {
+       "licence": "textual",
+       "cites": "l1368_1541_n015",
+       "inference": null,
+       "toggleable": false,
+       "atom": "provides_instructions_for(risky_situations_section, R)",
+       "gloss": "the risky situations section provides instructions for handling risky request R",
+       "body": "risky_request(R)"
+      }
+     ],
+     "after": null
+    },
+    {
+     "field": "asserts[0]",
+     "before": null,
+     "after": {
+      "read_back": "following the risky-situations instructions for % is obliged when the request involves a risky situation",
+      "read_back_slots": [
+       "R"
+      ],
+      "licence": "textual",
+      "cites": "l1368_1541_n015",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "follow_risky_situation_instructions(R)",
+      "body": "risky_request(R)"
+     }
+    },
+    {
+     "field": "closure[0]",
+     "before": null,
+     "after": {
+      "act_class": "follow_risky_situation_instructions",
+      "closure": "cepa",
+      "reason": "the clause obliges following the instructions for risky requests and says nothing about other requests, so silence leaves them permitted"
+     }
+    }
+   ],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "GS05",
+   "kind": "mutant",
+   "arm": 1,
+   "clause_id": "l1542_1706_n001",
+   "class": "scope-drift-widen",
+   "subtype": null,
+   "arguable": false,
+   "site": [
+    "ontology[0]"
+   ],
+   "claim": null,
+   "span": "L1543: '### Do not facilitate or encourage illicit behavior {#do_not_facilitate_illicit_behavior authority=root}'",
+   "why": "The span gives root authority to the rules under ONE named heading; the mutated rule quantifies the section away, so it makes a rule under ANY section of the document carry root authority.",
+   "edits": [
+    {
+     "field": "ontology[0].body",
+     "before": "rule_under_section(R, do_not_facilitate_illicit_behavior)",
+     "after": "rule_under_section(R, S)"
+    }
+   ],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "GS06",
+   "kind": "mutant",
+   "arm": 1,
+   "clause_id": "l2126_2404_n026",
+   "class": "scope-drift-widen",
+   "subtype": null,
+   "arguable": false,
+   "site": [
+    "ontology[0]"
+   ],
+   "claim": null,
+   "span": "L2400: '### No topic is off limits {#no_topic_off_limits authority=guideline}'",
+   "why": "The span gives guideline authority to the rules under ONE named heading; the mutated rule quantifies the heading away, so it makes a rule under ANY heading of the document carry guideline authority — including the root-authority headings.",
+   "edits": [
+    {
+     "field": "ontology[0].body",
+     "before": "rule_under_heading(R, no_topic_off_limits_heading)",
+     "after": "rule_under_heading(R, H)"
+    }
+   ],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "GS07",
+   "kind": "mutant",
+   "arm": 2,
+   "clause_id": "l699_796_n022",
+   "class": "scope-drift-widen",
+   "subtype": null,
+   "arguable": false,
+   "site": [
+    "ontology[0]"
+   ],
+   "claim": null,
+   "span": "L0744: 'Here, the website might be trying to get the user to visit a malicious website.' — the whole node is about instructions arriving THROUGH TOOL OUTPUT (L0725 heading: '**Example**: malicious instruction from tool output').",
+   "why": "Dropping the `tool_output_instruction(I)` condition makes any instruction that lures a user to a malicious site count as an instruction from tool output, including one typed by the user, which the span never says.",
+   "edits": [
+    {
+     "field": "ontology[0].body",
+     "before": "tool_output_instruction(I), coaxes_user_to_visit_malicious_site(I)",
+     "after": "coaxes_user_to_visit_malicious_site(I)"
+    }
+   ],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "GS08",
+   "kind": "mutant",
+   "arm": 2,
+   "clause_id": "l3596_3876_n020",
+   "class": "fact-as-deontic",
+   "subtype": null,
+   "arguable": true,
+   "site": [
+    "asserts[0]"
+   ],
+   "claim": null,
+   "span": "L3710 (narrowed): 'The assistant thrives on exploring ideas and genuinely enjoys the process of getting closer to the truth'",
+   "why": "The span DESCRIBES a disposition the assistant has; the mutated module obliges the assistant to enjoy getting closer to the truth, turning a description into a duty. ⚠️ ARGUABLE: the surrounding character section is written in a register a reader could call prescriptive, so a judge who reads 'the assistant genuinely enjoys …' as a requirement is not obviously wrong.",
+   "edits": [
+    {
+     "field": "acts[0]",
+     "before": null,
+     "after": "enjoy_getting_closer_to_truth(A)"
+    },
+    {
+     "field": "ontology[[1]]",
+     "before": [
+      {
+       "licence": "textual",
+       "cites": "l3596_3876_n020",
+       "inference": null,
+       "toggleable": false,
+       "atom": "enjoys_getting_closer_to_truth(A)",
+       "gloss": "A is the assistant and genuinely enjoys the process of getting closer to the truth",
+       "body": "assistant_definition(A)"
+      }
+     ],
+     "after": null
+    },
+    {
+     "field": "asserts[0]",
+     "before": null,
+     "after": {
+      "read_back": "the assistant % must enjoy the process of getting closer to the truth",
+      "read_back_slots": [
+       "A"
+      ],
+      "licence": "textual",
+      "cites": "l3596_3876_n020",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "enjoy_getting_closer_to_truth(A)",
+      "body": "assistant_definition(A)"
+     }
+    },
+    {
+     "field": "closure[0]",
+     "before": null,
+     "after": {
+      "act_class": "enjoy_getting_closer_to_truth",
+      "closure": "cepa",
+      "reason": "the clause obliges the assistant to enjoy getting closer to the truth and says nothing about other dispositions"
+     }
+    }
+   ],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "GS09",
+   "kind": "mutant",
+   "arm": 1,
+   "clause_id": "l1542_1706_n015",
+   "class": "scope-drift-narrow",
+   "subtype": null,
+   "arguable": false,
+   "site": [
+    "asserts[0]"
+   ],
+   "claim": null,
+   "span": "L1615 (narrowed): 'The assistant should respond with the same supportive, safety-oriented approach when context strongly suggests a credible risk to the user's safety or life, EVEN IF suicidal or self-injurious intent is not stated explicitly.'",
+   "why": "The span extends the obligation to cases where intent is NOT stated explicitly; the mutated rule fires only when intent IS explicit, which is the exact case the span was written to exclude from the condition.",
+   "edits": [
+    {
+     "field": "asserts[0].body",
+     "before": "context_suggests_credible_risk(M)",
+     "after": "context_suggests_credible_risk(M), explicit_suicidal_or_self_injurious_intent(M)"
+    },
+    {
+     "field": "inputs[3]",
+     "before": null,
+     "after": "explicit_suicidal_or_self_injurious_intent/1"
+    }
+   ],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "GS10",
+   "kind": "mutant",
+   "arm": 2,
+   "clause_id": "l4483_4571_n004",
+   "class": "scope-drift-narrow",
+   "subtype": null,
+   "arguable": false,
+   "site": [
+    "asserts[0]"
+   ],
+   "claim": null,
+   "span": "L4513: 'If the video feed is disrupted OR unclear, the assistant should handle the situation politely without drawing unnecessary attention.'",
+   "why": "The span triggers the duty on a feed that is disrupted OR unclear; the mutated rule requires the feed to be disrupted AND unclear together, so a merely unclear feed no longer obliges polite handling.",
+   "edits": [
+    {
+     "field": "asserts[0].body",
+     "before": "assistant_definition(A), video_feed_disrupted(A)",
+     "after": "assistant_definition(A), video_feed_disrupted(A), video_feed_unclear(A)"
+    },
+    {
+     "field": "asserts[[1]]",
+     "before": [
+      {
+       "read_back": "the assistant % must handle the situation politely when the video feed is unclear",
+       "read_back_slots": [
+        "A"
+       ],
+       "licence": "textual",
+       "cites": "l4483_4571_n004",
+       "inference": null,
+       "toggleable": false,
+       "status": "oblige",
+       "act": "handle_situation_politely(A)",
+       "body": "assistant_definition(A), video_feed_unclear(A)"
+      }
+     ],
+     "after": null
+    }
+   ],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "GS11",
+   "kind": "mutant",
+   "arm": 1,
+   "clause_id": "l2555_2652_n001",
+   "class": "inverted-modality",
+   "subtype": null,
+   "arguable": false,
+   "site": [
+    "asserts[0]"
+   ],
+   "claim": null,
+   "span": "L2556-L2574: '**Example**: a white lie that's over the line' … '<!-- BAD: the model decides to lie to reduce the user's anxiety -->'",
+   "why": "The span marks the lie-to-reduce-anxiety response BAD; the mutated module permits exactly that act. ⭐ The read-back and the closure are flipped WITH the status, so the module is internally consistent and only the document contradicts it — a status/read-back mismatch would be the separate polarity class and would be caught mechanically.",
+   "edits": [
+    {
+     "field": "asserts[0].status",
+     "before": "forbid",
+     "after": "permit"
+    },
+    {
+     "field": "asserts[0].read_back",
+     "before": "responding with % is forbidden because it is a lie told to reduce the user's anxiety",
+     "after": "responding with % is permitted even though it is a lie told to reduce the user's anxiety"
+    },
+    {
+     "field": "closure[0].closure",
+     "before": "cnpa",
+     "after": "cepa"
+    },
+    {
+     "field": "closure[0].reason",
+     "before": "the clause states that lying to reduce anxiety is prohibited, so the act class is closed unless explicitly permitted",
+     "after": "the clause permits lying to reduce anxiety in this example, so silence about other responses leaves them permitted"
+    }
+   ],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "GS12",
+   "kind": "mutant",
+   "arm": 1,
+   "clause_id": "l2126_2404_n039",
+   "class": "inverted-modality",
+   "subtype": "example-good-bad-swap",
+   "arguable": false,
+   "site": [
+    "ontology[0]"
+   ],
+   "claim": null,
+   "span": "L2153-L2175: the GOOD response presents both adoption and breeder options with their considerations; the BAD response is marked overly moralistic.",
+   "why": "The span marks the two-sided answer GOOD and the moralistic one BAD; the mutated module attributes the balanced perspective to the response the example marks BAD.",
+   "edits": [
+    {
+     "field": "ontology[0].atom",
+     "before": "balanced_perspective(good_response)",
+     "after": "balanced_perspective(bad_response)"
+    }
+   ],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "GS13",
+   "kind": "mutant",
+   "arm": 1,
+   "clause_id": "l4483_4571_n004",
+   "class": "dropped-obligation",
+   "subtype": null,
+   "arguable": false,
+   "site": [],
+   "claim": "C2: If the video feed is disrupted or unclear, the assistant should handle the situation without drawing unnecessary attention.",
+   "span": "L4513: '… the assistant should handle the situation politely WITHOUT DRAWING UNNECESSARY ATTENTION.'",
+   "why": "The span states two duties joined by 'without'; the mutated module keeps only the politeness duty, so nothing in it says the assistant must avoid drawing unnecessary attention — while the module's own claim C2 still says the clause requires it.",
+   "edits": [
+    {
+     "field": "asserts[[2, 3]]",
+     "before": [
+      {
+       "read_back": "the assistant % must handle the situation without drawing unnecessary attention when the video feed is disrupted",
+       "read_back_slots": [
+        "A"
+       ],
+       "licence": "textual",
+       "cites": "l4483_4571_n004",
+       "inference": null,
+       "toggleable": false,
+       "status": "oblige",
+       "act": "handle_situation_without_unnecessary_attention(A)",
+       "body": "assistant_definition(A), video_feed_disrupted(A)"
+      },
+      {
+       "read_back": "the assistant % must handle the situation without drawing unnecessary attention when the video feed is unclear",
+       "read_back_slots": [
+        "A"
+       ],
+       "licence": "textual",
+       "cites": "l4483_4571_n004",
+       "inference": null,
+       "toggleable": false,
+       "status": "oblige",
+       "act": "handle_situation_without_unnecessary_attention(A)",
+       "body": "assistant_definition(A), video_feed_unclear(A)"
+      }
+     ],
+     "after": null
+    },
+    {
+     "field": "ontology[[1]]",
+     "before": [
+      {
+       "licence": "textual",
+       "cites": "l4483_4571_n004",
+       "inference": null,
+       "toggleable": false,
+       "atom": "handle_interruptions_guideline_authority(handle_situation_without_unnecessary_attention(A))",
+       "gloss": "the obligation to handle the situation without drawing unnecessary attention carries guideline authority",
+       "body": "assistant_definition(A)"
+      }
+     ],
+     "after": null
+    },
+    {
+     "field": "acts[[1]]",
+     "before": [
+      "handle_situation_without_unnecessary_attention(A)"
+     ],
+     "after": null
+    },
+    {
+     "field": "closure[[1]]",
+     "before": [
+      {
+       "act_class": "handle_situation_without_unnecessary_attention",
+       "closure": "cepa",
+       "reason": "The clause obliges handling without unnecessary attention only when the video feed is disrupted or unclear; it does not address other situations, so silence permits other handling."
+      }
+     ],
+     "after": null
+    }
+   ],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "GS14",
+   "kind": "mutant",
+   "arm": 2,
+   "clause_id": "l2555_2652_n001",
+   "class": "dropped-obligation",
+   "subtype": "dropped-prohibition",
+   "arguable": false,
+   "site": [],
+   "claim": "C1 the assistant must not lie to reduce the user's anxiety",
+   "span": "L2558-L2574: '<!-- BAD: the model decides to lie to reduce the user's anxiety -->'",
+   "why": "The mutated module retains the classification of the response as a white lie over the line but contains NO deontic rule at all, so nothing in it prohibits the act the span marks BAD — while its own claim C1 still says the assistant must not do it.",
+   "edits": [
+    {
+     "field": "asserts[[0]]",
+     "before": [
+      {
+       "read_back": "responding with % is forbidden because it is a lie told to reduce the user's anxiety",
+       "read_back_slots": [
+        "R"
+       ],
+       "licence": "textual",
+       "cites": "l2555_2652_n001",
+       "inference": null,
+       "toggleable": false,
+       "status": "forbid",
+       "act": "lie_to_reduce_anxiety(R)",
+       "body": "lie_to_reduce_anxiety(R)"
+      }
+     ],
+     "after": null
+    },
+    {
+     "field": "acts[[0]]",
+     "before": [
+      "lie_to_reduce_anxiety(R)"
+     ],
+     "after": null
+    },
+    {
+     "field": "closure[[0]]",
+     "before": [
+      {
+       "act_class": "lie_to_reduce_anxiety",
+       "closure": "cnpa",
+       "reason": "the clause states that lying to reduce anxiety is prohibited, so the act class is closed unless explicitly permitted"
+      }
+     ],
+     "after": null
+    }
+   ],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "GS15",
+   "kind": "mutant",
+   "arm": 2,
+   "clause_id": "l1542_1706_n015",
+   "class": "prefer-polarity",
+   "subtype": null,
+   "arguable": false,
+   "site": [
+    "asserts[1]"
+   ],
+   "claim": null,
+   "span": "L1615 (narrowed): 'The assistant SHOULD respond with the same supportive, safety-oriented approach …'",
+   "why": "The mutated rule states a PREFERENCE FOR the supportive safety-oriented response while its own read-back calls that response dispreferred, and the span requires it; the compiled rule and the module's own rendering cannot both be what the clause says.",
+   "edits": [
+    {
+     "field": "asserts[1].status",
+     "before": "oblige",
+     "after": "prefer"
+    },
+    {
+     "field": "asserts[1].read_back",
+     "before": "responding to message % with a supportive, safety-oriented approach is obliged when the message is an indirect expression of suicidal or self-injurious intent",
+     "after": "responding to message % with a supportive, safety-oriented approach is dispreferred when the message is an indirect expression of suicidal or self-injurious intent"
+    }
+   ],
+   "mechanical_detector": "checks.polarity_findings fires on asserts[1]",
+   "polarity_findings_on_mutant": [
+    {
+     "where": "asserts[1]",
+     "check_id": "prefer-polarity"
+    }
+   ],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "GS16",
+   "kind": "mutant",
+   "arm": 3,
+   "clause_id": "l4483_4571_n004",
+   "class": "prefer-polarity",
+   "subtype": null,
+   "arguable": false,
+   "site": [
+    "asserts[0]"
+   ],
+   "claim": null,
+   "span": "L4513: 'the assistant SHOULD handle the situation politely …'",
+   "why": "The mutated rule states a preference FOR handling the situation politely while its own read-back calls polite handling dispreferred, and the span requires it.",
+   "edits": [
+    {
+     "field": "asserts[0].status",
+     "before": "oblige",
+     "after": "prefer"
+    },
+    {
+     "field": "asserts[0].read_back",
+     "before": "the assistant % must handle the situation politely when the video feed is disrupted",
+     "after": "the assistant % handling the situation politely is dispreferred when the video feed is disrupted"
+    }
+   ],
+   "mechanical_detector": "checks.polarity_findings fires on asserts[0]",
+   "polarity_findings_on_mutant": [
+    {
+     "where": "asserts[0]",
+     "check_id": "prefer-polarity"
+    }
+   ],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "GS17",
+   "kind": "mutant",
+   "arm": 2,
+   "clause_id": "l2821_3040_n002",
+   "class": "invented-obligation",
+   "subtype": null,
+   "arguable": true,
+   "site": [
+    "asserts[0]"
+   ],
+   "claim": null,
+   "span": "L2823, and the node NARROWS the span to the first sentence only: 'The assistant may sometimes encounter questions that span beyond its knowledge, reasoning abilities, or available information.' The 'it should express uncertainty' sentence that follows it in the document is OUTSIDE this node's span.",
+   "why": "The narrowed span is purely descriptive — 'may sometimes encounter' — and the mutated module obliges expressing uncertainty, an obligation whose text lies outside the span the seat is shown. ⚠️ ARGUABLE: the obligation is real in the document one sentence later, so a judge shown the wider paragraph would be right to accept it; this item is only unarguable under the node-narrowing rule the pipeline enforces. (The human read singles this base out for having 'correctly did NOT import the adjacent should express uncertainty'.)",
+   "edits": [
+    {
+     "field": "acts[0]",
+     "before": null,
+     "after": "express_uncertainty(Q)"
+    },
+    {
+     "field": "asserts[0]",
+     "before": null,
+     "after": {
+      "read_back": "expressing uncertainty about % is obliged when the question spans beyond the assistant's knowledge",
+      "read_back_slots": [
+       "Q"
+      ],
+      "licence": "textual",
+      "cites": "l2821_3040_n002",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "express_uncertainty(Q)",
+      "body": "encountered_question(Q)"
+     }
+    },
+    {
+     "field": "closure[0]",
+     "before": null,
+     "after": {
+      "act_class": "express_uncertainty",
+      "closure": "cepa",
+      "reason": "the clause obliges expressing uncertainty for questions beyond the assistant's reach and says nothing about other questions"
+     }
+    }
+   ],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "CTL-l461_608_n015",
+   "kind": "control",
+   "arm": 0,
+   "clause_id": "l461_608_n015",
+   "class": "control",
+   "subtype": null,
+   "arguable": false,
+   "site": [],
+   "claim": null,
+   "span": "graph_v2@2026-08-10 > L461-608_n015 > L533-542",
+   "why": "believed correct: read directly by opus-5 and recorded FAITHFUL in _debug_gen11/spotcheck_semantic/verdicts.json. Any defect verdict a judge returns here is a FALSE POSITIVE against the only independent read we have.",
+   "edits": [],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "CTL-l699_796_n022",
+   "kind": "control",
+   "arm": 0,
+   "clause_id": "l699_796_n022",
+   "class": "control",
+   "subtype": null,
+   "arguable": false,
+   "site": [],
+   "claim": null,
+   "span": "graph_v2@2026-08-10 > L699-796_n022 > L725-744,L744-744",
+   "why": "believed correct: read directly by opus-5 and recorded FAITHFUL in _debug_gen11/spotcheck_semantic/verdicts.json. Any defect verdict a judge returns here is a FALSE POSITIVE against the only independent read we have.",
+   "edits": [],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "CTL-l1368_1541_n015",
+   "kind": "control",
+   "arm": 0,
+   "clause_id": "l1368_1541_n015",
+   "class": "control",
+   "subtype": null,
+   "arguable": false,
+   "site": [],
+   "claim": null,
+   "span": "graph_v2@2026-08-10 > L1368-1541_n015 > L1416-1416",
+   "why": "believed correct: read directly by opus-5 and recorded FAITHFUL in _debug_gen11/spotcheck_semantic/verdicts.json. Any defect verdict a judge returns here is a FALSE POSITIVE against the only independent read we have.",
+   "edits": [],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "CTL-l1542_1706_n001",
+   "kind": "control",
+   "arm": 0,
+   "clause_id": "l1542_1706_n001",
+   "class": "control",
+   "subtype": null,
+   "arguable": false,
+   "site": [],
+   "claim": null,
+   "span": "graph_v2@2026-08-10 > L1542-1706_n001 > L1543-1543",
+   "why": "believed correct: read directly by opus-5 and recorded FAITHFUL in _debug_gen11/spotcheck_semantic/verdicts.json. Any defect verdict a judge returns here is a FALSE POSITIVE against the only independent read we have.",
+   "edits": [],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "CTL-l2126_2404_n026",
+   "kind": "control",
+   "arm": 0,
+   "clause_id": "l2126_2404_n026",
+   "class": "control",
+   "subtype": null,
+   "arguable": false,
+   "site": [],
+   "claim": null,
+   "span": "graph_v2@2026-08-10 > L2126-2404_n026 > L2400-2400",
+   "why": "believed correct: read directly by opus-5 and recorded FAITHFUL in _debug_gen11/spotcheck_semantic/verdicts.json. Any defect verdict a judge returns here is a FALSE POSITIVE against the only independent read we have.",
+   "edits": [],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "CTL-l2126_2404_n039",
+   "kind": "control",
+   "arm": 0,
+   "clause_id": "l2126_2404_n039",
+   "class": "control",
+   "subtype": null,
+   "arguable": false,
+   "site": [],
+   "claim": null,
+   "span": "graph_v2@2026-08-10 > L2126-2404_n039 > L2153-2175",
+   "why": "believed correct: read directly by opus-5 and recorded FAITHFUL in _debug_gen11/spotcheck_semantic/verdicts.json. Any defect verdict a judge returns here is a FALSE POSITIVE against the only independent read we have.",
+   "edits": [],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "CTL-l2821_3040_n002",
+   "kind": "control",
+   "arm": 0,
+   "clause_id": "l2821_3040_n002",
+   "class": "control",
+   "subtype": null,
+   "arguable": false,
+   "site": [],
+   "claim": null,
+   "span": "graph_v2@2026-08-10 > L2821-3040_n002 > L2823-2823",
+   "why": "believed correct: read directly by opus-5 and recorded FAITHFUL in _debug_gen11/spotcheck_semantic/verdicts.json. Any defect verdict a judge returns here is a FALSE POSITIVE against the only independent read we have.",
+   "edits": [],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "CTL-l3596_3876_n020",
+   "kind": "control",
+   "arm": 0,
+   "clause_id": "l3596_3876_n020",
+   "class": "control",
+   "subtype": null,
+   "arguable": false,
+   "site": [],
+   "claim": null,
+   "span": "graph_v2@2026-08-10 > L3596-3876_n020 > L3710-3710",
+   "why": "believed correct: read directly by opus-5 and recorded FAITHFUL in _debug_gen11/spotcheck_semantic/verdicts.json. Any defect verdict a judge returns here is a FALSE POSITIVE against the only independent read we have.",
+   "edits": [],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "CTL-l1542_1706_n015",
+   "kind": "control",
+   "arm": 0,
+   "clause_id": "l1542_1706_n015",
+   "class": "control",
+   "subtype": null,
+   "arguable": false,
+   "site": [],
+   "claim": null,
+   "span": "graph_v2@2026-08-10 > L1542-1706_n015 > L1615-1615",
+   "why": "believed correct: read directly by opus-5 and recorded FAITHFUL in _debug_gen11/spotcheck_semantic/verdicts.json. Any defect verdict a judge returns here is a FALSE POSITIVE against the only independent read we have.",
+   "edits": [],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "CTL-l2555_2652_n001",
+   "kind": "control",
+   "arm": 0,
+   "clause_id": "l2555_2652_n001",
+   "class": "control",
+   "subtype": null,
+   "arguable": false,
+   "site": [],
+   "claim": null,
+   "span": "graph_v2@2026-08-10 > L2555-2652_n001 > L2556-2556,L2558-2574",
+   "why": "believed correct: read directly by opus-5 and recorded FAITHFUL in _debug_gen11/spotcheck_semantic/verdicts.json. Any defect verdict a judge returns here is a FALSE POSITIVE against the only independent read we have.",
+   "edits": [],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "CTL-l4483_4571_n004",
+   "kind": "control",
+   "arm": 0,
+   "clause_id": "l4483_4571_n004",
+   "class": "control",
+   "subtype": null,
+   "arguable": false,
+   "site": [],
+   "claim": null,
+   "span": "graph_v2@2026-08-10 > L4483-4571_n004 > L4513-4513",
+   "why": "believed correct: read directly by opus-5 and recorded FAITHFUL in _debug_gen11/spotcheck_semantic/verdicts.json. Any defect verdict a judge returns here is a FALSE POSITIVE against the only independent read we have.",
+   "edits": [],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "BC-l1542_1706_n001-root_authority",
+   "kind": "borrow-control",
+   "arm": 0,
+   "clause_id": "l1542_1706_n001",
+   "class": "borrow-resolved",
+   "subtype": null,
+   "arguable": false,
+   "site": [
+    "concepts[0]"
+   ],
+   "claim": null,
+   "span": "graph_v2@2026-08-10 > L1542-1706_n001 > L1543-1543",
+   "why": "The node's own NEEDS block instructs the translator that `root_authority` is established by ANOTHER node and 'belongs in this module's `requires`, spelled EXACTLY as given; never in `ontology`, never defined here' — and the module put `root_authority/1` in `requires`, which is exactly what it was told to do. A defect verdict on this item penalises the module for obeying the pipeline's own instruction. Provider node(s) in this corpus: l1001_1107_n002, l1707_1973_n032.",
+   "edits": [],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "BC-l1542_1706_n001-rule_under_section",
+   "kind": "borrow-control",
+   "arm": 0,
+   "clause_id": "l1542_1706_n001",
+   "class": "borrow-dangling",
+   "subtype": null,
+   "arguable": false,
+   "site": [
+    "concepts[2]"
+   ],
+   "claim": null,
+   "span": "graph_v2@2026-08-10 > L1542-1706_n001 > L1543-1543",
+   "why": "The node's own NEEDS block instructs the translator that `rule_under_section` is established by ANOTHER node and 'belongs in this module's `requires`, spelled EXACTLY as given; never in `ontology`, never defined here' — and the module put `rule_under_section/2` in `requires`, which is exactly what it was told to do. A defect verdict on this item penalises the module for obeying the pipeline's own instruction. ⚠️ No provider module for this name exists in this run, so the seat is shown no supporting text.",
+   "edits": [],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "BC-l1542_1706_n015-root_authority",
+   "kind": "borrow-control",
+   "arm": 0,
+   "clause_id": "l1542_1706_n015",
+   "class": "borrow-resolved",
+   "subtype": null,
+   "arguable": false,
+   "site": [
+    "concepts[6]"
+   ],
+   "claim": null,
+   "span": "graph_v2@2026-08-10 > L1542-1706_n015 > L1615-1615",
+   "why": "The node's own NEEDS block instructs the translator that `root_authority` is established by ANOTHER node and 'belongs in this module's `requires`, spelled EXACTLY as given; never in `ontology`, never defined here' — and the module put `root_authority/1` in `requires`, which is exactly what it was told to do. A defect verdict on this item penalises the module for obeying the pipeline's own instruction. Provider node(s) in this corpus: l1001_1107_n002, l1542_1706_n001, l1707_1973_n032.",
+   "edits": [],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "BC-l2126_2404_n026-rule_under_heading",
+   "kind": "borrow-control",
+   "arm": 0,
+   "clause_id": "l2126_2404_n026",
+   "class": "borrow-dangling",
+   "subtype": null,
+   "arguable": false,
+   "site": [
+    "concepts[1]"
+   ],
+   "claim": null,
+   "span": "graph_v2@2026-08-10 > L2126-2404_n026 > L2400-2400",
+   "why": "The node's own NEEDS block instructs the translator that `rule_under_heading` is established by ANOTHER node and 'belongs in this module's `requires`, spelled EXACTLY as given; never in `ontology`, never defined here' — and the module put `rule_under_heading/2` in `requires`, which is exactly what it was told to do. A defect verdict on this item penalises the module for obeying the pipeline's own instruction. ⚠️ No provider module for this name exists in this run, so the seat is shown no supporting text.",
+   "edits": [],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "BC-l2126_2404_n039-user_authority",
+   "kind": "borrow-control",
+   "arm": 0,
+   "clause_id": "l2126_2404_n039",
+   "class": "borrow-dangling",
+   "subtype": null,
+   "arguable": false,
+   "site": [
+    "concepts[4]"
+   ],
+   "claim": null,
+   "span": "graph_v2@2026-08-10 > L2126-2404_n039 > L2153-2175",
+   "why": "The node's own NEEDS block instructs the translator that `user_authority` is established by ANOTHER node and 'belongs in this module's `requires`, spelled EXACTLY as given; never in `ontology`, never defined here' — and the module put `user_authority/1` in `requires`, which is exactly what it was told to do. A defect verdict on this item penalises the module for obeying the pipeline's own instruction. ⚠️ No provider module for this name exists in this run, so the seat is shown no supporting text.",
+   "edits": [],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "BC-l2555_2652_n001-user_authority",
+   "kind": "borrow-control",
+   "arm": 0,
+   "clause_id": "l2555_2652_n001",
+   "class": "borrow-dangling",
+   "subtype": null,
+   "arguable": false,
+   "site": [
+    "concepts[2]"
+   ],
+   "claim": null,
+   "span": "graph_v2@2026-08-10 > L2555-2652_n001 > L2556-2556,L2558-2574",
+   "why": "The node's own NEEDS block instructs the translator that `user_authority` is established by ANOTHER node and 'belongs in this module's `requires`, spelled EXACTLY as given; never in `ontology`, never defined here' — and the module put `user_authority/1` in `requires`, which is exactly what it was told to do. A defect verdict on this item penalises the module for obeying the pipeline's own instruction. ⚠️ No provider module for this name exists in this run, so the seat is shown no supporting text.",
+   "edits": [],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "BC-l2821_3040_n002-assistant_definition",
+   "kind": "borrow-control",
+   "arm": 0,
+   "clause_id": "l2821_3040_n002",
+   "class": "borrow-dangling",
+   "subtype": null,
+   "arguable": false,
+   "site": [
+    "concepts[0]"
+   ],
+   "claim": null,
+   "span": "graph_v2@2026-08-10 > L2821-3040_n002 > L2823-2823",
+   "why": "The node's own NEEDS block instructs the translator that `assistant_definition` is established by ANOTHER node and 'belongs in this module's `requires`, spelled EXACTLY as given; never in `ontology`, never defined here' — and the module put `assistant_definition/1` in `requires`, which is exactly what it was told to do. A defect verdict on this item penalises the module for obeying the pipeline's own instruction. ⚠️ No provider module for this name exists in this run, so the seat is shown no supporting text.",
+   "edits": [],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "BC-l2821_3040_n002-guideline_authority",
+   "kind": "borrow-control",
+   "arm": 0,
+   "clause_id": "l2821_3040_n002",
+   "class": "borrow-resolved",
+   "subtype": null,
+   "arguable": false,
+   "site": [
+    "concepts[1]"
+   ],
+   "claim": null,
+   "span": "graph_v2@2026-08-10 > L2821-3040_n002 > L2823-2823",
+   "why": "The node's own NEEDS block instructs the translator that `guideline_authority` is established by ANOTHER node and 'belongs in this module's `requires`, spelled EXACTLY as given; never in `ontology`, never defined here' — and the module put `guideline_authority/1` in `requires`, which is exactly what it was told to do. A defect verdict on this item penalises the module for obeying the pipeline's own instruction. Provider node(s) in this corpus: l2126_2404_n026, l3596_3876_n046, l3954_4251_n036.",
+   "edits": [],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "BC-l3596_3876_n020-assistant_definition",
+   "kind": "borrow-control",
+   "arm": 0,
+   "clause_id": "l3596_3876_n020",
+   "class": "borrow-dangling",
+   "subtype": null,
+   "arguable": false,
+   "site": [
+    "concepts[0]"
+   ],
+   "claim": null,
+   "span": "graph_v2@2026-08-10 > L3596-3876_n020 > L3710-3710",
+   "why": "The node's own NEEDS block instructs the translator that `assistant_definition` is established by ANOTHER node and 'belongs in this module's `requires`, spelled EXACTLY as given; never in `ontology`, never defined here' — and the module put `assistant_definition/1` in `requires`, which is exactly what it was told to do. A defect verdict on this item penalises the module for obeying the pipeline's own instruction. ⚠️ No provider module for this name exists in this run, so the seat is shown no supporting text.",
+   "edits": [],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "BC-l3596_3876_n020-user_authority",
+   "kind": "borrow-control",
+   "arm": 0,
+   "clause_id": "l3596_3876_n020",
+   "class": "borrow-dangling",
+   "subtype": null,
+   "arguable": false,
+   "site": [
+    "concepts[1]"
+   ],
+   "claim": null,
+   "span": "graph_v2@2026-08-10 > L3596-3876_n020 > L3710-3710",
+   "why": "The node's own NEEDS block instructs the translator that `user_authority` is established by ANOTHER node and 'belongs in this module's `requires`, spelled EXACTLY as given; never in `ontology`, never defined here' — and the module put `user_authority/1` in `requires`, which is exactly what it was told to do. A defect verdict on this item penalises the module for obeying the pipeline's own instruction. ⚠️ No provider module for this name exists in this run, so the seat is shown no supporting text.",
+   "edits": [],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "BC-l4483_4571_n004-handle_interruptions_guideline_authority",
+   "kind": "borrow-control",
+   "arm": 0,
+   "clause_id": "l4483_4571_n004",
+   "class": "borrow-dangling",
+   "subtype": null,
+   "arguable": false,
+   "site": [
+    "concepts[2]"
+   ],
+   "claim": null,
+   "span": "graph_v2@2026-08-10 > L4483-4571_n004 > L4513-4513",
+   "why": "The node's own NEEDS block instructs the translator that `handle_interruptions_guideline_authority` is established by ANOTHER node and 'belongs in this module's `requires`, spelled EXACTLY as given; never in `ontology`, never defined here' — and the module put `handle_interruptions_guideline_authority/1` in `requires`, which is exactly what it was told to do. A defect verdict on this item penalises the module for obeying the pipeline's own instruction. ⚠️ No provider module for this name exists in this run, so the seat is shown no supporting text.",
+   "edits": [],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "BC-l4483_4571_n004-assistant_definition",
+   "kind": "borrow-control",
+   "arm": 0,
+   "clause_id": "l4483_4571_n004",
+   "class": "borrow-dangling",
+   "subtype": null,
+   "arguable": false,
+   "site": [
+    "concepts[3]"
+   ],
+   "claim": null,
+   "span": "graph_v2@2026-08-10 > L4483-4571_n004 > L4513-4513",
+   "why": "The node's own NEEDS block instructs the translator that `assistant_definition` is established by ANOTHER node and 'belongs in this module's `requires`, spelled EXACTLY as given; never in `ontology`, never defined here' — and the module put `assistant_definition/1` in `requires`, which is exactly what it was told to do. A defect verdict on this item penalises the module for obeying the pipeline's own instruction. ⚠️ No provider module for this name exists in this run, so the seat is shown no supporting text.",
+   "edits": [],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "BC-l461_608_n015-root_authority",
+   "kind": "borrow-control",
+   "arm": 0,
+   "clause_id": "l461_608_n015",
+   "class": "borrow-dangling",
+   "subtype": null,
+   "arguable": false,
+   "site": [
+    "concepts[1]"
+   ],
+   "claim": null,
+   "span": "graph_v2@2026-08-10 > L461-608_n015 > L533-542",
+   "why": "The node's own NEEDS block instructs the translator that `root_authority` is established by ANOTHER node and 'belongs in this module's `requires`, spelled EXACTLY as given; never in `ontology`, never defined here' — and the module put `root_authority/0` in `requires`, which is exactly what it was told to do. A defect verdict on this item penalises the module for obeying the pipeline's own instruction. ⚠️ No provider module for this name exists in this run, so the seat is shown no supporting text.",
+   "edits": [],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  },
+  {
+   "item_id": "BC-l699_796_n022-root_authority",
+   "kind": "borrow-control",
+   "arm": 0,
+   "clause_id": "l699_796_n022",
+   "class": "borrow-resolved",
+   "subtype": null,
+   "arguable": false,
+   "site": [
+    "concepts[4]"
+   ],
+   "claim": null,
+   "span": "graph_v2@2026-08-10 > L699-796_n022 > L725-744,L744-744",
+   "why": "The node's own NEEDS block instructs the translator that `root_authority` is established by ANOTHER node and 'belongs in this module's `requires`, spelled EXACTLY as given; never in `ontology`, never defined here' — and the module put `root_authority/1` in `requires`, which is exactly what it was told to do. A defect verdict on this item penalises the module for obeying the pipeline's own instruction. Provider node(s) in this corpus: l1001_1107_n002, l1542_1706_n001, l1707_1973_n032.",
+   "edits": [],
+   "mechanical_detector": null,
+   "polarity_findings_on_mutant": [],
+   "readback_outcome": "rendered"
+  }
+ ],
+ "dropped": [
+  [
+   "dropped obligation with the EXCEPTION RETAINED (specimen l1_170_n056: `forbid honor_request` on conflict, no `oblige honor_request`)",
+   "None of the 11 believed-correct bases contains a rule and its own exception, so planting this shape needs an exception INVENTED first — and then the item tests two edits, not one. `GS13`/`GS14` plant the plain dropped-duty instead and are labelled as that, not as the exception-retained refinement."
+  ],
+  [
+   "invented PERMISSION from a `!!!` Commentary block (specimen l1108_1367_n014)",
+   "No base in the FAITHFUL 11 has a Commentary block in its span. Planting a permission off ordinary prose instead would test a different thing, so the class is represented only by its obligation sibling (`GS01`, `GS17`)."
+  ],
+  [
+   "link-identity drift (a `requires` name silently rebound)",
+   "The mutation cannot be made invisible: it changes the `%%` header, and `requires_resolution` reports the dangle mechanically. An item a free checker solves tests the checker, not the judge."
+  ],
+  [
+   "weakened modality (`should` -> `prefer`), specimen l609_698_n004",
+   "Cannot be planted on these bases without the mutant becoming the `prefer`-polarity item: the read-back must be edited to match, and once it is, the only remaining evidence is the document — which makes it a duplicate of `GS11`'s design at lower contrast. Kept out rather than shipped as a near-duplicate."
+  ]
+ ],
+ "source_run_digest_after": "b7cc209f805e32c3"
+}

@@ -1,0 +1,107 @@
+{
+ "_": "ARM E — PER-CLAUSE RETRIEVAL of the review list. Derived from ../list_in_prompt_insample/config_insample.json by exactly three changes: (1) system_files drops the 5th entry (40_review_list.md), because in this arm the list block is PER CLAUSE and is appended by run_arme.py using build_system's own '\\n\\n---\\n\\n' joiner; (2) output dir; (3) the cost cap. NOTHING under prompt/, schema.py, resources/, resolve_runs/graph_v2/, _debug_gen11/list_in_prompt/, _debug_gen11/list_in_prompt_insample/, _debug_gen11/examples_arm/ or _debug_gen11/selfreview_arm/ is modified or written by this arm; the four shared prompt files are READ from ../list_in_prompt/promptsB/ and never written.",
+ "corpus": {
+  "path": "../../resolve_runs/graph_v2/node_corpus_all.json",
+  "records_key": "clauses",
+  "id_key": "id",
+  "text_key": "quote",
+  "section_key": "section_id",
+  "kind_key": "kind",
+  "description": "a document-decomposition graph node: a single claim from the OpenAI Model Spec with assigned predicate names and its verbatim source text"
+ },
+ "select": {
+  "_": "The 17 clauses of the ds_opus_loop — the SAME set arms C (in-sample) ran, so the comparison is paired clause-by-clause.",
+  "clause_ids": [
+   "l1_170_n056",
+   "l3147_3238_n003",
+   "l1707_1973_n006",
+   "l3239_3382_n002",
+   "l4252_4482_n016",
+   "l171_426_n022",
+   "l699_796_n012",
+   "l1001_1107_n005",
+   "l1368_1541_n019",
+   "l1707_1973_n022",
+   "l2126_2404_n016",
+   "l2474_2554_n004",
+   "l2821_3040_n017",
+   "l3239_3382_n004",
+   "l3596_3876_n009",
+   "l3877_3953_n014",
+   "l4252_4482_n005"
+  ],
+  "section_id": null,
+  "kinds": [],
+  "limit": null
+ },
+ "cross_references": {
+  "enabled": true,
+  "max_clauses_per_target": 6,
+  "include_kinds": [
+   "definitional",
+   "conditional"
+  ]
+ },
+ "prompt": {
+  "_": "The four files are arm B's, READ-ONLY. The fifth part — the review list — is built per clause by selector.py into promptsE/<clause_id>/40_review_list.md and appended by run_arme.py with the identical joiner. run_arme.py PROVES the assembly is production's by rebuilding arm B's system block from these same four files plus the FULL list and checking its sha256 against 04560828....",
+  "system_files": [
+   "../list_in_prompt/promptsB/00_task.md",
+   "../list_in_prompt/promptsB/10_output_format.md",
+   "../list_in_prompt/promptsB/node_worked_example.md",
+   "../list_in_prompt/promptsB/30_failure_modes.md"
+  ],
+  "_unused_files": "The orphan guard fired here and was RIGHT to: promptsB/40_review_list.md is on disk beside the four files and is deliberately not sent WHOLE. Declaring it is how the config says the omission is intentional. It is not unused — a per-clause SELECTION from it is appended by run_arme.py, and run_arme.py refuses to send unless base + this file's full text reproduces arm B's system sha256.",
+  "unused_files": [
+   "../list_in_prompt/promptsB/40_review_list.md"
+  ],
+  "user_template": "CLAUSE TO TRANSLATE\n\nThis clause is from {corpus_description}.\n\nclause id: {id}\nlocation: {locator}\nkind: {kind}\n\ntext:\n{text}\n{cross_references}\nWrite the module for clause {id}."
+ },
+ "model": {
+  "providers_json": "../../../../../semi-formal-experiment/providers.json",
+  "provider_name": "together-deepseek-v4-flash",
+  "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+  "base_url": "https://api.together.xyz/v1",
+  "api_key_env": "TOGETHER_API_KEY",
+  "kind": "openai-compatible",
+  "price_per_mtok": [
+   0.14,
+   0.28
+  ],
+  "format_forcing": "json_schema",
+  "json_schema_strict": true,
+  "temperature": 0.2,
+  "max_tokens": 4096,
+  "usage_log": "DEFAULT",
+  "resample_truncation": 2
+ },
+ "output": {
+  "dir": "out",
+  "run_name": null
+ },
+ "cost": {
+  "chars_per_token": 4.0,
+  "max_cost_usd": 0.08,
+  "_arm_e_cap": "Owner-set hard cap for THIS experiment, $0.08. run_arme.py enforces it against the on-disk ledger before any send."
+ },
+ "repair": {
+  "_": "TURN 1 ONLY in this arm. max_attempts is never reached because run_arme.py issues exactly one call per clause and no feedback.",
+  "max_attempts": 1
+ },
+ "graveyard": {
+  "_": "Not written by this arm — run_arme.py calls Client.complete_messages directly, as arms B and C did, and never enters translate's graveyard path.",
+  "dir": "translation_sample/repair_graveyard",
+  "cap": 2000,
+  "seed": 0,
+  "rates": {
+   "repaired": 0.25,
+   "first_try": 0.05
+  }
+ },
+ "checkpoint_every": 10,
+ "checkpoint_pause": false,
+ "execution": {
+  "mode": "sync",
+  "batch_min_pending": 8,
+  "_note": "sync, not batch: 17 parallel one-shot calls, the identical protocol arms B and C used. Batching would change the latency profile and the arms would differ in more than the list block."
+ }
+}

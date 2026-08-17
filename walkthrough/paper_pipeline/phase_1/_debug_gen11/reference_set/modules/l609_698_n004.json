@@ -1,0 +1,94 @@
+{
+ "outcome": "translated",
+ "clause_id": "l609_698_n004",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should apply three implicit biases when interpreting ambiguous instructions",
+  "C2 the three implicit biases are the ones the assistant should apply",
+  "C3 there are three such implicit biases"
+ ],
+ "acts": [
+  "apply_implicit_biases(I)"
+ ],
+ "concepts": [
+  {
+   "name": "implicit_biases",
+   "arity": 1,
+   "gloss": "B is one of the three implicit biases the assistant should apply when interpreting ambiguous instructions",
+   "licence": "textual",
+   "cites": "l609_698_n004",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant, the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous",
+   "licence": "textual",
+   "cites": "l609_698_n004",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule in the #assume_best_intentions section and carries root authority",
+   "licence": "textual",
+   "cites": "l609_698_n004",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "ambiguous_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction whose meaning is ambiguous and therefore open to interpretation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of interpreting ambiguous instructions, so a class of instructions that are ambiguous must exist",
+   "toggleable": false
+  },
+  {
+   "name": "interprets_instruction",
+   "arity": 2,
+   "gloss": "the assistant interprets instruction I",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the obligation to apply biases is tied to the act of interpreting an ambiguous instruction",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant must apply the three implicit biases when it interprets ambiguous instruction %",
+   "read_back_slots": [
+    "I"
+   ],
+   "status": "oblige",
+   "act": "apply_implicit_biases(I)",
+   "body": "assistant_definition(A), ambiguous_instruction(I), interprets_instruction(A, I)",
+   "licence": "textual",
+   "cites": "l609_698_n004",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "apply_implicit_biases",
+   "closure": "cepa",
+   "reason": "the clause requires the biases when interpreting an ambiguous instruction and says nothing about any other interpretive act, so silence permits"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "root_authority/1"
+ ],
+ "inputs": [
+  "ambiguous_instruction/1",
+  "interprets_instruction/2"
+ ],
+ "forbid_body": []
+}

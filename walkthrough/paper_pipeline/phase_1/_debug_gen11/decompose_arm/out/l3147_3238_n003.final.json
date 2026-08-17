@@ -1,0 +1,162 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3147_3238_n003",
+ "abstain_reason": null,
+ "claims": [
+  "C1: If the assistant lacks sufficient confidence in its response, it should use a tool to gather more information.",
+  "C2: If the assistant lacks sufficient confidence in its response, it should hedge its answer appropriately.",
+  "C3: If the assistant lacks sufficient confidence in its response, it should explain that it can't give a confident answer."
+ ],
+ "acts": [
+  "use_tool(R)",
+  "hedge_answer(R)",
+  "explain_cannot_answer(R)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "the assistant is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the narrowing uses the word 'assistant' but does not define it; the definition is supplied by another node",
+   "toggleable": false
+  },
+  {
+   "name": "user_authority",
+   "arity": 1,
+   "gloss": "rules in sections marked authority=user carry user-level instruction authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the narrowing does not mention user authority; the concept is supplied by another node",
+   "toggleable": false
+  },
+  {
+   "name": "lacks_sufficient_confidence",
+   "arity": 1,
+   "gloss": "the assistant does not have enough certainty about the correctness of its response",
+   "licence": "textual",
+   "cites": "l3147_3238_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "use_tool",
+   "arity": 1,
+   "gloss": "the assistant employs an external tool to obtain additional information",
+   "licence": "textual",
+   "cites": "l3147_3238_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "hedge_answer",
+   "arity": 1,
+   "gloss": "the assistant qualifies its response to express uncertainty",
+   "licence": "textual",
+   "cites": "l3147_3238_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "explain_cannot_answer",
+   "arity": 1,
+   "gloss": "the assistant states that it cannot provide a confident response",
+   "licence": "textual",
+   "cites": "l3147_3238_n003",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l3147_3238_n003",
+   "inference": null,
+   "toggleable": false,
+   "atom": "use_tool(R)",
+   "gloss": "the assistant uses a tool to gather more information",
+   "body": "lacks_sufficient_confidence(R)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l3147_3238_n003",
+   "inference": null,
+   "toggleable": false,
+   "atom": "hedge_answer(R)",
+   "gloss": "the assistant hedges its answer appropriately",
+   "body": "lacks_sufficient_confidence(R)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l3147_3238_n003",
+   "inference": null,
+   "toggleable": false,
+   "atom": "explain_cannot_answer(R)",
+   "gloss": "the assistant explains that it can't give a confident answer",
+   "body": "lacks_sufficient_confidence(R)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "If the assistant lacks sufficient confidence in its response, it should use a tool to gather more information.",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l3147_3238_n003",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "use_tool(R)",
+   "body": "lacks_sufficient_confidence(R)"
+  },
+  {
+   "read_back": "If the assistant lacks sufficient confidence in its response, it should hedge its answer appropriately.",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l3147_3238_n003",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "hedge_answer(R)",
+   "body": "lacks_sufficient_confidence(R)"
+  },
+  {
+   "read_back": "If the assistant lacks sufficient confidence in its response, it should explain that it can't give a confident answer.",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l3147_3238_n003",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "explain_cannot_answer(R)",
+   "body": "lacks_sufficient_confidence(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "use_tool",
+   "closure": "cepa",
+   "reason": "the span explicitly lists using a tool as one of the preferred options, so silence about other uses permits them"
+  },
+  {
+   "act_class": "hedge_answer",
+   "closure": "cepa",
+   "reason": "the span explicitly lists hedging as one of the preferred options, so silence about other hedges permits them"
+  },
+  {
+   "act_class": "explain_cannot_answer",
+   "closure": "cepa",
+   "reason": "the span explicitly lists explaining inability as one of the preferred options, so silence about other explanations permits them"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "user_authority/1"
+ ],
+ "inputs": [
+  "lacks_sufficient_confidence/1"
+ ],
+ "forbid_body": []
+}

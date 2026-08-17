@@ -1,0 +1,169 @@
+{
+ "clause_id": "l3147_3238_n003",
+ "_arm_e_cost_usd": 0.0020458200000000003,
+ "_arm_e_sha1_raw": "6d8065f7b45b35e63c86ad61e80f846f328bfc1b",
+ "_arm_e_system_sha256": "ffdb661a33f8263c1e29c332c741b55478794f62f87cc8f8f59913e8105fad29",
+ "_arm_e_system_chars": 45040,
+ "_arm_e_selected": [
+  "E03",
+  "E01",
+  "E04"
+ ],
+ "usage": null,
+ "floor": {
+  "parsed": true,
+  "breaches": [
+   "Breach(where='asserts[0]', message=\"read_back has 0 `%` slot(s) but 1 slot entr(ies) \u2014 the rendered sentence would silently be wrong. Make the counts match: add one `%` in the sentence per slot entry (in order), or remove the extra entries; a sentence with no substitution takes [] and no `%`. (`%` is reserved for substitution \u2014 for a percentage, say 'per cent')\")",
+   "Breach(where='asserts[1]', message=\"read_back has 0 `%` slot(s) but 1 slot entr(ies) \u2014 the rendered sentence would silently be wrong. Make the counts match: add one `%` in the sentence per slot entry (in order), or remove the extra entries; a sentence with no substitution takes [] and no `%`. (`%` is reserved for substitution \u2014 for a percentage, say 'per cent')\")",
+   "Breach(where='asserts[2]', message=\"read_back has 0 `%` slot(s) but 1 slot entr(ies) \u2014 the rendered sentence would silently be wrong. Make the counts match: add one `%` in the sentence per slot entry (in order), or remove the extra entries; a sentence with no substitution takes [] and no `%`. (`%` is reserved for substitution \u2014 for a percentage, say 'per cent')\")"
+  ],
+  "checks": [
+   "[error/schema] schema-breach @ asserts[0]: read_back has 0 `%` slot(s) but 1 slot entr(ies) \u2014 the rendered sentence would silently be wrong. Make the counts match: add one `%` in the sentence per slot entry (in order), or remove the extra entries; a sentence with no substitution takes [] and no `%`. (`%` is reserved for substitution \u2014 for a percentage, say 'per cent')",
+   "[error/schema] schema-breach @ asserts[1]: read_back has 0 `%` slot(s) but 1 slot entr(ies) \u2014 the rendered sentence would silently be wrong. Make the counts match: add one `%` in the sentence per slot entry (in order), or remove the extra entries; a sentence with no substitution takes [] and no `%`. (`%` is reserved for substitution \u2014 for a percentage, say 'per cent')",
+   "[error/schema] schema-breach @ asserts[2]: read_back has 0 `%` slot(s) but 1 slot entr(ies) \u2014 the rendered sentence would silently be wrong. Make the counts match: add one `%` in the sentence per slot entry (in order), or remove the extra entries; a sentence with no substitution takes [] and no `%`. (`%` is reserved for substitution \u2014 for a percentage, say 'per cent')"
+  ],
+  "outcome": "invalid",
+  "repair_needed": true
+ },
+ "module": {
+  "outcome": "translated",
+  "clause_id": "l3147_3238_n003",
+  "abstain_reason": null,
+  "claims": [
+   "C1: If the assistant lacks sufficient confidence in its response, it should use a tool to gather more information.",
+   "C2: If the assistant lacks sufficient confidence in its response, it should hedge its answer appropriately.",
+   "C3: If the assistant lacks sufficient confidence in its response, it should explain that it can't give a confident answer.",
+   "C4: The three options are alternatives: the assistant should do at least one of them, not all of them."
+  ],
+  "acts": [
+   "use_tool_to_gather_info(A)",
+   "hedge_answer(A)",
+   "explain_cannot_answer_confidently(A)"
+  ],
+  "concepts": [
+   {
+    "name": "assistant_definition",
+    "arity": 1,
+    "gloss": "A is the assistant entity that the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document.",
+    "licence": "textual",
+    "cites": "l3147_3238_n003",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "user_authority",
+    "arity": 1,
+    "gloss": "R is a rule that carries user-level instruction authority because it is in a section marked authority=user.",
+    "licence": "textual",
+    "cites": "l3147_3238_n003",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "lacks_sufficient_confidence",
+    "arity": 1,
+    "gloss": "A lacks sufficient confidence in its response, meaning it is not sufficiently sure that its response is correct or appropriate.",
+    "licence": "textual",
+    "cites": "l3147_3238_n003",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "use_tool_to_gather_info",
+    "arity": 1,
+    "gloss": "A uses a tool to gather more information before responding.",
+    "licence": "textual",
+    "cites": "l3147_3238_n003",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "hedge_answer",
+    "arity": 1,
+    "gloss": "A hedges its answer appropriately, expressing uncertainty or qualification in its response.",
+    "licence": "textual",
+    "cites": "l3147_3238_n003",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "explain_cannot_answer_confidently",
+    "arity": 1,
+    "gloss": "A explains that it cannot give a confident answer.",
+    "licence": "textual",
+    "cites": "l3147_3238_n003",
+    "inference": null,
+    "toggleable": false
+   }
+  ],
+  "ontology": [],
+  "asserts": [
+   {
+    "read_back": "if the assistant lacks sufficient confidence in its response, it should use a tool to gather more information",
+    "read_back_slots": [
+     "A"
+    ],
+    "licence": "textual",
+    "cites": "l3147_3238_n003",
+    "inference": null,
+    "toggleable": false,
+    "status": "oblige",
+    "act": "use_tool_to_gather_info(A)",
+    "body": "assistant_definition(A), lacks_sufficient_confidence(A)"
+   },
+   {
+    "read_back": "if the assistant lacks sufficient confidence in its response, it should hedge its answer appropriately",
+    "read_back_slots": [
+     "A"
+    ],
+    "licence": "textual",
+    "cites": "l3147_3238_n003",
+    "inference": null,
+    "toggleable": false,
+    "status": "oblige",
+    "act": "hedge_answer(A)",
+    "body": "assistant_definition(A), lacks_sufficient_confidence(A)"
+   },
+   {
+    "read_back": "if the assistant lacks sufficient confidence in its response, it should explain that it can't give a confident answer",
+    "read_back_slots": [
+     "A"
+    ],
+    "licence": "textual",
+    "cites": "l3147_3238_n003",
+    "inference": null,
+    "toggleable": false,
+    "status": "oblige",
+    "act": "explain_cannot_answer_confidently(A)",
+    "body": "assistant_definition(A), lacks_sufficient_confidence(A)"
+   }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+   {
+    "act_class": "use_tool_to_gather_info",
+    "closure": "cepa",
+    "reason": "The clause obliges using a tool when confidence is lacking, but is silent about using a tool when confidence is sufficient; silence permits that act."
+   },
+   {
+    "act_class": "hedge_answer",
+    "closure": "cepa",
+    "reason": "The clause obliges hedging when confidence is lacking, but is silent about hedging when confidence is sufficient; silence permits that act."
+   },
+   {
+    "act_class": "explain_cannot_answer_confidently",
+    "closure": "cepa",
+    "reason": "The clause obliges explaining inability when confidence is lacking, but is silent about explaining when confidence is sufficient; silence permits that act."
+   }
+  ],
+  "requires": [
+   "assistant_definition/1",
+   "user_authority/1"
+  ],
+  "inputs": [
+   "lacks_sufficient_confidence/1"
+  ],
+  "forbid_body": []
+ }
+}

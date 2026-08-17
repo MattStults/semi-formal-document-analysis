@@ -1,0 +1,111 @@
+{
+  "outcome": "translated",
+  "clause_id": "l3383_3501_n013",
+  "abstain_reason": null,
+  "claims": [
+    "C1: If following a requested output format would violate a higher-level instruction, the assistant is required to refuse.",
+    "C2: The refusal obligation applies only when the format cannot be followed without violating a higher-level instruction; it does not apply when the format can be followed without such a violation."
+  ],
+  "acts": ["refuse(R)"],
+  "concepts": [
+    {
+      "name": "authority_levels_hierarchy",
+      "arity": 2,
+      "gloss": "the ranking of instruction authority levels, where the first argument is a level that outranks the second argument (root > system > developer > user > guideline > no authority)",
+      "licence": "textual",
+      "cites": "l3383_3501_n013",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "guideline_authority",
+      "arity": 1,
+      "gloss": "the rule carries guideline-level instruction authority, which is below user-level authority in the hierarchy",
+      "licence": "textual",
+      "cites": "l3383_3501_n013",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "requested_output_format",
+      "arity": 1,
+      "gloss": "F is a specific output format requested by a developer or user, such as a particular JSON schema or a single-word response",
+      "licence": "textual",
+      "cites": "l3383_3501_n013",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "higher_level_instruction",
+      "arity": 1,
+      "gloss": "I is an instruction from a level of the authority hierarchy that outranks the level of the format request",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause refers to 'a higher-level instruction' relative to the format request, so the instruction must be from a level that outranks the request's level",
+      "toggleable": false
+    },
+    {
+      "name": "format_instruction_level",
+      "arity": 2,
+      "gloss": "the format request F was made at authority level L",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "comparing the format request to a higher-level instruction requires knowing the authority level of the format request",
+      "toggleable": false
+    },
+    {
+      "name": "instruction_level",
+      "arity": 2,
+      "gloss": "instruction I was issued at authority level L",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "comparing instructions requires each instruction to carry an authority level",
+      "toggleable": false
+    },
+    {
+      "name": "violates_if_followed",
+      "arity": 2,
+      "gloss": "following format F would violate instruction I",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause's condition is that following the format would violate a higher-level instruction; this is a fact about the case",
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "l3383_3501_n013",
+      "inference": null,
+      "toggleable": false,
+      "atom": "higher_level_instruction(I)",
+      "gloss": "I is an instruction from a level that outranks the level of the format request",
+      "body": "instruction_level(I, L), format_instruction_level(F, Lf), authority_levels_hierarchy(L, Lf)"
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "the assistant is required to refuse when following the requested format % would violate higher-level instruction %",
+      "read_back_slots": ["F", "I"],
+      "licence": "textual",
+      "cites": "l3383_3501_n013",
+      "inference": null,
+      "toggleable": false,
+      "status": "oblige",
+      "act": "refuse(R)",
+      "body": "requested_output_format(F), higher_level_instruction(I), violates_if_followed(F, I), refuse(R)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "refuse",
+      "closure": "unclear",
+      "reason": "The clause obliges refusal only when following the format would violate a higher-level instruction; it does not state whether refusal is permitted or forbidden in other situations, so the silence is unsettled by this clause."
+    }
+  ],
+  "requires": ["authority_levels_hierarchy/2", "guideline_authority/1"],
+  "inputs": ["requested_output_format/1", "format_instruction_level/2", "instruction_level/2", "violates_if_followed/2", "refuse/1"],
+  "forbid_body": []
+}

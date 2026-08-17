@@ -1,0 +1,84 @@
+{
+  "outcome": "translated",
+  "clause_id": "l1108_1367_n013",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the document labels the heading anchored #avoid_abuse with the authority level user",
+    "C2 a rule located in the document under that heading therefore carries user-level authority"
+  ],
+  "acts": [],
+  "concepts": [
+    {
+      "name": "user_authority",
+      "arity": 1,
+      "gloss": "R is an instruction that sits at the user level of the chain of command, so a conflicting instruction from a level the document ranks above user prevails over it",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the heading line states the LEVEL verbatim as authority=user, but what carrying that level does in a conflict is fixed by the document's levels-of-authority material rather than by this heading, and a gloss confined to the heading could only restate the name",
+      "toggleable": false
+    },
+    {
+      "name": "authority_levels_hierarchy",
+      "arity": 2,
+      "gloss": "authority_levels_hierarchy(H, L) holds when level H outranks level L in the document ranking root above system above developer above user above guideline above no authority, so an instruction at H prevails over a conflicting one at L; first argument is the HIGHER level",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the label authority=user picks one level out of a ranking of levels; the ranking itself is stated elsewhere in the document and is handed to this node by its NEEDS block, not by this heading",
+      "toggleable": false
+    },
+    {
+      "name": "heading_authority",
+      "arity": 2,
+      "gloss": "heading_authority(H, L) holds when the document's own inline attribute block on heading H assigns it authority level L; first argument is the heading, second the level",
+      "licence": "textual",
+      "cites": "l1108_1367_n013",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "avoid_abuse_heading",
+      "arity": 0,
+      "gloss": "the level-4 document heading whose anchor is avoid_abuse and whose title reads Do not engage in abuse",
+      "licence": "textual",
+      "cites": "l1108_1367_n013",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "rule_under_heading",
+      "arity": 2,
+      "gloss": "rule_under_heading(R, H) holds when rule R is located in the document in the section that heading H opens; first argument is the rule, second the heading",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "for a heading's authority label to reach anything at all there must be a relation between a rule and the heading it sits under; the heading line names no such relation",
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "atom": "heading_authority(avoid_abuse_heading, user)",
+      "body": null,
+      "gloss": "heading_authority(H, L) holds when the document's inline attribute block on heading H assigns it authority level L",
+      "licence": "textual",
+      "cites": "l1108_1367_n013",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "atom": "user_authority(R)",
+      "body": "rule_under_heading(R, avoid_abuse_heading), heading_authority(avoid_abuse_heading, user)",
+      "gloss": "user_authority(R) holds when instruction R sits at the user level of the chain of command",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the heading line attaches authority=user to the HEADING and says nothing about the rules beneath it; that the label governs every rule of the section is the document's heading-label convention, asserted by this node's ESTABLISHES rather than by the heading text",
+      "toggleable": false
+    }
+  ],
+  "asserts": [],
+  "beats": [],
+  "defines": [],
+  "closure": [],
+  "requires": ["authority_levels_hierarchy/2"],
+  "inputs": ["rule_under_heading/2"],
+  "forbid_body": []
+}

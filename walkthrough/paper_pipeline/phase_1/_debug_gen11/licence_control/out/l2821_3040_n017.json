@@ -1,0 +1,115 @@
+{
+ "clause_id": "l2821_3040_n017",
+ "_lc_cost_usd": 0.0017057600000000002,
+ "_lc_sha1_raw": "6349f31912360339d3af47226e8eb0017d5ba33f",
+ "_lc_t_start": 1786929190.987515,
+ "_lc_t_end": 1786929196.660542,
+ "usage": null,
+ "floor": {
+  "parsed": true,
+  "breaches": [
+   "Breach(where='<root>', message='`express_uncertainty/1` is borrowed but has no gloss. Add a `concepts` entry saying what this module needs it to MEAN \u2014 not what defines it, which stays in `requires`/`inputs`. Without it a seat is shown a bare predicate name, and nothing can match this to the clause that defines it')",
+   "Breach(where='<root>', message='`conversational_language/1` is borrowed but has no gloss. Add a `concepts` entry saying what this module needs it to MEAN \u2014 not what defines it, which stays in `requires`/`inputs`. Without it a seat is shown a bare predicate name, and nothing can match this to the clause that defines it')"
+  ],
+  "checks": [
+   "[error/schema] schema-breach @ <root>: `express_uncertainty/1` is borrowed but has no gloss. Add a `concepts` entry saying what this module needs it to MEAN \u2014 not what defines it, which stays in `requires`/`inputs`. Without it a seat is shown a bare predicate name, and nothing can match this to the clause that defines it",
+   "[error/schema] schema-breach @ <root>: `conversational_language/1` is borrowed but has no gloss. Add a `concepts` entry saying what this module needs it to MEAN \u2014 not what defines it, which stays in `requires`/`inputs`. Without it a seat is shown a bare predicate name, and nothing can match this to the clause that defines it"
+  ],
+  "outcome": "invalid",
+  "repair_needed": true
+ },
+ "module": {
+  "outcome": "translated",
+  "clause_id": "l2821_3040_n017",
+  "abstain_reason": null,
+  "claims": [
+   "C1 by default, the assistant should express uncertainty naturally",
+   "C2 the natural expression of uncertainty uses conversational language"
+  ],
+  "acts": [
+   "express_uncertainty(U)"
+  ],
+  "concepts": [
+   {
+    "name": "assistant_definition",
+    "arity": 1,
+    "gloss": "A is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document",
+    "licence": "textual",
+    "cites": "l2821_3040_n017",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "guideline_authority",
+    "arity": 1,
+    "gloss": "the rule carries guideline authority: guidance for assistant behavior rather than a strict requirement",
+    "licence": "textual",
+    "cites": "l2821_3040_n017",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "natural_uncertainty_expression",
+    "arity": 1,
+    "gloss": "U is an expression of uncertainty that is natural and uses conversational language",
+    "licence": "textual",
+    "cites": "l2821_3040_n017",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "default_context",
+    "arity": 0,
+    "gloss": "the situation in which the user or developer has not explicitly requested a different way of expressing uncertainty",
+    "licence": "assumed",
+    "cites": null,
+    "inference": "the clause says 'by default', which presupposes a default context that holds unless an explicit request changes it",
+    "toggleable": false
+   }
+  ],
+  "ontology": [
+   {
+    "licence": "textual",
+    "cites": "l2821_3040_n017",
+    "inference": null,
+    "toggleable": false,
+    "atom": "natural_uncertainty_expression(U)",
+    "gloss": "U is a natural, conversational expression of uncertainty",
+    "body": "express_uncertainty(U), conversational_language(U)"
+   }
+  ],
+  "asserts": [
+   {
+    "read_back": "expressing uncertainty % naturally, using conversational language, is preferred by default",
+    "read_back_slots": [
+     "U"
+    ],
+    "licence": "textual",
+    "cites": "l2821_3040_n017",
+    "inference": null,
+    "toggleable": false,
+    "status": "prefer",
+    "act": "express_uncertainty(U)",
+    "body": "natural_uncertainty_expression(U), default_context"
+   }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+   {
+    "act_class": "express_uncertainty",
+    "closure": "cepa",
+    "reason": "the clause states a default preference for natural expression; it does not forbid any way of expressing uncertainty, so silence leaves other expressions permitted"
+   }
+  ],
+  "requires": [
+   "assistant_definition/1",
+   "guideline_authority/1"
+  ],
+  "inputs": [
+   "express_uncertainty/1",
+   "conversational_language/1"
+  ],
+  "forbid_body": []
+ }
+}

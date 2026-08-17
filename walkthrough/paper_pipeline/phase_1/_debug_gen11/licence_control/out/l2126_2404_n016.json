@@ -1,0 +1,181 @@
+{
+ "clause_id": "l2126_2404_n016",
+ "_lc_cost_usd": 0.0019287800000000002,
+ "_lc_sha1_raw": "adada9c60b92bd541226ee256d42080297e69a40",
+ "_lc_t_start": 1786929188.5162969,
+ "_lc_t_end": 1786929194.7240489,
+ "usage": null,
+ "floor": {
+  "parsed": true,
+  "breaches": [
+   "Breach(where='<root>', message='`provide_answer/1` is borrowed but has no gloss. Add a `concepts` entry saying what this module needs it to MEAN \u2014 not what defines it, which stays in `requires`/`inputs`. Without it a seat is shown a bare predicate name, and nothing can match this to the clause that defines it')"
+  ],
+  "checks": [
+   "[error/schema] schema-breach @ <root>: `provide_answer/1` is borrowed but has no gloss. Add a `concepts` entry saying what this module needs it to MEAN \u2014 not what defines it, which stays in `requires`/`inputs`. Without it a seat is shown a bare predicate name, and nothing can match this to the clause that defines it"
+  ],
+  "outcome": "invalid",
+  "repair_needed": true
+ },
+ "module": {
+  "outcome": "translated",
+  "clause_id": "l2126_2404_n016",
+  "abstain_reason": null,
+  "claims": [
+   "C1: In scenarios with no moral ambiguity or valid opposing perspective, the assistant should provide straightforward, unambiguous answers.",
+   "C2: In such scenarios, the assistant should not resort to false neutrality or excessive qualifications.",
+   "C3: The assistant may explain that certain theories or practices lack supporting factual evidence, but should not offer blanket condemnation or try to persuade the user."
+  ],
+  "acts": [
+   "provide_answer(A)",
+   "explain_lack_of_evidence(E)"
+  ],
+  "concepts": [
+   {
+    "name": "assistant_definition",
+    "arity": 1,
+    "gloss": "A is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document.",
+    "licence": "textual",
+    "cites": "l2126_2404_n016",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "user_authority",
+    "arity": 1,
+    "gloss": "I is an instruction from the user role, whose authority level is below developer and above guideline in the authority hierarchy.",
+    "licence": "textual",
+    "cites": "l2126_2404_n016",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "no_moral_ambiguity",
+    "arity": 1,
+    "gloss": "S is a scenario in which there is no moral ambiguity or valid opposing perspective.",
+    "licence": "textual",
+    "cites": "l2126_2404_n016",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "straightforward_answer",
+    "arity": 1,
+    "gloss": "A is an answer that is straightforward and unambiguous, without false neutrality or excessive qualifications.",
+    "licence": "textual",
+    "cites": "l2126_2404_n016",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "false_neutrality",
+    "arity": 1,
+    "gloss": "A is an answer that resorts to false neutrality or excessive qualifications.",
+    "licence": "textual",
+    "cites": "l2126_2404_n016",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "blanket_condemnation",
+    "arity": 1,
+    "gloss": "A is an answer that offers blanket condemnation or tries to persuade the user.",
+    "licence": "textual",
+    "cites": "l2126_2404_n016",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "explain_lack_of_evidence",
+    "arity": 1,
+    "gloss": "E is an explanation that certain theories or practices have no supporting factual evidence.",
+    "licence": "textual",
+    "cites": "l2126_2404_n016",
+    "inference": null,
+    "toggleable": false
+   }
+  ],
+  "ontology": [
+   {
+    "licence": "textual",
+    "cites": "l2126_2404_n016",
+    "inference": null,
+    "toggleable": false,
+    "atom": "straightforward_answer(A)",
+    "gloss": "A is a straightforward, unambiguous answer without false neutrality or excessive qualifications.",
+    "body": "provide_answer(A), not false_neutrality(A), not blanket_condemnation(A)"
+   }
+  ],
+  "asserts": [
+   {
+    "read_back": "In a scenario with no moral ambiguity or valid opposing perspective, the assistant should provide a straightforward, unambiguous answer without false neutrality or excessive qualifications.",
+    "read_back_slots": [],
+    "licence": "textual",
+    "cites": "l2126_2404_n016",
+    "inference": null,
+    "toggleable": false,
+    "status": "oblige",
+    "act": "provide_answer(A)",
+    "body": "no_moral_ambiguity(S), assistant_definition(A), straightforward_answer(A)"
+   },
+   {
+    "read_back": "In a scenario with no moral ambiguity or valid opposing perspective, the assistant should not resort to false neutrality or excessive qualifications.",
+    "read_back_slots": [],
+    "licence": "textual",
+    "cites": "l2126_2404_n016",
+    "inference": null,
+    "toggleable": false,
+    "status": "forbid",
+    "act": "provide_answer(A)",
+    "body": "no_moral_ambiguity(S), assistant_definition(A), false_neutrality(A)"
+   },
+   {
+    "read_back": "In a scenario with no moral ambiguity or valid opposing perspective, the assistant should not offer blanket condemnation or try to persuade the user.",
+    "read_back_slots": [],
+    "licence": "textual",
+    "cites": "l2126_2404_n016",
+    "inference": null,
+    "toggleable": false,
+    "status": "forbid",
+    "act": "provide_answer(A)",
+    "body": "no_moral_ambiguity(S), assistant_definition(A), blanket_condemnation(A)"
+   },
+   {
+    "read_back": "It is acceptable to explain that certain theories or practices have no supporting factual evidence.",
+    "read_back_slots": [],
+    "licence": "textual",
+    "cites": "l2126_2404_n016",
+    "inference": null,
+    "toggleable": false,
+    "status": "permit",
+    "act": "explain_lack_of_evidence(E)",
+    "body": "no_moral_ambiguity(S), assistant_definition(A), explain_lack_of_evidence(E)"
+   }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+   {
+    "act_class": "provide_answer",
+    "closure": "cnpa",
+    "reason": "The clause obliges straightforward answers and forbids false neutrality and blanket condemnation in unambiguous scenarios; silence about other answer types in such scenarios is not a permission, so the default is closed."
+   },
+   {
+    "act_class": "explain_lack_of_evidence",
+    "closure": "cepa",
+    "reason": "The clause explicitly permits explaining lack of evidence, and does not forbid other explanations, so silence permits."
+   }
+  ],
+  "requires": [
+   "assistant_definition/1",
+   "user_authority/1"
+  ],
+  "inputs": [
+   "no_moral_ambiguity/1",
+   "provide_answer/1",
+   "false_neutrality/1",
+   "blanket_condemnation/1",
+   "explain_lack_of_evidence/1"
+  ],
+  "forbid_body": []
+ }
+}

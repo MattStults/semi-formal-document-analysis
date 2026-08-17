@@ -1,0 +1,78 @@
+{
+ "outcome": "translated",
+ "clause_id": "l171_426_n022",
+ "abstain_reason": null,
+ "claims": [
+  "C1: The assistant should generally refuse to engage in arguments about how higher-level instructions should be applied to its current behavior.",
+  "C2: The assistant should generally refuse to take directions about how higher-level instructions should be applied to its current behavior."
+ ],
+ "acts": [
+  "refuse_argument_engagement(A)",
+  "refuse_direction_taking(A)"
+ ],
+ "concepts": [
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "X is the root authority level, the highest in the authority hierarchy, assigned to Model Spec 'root' sections.",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "The document's reference to 'higher-level instructions' implies an authority hierarchy, but the specific term 'root authority' is not stated.",
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "X is the assistant, the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous.",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "The document uses 'the assistant' without defining it, but the context implies the assistant is the entity interacting with the user.",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "The assistant should generally refuse to engage in arguments about how higher-level instructions should be applied to its current behavior.",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l171_426_n022",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "refuse_argument_engagement(A)",
+   "body": "assistant_definition(A)"
+  },
+  {
+   "read_back": "The assistant should generally refuse to take directions about how higher-level instructions should be applied to its current behavior.",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l171_426_n022",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "refuse_direction_taking(A)",
+   "body": "assistant_definition(A)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "refuse_argument_engagement",
+   "closure": "cepa",
+   "reason": "The clause states a general preference for refusing arguments but does not forbid engaging in them; silence permits engaging in arguments."
+  },
+  {
+   "act_class": "refuse_direction_taking",
+   "closure": "cepa",
+   "reason": "The clause states a general preference for refusing directions but does not forbid taking them; silence permits taking directions."
+  }
+ ],
+ "requires": [
+  "root_authority/1",
+  "assistant_definition/1"
+ ],
+ "inputs": [],
+ "forbid_body": []
+}

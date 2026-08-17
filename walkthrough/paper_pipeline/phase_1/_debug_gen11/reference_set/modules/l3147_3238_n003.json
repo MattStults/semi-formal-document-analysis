@@ -1,0 +1,143 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3147_3238_n003",
+ "abstain_reason": null,
+ "claims": [
+  "C1 when the assistant lacks sufficient confidence in its response, it should use a tool to gather more information",
+  "C2 when the assistant lacks sufficient confidence in its response, it should hedge its answer appropriately",
+  "C3 when the assistant lacks sufficient confidence in its response, it should explain that it can't give a confident answer",
+  "C4 the three responses are alternatives: any one of them satisfies the clause"
+ ],
+ "acts": [
+  "address_low_confidence(A)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous",
+   "licence": "textual",
+   "cites": "l3147_3238_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "user_authority",
+   "arity": 1,
+   "gloss": "the rule carries user-level instruction authority, meaning it is a should-level instruction from the user authority",
+   "licence": "textual",
+   "cites": "l3147_3238_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "lacks_sufficient_confidence",
+   "arity": 2,
+   "gloss": "assistant A lacks sufficient confidence in its response to the current situation",
+   "licence": "textual",
+   "cites": "l3147_3238_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "gathers_more_information",
+   "arity": 2,
+   "gloss": "assistant A uses a tool to gather more information in the current situation",
+   "licence": "textual",
+   "cites": "l3147_3238_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "hedges_appropriately",
+   "arity": 2,
+   "gloss": "assistant A hedges its answer appropriately in the current situation, expressing uncertainty as the express-uncertainty guidance describes",
+   "licence": "textual",
+   "cites": "l3147_3238_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "explains_cannot_answer_confidently",
+   "arity": 2,
+   "gloss": "assistant A explains in the current situation that it cannot give a confident answer",
+   "licence": "textual",
+   "cites": "l3147_3238_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "address_low_confidence",
+   "arity": 1,
+   "gloss": "assistant A meets its duty on a response it is not confident in, by any one of the three routes the clause names",
+   "licence": "textual",
+   "cites": "l3147_3238_n003",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "atom": "address_low_confidence(A)",
+   "gloss": "assistant A has addressed its lack of confidence, here by using a tool to gather more information",
+   "body": "gathers_more_information(A, S)",
+   "licence": "textual",
+   "cites": "l3147_3238_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "atom": "address_low_confidence(A)",
+   "gloss": "assistant A has addressed its lack of confidence, here by hedging its answer appropriately",
+   "body": "hedges_appropriately(A, S)",
+   "licence": "textual",
+   "cites": "l3147_3238_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "atom": "address_low_confidence(A)",
+   "gloss": "assistant A has addressed its lack of confidence, here by explaining that it cannot give a confident answer",
+   "body": "explains_cannot_answer_confidently(A, S)",
+   "licence": "textual",
+   "cites": "l3147_3238_n003",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "when assistant % lacks sufficient confidence in its response it must do one of three things - use a tool to gather more information, hedge its answer appropriately, or explain that it cannot give a confident answer",
+   "read_back_slots": [
+    "A"
+   ],
+   "status": "oblige",
+   "act": "address_low_confidence(A)",
+   "body": "assistant_definition(A), lacks_sufficient_confidence(A, S)",
+   "licence": "textual",
+   "cites": "l3147_3238_n003",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "address_low_confidence",
+   "closure": "cepa",
+   "reason": "the clause requires one of the three routes only when the assistant lacks sufficient confidence, and says nothing about any other situation, so silence permits"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "user_authority/1"
+ ],
+ "inputs": [
+  "lacks_sufficient_confidence/2",
+  "gathers_more_information/2",
+  "hedges_appropriately/2",
+  "explains_cannot_answer_confidently/2"
+ ],
+ "forbid_body": []
+}

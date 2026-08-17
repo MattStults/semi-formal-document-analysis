@@ -1,0 +1,61 @@
+{
+  "outcome": "translated",
+  "clause_id": "l4252_4482_n016",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the assistant should avoid repeating the user's prompt in its responses",
+    "C2 the assistant should generally minimize redundant phrases in its responses",
+    "C3 the assistant should generally minimize redundant ideas in its responses"
+  ],
+  "acts": ["repeat_user_prompt(R)", "include_redundant_phrase(R)", "include_redundant_idea(R)"],
+  "concepts": [
+    { "name": "guideline_authority", "arity": 1,
+      "gloss": "the rule carries guideline-level authority: guidance for assistant behavior rather than a strict requirement",
+      "licence": "textual", "cites": "l4252_4482_n016", "inference": null, "toggleable": false },
+    { "name": "response", "arity": 1,
+      "gloss": "R is a response produced by the assistant in the conversation",
+      "licence": "assumed", "cites": null,
+      "inference": "the clause speaks of the assistant's responses, so a class of responses must exist",
+      "toggleable": false },
+    { "name": "repeats_user_prompt", "arity": 1,
+      "gloss": "response R repeats the user's prompt back, in whole or in part",
+      "licence": "textual", "cites": "l4252_4482_n016", "inference": null, "toggleable": false },
+    { "name": "redundant_phrase", "arity": 1,
+      "gloss": "response R contains a phrase that adds no new information beyond what the response already conveys",
+      "licence": "textual", "cites": "l4252_4482_n016", "inference": null, "toggleable": false },
+    { "name": "redundant_idea", "arity": 1,
+      "gloss": "response R restates an idea already expressed in the response without adding new content",
+      "licence": "textual", "cites": "l4252_4482_n016", "inference": null, "toggleable": false }
+  ],
+  "ontology": [],
+  "asserts": [
+    { "read_back": "repeating the user's prompt in response % is to be avoided",
+      "read_back_slots": ["R"],
+      "licence": "textual", "cites": "l4252_4482_n016", "inference": null, "toggleable": false,
+      "status": "prefer", "act": "repeat_user_prompt(R)",
+      "body": "response(R), repeats_user_prompt(R)" },
+    { "read_back": "including a redundant phrase in response % is to be minimized",
+      "read_back_slots": ["R"],
+      "licence": "textual", "cites": "l4252_4482_n016", "inference": null, "toggleable": false,
+      "status": "prefer", "act": "include_redundant_phrase(R)",
+      "body": "response(R), redundant_phrase(R)" },
+    { "read_back": "including a redundant idea in response % is to be minimized",
+      "read_back_slots": ["R"],
+      "licence": "textual", "cites": "l4252_4482_n016", "inference": null, "toggleable": false,
+      "status": "prefer", "act": "include_redundant_idea(R)",
+      "body": "response(R), redundant_idea(R)" }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    { "act_class": "repeat_user_prompt", "closure": "cepa",
+      "reason": "the clause states a preference to avoid repetition; it does not forbid it outright, so silence leaves repetition permitted" },
+    { "act_class": "include_redundant_phrase", "closure": "cepa",
+      "reason": "the clause says to generally minimize redundant phrases, a preference rather than a prohibition, so silence permits" },
+    { "act_class": "include_redundant_idea", "closure": "cepa",
+      "reason": "the clause says to generally minimize redundant ideas, a preference rather than a prohibition, so silence permits" }
+  ],
+  "requires": ["guideline_authority/1"],
+  "inputs": ["response/1", "repeats_user_prompt/1", "redundant_phrase/1", "redundant_idea/1"],
+  "forbid_body": []
+}

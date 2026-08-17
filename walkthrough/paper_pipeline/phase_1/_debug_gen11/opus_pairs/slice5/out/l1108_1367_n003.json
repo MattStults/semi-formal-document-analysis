@@ -1,0 +1,68 @@
+{
+  "outcome": "translated",
+  "clause_id": "l1108_1367_n003",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the assistant must not create content that praises an extremist agenda that promotes violence",
+    "C2 the assistant must not create content that endorses an extremist agenda that promotes violence",
+    "C3 the assistant must not create content that aids an extremist agenda that promotes violence",
+    "C4 the qualifier binds the shared object: the prohibition reaches only those extremist agendas that promote violence, and content about an extremist agenda that does not promote violence is left unaddressed by this clause rather than permitted by it"
+  ],
+  "acts": ["create_content(C)"],
+  "concepts": [
+    { "name": "root_authority", "arity": 1,
+      "gloss": "I is an instruction carrying the root authority level, the level the instructions of the section on avoiding extremist content are set at",
+      "licence": "textual", "cites": "l1108_1367_n003", "inference": null, "toggleable": false },
+    { "name": "violent_extremist_agenda", "arity": 1,
+      "gloss": "A is an extremist agenda of the kind this clause reaches: one that promotes violence, as opposed to an extremist agenda that does not",
+      "licence": "textual", "cites": "l1108_1367_n003", "inference": null, "toggleable": false },
+    { "name": "extremist_agenda", "arity": 1,
+      "gloss": "A is a programme of aims pursued well outside accepted political or social bounds; whether it also promotes violence is a separate fact about it",
+      "licence": "textual", "cites": "l1108_1367_n003", "inference": null, "toggleable": false },
+    { "name": "promotes_violence", "arity": 1,
+      "gloss": "A is an agenda that promotes violence, rather than merely holding a position outside the mainstream",
+      "licence": "textual", "cites": "l1108_1367_n003", "inference": null, "toggleable": false },
+    { "name": "praises", "arity": 2,
+      "gloss": "argument order is content then agenda: the piece of content C speaks well of the agenda A, treating it favourably",
+      "licence": "textual", "cites": "l1108_1367_n003", "inference": null, "toggleable": false },
+    { "name": "endorses", "arity": 2,
+      "gloss": "argument order is content then agenda: the piece of content C gives the agenda A its backing or approval rather than merely describing it",
+      "licence": "textual", "cites": "l1108_1367_n003", "inference": null, "toggleable": false },
+    { "name": "aids", "arity": 2,
+      "gloss": "argument order is content then agenda: the piece of content C helps the agenda A along, furthering what it is trying to achieve",
+      "licence": "textual", "cites": "l1108_1367_n003", "inference": null, "toggleable": false }
+  ],
+  "ontology": [
+    { "atom": "violent_extremist_agenda(A)",
+      "body": "extremist_agenda(A), promotes_violence(A)",
+      "gloss": "an extremist agenda that promotes violence, which is the only kind of extremist agenda this clause's prohibition reaches",
+      "licence": "textual", "cites": "l1108_1367_n003", "inference": null, "toggleable": false }
+  ],
+  "asserts": [
+    { "status": "forbid", "act": "create_content(C)",
+      "body": "praises(C, A), violent_extremist_agenda(A)",
+      "read_back": "the assistant must not create content %, because it praises extremist agenda %, which promotes violence",
+      "read_back_slots": ["C", "A"],
+      "licence": "textual", "cites": "l1108_1367_n003", "inference": null, "toggleable": false },
+    { "status": "forbid", "act": "create_content(C)",
+      "body": "endorses(C, A), violent_extremist_agenda(A)",
+      "read_back": "the assistant must not create content %, because it endorses extremist agenda %, which promotes violence",
+      "read_back_slots": ["C", "A"],
+      "licence": "textual", "cites": "l1108_1367_n003", "inference": null, "toggleable": false },
+    { "status": "forbid", "act": "create_content(C)",
+      "body": "aids(C, A), violent_extremist_agenda(A)",
+      "read_back": "the assistant must not create content %, because it aids extremist agenda %, which promotes violence",
+      "read_back_slots": ["C", "A"],
+      "licence": "textual", "cites": "l1108_1367_n003", "inference": null, "toggleable": false }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    { "act_class": "create_content", "closure": "unclear",
+      "reason": "the clause states only that content praising, endorsing or aiding violent extremist agendas must not be created, and says nothing at all about creating any other content, so it does not settle what its own silence means for the rest"
+    }
+  ],
+  "requires": ["root_authority/1"],
+  "inputs": ["extremist_agenda/1", "promotes_violence/1", "praises/2", "endorses/2", "aids/2"],
+  "forbid_body": []
+}

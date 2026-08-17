@@ -1,0 +1,165 @@
+{
+  "outcome": "translated",
+  "clause_id": "l1707_1973_n022",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the assistant may share its identity and capabilities",
+    "C2 the underlying system or developer prompts are kept private by default",
+    "C3 the underlying system or developer prompts may be disclosed only when policy explicitly allows it"
+  ],
+  "acts": [
+    "share_identity_capabilities(A)",
+    "disclose_prompt(P)"
+  ],
+  "concepts": [
+    {
+      "name": "root_authority",
+      "arity": 1,
+      "gloss": "R is a rule in the protect_privileged_information section and carries root authority",
+      "licence": "textual",
+      "cites": "l1707_1973_n022",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "underlying_prompt",
+      "arity": 1,
+      "gloss": "P is one of the assistant's underlying system or developer prompts",
+      "licence": "textual",
+      "cites": "l1707_1973_n022",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "policy_explicitly_allows",
+      "arity": 1,
+      "gloss": "P is a prompt whose disclosure is explicitly allowed by policy",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause says disclosure is allowed only when policy explicitly allows it, so a predicate marking such explicit allowance is needed",
+      "toggleable": false
+    },
+    {
+      "name": "identity_capabilities_shareable",
+      "arity": 1,
+      "gloss": "A is an assistant whose identity and capabilities may be shared",
+      "licence": "textual",
+      "cites": "l1707_1973_n022",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "l1707_1973_n022",
+      "inference": null,
+      "toggleable": false,
+      "atom": "identity_capabilities_shareable(A)",
+      "gloss": "A is an assistant that can share its identity and capabilities",
+      "body": "assistant(A)"
+    },
+    {
+      "licence": "textual",
+      "cites": "l1707_1973_n022",
+      "inference": null,
+      "toggleable": false,
+      "atom": "underlying_prompt(P)",
+      "gloss": "P is an underlying system or developer prompt",
+      "body": "system_prompt(P); developer_prompt(P)"
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "sharing identity and capabilities is permitted for %",
+      "read_back_slots": ["A"],
+      "licence": "textual",
+      "cites": "l1707_1973_n022",
+      "inference": null,
+      "toggleable": false,
+      "status": "permit",
+      "act": "share_identity_capabilities(A)",
+      "body": "identity_capabilities_shareable(A)"
+    },
+    {
+      "read_back": "disclosing underlying prompt % is forbidden unless policy explicitly allows it",
+      "read_back_slots": ["P"],
+      "licence": "textual",
+      "cites": "l1707_1973_n022",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "disclose_prompt(P)",
+      "body": "underlying_prompt(P), not policy_explicitly_allows(P)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "share_identity_capabilities",
+      "closure": "cepa",
+      "reason": "the clause explicitly says the assistant can share its identity and capabilities, so silence about other sharing acts permits them"
+    },
+    {
+      "act_class": "disclose_prompt",
+      "closure": "cnpa",
+      "reason": "the clause says underlying prompts are kept private by default and disclosed only when policy explicitly allows it, so silence about a prompt's disclosure means it is forbidden"
+    }
+  ],
+  "requires": ["root_authority/1"],
+  "inputs": ["assistant/1", "system_prompt/1", "developer_prompt/1", "policy_explicitly_allows/1"],
+  "forbid_body": []
+  ,
+  "checks": [
+    {
+      "entry_id": "C1",
+      "evidence": "the clause says the assistant can share its identity and capabilities",
+      "verdict": "applies_and_handled"
+    ,
+    "action": "permit"
+    ,
+    "excluded_case": null
+    }
+  ,
+    {
+      "entry_id": "C2",
+      "evidence": "the clause says the underlying system or developer prompts are kept private by default",
+      "verdict": "applies_and_handled",
+      "action": "forbid",
+      "excluded_case": "policy explicitly allows it"
+    }
+  ,
+    {
+      "entry_id": "C3",
+      "evidence": "the clause says disclosure is allowed only when policy explicitly allows it",
+      "verdict": "applies_and_handled",
+      "action": "permit",
+      "excluded_case": null
+    }
+  ,
+    {
+      "entry_id": "C4",
+      "evidence": "the clause says the manual itself should not be disclosed unless policy explicitly allows it",
+      "verdict": "applies_and_handled",
+      "action": "forbid",
+      "excluded_case": "policy explicitly allows it"
+    }
+  ,
+    {
+      "entry_id": "C5",
+      "evidence": "the clause says the assistant can share its identity and capabilities",
+      "verdict": "applies_and_handled",
+      "action": "permit",
+      "excluded_case": null
+    }
+  ,
+    {
+      "entry_id": "C6",
+      "evidence": "the clause says the underlying system or developer prompts are kept private by default",
+      "verdict": "applies_and_handled",
+      "action": "forbid",
+      "excluded_case": "policy explicitly allows it"
+    }
+  ]
+}

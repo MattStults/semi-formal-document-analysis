@@ -1,0 +1,94 @@
+{
+ "clause_id": "l1_170_n001",
+ "_arm_b_cost_usd": 0.0021334600000000002,
+ "_arm_b_sha1_raw": "aa7808b08fa2e4e3ddd1e188dd1521d5fd51fa01",
+ "usage": null,
+ "floor": {
+  "parsed": true,
+  "breaches": [],
+  "checks": [
+   "[note/link] concept-declared @ l1_170_n001.lp: `api_platform_model/1` is head-less and declared in the concept table by l1_170_n001",
+   "[note/link] situation-input @ l1_170_n001.lp: `api_platform_model/1` is head-less and declared as a situation input"
+  ],
+  "outcome": "translated",
+  "repair_needed": false
+ },
+ "module": {
+  "outcome": "translated",
+  "clause_id": "l1_170_n001",
+  "abstain_reason": null,
+  "claims": [
+   "C1 the Model Spec outlines the intended behavior for the models that power OpenAI's products",
+   "C2 the models that power OpenAI's products include those behind the API platform"
+  ],
+  "acts": [],
+  "concepts": [
+   {
+    "name": "model_spec",
+    "arity": 0,
+    "gloss": "the document called the Model Spec, which states intended behavior for OpenAI's models",
+    "licence": "textual",
+    "cites": "l1_170_n001",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "intended_behavior",
+    "arity": 2,
+    "gloss": "the behavior that the Model Spec intends for model M, as guidance for how the model should act",
+    "licence": "textual",
+    "cites": "l1_170_n001",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "powers_openai_product",
+    "arity": 1,
+    "gloss": "model M is one of the models that power OpenAI's products",
+    "licence": "textual",
+    "cites": "l1_170_n001",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "api_platform_model",
+    "arity": 1,
+    "gloss": "model M powers the API platform, one of OpenAI's products",
+    "licence": "textual",
+    "cites": "l1_170_n001",
+    "inference": null,
+    "toggleable": false
+   }
+  ],
+  "ontology": [
+   {
+    "licence": "textual",
+    "cites": "l1_170_n001",
+    "inference": null,
+    "toggleable": false,
+    "atom": "intended_behavior(model_spec, M)",
+    "gloss": "the Model Spec outlines the intended behavior for model M",
+    "body": "powers_openai_product(M)"
+   },
+   {
+    "licence": "textual",
+    "cites": "l1_170_n001",
+    "inference": null,
+    "toggleable": false,
+    "atom": "powers_openai_product(M)",
+    "gloss": "model M powers the API platform and therefore powers an OpenAI product",
+    "body": "api_platform_model(M)"
+   }
+  ],
+  "asserts": [],
+  "beats": [],
+  "defines": [],
+  "closure": [],
+  "requires": [],
+  "inputs": [
+   "powers_openai_product/1",
+   "api_platform_model/1"
+  ],
+  "forbid_body": []
+ }
+}

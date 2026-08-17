@@ -1,0 +1,187 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1_170_n056",
+ "abstain_reason": null,
+ "claims": [
+  "C1: Models should honor user requests.",
+  "C2: This obligation is subject to an exception: a user request that conflicts with a developer-level instruction need not be honored.",
+  "C3: This obligation is subject to an exception: a user request that conflicts with a system-level instruction need not be honored.",
+  "C4: This obligation is subject to an exception: a user request that conflicts with a root-level instruction need not be honored."
+ ],
+ "acts": [
+  "honor_request(R)"
+ ],
+ "concepts": [
+  {
+   "name": "user_authority",
+   "arity": 1,
+   "gloss": "R is a request from an end user, carrying user-level instruction authority",
+   "licence": "textual",
+   "cites": "l1_170_n056",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "authority_levels_hierarchy",
+   "arity": 2,
+   "gloss": "L1 is a higher instruction authority level than L2, per the ranking root > system > developer > user > guideline > no authority",
+   "licence": "textual",
+   "cites": "l1_170_n056",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "developer_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction issued at the developer level of authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause names developer-level instructions as a conflict source, so a predicate for such instructions is needed",
+   "toggleable": false
+  },
+  {
+   "name": "system_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction issued at the system level of authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause names system-level instructions as a conflict source, so a predicate for such instructions is needed",
+   "toggleable": false
+  },
+  {
+   "name": "root_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction issued at the root level of authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause names root-level instructions as a conflict source, so a predicate for such instructions is needed",
+   "toggleable": false
+  },
+  {
+   "name": "conflicts_with",
+   "arity": 2,
+   "gloss": "request R conflicts with instruction I, meaning honoring R would contradict what I directs",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's exception turns on a conflict relation between a user request and a higher-level instruction",
+   "toggleable": false
+  },
+  {
+   "name": "user_request",
+   "arity": 1,
+   "gloss": "R is a request made by an end user",
+   "licence": "textual",
+   "cites": "l1_170_n056",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "instruction_level",
+   "arity": 2,
+   "gloss": "instruction I is issued at authority level L",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause names developer-, system-, and root-level instructions, so each instruction must carry a level for the conflict comparison to range over",
+   "toggleable": false
+  },
+  {
+   "name": "overridden_by_higher_instruction",
+   "arity": 1,
+   "gloss": "honoring request R would conflict with an instruction from the developer, system, or root level",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's 'unless' withdraws the obligation when a higher-level instruction conflicts; this predicate names that condition",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1_170_n056",
+   "inference": null,
+   "toggleable": false,
+   "atom": "developer_instruction(I)",
+   "gloss": "I is an instruction at the developer level of authority",
+   "body": "instruction_level(I, developer)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n056",
+   "inference": null,
+   "toggleable": false,
+   "atom": "system_instruction(I)",
+   "gloss": "I is an instruction at the system level of authority",
+   "body": "instruction_level(I, system)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n056",
+   "inference": null,
+   "toggleable": false,
+   "atom": "root_instruction(I)",
+   "gloss": "I is an instruction at the root level of authority",
+   "body": "instruction_level(I, root)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n056",
+   "inference": null,
+   "toggleable": false,
+   "atom": "overridden_by_higher_instruction(R)",
+   "gloss": "request R is overridden by a developer-level instruction",
+   "body": "user_request(R), developer_instruction(I), conflicts_with(R, I)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n056",
+   "inference": null,
+   "toggleable": false,
+   "atom": "overridden_by_higher_instruction(R)",
+   "gloss": "request R is overridden by a system-level instruction",
+   "body": "user_request(R), system_instruction(I), conflicts_with(R, I)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n056",
+   "inference": null,
+   "toggleable": false,
+   "atom": "overridden_by_higher_instruction(R)",
+   "gloss": "request R is overridden by a root-level instruction",
+   "body": "user_request(R), root_instruction(I), conflicts_with(R, I)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "honoring user request % is obliged unless it is overridden by a higher-level instruction",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l1_170_n056",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "honor_request(R)",
+   "body": "user_request(R), not overridden_by_higher_instruction(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "honor_request",
+   "closure": "unclear",
+   "reason": "the span withdraws the obligation on the excepted branch and says nothing about what is permitted there"
+  }
+ ],
+ "requires": [
+  "user_authority/1",
+  "authority_levels_hierarchy/2"
+ ],
+ "inputs": [
+  "user_request/1",
+  "conflicts_with/2",
+  "instruction_level/2"
+ ],
+ "forbid_body": []
+}

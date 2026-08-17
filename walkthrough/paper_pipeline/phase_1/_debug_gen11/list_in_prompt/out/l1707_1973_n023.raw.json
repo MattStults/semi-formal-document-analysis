@@ -1,0 +1,114 @@
+{
+  "outcome": "translated",
+  "clause_id": "l1707_1973_n023",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the assistant must not disclose privileged content without permission",
+    "C2 the prohibition covers verbatim disclosure",
+    "C3 the prohibition covers paraphrased, structural, or procedural forms that could enable reconstruction"
+  ],
+  "acts": ["disclose(D)"],
+  "concepts": [
+    {
+      "name": "root_authority",
+      "arity": 1,
+      "gloss": "the rule carries root authority: it is a top-level requirement of the protect_privileged_information section",
+      "licence": "textual",
+      "cites": "l1707_1973_n023",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "privileged_information",
+      "arity": 1,
+      "gloss": "information that is private or privileged, including non-public policies, system messages, hidden chain-of-thought, and private user/developer content",
+      "licence": "textual",
+      "cites": "l1707_1973_n023",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "privileged_content",
+      "arity": 1,
+      "gloss": "content that constitutes privileged information",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause uses 'privileged content' and the NEEDS definition of privileged_information supplies the extension",
+      "toggleable": false
+    },
+    {
+      "name": "permission_to_disclose",
+      "arity": 2,
+      "gloss": "the assistant has been granted permission to disclose content C to recipient R",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the clause's 'without permission' presupposes a permission relation between content and recipient",
+      "toggleable": false
+    },
+    {
+      "name": "verbatim_disclosure",
+      "arity": 2,
+      "gloss": "disclosure D reproduces content C word-for-word",
+      "licence": "textual",
+      "cites": "l1707_1973_n023",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "reconstructive_disclosure",
+      "arity": 2,
+      "gloss": "disclosure D conveys content C in paraphrased, structural, or procedural form such that C could be reconstructed",
+      "licence": "textual",
+      "cites": "l1707_1973_n023",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "l1707_1973_n023",
+      "inference": null,
+      "toggleable": false,
+      "atom": "privileged_content(C)",
+      "gloss": "C is privileged content",
+      "body": "privileged_information(C)"
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "disclosing % is forbidden because it is a verbatim disclosure of privileged content % without permission",
+      "read_back_slots": ["D", "C"],
+      "licence": "textual",
+      "cites": "l1707_1973_n023",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "disclose(D)",
+      "body": "privileged_content(C), verbatim_disclosure(D, C), not permission_to_disclose(C, R)"
+    },
+    {
+      "read_back": "disclosing % is forbidden because it is a paraphrased, structural, or procedural disclosure of privileged content % that could enable reconstruction, without permission",
+      "read_back_slots": ["D", "C"],
+      "licence": "textual",
+      "cites": "l1707_1973_n023",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "disclose(D)",
+      "body": "privileged_content(C), reconstructive_disclosure(D, C), not permission_to_disclose(C, R)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "disclose",
+      "closure": "cnpa",
+      "reason": "the clause states an unconditional prohibition on disclosing privileged content without permission; silence about other disclosures does not permit them because the clause's own terms forbid the act class"
+    }
+  ],
+  "requires": ["root_authority/1", "privileged_information/1"],
+  "inputs": ["permission_to_disclose/2", "verbatim_disclosure/2", "reconstructive_disclosure/2"],
+  "forbid_body": []
+}

@@ -1,0 +1,135 @@
+{
+ "clause_id": "l2126_2404_n010",
+ "_arm_b_cost_usd": 0.00227108,
+ "_arm_b_sha1_raw": "268fdcbf40cf0b11d7adf34a99f93b1e81d1700b",
+ "usage": null,
+ "floor": {
+  "parsed": true,
+  "breaches": [
+   "Breach(where='<root>', message=\"assertion names act 'use_subjective_terms(T)', which is not in `acts`. Every act must be declared once so the closure declaration can be checked against it\")",
+   "Breach(where='<root>', message='`sensitive_or_controversial_topic/1` is borrowed but has no gloss. Add a `concepts` entry saying what this module needs it to MEAN \u2014 not what defines it, which stays in `requires`/`inputs`. Without it a seat is shown a bare predicate name, and nothing can match this to the clause that defines it')"
+  ],
+  "checks": [
+   "[error/schema] schema-breach @ <root>: assertion names act 'use_subjective_terms(T)', which is not in `acts`. Every act must be declared once so the closure declaration can be checked against it",
+   "[error/schema] schema-breach @ <root>: `sensitive_or_controversial_topic/1` is borrowed but has no gloss. Add a `concepts` entry saying what this module needs it to MEAN \u2014 not what defines it, which stays in `requires`/`inputs`. Without it a seat is shown a bare predicate name, and nothing can match this to the clause that defines it"
+  ],
+  "outcome": "invalid",
+  "repair_needed": true
+ },
+ "module": {
+  "outcome": "translated",
+  "clause_id": "l2126_2404_n010",
+  "abstain_reason": null,
+  "claims": [
+   "C1: When an objective stance is appropriate, the assistant should avoid subjective terms.",
+   "C2: This avoidance applies particularly on sensitive or controversial topics.",
+   "C3: The avoidance does not apply when the assistant is quoting directly.",
+   "C4: The avoidance does not apply when the assistant is citing specific sources."
+  ],
+  "acts": [
+   "use_subjective_terms(A)"
+  ],
+  "concepts": [
+   {
+    "name": "assistant_definition",
+    "arity": 1,
+    "gloss": "A is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document.",
+    "licence": "textual",
+    "cites": "l2126_2404_n010",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "user_authority",
+    "arity": 1,
+    "gloss": "The authority level of instructions from the user role, below developer and above guideline in the authority hierarchy.",
+    "licence": "textual",
+    "cites": "l2126_2404_n010",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "objective_stance_appropriate",
+    "arity": 1,
+    "gloss": "A situation in which an objective stance is appropriate, particularly on sensitive or controversial topics.",
+    "licence": "textual",
+    "cites": "l2126_2404_n010",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "subjective_term",
+    "arity": 1,
+    "gloss": "A term that expresses a subjective judgment or opinion rather than a neutral, factual description.",
+    "licence": "assumed",
+    "cites": null,
+    "inference": "The clause refers to 'subjective terms' without defining them; this gloss captures the ordinary meaning needed to apply the prohibition.",
+    "toggleable": false
+   },
+   {
+    "name": "quoting_directly",
+    "arity": 1,
+    "gloss": "The assistant is reproducing the exact words of a source, marked as a quotation.",
+    "licence": "assumed",
+    "cites": null,
+    "inference": "The clause's exception for 'quoting directly' requires a predicate identifying such acts.",
+    "toggleable": false
+   },
+   {
+    "name": "citing_specific_source",
+    "arity": 1,
+    "gloss": "The assistant is referring to or attributing content to a specific, identifiable source.",
+    "licence": "assumed",
+    "cites": null,
+    "inference": "The clause's exception for 'citing specific sources' requires a predicate identifying such acts.",
+    "toggleable": false
+   }
+  ],
+  "ontology": [
+   {
+    "licence": "textual",
+    "cites": "l2126_2404_n010",
+    "inference": null,
+    "toggleable": false,
+    "atom": "objective_stance_appropriate(S)",
+    "gloss": "S is a situation where an objective stance is appropriate, particularly on sensitive or controversial topics.",
+    "body": "sensitive_or_controversial_topic(S)"
+   }
+  ],
+  "asserts": [
+   {
+    "read_back": "using subjective terms % is forbidden when an objective stance is appropriate, unless the assistant is quoting directly or citing a specific source",
+    "read_back_slots": [
+     "T"
+    ],
+    "licence": "textual",
+    "cites": "l2126_2404_n010",
+    "inference": null,
+    "toggleable": false,
+    "status": "forbid",
+    "act": "use_subjective_terms(T)",
+    "body": "objective_stance_appropriate(S), subjective_term(T), assistant_definition(A), not quoting_directly(A), not citing_specific_source(A)"
+   }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+   {
+    "act_class": "use_subjective_terms",
+    "closure": "unclear",
+    "reason": "The clause prohibits subjective terms only when an objective stance is appropriate and outside the quoting/citing exceptions; it does not state whether subjective terms are permitted or prohibited in other situations, so the default is unsettled."
+   }
+  ],
+  "requires": [
+   "assistant_definition/1",
+   "user_authority/1"
+  ],
+  "inputs": [
+   "sensitive_or_controversial_topic/1",
+   "subjective_term/1",
+   "quoting_directly/1",
+   "citing_specific_source/1"
+  ],
+  "forbid_body": []
+ }
+}

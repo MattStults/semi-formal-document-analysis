@@ -1,0 +1,167 @@
+{
+ "clause_id": "l1707_1973_n006",
+ "_armc_cost_usd": 0.0021707000000000002,
+ "_armc_sha1_raw": "504f7c4e44cd310820de616ae39420c6f77ebfc2",
+ "usage": null,
+ "floor": {
+  "parsed": true,
+  "breaches": [
+   "Breach(where='<root>', message=\"body references `respond_with` but nothing declares it. Put it in this module's `ontology`, in `requires` (another clause defines it), or in `inputs` (a fact about the case). \u26a0\ufe0f A `concepts` entry alone does NOT declare it \u2014 concepts carry meaning, not provenance; `respond_with/N` must ALSO appear in one of those three. An undeclared name cannot be told apart from a typo\")",
+   "Breach(where='<root>', message=\"body references `respond_with` but nothing declares it. Put it in this module's `ontology`, in `requires` (another clause defines it), or in `inputs` (a fact about the case). \u26a0\ufe0f A `concepts` entry alone does NOT declare it \u2014 concepts carry meaning, not provenance; `respond_with/N` must ALSO appear in one of those three. An undeclared name cannot be told apart from a typo\")"
+  ],
+  "checks": [
+   "[error/schema] schema-breach @ <root>: body references `respond_with` but nothing declares it. Put it in this module's `ontology`, in `requires` (another clause defines it), or in `inputs` (a fact about the case). \u26a0\ufe0f A `concepts` entry alone does NOT declare it \u2014 concepts carry meaning, not provenance; `respond_with/N` must ALSO appear in one of those three. An undeclared name cannot be told apart from a typo",
+   "[error/schema] schema-breach @ <root>: body references `respond_with` but nothing declares it. Put it in this module's `ontology`, in `requires` (another clause defines it), or in `inputs` (a fact about the case). \u26a0\ufe0f A `concepts` entry alone does NOT declare it \u2014 concepts carry meaning, not provenance; `respond_with/N` must ALSO appear in one of those three. An undeclared name cannot be told apart from a typo"
+  ],
+  "outcome": "invalid",
+  "repair_needed": true
+ },
+ "module": {
+  "outcome": "translated",
+  "clause_id": "l1707_1973_n006",
+  "abstain_reason": null,
+  "claims": [
+   "C1 the GOOD assistant response to a medical question explains possible causes of dizziness rather than giving a definitive diagnosis",
+   "C2 the GOOD assistant suggests standing up slowly as a precaution",
+   "C3 the GOOD assistant advises consulting a doctor for severe symptoms",
+   "C4 the BAD assistant response gives a definitive diagnosis, which the avoid-regulated-advice rule disfavors"
+  ],
+  "acts": [
+   "respond_with(R)"
+  ],
+  "concepts": [
+   {
+    "name": "avoid_regulated_advice_rule",
+    "arity": 1,
+    "gloss": "R is a response governed by the rule that the assistant should equip users with information without providing definitive regulated advice and include a disclaimer",
+    "licence": "textual",
+    "cites": "l1707_1973_n006",
+    "inference": null,
+    "toggleable": false
+   },
+   {
+    "name": "medical_question",
+    "arity": 1,
+    "gloss": "Q is a user question asking for a diagnosis or medical explanation of symptoms",
+    "licence": "assumed",
+    "cites": null,
+    "inference": "the example is introduced as a medical question, so the class must exist for the example to illustrate the rule",
+    "toggleable": false
+   },
+   {
+    "name": "explains_possible_causes",
+    "arity": 2,
+    "gloss": "response R to question Q explains possible causes of the symptom rather than asserting a single cause",
+    "licence": "assumed",
+    "cites": null,
+    "inference": "the GOOD response is characterized by explaining possible causes; the contrast needs this class",
+    "toggleable": false
+   },
+   {
+    "name": "suggests_precaution",
+    "arity": 2,
+    "gloss": "response R to question Q suggests a precautionary measure such as standing up slowly",
+    "licence": "assumed",
+    "cites": null,
+    "inference": "the GOOD response suggests standing up slowly; the example needs this class",
+    "toggleable": false
+   },
+   {
+    "name": "advises_doctor_consultation",
+    "arity": 2,
+    "gloss": "response R to question Q advises consulting a doctor for severe symptoms",
+    "licence": "assumed",
+    "cites": null,
+    "inference": "the GOOD response advises consulting a doctor; the example needs this class",
+    "toggleable": false
+   },
+   {
+    "name": "definitive_diagnosis",
+    "arity": 2,
+    "gloss": "response R to question Q asserts a single definitive diagnosis of the condition",
+    "licence": "assumed",
+    "cites": null,
+    "inference": "the BAD response is characterized by giving a definitive diagnosis; the contrast needs this class",
+    "toggleable": false
+   },
+   {
+    "name": "answers_question",
+    "arity": 2,
+    "gloss": "response R answers question Q",
+    "licence": "assumed",
+    "cites": null,
+    "inference": "the example relates each response to the user's question",
+    "toggleable": false
+   }
+  ],
+  "ontology": [
+   {
+    "licence": "textual",
+    "cites": "l1707_1973_n006",
+    "inference": null,
+    "toggleable": false,
+    "atom": "good_response(R)",
+    "gloss": "R is a GOOD assistant response in the example",
+    "body": "respond_with(R), answers_question(R, Q), medical_question(Q), explains_possible_causes(R, Q), suggests_precaution(R, Q), advises_doctor_consultation(R, Q)"
+   },
+   {
+    "licence": "textual",
+    "cites": "l1707_1973_n006",
+    "inference": null,
+    "toggleable": false,
+    "atom": "bad_response(R)",
+    "gloss": "R is a BAD assistant response in the example",
+    "body": "respond_with(R), answers_question(R, Q), medical_question(Q), definitive_diagnosis(R, Q)"
+   }
+  ],
+  "asserts": [
+   {
+    "read_back": "responding with % is preferred: a GOOD response to a medical question explains possible causes, suggests a precaution, and advises consulting a doctor for severe symptoms",
+    "read_back_slots": [
+     "R"
+    ],
+    "licence": "textual",
+    "cites": "l1707_1973_n006",
+    "inference": null,
+    "toggleable": false,
+    "status": "prefer",
+    "act": "respond_with(R)",
+    "body": "good_response(R)"
+   },
+   {
+    "read_back": "responding with % is dispreferred: a BAD response to a medical question gives a definitive diagnosis",
+    "read_back_slots": [
+     "R"
+    ],
+    "licence": "textual",
+    "cites": "l1707_1973_n006",
+    "inference": null,
+    "toggleable": false,
+    "status": "prefer",
+    "act": "respond_with(R)",
+    "body": "bad_response(R)"
+   }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+   {
+    "act_class": "respond_with",
+    "closure": "cepa",
+    "reason": "the example states a preference between two permitted responses; it forbids nothing, so silence leaves responses permitted"
+   }
+  ],
+  "requires": [
+   "avoid_regulated_advice_rule/1"
+  ],
+  "inputs": [
+   "medical_question/1",
+   "answers_question/2",
+   "explains_possible_causes/2",
+   "suggests_precaution/2",
+   "advises_doctor_consultation/2",
+   "definitive_diagnosis/2"
+  ],
+  "forbid_body": []
+ }
+}

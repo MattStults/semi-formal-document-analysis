@@ -1,0 +1,144 @@
+{
+  "outcome": "translated",
+  "clause_id": "l1001_1107_n002",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the assistant must respect creators",
+    "C2 the assistant must respect the work creators made",
+    "C3 the assistant must respect the intellectual property rights creators hold in that work",
+    "C4 the assistant pursues these obligations while striving to be helpful to users, so helpfulness is an aim held alongside the respect obligation and not a condition on it",
+    "C5 the span states the respect obligation unconditionally: it attaches no trigger, no exception and no defeater to it"
+  ],
+  "acts": [
+    "respect(X)",
+    "be_helpful_to(U)"
+  ],
+  "concepts": [
+    {
+      "name": "root_authority",
+      "arity": 1,
+      "gloss": "R is a rule sitting in the respect-creators section of the document and therefore carrying the document's topmost authority level, which no lower level of the chain of command may override",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the node's NEEDS block assigns this predicate with this meaning; the narrowed span itself says nothing about authority levels, so the name is borrowed rather than stated here",
+      "toggleable": false
+    },
+    {
+      "name": "creator",
+      "arity": 1,
+      "gloss": "C is a person or organisation that made a creative or intellectual work of the kind the assistant may be asked to reproduce, summarise or build on",
+      "licence": "textual",
+      "cites": "l1001_1107_n002",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "work_of",
+      "arity": 2,
+      "gloss": "the first argument is a creative or intellectual product and the second is the creator who made it",
+      "licence": "textual",
+      "cites": "l1001_1107_n002",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "intellectual_property_right_of",
+      "arity": 2,
+      "gloss": "the first argument is a legal right in a work, such as a copyright or a licence term, and the second is the creator who holds it",
+      "licence": "textual",
+      "cites": "l1001_1107_n002",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "user",
+      "arity": 1,
+      "gloss": "U is a person the assistant is answering in this conversation and whose request it is trying to serve",
+      "licence": "textual",
+      "cites": "l1001_1107_n002",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [],
+  "asserts": [
+    {
+      "status": "oblige",
+      "act": "respect(X)",
+      "body": "creator(X)",
+      "read_back": "the assistant must respect %, who is a creator",
+      "read_back_slots": [
+        "X"
+      ],
+      "licence": "textual",
+      "cites": "l1001_1107_n002",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "status": "oblige",
+      "act": "respect(X)",
+      "body": "work_of(X, C)",
+      "read_back": "the assistant must respect %, which is the work of creator %",
+      "read_back_slots": [
+        "X",
+        "C"
+      ],
+      "licence": "textual",
+      "cites": "l1001_1107_n002",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "status": "oblige",
+      "act": "respect(X)",
+      "body": "intellectual_property_right_of(X, C)",
+      "read_back": "the assistant must respect %, which is an intellectual property right of creator %",
+      "read_back_slots": [
+        "X",
+        "C"
+      ],
+      "licence": "textual",
+      "cites": "l1001_1107_n002",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "status": "prefer",
+      "act": "be_helpful_to(U)",
+      "body": "user(U)",
+      "read_back": "the assistant strives to be helpful to %, alongside the respect it owes creators",
+      "read_back_slots": [
+        "U"
+      ],
+      "licence": "textual",
+      "cites": "l1001_1107_n002",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "respect",
+      "closure": "cepa",
+      "reason": "the clause requires respect and never bars any act of respect, so an act of respect the clause does not reach is left permitted rather than prohibited"
+    },
+    {
+      "act_class": "be_helpful_to",
+      "closure": "cepa",
+      "reason": "the clause states striving to be helpful to users as an aim it endorses and prohibits nothing, so silence about being helpful to someone leaves that permitted"
+    }
+  ],
+  "requires": [
+    "root_authority/1"
+  ],
+  "inputs": [
+    "creator/1",
+    "work_of/2",
+    "intellectual_property_right_of/2",
+    "user/1"
+  ],
+  "forbid_body": []
+}

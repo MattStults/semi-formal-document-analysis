@@ -1,0 +1,34 @@
+{
+ "clause_id": "l1001_1107_n005",
+ "calls": [
+  {
+   "phase": "critic",
+   "raw": "E1: PASS\nE2: PASS\nE3: FIX \u2014 `rule_under_heading/2` is coined but no substring of the narrowed text supports it; either mark it `assumed` with an inference naming ESTABLISHES or remove it.\nE4: FIX \u2014 the ontology entry `root_authority(R)` is licensed `textual` but the narrowed text only gives the heading `authority=root`, not that every rule under it carries root authority; change its licence to `assumed` with inference \"ESTABLISHES adds the every-rule consequence\".\nE5: PASS\nE6: FIX \u2014 claim C1 (\"the heading carries root authority\") is not encoded; add an ontology fact or assert `root_authority(protect_privacy_heading)` (or equivalent) so C1 is derivable.\nE7: PASS\nE8: PASS\nE9: PASS\nE10: PASS\nE11: PASS",
+   "sha1": "bb10e80236aedfa62c9d43c922071b3407408009",
+   "cost_usd": 0.00327908,
+   "usage": null,
+   "sent_chars": 14101,
+   "error": null,
+   "floor": null
+  },
+  {
+   "phase": "repair",
+   "raw": "{\n  \"outcome\": \"translated\",\n  \"clause_id\": \"l1001_1107_n005\",\n  \"abstain_reason\": null,\n  \"claims\": [\n    \"C1 the heading 'Protect people's privacy' carries root authority\",\n    \"C2 every rule under that heading is a root-level rule\"\n  ],\n  \"acts\": [],\n  \"concepts\": [\n    { \"name\": \"root_authority\", \"arity\": 1,\n      \"gloss\": \"the rule carries root-level authority: the highest authority level in the Model Spec, overriding lower-level rules\",\n      \"licence\": \"textual\", \"cites\": \"l1001_1107_n005\", \"inference\": null, \"toggleable\": false },\n    { \"name\": \"rule_under_heading\", \"arity\": 2,\n      \"gloss\": \"the rule is located under the named heading in the document\",\n      \"licence\": \"assumed\", \"cites\": null,\n      \"inference\": \"ESTABLISHES says every rule under the heading is root-level, so a relation between a rule and a heading must exist\",\n      \"toggleable\": false },\n    { \"name\": \"protect_privacy_heading\", \"arity\": 0,\n      \"gloss\": \"the document heading 'Protect people's privacy' with the anchor #protect_privacy\",\n      \"licence\": \"textual\", \"cites\": \"l1001_1107_n005\", \"inference\": null, \"toggleable\": false }\n  ],\n  \"ontology\": [\n    { \"licence\": \"textual\", \"cites\": \"l1001_1107_n005\", \"inference\": null, \"toggleable\": false,\n      \"atom\": \"root_authority(protect_privacy_heading)\",\n      \"gloss\": \"the heading 'Protect people's privacy' itself carries root authority\",\n      \"body\": null },\n    { \"licence\": \"assumed\", \"cites\": null, \"inference\": \"ESTABLISHES adds the every-rule consequence\", \"toggleable\": false,\n      \"atom\": \"root_authority(R)\",\n      \"gloss\": \"R is a rule under the 'Protect people's privacy' heading and therefore carries root authority\",\n      \"body\": \"rule_under_heading(R, protect_privacy_heading)\" }\n  ],\n  \"asserts\": [],\n  \"beats\": [],\n  \"defines\": [],\n  \"closure\": [],\n  \"requires\": [\"root_authority/1\"],\n  \"inputs\": [\"rule_under_heading/2\"],\n  \"forbid_body\": []\n}",
+   "sha1": "0d4e70f1268c8e887d950f6262c396de889799b2",
+   "cost_usd": 0.00171696,
+   "usage": null,
+   "sent_chars": 3976,
+   "error": null,
+   "floor": {
+    "parsed": true,
+    "breaches": [],
+    "checks": [
+     "[note/link] concept-declared @ l1001_1107_n005.lp: `rule_under_heading/2` is head-less and declared in the concept table by l1001_1107_n005",
+     "[note/link] situation-input @ l1001_1107_n005.lp: `rule_under_heading/2` is head-less and declared as a situation input"
+    ],
+    "outcome": "translated",
+    "repair_needed": false
+   }
+  }
+ ]
+}
