@@ -1,0 +1,21 @@
+{
+ "_": "Identity contract for names SHARED across node modules (the borrowing seam). One canonical arity + argument sorts + document-wide gloss per name. corpus_gate.py enforces arity conformance (hard tier); glosses for these names must never be section-local. Ruled 2026-08-16, grounds in SEAM_CONTRACT.md.",
+ "names": {
+  "root_authority":            {"arity": 1, "args": ["rule_or_instruction"], "gloss": "R carries the root level of instruction authority, the highest in the hierarchy; it cannot be overridden by system, developer or user instructions"},
+  "system_authority":          {"arity": 1, "args": ["rule_or_instruction"], "gloss": "R carries the system level of instruction authority"},
+  "developer_authority":       {"arity": 1, "args": ["rule_or_instruction"], "gloss": "R carries the developer level of instruction authority"},
+  "user_authority":            {"arity": 1, "args": ["rule_or_instruction"], "gloss": "R carries the user level of instruction authority"},
+  "guideline_authority":       {"arity": 1, "args": ["rule_or_instruction"], "gloss": "R carries the guideline level of instruction authority: guidance rather than strict requirement"},
+  "authority_levels_hierarchy": {"arity": 2, "args": ["higher_level", "lower_level"], "gloss": "authority level H (first argument) outranks authority level L (second argument) in the ordering root > system > developer > user > guideline"},
+  "assistant_definition":      {"arity": 1, "args": ["assistant"], "gloss": "A is the assistant as the Model Spec defines it"},
+  "model_spec":                {"arity": 1, "args": ["document"], "gloss": "D is the Model Spec document"},
+  "usage_policies":            {"arity": 1, "args": ["document"], "gloss": "P is OpenAI's usage-policies document"},
+  "message_role_definition":   {"arity": 2, "args": ["message", "role"], "gloss": "message M (first argument) has role R (second argument), one of system, developer, user, assistant, tool; the role specifies the message's source and determines its authority"},
+  "developer_instruction":     {"arity": 1, "args": ["instruction"], "gloss": "I is an instruction issued at the developer authority level"},
+  "user_instruction":          {"arity": 1, "args": ["instruction"], "gloss": "I is an instruction issued at the user authority level"},
+  "higher_level_instruction":  {"arity": 1, "args": ["instruction"], "gloss": "I is an instruction from an authority level that outranks the level of the instruction under evaluation"},
+  "answers_question":          {"arity": 2, "args": ["response", "question"], "gloss": "response R (first argument) answers question Q (second argument)"},
+  "delegated_power":           {"arity": 2, "args": ["power", "authority_level"], "gloss": "power P over a matter (first argument) is delegated by the Model Spec to authority level L (second argument)"},
+  "information_hazards_prohibition": {"arity": 1, "args": ["rule"], "gloss": "R is the rule prohibiting detailed actionable steps for information hazards (e.g. biological amplification, weapons)"}
+ }
+}

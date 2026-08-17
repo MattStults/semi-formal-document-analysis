@@ -646,7 +646,30 @@ def x_orphan_borrow(ix, mods):
     return out
 
 
+def x_seam_contract(ix, mods):
+    """X6 hard. A module declares a SEAM_CONTRACT.json name at a different
+    arity than the contract pins (SEAM_CONTRACT.md, 2026-08-16). Unlike X1,
+    this fires even when only ONE module carries the name — the contract is
+    the other party."""
+    path = os.path.join(HERE, "SEAM_CONTRACT.json")
+    if not os.path.exists(path):
+        return []
+    contract = json.load(open(path))["names"]
+    out = []
+    for n, spec in sorted(contract.items()):
+        for cid, ar, g, role in ix.get(n, []):
+            try:
+                ok = int(ar) == int(spec["arity"])
+            except (TypeError, ValueError):
+                ok = False
+            if not ok:
+                out.append(f"`{n}` declared /{ar} by {cid} ({role}); contract "
+                           f"pins /{spec['arity']} ({', '.join(spec['args'])})")
+    return out
+
+
 CROSS = [
+    ("seam_contract", x_seam_contract, "hard"),
     ("arity_disagreement", x_arity_disagreement, "hard"),
     ("sort_disagreement", x_sort_disagreement, "review"),
     ("section_local_gloss", x_section_local_gloss, "hard"),
