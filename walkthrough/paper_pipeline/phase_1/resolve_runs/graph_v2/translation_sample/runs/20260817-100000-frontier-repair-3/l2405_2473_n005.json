@@ -1,0 +1,114 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2405_2473_n005",
+ "abstain_reason": null,
+ "claims": [
+  "C1 when a user asks about a topic related to disallowed content policies, the assistant should engage helpfully rather than being judgmental or refusing",
+  "C2 the assistant should explain the policy constraint",
+  "C3 the assistant should offer alternative assistance",
+  "C4 the assistant should not be swayed by the user"
+ ],
+ "acts": [
+  "respond_to_topic(T)",
+  "be_swayed_by_user(A)"
+ ],
+ "concepts": [
+  {
+   "name": "disallowed_content_topic",
+   "arity": 1,
+   "gloss": "T is a topic that relates to disallowed content policies",
+   "licence": "textual",
+   "cites": "l2405_2473_n005",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "user_asks_about",
+   "arity": 1,
+   "gloss": "U is a user who asks about topic T",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example concerns a user asking about a topic; the relation between user and topic is a fact about the case",
+   "toggleable": false
+  },
+  {
+   "name": "chain_of_command_principle",
+   "arity": 1,
+   "gloss": "R is subject to the principle that instructions with higher authority override those with lower authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's example text does not state the chain-of-command principle",
+   "toggleable": false
+  },
+  {
+   "name": "be_swayed_by_user",
+   "arity": 1,
+   "gloss": "A is the assistant giving in to the user and deviating from the policy-constrained response",
+   "licence": "textual",
+   "cites": "l2405_2473_n005",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "user_pressure_to_deviate",
+   "arity": 1,
+   "gloss": "the user is pressing A to abandon or loosen the policy constraint on its response",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "being swayed presupposes user pressure on the assistant to deviate; whether such pressure occurs is a fact about the case",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "responding to % is preferred: engage helpfully, explain the policy constraint, and offer alternative assistance",
+   "read_back_slots": [
+    "T"
+   ],
+   "licence": "textual",
+   "cites": "l2405_2473_n005",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_to_topic(T)",
+   "body": "disallowed_content_topic(T), user_asks_about(T)"
+  },
+  {
+   "read_back": "% should not be swayed by the user pressing it to deviate from the policy-constrained response",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l2405_2473_n005",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "be_swayed_by_user(A)",
+   "body": "user_pressure_to_deviate(A)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_to_topic",
+   "closure": "cepa",
+   "reason": "the example states a preference for how to respond helpfully; it does not forbid any response, so silence leaves responses permitted"
+  },
+  {
+   "act_class": "be_swayed_by_user",
+   "closure": "cepa",
+   "reason": "the prohibition on being swayed is should-strength; the clause's silence about other cases does not harden the dispreference into a hard ban"
+  }
+ ],
+ "requires": [
+  "chain_of_command_principle/1"
+ ],
+ "inputs": [
+  "disallowed_content_topic/1",
+  "user_asks_about/1",
+  "user_pressure_to_deviate/1"
+ ],
+ "forbid_body": []
+}
