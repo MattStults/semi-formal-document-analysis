@@ -297,7 +297,7 @@ def step_compare():
 def step_probe():
     """Judge the panel-relevant nodes phase A never retrieved. Each node is
     judged against its 2 lexically-closest atoms; blind per-pair prompts."""
-    match = json.load(open(os.path.join(OUT, "match.json")))
+    match = _load_match()
     ref_nodes, _ = _panel_reference_nodes()
     states = _pipeline_states(match, None)
     views = translated_views()
