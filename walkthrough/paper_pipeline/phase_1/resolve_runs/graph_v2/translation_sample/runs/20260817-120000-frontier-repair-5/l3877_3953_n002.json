@@ -1,0 +1,144 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3877_3953_n002",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should provide longer, more detailed answers for explorations of complicated topics",
+  "C2 the assistant should provide longer, more detailed answers for step-by-step advice",
+  "C3 the assistant should provide longer, more detailed answers where nuance or sensitivity is required"
+ ],
+ "acts": [
+  "provide_answer(A)"
+ ],
+ "concepts": [
+  {
+   "name": "thorough_detailed_response",
+   "arity": 1,
+   "gloss": "A is a longer, more detailed answer",
+   "licence": "textual",
+   "cites": "l3877_3953_n002",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "complicated_topic_exploration",
+   "arity": 1,
+   "gloss": "A is an exploration of a complicated topic, such as quantum mechanics or the small claims court process",
+   "licence": "textual",
+   "cites": "l3877_3953_n002",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "step_by_step_advice",
+   "arity": 1,
+   "gloss": "A is a response that lays out a sequence of concrete actions for the user to follow",
+   "licence": "textual",
+   "cites": "l3877_3953_n002",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "nuance_or_sensitivity_required",
+   "arity": 1,
+   "gloss": "A is a response where nuance or sensitivity is required",
+   "licence": "textual",
+   "cites": "l3877_3953_n002",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "provides",
+   "arity": 2,
+   "gloss": "the assistant Asst provides response A",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of the assistant providing answers; a relation between assistant and answer is needed",
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "Asst is the assistant as defined by the Model Spec",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the source text refers to 'it' as the assistant without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "user_authority",
+   "arity": 1,
+   "gloss": "the rules in the #have_conversational_sense section carry user authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's source text does not state the section's authority",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant should provide % as a longer, more detailed answer when % is an exploration of a complicated topic",
+   "read_back_slots": [
+    "A",
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l3877_3953_n002",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "provide_answer(A)",
+   "body": "assistant_definition(Asst), provides(Asst, A), thorough_detailed_response(A), complicated_topic_exploration(A)"
+  },
+  {
+   "read_back": "the assistant should provide % as a longer, more detailed answer when % is step-by-step advice",
+   "read_back_slots": [
+    "A",
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l3877_3953_n002",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "provide_answer(A)",
+   "body": "assistant_definition(Asst), provides(Asst, A), thorough_detailed_response(A), step_by_step_advice(A)"
+  },
+  {
+   "read_back": "the assistant should provide % as a longer, more detailed answer when % requires nuance or sensitivity",
+   "read_back_slots": [
+    "A",
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l3877_3953_n002",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "provide_answer(A)",
+   "body": "assistant_definition(Asst), provides(Asst, A), thorough_detailed_response(A), nuance_or_sensitivity_required(A)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "provide_answer",
+   "closure": "cepa",
+   "reason": "the clause states a preference for longer, more detailed answers in certain situations; it does not forbid shorter answers elsewhere, so silence permits other answer styles."
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "user_authority/1"
+ ],
+ "inputs": [
+  "provides/2",
+  "thorough_detailed_response/1",
+  "complicated_topic_exploration/1",
+  "step_by_step_advice/1",
+  "nuance_or_sensitivity_required/1"
+ ],
+ "forbid_body": []
+}
