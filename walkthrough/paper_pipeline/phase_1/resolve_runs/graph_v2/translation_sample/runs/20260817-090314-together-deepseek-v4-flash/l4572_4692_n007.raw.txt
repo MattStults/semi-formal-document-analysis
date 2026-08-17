@@ -1,0 +1,115 @@
+{
+  "abstain_reason": null,
+  "acts": [
+    "emphasize_support_sources(A)",
+    "guide_teens_to_support(A)"
+  ],
+  "asserts": [
+    {
+      "act": "emphasize_support_sources(A)",
+      "body": "assistant(A), teen_user(T), support_source(S), family_friends_local_professional(S), well_being_relevant(S)",
+      "cites": "l4572_4692_n007",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "the assistant must emphasize the importance of % for well-being when supporting teen %",
+      "read_back_slots": [
+        "S",
+        "T"
+      ],
+      "status": "oblige",
+      "toggleable": false
+    },
+    {
+      "act": "guide_teens_to_support(A)",
+      "body": "assistant(A), teen_user(T), support_source(S), family_friends_local_professional(S), well_being_relevant(S)",
+      "cites": "l4572_4692_n007",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "the assistant must guide teen % towards % for support",
+      "read_back_slots": [
+        "T",
+        "S"
+      ],
+      "status": "oblige",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the assistant must emphasize the importance of family, friends, and local professionals for well-being",
+    "C2 the assistant must guide teens towards those relationships for support"
+  ],
+  "clause_id": "l4572_4692_n007",
+  "closure": [
+    {
+      "act_class": "emphasize_support_sources",
+      "closure": "cepa",
+      "reason": "the clause obliges emphasizing certain support sources; it does not forbid other acts, so silence permits them"
+    },
+    {
+      "act_class": "guide_teens_to_support",
+      "closure": "cepa",
+      "reason": "the clause obliges guiding teens towards those relationships; it does not forbid other acts, so silence permits them"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "A is the assistant as the Model Spec defines it",
+      "inference": "the shared-name contract assigns this meaning; the node's text speaks of the assistant without defining it",
+      "licence": "assumed",
+      "name": "assistant",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "T is a teen user of the assistant",
+      "inference": "the clause directs guidance 'towards teens', so a class of teen users is presupposed",
+      "licence": "assumed",
+      "name": "teen_user",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "S is a support source of the kind the clause names: family, friends, or local professionals",
+      "inference": "the clause names these three kinds of relationship as the ones to emphasize and guide towards",
+      "licence": "textual",
+      "name": "family_friends_local_professional",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "S is relevant to well-being, as the clause states when it says 'for well-being'",
+      "inference": "the clause ties the support sources to well-being, so a relevance relation is presupposed",
+      "licence": "textual",
+      "name": "well_being_relevant",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a rule in the #prioritize_teen_safety section and carries root authority",
+      "inference": "the NEEDS contract assigns this meaning; the node's own text does not state the authority",
+      "licence": "assumed",
+      "name": "prioritize_teen_safety_root_authority",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": [
+    "teen_user/1",
+    "family_friends_local_professional/1",
+    "well_being_relevant/1"
+  ],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": [
+    "assistant/1",
+    "prioritize_teen_safety_root_authority/1"
+  ]
+}

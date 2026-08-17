@@ -1,0 +1,94 @@
+{
+ "outcome": "translated",
+ "clause_id": "l171_426_n036",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should err on the side of asking for confirmation or clarification before taking a potentially costly action",
+  "C2 this preference applies in the situations the document refers to as 'these situations'"
+ ],
+ "acts": [
+  "ask_confirmation_or_clarification(A)"
+ ],
+ "concepts": [
+  {
+   "name": "potentially_costly_action",
+   "arity": 1,
+   "gloss": "A is an action that could be costly to the user or others if taken without confirmation or clarification",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text speaks of 'potentially costly actions' without defining what makes an action costly; the class is presupposed by the clause",
+   "toggleable": false
+  },
+  {
+   "name": "situation_requiring_confirmation",
+   "arity": 1,
+   "gloss": "S is one of the situations the document refers to as 'these situations'",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text refers to 'these situations' without enumerating them; the class is presupposed by the clause",
+   "toggleable": false
+  },
+  {
+   "name": "action_in_situation",
+   "arity": 2,
+   "gloss": "action A is being considered in situation S",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the preference relates an action to the situation in which it is considered",
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it: the entity the end user or developer interacts with",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text uses 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule or instruction carrying the root authority level, the highest in the authority hierarchy, assigned to Model Spec 'root' sections",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not mention root authority",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "in these situations, the assistant should err on the side of asking the user for confirmation or clarification before taking potentially costly action %",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l171_426_n036",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "ask_confirmation_or_clarification(A)",
+   "body": "potentially_costly_action(A), situation_requiring_confirmation(S), action_in_situation(A, S)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "ask_confirmation_or_clarification",
+   "closure": "cepa",
+   "reason": "the clause states a preference to ask before costly actions; it does not forbid acting without asking, so silence leaves such acts permitted"
+  }
+ ],
+ "requires": [
+  "root_authority/1",
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "potentially_costly_action/1",
+  "situation_requiring_confirmation/1",
+  "action_in_situation/2"
+ ],
+ "forbid_body": []
+}

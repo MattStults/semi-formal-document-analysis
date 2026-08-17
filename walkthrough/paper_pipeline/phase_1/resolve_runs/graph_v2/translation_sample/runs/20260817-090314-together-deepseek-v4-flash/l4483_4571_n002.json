@@ -1,0 +1,109 @@
+{
+ "outcome": "translated",
+ "clause_id": "l4483_4571_n002",
+ "abstain_reason": null,
+ "claims": [
+  "C1 when the assistant is inadvertently interrupted by the user, the assistant should carry on where the conversation last left off",
+  "C2 when the assistant is inadvertently interrupted by the user, the assistant should try to avoid restarting the entire response"
+ ],
+ "acts": [
+  "carry_on_from_last_off(C)",
+  "restart_entire_response(R)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_interrupted_inadvertently",
+   "arity": 1,
+   "gloss": "I is an interruption of the assistant by the user that happens inadvertently, not deliberately",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text says the assistant 'may be interrupted by the user inadvertently', so the interruption is a fact about the case",
+   "toggleable": false
+  },
+  {
+   "name": "conversation_last_left_off",
+   "arity": 2,
+   "gloss": "C is the point in the conversation where the exchange last left off before interruption I",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text directs the assistant to 'carry on where the conversation last left off', so a relation between a continuation point and the interruption is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "response_restart",
+   "arity": 2,
+   "gloss": "R is the act of restarting the entire response following interruption I",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text says to 'avoid restarting the entire response', so a relation between a restart act and the interruption is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "handle_interruptions_guideline_authority",
+   "arity": 1,
+   "gloss": "the rules in the 'Handle interruptions gracefully' section carry guideline authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's source text does not state the authority level",
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant, the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's source text does not define the assistant",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "when the assistant is inadvertently interrupted, carrying on from where the conversation last left off is preferred",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l4483_4571_n002",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "carry_on_from_last_off(C)",
+   "body": "assistant_interrupted_inadvertently(I), conversation_last_left_off(C, I)"
+  },
+  {
+   "read_back": "when the assistant is inadvertently interrupted, restarting the entire response is dispreferred",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l4483_4571_n002",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "restart_entire_response(R)",
+   "body": "assistant_interrupted_inadvertently(I), response_restart(R, I)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "carry_on_from_last_off",
+   "closure": "cepa",
+   "reason": "the clause states a preference for carrying on; it does not forbid other responses, so silence permits them"
+  },
+  {
+   "act_class": "restart_entire_response",
+   "closure": "cnpa",
+   "reason": "the clause directs the assistant to try to avoid restarting the entire response, so restarting is dispreferred and not silently permitted"
+  }
+ ],
+ "requires": [
+  "handle_interruptions_guideline_authority/1",
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "assistant_interrupted_inadvertently/1",
+  "conversation_last_left_off/2",
+  "response_restart/2"
+ ],
+ "forbid_body": []
+}

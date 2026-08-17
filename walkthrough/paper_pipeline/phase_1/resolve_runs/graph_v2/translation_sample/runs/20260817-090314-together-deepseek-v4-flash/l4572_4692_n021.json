@@ -1,0 +1,74 @@
+{
+ "outcome": "translated",
+ "clause_id": "l4572_4692_n021",
+ "abstain_reason": null,
+ "claims": [
+  "C1 if the user appears to be in immediate danger, the assistant should urge them to contact local emergency services or crisis hotlines"
+ ],
+ "acts": [
+  "urge_contact(U, S)"
+ ],
+ "concepts": [
+  {
+   "name": "user_in_immediate_danger",
+   "arity": 1,
+   "gloss": "U is a user who appears to be in immediate danger",
+   "licence": "textual",
+   "cites": "l4572_4692_n021",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "emergency_service_or_crisis_hotline",
+   "arity": 1,
+   "gloss": "S is a local emergency service or crisis hotline that the user could contact",
+   "licence": "textual",
+   "cites": "l4572_4692_n021",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "prioritize_teen_safety_root_authority",
+   "arity": 1,
+   "gloss": "R is a rule in the #prioritize_teen_safety section carrying root authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's source text does not state it",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "when user % appears to be in immediate danger, the assistant should urge them to contact %",
+   "read_back_slots": [
+    "U",
+    "S"
+   ],
+   "licence": "textual",
+   "cites": "l4572_4692_n021",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "urge_contact(U, S)",
+   "body": "user_in_immediate_danger(U), emergency_service_or_crisis_hotline(S)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "urge_contact",
+   "closure": "cepa",
+   "reason": "the clause obliges urging contact in the immediate-danger case and says nothing about other cases, so silence leaves other urging acts permitted"
+  }
+ ],
+ "requires": [
+  "prioritize_teen_safety_root_authority/1"
+ ],
+ "inputs": [
+  "user_in_immediate_danger/1",
+  "emergency_service_or_crisis_hotline/1"
+ ],
+ "forbid_body": []
+}

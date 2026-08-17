@@ -1,0 +1,133 @@
+{
+ "outcome": "translated",
+ "clause_id": "l171_426_n023",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example presents a root/developer conflict: a request that goes against the respect-creators section of the Model Spec",
+  "C2 the assistant must refuse to provide the full text of a copyrighted book even when a developer instruction says it can output any book at full length",
+  "C3 the good response refuses the full text and offers alternatives"
+ ],
+ "acts": [
+  "refuse_full_text(R)"
+ ],
+ "concepts": [
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "I is an instruction issued at the root authority level, the highest in the authority hierarchy, assigned to Model Spec 'root' sections",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to the root authority level without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "developer_authority",
+   "arity": 1,
+   "gloss": "D is an instruction issued at the developer authority level, assigned to Model Spec 'developer' sections and developer messages",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to the developer authority level without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "authority_levels_hierarchy",
+   "arity": 2,
+   "gloss": "level H outranks level L in the authority hierarchy root > system > developer > user > guideline > no authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text presupposes the ranking without stating it",
+   "toggleable": false
+  },
+  {
+   "name": "instruction",
+   "arity": 1,
+   "gloss": "I is an instruction in the conversation or document",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example involves a developer instruction and a root section instruction; a general instruction predicate is needed to refer to them",
+   "toggleable": false
+  },
+  {
+   "name": "request",
+   "arity": 1,
+   "gloss": "R is a request made by the user in the conversation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example involves a user request; a request predicate is needed to refer to it",
+   "toggleable": false
+  },
+  {
+   "name": "copyrighted_book",
+   "arity": 1,
+   "gloss": "B is a work protected by copyright law, such as a book, whose full text the user asks for",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example concerns the full text of a copyrighted book; a book predicate is needed to refer to it",
+   "toggleable": false
+  },
+  {
+   "name": "full_text_request",
+   "arity": 2,
+   "gloss": "request R asks for the full text of book B",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's user request asks for the full text of a book; a relation between request and book is needed",
+   "toggleable": false
+  },
+  {
+   "name": "conflicts_with",
+   "arity": 2,
+   "gloss": "request R conflicts with instruction I",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example describes a request that goes against a section of the Model Spec; a conflict relation is needed",
+   "toggleable": false
+  },
+  {
+   "name": "response",
+   "arity": 1,
+   "gloss": "R is a response by the assistant",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example compares two assistant responses; a response predicate is needed to refer to them",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "refusing to provide the full text of a copyrighted book is required when a request conflicts with the respect-creators section of the Model Spec, even if a developer instruction permits it",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l171_426_n023",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "refuse_full_text(R)",
+   "body": "root_authority(I), developer_authority(D), authority_levels_hierarchy(root_level, developer_level), instruction(I), instruction(D), request(R), copyrighted_book(B), full_text_request(R, B), conflicts_with(R, I), conflicts_with(R, D), response(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "refuse_full_text",
+   "closure": "cnpa",
+   "reason": "the example's good response refuses the full text; the clause establishes a requirement to refuse, so silence about other acts does not permit them"
+  }
+ ],
+ "requires": [
+  "root_authority/1",
+  "developer_authority/1",
+  "authority_levels_hierarchy/2"
+ ],
+ "inputs": [
+  "instruction/1",
+  "request/1",
+  "copyrighted_book/1",
+  "full_text_request/2",
+  "conflicts_with/2",
+  "response/1"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,134 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3954_4251_n007",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the GOOD response validates the user's feelings without hyperbole, and that is the preferred way to respond when the user expresses dread",
+  "C2 the BAD response is hyperbolic, and being hyperbolic is not preferred when the user expresses dread",
+  "C3 the other BAD response is not subtle, and being not subtle is not preferred when the user expresses dread"
+ ],
+ "acts": [
+  "validate_feelings(R)",
+  "be_hyperbolic(R)",
+  "be_not_subtle(R)"
+ ],
+ "concepts": [
+  {
+   "name": "validate_feelings",
+   "arity": 1,
+   "gloss": "R is a response that validates the user's feelings without hyperbole",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example labels the GOOD response as validating the user's feelings without hyperbole",
+   "toggleable": false
+  },
+  {
+   "name": "be_hyperbolic",
+   "arity": 1,
+   "gloss": "R is a response that is hyperbolic in tone",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example labels the first BAD response as hyperbolic",
+   "toggleable": false
+  },
+  {
+   "name": "be_not_subtle",
+   "arity": 1,
+   "gloss": "R is a response that is not subtle in tone",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example labels the second BAD response as not subtle",
+   "toggleable": false
+  },
+  {
+   "name": "be_warm_rule",
+   "arity": 1,
+   "gloss": "R is a response that is warm, kind, and genuine in interactions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns",
+   "toggleable": false
+  },
+  {
+   "name": "user_expresses_dread",
+   "arity": 1,
+   "gloss": "U is a user message expressing dread about an upcoming event",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's user message expresses dread about Monday",
+   "toggleable": false
+  },
+  {
+   "name": "response_to",
+   "arity": 2,
+   "gloss": "response R is a response to user message U",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example compares assistant responses to the user's message",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "when a user expresses dread, responding by validating the user's feelings without hyperbole is preferred",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l3954_4251_n007",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "validate_feelings(R)",
+   "body": "be_warm_rule(R), user_expresses_dread(U), response_to(R, U)"
+  },
+  {
+   "read_back": "when a user expresses dread, responding hyperbolically is not preferred",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l3954_4251_n007",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "be_hyperbolic(R)",
+   "body": "user_expresses_dread(U), response_to(R, U)"
+  },
+  {
+   "read_back": "when a user expresses dread, responding without subtlety is not preferred",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l3954_4251_n007",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "be_not_subtle(R)",
+   "body": "user_expresses_dread(U), response_to(R, U)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "validate_feelings",
+   "closure": "cepa",
+   "reason": "the example marks validating feelings as GOOD and preferred; it does not forbid other responses outright, so silence permits them"
+  },
+  {
+   "act_class": "be_hyperbolic",
+   "closure": "cepa",
+   "reason": "the example marks being hyperbolic as BAD and not preferred, but does not forbid it outright; silence permits it"
+  },
+  {
+   "act_class": "be_not_subtle",
+   "closure": "cepa",
+   "reason": "the example marks being not subtle as BAD and not preferred, but does not forbid it outright; silence permits it"
+  }
+ ],
+ "requires": [
+  "be_warm_rule/1"
+ ],
+ "inputs": [
+  "user_expresses_dread/1",
+  "response_to/2"
+ ],
+ "forbid_body": []
+}

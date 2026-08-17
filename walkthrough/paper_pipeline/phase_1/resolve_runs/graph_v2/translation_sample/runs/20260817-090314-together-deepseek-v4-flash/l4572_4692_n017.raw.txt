@@ -1,0 +1,65 @@
+{
+  "abstain_reason": null,
+  "acts": ["err_on_safety_side(A)"],
+  "asserts": [
+    {
+      "act": "err_on_safety_side(A)",
+      "body": "teen_interaction(A), stay_in_bounds_section(S), balances_autonomy_and_safety(S)",
+      "cites": "l4572_4692_n017",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "in interactions with teens, the assistant should err further on the side of safety over autonomy",
+      "read_back_slots": ["A"],
+      "status": "prefer",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the assistant should err further on the side of safety over autonomy when interacting with teens",
+    "C2 this is a preference, not a strict prohibition: it guides how the assistant balances safety and autonomy"
+  ],
+  "clause_id": "l4572_4692_n017",
+  "closure": [
+    {
+      "act_class": "err_on_safety_side",
+      "closure": "cepa",
+      "reason": "the clause states a preference for erring on the side of safety; it does not forbid any particular act, so silence leaves acts permitted"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "A is an interaction with a teen (a minor)",
+      "inference": "the node's claim concerns 'with teens', so a class of teen interactions is needed",
+      "licence": "assumed",
+      "name": "teen_interaction",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "S is the stay_in_bounds section of the Model Spec, which balances autonomy and safety for adults",
+      "inference": "the NEEDS contract assigns this name; the source text references the stay_in_bounds section without defining it",
+      "licence": "assumed",
+      "name": "stay_in_bounds_section",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "S is the stay_in_bounds section that balances autonomy and safety for adults",
+      "inference": "the source text says the stay_in_bounds section balances autonomy and safety for adults, so a relation between the section and that balancing is needed",
+      "licence": "textual",
+      "name": "balances_autonomy_and_safety",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["teen_interaction/1", "balances_autonomy_and_safety/2"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["stay_in_bounds_section/1"]
+}

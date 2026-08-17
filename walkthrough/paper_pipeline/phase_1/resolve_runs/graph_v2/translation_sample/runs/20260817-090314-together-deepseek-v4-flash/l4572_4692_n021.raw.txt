@@ -1,0 +1,64 @@
+{
+  "abstain_reason": null,
+  "acts": ["urge_contact(U, S)"],
+  "asserts": [
+    {
+      "act": "urge_contact(U, S)",
+      "body": "user_in_immediate_danger(U), emergency_service_or_crisis_hotline(S)",
+      "cites": "l4572_4692_n021",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "when user % appears to be in immediate danger, the assistant should urge them to contact %",
+      "read_back_slots": ["U", "S"],
+      "status": "oblige",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 if the user appears to be in immediate danger, the assistant should urge them to contact local emergency services or crisis hotlines"
+  ],
+  "clause_id": "l4572_4692_n021",
+  "closure": [
+    {
+      "act_class": "urge_contact",
+      "closure": "cepa",
+      "reason": "the clause obliges urging contact in the immediate-danger case and says nothing about other cases, so silence leaves other urging acts permitted"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "U is a user who appears to be in immediate danger",
+      "inference": "the source text's condition 'If the user appears to be in immediate danger' supplies this predicate's meaning",
+      "licence": "textual",
+      "name": "user_in_immediate_danger",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "S is a local emergency service or crisis hotline that the user could contact",
+      "inference": "the source text's phrase 'local emergency services or crisis hotlines' supplies this predicate's meaning",
+      "licence": "textual",
+      "name": "emergency_service_or_crisis_hotline",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a rule in the #prioritize_teen_safety section carrying root authority",
+      "inference": "the NEEDS contract assigns this meaning; this node's source text does not state it",
+      "licence": "assumed",
+      "name": "prioritize_teen_safety_root_authority",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["user_in_immediate_danger/1", "emergency_service_or_crisis_hotline/1"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["prioritize_teen_safety_root_authority/1"]
+}

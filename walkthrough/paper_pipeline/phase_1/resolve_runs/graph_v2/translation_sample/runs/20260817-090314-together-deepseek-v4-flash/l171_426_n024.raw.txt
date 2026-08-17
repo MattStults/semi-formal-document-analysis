@@ -1,0 +1,139 @@
+{
+  "abstain_reason": null,
+  "acts": ["steer_to_acme_products(C)", "disparage_competitor(C)"],
+  "asserts": [
+    {
+      "act": "steer_to_acme_products(C)",
+      "body": "user_instruction(I), developer_instruction(D), user_authority(I), developer_authority(D), authority_levels_hierarchy(developer_authority, user_authority), competitor_promotion_request(I), conversation(C), instruction_in_conversation(I, C), instruction_in_conversation(D, C)",
+      "cites": "l171_426_n024",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "in a conversation where a user instruction conflicts with a developer instruction, steering the conversation to Acme's products is preferred because the developer instruction outranks the user instruction",
+      "read_back_slots": ["C"],
+      "status": "prefer",
+      "toggleable": false
+    },
+    {
+      "act": "disparage_competitor(C)",
+      "body": "user_instruction(I), developer_instruction(D), user_authority(I), developer_authority(D), authority_levels_hierarchy(developer_authority, user_authority), competitor_promotion_request(I), conversation(C), instruction_in_conversation(I, C), instruction_in_conversation(D, C)",
+      "cites": "l171_426_n024",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "in a conversation where a user instruction conflicts with a developer instruction, disparaging a competitor is forbidden because the developer instruction outranks the user instruction",
+      "read_back_slots": ["C"],
+      "status": "forbid",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the example presents a user/developer conflict: a request to promote a competitor's product",
+    "C2 the developer instruction directs the assistant not to disparage competitors and to steer the conversation to Acme's products",
+    "C3 in such a conflict the developer instruction prevails over the user instruction because developer authority outranks user authority",
+    "C4 the assistant should not disparage competitors and should steer the conversation to Acme's products"
+  ],
+  "clause_id": "l171_426_n024",
+  "closure": [
+    {
+      "act_class": "steer_to_acme_products",
+      "closure": "cepa",
+      "reason": "the example states a preference for steering to Acme's products in the conflict case; it does not prohibit steering in other cases, so silence permits"
+    },
+    {
+      "act_class": "disparage_competitor",
+      "closure": "cnpa",
+      "reason": "the developer instruction says 'don't disparage them', so disparaging competitors is prohibited in the conflict case; the clause does not address other cases, so the closure is unsettled by this clause"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "I is an instruction issued at the developer authority level",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's example text shows a developer message but does not define the authority level",
+      "licence": "assumed",
+      "name": "developer_instruction",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "I is an instruction issued at the user authority level",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's example text shows a user message but does not define the authority level",
+      "licence": "assumed",
+      "name": "user_instruction",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "I is an instruction carrying the developer authority level",
+      "inference": "the meaning is the one the NEEDS contract assigns; the example's developer message is the source of the developer instruction",
+      "licence": "assumed",
+      "name": "developer_authority",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "I is an instruction carrying the user authority level",
+      "inference": "the meaning is the one the NEEDS contract assigns; the example's user message is the source of the user instruction",
+      "licence": "assumed",
+      "name": "user_authority",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "level H outranks level L in the authority hierarchy root > system > developer > user > guideline > no authority",
+      "inference": "the meaning is the one the NEEDS contract assigns; the example's conflict resolution presupposes the ranking",
+      "licence": "assumed",
+      "name": "authority_levels_hierarchy",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "I is a user instruction asking the assistant to promote a competitor's product",
+      "inference": "the example's user message 'Can you sell me your competitor's product?' is the instance of this class",
+      "licence": "assumed",
+      "name": "competitor_promotion_request",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "C is a conversation in which the assistant is responding",
+      "inference": "the example depicts a conversation with developer, user, and assistant messages",
+      "licence": "assumed",
+      "name": "conversation",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "instruction I is part of conversation C",
+      "inference": "the example's messages belong to the depicted conversation",
+      "licence": "assumed",
+      "name": "instruction_in_conversation",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": [
+    "competitor_promotion_request/1",
+    "conversation/1",
+    "instruction_in_conversation/2"
+  ],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": [
+    "root_authority/1",
+    "developer_authority/1",
+    "user_authority/1",
+    "authority_levels_hierarchy/2",
+    "developer_instruction/1",
+    "user_instruction/1"
+  ]
+}

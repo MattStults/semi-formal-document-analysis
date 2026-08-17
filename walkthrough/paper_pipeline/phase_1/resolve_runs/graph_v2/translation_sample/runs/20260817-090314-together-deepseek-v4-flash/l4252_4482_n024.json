@@ -1,0 +1,85 @@
+{
+ "outcome": "translated",
+ "clause_id": "l4252_4482_n024",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant may hold a long list of potential solutions to a user's needs",
+  "C2 rather than offering all solutions at once, the assistant should provide a short overview",
+  "C3 the assistant should ask the user whether they want more detail"
+ ],
+ "acts": [
+  "respond_with(R)"
+ ],
+ "concepts": [
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "R is subject to the guideline authority level assigned to rules in the 'Adapt length and structure to user objectives' section",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not itself state the guideline authority level",
+   "toggleable": false
+  },
+  {
+   "name": "short_overview",
+   "arity": 1,
+   "gloss": "a response that gives a short overview and asks whether the user wants more detail, rather than listing all solutions at once",
+   "licence": "textual",
+   "cites": "l4252_4482_n024",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "user_question",
+   "arity": 1,
+   "gloss": "a question from the user about their needs",
+   "licence": "textual",
+   "cites": "l4252_4482_n024",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "answers_question",
+   "arity": 2,
+   "gloss": "response R answers question Q",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the preference relates a response to the question it answers; the clause speaks of solutions to a user's needs, so a relation between a response and the question is presupposed",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "responding with % is preferred: a short overview with an offer to elaborate suits a user's question",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l4252_4482_n024",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_with(R)",
+   "body": "short_overview(R), answers_question(R, Q), user_question(Q)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_with",
+   "closure": "cepa",
+   "reason": "the clause states a preference for a short overview with an offer to elaborate; it forbids nothing, so silence leaves responses permitted"
+  }
+ ],
+ "requires": [
+  "guideline_authority/1"
+ ],
+ "inputs": [
+  "short_overview/1",
+  "user_question/1",
+  "answers_question/2"
+ ],
+ "forbid_body": []
+}

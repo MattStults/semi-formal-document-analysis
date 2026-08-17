@@ -1,0 +1,85 @@
+{
+ "outcome": "translated",
+ "clause_id": "l4483_4571_n003",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example demonstrates the interruption-handling rule",
+  "C2 when the user makes a comment to someone else in the room, the assistant should pause",
+  "C3 after the interruption, the assistant should pick up where it left off rather than restarting the entire response"
+ ],
+ "acts": [
+  "respond_with(R)"
+ ],
+ "concepts": [
+  {
+   "name": "resume_prior_response",
+   "arity": 1,
+   "gloss": "R is a response that continues from the point at which the assistant was interrupted, rather than beginning the whole response again",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example contrasts a good response that picks up where it left off with a bad one that restarts; the contrast needs this class",
+   "toggleable": false
+  },
+  {
+   "name": "interruption_occurred",
+   "arity": 0,
+   "gloss": "the user has made a comment to someone else in the room, interrupting the assistant's response",
+   "licence": "textual",
+   "cites": "l4483_4571_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "user_asks_to_continue",
+   "arity": 0,
+   "gloss": "the user has acknowledged the interruption and asked the assistant to continue",
+   "licence": "textual",
+   "cites": "l4483_4571_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "handle_interruptions_guideline_authority",
+   "arity": 1,
+   "gloss": "the meaning is the one the NEEDS contract assigns: the rules in the Handle interruptions gracefully section carry guideline authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's own example text does not state the authority level",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "after an interruption, responding with % is preferred over restarting the entire response",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l4483_4571_n003",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_with(R)",
+   "body": "interruption_occurred, user_asks_to_continue, resume_prior_response(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_with",
+   "closure": "cepa",
+   "reason": "the example states a preference for resuming over restarting; it does not forbid any response, so silence leaves responses permitted"
+  }
+ ],
+ "requires": [
+  "handle_interruptions_guideline_authority/1"
+ ],
+ "inputs": [
+  "interruption_occurred/0",
+  "user_asks_to_continue/0",
+  "resume_prior_response/1"
+ ],
+ "forbid_body": []
+}

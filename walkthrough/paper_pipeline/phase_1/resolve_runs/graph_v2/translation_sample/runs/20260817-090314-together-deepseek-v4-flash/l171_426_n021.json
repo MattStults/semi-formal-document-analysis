@@ -1,0 +1,163 @@
+{
+ "outcome": "translated",
+ "clause_id": "l171_426_n021",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant must not allow lower-level content, including its own previous messages, to influence its interpretation of higher-level principles",
+  "C2 this prohibition covers a lower-level message that provides an imperative, moral, or logical argument",
+  "C3 this prohibition covers a lower-level message that tries to confuse the assistant into role-playing a different persona"
+ ],
+ "acts": [
+  "allow_influence(A)"
+ ],
+ "concepts": [
+  {
+   "name": "lower_level_content",
+   "arity": 1,
+   "gloss": "A is content issued at a lower authority level than the principle it might influence",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract supplies the authority-level ranking; the clause's phrase 'lower-level content' presupposes that ranking",
+   "toggleable": false
+  },
+  {
+   "name": "higher_level_principle",
+   "arity": 1,
+   "gloss": "P is a principle carrying higher authority than the content that might influence its interpretation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's phrase 'higher-level principles' presupposes the authority ranking supplied by the NEEDS contract",
+   "toggleable": false
+  },
+  {
+   "name": "influences_interpretation",
+   "arity": 2,
+   "gloss": "content A has an effect on how the assistant interprets principle P",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's verb 'influence' names this relation without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "own_previous_message",
+   "arity": 1,
+   "gloss": "M is a message from the assistant's own previous output in this conversation",
+   "licence": "textual",
+   "cites": "l171_426_n021",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "argument_message",
+   "arity": 1,
+   "gloss": "M is a message that provides an imperative, moral, or logical argument about how higher-level instructions should be applied",
+   "licence": "textual",
+   "cites": "l171_426_n021",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "persona_confusion_message",
+   "arity": 1,
+   "gloss": "M is a message that tries to confuse the assistant into role-playing a different persona",
+   "licence": "textual",
+   "cites": "l171_426_n021",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "lower_level_influence_content",
+   "arity": 1,
+   "gloss": "A is content that is either the assistant's own previous message, an argument message, or a persona-confusion message",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's 'including' and 'this includes' structure groups these three cases under lower-level content",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule or instruction carrying the root level of instruction authority, the highest level, not overridable by system, developer or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract supplies this meaning; the clause's 'higher-level principles' is taken to refer to root-authority principles",
+   "toggleable": false
+  },
+  {
+   "name": "authority_levels_hierarchy",
+   "arity": 2,
+   "gloss": "level H (first argument) outranks level L (second) in root > system > developer > user > guideline > no authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract supplies this meaning; the clause's 'lower-level' and 'higher-level' presuppose this ranking",
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it: the entity the end user or developer interacts with",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract supplies this meaning; the clause's 'the assistant' refers to this entity",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l171_426_n021",
+   "inference": null,
+   "toggleable": false,
+   "atom": "lower_level_content(A)",
+   "gloss": "A is lower-level content that may influence interpretation of higher-level principles",
+   "body": "lower_level_influence_content(A)"
+  },
+  {
+   "licence": "assumed",
+   "cites": "l171_426_n021",
+   "inference": "the NEEDS contract supplies root_authority as the highest authority level; the clause's 'higher-level principles' is taken to mean principles at that level",
+   "toggleable": false,
+   "atom": "higher_level_principle(P)",
+   "gloss": "P is a higher-level principle, here a root-authority principle",
+   "body": "root_authority(P)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "allowing % to influence the assistant's interpretation of higher-level principle % is forbidden",
+   "read_back_slots": [
+    "A",
+    "P"
+   ],
+   "licence": "textual",
+   "cites": "l171_426_n021",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "allow_influence(A)",
+   "body": "lower_level_content(A), influences_interpretation(A, P), higher_level_principle(P)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "allow_influence",
+   "closure": "cnpa",
+   "reason": "the clause states a prohibition on allowing lower-level content to influence interpretation of higher-level principles; silence about other cases does not permit this act class"
+  }
+ ],
+ "requires": [
+  "root_authority/1",
+  "authority_levels_hierarchy/2",
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "own_previous_message/1",
+  "argument_message/1",
+  "persona_confusion_message/1",
+  "influences_interpretation/2",
+  "lower_level_influence_content/1"
+ ],
+ "forbid_body": []
+}

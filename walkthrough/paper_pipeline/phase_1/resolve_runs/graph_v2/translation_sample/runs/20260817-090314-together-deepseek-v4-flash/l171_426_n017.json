@@ -1,0 +1,150 @@
+{
+ "outcome": "translated",
+ "clause_id": "l171_426_n017",
+ "abstain_reason": null,
+ "claims": [
+  "C1 an instruction is superseded when a later message at the same authority level contains an instruction that contradicts it",
+  "C2 an instruction is superseded when a later message at the same authority level contains an instruction that overrides it",
+  "C3 an instruction is superseded when a later message at the same authority level contains an instruction that otherwise makes it irrelevant, e.g. by changing the context of the request"
+ ],
+ "acts": [],
+ "concepts": [
+  {
+   "name": "superseded_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction that is made irrelevant by a later instruction at the same authority level",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the PROVIDES contract assigns this predicate and its meaning; the source text defines 'superseded' as the condition this module encodes",
+   "toggleable": false
+  },
+  {
+   "name": "applicable_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction that applies to the current request, determined by filtering candidate instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this predicate and its meaning; this node's text presupposes that instructions are filtered for applicability without defining the filter",
+   "toggleable": false
+  },
+  {
+   "name": "authority_levels_hierarchy",
+   "arity": 2,
+   "gloss": "level H outranks level L in the authority hierarchy root > system > developer > user > guideline > no authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this predicate and its meaning; this node's text presupposes the ranking without stating it",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is the root authority level, the highest in the authority hierarchy, assigned to Model Spec 'root' sections",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this predicate and its meaning; this node's text presupposes the authority levels without defining them",
+   "toggleable": false
+  },
+  {
+   "name": "instruction_in_message",
+   "arity": 2,
+   "gloss": "instruction I appears in message M",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text speaks of an instruction 'in a later message', so a relation between an instruction and its message must exist",
+   "toggleable": false
+  },
+  {
+   "name": "instruction_level",
+   "arity": 2,
+   "gloss": "instruction I is issued at authority level L",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text speaks of instructions 'at the same level', so each instruction must carry an authority level",
+   "toggleable": false
+  },
+  {
+   "name": "later_message",
+   "arity": 2,
+   "gloss": "message M1 is later than message M2 in the conversation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text speaks of a 'later message', so an ordering relation between messages must exist",
+   "toggleable": false
+  },
+  {
+   "name": "contradicts",
+   "arity": 2,
+   "gloss": "instruction I1 contradicts instruction I2",
+   "licence": "textual",
+   "cites": "l171_426_n017",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "overrides",
+   "arity": 2,
+   "gloss": "instruction I1 overrides instruction I2",
+   "licence": "textual",
+   "cites": "l171_426_n017",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "makes_irrelevant",
+   "arity": 2,
+   "gloss": "instruction I1 otherwise makes instruction I2 irrelevant, e.g. by changing the context of the request",
+   "licence": "textual",
+   "cites": "l171_426_n017",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l171_426_n017",
+   "inference": null,
+   "toggleable": false,
+   "atom": "superseded_instruction(I1)",
+   "gloss": "I1 is superseded because a later instruction at the same level contradicts it",
+   "body": "applicable_instruction(I1), instruction_in_message(I1, M1), instruction_in_message(I2, M2), later_message(M2, M1), instruction_level(I1, L), instruction_level(I2, L), contradicts(I2, I1)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l171_426_n017",
+   "inference": null,
+   "toggleable": false,
+   "atom": "superseded_instruction(I1)",
+   "gloss": "I1 is superseded because a later instruction at the same level overrides it",
+   "body": "applicable_instruction(I1), instruction_in_message(I1, M1), instruction_in_message(I2, M2), later_message(M2, M1), instruction_level(I1, L), instruction_level(I2, L), overrides(I2, I1)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l171_426_n017",
+   "inference": null,
+   "toggleable": false,
+   "atom": "superseded_instruction(I1)",
+   "gloss": "I1 is superseded because a later instruction at the same level otherwise makes it irrelevant",
+   "body": "applicable_instruction(I1), instruction_in_message(I1, M1), instruction_in_message(I2, M2), later_message(M2, M1), instruction_level(I1, L), instruction_level(I2, L), makes_irrelevant(I2, I1)"
+  }
+ ],
+ "asserts": [],
+ "beats": [],
+ "defines": [],
+ "closure": [],
+ "requires": [
+  "root_authority/1",
+  "authority_levels_hierarchy/2",
+  "applicable_instruction/1"
+ ],
+ "inputs": [
+  "instruction_in_message/2",
+  "instruction_level/2",
+  "later_message/2",
+  "contradicts/2",
+  "overrides/2",
+  "makes_irrelevant/2"
+ ],
+ "forbid_body": []
+}

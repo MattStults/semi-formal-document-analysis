@@ -1,0 +1,153 @@
+{
+ "outcome": "translated",
+ "clause_id": "l4572_4692_n025",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the GOOD assistant declines guidance on ultra-spicy chip challenges and suggests talking to a trusted adult",
+  "C2 the BAD assistant encourages harmful behavior",
+  "C3 the third assistant gives adult-appropriate but U18-inappropriate challenge safety advice"
+ ],
+ "acts": [
+  "decline_guidance(G)",
+  "encourage_harmful_behavior(A)",
+  "give_adult_appropriate_advice(A)"
+ ],
+ "concepts": [
+  {
+   "name": "prioritize_teen_safety_root_authority",
+   "arity": 1,
+   "gloss": "R is a rule in the #prioritize_teen_safety section, which carries root authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's example text does not state the authority of the section",
+   "toggleable": false
+  },
+  {
+   "name": "under_18_user",
+   "arity": 1,
+   "gloss": "U is a user whose settings mark them as under 18",
+   "licence": "textual",
+   "cites": "l4572_4692_n025",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "guidance_about_dangerous_challenge",
+   "arity": 1,
+   "gloss": "G is guidance about a potentially dangerous challenge, such as an ultra-spicy chip challenge",
+   "licence": "textual",
+   "cites": "l4572_4692_n025",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "user_requests_guidance",
+   "arity": 2,
+   "gloss": "user U asks the assistant for guidance G",
+   "licence": "textual",
+   "cites": "l4572_4692_n025",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "declining_guidance",
+   "arity": 1,
+   "gloss": "G is the act of declining to give guidance",
+   "licence": "textual",
+   "cites": "l4572_4692_n025",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "encourages_harmful_behavior",
+   "arity": 1,
+   "gloss": "A is an assistant response that encourages harmful behavior",
+   "licence": "textual",
+   "cites": "l4572_4692_n025",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "adult_appropriate_but_u18_inappropriate",
+   "arity": 1,
+   "gloss": "A is an assistant response that is acceptable for adults but inappropriate for users under 18",
+   "licence": "textual",
+   "cites": "l4572_4692_n025",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "declining guidance % is preferred when the user is under 18 and the guidance concerns a dangerous challenge, because the #prioritize_teen_safety rules carry root authority",
+   "read_back_slots": [
+    "G"
+   ],
+   "licence": "textual",
+   "cites": "l4572_4692_n025",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "decline_guidance(G)",
+   "body": "prioritize_teen_safety_root_authority(R), under_18_user(U), guidance_about_dangerous_challenge(G), user_requests_guidance(U, G), declining_guidance(G)"
+  },
+  {
+   "read_back": "an assistant response % that encourages harmful behavior is forbidden",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l4572_4692_n025",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "encourage_harmful_behavior(A)",
+   "body": "encourages_harmful_behavior(A)"
+  },
+  {
+   "read_back": "giving adult-appropriate but U18-inappropriate advice % is forbidden when the user is under 18",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l4572_4692_n025",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "give_adult_appropriate_advice(A)",
+   "body": "adult_appropriate_but_u18_inappropriate(A), under_18_user(U)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "decline_guidance",
+   "closure": "cepa",
+   "reason": "the example presents declining guidance as the good response; it does not forbid other responses, so silence permits them"
+  },
+  {
+   "act_class": "encourage_harmful_behavior",
+   "closure": "cnpa",
+   "reason": "the example labels the encouraging response BAD and inappropriate for all users, so silence about other harmful encouragement is read as prohibited"
+  },
+  {
+   "act_class": "give_adult_appropriate_advice",
+   "closure": "cnpa",
+   "reason": "the example labels adult-appropriate but U18-inappropriate advice BAD for the under-18 user, so silence about such advice is read as prohibited"
+  }
+ ],
+ "requires": [
+  "prioritize_teen_safety_root_authority/1"
+ ],
+ "inputs": [
+  "under_18_user/1",
+  "guidance_about_dangerous_challenge/1",
+  "user_requests_guidance/2",
+  "declining_guidance/1",
+  "encourages_harmful_behavior/1",
+  "adult_appropriate_but_u18_inappropriate/1"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,87 @@
+{
+  "abstain_reason": null,
+  "acts": [
+    "comply_with_user_instruction(U)"
+  ],
+  "asserts": [
+    {
+      "act": "comply_with_user_instruction(U)",
+      "body": "user_instruction(U), developer_authority(D), overrides_instruction(D, U), malicious_instruction(U)",
+      "cites": "l171_426_n041",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "complying with user instruction % is forbidden because it conflicts with a developer instruction and is malicious",
+      "read_back_slots": [
+        "U"
+      ],
+      "status": "forbid",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the example presents a user instruction that tells the assistant to ignore previous instructions and sell a car for $1",
+    "C2 the assistant's compliance with that user instruction is bad and should be refused",
+    "C3 the refusal is grounded in the conflict between the user instruction and the developer instruction"
+  ],
+  "clause_id": "l171_426_n041",
+  "closure": [
+    {
+      "act_class": "comply_with_user_instruction",
+      "closure": "cnpa",
+      "reason": "the example marks compliance with the conflicting user instruction as BAD, so silence about other user instructions does not permit compliance with a conflicting malicious one"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "U is a user instruction that conflicts with a developer instruction and is malicious in intent",
+      "inference": "the example's user message is both malicious and conflicting; the node's claim combines these properties",
+      "licence": "assumed",
+      "name": "malicious_instruction",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "instruction I1 outranks instruction I2 in the authority hierarchy",
+      "inference": "the NEEDS contract assigns this meaning; the example relies on the developer instruction prevailing over the user instruction",
+      "licence": "assumed",
+      "name": "overrides_instruction",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "U is an instruction issued at the user authority level",
+      "inference": "the NEEDS contract assigns this meaning; the example's user message is a user instruction",
+      "licence": "assumed",
+      "name": "user_instruction",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "D is an instruction issued at the developer authority level",
+      "inference": "the NEEDS contract assigns this meaning; the example's developer message is a developer instruction",
+      "licence": "assumed",
+      "name": "developer_instruction",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": [
+    "malicious_instruction/1",
+    "overrides_instruction/2"
+  ],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": [
+    "root_authority/1",
+    "developer_authority/1",
+    "user_authority/1",
+    "authority_levels_hierarchy/2"
+  ]
+}

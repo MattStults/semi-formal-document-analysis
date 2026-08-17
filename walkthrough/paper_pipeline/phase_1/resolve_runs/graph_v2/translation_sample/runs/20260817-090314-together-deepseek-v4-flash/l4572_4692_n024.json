@@ -1,0 +1,163 @@
+{
+ "outcome": "translated",
+ "clause_id": "l4572_4692_n024",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the GOOD assistant declines romantic roleplay",
+  "C2 the GOOD assistant offers alternatives",
+  "C3 the BAD assistant escalates exclusivity in romantic roleplay, inappropriate for all users",
+  "C4 the third assistant gives adult-appropriate but U18-inappropriate first-person intimacy"
+ ],
+ "acts": [
+  "decline_romantic_roleplay(R)",
+  "offer_alternatives(R)",
+  "escalate_exclusivity(R)",
+  "first_person_intimacy(R)"
+ ],
+ "concepts": [
+  {
+   "name": "good_assistant",
+   "arity": 1,
+   "gloss": "R is a response marked GOOD in the example: it declines romantic roleplay and offers alternatives",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example labels the first assistant GOOD; the label is a fact about the example, not a definition in the source text",
+   "toggleable": false
+  },
+  {
+   "name": "bad_assistant",
+   "arity": 1,
+   "gloss": "R is a response marked BAD in the example: it escalates exclusivity in romantic roleplay",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example labels the second assistant BAD; the label is a fact about the example, not a definition in the source text",
+   "toggleable": false
+  },
+  {
+   "name": "third_assistant",
+   "arity": 1,
+   "gloss": "R is the third assistant response in the example, marked acceptable for adults but inappropriate for U18 users",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example presents a third assistant with that annotation; the annotation is a fact about the example, not a definition in the source text",
+   "toggleable": false
+  },
+  {
+   "name": "romantic_roleplay_request",
+   "arity": 1,
+   "gloss": "Q is a user request for romantic roleplay, such as the request in the example",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example is introduced as a romantic roleplay request; the class is needed to relate the responses to the request",
+   "toggleable": false
+  },
+  {
+   "name": "answers_question",
+   "arity": 2,
+   "gloss": "response R answers question Q",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the shared-name signature assigns this meaning; the example relates each assistant response to the user request",
+   "toggleable": false
+  },
+  {
+   "name": "prioritize_teen_safety_root_authority",
+   "arity": 1,
+   "gloss": "R is subject to the root-authority rules in the #prioritize_teen_safety section",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the example's U18 setting invokes those rules without stating them",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the good assistant % declines romantic roleplay in response to the request",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l4572_4692_n024",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "decline_romantic_roleplay(R)",
+   "body": "good_assistant(R), romantic_roleplay_request(Q), answers_question(R, Q)"
+  },
+  {
+   "read_back": "the good assistant % offers alternatives in response to the request",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l4572_4692_n024",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "offer_alternatives(R)",
+   "body": "good_assistant(R), romantic_roleplay_request(Q), answers_question(R, Q)"
+  },
+  {
+   "read_back": "the bad assistant % escalates exclusivity in romantic roleplay, which is inappropriate for all users",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l4572_4692_n024",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "escalate_exclusivity(R)",
+   "body": "bad_assistant(R), romantic_roleplay_request(Q), answers_question(R, Q)"
+  },
+  {
+   "read_back": "the third assistant % gives adult-appropriate but U18-inappropriate first-person intimacy",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l4572_4692_n024",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "first_person_intimacy(R)",
+   "body": "third_assistant(R), romantic_roleplay_request(Q), answers_question(R, Q)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "decline_romantic_roleplay",
+   "closure": "cepa",
+   "reason": "the example only illustrates the good assistant declining; it does not state that declining is the only permitted response, so silence permits other responses"
+  },
+  {
+   "act_class": "offer_alternatives",
+   "closure": "cepa",
+   "reason": "the example only illustrates the good assistant offering alternatives; it does not state that offering alternatives is the only permitted response, so silence permits other responses"
+  },
+  {
+   "act_class": "escalate_exclusivity",
+   "closure": "cnpa",
+   "reason": "the example marks escalating exclusivity as BAD and inappropriate for all users, so the act is prohibited unless an exception is stated"
+  },
+  {
+   "act_class": "first_person_intimacy",
+   "closure": "cnpa",
+   "reason": "the example marks first-person intimacy as inappropriate for U18 users, so the act is prohibited for that class unless an exception is stated"
+  }
+ ],
+ "requires": [
+  "prioritize_teen_safety_root_authority/1"
+ ],
+ "inputs": [
+  "good_assistant/1",
+  "bad_assistant/1",
+  "third_assistant/1",
+  "romantic_roleplay_request/1",
+  "answers_question/2"
+ ],
+ "forbid_body": []
+}

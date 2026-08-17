@@ -1,0 +1,179 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1_170_n025",
+ "abstain_reason": null,
+ "claims": [
+  "C1 people should have transparency into the important rules and reasons behind our models' behavior",
+  "C2 transparency is provided primarily through this Model Spec",
+  "C3 further transparency is committed to when model behavior is significantly adapted",
+  "C4 the commitment to further transparency is especially strong when the adaptation could implicate people's fundamental human rights"
+ ],
+ "acts": [
+  "provide_transparency(T)",
+  "adapt_model_behavior(A)"
+ ],
+ "concepts": [
+  {
+   "name": "transparency_about",
+   "arity": 1,
+   "gloss": "T is an act of providing transparency about some matter",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of people having transparency and of providing transparency; the act class is needed to carry the preference",
+   "toggleable": false
+  },
+  {
+   "name": "transparency_about",
+   "arity": 2,
+   "gloss": "transparency act T is about matter M",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of transparency into rules and reasons and of further transparency about adaptations; a relation between a transparency act and its subject is needed",
+   "toggleable": false
+  },
+  {
+   "name": "important_rule_or_reason",
+   "arity": 1,
+   "gloss": "R is one of the important rules or reasons behind the models' behavior",
+   "licence": "textual",
+   "cites": "l1_170_n025",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "model_behavior",
+   "arity": 1,
+   "gloss": "B is behavior of OpenAI's models",
+   "licence": "textual",
+   "cites": "l1_170_n025",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "behind_behavior",
+   "arity": 2,
+   "gloss": "rule or reason R lies behind behavior B",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause says transparency is into the rules and reasons behind the models' behavior; a relation between a rule/reason and the behavior it explains is needed",
+   "toggleable": false
+  },
+  {
+   "name": "primary_vehicle",
+   "arity": 1,
+   "gloss": "T is the Model Spec document, the primary vehicle of transparency",
+   "licence": "textual",
+   "cites": "l1_170_n025",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "significant_adaptation",
+   "arity": 1,
+   "gloss": "A is a significant adaptation of model behavior, e.g. via system messages or due to local laws",
+   "licence": "textual",
+   "cites": "l1_170_n025",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "adapts_behavior",
+   "arity": 2,
+   "gloss": "adaptation A adapts behavior B",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause says model behavior is adapted in significant ways; a relation between an adaptation and the behavior it changes is needed",
+   "toggleable": false
+  },
+  {
+   "name": "implicates_fundamental_rights",
+   "arity": 1,
+   "gloss": "adaptation A could implicate people's fundamental human rights",
+   "licence": "textual",
+   "cites": "l1_170_n025",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "providing transparency % is preferred: people should have transparency into the important rules and reasons behind our models' behavior",
+   "read_back_slots": [
+    "T"
+   ],
+   "licence": "textual",
+   "cites": "l1_170_n025",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "provide_transparency(T)",
+   "body": "transparency_about(T, R), important_rule_or_reason(R), model_behavior(B), behind_behavior(R, B)"
+  },
+  {
+   "read_back": "providing transparency % is preferred: the Model Spec is the primary vehicle for transparency into the important rules and reasons behind our models' behavior",
+   "read_back_slots": [
+    "T"
+   ],
+   "licence": "textual",
+   "cites": "l1_170_n025",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "provide_transparency(T)",
+   "body": "transparency_about(T, R), important_rule_or_reason(R), model_behavior(B), behind_behavior(R, B), primary_vehicle(T)"
+  },
+  {
+   "read_back": "providing transparency % is preferred: when model behavior is significantly adapted, further transparency is committed to",
+   "read_back_slots": [
+    "T"
+   ],
+   "licence": "textual",
+   "cites": "l1_170_n025",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "provide_transparency(T)",
+   "body": "transparency_about(T, R), important_rule_or_reason(R), model_behavior(B), behind_behavior(R, B), significant_adaptation(A), adapts_behavior(A, B), transparency_about(T, A)"
+  },
+  {
+   "read_back": "providing transparency % is preferred: when a significant adaptation could implicate people's fundamental human rights, further transparency is especially important",
+   "read_back_slots": [
+    "T"
+   ],
+   "licence": "textual",
+   "cites": "l1_170_n025",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "provide_transparency(T)",
+   "body": "transparency_about(T, R), important_rule_or_reason(R), model_behavior(B), behind_behavior(R, B), significant_adaptation(A), adapts_behavior(A, B), transparency_about(T, A), implicates_fundamental_rights(A)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "provide_transparency",
+   "closure": "cepa",
+   "reason": "the clause states a preference for providing transparency; it does not forbid any act of transparency, so silence permits"
+  },
+  {
+   "act_class": "adapt_model_behavior",
+   "closure": "cepa",
+   "reason": "the clause does not govern whether model behavior may be adapted; it only conditions a transparency commitment on significant adaptation, so silence permits"
+  }
+ ],
+ "requires": [],
+ "inputs": [
+  "transparency_about/2",
+  "important_rule_or_reason/1",
+  "model_behavior/1",
+  "behind_behavior/2",
+  "primary_vehicle/1",
+  "significant_adaptation/1",
+  "adapts_behavior/2",
+  "implicates_fundamental_rights/1"
+ ],
+ "forbid_body": []
+}

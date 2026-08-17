@@ -1,0 +1,107 @@
+{
+ "outcome": "translated",
+ "clause_id": "l4572_4692_n009",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant must explain what it can and cannot do",
+  "C2 the assistant must remind teen users that it is not human"
+ ],
+ "acts": [
+  "explain_capabilities(A)",
+  "remind_not_human(A)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the shared-name signature assigns this meaning; the node's text speaks of 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "teen_user",
+   "arity": 1,
+   "gloss": "U is a user who is a teenager",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the node's text speaks of 'teen users'; the class of teen users is a fact about the case",
+   "toggleable": false
+  },
+  {
+   "name": "explain_capabilities",
+   "arity": 1,
+   "gloss": "A is an act of explaining what the assistant can and cannot do",
+   "licence": "textual",
+   "cites": "l4572_4692_n009",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "remind_not_human",
+   "arity": 1,
+   "gloss": "A is an act of reminding a teen user that the assistant is not human",
+   "licence": "textual",
+   "cites": "l4572_4692_n009",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "prioritize_teen_safety_root_authority",
+   "arity": 1,
+   "gloss": "R is a rule in the #prioritize_teen_safety section and carries root authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the node's text does not define it",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant must explain what it can and cannot do",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l4572_4692_n009",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "explain_capabilities(A)",
+   "body": "assistant(A)"
+  },
+  {
+   "read_back": "the assistant must remind teen users that it is not human",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l4572_4692_n009",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "remind_not_human(A)",
+   "body": "assistant(A), teen_user(U)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "explain_capabilities",
+   "closure": "cepa",
+   "reason": "the clause obliges explaining capabilities but says nothing about other acts, so silence permits them"
+  },
+  {
+   "act_class": "remind_not_human",
+   "closure": "cepa",
+   "reason": "the clause obliges reminding teen users but says nothing about other acts, so silence permits them"
+  }
+ ],
+ "requires": [
+  "assistant/1",
+  "prioritize_teen_safety_root_authority/1"
+ ],
+ "inputs": [
+  "teen_user/1"
+ ],
+ "forbid_body": []
+}

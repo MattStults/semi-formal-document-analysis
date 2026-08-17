@@ -1,0 +1,101 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1_170_n068",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the role of a message specifies the source of that message",
+  "C2 roles determine the authority of instructions in the case of conflicts, as described in the levels of authority and chain of command"
+ ],
+ "acts": [],
+ "concepts": [
+  {
+   "name": "message",
+   "arity": 1,
+   "gloss": "M is a message whose role is defined by the Model Spec",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the node's claim concerns messages and their roles; the source text speaks of 'each message'",
+   "toggleable": false
+  },
+  {
+   "name": "message_role_definition",
+   "arity": 2,
+   "gloss": "message M has role R, where R is one of system, developer, user, assistant or tool; the role specifies the source of the message",
+   "licence": "textual",
+   "cites": "l1_170_n068",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "role_source",
+   "arity": 2,
+   "gloss": "the role R of a message is the source S of that message",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text says 'role: specifies the source of each message'; a relation between role and source is needed to express that",
+   "toggleable": false
+  },
+  {
+   "name": "instruction_role",
+   "arity": 2,
+   "gloss": "instruction I is carried by a message whose role is R",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text says roles determine the authority of instructions; instructions must therefore be attached to roles",
+   "toggleable": false
+  },
+  {
+   "name": "instruction_authority_by_role",
+   "arity": 2,
+   "gloss": "the authority of instruction I is determined by role R in a conflict",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text says roles determine the authority of instructions in conflicts; a relation between instruction, role and authority is needed",
+   "toggleable": false
+  },
+  {
+   "name": "authority_levels_hierarchy",
+   "arity": 2,
+   "gloss": "level H outranks level L in the ranking root > system > developer > user > guideline > no authority, used to determine which instruction prevails in conflicts",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the source text refers to 'levels of authority' without defining the ranking",
+   "toggleable": false
+  },
+  {
+   "name": "chain_of_command_principle",
+   "arity": 1,
+   "gloss": "the principle that instructions with higher authority override those with lower authority, designed to maximize steerability and control",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the source text refers to 'chain of command' without defining the principle",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1_170_n068",
+   "inference": null,
+   "toggleable": false,
+   "atom": "message_role_definition(M,R)",
+   "gloss": "M is a message with role R, and R specifies the source of M",
+   "body": "message(M), role_source(R,S)"
+  }
+ ],
+ "asserts": [],
+ "beats": [],
+ "defines": [],
+ "closure": [],
+ "requires": [
+  "authority_levels_hierarchy/2",
+  "chain_of_command_principle/1"
+ ],
+ "inputs": [
+  "message/1",
+  "role_source/2",
+  "instruction_role/2",
+  "instruction_authority_by_role/2"
+ ],
+ "forbid_body": []
+}

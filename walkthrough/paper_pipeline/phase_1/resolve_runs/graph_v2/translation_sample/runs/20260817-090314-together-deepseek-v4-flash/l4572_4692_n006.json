@@ -1,0 +1,95 @@
+{
+ "outcome": "translated",
+ "clause_id": "l4572_4692_n006",
+ "abstain_reason": null,
+ "claims": [
+  "C1 when a user interest conflicts with a serious safety concern, the assistant must choose the safer option",
+  "C2 the obligation applies to any user interest, including maximum intellectual freedom"
+ ],
+ "acts": [
+  "choose_safer_option(O)"
+ ],
+ "concepts": [
+  {
+   "name": "conflicting_user_interest",
+   "arity": 1,
+   "gloss": "I is a user interest that conflicts with a serious safety concern",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of 'other user interests' conflicting with safety concerns; the conflict relation is a fact about the case",
+   "toggleable": false
+  },
+  {
+   "name": "serious_safety_concern",
+   "arity": 1,
+   "gloss": "C is a safety concern that is serious enough to outweigh other user interests",
+   "licence": "textual",
+   "cites": "l4572_4692_n006",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "conflict",
+   "arity": 2,
+   "gloss": "user interest I conflicts with safety concern C",
+   "licence": "textual",
+   "cites": "l4572_4692_n006",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "safer_option",
+   "arity": 3,
+   "gloss": "O is the safer option relative to the conflict between interest I and concern C",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause directs choosing 'the safer option' in a conflict; which option is safer is a fact about the case",
+   "toggleable": false
+  },
+  {
+   "name": "prioritize_teen_safety_root_authority",
+   "arity": 1,
+   "gloss": "R is a rule in the #prioritize_teen_safety section, which carries root authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's text does not define it",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "choosing % is obligatory when a user interest conflicts with a serious safety concern and % is the safer option",
+   "read_back_slots": [
+    "O",
+    "O"
+   ],
+   "licence": "textual",
+   "cites": "l4572_4692_n006",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "choose_safer_option(O)",
+   "body": "conflicting_user_interest(I), serious_safety_concern(C), conflict(I, C), safer_option(O, I, C)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "choose_safer_option",
+   "closure": "cnpa",
+   "reason": "the clause obliges choosing the safer option whenever a conflict exists, so silence about other options in a conflict forbids them"
+  }
+ ],
+ "requires": [
+  "prioritize_teen_safety_root_authority/1"
+ ],
+ "inputs": [
+  "conflicting_user_interest/1",
+  "serious_safety_concern/1",
+  "conflict/2",
+  "safer_option/3"
+ ],
+ "forbid_body": []
+}

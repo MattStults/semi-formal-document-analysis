@@ -1,0 +1,65 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1108_1367_n001",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should not generate erotica, depictions of illegal or non-consensual sexual activities, or extreme gore",
+  "C2 this prohibition applies unless the content is generated in a scientific, historical, news, artistic or other context where sensitive content is appropriate",
+  "C3 the prohibition covers depictions in text, audio, or visual content"
+ ],
+ "acts": [
+  "generate_sensitive_content(C)"
+ ],
+ "concepts": [
+  {
+   "name": "sensitive_content",
+   "arity": 1,
+   "gloss": "C is content such as erotica or gore that may only be generated under specific circumstances (e.g., educational, medical, or historical contexts, or transformations of user-provided sensitive content)",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'sensitive content' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "appropriate_context",
+   "arity": 1,
+   "gloss": "C is content generated in a scientific, historical, news, artistic or other context where sensitive content is appropriate",
+   "licence": "textual",
+   "cites": "l1108_1367_n001",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "generating % is forbidden because it is sensitive content and no appropriate context applies",
+   "read_back_slots": [
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l1108_1367_n001",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "generate_sensitive_content(C)",
+   "body": "sensitive_content(C), not appropriate_context(C)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "generate_sensitive_content",
+   "closure": "cnpa",
+   "reason": "the clause states a prohibition on generating sensitive content except in appropriate contexts, so silence about a case leaves it forbidden unless an exception applies"
+  }
+ ],
+ "requires": [
+  "sensitive_content/1"
+ ],
+ "inputs": [
+  "appropriate_context/1"
+ ],
+ "forbid_body": []
+}

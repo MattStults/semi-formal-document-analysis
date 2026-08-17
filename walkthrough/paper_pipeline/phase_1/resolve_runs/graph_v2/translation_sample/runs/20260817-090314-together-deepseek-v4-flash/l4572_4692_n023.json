@@ -1,0 +1,134 @@
+{
+ "outcome": "translated",
+ "clause_id": "l4572_4692_n023",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the GOOD assistant declines extreme appearance changes and offers healthy alternatives",
+  "C2 the BAD assistant provides dangerous health advice",
+  "C3 the third assistant provides advice that is acceptable for adults but inappropriate for under-18 users"
+ ],
+ "acts": [
+  "decline_extreme_appearance_changes(A)",
+  "offer_healthy_alternatives(A)",
+  "provide_dangerous_health_advice(A)",
+  "provide_adult_appropriate_u18_inappropriate_advice(A)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_response",
+   "arity": 1,
+   "gloss": "A is an assistant response in the example",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example compares three assistant responses, so a class of assistant responses is needed",
+   "toggleable": false
+  },
+  {
+   "name": "under_18_user",
+   "arity": 1,
+   "gloss": "U is a user who is under 18 years old",
+   "licence": "textual",
+   "cites": "l4572_4692_n023",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "body_dissatisfaction_coaching_request",
+   "arity": 2,
+   "gloss": "A is an assistant response to a user request that could reinforce body dissatisfaction",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example is about coaching that could reinforce body dissatisfaction, so a relation between a response and such a request is needed",
+   "toggleable": false
+  },
+  {
+   "name": "prioritize_teen_safety_root_authority",
+   "arity": 1,
+   "gloss": "R is a rule in the #prioritize_teen_safety section carrying root authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's example text does not state the rule's authority",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "an assistant responding to a body-dissatisfaction coaching request from an under-18 user is preferred to decline extreme appearance changes",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l4572_4692_n023",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "decline_extreme_appearance_changes(A)",
+   "body": "assistant_response(A), under_18_user(U), body_dissatisfaction_coaching_request(A, U)"
+  },
+  {
+   "read_back": "an assistant responding to a body-dissatisfaction coaching request from an under-18 user is preferred to offer healthy alternatives",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l4572_4692_n023",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "offer_healthy_alternatives(A)",
+   "body": "assistant_response(A), under_18_user(U), body_dissatisfaction_coaching_request(A, U)"
+  },
+  {
+   "read_back": "an assistant responding to a body-dissatisfaction coaching request from an under-18 user is forbidden to provide dangerous health advice",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l4572_4692_n023",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "provide_dangerous_health_advice(A)",
+   "body": "assistant_response(A), under_18_user(U), body_dissatisfaction_coaching_request(A, U)"
+  },
+  {
+   "read_back": "an assistant responding to a body-dissatisfaction coaching request from an under-18 user is forbidden to provide advice that is acceptable for adults but inappropriate for under-18 users",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l4572_4692_n023",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "provide_adult_appropriate_u18_inappropriate_advice(A)",
+   "body": "assistant_response(A), under_18_user(U), body_dissatisfaction_coaching_request(A, U)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "decline_extreme_appearance_changes",
+   "closure": "cepa",
+   "reason": "the example marks declining extreme appearance changes as the GOOD behavior, so silence about other responses permits them"
+  },
+  {
+   "act_class": "offer_healthy_alternatives",
+   "closure": "cepa",
+   "reason": "the example marks offering healthy alternatives as the GOOD behavior, so silence about other responses permits them"
+  },
+  {
+   "act_class": "provide_dangerous_health_advice",
+   "closure": "cnpa",
+   "reason": "the example labels dangerous health advice as BAD and inappropriate for all users, so silence about it prohibits it"
+  },
+  {
+   "act_class": "provide_adult_appropriate_u18_inappropriate_advice",
+   "closure": "cnpa",
+   "reason": "the example labels adult-appropriate but U18-inappropriate advice as BAD for under-18 users, so silence about it prohibits it"
+  }
+ ],
+ "requires": [
+  "prioritize_teen_safety_root_authority/1"
+ ],
+ "inputs": [
+  "assistant_response/1",
+  "under_18_user/1",
+  "body_dissatisfaction_coaching_request/2"
+ ],
+ "forbid_body": []
+}
