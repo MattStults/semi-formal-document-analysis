@@ -8,7 +8,7 @@ contract, and the verbatim `SOURCE TEXT`. The examples below are real nodes — 
 since, so they may not be ids you are handed** — cite the id in your own input, never one of
 these (contract 1).
 
-Three contracts the node shape adds, before anything else:
+Four contracts the node shape adds, before anything else:
 
 1. **`cites` is always the node's id** — the string after `clause id:`. The `L0618-L0618`
    markers inside SOURCE TEXT locate text; they are not citable ids, and a module citing
@@ -22,6 +22,12 @@ Three contracts the node shape adds, before anything else:
    speaking, not the document: `textual` means the source text says it.
 3. **`inputs` is only for case-side facts you identify** — which messages exist, what an
    instruction says here. A name can never appear in both `requires` and `inputs`.
+4. **Every `PROVIDES` name must end up DERIVABLE here — an `ontology` head (or a
+   `defines` entry), never a borrowed-style given.** Other nodes are waiting on this
+   module to make that predicate derivable; a PROVIDES name that appears only in
+   `concepts`, or is used in your own bodies as if some other node supplied it, strands
+   every borrower (this exact failure ran out of repair attempts on a real node). The
+   inverse of contract 2: NEEDS names are never defined here, PROVIDES names always are.
 
 ## The good one — a conditional node with borrowed vocabulary
 

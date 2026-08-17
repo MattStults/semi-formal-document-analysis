@@ -877,7 +877,14 @@ class Module(Strict):
                         f"NOT declare it — concepts carry meaning, not "
                         f"provenance; `{name}/N` must ALSO appear in one of "
                         f"those three. An undeclared name cannot be told "
-                        f"apart from a typo")
+                        f"apart from a typo. THE EDIT, LITERALLY: if `{name}` "
+                        f"is a case-side fact, add the string \"{name}/1\" "
+                        f"(with its real arity) to the `inputs` list and "
+                        f"resubmit; if the NEEDS block lists `{name}`, add it "
+                        f"to `requires` instead; only if THIS clause "
+                        f"establishes it, give it an `ontology` entry with a "
+                        f"body. Do not resubmit the same module unchanged — "
+                        f"this exact check will fire again")
 
         # ---- D4b level 2: a BORROW must carry a MEANING --------------------
         #

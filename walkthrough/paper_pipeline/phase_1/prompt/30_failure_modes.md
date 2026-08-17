@@ -1,4 +1,4 @@
-# The 17 known failure modes
+# The 20 known failure modes
 
 Every one of these was found in real work on this document, not imagined. Each is marked with how it
 announces itself: **silent** (nothing complains), **loud** (something errors), **misleading** (you
@@ -18,6 +18,9 @@ makes it visible, which is why you are given the whole list rather than a summar
 | **5** | **Hollow stubs** | *silent.* One opaque symbol echoing the document's own words reads correctly in every explanation while the referenced content is absent. **Survives a paraphrase check by construction.** |
 | **6** | **Guessing forward from a backward statement** | *silent.* The clause said what an exception does *not* cover; the module encodes what it *does*. |
 | **7** | **Anonymous placeholders break the explainer** | *loud — crashes.* `policy(P) :- policy_class(P,_)` is idiomatic ASP and the explanation tool cannot process it. |
+| **18** | **A refusal or "unless" encoded on the wrong side** | *silent, and it INVERTS the norm.* "Should generally refuse to engage in X" became `prefer` on the act of engaging; "delegation must ensure every sub-agent respects the scope" became a `forbid` whose body lists the COMPLIANCE atoms — so compliant delegation was forbidden and non-compliant delegation unconstrained. ⇒ a prohibition-with-exception forbids on the **violation ground**: coin the positive violation predicate (rule 4 demands a positive *reason*, not a compliance guard), and an act the clause says to refuse never appears under `permit` or `prefer`. |
+| **19** | **Modal strength quietly downgraded or dropped** | *silent.* "Our models WILL STILL provide safety-critical information…" became three `permit`s — doing none of the three now violates nothing; "every scope MUST include a shutdown timer" was claimed in `claims` and encoded nowhere. ⇒ must/will/never map to `oblige`/`forbid`; may/can to `permit`; should to `prefer`. A modal in the span with no assert carrying it is a dropped norm — check each one before returning. |
+| **20** | **A condition stated in the read-back but wired to nothing** | *silent.* The read-back said "when the scope of autonomy is negotiated per interaction"; no body checked it, so the preference fires in every planning context; an "until a new scope is confirmed" terminator was declared as a concept and used by no rule, making a cessation obligation unconditional. ⇒ every condition your read-back states appears as an atom in that assert's body, and a concept you declared that no body uses is your own warning sign — re-read the span before returning. |
 
 ## ② Only visible across clauses — you cannot see these, so do not try to fix them
 
