@@ -490,6 +490,85 @@ def c_open_list_closed(cid, o, span):
             f"constants only. Scope narrowing, dangerous direction."]
 
 
+def c_refusal_inverted(cid, o, span):
+    """M26 hard (fix-loop 2026-08-17). The span says to refuse/never/not do
+    something and the module carries `prefer` or `permit` on a matching act —
+    a preference FOR the refused act. Recurred three times on one clause
+    through two prompt iterations; instruction does not reach it, detection
+    does."""
+    m = re.search(r"\[node narrows this span to: \"(.*?)\"\]", span, re.S)
+    hay = (m.group(1) if m else span.split("SOURCE TEXT")[-1]).lower()
+    refusals = re.findall(
+        r"(?:refuse to|should not|must not|never)\s+((?:\w+\s+){0,4}\w+)", hay)
+    if not refusals:
+        return []
+    ref_toks = {t for phrase in refusals
+                for t in re.split(r"[^a-z]+", phrase) if len(t) > 4}
+    out = []
+    for e in entries(o, "asserts"):
+        if not isinstance(e, dict) or e.get("status") not in ("prefer", "permit"):
+            continue
+        act_toks = {t for t in str(e.get("act", "")).lower()
+                    .replace("(", "_").split("_") if len(t) > 4}
+        hit = act_toks & ref_toks
+        if hit:
+            out.append(f"span refuses an act and the module {e.get('status')}s "
+                       f"it: {e.get('act')} (shared: {', '.join(sorted(hit))})")
+    return out
+
+
+def c_rebranding_derivation(cid, o, span):
+    """M27 hard (fix-loop 2026-08-17). A single-literal ontology rule whose
+    head and body are DIFFERENT concepts with no shared name tokens — the
+    condition-voiding shape (`no_agenda_section(S) :- model_spec(S)`,
+    `confirmation_requested(P) :- proposed_plan(P)`): it makes the head
+    trivially derivable from an unrelated fact, so any condition using the
+    head can never fail. A single-literal rule WITH token overlap
+    (`untrusted_data_default` from `untrusted_content`) is a legitimate
+    narrowing and does not fire."""
+    out = []
+    for e in entries(o, "ontology"):
+        if not isinstance(e, dict) or not e.get("body"):
+            continue
+        body_names = _NAME.findall(str(e["body"]))
+        if len(body_names) != 1:
+            continue
+        h = (_NAME.findall(str(e.get("atom", ""))) or [""])[0]
+        b = body_names[0]
+        ht = {t for t in h.split("_") if len(t) > 3}
+        bt = {t for t in b.split("_") if len(t) > 3}
+        if h and b and not (ht & bt):
+            out.append(f"single-literal rebranding derivation: {h} :- {b} — "
+                       f"the head becomes free whenever `{b}` holds")
+    return out
+
+
+def c_readback_status_conflict(cid, o, span):
+    """M28 hard (fix-loop 2026-08-17). The read_back narrates a prohibition
+    ("is forbidden", "must not") while the status field is
+    oblige/permit/prefer, or narrates an obligation while the status is
+    permit/prefer. The prose and the machine state opposite norms; the prose
+    is what reviewers read, the status is what the solver runs."""
+    out = []
+    for e in entries(o, "asserts"):
+        if not isinstance(e, dict):
+            continue
+        rb = str(e.get("read_back", "")).lower()
+        st = e.get("status")
+        forbid_shaped = re.search(
+            r"\bis (?:generally )?(?:forbidden|refused|not permitted|"
+            r"prohibited)\b|\bmust not\b", rb)
+        oblige_shaped = re.search(r"\bis (?:required|obliged|mandatory)\b"
+                                  r"|\bmust (?!not)\b", rb)
+        if forbid_shaped and st in ("oblige", "permit", "prefer"):
+            out.append(f"read_back is forbid-shaped but status={st}: "
+                       f"{e.get('act')} — {e.get('read_back')!r:.90}")
+        elif oblige_shaped and st in ("permit", "prefer"):
+            out.append(f"read_back is oblige-shaped but status={st}: "
+                       f"{e.get('act')} — {e.get('read_back')!r:.90}")
+    return out
+
+
 def c_needs_gloss_licence(cid, o, span):
     """M24 hard SINCE THE RULING. A borrowed NEEDS name's gloss stamped
     `licence: textual` citing this clause. Before DECISION_licence_textual.md
@@ -534,6 +613,9 @@ PER_MODULE = [
     ("argorder_unpinned", c_argorder_unpinned, "review"),
     ("open_list_closed", c_open_list_closed, "review"),
     ("needs_gloss_licence", c_needs_gloss_licence, "hard"),
+    ("refusal_inverted", c_refusal_inverted, "hard"),
+    ("rebranding_derivation", c_rebranding_derivation, "hard"),
+    ("readback_status_conflict", c_readback_status_conflict, "hard"),
 ]
 
 
