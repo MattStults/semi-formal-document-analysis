@@ -95,7 +95,7 @@ def node_geometry():
 FROZEN_ATOMS = os.path.join(HERE, "atoms_frontier_frozen.json")
 
 
-def step_match():
+def step_match(partial=False):
     defs = {b["slug"]: b for b in json.load(open(QUERY_DEFS))["behaviours"]}
     views = translated_views()
     print(f"universe: {len(views)} translated nodes")
@@ -142,7 +142,8 @@ def step_match():
     report["model"] = c.p.model
     report["calls"] = c.calls
     report["spent_usd"] = round(c.spent_usd, 6)
-    _write("match.json", report)
+    _write(("match_partial_%s.json" % SLUGS[0]) if partial else "match.json",
+           report)
 
 
 # ------------------------------------------------------------------ phase B
@@ -160,8 +161,7 @@ def _panel_reference_nodes():
         line_of = {c["id"]: c["line"] for c in clauses if "line" in c}
         panel = benchmark.load_true_panel()
         geo = node_geometry()
-        translated = set(json.load(open(
-            os.path.join(OUT, "match.json")))["universe"])
+        translated = set(_load_match()["universe"])
 
         def nodes_at(ln):
             return {n for n in translated
@@ -214,8 +214,28 @@ def _pipeline_states(match, probe):
     return states
 
 
+def _load_match():
+    """match.json, or the union of match_partial_*.json (preliminary runs)."""
+    import glob as _g
+    parts = sorted(_g.glob(os.path.join(OUT, "match_partial_*.json")))
+    if parts:
+        merged = None
+        for pth in parts:
+            m = json.load(open(pth))
+            if merged is None:
+                merged = m
+            else:
+                merged["behaviors"].update(m["behaviors"])
+                merged["calls"] = merged.get("calls", 0) + m.get("calls", 0)
+                merged["spent_usd"] = round(
+                    merged.get("spent_usd", 0) + m.get("spent_usd", 0), 6)
+        merged["_partials"] = [os.path.basename(x) for x in parts]
+        return merged
+    return json.load(open(os.path.join(OUT, "match.json")))
+
+
 def step_compare():
-    match = json.load(open(os.path.join(OUT, "match.json")))
+    match = _load_match()
     probe_p = os.path.join(OUT, "probe.json")
     probe = json.load(open(probe_p))["behaviors"] if os.path.exists(probe_p) \
         else None
@@ -319,8 +339,15 @@ STEPS = {"match": step_match, "compare": step_compare, "probe": step_probe}
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("step", choices=list(STEPS))
+    ap.add_argument("--slug", default=None,
+                    help="match only this behavior; writes match_partial_<slug>.json")
     args = ap.parse_args(argv)
-    STEPS[args.step]()
+    if args.step == "match" and args.slug:
+        global SLUGS
+        SLUGS = [args.slug]
+        STEPS["match"](partial=True)
+    else:
+        STEPS[args.step]()
     return 0
 
 
