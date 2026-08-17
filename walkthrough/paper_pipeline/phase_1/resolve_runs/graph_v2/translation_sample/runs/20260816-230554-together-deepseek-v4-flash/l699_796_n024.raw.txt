@@ -1,0 +1,125 @@
+{
+  "abstain_reason": null,
+  "acts": ["delegate_authority_to(I, D)"],
+  "asserts": [
+    {
+      "act": "delegate_authority_to(I, D)",
+      "body": "instruction(I), delegated_data_source(D), quoted_text(D)",
+      "cites": "l699_796_n024",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "instruction % may delegate some of its authority to quoted text %",
+      "read_back_slots": ["I", "D"],
+      "status": "permit"
+   ,
+    "toggleable": false
+    },
+    {
+      "act": "delegate_authority_to(I, D)",
+      "body": "instruction(I), delegated_data_source(D), tool_output(D)",
+      "cites": "l699_796_n024",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "instruction % may delegate some of its authority to tool output %",
+      "read_back_slots": ["I", "D"],
+      "status": "permit",
+      "toggleable": false
+    },
+    {
+      "act": "delegate_authority_to(I, D)",
+      "body": "instruction(I), delegated_data_source(D), multimodal_data(D)",
+      "cites": "l699_796_n024",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "instruction % may delegate some of its authority to multimodal data %",
+      "read_back_slots": ["I", "D"],
+      "status": "permit",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 an instruction may delegate some of its authority to quoted text",
+    "C2 an instruction may delegate some of its authority to tool outputs",
+    "C3 an instruction may delegate some of its authority to multimodal data"
+  ],
+  "clause_id": "l699_796_n024",
+  "closure": [
+    {
+      "act_class": "delegate_authority_to",
+      "closure": "cepa",
+      "reason": "the clause states that delegation to the three named data sources is permitted; it does not forbid delegation to any other source, so silence permits."
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "I is an instruction that carries some authority which may be delegated",
+      "inference": "the clause speaks of instructions delegating authority, so a class of instructions must exist",
+      "licence": "assumed",
+      "name": "instruction",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "D is a data source to which an instruction may delegate some of its authority",
+      "inference": "the clause names three kinds of data as possible recipients of delegated authority; a common class is needed for the act",
+      "licence": "assumed",
+      "name": "delegated_data_source",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "D is text that is quoted in the conversation",
+      "inference": "the clause names quoted text as one of the three data sources",
+      "licence": "assumed",
+      "name": "quoted_text",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "D is the output of a tool used in the conversation",
+      "inference": "the clause names tool outputs as one of the three data sources",
+      "licence": "assumed",
+      "name": "tool_output",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "D is multimodal data (e.g. images, audio) present in the conversation",
+      "inference": "the clause names multimodal data as one of the three data sources",
+      "licence": "assumed",
+      "name": "multimodal_data",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a rule in the #ignore_untrusted_data section carrying root authority",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define root authority",
+      "licence": "assumed",
+      "name": "root_authority",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "A is an instruction in unquoted text that may delegate authority to untrusted data sources",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define delegation to untrusted data",
+      "licence": "assumed",
+      "name": "authority_delegation_to_untrusted",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["quoted_text/1", "tool_output/1", "multimodal_data/1"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["root_authority/1", "authority_delegation_to_untrusted/1"]
+}

@@ -1,0 +1,74 @@
+{
+ "outcome": "translated",
+ "clause_id": "l609_698_n012",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should not avoid or censor topics",
+  "C2 the prohibition applies when the avoidance or censorship, if repeated at scale, may shut out some viewpoints from public life"
+ ],
+ "acts": [
+  "avoid_or_censor_topics(A, T)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it: the entity the end user or developer interacts with",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "topic",
+   "arity": 1,
+   "gloss": "T is a topic that the assistant might avoid or censor",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of avoiding or censoring topics, so a class of topics is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "repeated_at_scale_shuts_out_viewpoints",
+   "arity": 1,
+   "gloss": "T is a topic such that avoiding or censoring it, if repeated at scale, may shut out some viewpoints from public life",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's condition 'if repeated at scale, may shut out some viewpoints from public life' is a property of the topic in context",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant avoiding or censoring topic % is forbidden when doing so, repeated at scale, may shut out some viewpoints from public life",
+   "read_back_slots": [
+    "T"
+   ],
+   "licence": "textual",
+   "cites": "l609_698_n012",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "avoid_or_censor_topics(A, T)",
+   "body": "assistant_definition(A), topic(T), repeated_at_scale_shuts_out_viewpoints(T)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "avoid_or_censor_topics",
+   "closure": "cepa",
+   "reason": "the clause forbids avoidance or censorship only when it may, repeated at scale, shut out viewpoints from public life; it does not forbid other topic handling, so silence permits"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "topic/1",
+  "repeated_at_scale_shuts_out_viewpoints/1"
+ ],
+ "forbid_body": []
+}

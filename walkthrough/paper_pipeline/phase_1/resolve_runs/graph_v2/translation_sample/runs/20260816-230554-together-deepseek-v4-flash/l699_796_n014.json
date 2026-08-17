@@ -1,0 +1,126 @@
+{
+ "outcome": "translated",
+ "clause_id": "l699_796_n014",
+ "abstain_reason": null,
+ "claims": [
+  "C1: when determining relevance of tool outputs, the assistant should consider the specific tool call that yielded them",
+  "C2: when determining relevance of tool outputs, the assistant should consider the trust level of that tool call",
+  "C3: when determining relevance of tool outputs, the assistant should consider how much control and knowledge the user likely has over the tool instructions"
+ ],
+ "acts": [
+  "consider_tool_call(T)",
+  "consider_trust_level(T)",
+  "consider_user_control_knowledge(T)"
+ ],
+ "concepts": [
+  {
+   "name": "tool_call",
+   "arity": 1,
+   "gloss": "T is a specific tool call that produced outputs in the conversation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of 'the specific tool call that yielded the outputs', so a relation between a tool call and its outputs is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "yielded_outputs",
+   "arity": 2,
+   "gloss": "tool call T yielded output O",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of 'the specific tool call that yielded the outputs', so a relation between a tool call and its outputs is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "determining_relevance",
+   "arity": 1,
+   "gloss": "O is an output whose relevance is being determined",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's opening phrase 'in determining relevance' presupposes a situation in which relevance of outputs is assessed",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule or instruction that carries the root level of instruction authority, the highest level not overridable by system, developer, or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's source text does not define it",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "when determining the relevance of outputs %, the assistant should consider the specific tool call % that yielded them",
+   "read_back_slots": [
+    "O",
+    "T"
+   ],
+   "licence": "textual",
+   "cites": "l699_796_n014",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "consider_tool_call(T)",
+   "body": "tool_call(T), yielded_outputs(T, O), determining_relevance(O)"
+  },
+  {
+   "read_back": "when determining the relevance of outputs %, the assistant should consider the trust level of the tool call % that yielded them",
+   "read_back_slots": [
+    "O",
+    "T"
+   ],
+   "licence": "textual",
+   "cites": "l699_796_n014",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "consider_trust_level(T)",
+   "body": "tool_call(T), yielded_outputs(T, O), determining_relevance(O)"
+  },
+  {
+   "read_back": "when determining the relevance of outputs %, the assistant should consider how much control and knowledge the user likely has over the instructions of tool call %",
+   "read_back_slots": [
+    "O",
+    "T"
+   ],
+   "licence": "textual",
+   "cites": "l699_796_n014",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "consider_user_control_knowledge(T)",
+   "body": "tool_call(T), yielded_outputs(T, O), determining_relevance(O)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "consider_tool_call",
+   "closure": "cepa",
+   "reason": "The clause obliges consideration of the tool call when determining relevance; it does not forbid or permit any act, so silence about other acts permits them."
+  },
+  {
+   "act_class": "consider_trust_level",
+   "closure": "cepa",
+   "reason": "The clause obliges consideration of the trust level when determining relevance; it does not forbid or permit any act, so silence about other acts permits them."
+  },
+  {
+   "act_class": "consider_user_control_knowledge",
+   "closure": "cepa",
+   "reason": "The clause obliges consideration of user control and knowledge when determining relevance; it does not forbid or permit any act, so silence about other acts permits them."
+  }
+ ],
+ "requires": [
+  "root_authority/1"
+ ],
+ "inputs": [
+  "tool_call/1",
+  "yielded_outputs/2",
+  "determining_relevance/1"
+ ],
+ "forbid_body": []
+}

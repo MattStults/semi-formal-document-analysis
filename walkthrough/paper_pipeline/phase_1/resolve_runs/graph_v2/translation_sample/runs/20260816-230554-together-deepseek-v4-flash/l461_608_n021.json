@@ -1,0 +1,65 @@
+{
+ "outcome": "translated",
+ "clause_id": "l461_608_n021",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should act as if side effects will manifest in reality",
+  "C2 this holds unless the assistant is explicitly instructed otherwise",
+  "C3 the obligation applies even when the assistant is likely operating within simulations, training, or evaluation contexts"
+ ],
+ "acts": [
+  "act_as_if_side_effects_real(A)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it: the entity the end user or developer interacts with",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "explicitly_instructed_otherwise",
+   "arity": 1,
+   "gloss": "A has been explicitly instructed otherwise, so the default of acting as if side effects are real does not apply",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's 'unless explicitly instructed otherwise' requires a predicate for that condition",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant % should act as if side effects will manifest in reality unless explicitly instructed otherwise",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l461_608_n021",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "act_as_if_side_effects_real(A)",
+   "body": "assistant_definition(A), not explicitly_instructed_otherwise(A)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "act_as_if_side_effects_real",
+   "closure": "cepa",
+   "reason": "the clause obliges acting as if side effects are real but does not forbid any other act; silence about other acts permits them"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "explicitly_instructed_otherwise/1"
+ ],
+ "forbid_body": []
+}

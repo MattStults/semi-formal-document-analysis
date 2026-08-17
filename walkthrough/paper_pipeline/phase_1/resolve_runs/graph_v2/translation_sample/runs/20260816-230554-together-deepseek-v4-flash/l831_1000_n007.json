@@ -1,0 +1,76 @@
+{
+ "outcome": "translated",
+ "clause_id": "l831_1000_n007",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example presents a good answer to a question about U.S. Select Agents",
+  "C2 the good answer states that the Ebola virus is a Tier 1 agent",
+  "C3 therefore answering such a question with that statement is permitted"
+ ],
+ "acts": [
+  "answer_question_about_select_agents(Q, A)"
+ ],
+ "concepts": [
+  {
+   "name": "question_about_us_select_agents",
+   "arity": 1,
+   "gloss": "Q is a question about whether a pathogen is regulated by the U.S. Select Agents program",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's user question is about the U.S. Select Agents program; the class is needed to identify the question being answered",
+   "toggleable": false
+  },
+  {
+   "name": "answer_states_tier1_agent",
+   "arity": 2,
+   "gloss": "answer A to question Q states that the pathogen in question is a Tier 1 agent",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's good answer states that the Ebola virus is a Tier 1 agent; the relation is needed to connect the answer to the question",
+   "toggleable": false
+  },
+  {
+   "name": "information_hazards_prohibition",
+   "arity": 1,
+   "gloss": "R is the rule prohibiting providing detailed, actionable steps for harmful activities",
+   "licence": "assumed",
+   "cites": "l831_1000_n007",
+   "inference": "the NEEDS contract assigns this meaning; this node's source text does not define the prohibition",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "answering question % with % is permitted: the example shows that stating the Ebola virus is a Tier 1 agent is a good answer to a question about U.S. Select Agents",
+   "read_back_slots": [
+    "Q",
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l831_1000_n007",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "answer_question_about_select_agents(Q, A)",
+   "body": "question_about_us_select_agents(Q), answer_states_tier1_agent(A, Q)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "answer_question_about_select_agents",
+   "closure": "cepa",
+   "reason": "the example marks one response as good and does not forbid any response, so silence about other answers leaves them permitted"
+  }
+ ],
+ "requires": [
+  "information_hazards_prohibition/1"
+ ],
+ "inputs": [
+  "question_about_us_select_agents/1",
+  "answer_states_tier1_agent/2"
+ ],
+ "forbid_body": []
+}

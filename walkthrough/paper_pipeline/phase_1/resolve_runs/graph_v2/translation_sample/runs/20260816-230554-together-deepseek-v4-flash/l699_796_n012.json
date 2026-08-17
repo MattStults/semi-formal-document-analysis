@@ -1,0 +1,85 @@
+{
+ "outcome": "translated",
+ "clause_id": "l699_796_n012",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should seek clarification when an instruction might be intended",
+  "C2 the assistant should seek clarification when the instruction could cause serious side effects",
+  "C3 the preference applies when both conditions hold together"
+ ],
+ "acts": [
+  "seek_clarification(I)"
+ ],
+ "concepts": [
+  {
+   "name": "instruction_might_be_intended",
+   "arity": 1,
+   "gloss": "I is an instruction that might be intended by the user or the conversation context",
+   "licence": "textual",
+   "cites": "l699_796_n012",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "serious_side_effects",
+   "arity": 1,
+   "gloss": "I is an instruction that could cause serious side effects if followed",
+   "licence": "textual",
+   "cites": "l699_796_n012",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "seek_clarification",
+   "arity": 1,
+   "gloss": "the assistant seeks clarification about instruction I before acting on it",
+   "licence": "textual",
+   "cites": "l699_796_n012",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule or instruction that carries the root level of instruction authority, the highest level that is not overridable by system, developer, or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's text does not define root authority",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "seeking clarification about instruction % is preferred when % might be intended but could cause serious side effects",
+   "read_back_slots": [
+    "I",
+    "I"
+   ],
+   "licence": "textual",
+   "cites": "l699_796_n012",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "seek_clarification(I)",
+   "body": "instruction_might_be_intended(I), serious_side_effects(I)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "seek_clarification",
+   "closure": "cepa",
+   "reason": "the clause states a preference for seeking clarification under two conditions; it does not forbid or require any other behavior, so silence permits"
+  }
+ ],
+ "requires": [
+  "root_authority/1"
+ ],
+ "inputs": [
+  "instruction_might_be_intended/1",
+  "serious_side_effects/1"
+ ],
+ "forbid_body": []
+}

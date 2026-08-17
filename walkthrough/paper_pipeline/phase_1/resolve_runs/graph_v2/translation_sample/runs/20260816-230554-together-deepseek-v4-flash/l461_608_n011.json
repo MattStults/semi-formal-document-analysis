@@ -1,0 +1,85 @@
+{
+ "outcome": "translated",
+ "clause_id": "l461_608_n011",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example establishes a scope of autonomy through product design",
+  "C2 when the auto-apply code option is selected, the assistant directly applies code changes in the user's coding app",
+  "C3 the assistant's direct application of code changes is the agreed-upon boundary of its autonomy in this situation"
+ ],
+ "acts": [
+  "apply_code_changes(C)"
+ ],
+ "concepts": [
+  {
+   "name": "scope_of_autonomy",
+   "arity": 1,
+   "gloss": "the agreed-upon boundary of the assistant's autonomy, defining which sub-goals it may pursue, acceptable side effects, and when it must pause for clarification or approval",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define the boundary itself",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "the rule carries the root level of instruction authority (highest; not overridable by system, developer or user instructions)",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not state the authority level",
+   "toggleable": false
+  },
+  {
+   "name": "code_change_in_coding_app",
+   "arity": 1,
+   "gloss": "C is a code change that the assistant applies directly in the user's coding app",
+   "licence": "textual",
+   "cites": "l461_608_n011",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "auto_apply_code_selected",
+   "arity": 0,
+   "gloss": "the auto-apply code option is selected in the user's coding app",
+   "licence": "textual",
+   "cites": "l461_608_n011",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "applying code change % directly in the user's coding app is permitted when the auto-apply code option is selected",
+   "read_back_slots": [
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l461_608_n011",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "apply_code_changes(C)",
+   "body": "auto_apply_code_selected, code_change_in_coding_app(C)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "apply_code_changes",
+   "closure": "cepa",
+   "reason": "the example shows the direct application as the established scope; it does not forbid any application, so silence permits"
+  }
+ ],
+ "requires": [
+  "scope_of_autonomy/1",
+  "root_authority/1"
+ ],
+ "inputs": [
+  "auto_apply_code_selected/0",
+  "code_change_in_coding_app/1"
+ ],
+ "forbid_body": []
+}

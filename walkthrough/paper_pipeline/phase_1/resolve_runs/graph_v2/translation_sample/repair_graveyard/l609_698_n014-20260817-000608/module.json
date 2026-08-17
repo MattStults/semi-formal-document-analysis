@@ -1,0 +1,131 @@
+{
+ "outcome": "translated",
+ "clause_id": "l609_698_n014",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should assume best intentions when a request is ambiguous and some reasonable interpretations align with Model Spec principles while others do not",
+  "C2 the assistant should not judge the user or developer in that same situation"
+ ],
+ "acts": [
+  "assume_best_intentions(R)",
+  "judge_user_or_developer(R)"
+ ],
+ "concepts": [
+  {
+   "name": "ambiguous_request",
+   "arity": 1,
+   "gloss": "R is a request from the user or developer that is ambiguous, admitting more than one reasonable interpretation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the node's claim concerns requests that are ambiguous; the concept is presupposed by the source text",
+   "toggleable": false
+  },
+  {
+   "name": "some_reasonable_interpretations_aligned",
+   "arity": 1,
+   "gloss": "R is a request some of whose reasonable interpretations are aligned with Model Spec principles",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text distinguishes interpretations aligned with Model Spec principles from others; this concept captures the aligned ones",
+   "toggleable": false
+  },
+  {
+   "name": "some_reasonable_interpretations_not_aligned",
+   "arity": 1,
+   "gloss": "R is a request some of whose reasonable interpretations are not aligned with Model Spec principles",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text distinguishes interpretations not aligned with Model Spec principles from aligned ones; this concept captures the non-aligned ones",
+   "toggleable": false
+  },
+  {
+   "name": "assume_best_intentions",
+   "arity": 1,
+   "gloss": "R is a request to which the assistant should apply the best-intentions assumption",
+   "licence": "textual",
+   "cites": "l609_698_n014",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "judge_user_or_developer",
+   "arity": 1,
+   "gloss": "R is a request about which the assistant should not judge the user or developer",
+   "licence": "textual",
+   "cites": "l609_698_n014",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it",
+   "licence": "assumed",
+   "cites": "l609_698_n014",
+   "inference": "the NEEDS contract assigns this meaning; the source text refers to 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule in the #assume_best_intentions section carrying root authority",
+   "licence": "assumed",
+   "cites": "l609_698_n014",
+   "inference": "the NEEDS contract assigns this meaning; the source text does not state the authority level",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "for an ambiguous request % with some reasonable interpretations aligned with Model Spec principles and others not, the assistant should assume best intentions",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l609_698_n014",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "assume_best_intentions(R)",
+   "body": "ambiguous_request(R), some_reasonable_interpretations_aligned(R), some_reasonable_interpretations_not_aligned(R)"
+  },
+  {
+   "read_back": "for an ambiguous request % with some reasonable interpretations aligned with Model Spec principles and others not, the assistant should not judge the user or developer",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l609_698_n014",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "judge_user_or_developer(R)",
+   "body": "ambiguous_request(R), some_reasonable_interpretations_aligned(R), some_reasonable_interpretations_not_aligned(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "assume_best_intentions",
+   "closure": "cepa",
+   "reason": "the clause obliges assuming best intentions only when the request is ambiguous with mixed reasonable interpretations; it does not forbid assuming best intentions in other situations, so silence permits"
+  },
+  {
+   "act_class": "judge_user_or_developer",
+   "closure": "cnpa",
+   "reason": "the clause states the assistant should not judge the user or developer in the specified situation; it does not address judging in other situations, so the default is unsettled by this clause"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "root_authority/1"
+ ],
+ "inputs": [
+  "ambiguous_request/1",
+  "some_reasonable_interpretations_aligned/1",
+  "some_reasonable_interpretations_not_aligned/1"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,73 @@
+{
+ "outcome": "translated",
+ "clause_id": "l797_830_n016",
+ "abstain_reason": null,
+ "claims": [
+  "C1 if a user requests any content that falls under the prohibition on sexual content involving minors, the assistant must refuse the request"
+ ],
+ "acts": [
+  "refuse_request(R)"
+ ],
+ "concepts": [
+  {
+   "name": "user_request",
+   "arity": 1,
+   "gloss": "R is a request made by a user",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of a user requesting content, so a relation between a request and the user who makes it must exist",
+   "toggleable": false
+  },
+  {
+   "name": "sexual_content_minors_prohibition",
+   "arity": 1,
+   "gloss": "P is the prohibition on producing sexual content involving minors, whether fictional or real",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's source text refers to the prohibition without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "prohibited_content_request",
+   "arity": 2,
+   "gloss": "request R is a request for content that falls under prohibition P",
+   "licence": "textual",
+   "cites": "l797_830_n016",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant must refuse request % because it is a request for sexual content involving minors, which is prohibited",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l797_830_n016",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "refuse_request(R)",
+   "body": "user_request(R), sexual_content_minors_prohibition(P), prohibited_content_request(R, P)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "refuse_request",
+   "closure": "cepa",
+   "reason": "the clause obliges refusal only for requests falling under the prohibition; it says nothing about other requests, so silence permits the assistant to respond to them"
+  }
+ ],
+ "requires": [
+  "sexual_content_minors_prohibition/1"
+ ],
+ "inputs": [
+  "user_request/1",
+  "prohibited_content_request/2"
+ ],
+ "forbid_body": []
+}

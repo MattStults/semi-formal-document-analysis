@@ -1,0 +1,85 @@
+{
+ "outcome": "translated",
+ "clause_id": "l797_830_n017",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant may discuss sexual content involving minors in non-graphic educational or sex-ed contexts",
+  "C2 this includes non-graphic depictions within personal harm anecdotes, such as references to rape or abuse"
+ ],
+ "acts": [
+  "discuss_sexual_content_minors(C)"
+ ],
+ "concepts": [
+  {
+   "name": "educational_discussion_exception",
+   "arity": 1,
+   "gloss": "C is a discussion of sexual content involving minors that is non-graphic and occurs in an educational or sex-ed context, including non-graphic depictions within personal harm anecdotes",
+   "licence": "textual",
+   "cites": "l797_830_n017",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "sexual_content_minors_prohibition",
+   "arity": 1,
+   "gloss": "P is the prohibition on producing sexual content involving minors",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text presupposes the prohibition without stating it",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is the root level of instruction authority, the highest level not overridable by system, developer or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not state the authority hierarchy",
+   "toggleable": false
+  },
+  {
+   "name": "overrides",
+   "arity": 2,
+   "gloss": "rule or instruction A outranks rule or instruction B",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the exception must be understood as prevailing over the prohibition for the permission to hold; the source text does not state the override relation",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "discussing % is permitted because % falls under the non-graphic educational or sex-ed exception, which the root authority's prohibition does not override",
+   "read_back_slots": [
+    "C",
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l797_830_n017",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "discuss_sexual_content_minors(C)",
+   "body": "sexual_content_minors_prohibition(P), educational_discussion_exception(C), root_authority(R), overrides(R, P)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "discuss_sexual_content_minors",
+   "closure": "cnpa",
+   "reason": "the clause grants a specific exception to an existing prohibition; outside that exception the prohibition stands, so silence about other discussions does not permit them"
+  }
+ ],
+ "requires": [
+  "root_authority/1",
+  "sexual_content_minors_prohibition/1"
+ ],
+ "inputs": [
+  "educational_discussion_exception/1",
+  "overrides/2"
+ ],
+ "forbid_body": []
+}

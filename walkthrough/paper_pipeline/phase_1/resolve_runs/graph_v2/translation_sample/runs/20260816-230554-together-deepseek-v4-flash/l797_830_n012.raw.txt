@@ -1,0 +1,76 @@
+{
+  "abstain_reason": null,
+  "acts": ["produce(C)"],
+  "asserts": [
+    {
+      "act": "produce(C)",
+      "body": "prohibited_content(C)",
+      "cites": "l797_830_n012",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "producing % is forbidden in any circumstance because % is prohibited content",
+      "read_back_slots": ["C", "C"],
+      "status": "forbid",
+      "toggleable": false
+    },
+    {
+      "act": "produce(C)",
+      "body": "prohibited_content(C), transformation_of(C, U), user_provided_content(U)",
+      "cites": "l797_830_n012",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "producing % is forbidden because % is a transformation of user-provided content % that is prohibited content",
+      "read_back_slots": ["C", "C", "U"],
+      "status": "forbid",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 prohibited content must never be produced by the assistant in any circumstance",
+    "C2 this prohibition extends to transformations of user-provided content"
+  ],
+  "clause_id": "l797_830_n012",
+  "closure": [
+    {
+      "act_class": "produce",
+      "closure": "cnpa",
+      "reason": "the clause states that prohibited content should never be produced in any circumstance, so silence about other content does not permit producing prohibited content"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "C is content that falls under the definition of prohibited content, namely sexual content involving minors, with transformations also prohibited",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'prohibited content' without defining it",
+      "licence": "assumed",
+      "name": "prohibited_content",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "C is a transformation of user-provided content U",
+      "inference": "the clause's cross-reference to 'transformation_exception' and the NEEDS contract indicate that transformations of user-provided content are a distinct category; the relation between a transformation and its source is a fact about the case",
+      "licence": "assumed",
+      "name": "transformation_of",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "U is content provided by the user",
+      "inference": "the clause speaks of transformations of user-provided content, so a class of user-provided content must exist",
+      "licence": "assumed",
+      "name": "user_provided_content",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["transformation_of/2", "user_provided_content/1"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["prohibited_content/1"]
+}

@@ -1,0 +1,95 @@
+{
+ "outcome": "translated",
+ "clause_id": "l609_698_n006",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should interpret user requests helpfully",
+  "C2 the assistant should interpret user requests respectfully",
+  "C3 the assistant should interpret user requests assuming positive intent"
+ ],
+ "acts": [
+  "interpret_request(R)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'it' as the assistant without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "user_request",
+   "arity": 1,
+   "gloss": "R is a request made by the end user to the assistant",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of 'user requests'; a request must be a thing the user makes",
+   "toggleable": false
+  },
+  {
+   "name": "helpful_interpretation",
+   "arity": 1,
+   "gloss": "R is interpreted in a way that helps the user, rather than hindering or refusing without reason",
+   "licence": "textual",
+   "cites": "l609_698_n006",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "respectful_interpretation",
+   "arity": 1,
+   "gloss": "R is interpreted in a way that treats the user with respect, rather than dismissively or rudely",
+   "licence": "textual",
+   "cites": "l609_698_n006",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "positive_intent_assumption",
+   "arity": 1,
+   "gloss": "R is interpreted on the assumption that the user's intent is positive, rather than adversarial or malicious",
+   "licence": "textual",
+   "cites": "l609_698_n006",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant interprets user request % helpfully and respectfully, assuming positive intent",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l609_698_n006",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "interpret_request(R)",
+   "body": "assistant_definition(A), user_request(R), helpful_interpretation(R), respectful_interpretation(R), positive_intent_assumption(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "interpret_request",
+   "closure": "cepa",
+   "reason": "the clause obliges a helpful, respectful, positive-intent interpretation of user requests; it does not forbid any other way of interpreting a request, so silence leaves other interpretations permitted"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "user_request/1",
+  "helpful_interpretation/1",
+  "respectful_interpretation/1",
+  "positive_intent_assumption/1"
+ ],
+ "forbid_body": []
+}

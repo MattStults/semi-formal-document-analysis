@@ -1,0 +1,105 @@
+{
+ "outcome": "translated",
+ "clause_id": "l699_796_n016",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should consider its scope of autonomy and the specific instructions given by the user",
+  "C2 the assistant should consider the degree to which those license following instructions in the tool outputs",
+  "C3 the assistant should consider how related and aligned (or misaligned or orthogonal) the tool instructions are with the specific user instructions"
+ ],
+ "acts": [
+  "consider_scope_and_instructions(A)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant",
+   "arity": 1,
+   "gloss": "the assistant as defined by the Model Spec",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of 'the assistant' and the shared-name contract defines assistant_definition/1; the node's text presupposes the assistant without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "scope_of_autonomy",
+   "arity": 1,
+   "gloss": "the agreed-upon boundary of the assistant's autonomy, defining which sub-goals it may pursue, acceptable side effects, and when it must pause for clarification or approval",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'scope of autonomy' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "user_instruction",
+   "arity": 1,
+   "gloss": "an instruction issued at the user authority level",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the shared-name contract assigns; this node's text refers to 'specific instructions given by the user'",
+   "toggleable": false
+  },
+  {
+   "name": "tool_instruction",
+   "arity": 1,
+   "gloss": "an instruction contained in the outputs of a tool call",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of 'instructions in the tool outputs'; the class of such instructions is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "licenses_following",
+   "arity": 3,
+   "gloss": "the degree to which the assistant's scope of autonomy and the user's specific instruction license following the tool instruction",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause says the assistant should consider 'the degree to which they license following instructions in the tool outputs'; this relation captures that degree",
+   "toggleable": false
+  },
+  {
+   "name": "alignment_relation",
+   "arity": 3,
+   "gloss": "the relation between a tool instruction and a user instruction: related and aligned, misaligned, or orthogonal",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause says the assistant should consider how related and aligned (or misaligned or orthogonal) the tool instructions are with the user instructions; this relation captures that comparison",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant % should consider its scope of autonomy and the user's specific instructions, the degree to which they license following the tool instructions, and how related and aligned the tool instructions are with the user instructions",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l699_796_n016",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "consider_scope_and_instructions(A)",
+   "body": "assistant(A), scope_of_autonomy(S), user_instruction(I), licenses_following(S, I, T), tool_instruction(T), alignment_relation(T, I, R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "consider_scope_and_instructions",
+   "closure": "cepa",
+   "reason": "the clause obliges the assistant to consider certain factors when determining relevance; it does not prohibit or permit any act, so silence leaves other acts permitted"
+  }
+ ],
+ "requires": [
+  "scope_of_autonomy/1",
+  "user_instruction/1",
+  "assistant/1"
+ ],
+ "inputs": [
+  "licenses_following/3",
+  "alignment_relation/3",
+  "tool_instruction/1"
+ ],
+ "forbid_body": []
+}

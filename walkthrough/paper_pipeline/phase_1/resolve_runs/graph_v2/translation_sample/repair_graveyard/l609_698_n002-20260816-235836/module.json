@@ -1,0 +1,113 @@
+{
+ "outcome": "translated",
+ "clause_id": "l609_698_n002",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant must not pursue its own agenda beyond helping the user",
+  "C2 the assistant must not make strong assumptions about user goals"
+ ],
+ "acts": [
+  "pursue_own_agenda(A)",
+  "make_strong_assumption(A, G)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant, the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's source text does not define the assistant",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule carrying root authority, the highest level of instruction authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's source text does not define root authority",
+   "toggleable": false
+  },
+  {
+   "name": "no_agenda_section",
+   "arity": 1,
+   "gloss": "S is the section of the Model Spec that describes the principle that the assistant should not pursue its own agenda beyond helping the user",
+   "licence": "textual",
+   "cites": "l609_698_n002",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "user_goal",
+   "arity": 1,
+   "gloss": "G is a goal of the user that the assistant is helping with",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "'helping the user' and 'user goals' presuppose that users have goals the assistant serves",
+   "toggleable": false
+  },
+  {
+   "name": "beyond_helping",
+   "arity": 2,
+   "gloss": "pursuing agenda Ag goes beyond helping the user with their goals",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "'beyond helping the user' is a relation between an agenda and the user's goals",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant % must not pursue its own agenda % beyond helping the user",
+   "read_back_slots": [
+    "A",
+    "Ag"
+   ],
+   "licence": "textual",
+   "cites": "l609_698_n002",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "pursue_own_agenda(A)",
+   "body": "assistant_definition(A), beyond_helping(Ag, G), user_goal(G)"
+  },
+  {
+   "read_back": "the assistant % must not make strong assumptions about user goals",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l609_698_n002",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "make_strong_assumption(A, G)",
+   "body": "assistant_definition(A), user_goal(G)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "pursue_own_agenda",
+   "closure": "cepa",
+   "reason": "the clause forbids pursuing an agenda only when it goes beyond helping the user; pursuing the user's goals is the assistant's purpose, so silence permits"
+  },
+  {
+   "act_class": "make_strong_assumption",
+   "closure": "cepa",
+   "reason": "the clause forbids strong assumptions about user goals; it does not forbid making reasonable or weak assumptions, so silence permits"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "root_authority/1"
+ ],
+ "inputs": [
+  "user_goal/1",
+  "beyond_helping/2"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,76 @@
+{
+ "outcome": "translated",
+ "clause_id": "l609_698_n003",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant must not make strong assumptions about user goals",
+  "C2 the prohibition applies to the assistant as defined by the Model Spec",
+  "C3 the prohibition concerns assumptions about the goals of the user"
+ ],
+ "acts": [
+  "make_strong_assumption(A, G)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it: the entity the end user or developer interacts with",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "user_goal",
+   "arity": 1,
+   "gloss": "G is a goal held by the user of the assistant",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of 'user goals', so a relation between a user and a goal must exist",
+   "toggleable": false
+  },
+  {
+   "name": "assumption_about_goal",
+   "arity": 2,
+   "gloss": "the assistant A makes a strong assumption about user goal G",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's prohibition concerns the act of making a strong assumption about a user goal",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant % must not make a strong assumption about user goal %",
+   "read_back_slots": [
+    "A",
+    "G"
+   ],
+   "licence": "textual",
+   "cites": "l609_698_n003",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "make_strong_assumption(A, G)",
+   "body": "assistant_definition(A), user_goal(G), assumption_about_goal(A, G)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "make_strong_assumption",
+   "closure": "cepa",
+   "reason": "the clause forbids only strong assumptions about user goals; it says nothing about other assumptions, so silence leaves them permitted"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "user_goal/1",
+  "assumption_about_goal/2"
+ ],
+ "forbid_body": []
+}

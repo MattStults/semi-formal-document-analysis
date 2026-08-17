@@ -1,0 +1,101 @@
+{
+ "outcome": "translated",
+ "clause_id": "l699_796_n005",
+ "abstain_reason": null,
+ "claims": [
+  "C1: without the recommended formatting, untrusted input might contain malicious instructions (prompt injection)",
+  "C2: without the recommended formatting, it can be extremely difficult for the assistant to distinguish such malicious instructions from the developer's instructions"
+ ],
+ "acts": [],
+ "concepts": [
+  {
+   "name": "untrusted_input",
+   "arity": 1,
+   "gloss": "input data that is not trusted by the developer and is placed in a message or block without the recommended formatting",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the node's claim speaks of 'untrusted input' and 'without this formatting'; the class of such input is presupposed by the source text",
+   "toggleable": false
+  },
+  {
+   "name": "malicious_instruction",
+   "arity": 1,
+   "gloss": "a set of instructions embedded in the untrusted input that is malicious, i.e. intended to make the assistant act against the developer's or user's interests",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text names 'malicious instructions' and equates them with 'prompt injection'; the class is presupposed by the source text",
+   "toggleable": false
+  },
+  {
+   "name": "developer_instruction",
+   "arity": 1,
+   "gloss": "an instruction issued at the developer authority level, as defined by the document-wide shared signature",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text refers to 'the developer's instructions'; the meaning is the one the shared-name signature assigns",
+   "toggleable": false
+  },
+  {
+   "name": "hard_to_distinguish",
+   "arity": 2,
+   "gloss": "the assistant cannot reliably tell whether instruction I is a developer instruction or a malicious instruction embedded in untrusted input U",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text says it is 'extremely difficult' to distinguish them; the relation between an instruction and the input it comes from is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "unformatted_input",
+   "arity": 1,
+   "gloss": "input that is placed in a message or block without the recommended formatting (untrusted_text block, YAML, JSON, or XML)",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text contrasts 'without this formatting' with the recommended formats; the class is presupposed by the source text",
+   "toggleable": false
+  },
+  {
+   "name": "contains_instruction",
+   "arity": 2,
+   "gloss": "input I contains instruction X as part of its content",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text says the untrusted input 'might contain' malicious instructions; the containment relation is presupposed",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l699_796_n005",
+   "inference": null,
+   "toggleable": false,
+   "atom": "malicious_instruction(X)",
+   "gloss": "an instruction contained in an unformatted untrusted input is a malicious instruction (prompt injection)",
+   "body": "untrusted_input(U), unformatted_input(U), contains_instruction(U, X)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l699_796_n005",
+   "inference": null,
+   "toggleable": false,
+   "atom": "hard_to_distinguish(X, D)",
+   "gloss": "when an unformatted untrusted input contains an instruction, it is extremely difficult for the assistant to distinguish that instruction from a developer instruction",
+   "body": "untrusted_input(U), unformatted_input(U), contains_instruction(U, X), developer_instruction(D)"
+  }
+ ],
+ "asserts": [],
+ "beats": [],
+ "defines": [],
+ "closure": [],
+ "requires": [
+  "developer_instruction/1"
+ ],
+ "inputs": [
+  "untrusted_input/1",
+  "unformatted_input/1",
+  "malicious_instruction/1",
+  "contains_instruction/2",
+  "hard_to_distinguish/2"
+ ],
+ "forbid_body": []
+}

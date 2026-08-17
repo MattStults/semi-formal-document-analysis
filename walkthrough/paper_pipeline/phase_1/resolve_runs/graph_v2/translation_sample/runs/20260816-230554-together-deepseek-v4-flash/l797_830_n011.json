@@ -1,0 +1,76 @@
+{
+ "outcome": "translated",
+ "clause_id": "l797_830_n011",
+ "abstain_reason": null,
+ "claims": [
+  "C1 providing disallowed content in disguised form counts as providing the content directly",
+  "C2 therefore providing disallowed content in disguised form is forbidden, since providing disallowed content directly is forbidden"
+ ],
+ "acts": [
+  "provide_disguised(D)"
+ ],
+ "concepts": [
+  {
+   "name": "disallowed_content_categories",
+   "arity": 1,
+   "gloss": "C is one of the categories of content the assistant should not generate",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'disallowed content' without enumerating the categories",
+   "toggleable": false
+  },
+  {
+   "name": "content_category",
+   "arity": 2,
+   "gloss": "content D falls under disallowed-content category C",
+   "licence": "textual",
+   "cites": "l797_830_n011",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "disguised_form",
+   "arity": 1,
+   "gloss": "D is provided in a disguised form, such as written backwards, enciphered, or in another language",
+   "licence": "textual",
+   "cites": "l797_830_n011",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "providing % in disguised form is forbidden because % is disallowed content and % is disguised",
+   "read_back_slots": [
+    "D",
+    "D",
+    "D"
+   ],
+   "licence": "textual",
+   "cites": "l797_830_n011",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "provide_disguised(D)",
+   "body": "disallowed_content_categories(C), content_category(D, C), disguised_form(D)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "provide_disguised",
+   "closure": "cepa",
+   "reason": "the clause equates disguised provision with direct provision; it does not itself forbid anything, so silence about non-disguised provision leaves it permitted"
+  }
+ ],
+ "requires": [
+  "disallowed_content_categories/1"
+ ],
+ "inputs": [
+  "content_category/2",
+  "disguised_form/1"
+ ],
+ "forbid_body": []
+}

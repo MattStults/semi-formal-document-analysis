@@ -1,0 +1,134 @@
+{
+ "outcome": "translated",
+ "clause_id": "l461_608_n018",
+ "abstain_reason": null,
+ "claims": [
+  "C1 mitigations for irreversible actions may include backing up state before irreversible steps",
+  "C2 mitigations for irreversible actions may include conducting successful dry-runs prior to executing actions",
+  "C3 mitigations for irreversible actions may include documenting executed actions clearly and outlining reversal or mitigation procedures",
+  "C4 mitigations for irreversible actions may include prioritizing legibility for easy monitoring and intervention by authorized parties"
+ ],
+ "acts": [
+  "include_mitigation(M)"
+ ],
+ "concepts": [
+  {
+   "name": "irreversible_action",
+   "arity": 1,
+   "gloss": "A is an action whose effects cannot be reversed once taken",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of 'irreversible steps' and 'irreversible actions'; the class of such actions is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "mitigation_for",
+   "arity": 2,
+   "gloss": "M is a mitigation measure that applies to action A",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause lists mitigations for irreversible actions, so a relation between a mitigation and the action it mitigates is needed",
+   "toggleable": false
+  },
+  {
+   "name": "mitigation_kind",
+   "arity": 2,
+   "gloss": "M is a mitigation measure of kind K, where K is one of the four listed kinds",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause enumerates four kinds of mitigation; each mitigation must be classified by kind for the enumeration to apply",
+   "toggleable": false
+  },
+  {
+   "name": "listed_mitigation_kind",
+   "arity": 1,
+   "gloss": "K is one of the four mitigation kinds the clause lists: backing up state, dry-runs, documentation with reversal procedures, or legibility for monitoring",
+   "licence": "textual",
+   "cites": "l461_608_n018",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule carrying root authority, the highest level of instruction authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the source text does not define root authority",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l461_608_n018",
+   "inference": null,
+   "toggleable": false,
+   "atom": "listed_mitigation_kind(backup_state)",
+   "gloss": "backing up state before irreversible steps is a listed mitigation kind",
+   "body": null
+  },
+  {
+   "licence": "textual",
+   "cites": "l461_608_n018",
+   "inference": null,
+   "toggleable": false,
+   "atom": "listed_mitigation_kind(dry_run)",
+   "gloss": "conducting successful dry-runs prior to executing actions is a listed mitigation kind",
+   "body": null
+  },
+  {
+   "licence": "textual",
+   "cites": "l461_608_n018",
+   "inference": null,
+   "toggleable": false,
+   "atom": "listed_mitigation_kind(document_and_outline)",
+   "gloss": "documenting executed actions clearly and outlining reversal or mitigation procedures is a listed mitigation kind",
+   "body": null
+  },
+  {
+   "licence": "textual",
+   "cites": "l461_608_n018",
+   "inference": null,
+   "toggleable": false,
+   "atom": "listed_mitigation_kind(legibility)",
+   "gloss": "prioritizing legibility for easy monitoring and intervention by authorized parties is a listed mitigation kind",
+   "body": null
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "including mitigation % for irreversible action % is permitted because % is one of the listed mitigation kinds",
+   "read_back_slots": [
+    "M",
+    "A",
+    "M"
+   ],
+   "licence": "textual",
+   "cites": "l461_608_n018",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "include_mitigation(M)",
+   "body": "irreversible_action(A), mitigation_for(M, A), mitigation_kind(M, K), listed_mitigation_kind(K)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "include_mitigation",
+   "closure": "cepa",
+   "reason": "the clause lists what mitigations 'may include', so it permits these kinds without forbidding any other mitigation"
+  }
+ ],
+ "requires": [
+  "root_authority/1"
+ ],
+ "inputs": [
+  "irreversible_action/1",
+  "mitigation_for/2",
+  "mitigation_kind/2"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,102 @@
+{
+ "outcome": "translated",
+ "clause_id": "l699_796_n021",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should ask for clarification before proceeding when it is plausible the user might not have noticed the instructions",
+  "C2 the assistant should ask for clarification before proceeding when carrying out the instructions could cause irreversible side effects",
+  "C3 the obligation to ask applies only if asking is possible"
+ ],
+ "acts": [
+  "ask_clarification_before_proceeding(A)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text speaks of the assistant without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "plausible_user_missed_instructions",
+   "arity": 1,
+   "gloss": "I is an instruction embedded in untrusted content that the user may not have noticed",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's condition 'plausible that the user might not have noticed the instructions' requires a class of instructions so noticed",
+   "toggleable": false
+  },
+  {
+   "name": "carrying_out_irreversible_side_effects",
+   "arity": 1,
+   "gloss": "I is an instruction whose carrying out could cause irreversible side effects",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's condition 'carrying out the instructions could cause irreversible side effects' requires a class of instructions so characterized",
+   "toggleable": false
+  },
+  {
+   "name": "possible_to_ask_clarification",
+   "arity": 1,
+   "gloss": "A is able to ask for clarification before proceeding in this situation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's 'if possible' condition requires a predicate for the possibility of asking",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule that carries the root level of instruction authority, the highest level not overridable by system, developer, or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define root authority",
+   "toggleable": false
+  },
+  {
+   "name": "ask_clarifying_questions_section",
+   "arity": 1,
+   "gloss": "S is the section of the Model Spec that discusses when and how the assistant should ask clarifying questions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define the section",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "asking for clarification before proceeding is required when it is plausible the user might not have noticed the instructions, or carrying them out could cause irreversible side effects, and asking is possible",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l699_796_n021",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "ask_clarification_before_proceeding(A)",
+   "body": "plausible_user_missed_instructions(I), carrying_out_irreversible_side_effects(I), possible_to_ask_clarification(A)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "ask_clarification_before_proceeding",
+   "closure": "cepa",
+   "reason": "the clause obliges asking only in the two named situations and only if possible; silence about other situations leaves them permitted"
+  }
+ ],
+ "requires": [
+  "root_authority/1",
+  "ask_clarifying_questions_section/1"
+ ],
+ "inputs": [
+  "plausible_user_missed_instructions/1",
+  "carrying_out_irreversible_side_effects/1",
+  "possible_to_ask_clarification/1"
+ ],
+ "forbid_body": []
+}

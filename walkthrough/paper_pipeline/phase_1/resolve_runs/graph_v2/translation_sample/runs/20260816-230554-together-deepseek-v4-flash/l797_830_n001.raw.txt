@@ -1,0 +1,112 @@
+{
+  "abstain_reason": null,
+  "acts": ["operate_within_legal_constraints(A)"],
+  "asserts": [
+    {
+      "act": "operate_within_legal_constraints(A)",
+      "body": "assistant_definition(A), applicable_legal_constraint(C), legal_constraint_applies_to_operation(C, A)",
+      "cites": "l797_830_n001",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "the assistant % is obliged to operate within applicable legal constraints %",
+      "read_back_slots": ["A", "C"],
+      "status": "oblige",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the assistant should operate within applicable legal constraints",
+    "C2 this includes applicable local law for local deployments of models",
+    "C3 this is consistent with the red line principles"
+  ],
+  "clause_id": "l797_830_n001",
+  "closure": [
+    {
+      "act_class": "operate_within_legal_constraints",
+      "closure": "cepa",
+      "reason": "the clause obliges operating within legal constraints but does not forbid any other act; silence permits acts not covered by the obligation"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "A is the assistant as the Model Spec defines it",
+      "inference": "the shared-name contract assigns this meaning; the node's text speaks of 'the assistant' without defining it",
+      "licence": "assumed",
+      "name": "assistant_definition",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "C is a legal constraint that applies to the assistant's operation",
+      "inference": "the node's text speaks of 'applicable legal constraints' without enumerating them; which constraints apply is a fact about the case",
+      "licence": "assumed",
+      "name": "applicable_legal_constraint",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "legal constraint C applies to the assistant's operation A",
+      "inference": "the obligation ranges over the constraints that apply to the assistant's operation; this relation is presupposed",
+      "licence": "assumed",
+      "name": "legal_constraint_applies_to_operation",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "C is a legal constraint that applies specifically to a local deployment of a model",
+      "inference": "the node's text says 'including applicable local law for local deployments of models', so local law is a kind of applicable legal constraint",
+      "licence": "textual",
+      "name": "local_law_constraint",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "C is a legal constraint that is part of the red line principles the assistant must uphold",
+      "inference": "the node's text says the operation is 'consistent with' the red line principles; the section is referenced but not resolvable, so the exact extension is not stated here",
+      "licence": "assumed",
+      "name": "red_line_principle_constraint",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "C is a legal constraint that applies to the assistant's operation",
+      "inference": "the node's text speaks of 'applicable legal constraints' without enumerating them; which constraints apply is a fact about the case",
+      "licence": "assumed",
+      "name": "applicable_legal_constraint",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["applicable_legal_constraint/1", "legal_constraint_applies_to_operation/2"],
+  "ontology": [
+    {
+      "atom": "local_law_constraint(C)",
+      "body": "applicable_legal_constraint(C), local_deployment_of_model(C)",
+      "cites": "l797_830_n001",
+      "gloss": "C is an applicable legal constraint that is local law for a local deployment of a model",
+      "inference": null,
+      "licence": "textual",
+      "toggleable": false
+    },
+    {
+      "atom": "red_line_principle_constraint(C)",
+      "body": "applicable_legal_constraint(C), red_line_principle(C)",
+      "cites": "l797_830_n001",
+      "gloss": "C is an applicable legal constraint that is part of the red line principles",
+      "inference": null,
+      "licence": "textual",
+      "toggleable": false
+    }
+  ],
+  "outcome": "translated",
+  "requires": ["system_authority/1", "stay_in_bounds_section/1"]
+}

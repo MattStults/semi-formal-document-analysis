@@ -1,0 +1,153 @@
+{
+ "outcome": "translated",
+ "clause_id": "l797_830_n002",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant may provide safety-critical information when needed to uphold red line principles",
+  "C2 the assistant may add further context when needed to uphold red line principles",
+  "C3 the assistant may refuse requests when needed to uphold red line principles"
+ ],
+ "acts": [
+  "provide_safety_critical_information(I)",
+  "add_further_context(C)",
+  "refuse_request(R)"
+ ],
+ "concepts": [
+  {
+   "name": "stay_in_bounds_section",
+   "arity": 1,
+   "gloss": "the section of the Model Spec that describes the red line principles the assistant must uphold, including legal constraints and safety-critical information",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'these principles' without defining the section",
+   "toggleable": false
+  },
+  {
+   "name": "red_line_principle",
+   "arity": 1,
+   "gloss": "P is one of the red line principles described in the stay-in-bounds section, which the assistant must uphold",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the node's text speaks of 'these principles' and the cross-reference names red_line_principles; the principle class is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "upheld_by",
+   "arity": 2,
+   "gloss": "principle P is upheld by the stay-in-bounds section S",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract says the section describes the principles; a relation between section and principle is needed to bind the principle",
+   "toggleable": false
+  },
+  {
+   "name": "needed_to_uphold",
+   "arity": 2,
+   "gloss": "providing information I (or adding context C, or refusing request R) is needed to uphold principle P",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "'where needed to uphold these principles' requires a relation between the act and the principle it serves",
+   "toggleable": false
+  },
+  {
+   "name": "safety_critical_information",
+   "arity": 1,
+   "gloss": "I is safety-critical information that the assistant may provide",
+   "licence": "textual",
+   "cites": "l797_830_n002",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "further_context",
+   "arity": 1,
+   "gloss": "C is further context the assistant may add",
+   "licence": "textual",
+   "cites": "l797_830_n002",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "refusable_request",
+   "arity": 1,
+   "gloss": "R is a request the assistant may refuse",
+   "licence": "textual",
+   "cites": "l797_830_n002",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "providing safety-critical information % is permitted when it is needed to uphold a red line principle",
+   "read_back_slots": [
+    "I"
+   ],
+   "licence": "textual",
+   "cites": "l797_830_n002",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "provide_safety_critical_information(I)",
+   "body": "stay_in_bounds_section(S), red_line_principle(P), upheld_by(P, S), needed_to_uphold(P, I)"
+  },
+  {
+   "read_back": "adding further context % is permitted when it is needed to uphold a red line principle",
+   "read_back_slots": [
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l797_830_n002",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "add_further_context(C)",
+   "body": "stay_in_bounds_section(S), red_line_principle(P), upheld_by(P, S), needed_to_uphold(P, C)"
+  },
+  {
+   "read_back": "refusing request % is permitted when it is needed to uphold a red line principle",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l797_830_n002",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "refuse_request(R)",
+   "body": "stay_in_bounds_section(S), red_line_principle(P), upheld_by(P, S), needed_to_uphold(P, R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "provide_safety_critical_information",
+   "closure": "cepa",
+   "reason": "the clause states a permission for this act under a condition; it does not prohibit it, so silence permits"
+  },
+  {
+   "act_class": "add_further_context",
+   "closure": "cepa",
+   "reason": "the clause states a permission for this act under a condition; it does not prohibit it, so silence permits"
+  },
+  {
+   "act_class": "refuse_request",
+   "closure": "cepa",
+   "reason": "the clause states a permission for this act under a condition; it does not prohibit it, so silence permits"
+  }
+ ],
+ "requires": [
+  "stay_in_bounds_section/1"
+ ],
+ "inputs": [
+  "safety_critical_information/1",
+  "further_context/1",
+  "refusable_request/1",
+  "needed_to_uphold/2",
+  "upheld_by/2",
+  "red_line_principle/1"
+ ],
+ "forbid_body": []
+}

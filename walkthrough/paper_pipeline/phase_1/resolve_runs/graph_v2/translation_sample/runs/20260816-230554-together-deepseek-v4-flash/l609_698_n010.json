@@ -1,0 +1,95 @@
+{
+ "outcome": "translated",
+ "clause_id": "l609_698_n010",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should never refuse a request unless the chain of command requires the refusal",
+  "C2 a refusal required by the chain of command is permitted",
+  "C3 a refusal not required by the chain of command is forbidden"
+ ],
+ "acts": [
+  "refuse_request(R)"
+ ],
+ "concepts": [
+  {
+   "name": "request",
+   "arity": 1,
+   "gloss": "R is a request made to the assistant",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of refusing a request, so a request entity must exist",
+   "toggleable": false
+  },
+  {
+   "name": "chain_of_command_requires_refusal",
+   "arity": 1,
+   "gloss": "R is a request that the chain of command requires the assistant to refuse",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's exception 'unless required to do so by the chain of command' presupposes a relation between a request and the chain of command's requirement",
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "chain_of_command_principle",
+   "arity": 1,
+   "gloss": "the principle that instructions with higher authority override those with lower authority, designed to maximize steerability and control",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'the chain of command' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R carries the root level of instruction authority (highest; not overridable by system, developer or user instructions)",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'the chain of command' without defining it",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "refusing request % is permitted when the chain of command requires it",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l609_698_n010",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "refuse_request(R)",
+   "body": "request(R), chain_of_command_requires_refusal(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "refuse_request",
+   "closure": "cnpa",
+   "reason": "the clause states the assistant should never refuse a request unless required by the chain of command, so refusals are prohibited except when the chain of command requires them"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "chain_of_command_principle/1",
+  "root_authority/1"
+ ],
+ "inputs": [
+  "request/1",
+  "chain_of_command_requires_refusal/1"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,114 @@
+{
+ "outcome": "translated",
+ "clause_id": "l699_796_n007",
+ "abstain_reason": null,
+ "claims": [
+  "C1 users may implicitly delegate authority to tool outputs",
+  "C2 when a user asks a coding assistant to implement a feature, the expected behavior is to act in line with instructions in AGENTS or README files as well as relevant code comments"
+ ],
+ "acts": [
+  "act_in_line_with(I)"
+ ],
+ "concepts": [
+  {
+   "name": "tool_output_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction contained in a tool output, such as an AGENTS or README file or a code comment",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the node's example names AGENTS/README files and code comments as tool outputs; the general class is needed to state the example's lesson",
+   "toggleable": false
+  },
+  {
+   "name": "coding_assistant_feature_request",
+   "arity": 1,
+   "gloss": "Q is a user request asking a coding assistant to implement a feature",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's antecedent is a user asking a coding assistant to implement a feature; the class is needed to state it",
+   "toggleable": false
+  },
+  {
+   "name": "answers_question",
+   "arity": 2,
+   "gloss": "instruction I is contained in the tool output that answers question Q",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example relates the instructions to the user's request; the relation is needed to bind the instruction to the request",
+   "toggleable": false
+  },
+  {
+   "name": "expected_behavior",
+   "arity": 1,
+   "gloss": "I is an instruction that the expected behavior directs the assistant to follow",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause says the expected behavior is to act in line with certain instructions; this marks those instructions",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule carrying the root level of instruction authority (highest; not overridable by system, developer or user instructions)",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define root authority",
+   "toggleable": false
+  },
+  {
+   "name": "authority_delegation_to_untrusted",
+   "arity": 1,
+   "gloss": "authority may be delegated to untrusted data sources by instructions in unquoted text",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define the delegation mechanism",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l699_796_n007",
+   "inference": null,
+   "toggleable": false,
+   "atom": "implicit_authority_delegation_to_tool_outputs",
+   "gloss": "users may implicitly delegate authority to tool outputs",
+   "body": null
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "acting in line with tool output instruction % is expected when a user asks a coding assistant to implement a feature",
+   "read_back_slots": [
+    "I"
+   ],
+   "licence": "textual",
+   "cites": "l699_796_n007",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "act_in_line_with(I)",
+   "body": "coding_assistant_feature_request(Q), tool_output_instruction(I), answers_question(I, Q), expected_behavior(I)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "act_in_line_with",
+   "closure": "cepa",
+   "reason": "the clause states an expected behavior for a specific case and does not forbid acting otherwise; silence permits"
+  }
+ ],
+ "requires": [
+  "root_authority/1",
+  "authority_delegation_to_untrusted/1"
+ ],
+ "inputs": [
+  "coding_assistant_feature_request/1",
+  "tool_output_instruction/1",
+  "answers_question/2",
+  "expected_behavior/1"
+ ],
+ "forbid_body": []
+}

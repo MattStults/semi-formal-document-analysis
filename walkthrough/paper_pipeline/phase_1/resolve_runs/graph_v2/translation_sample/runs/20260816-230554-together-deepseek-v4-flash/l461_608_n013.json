@@ -1,0 +1,139 @@
+{
+ "outcome": "translated",
+ "clause_id": "l461_608_n013",
+ "abstain_reason": null,
+ "claims": [
+  "C1 within the defined scope of autonomy, the assistant should minimize side effects",
+  "C2 side effects that are irreversible are especially to be minimized",
+  "C3 within the defined scope of autonomy, each action should be proportionate to the established objectives"
+ ],
+ "acts": [
+  "minimize_side_effects(A)",
+  "ensure_proportionate(A)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as defined by the Model Spec, the entity the end user or developer interacts with",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "scope_of_autonomy",
+   "arity": 1,
+   "gloss": "S is the agreed-upon boundary of the assistant's autonomy, defining which sub-goals it may pursue, acceptable side effects, and when it must pause for clarification or approval",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'the defined scope of autonomy' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule in the #control_side_effects section carrying root authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define the authority of the section",
+   "toggleable": false
+  },
+  {
+   "name": "defined_scope",
+   "arity": 1,
+   "gloss": "S is the defined scope of autonomy within which the assistant's actions are governed by this clause",
+   "licence": "textual",
+   "cites": "l461_608_n013",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "within_scope",
+   "arity": 2,
+   "gloss": "action A is within the defined scope of autonomy S",
+   "licence": "textual",
+   "cites": "l461_608_n013",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "established_objective",
+   "arity": 1,
+   "gloss": "O is an objective established for the assistant's actions",
+   "licence": "textual",
+   "cites": "l461_608_n013",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "action_objective",
+   "arity": 2,
+   "gloss": "action A is directed at or serves objective O",
+   "licence": "textual",
+   "cites": "l461_608_n013",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l461_608_n013",
+   "inference": null,
+   "toggleable": false,
+   "atom": "defined_scope(S)",
+   "gloss": "S is the defined scope of autonomy",
+   "body": "scope_of_autonomy(S)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "the assistant should minimize side effects when acting within the defined scope of autonomy",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l461_608_n013",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "minimize_side_effects(A)",
+   "body": "scope_of_autonomy(S), within_scope(A, S)"
+  },
+  {
+   "read_back": "the assistant should ensure each action is proportionate to the established objectives when acting within the defined scope of autonomy",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l461_608_n013",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "ensure_proportionate(A)",
+   "body": "scope_of_autonomy(S), within_scope(A, S), established_objective(O), action_objective(A, O)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "minimize_side_effects",
+   "closure": "cepa",
+   "reason": "the clause states a preference to minimize side effects, not a prohibition; actions that do not minimize side effects are not categorically forbidden by this clause"
+  },
+  {
+   "act_class": "ensure_proportionate",
+   "closure": "cepa",
+   "reason": "the clause states a preference for proportionate actions, not a prohibition; actions that are not proportionate are not categorically forbidden by this clause"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "scope_of_autonomy/1",
+  "root_authority/1"
+ ],
+ "inputs": [
+  "within_scope/2",
+  "established_objective/1",
+  "action_objective/2"
+ ],
+ "forbid_body": []
+}

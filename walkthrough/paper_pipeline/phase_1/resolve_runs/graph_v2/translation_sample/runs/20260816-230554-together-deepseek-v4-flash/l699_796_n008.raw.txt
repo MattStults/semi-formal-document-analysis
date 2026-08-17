@@ -1,0 +1,83 @@
+{
+  "abstain_reason": null,
+  "acts": [],
+  "asserts": [],
+  "beats": [],
+  "claims": [
+    "C1 tool outputs can contain instructions that are irrelevant to the user's request",
+    "C2 tool outputs can contain instructions that are malicious",
+    "C3 the user would not intend the assistant to follow such instructions"
+  ],
+  "clause_id": "l699_796_n008",
+  "closure": [],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": "l699_796_n008",
+      "gloss": "I is an instruction that appears inside a tool output rather than in a user message",
+      "inference": null,
+      "licence": "textual",
+      "name": "tool_output_instruction",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l699_796_n008",
+      "gloss": "I is an instruction that is irrelevant to the user's request or the task at hand",
+      "inference": null,
+      "licence": "textual",
+      "name": "irrelevant_instruction",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l699_796_n008",
+      "gloss": "I is an instruction that is malicious, i.e. intended to cause harm or deceive",
+      "inference": null,
+      "licence": "textual",
+      "name": "malicious_instruction",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l699_796_n008",
+      "gloss": "I is an instruction that the user would not intend the assistant to follow",
+      "inference": null,
+      "licence": "textual",
+      "name": "unintended_instruction",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": [
+    "tool_output_instruction/1",
+    "irrelevant_instruction/1",
+    "malicious_instruction/1",
+    "unintended_instruction/1"
+  ],
+  "ontology": [
+    {
+      "atom": "unintended_instruction(I)",
+      "body": "tool_output_instruction(I), irrelevant_instruction(I)",
+      "cites": "l699_796_n008",
+      "gloss": "an instruction in a tool output that is irrelevant to the user's request is one the user would not intend the assistant to follow",
+      "inference": null,
+      "licence": "textual",
+      "toggleable": false
+    },
+    {
+      "atom": "unintended_instruction(I)",
+      "body": "tool_output_instruction(I), malicious_instruction(I)",
+      "cites": "l699_796_n008",
+      "gloss": "an instruction in a tool output that is malicious is one the user would not intend the assistant to follow",
+      "inference": null,
+      "licence": "textual",
+      "toggleable": false
+    }
+  ],
+  "outcome": "translated",
+  "requires": [
+    "root_authority/1"
+  ]
+}

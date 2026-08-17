@@ -1,0 +1,139 @@
+{
+  "abstain_reason": null,
+  "acts": [
+    "minimize_side_effects(A)",
+    "ensure_proportionate(A)"
+  ],
+  "asserts": [
+    {
+      "act": "minimize_side_effects(A)",
+      "body": "scope_of_autonomy(S), within_scope(A, S)",
+      "cites": "l461_608_n013",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "the assistant should minimize side effects when acting within the defined scope of autonomy",
+      "read_back_slots": ["A"],
+      "status": "prefer",
+      "toggleable": false
+    },
+    {
+      "act": "ensure_proportionate(A)",
+      "body": "scope_of_autonomy(S), within_scope(A, S), established_objective(O), action_objective(A, O)",
+      "cites": "l461_608_n013",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "the assistant should ensure each action is proportionate to the established objectives when acting within the defined scope of autonomy",
+      "read_back_slots": ["A"],
+      "status": "prefer",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 within the defined scope of autonomy, the assistant should minimize side effects",
+    "C2 side effects that are irreversible are especially to be minimized",
+    "C3 within the defined scope of autonomy, each action should be proportionate to the established objectives"
+  ],
+  "clause_id": "l461_608_n013",
+  "closure": [
+    {
+      "act_class": "minimize_side_effects",
+      "closure": "cepa",
+      "reason": "the clause states a preference to minimize side effects, not a prohibition; actions that do not minimize side effects are not categorically forbidden by this clause"
+    },
+    {
+      "act_class": "ensure_proportionate",
+      "closure": "cepa",
+      "reason": "the clause states a preference for proportionate actions, not a prohibition; actions that are not proportionate are not categorically forbidden by this clause"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "A is the assistant as defined by the Model Spec, the entity the end user or developer interacts with",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'the assistant' without defining it",
+      "licence": "assumed",
+      "name": "assistant_definition",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "S is the agreed-upon boundary of the assistant's autonomy, defining which sub-goals it may pursue, acceptable side effects, and when it must pause for clarification or approval",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'the defined scope of autonomy' without defining it",
+      "licence": "assumed",
+      "name": "scope_of_autonomy",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a rule in the #control_side_effects section carrying root authority",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define the authority of the section",
+      "licence": "assumed",
+      "name": "root_authority",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l461_608_n013",
+      "gloss": "S is the defined scope of autonomy within which the assistant's actions are governed by this clause",
+      "inference": null,
+      "licence": "textual",
+      "name": "defined_scope",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": "l461_608_n013",
+      "gloss": "action A is within the defined scope of autonomy S",
+      "inference": null,
+      "licence": "textual",
+      "name": "within_scope",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l461_608_n013",
+      "gloss": "O is an objective established for the assistant's actions",
+      "inference": null,
+      "licence": "textual",
+      "name": "established_objective",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": "l461_608_n013",
+      "gloss": "action A is directed at or serves objective O",
+      "inference": null,
+      "licence": "textual",
+      "name": "action_objective",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": [
+    "within_scope/2",
+    "established_objective/1",
+    "action_objective/2"
+  ],
+  "ontology": [
+    {
+      "atom": "defined_scope(S)",
+      "body": "scope_of_autonomy(S)",
+      "cites": "l461_608_n013",
+      "gloss": "S is the defined scope of autonomy",
+      "inference": null,
+      "licence": "textual",
+      "toggleable": false
+    }
+  ],
+  "outcome": "translated",
+  "requires": [
+    "assistant_definition/1",
+    "scope_of_autonomy/1",
+    "root_authority/1"
+  ]
+}

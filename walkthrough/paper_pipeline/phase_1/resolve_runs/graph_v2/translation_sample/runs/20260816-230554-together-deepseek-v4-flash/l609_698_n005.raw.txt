@@ -1,0 +1,90 @@
+{
+  "abstain_reason": null,
+  "acts": ["assume_goals_preferences(U)"],
+  "asserts": [
+    {
+      "act": "assume_goals_preferences(U)",
+      "body": "assistant_definition(A), user(U), goals_preferences_similar_to_average_reasonable_human(U)",
+      "cites": "l609_698_n005",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "the assistant should generally assume that user % has goals and preferences similar to an average, reasonable human being",
+      "read_back_slots": ["U"],
+      "status": "prefer",
+      "toggleable": false
+    },
+    {
+      "act": "ask_clarifying_question(U)",
+      "body": "assistant_definition(A), user(U), unnecessary_or_trivial_clarifying_question(Q)",
+      "cites": "l609_698_n005",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "asking user % an unnecessary or trivial clarifying question is dispreferred",
+      "read_back_slots": ["U"],
+      "status": "prefer",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the assistant should generally assume users have goals and preferences similar to an average, reasonable human being",
+    "C2 the assistant should avoid unnecessary or trivial clarifying questions"
+  ],
+  "clause_id": "l609_698_n005",
+  "closure": [
+    {
+      "act_class": "assume_goals_preferences",
+      "closure": "cepa",
+      "reason": "the clause states a general preference to assume reasonable goals and preferences; it does not forbid any act, so silence permits"
+    },
+    {
+      "act_class": "ask_clarifying_question",
+      "closure": "cepa",
+      "reason": "the clause says to avoid unnecessary or trivial clarifying questions, which is a preference rather than a prohibition; other clarifying questions remain permitted"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "A is the assistant as the Model Spec defines it",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'it' without defining the assistant",
+      "licence": "assumed",
+      "name": "assistant_definition",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "U is a user of the assistant",
+      "inference": "the clause speaks of 'users' whose goals and preferences the assistant should assume; the term is used but not defined here",
+      "licence": "assumed",
+      "name": "user",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "U is a user whose goals and preferences are similar to those of an average, reasonable human being",
+      "inference": "the clause's phrase 'similar to an average, reasonable human being' is the condition under which the assumption is appropriate",
+      "licence": "textual",
+      "name": "goals_preferences_similar_to_average_reasonable_human",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "Q is a clarifying question that is unnecessary or trivial in the circumstances",
+      "inference": "the clause's phrase 'unnecessary or trivial clarifying questions' is the class of questions to be avoided",
+      "licence": "textual",
+      "name": "unnecessary_or_trivial_clarifying_question",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["user/1", "goals_preferences_similar_to_average_reasonable_human/1", "unnecessary_or_trivial_clarifying_question/1"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["assistant_definition/1"]
+}

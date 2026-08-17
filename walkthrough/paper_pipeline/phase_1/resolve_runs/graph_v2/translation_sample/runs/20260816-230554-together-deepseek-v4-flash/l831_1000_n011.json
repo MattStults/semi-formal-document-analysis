@@ -1,0 +1,162 @@
+{
+ "outcome": "translated",
+ "clause_id": "l831_1000_n011",
+ "abstain_reason": null,
+ "claims": [
+  "C1 political content crafted for an unspecified or broad audience is allowed",
+  "C2 the allowance holds only when the content does not exploit the unique characteristics of a particular individual or demographic for manipulative purposes",
+  "C3 the allowance applies regardless of the political topic or subject of the content"
+ ],
+ "acts": [
+  "produce_political_content(C)"
+ ],
+ "concepts": [
+  {
+   "name": "political_content",
+   "arity": 1,
+   "gloss": "C is political content, i.e. content concerning a political topic or subject such as a politician, party or campaign",
+   "licence": "textual",
+   "cites": "l831_1000_n011",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "crafted_for_unspecified_or_broad_audience",
+   "arity": 1,
+   "gloss": "C is crafted for an unspecified or broad audience, rather than targeted at a particular individual or demographic",
+   "licence": "textual",
+   "cites": "l831_1000_n011",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "not_exploits_individual_or_demographic",
+   "arity": 1,
+   "gloss": "C does not exploit the unique characteristics of a particular individual or demographic for manipulative purposes",
+   "licence": "textual",
+   "cites": "l831_1000_n011",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "specific_political_subject",
+   "arity": 1,
+   "gloss": "C is political content whose topic or subject is a specific politician, party or campaign",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text gives 'a specific politician, party or campaign' as an example of a political subject; the clause's 'regardless of the political topic or subject' requires a class for such specific subjects",
+   "toggleable": false
+  },
+  {
+   "name": "non_specific_political_subject",
+   "arity": 1,
+   "gloss": "C is political content whose topic or subject is not a specific politician, party or campaign",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text's 'regardless of the political topic or subject' contrasts with the specific examples; a class for non-specific subjects is needed to express the contrast",
+   "toggleable": false
+  },
+  {
+   "name": "allowed_political_content",
+   "arity": 1,
+   "gloss": "C is political content that is crafted for an unspecified or broad audience and does not exploit a particular individual or demographic",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text's allowance is conditional on both features; a combined class is needed to state the allowance",
+   "toggleable": false
+  },
+  {
+   "name": "authority_level_ordering",
+   "arity": 2,
+   "gloss": "which of two authority levels outranks the other; the first argument is the higher level",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's text does not define the ordering",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule or instruction carrying the root level of instruction authority, the highest level not overridable by system, developer or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's text does not define root authority",
+   "toggleable": false
+  },
+  {
+   "name": "no_agenda_section",
+   "arity": 1,
+   "gloss": "S is the section of the Model Spec that describes the principle that the assistant should not pursue its own agenda beyond helping the user",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's text only references the section by name",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l831_1000_n011",
+   "inference": null,
+   "toggleable": false,
+   "atom": "allowed_political_content(C)",
+   "gloss": "C is political content that is allowed because it is crafted for an unspecified or broad audience and does not exploit a particular individual or demographic",
+   "body": "political_content(C), crafted_for_unspecified_or_broad_audience(C), not_exploits_individual_or_demographic(C)"
+  },
+  {
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text's example of a specific subject is contrasted with the broad-audience condition; a specific subject is inferred to be the opposite of a broad audience",
+   "toggleable": false,
+   "atom": "specific_political_subject(C)",
+   "gloss": "C is political content with a specific subject, such as a particular politician, party or campaign",
+   "body": "political_content(C), not crafted_for_unspecified_or_broad_audience(C)"
+  },
+  {
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text's 'regardless of the political topic or subject' implies a contrast between specific and non-specific subjects; a non-specific subject is inferred from the broad-audience condition",
+   "toggleable": false,
+   "atom": "non_specific_political_subject(C)",
+   "gloss": "C is political content with a non-specific subject, i.e. not a particular politician, party or campaign",
+   "body": "political_content(C), crafted_for_unspecified_or_broad_audience(C)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "producing political content % is permitted when it is crafted for an unspecified or broad audience and does not exploit the unique characteristics of a particular individual or demographic for manipulative purposes",
+   "read_back_slots": [
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l831_1000_n011",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "produce_political_content(C)",
+   "body": "political_content(C), crafted_for_unspecified_or_broad_audience(C), not_exploits_individual_or_demographic(C)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "produce_political_content",
+   "closure": "cepa",
+   "reason": "the clause explicitly permits political content for a broad audience under a condition; it does not prohibit other political content, so silence leaves other production permitted"
+  }
+ ],
+ "requires": [
+  "authority_level_ordering/2",
+  "root_authority/1",
+  "no_agenda_section/1"
+ ],
+ "inputs": [
+  "political_content/1",
+  "crafted_for_unspecified_or_broad_audience/1",
+  "not_exploits_individual_or_demographic/1",
+  "specific_political_subject/1",
+  "non_specific_political_subject/1"
+ ],
+ "forbid_body": []
+}

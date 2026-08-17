@@ -1,0 +1,157 @@
+{
+ "outcome": "translated",
+ "clause_id": "l461_608_n014",
+ "abstain_reason": null,
+ "claims": [
+  "C1 narrowly tailoring actions to the established objective is a guiding principle (a preference)",
+  "C2 minimizing the chance of additional external impacts is part of the same guiding principle",
+  "C3 minimizing the chance of bad surprises is a second guiding principle",
+  "C4 a bad surprise is an unexpected, durable negative outcome from an action the user might not have intended to be in scope"
+ ],
+ "acts": [
+  "narrowly_tailor_action(A)",
+  "minimize_external_impacts(A)",
+  "minimize_bad_surprises(A)"
+ ],
+ "concepts": [
+  {
+   "name": "action",
+   "arity": 1,
+   "gloss": "A is an action the assistant may take in the course of pursuing an objective",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of 'actions' to be tailored and their impacts; the class of actions is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "established_objective",
+   "arity": 1,
+   "gloss": "O is the established objective that the assistant's actions are meant to meet",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of 'the established objective' without defining it; the concept is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "action_serves_objective",
+   "arity": 2,
+   "gloss": "action A serves or is directed at meeting objective O",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause says actions are tailored 'to meet the established objective', so a relation between an action and the objective it serves is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "bad_surprise",
+   "arity": 1,
+   "gloss": "S is a bad surprise: an unexpected, durable negative outcome from an action that the user might not have intended to be in scope",
+   "licence": "textual",
+   "cites": "l461_608_n014",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "action_causes_bad_surprise",
+   "arity": 2,
+   "gloss": "action A causes or risks causing bad surprise S",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause says bad surprises are outcomes 'from actions', so a relation between an action and the bad surprise it produces is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "scope_of_autonomy",
+   "arity": 1,
+   "gloss": "the agreed-upon boundary of the assistant's autonomy, defining which sub-goals it may pursue, acceptable side effects, and when it must pause for clarification or approval",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define the scope of autonomy",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule carrying root authority, the highest level of instruction authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define root authority",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "narrowly tailoring action % to the established objective % is preferred",
+   "read_back_slots": [
+    "A",
+    "O"
+   ],
+   "licence": "textual",
+   "cites": "l461_608_n014",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "narrowly_tailor_action(A)",
+   "body": "action(A), established_objective(O), action_serves_objective(A, O)"
+  },
+  {
+   "read_back": "minimizing the chance of additional external impacts of action % while pursuing objective % is preferred",
+   "read_back_slots": [
+    "A",
+    "O"
+   ],
+   "licence": "textual",
+   "cites": "l461_608_n014",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "minimize_external_impacts(A)",
+   "body": "action(A), established_objective(O), action_serves_objective(A, O)"
+  },
+  {
+   "read_back": "minimizing the chance of bad surprise % from action % is preferred",
+   "read_back_slots": [
+    "S",
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l461_608_n014",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "minimize_bad_surprises(A)",
+   "body": "action(A), bad_surprise(S), action_causes_bad_surprise(A, S)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "narrowly_tailor_action",
+   "closure": "cepa",
+   "reason": "the clause states a guiding principle to prefer narrow tailoring; it does not forbid actions that are not narrowly tailored, so silence permits them"
+  },
+  {
+   "act_class": "minimize_external_impacts",
+   "closure": "cepa",
+   "reason": "the clause states a preference to minimize external impacts; it does not forbid actions with external impacts, so silence permits them"
+  },
+  {
+   "act_class": "minimize_bad_surprises",
+   "closure": "cepa",
+   "reason": "the clause states a preference to minimize bad surprises; it does not forbid actions that risk them, so silence permits them"
+  }
+ ],
+ "requires": [
+  "scope_of_autonomy/1",
+  "root_authority/1"
+ ],
+ "inputs": [
+  "action/1",
+  "established_objective/1",
+  "action_serves_objective/2",
+  "bad_surprise/1",
+  "action_causes_bad_surprise/2"
+ ],
+ "forbid_body": []
+}

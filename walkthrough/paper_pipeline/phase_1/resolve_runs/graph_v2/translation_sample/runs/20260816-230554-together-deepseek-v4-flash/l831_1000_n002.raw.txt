@@ -1,0 +1,135 @@
+{
+  "abstain_reason": null,
+  "acts": [
+    "generate(R)"
+  ],
+  "asserts": [
+    {
+      "act": "generate(R)",
+      "body": "restricted_content(R)",
+      "cites": "l831_1000_n002",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "generating % is forbidden because % is restricted content",
+      "read_back_slots": [
+        "R",
+        "R"
+      ],
+      "status": "forbid",
+      "toggleable": false
+    },
+    {
+      "act": "generate(R)",
+      "body": "restricted_content(R), transformation_exception_rule(T), transforms_user_provided_restricted_content(R, T)",
+      "cites": "l831_1000_n002",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "generating % is permitted because % is a transformation of user-provided restricted content under the transformation exception",
+      "read_back_slots": [
+        "R",
+        "R"
+      ],
+      "status": "permit",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the assistant must not generate restricted content",
+    "C2 restricted content includes information hazards and sensitive personal data",
+    "C3 generating restricted content is permitted only in specific cases involving transformation of user-provided restricted content",
+    "C4 there are no other contextual exceptions beyond the transformation exception"
+  ],
+  "clause_id": "l831_1000_n002",
+  "closure": [
+    {
+      "act_class": "generate",
+      "closure": "cnpa",
+      "reason": "the clause states a general prohibition on generating restricted content and permits only the specific transformation exception, so silence about other cases means they remain forbidden"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": "l831_1000_n002",
+      "gloss": "R is content the assistant must not generate, such as information hazards or sensitive personal data",
+      "inference": null,
+      "licence": "textual",
+      "name": "restricted_content",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l831_1000_n002",
+      "gloss": "R is content that falls under the information-hazards prohibition: detailed, actionable steps for activities that are illicit, could harm people or property, or lead to critical or large-scale harm",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to information hazards without defining them",
+      "licence": "assumed",
+      "name": "information_hazards_prohibition",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is content that falls under the privacy-protection rule: private or sensitive information about people",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to sensitive personal data without defining it",
+      "licence": "assumed",
+      "name": "privacy_protection_rule",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "T is the exception that allows transformation of user-provided restricted content",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to the transformation exception without defining it",
+      "licence": "assumed",
+      "name": "transformation_exception_rule",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "R is a transformation of user-provided restricted content under exception T",
+      "inference": "the clause's exception applies to specific cases involving transformation of user-provided restricted content, so a relation between the generated content and the exception must exist",
+      "licence": "assumed",
+      "name": "transforms_user_provided_restricted_content",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [
+    {
+      "banned": "permit",
+      "head": "generate"
+    }
+  ],
+  "inputs": [
+    "restricted_content/1",
+    "transforms_user_provided_restricted_content/2"
+  ],
+  "ontology": [
+    {
+      "atom": "restricted_content(R)",
+      "body": "information_hazards_prohibition(R)",
+      "cites": "l831_1000_n002",
+      "gloss": "R is restricted content because it is an information hazard",
+      "inference": null,
+      "licence": "textual",
+      "toggleable": false
+    },
+    {
+      "atom": "restricted_content(R)",
+      "body": "privacy_protection_rule(R)",
+      "cites": "l831_1000_n002",
+      "gloss": "R is restricted content because it is sensitive personal data protected by the privacy rule",
+      "inference": null,
+      "licence": "textual",
+      "toggleable": false
+    }
+  ],
+  "outcome": "translated",
+  "requires": [
+    "information_hazards_prohibition/1",
+    "privacy_protection_rule/1",
+    "transformation_exception_rule/1"
+  ]
+}

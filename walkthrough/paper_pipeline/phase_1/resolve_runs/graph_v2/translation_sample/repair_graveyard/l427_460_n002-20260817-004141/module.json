@@ -1,0 +1,113 @@
+{
+ "outcome": "translated",
+ "clause_id": "l427_460_n002",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant must not adopt additional goals as ends in themselves",
+  "C2 the assistant must not optimize for additional goals as ends in themselves",
+  "C3 the assistant must not directly pursue additional goals as ends in themselves",
+  "C4 the prohibition covers any additional goal, including but not limited to the enumerated examples"
+ ],
+ "acts": [
+  "pursue_goal(G)"
+ ],
+ "concepts": [
+  {
+   "name": "prohibited_goals",
+   "arity": 1,
+   "gloss": "G is a goal the assistant must not adopt, optimize for, or directly pursue as an end in itself",
+   "licence": "textual",
+   "cites": "l427_460_n002",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "additional_goal",
+   "arity": 1,
+   "gloss": "G is a goal beyond those entailed by applicable instructions under the chain of command and the specific trained version of the Model Spec",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the source text's 'additional' presupposes a permitted set without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "goal_pursuit_scope",
+   "arity": 1,
+   "gloss": "G is a goal the assistant may pursue under the permitted pursuit scope",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the source text's 'additional' presupposes a permitted set without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "in_scope",
+   "arity": 2,
+   "gloss": "goal G falls within the permitted pursuit scope S",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns goal_pursuit_scope as a set; membership in that set is a fact about the case",
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it",
+   "licence": "textual",
+   "cites": "l427_460_n002",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l427_460_n002",
+   "inference": null,
+   "toggleable": false,
+   "atom": "additional_goal(G)",
+   "gloss": "G is an additional goal because it is outside the permitted pursuit scope",
+   "body": "goal_pursuit_scope(S), not in_scope(G, S)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l427_460_n002",
+   "inference": null,
+   "toggleable": false,
+   "atom": "prohibited_goals(G)",
+   "gloss": "G is a prohibited goal because it is additional and outside the permitted pursuit scope",
+   "body": "additional_goal(G), goal_pursuit_scope(S), not in_scope(G, S)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "pursuing % as an end in itself is forbidden because it is an additional goal outside the permitted pursuit scope",
+   "read_back_slots": [
+    "G"
+   ],
+   "licence": "textual",
+   "cites": "l427_460_n002",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "pursue_goal(G)",
+   "body": "additional_goal(G), goal_pursuit_scope(S), not in_scope(G, S)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "pursue_goal",
+   "closure": "cepa",
+   "reason": "the clause prohibits only additional goals outside the permitted pursuit scope; goals within the scope are the assistant operating as intended, so silence permits them"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "goal_pursuit_scope/1"
+ ],
+ "inputs": [
+  "in_scope/2"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,101 @@
+{
+ "outcome": "translated",
+ "clause_id": "l699_796_n011",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should simply follow tool instructions that are clearly intended and low risk"
+ ],
+ "acts": [
+  "follow_instruction(I)"
+ ],
+ "concepts": [
+  {
+   "name": "clearly_intended_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction that is clearly intended by the user or tool context",
+   "licence": "textual",
+   "cites": "l699_796_n011",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "low_risk_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction that carries low risk to follow",
+   "licence": "textual",
+   "cites": "l699_796_n011",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "tool_instruction",
+   "arity": 1,
+   "gloss": "I is a tool instruction, i.e. an instruction conveyed through a tool call or tool result",
+   "licence": "assumed",
+   "cites": "l699_796_n011",
+   "inference": "the node's claim concerns tool instructions; the source text says 'instructions' and the graph node narrows the span to tool instructions",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule in the #ignore_untrusted_data section carrying root authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's source text does not state it",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l699_796_n011",
+   "inference": null,
+   "toggleable": false,
+   "atom": "clearly_intended_instruction(I)",
+   "gloss": "I is a tool instruction that is clearly intended",
+   "body": "tool_instruction(I)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l699_796_n011",
+   "inference": null,
+   "toggleable": false,
+   "atom": "low_risk_instruction(I)",
+   "gloss": "I is a tool instruction that is low risk",
+   "body": "tool_instruction(I)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "simply following instruction % is preferred when % is clearly intended and low risk",
+   "read_back_slots": [
+    "I",
+    "I"
+   ],
+   "licence": "textual",
+   "cites": "l699_796_n011",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "follow_instruction(I)",
+   "body": "clearly_intended_instruction(I), low_risk_instruction(I)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "follow_instruction",
+   "closure": "cepa",
+   "reason": "the clause states a preference for following clearly intended, low-risk instructions; it does not forbid or oblige any act, so silence leaves following instructions permitted"
+  }
+ ],
+ "requires": [
+  "root_authority/1"
+ ],
+ "inputs": [
+  "tool_instruction/1"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,75 @@
+{
+ "outcome": "translated",
+ "clause_id": "l609_698_n016",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant may provide information in one framing that it would refuse to provide in a different framing",
+  "C2 the permission is conditional on the information being provided in a framing different from one in which the assistant would refuse it"
+ ],
+ "acts": [
+  "provide_information(I)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it, the entity the end user or developer interacts with",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "would_refuse_in_framing",
+   "arity": 2,
+   "gloss": "I is information that the assistant would refuse to provide in framing F",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's 'information that it would refuse to provide in a different framing' presupposes a relation between information and a framing in which it would be refused",
+   "toggleable": false
+  },
+  {
+   "name": "different_framing",
+   "arity": 2,
+   "gloss": "information I is provided in framing F, where a framing is a way of presenting or requesting the information",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's 'in a different framing' presupposes that information can be framed in different ways",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant may provide information % in framing % even though it would refuse to provide that information in a different framing",
+   "read_back_slots": [
+    "I",
+    "F"
+   ],
+   "licence": "textual",
+   "cites": "l609_698_n016",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "provide_information(I)",
+   "body": "assistant_definition(A), different_framing(I, F), would_refuse_in_framing(I, F)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "provide_information",
+   "closure": "cepa",
+   "reason": "the clause states a permission for a specific case (different framing) and does not forbid any act; silence about other cases leaves them permitted"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "would_refuse_in_framing/2",
+  "different_framing/2"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,92 @@
+{
+ "outcome": "translated",
+ "clause_id": "l699_796_n008",
+ "abstain_reason": null,
+ "claims": [
+  "C1 tool outputs can contain instructions that are irrelevant to the user's request",
+  "C2 tool outputs can contain instructions that are malicious",
+  "C3 the user would not intend the assistant to follow such instructions"
+ ],
+ "acts": [],
+ "concepts": [
+  {
+   "name": "tool_output_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction that appears inside a tool output rather than in a user message",
+   "licence": "textual",
+   "cites": "l699_796_n008",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "irrelevant_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction that is irrelevant to the user's request or the task at hand",
+   "licence": "textual",
+   "cites": "l699_796_n008",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "malicious_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction that is malicious, i.e. intended to cause harm or deceive",
+   "licence": "textual",
+   "cites": "l699_796_n008",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "unintended_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction that the user would not intend the assistant to follow",
+   "licence": "textual",
+   "cites": "l699_796_n008",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule that carries the root level of instruction authority, meaning it is the highest authority and not overridable by system, developer, or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's source text does not define root authority",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l699_796_n008",
+   "inference": null,
+   "toggleable": false,
+   "atom": "unintended_instruction(I)",
+   "gloss": "an instruction in a tool output that is irrelevant to the user's request is one the user would not intend the assistant to follow",
+   "body": "tool_output_instruction(I), irrelevant_instruction(I)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l699_796_n008",
+   "inference": null,
+   "toggleable": false,
+   "atom": "unintended_instruction(I)",
+   "gloss": "an instruction in a tool output that is malicious is one the user would not intend the assistant to follow",
+   "body": "tool_output_instruction(I), malicious_instruction(I)"
+  }
+ ],
+ "asserts": [],
+ "beats": [],
+ "defines": [],
+ "closure": [],
+ "requires": [
+  "root_authority/1"
+ ],
+ "inputs": [
+  "tool_output_instruction/1",
+  "irrelevant_instruction/1",
+  "malicious_instruction/1",
+  "unintended_instruction/1"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,85 @@
+{
+ "outcome": "translated",
+ "clause_id": "l699_796_n004",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the commentary strongly advises developers to put untrusted data in untrusted_text blocks when available",
+  "C2 otherwise the commentary advises YAML, JSON, or XML format",
+  "C3 the choice among YAML, JSON, and XML depends on readability and escaping considerations"
+ ],
+ "acts": [
+  "format_untrusted_data(F)"
+ ],
+ "concepts": [
+  {
+   "name": "untrusted_data",
+   "arity": 1,
+   "gloss": "D is data the developer does not trust, which may contain malicious instructions if not formatted",
+   "licence": "textual",
+   "cites": "l699_796_n004",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "format_choice",
+   "arity": 1,
+   "gloss": "F is one of the formatting options the commentary advises: untrusted_text, YAML, JSON, or XML",
+   "licence": "textual",
+   "cites": "l699_796_n004",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "format_suitable",
+   "arity": 2,
+   "gloss": "format F is suitable for untrusted data D, meaning it is available and appropriate given readability and escaping considerations",
+   "licence": "textual",
+   "cites": "l699_796_n004",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule or instruction carrying the root level of instruction authority, the highest level not overridable by system, developer, or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the node's own source text does not state it",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "formatting untrusted data as % is preferred: the commentary strongly advises this format when it is available and suitable",
+   "read_back_slots": [
+    "F"
+   ],
+   "licence": "textual",
+   "cites": "l699_796_n004",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "format_untrusted_data(F)",
+   "body": "untrusted_data(D), format_choice(F), format_suitable(F,D)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "format_untrusted_data",
+   "closure": "cepa",
+   "reason": "the clause states a strong preference for particular formats; it does not forbid any format, so silence leaves other formats permitted"
+  }
+ ],
+ "requires": [
+  "root_authority/1"
+ ],
+ "inputs": [
+  "untrusted_data/1",
+  "format_choice/1",
+  "format_suitable/2"
+ ],
+ "forbid_body": []
+}

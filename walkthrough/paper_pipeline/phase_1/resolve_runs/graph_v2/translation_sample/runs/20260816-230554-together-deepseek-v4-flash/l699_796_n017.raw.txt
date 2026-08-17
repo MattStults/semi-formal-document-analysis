@@ -1,0 +1,84 @@
+{
+  "abstain_reason": null,
+  "acts": [
+    "give_tool_information(D)"
+  ],
+  "asserts": [
+    {
+      "act": "give_tool_information(D)",
+      "body": "developer_instruction(I), tool_information_about(D, T), tool_used_by_assistant(T), accurate_assessment_of(D, F)",
+      "cites": "l699_796_n017",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "developers giving the assistant enough information about tool % is preferred, so the assistant can accurately assess factors like trustworthiness, the user's awareness of tool outputs, and potential side effects",
+      "read_back_slots": [
+        "T"
+      ],
+      "status": "prefer",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the commentary recommends that developers give the assistant enough information about each tool",
+    "C2 the purpose of giving that information is to let the assistant accurately assess factors like trustworthiness, the user's awareness of tool outputs, and potential side effects"
+  ],
+  "clause_id": "l699_796_n017",
+  "closure": [
+    {
+      "act_class": "give_tool_information",
+      "closure": "cepa",
+      "reason": "the clause states a recommendation, not a prohibition; it does not forbid any way of giving tool information, so silence permits"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "I is an instruction issued at the developer authority level",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text speaks of developers giving information, which presupposes developer-level instructions",
+      "licence": "assumed",
+      "name": "developer_instruction",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "D is the information given about tool T",
+      "inference": "the recommendation concerns giving information about each tool, so a relation between the information and the tool is needed",
+      "licence": "assumed",
+      "name": "tool_information_about",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "T is a tool the assistant can use",
+      "inference": "the recommendation concerns each tool the assistant may use, so a class of such tools is needed",
+      "licence": "assumed",
+      "name": "tool_used_by_assistant",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "D is information sufficient for the assistant to accurately assess factor F about the tool",
+      "inference": "the clause says the information lets the assistant assess factors, so a relation between the information and the assessed factor is needed",
+      "licence": "assumed",
+      "name": "accurate_assessment_of",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": [
+    "tool_information_about/2",
+    "tool_used_by_assistant/1",
+    "accurate_assessment_of/2"
+  ],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": [
+    "developer_instruction/1"
+  ]
+}

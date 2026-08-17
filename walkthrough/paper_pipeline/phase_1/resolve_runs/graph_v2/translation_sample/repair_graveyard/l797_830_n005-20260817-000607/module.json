@@ -1,0 +1,116 @@
+{
+ "outcome": "translated",
+ "clause_id": "l797_830_n005",
+ "abstain_reason": null,
+ "claims": [
+  "C1 content omitted due to legal requirements above and beyond the Model Spec's boundaries must be transparently indicated to the user",
+  "C2 the indication must occur in each model response",
+  "C3 the indication must specify the type of information removed and the rationale for its removal",
+  "C4 the indication must not disclose the redacted content itself"
+ ],
+ "acts": [
+  "indicate_omission(O)"
+ ],
+ "concepts": [
+  {
+   "name": "omitted_content",
+   "arity": 1,
+   "gloss": "O is content that was omitted from a response because legal requirements for a local deployment required its removal, where those requirements go beyond the boundaries set in this Model Spec",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the node's claim speaks of 'content omitted due to legal requirements above and beyond the boundaries in this Model Spec'; the class of such content is presupposed without being defined",
+   "toggleable": false
+  },
+  {
+   "name": "legal_requirement_omission",
+   "arity": 1,
+   "gloss": "O is content whose omission is attributable to legal requirements rather than to the Model Spec's own boundaries",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the claim distinguishes omissions due to legal requirements from those within the Model Spec's boundaries; this predicate marks that distinction",
+   "toggleable": false
+  },
+  {
+   "name": "model_response",
+   "arity": 1,
+   "gloss": "R is a model response in which the omission occurs",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the claim requires indication 'in each model response', so a relation between an omission and the response it occurs in is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "omission_in_response",
+   "arity": 2,
+   "gloss": "omission O occurs in model response R",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the claim requires indication in each model response, which presupposes that an omission is located in a particular response",
+   "toggleable": false
+  },
+  {
+   "name": "specify_type_and_rationale",
+   "arity": 1,
+   "gloss": "the indication of O states the type of information removed and the rationale for its removal",
+   "licence": "textual",
+   "cites": "l797_830_n005",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "not_disclose_redacted",
+   "arity": 1,
+   "gloss": "the indication of O does not disclose the redacted content itself",
+   "licence": "textual",
+   "cites": "l797_830_n005",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "system_authority",
+   "arity": 1,
+   "gloss": "the authority level of the system, as defined by the shared-name contract",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's source text does not define the system authority level",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "omitted content % must be transparently indicated in each model response, specifying the type of information removed and the rationale for its removal, without disclosing the redacted content itself",
+   "read_back_slots": [
+    "O"
+   ],
+   "licence": "textual",
+   "cites": "l797_830_n005",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "indicate_omission(O)",
+   "body": "omitted_content(O), legal_requirement_omission(O), model_response(R), omission_in_response(O,R), specify_type_and_rationale(O), not_disclose_redacted(O)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "indicate_omission",
+   "closure": "cepa",
+   "reason": "the clause obliges transparent indication only for content omitted due to legal requirements beyond the Model Spec's boundaries; it does not address other omissions, so silence permits them"
+  }
+ ],
+ "requires": [
+  "system_authority/1"
+ ],
+ "inputs": [
+  "omitted_content/1",
+  "legal_requirement_omission/1",
+  "model_response/1",
+  "omission_in_response/2",
+  "specify_type_and_rationale/1",
+  "not_disclose_redacted/1"
+ ],
+ "forbid_body": []
+}

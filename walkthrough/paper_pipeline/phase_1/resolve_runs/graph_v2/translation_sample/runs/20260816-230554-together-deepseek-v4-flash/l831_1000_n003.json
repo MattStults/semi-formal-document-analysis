@@ -1,0 +1,182 @@
+{
+ "outcome": "translated",
+ "clause_id": "l831_1000_n003",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant must not provide detailed, actionable steps for carrying out an activity that is illicit",
+  "C2 the assistant must not provide detailed, actionable steps for carrying out an activity that could harm people or property",
+  "C3 the assistant must not provide detailed, actionable steps for carrying out an activity that could lead to critical or large-scale harm",
+  "C4 the prohibition includes steps related to creating, obtaining, magnifying, or deploying CBRN weapons"
+ ],
+ "acts": [
+  "provide_steps(S)"
+ ],
+ "concepts": [
+  {
+   "name": "detailed_actionable_steps",
+   "arity": 1,
+   "gloss": "S is a set of steps that are detailed and actionable, i.e. specific enough to be carried out directly",
+   "licence": "textual",
+   "cites": "l831_1000_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "harmful_activity",
+   "arity": 1,
+   "gloss": "A is an activity that is illicit, could harm people or property, or could lead to critical or large-scale harm",
+   "licence": "textual",
+   "cites": "l831_1000_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "steps_for",
+   "arity": 2,
+   "gloss": "steps S are steps for carrying out activity A",
+   "licence": "textual",
+   "cites": "l831_1000_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "illicit_activity",
+   "arity": 1,
+   "gloss": "A is an activity that is illicit, i.e. against the law",
+   "licence": "textual",
+   "cites": "l831_1000_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "harm_people_or_property_activity",
+   "arity": 1,
+   "gloss": "A is an activity that could harm people or property",
+   "licence": "textual",
+   "cites": "l831_1000_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "critical_or_large_scale_harm_activity",
+   "arity": 1,
+   "gloss": "A is an activity that could lead to critical or large-scale harm",
+   "licence": "textual",
+   "cites": "l831_1000_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "cbrn_weapons_activity",
+   "arity": 1,
+   "gloss": "A is an activity related to creating, obtaining, magnifying, or deploying CBRN weapons",
+   "licence": "textual",
+   "cites": "l831_1000_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "information_hazards_prohibition",
+   "arity": 1,
+   "gloss": "A is an activity that is a harmful activity as defined by the information-hazards prohibition",
+   "licence": "textual",
+   "cites": "l831_1000_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "authority_level_ordering",
+   "arity": 2,
+   "gloss": "which of two authority levels outranks the other, as established by the authority-level ordering",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's text does not define the ordering",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "the authority level of rules in the #avoid_info_hazards section, as established by the root-authority concept",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's text does not define the root authority",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l831_1000_n003",
+   "inference": null,
+   "toggleable": false,
+   "atom": "harmful_activity(A)",
+   "gloss": "an activity that is illicit is a harmful activity",
+   "body": "illicit_activity(A)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l831_1000_n003",
+   "inference": null,
+   "toggleable": false,
+   "atom": "harmful_activity(A)",
+   "gloss": "an activity that could harm people or property is a harmful activity",
+   "body": "harm_people_or_property_activity(A)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l831_1000_n003",
+   "inference": null,
+   "toggleable": false,
+   "atom": "harmful_activity(A)",
+   "gloss": "an activity that could lead to critical or large-scale harm is a harmful activity",
+   "body": "critical_or_large_scale_harm_activity(A)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l831_1000_n003",
+   "inference": null,
+   "toggleable": false,
+   "atom": "harmful_activity(A)",
+   "gloss": "an activity related to creating, obtaining, magnifying, or deploying CBRN weapons is a harmful activity",
+   "body": "cbrn_weapons_activity(A)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "providing detailed, actionable steps % is forbidden because % is a harmful activity",
+   "read_back_slots": [
+    "S",
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l831_1000_n003",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "provide_steps(S)",
+   "body": "detailed_actionable_steps(S), harmful_activity(A), steps_for(S, A)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "provide_steps",
+   "closure": "cepa",
+   "reason": "the clause forbids providing steps only when they are detailed, actionable, and for a harmful activity; silence about other step-providing leaves it permitted"
+  }
+ ],
+ "requires": [
+  "authority_level_ordering/2",
+  "root_authority/1"
+ ],
+ "inputs": [
+  "detailed_actionable_steps/1",
+  "steps_for/2",
+  "illicit_activity/1",
+  "harm_people_or_property_activity/1",
+  "critical_or_large_scale_harm_activity/1",
+  "cbrn_weapons_activity/1"
+ ],
+ "forbid_body": []
+}

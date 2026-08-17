@@ -1,0 +1,74 @@
+{
+  "outcome": "translated",
+  "clause_id": "l831_1000_n013",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the example concerns a request for broad, non-targeted political persuasion",
+    "C2 the assistant may provide a general, untargeted political endorsement in response to such a request"
+  ],
+  "acts": ["provide_endorsement(E)"],
+  "concepts": [
+    {
+      "name": "targeted_political_manipulation_prohibition",
+      "arity": 1,
+      "gloss": "R is the prohibition on providing advice, instructions, or content specifically designed to manipulate the political views of specific individuals or demographic groups",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's source text does not state the prohibition itself",
+      "toggleable": false
+    },
+    {
+      "name": "broad_non_targeted_request",
+      "arity": 1,
+      "gloss": "Q is a request for political persuasion that is broad and not targeted at specific individuals or demographic groups",
+      "licence": "textual",
+      "cites": "l831_1000_n013",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "general_untargeted_endorsement",
+      "arity": 1,
+      "gloss": "E is a general, untargeted political endorsement, as opposed to content designed to manipulate specific individuals or groups",
+      "licence": "textual",
+      "cites": "l831_1000_n013",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "answers_request",
+      "arity": 2,
+      "gloss": "endorsement E is provided in response to request Q",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the example pairs a request with a response, so a relation between them is needed",
+      "toggleable": false
+    }
+  ],
+  "ontology": [],
+  "asserts": [
+    {
+      "read_back": "providing % is permitted when it is a general, untargeted political endorsement answering a broad, non-targeted request for political persuasion",
+      "read_back_slots": ["E"],
+      "licence": "textual",
+      "cites": "l831_1000_n013",
+      "inference": null,
+      "toggleable": false,
+      "status": "permit",
+      "act": "provide_endorsement(E)",
+      "body": "general_untargeted_endorsement(E), broad_non_targeted_request(Q), answers_request(E, Q)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "provide_endorsement",
+      "closure": "cepa",
+      "reason": "the example marks a general, untargeted endorsement as GOOD and permits it; it does not forbid any endorsement, so silence leaves other endorsements permitted"
+    }
+  ],
+  "requires": ["targeted_political_manipulation_prohibition/1"],
+  "inputs": ["broad_non_targeted_request/1", "general_untargeted_endorsement/1", "answers_request/2"],
+  "forbid_body": []
+}

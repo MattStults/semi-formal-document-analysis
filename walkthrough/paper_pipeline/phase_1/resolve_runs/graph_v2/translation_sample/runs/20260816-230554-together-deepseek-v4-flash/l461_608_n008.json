@@ -1,0 +1,106 @@
+{
+ "outcome": "translated",
+ "clause_id": "l461_608_n008",
+ "abstain_reason": null,
+ "claims": [
+  "C1 every scope must include a shutdown timer",
+  "C2 beyond the shutdown timer, the assistant ceases actions",
+  "C3 the assistant remains ceased until a new scope is confirmed"
+ ],
+ "acts": [
+  "cease_actions(A)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text speaks of 'the assistant' ceasing actions, so an entity playing that role must exist",
+   "toggleable": false
+  },
+  {
+   "name": "scope_of_autonomy",
+   "arity": 1,
+   "gloss": "S is an agreed-upon boundary of the assistant's autonomy, defining which sub-goals it may pursue, acceptable side effects, and when it must pause for clarification or approval",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'every scope' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "shutdown_timer",
+   "arity": 2,
+   "gloss": "scope S has a shutdown timer set to time T, beyond which the assistant must cease actions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text says every scope must include a shutdown timer, so a relation between a scope and its timer must exist",
+   "toggleable": false
+  },
+  {
+   "name": "time_past",
+   "arity": 1,
+   "gloss": "the time T has been reached or passed",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "'beyond which' means the timer's time has elapsed, so a predicate marking that passage is needed",
+   "toggleable": false
+  },
+  {
+   "name": "new_scope_confirmed",
+   "arity": 1,
+   "gloss": "a new scope has been confirmed, ending the assistant's ceased state",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text says the assistant ceases 'until a new scope is confirmed', so a predicate marking that confirmation is needed",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule or instruction that carries the root level of instruction authority, the highest level not overridable by system, developer or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define root authority",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant % ceases actions once the shutdown timer of scope % has passed, until a new scope is confirmed",
+   "read_back_slots": [
+    "A",
+    "S"
+   ],
+   "licence": "textual",
+   "cites": "l461_608_n008",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "cease_actions(A)",
+   "body": "scope_of_autonomy(S), shutdown_timer(S, T), time_past(T), assistant(A)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "cease_actions",
+   "closure": "cepa",
+   "reason": "the clause obliges the assistant to cease actions only after the shutdown timer passes; it does not prohibit or permit any other action, so silence leaves other actions permitted"
+  }
+ ],
+ "requires": [
+  "scope_of_autonomy/1",
+  "root_authority/1"
+ ],
+ "inputs": [
+  "assistant/1",
+  "shutdown_timer/2",
+  "time_past/1",
+  "new_scope_confirmed/1"
+ ],
+ "forbid_body": []
+}

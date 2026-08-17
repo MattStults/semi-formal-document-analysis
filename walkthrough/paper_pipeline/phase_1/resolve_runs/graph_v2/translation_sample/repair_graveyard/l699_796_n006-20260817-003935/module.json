@@ -1,0 +1,91 @@
+{
+ "outcome": "translated",
+ "clause_id": "l699_796_n006",
+ "abstain_reason": null,
+ "claims": [
+  "C1: end user instructions may be included as part of a user message",
+  "C2: including end user instructions in a user message does not require quoting them with a specific format"
+ ],
+ "acts": [],
+ "concepts": [
+  {
+   "name": "end_user_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction issued by an end user of the product, as distinct from a developer instruction",
+   "licence": "textual",
+   "cites": "l699_796_n006",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "user_message",
+   "arity": 1,
+   "gloss": "M is a message in the conversation whose role is 'user'",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text names the 'user' message role; the message_role_definition/2 shared signature is the document-wide way to state a message's role, and this node's text presupposes that role without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "included_in_message",
+   "arity": 2,
+   "gloss": "instruction I is included as part of message M",
+   "licence": "textual",
+   "cites": "l699_796_n006",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "quoted_with_specific_format",
+   "arity": 1,
+   "gloss": "I is an instruction that is quoted with a specific format such as YAML, JSON, or XML",
+   "licence": "textual",
+   "cites": "l699_796_n006",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule or instruction that carries the root level of instruction authority, the highest level, not overridable by system, developer, or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's source text does not state it",
+   "toggleable": false
+  },
+  {
+   "name": "message_role_definition",
+   "arity": 2,
+   "gloss": "message M has role R, where R is one of system, developer, user, assistant, or tool",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the shared-name signature defines this predicate; this node's source text refers to a 'user' message without defining the role relation",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text names the 'user' message role; the shared message_role_definition/2 signature is the document-wide way to state a message's role",
+   "toggleable": false,
+   "atom": "user_message(M)",
+   "gloss": "M is a message with the user role",
+   "body": "message_role_definition(M, user)"
+  }
+ ],
+ "asserts": [],
+ "beats": [],
+ "defines": [],
+ "closure": [],
+ "requires": [
+  "root_authority/1",
+  "message_role_definition/2"
+ ],
+ "inputs": [
+  "user_message/1",
+  "included_in_message/2",
+  "quoted_with_specific_format/1"
+ ],
+ "forbid_body": []
+}

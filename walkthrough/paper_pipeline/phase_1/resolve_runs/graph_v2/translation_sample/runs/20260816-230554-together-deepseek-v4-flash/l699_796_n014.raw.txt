@@ -1,0 +1,108 @@
+{
+  "abstain_reason": null,
+  "acts": [
+    "consider_tool_call(T)",
+    "consider_trust_level(T)",
+    "consider_user_control_knowledge(T)"
+  ],
+  "asserts": [
+    {
+      "act": "consider_tool_call(T)",
+      "body": "tool_call(T), yielded_outputs(T, O), determining_relevance(O)",
+      "cites": "l699_796_n014",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "when determining the relevance of outputs %, the assistant should consider the specific tool call % that yielded them",
+      "read_back_slots": ["O", "T"],
+      "status": "oblige",
+      "toggleable": false
+    },
+    {
+      "act": "consider_trust_level(T)",
+      "body": "tool_call(T), yielded_outputs(T, O), determining_relevance(O)",
+      "cites": "l699_796_n014",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "when determining the relevance of outputs %, the assistant should consider the trust level of the tool call % that yielded them",
+      "read_back_slots": ["O", "T"],
+      "status": "oblige",
+      "toggleable": false
+    },
+    {
+      "act": "consider_user_control_knowledge(T)",
+      "body": "tool_call(T), yielded_outputs(T, O), determining_relevance(O)",
+      "cites": "l699_796_n014",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "when determining the relevance of outputs %, the assistant should consider how much control and knowledge the user likely has over the instructions of tool call %",
+      "read_back_slots": ["O", "T"],
+      "status": "oblige",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1: when determining relevance of tool outputs, the assistant should consider the specific tool call that yielded them",
+    "C2: when determining relevance of tool outputs, the assistant should consider the trust level of that tool call",
+    "C3: when determining relevance of tool outputs, the assistant should consider how much control and knowledge the user likely has over the tool instructions"
+  ],
+  "clause_id": "l699_796_n014",
+  "closure": [
+    {
+      "act_class": "consider_tool_call",
+      "closure": "cepa",
+      "reason": "The clause obliges consideration of the tool call when determining relevance; it does not forbid or permit any act, so silence about other acts permits them."
+    },
+    {
+      "act_class": "consider_trust_level",
+      "closure": "cepa",
+      "reason": "The clause obliges consideration of the trust level when determining relevance; it does not forbid or permit any act, so silence about other acts permits them."
+    },
+    {
+      "act_class": "consider_user_control_knowledge",
+      "closure": "cepa",
+      "reason": "The clause obliges consideration of user control and knowledge when determining relevance; it does not forbid or permit any act, so silence about other acts permits them."
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "T is a specific tool call that produced outputs in the conversation",
+      "inference": "the clause speaks of 'the specific tool call that yielded the outputs', so a relation between a tool call and its outputs is presupposed",
+      "licence": "assumed",
+      "name": "tool_call",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "tool call T yielded output O",
+      "inference": "the clause speaks of 'the specific tool call that yielded the outputs', so a relation between a tool call and its outputs is presupposed",
+      "licence": "assumed",
+      "name": "yielded_outputs",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "O is an output whose relevance is being determined",
+      "inference": "the clause's opening phrase 'in determining relevance' presupposes a situation in which relevance of outputs is assessed",
+      "licence": "assumed",
+      "name": "determining_relevance",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": [
+    "tool_call/1",
+    "yielded_outputs/2",
+    "determining_relevance/1"
+  ],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": [
+    "root_authority/1"
+  ]
+}
