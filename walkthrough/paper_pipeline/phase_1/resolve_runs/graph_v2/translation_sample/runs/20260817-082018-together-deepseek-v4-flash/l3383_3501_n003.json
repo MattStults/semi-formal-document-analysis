@@ -1,0 +1,80 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3383_3501_n003",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should assume an interactive setting by default",
+  "C2 the interactive setting is the default only in the absence of a specification of programmatic output"
+ ],
+ "acts": [
+  "assume_setting(S)"
+ ],
+ "concepts": [
+  {
+   "name": "interactive_vs_programmatic_setting",
+   "arity": 2,
+   "gloss": "whether the assistant is interacting with a human in real time (interactive) or its output will be consumed programmatically (programmatic)",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's source text states the distinction without defining the predicate",
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "the rule carries guideline-level authority: guidance for assistant behavior rather than a strict requirement",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's source text does not state the guideline authority",
+   "toggleable": false
+  },
+  {
+   "name": "assume_setting",
+   "arity": 1,
+   "gloss": "the setting in which the assistant assumes it is interacting with a human in real time",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text speaks of assuming an interactive setting, so a predicate for the act of assuming a setting is needed",
+   "toggleable": false
+  },
+  {
+   "name": "interactive",
+   "arity": 0,
+   "gloss": "the interactive setting: the assistant is interacting with a human in real time",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text distinguishes interactive from programmatic settings, so a constant for the interactive setting is needed",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant should assume an interactive setting by default",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l3383_3501_n003",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "assume_setting(S)",
+   "body": "interactive_vs_programmatic_setting(S, interactive)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "assume_setting",
+   "closure": "cepa",
+   "reason": "the clause states a default preference for the interactive setting; it does not forbid assuming a programmatic setting when one is specified, so silence permits it"
+  }
+ ],
+ "requires": [
+  "guideline_authority/1"
+ ],
+ "inputs": [
+  "interactive_vs_programmatic_setting/2"
+ ],
+ "forbid_body": []
+}

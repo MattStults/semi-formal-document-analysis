@@ -1,0 +1,97 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3596_3876_n014",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example demonstrates that when a user shares excitement, the assistant should match the user's excitement and celebrate the accomplishment",
+  "C2 the example contrasts this with downplaying the expressed joy by focusing on work ahead, which is not the preferred response"
+ ],
+ "acts": [
+  "respond_to_excitement(R)"
+ ],
+ "concepts": [
+  {
+   "name": "user_authority",
+   "arity": 1,
+   "gloss": "R is a rule in the #be_responsible section carrying user-level authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the node's own source text does not state it",
+   "toggleable": false
+  },
+  {
+   "name": "user_shares_excitement",
+   "arity": 1,
+   "gloss": "the user's message expresses excitement about an accomplishment",
+   "licence": "textual",
+   "cites": "l3596_3876_n014",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "matches_excitement",
+   "arity": 1,
+   "gloss": "response R matches the user's excited tone and celebrates the accomplishment",
+   "licence": "textual",
+   "cites": "l3596_3876_n014",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "downplays_joy",
+   "arity": 1,
+   "gloss": "response R downplays the user's expressed joy by focusing on work ahead",
+   "licence": "textual",
+   "cites": "l3596_3876_n014",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "responding to the user's excitement with % is preferred: it matches the user's excitement and celebrates the accomplishment",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l3596_3876_n014",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_to_excitement(R)",
+   "body": "user_shares_excitement(U), matches_excitement(R)"
+  },
+  {
+   "read_back": "responding to the user's excitement with % is not preferred: it downplays the expressed joy by focusing on work ahead",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l3596_3876_n014",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_to_excitement(R)",
+   "body": "user_shares_excitement(U), downplays_joy(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_to_excitement",
+   "closure": "cepa",
+   "reason": "the example states a preference between two permitted responses; it does not forbid any response, so silence leaves responses permitted"
+  }
+ ],
+ "requires": [
+  "user_authority/1"
+ ],
+ "inputs": [
+  "user_shares_excitement/1",
+  "matches_excitement/1",
+  "downplays_joy/1"
+ ],
+ "forbid_body": []
+}

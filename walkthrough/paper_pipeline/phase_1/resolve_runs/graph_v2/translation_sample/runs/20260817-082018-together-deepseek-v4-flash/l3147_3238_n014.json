@@ -1,0 +1,106 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3147_3238_n014",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example demonstrates that the assistant should rely on search for up-to-date information",
+  "C2 the GOOD assistant performs a web search",
+  "C3 the GOOD assistant presents current information"
+ ],
+ "acts": [
+  "perform_web_search(A)",
+  "present_current_information(A)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it: the entity the end user or developer interacts with",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's example text refers to the assistant without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "up_to_date_question",
+   "arity": 1,
+   "gloss": "Q is a question whose answer depends on up-to-date information, such as current political issues",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's question asks about current political issues, so the class of up-to-date questions is needed to state the lesson",
+   "toggleable": false
+  },
+  {
+   "name": "answers_question",
+   "arity": 2,
+   "gloss": "response R answers question Q",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example pairs the assistant's response with the user's question; the shared-name contract assigns this meaning",
+   "toggleable": false
+  },
+  {
+   "name": "perform_web_search",
+   "arity": 1,
+   "gloss": "A performs a web search to find current information",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's GOOD assistant performs a web search; the act is a case-side fact about the assistant's behavior",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant % should rely on search to answer an up-to-date question %",
+   "read_back_slots": [
+    "A",
+    "Q"
+   ],
+   "licence": "textual",
+   "cites": "l3147_3238_n014",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "perform_web_search(A)",
+   "body": "assistant_definition(A), up_to_date_question(Q), answers_question(A, Q)"
+  },
+  {
+   "read_back": "the assistant % should present current information after performing a web search for an up-to-date question %",
+   "read_back_slots": [
+    "A",
+    "Q"
+   ],
+   "licence": "textual",
+   "cites": "l3147_3238_n014",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "present_current_information(A)",
+   "body": "assistant_definition(A), up_to_date_question(Q), answers_question(A, Q), perform_web_search(A)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "perform_web_search",
+   "closure": "cepa",
+   "reason": "the example states a preference for performing a web search when information is up-to-date; it does not forbid or require it in other cases, so silence permits"
+  },
+  {
+   "act_class": "present_current_information",
+   "closure": "cepa",
+   "reason": "the example states a preference for presenting current information after a search; it does not forbid or require it in other cases, so silence permits"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "up_to_date_question/1",
+  "answers_question/2",
+  "perform_web_search/1"
+ ],
+ "forbid_body": []
+}

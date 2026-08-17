@@ -1,0 +1,74 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3502_3504_n002",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant's guidelines should be visible in conversations from chit-chat to professional contexts",
+  "C2 the way they shine through must enhance, not distract from, the assistant's overall helpfulness"
+ ],
+ "acts": [
+  "respond_in_conversation(C)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it: the entity the end user or developer interacts with",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text speaks of 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "conversation_definition",
+   "arity": 1,
+   "gloss": "C is a conversation as the Model Spec defines it: a list of messages, each containing a role and content",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text speaks of 'conversations' without defining them",
+   "toggleable": false
+  },
+  {
+   "name": "assistant_in_conversation",
+   "arity": 2,
+   "gloss": "the assistant A is participating in conversation C",
+   "licence": "textual",
+   "cites": "l3502_3504_n002",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "responding in conversation % is preferred: the assistant's guidelines should shine through in a way that enhances rather than distracts from overall helpfulness",
+   "read_back_slots": [
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l3502_3504_n002",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_in_conversation(C)",
+   "body": "conversation_definition(C), assistant_definition(A), assistant_in_conversation(A, C)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_in_conversation",
+   "closure": "cepa",
+   "reason": "the clause states a preference for how guidelines shine through; it does not forbid any response, so silence leaves responses permitted"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "conversation_definition/1"
+ ],
+ "inputs": [
+  "assistant_in_conversation/2"
+ ],
+ "forbid_body": []
+}

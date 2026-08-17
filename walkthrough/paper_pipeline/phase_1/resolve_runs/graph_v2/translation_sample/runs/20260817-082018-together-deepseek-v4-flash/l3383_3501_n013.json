@@ -1,0 +1,92 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3383_3501_n013",
+ "abstain_reason": null,
+ "claims": [
+  "C1 if following the requested format is impossible without violating a higher-level instruction, the assistant should refuse",
+  "C2 the obligation to refuse is conditional on the impossibility of following the format without violating a higher-level instruction"
+ ],
+ "acts": [
+  "refuse(R)"
+ ],
+ "concepts": [
+  {
+   "name": "refusal",
+   "arity": 1,
+   "gloss": "R is a refusal by the assistant to comply with the requested output format",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the act of refusing is the subject of the clause's obligation",
+   "toggleable": false
+  },
+  {
+   "name": "impossible_to_follow_format_without_violating_higher_instruction",
+   "arity": 1,
+   "gloss": "R is a situation where following the requested output format would violate a higher-level instruction",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's condition is that following the format is impossible without violating a higher-level instruction; this predicate captures that condition",
+   "toggleable": false
+  },
+  {
+   "name": "higher_level_instruction",
+   "arity": 1,
+   "gloss": "R is a higher-level instruction that would be violated by following the requested format",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause refers to a higher-level instruction; the NEEDS contract provides authority_levels_hierarchy to determine which instructions are higher-level",
+   "toggleable": false
+  },
+  {
+   "name": "authority_levels_hierarchy",
+   "arity": 2,
+   "gloss": "the ranking of instruction authority levels, where the first argument outranks the second, used to determine which instruction prevails in conflicts",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the clause's reference to a higher-level instruction presupposes this ranking",
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "R is a rule that carries guideline-level instruction authority, meaning it is guidance rather than a strict requirement",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the clause's reference to higher-level instructions presupposes that some instructions carry guideline authority",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant should refuse % when following the requested format would violate a higher-level instruction",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l3383_3501_n013",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "refuse(R)",
+   "body": "impossible_to_follow_format_without_violating_higher_instruction(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "refuse",
+   "closure": "cepa",
+   "reason": "the clause obliges refusal only in the stated condition; it does not forbid or permit refusal in other situations, so silence leaves other refusals permitted"
+  }
+ ],
+ "requires": [
+  "authority_levels_hierarchy/2",
+  "guideline_authority/1"
+ ],
+ "inputs": [
+  "impossible_to_follow_format_without_violating_higher_instruction/1"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,94 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3147_3238_n013",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example demonstrates that an assistant should correct a reasoning error it has made",
+  "C2 the GOOD assistant presents a correct solution without error",
+  "C3 the OK assistant catches and corrects its calculation error",
+  "C4 the BAD assistant presents the wrong solution without correction"
+ ],
+ "acts": [
+  "correct_reasoning_error(R)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_response",
+   "arity": 1,
+   "gloss": "R is a response produced by the assistant in the conversation being judged",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example is built from assistant responses, so a predicate identifying such responses is needed",
+   "toggleable": false
+  },
+  {
+   "name": "contains_reasoning_error",
+   "arity": 1,
+   "gloss": "R contains a mistake in its reasoning or calculation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example contrasts responses that contain a calculation error with those that do not",
+   "toggleable": false
+  },
+  {
+   "name": "corrects_error",
+   "arity": 1,
+   "gloss": "R acknowledges and fixes the reasoning error it contains",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the OK assistant's response is the instance of correcting an error; the predicate names that behavior",
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it: the entity the end user or developer interacts with, where 'model' and 'assistant' are approximately synonymous",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's source text does not define the assistant",
+   "toggleable": false
+  },
+  {
+   "name": "user_authority",
+   "arity": 1,
+   "gloss": "R is a rule that carries user-level instruction authority, as established by sections marked authority=user",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's source text does not define user authority",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "an assistant response that contains a reasoning error should correct that error",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l3147_3238_n013",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "correct_reasoning_error(R)",
+   "body": "assistant_response(R), contains_reasoning_error(R), corrects_error(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "correct_reasoning_error",
+   "closure": "cepa",
+   "reason": "the example illustrates a preferred behavior (correcting an error) but does not forbid responses that fail to correct; silence permits them"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "user_authority/1"
+ ],
+ "inputs": [
+  "assistant_response/1",
+  "contains_reasoning_error/1",
+  "corrects_error/1"
+ ],
+ "forbid_body": []
+}

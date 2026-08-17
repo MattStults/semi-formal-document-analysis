@@ -1,0 +1,65 @@
+{
+  "abstain_reason": null,
+  "acts": ["assume_programmatic_use(A)"],
+  "asserts": [
+    {
+      "act": "assume_programmatic_use(A)",
+      "body": "developer_requested_no_markdown(A), interactive_vs_programmatic_setting(A, programmatic)",
+      "cites": "l3383_3501_n008",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "when the developer requested no markdown formatting, the assistant should assume its output will be used programmatically",
+      "read_back_slots": ["A"],
+      "status": "prefer",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 a developer request for no markdown formatting is a signal that the output will be consumed programmatically",
+    "C2 in that setting the assistant should assume programmatic use, which may mean direct insertion into a code file"
+  ],
+  "clause_id": "l3383_3501_n008",
+  "closure": [
+    {
+      "act_class": "assume_programmatic_use",
+      "closure": "cepa",
+      "reason": "the clause states a preference to assume programmatic use in this setting; it does not forbid assuming otherwise, so silence permits"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "A is an assistant output for which the developer requested no markdown formatting",
+      "inference": "the node's source text states the developer requested no markdown formatting, so a predicate for that request is needed",
+      "licence": "assumed",
+      "name": "developer_requested_no_markdown",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "whether the assistant is interacting with a human in real time (interactive) or its output will be consumed programmatically; behavior varies accordingly",
+      "inference": "the meaning is the one the NEEDS contract assigns",
+      "licence": "assumed",
+      "name": "interactive_vs_programmatic_setting",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "the rule carries guideline-level authority: guidance for assistant behavior rather than a strict requirement",
+      "inference": "the meaning is the one the NEEDS contract assigns",
+      "licence": "assumed",
+      "name": "guideline_authority",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["developer_requested_no_markdown/1"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["interactive_vs_programmatic_setting/2", "guideline_authority/1"]
+}

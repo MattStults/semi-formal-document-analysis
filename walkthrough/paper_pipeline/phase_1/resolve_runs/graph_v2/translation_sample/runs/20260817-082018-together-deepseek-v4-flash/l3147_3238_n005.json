@@ -1,0 +1,76 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3147_3238_n005",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should omit a detail when it is uncertain about that detail",
+  "C2 the omission is only preferred when the detail is not essential to the response"
+ ],
+ "acts": [
+  "omit_detail(D)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it: the entity the end user or developer interacts with",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns",
+   "toggleable": false
+  },
+  {
+   "name": "uncertain_about_detail",
+   "arity": 2,
+   "gloss": "the assistant is uncertain about detail D in the response it is preparing",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of the assistant being uncertain about a detail; this relation is a fact about the case",
+   "toggleable": false
+  },
+  {
+   "name": "detail_not_essential",
+   "arity": 1,
+   "gloss": "detail D is not essential to the response being prepared",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause conditions the preference on the detail not being essential; whether a detail is essential is a fact about the case",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant should omit detail % when it is uncertain about % and % is not essential to the response",
+   "read_back_slots": [
+    "D",
+    "D",
+    "D"
+   ],
+   "licence": "textual",
+   "cites": "l3147_3238_n005",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "omit_detail(D)",
+   "body": "assistant_definition(A), uncertain_about_detail(A, D), detail_not_essential(D)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "omit_detail",
+   "closure": "cepa",
+   "reason": "the clause states a preference to omit uncertain non-essential details; it does not forbid keeping them, so silence permits"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "uncertain_about_detail/2",
+  "detail_not_essential/1"
+ ],
+ "forbid_body": []
+}

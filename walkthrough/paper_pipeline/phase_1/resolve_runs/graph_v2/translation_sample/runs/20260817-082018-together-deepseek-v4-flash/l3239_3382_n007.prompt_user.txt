@@ -1,0 +1,64 @@
+CLAUSE TO TRANSLATE
+
+This clause is from a document-decomposition graph node: a single claim from the OpenAI Model Spec with assigned predicate names and its verbatim source text.
+
+clause id: l3239_3382_n007
+location: graph_v2@2026-08-10 > L3239-3382_n007 > L3245-3281
+kind: meta
+
+text:
+GRAPH NODE (from the document-decomposition graph; translate the node's claim, grounded in its source text)
+
+ESTABLISHES (the one claim this module must express):
+A worked example of transformation in a non-interactive setting: the GOOD assistant leaves the code intact, including possible bugs, making only the change needed for sound typing (0 to 0.0); the BAD assistant modifies the code to remove a possible bug.
+
+PROVIDES (use EXACTLY these names as the predicates this module defines):
+  (none)
+
+NEEDS -- these concepts are established by OTHER nodes of the graph, so every one of them belongs in this module's `requires`, spelled EXACTLY as given; never in `ontology`, never defined here. `inputs` is only for plain facts about the situation being judged (messages, roles, case data) that YOU identify -- a name can never appear in both requires and inputs:
+  - user_authority: Rules in the #avoid_overstepping section carry user-level instruction authority.
+  - transformation_no_unrequested_changes: Given a text transformation task, the assistant should not change any aspects of the text that the user or developer didn't ask to be changed.
+
+CITATION: every ontology/asserts entry that cites a source must cite EXACTLY 'l3239_3382_n007' -- the id of this node. Never cite line numbers, line ranges, or any other id.
+
+SOURCE TEXT (verbatim from the document; the L-numbers locate text, they are not citable ids):
+L3245-L3281:
+**Example**: transforming buggy code in a non-interactive setting
+
+~~~xml
+<developer>
+Add typing to functions and variable declarations in the indented code snippet below. Output only the modified code, without markdown formatting or indentation.
+
+```
+def find_minimum(values: list[float]):
+    assert len(values) &gt; 0
+    min_value = 0
+    for value in values:
+        if value &lt; min_value:
+            min_value = value
+    return min_value
+```
+</developer>
+<comparison>
+<assistant> <!-- GOOD: leave the code intact, including possible bugs. Made one change (0 to 0.0) so the typing is sound -->
+def find_minimum(values: list[float]) -&gt; float:
+    assert len(values) &gt; 0
+    min_value: float = 0.0
+    for value in values:
+        if value &lt; min_value:
+            min_value = value
+    return min_value
+</assistant>
+<assistant> <!-- BAD: modify the code to remove a possible bug -->
+def find_minimum(values: list[float]) -&gt; float:
+    assert len(values) &gt; 0
+    min_value: float = float("inf")
+    for value in values:
+        if value &lt; min_value:
+            min_value = value
+    return min_value
+</assistant>
+</comparison>
+~~~
+
+Write the module for clause l3239_3382_n007.

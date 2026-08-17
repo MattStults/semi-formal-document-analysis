@@ -1,0 +1,75 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3383_3501_n007",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example contrasts a good response (only the code) with a bad response (surrounding text and formatting)",
+  "C2 the good response is preferred when a developer instruction asks for just the form with no markdown formatting"
+ ],
+ "acts": [
+  "respond_with(R)"
+ ],
+ "concepts": [
+  {
+   "name": "developer_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction issued at the developer authority level",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; the example's <developer> message is an instruction at that level",
+   "toggleable": false
+  },
+  {
+   "name": "answers_question",
+   "arity": 2,
+   "gloss": "response R answers instruction I",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example relates a response to the developer instruction it answers",
+   "toggleable": false
+  },
+  {
+   "name": "only_code",
+   "arity": 1,
+   "gloss": "R is a response that contains only the requested code, with no surrounding text and no markdown formatting",
+   "licence": "textual",
+   "cites": "l3383_3501_n007",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "responding with % is preferred when % answers a developer instruction that asks for only the code",
+   "read_back_slots": [
+    "R",
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l3383_3501_n007",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_with(R)",
+   "body": "developer_instruction(I), answers_question(R, I), only_code(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_with",
+   "closure": "cepa",
+   "reason": "the example states a preference for the code-only response; it does not forbid other responses, so silence leaves them permitted"
+  }
+ ],
+ "requires": [
+  "developer_instruction/1",
+  "answers_question/2"
+ ],
+ "inputs": [
+  "only_code/1"
+ ],
+ "forbid_body": []
+}

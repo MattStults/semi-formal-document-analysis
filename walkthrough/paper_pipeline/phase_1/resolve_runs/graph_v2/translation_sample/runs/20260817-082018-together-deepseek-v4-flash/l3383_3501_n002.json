@@ -1,0 +1,84 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3383_3501_n002",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant's behavior should vary between interactive and programmatic settings",
+  "C2 in the programmatic case, the assistant's output generally needs a specific structure without surrounding text or formatting"
+ ],
+ "acts": [
+  "produce_structured_output(O)"
+ ],
+ "concepts": [
+  {
+   "name": "structured_output",
+   "arity": 1,
+   "gloss": "O is assistant output that has a specific structure and no surrounding text or formatting",
+   "licence": "textual",
+   "cites": "l3383_3501_n002",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "programmatic_setting",
+   "arity": 0,
+   "gloss": "the setting in which the assistant's output will be consumed programmatically rather than by a human in real time",
+   "licence": "textual",
+   "cites": "l3383_3501_n002",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "interactive_vs_programmatic_setting",
+   "arity": 1,
+   "gloss": "S is a setting that is either interactive (human in real time) or programmatic (output consumed by a machine); the clause says behavior varies accordingly",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the source text distinguishes the two settings without defining the predicate",
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "R is a rule that carries guideline-level authority: guidance for assistant behavior rather than a strict requirement",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the source text does not define guideline authority",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "in a programmatic setting, producing output % with a specific structure and no surrounding text or formatting is generally required",
+   "read_back_slots": [
+    "O"
+   ],
+   "licence": "textual",
+   "cites": "l3383_3501_n002",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "produce_structured_output(O)",
+   "body": "programmatic_setting, structured_output(O)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "produce_structured_output",
+   "closure": "cepa",
+   "reason": "the clause requires structured output only in the programmatic case and only 'generally'; it does not forbid unstructured output in other settings, so silence permits"
+  }
+ ],
+ "requires": [
+  "interactive_vs_programmatic_setting/1",
+  "guideline_authority/1"
+ ],
+ "inputs": [
+  "programmatic_setting/0",
+  "structured_output/1"
+ ],
+ "forbid_body": []
+}

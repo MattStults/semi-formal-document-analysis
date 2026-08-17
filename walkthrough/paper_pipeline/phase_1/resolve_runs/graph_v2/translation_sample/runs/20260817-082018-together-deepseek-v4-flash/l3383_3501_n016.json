@@ -1,0 +1,153 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3383_3501_n016",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example demonstrates that when a user demands a YES or NO answer about a private person's phone number, the good response breaks format and refuses in text",
+  "C2 the example demonstrates that answering either way violates privacy and is bad"
+ ],
+ "acts": [
+  "break_format(R)",
+  "answer_yes_no(R)",
+  "refuse_in_text(R)"
+ ],
+ "concepts": [
+  {
+   "name": "break_format",
+   "arity": 1,
+   "gloss": "R is a response that breaks the requested format (e.g. does not answer YES or NO)",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example contrasts breaking format with answering YES or NO; the contrast needs this class",
+   "toggleable": false
+  },
+  {
+   "name": "answer_yes_no",
+   "arity": 1,
+   "gloss": "R is a response that answers the question with YES or NO",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's bad response is 'NO'; the class of yes/no answers is needed",
+   "toggleable": false
+  },
+  {
+   "name": "refuse_in_text",
+   "arity": 1,
+   "gloss": "R is a response that refuses to answer, stated in text",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the good response refuses in text; the class of text refusals is needed",
+   "toggleable": false
+  },
+  {
+   "name": "user_demands_yes_no",
+   "arity": 1,
+   "gloss": "Q is a user question demanding a YES or NO answer",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's user message demands YES or NO; the class of such demands is needed",
+   "toggleable": false
+  },
+  {
+   "name": "private_person_phone_number",
+   "arity": 1,
+   "gloss": "Q is a question about a private person's phone number",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's question is about a private person's phone number; the class is needed",
+   "toggleable": false
+  },
+  {
+   "name": "answers_question",
+   "arity": 2,
+   "gloss": "response R answers question Q",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example relates responses to the question; the relation is needed",
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "R carries guideline-level instruction authority: guidance for assistant behavior rather than a strict requirement",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's example text does not state it",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "breaking format is preferred when % demands a YES or NO answer about a private person's phone number and % would answer either way",
+   "read_back_slots": [
+    "Q",
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l3383_3501_n016",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "break_format(R)",
+   "body": "user_demands_yes_no(Q), private_person_phone_number(Q), answer_yes_no(R), answers_question(R,Q)"
+  },
+  {
+   "read_back": "refusing in text is preferred when % demands a YES or NO answer about a private person's phone number and % answers the question",
+   "read_back_slots": [
+    "Q",
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l3383_3501_n016",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "refuse_in_text(R)",
+   "body": "user_demands_yes_no(Q), private_person_phone_number(Q), answers_question(R,Q)"
+  },
+  {
+   "read_back": "answering YES or NO is forbidden when % demands a YES or NO answer about a private person's phone number and % answers the question",
+   "read_back_slots": [
+    "Q",
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l3383_3501_n016",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "answer_yes_no(R)",
+   "body": "user_demands_yes_no(Q), private_person_phone_number(Q), answers_question(R,Q)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "break_format",
+   "closure": "cepa",
+   "reason": "the example prefers breaking format in this situation but does not forbid format compliance generally; silence permits"
+  },
+  {
+   "act_class": "answer_yes_no",
+   "closure": "cnpa",
+   "reason": "the example marks answering either way as violating privacy, so answering YES or NO in this situation is prohibited"
+  },
+  {
+   "act_class": "refuse_in_text",
+   "closure": "cepa",
+   "reason": "the example prefers refusing in text but does not forbid other refusal forms generally; silence permits"
+  }
+ ],
+ "requires": [
+  "guideline_authority/1"
+ ],
+ "inputs": [
+  "user_demands_yes_no/1",
+  "private_person_phone_number/1",
+  "answers_question/2",
+  "answer_yes_no/1"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,5985 @@
+{
+ "config": {
+  "_": "phase_1/translate.py \u2014 every knob, at its default, with the reason beside it. Nothing about the provider, the corpus or the prompt is hardcoded in translate.py. --config points elsewhere; CLI flags override individual keys. Paths are relative to phase_1/.",
+  "corpus": {
+   "_": "The clause set. modelspec_clauses.json is the segmentation of record: 593 clauses, each with id, quote, section_id, section_path, kind, locator.",
+   "path": "node_corpus_all.json",
+   "records_key": "clauses",
+   "id_key": "id",
+   "text_key": "quote",
+   "section_key": "section_id",
+   "kind_key": "kind",
+   "_description": "What the corpus IS, one line, rendered into the USER block. It belongs there and not in the system block: the system block is the METHOD of translation and should be byte-identical across corpora, which also keeps it cacheable. A corpus-specific sentence in it makes the prompt fit only the document it was written for.",
+   "description": "a document-decomposition graph node: a single claim from the OpenAI Model Spec with assigned predicate names and its verbatim source text",
+   "_split_note": "DURABLE FIX 2026-08-14 (the -out split recorded after the first --ids clobber, now bitten a third time): the FULL-CORPUS run reads node_corpus_all.json. node_corpus.json stays the pinned 15-node SAMPLE that test_node_worked_example and behavior_pilot assert against -- a live artifact and a test fixture must not be the same file."
+  },
+  "select": {
+   "_": "What to translate. A clause id list wins over section; section wins over kind. All three empty = refuse, because 'translate everything' is not a thing to do by accident.",
+   "_kinds": "modelspec_kinds over 410 classified clauses: conditional 188, definitional 84, meta 72, holistic 66. `definitional` clauses emit facts and are the easy end of stage 1; `conditional` clauses are the ones that need rules.",
+   "clause_ids": [
+    "l1_170_n001",
+    "l1_170_n002",
+    "l1_170_n003",
+    "l1_170_n004",
+    "l1_170_n005",
+    "l1_170_n006",
+    "l1_170_n007",
+    "l1_170_n008",
+    "l1_170_n009",
+    "l1_170_n010",
+    "l1_170_n011",
+    "l1_170_n012",
+    "l1_170_n013",
+    "l1_170_n014",
+    "l1_170_n015",
+    "l1_170_n016",
+    "l1_170_n017",
+    "l1_170_n018",
+    "l1_170_n019",
+    "l1_170_n020",
+    "l1_170_n021",
+    "l1_170_n022",
+    "l1_170_n023",
+    "l1_170_n024",
+    "l1_170_n025",
+    "l1_170_n026",
+    "l1_170_n027",
+    "l1_170_n028",
+    "l1_170_n029",
+    "l1_170_n030",
+    "l1_170_n031",
+    "l1_170_n032",
+    "l1_170_n033",
+    "l1_170_n034",
+    "l1_170_n035",
+    "l1_170_n036",
+    "l1_170_n037",
+    "l1_170_n038",
+    "l1_170_n039",
+    "l1_170_n040",
+    "l1_170_n041",
+    "l1_170_n042",
+    "l1_170_n043",
+    "l1_170_n044",
+    "l1_170_n045",
+    "l1_170_n046",
+    "l1_170_n047",
+    "l1_170_n048",
+    "l1_170_n049",
+    "l1_170_n050",
+    "l1_170_n051",
+    "l1_170_n052",
+    "l1_170_n053",
+    "l1_170_n054",
+    "l1_170_n055",
+    "l1_170_n056",
+    "l1_170_n057",
+    "l1_170_n058",
+    "l1_170_n059",
+    "l1_170_n060",
+    "l1_170_n061",
+    "l1_170_n062",
+    "l1_170_n063",
+    "l1_170_n064",
+    "l1_170_n065",
+    "l1_170_n066",
+    "l1_170_n067",
+    "l1_170_n068",
+    "l1_170_n069",
+    "l1_170_n070",
+    "l1_170_n071",
+    "l1_170_n072",
+    "l1_170_n073",
+    "l1_170_n074",
+    "l1_170_n075",
+    "l1_170_n076",
+    "l1_170_n077",
+    "l1_170_n078",
+    "l1_170_n079",
+    "l1_170_n080",
+    "l1_170_n081",
+    "l1_170_n082",
+    "l1_170_n083",
+    "l1_170_n084",
+    "l1_170_n085",
+    "l1_170_n086",
+    "l1_170_n087",
+    "l1_170_n088",
+    "l1_170_n089",
+    "l1_170_n090",
+    "l1_170_n091",
+    "l1_170_n092",
+    "l171_426_n001",
+    "l171_426_n002",
+    "l171_426_n003",
+    "l171_426_n004",
+    "l171_426_n005",
+    "l171_426_n007",
+    "l171_426_n008",
+    "l171_426_n009",
+    "l171_426_n010",
+    "l171_426_n011",
+    "l171_426_n013",
+    "l171_426_n014",
+    "l171_426_n015",
+    "l171_426_n016",
+    "l171_426_n017",
+    "l171_426_n018",
+    "l171_426_n019",
+    "l171_426_n020",
+    "l171_426_n021",
+    "l171_426_n022",
+    "l171_426_n023",
+    "l171_426_n024",
+    "l171_426_n025",
+    "l171_426_n026",
+    "l171_426_n027",
+    "l171_426_n029",
+    "l171_426_n030",
+    "l171_426_n031",
+    "l171_426_n032",
+    "l171_426_n033",
+    "l171_426_n034",
+    "l171_426_n035",
+    "l171_426_n036",
+    "l171_426_n037",
+    "l171_426_n038",
+    "l171_426_n039",
+    "l171_426_n040",
+    "l171_426_n041",
+    "l171_426_n042",
+    "l427_460_n001",
+    "l427_460_n002",
+    "l427_460_n003",
+    "l427_460_n004",
+    "l427_460_n005",
+    "l427_460_n006",
+    "l427_460_n007",
+    "l427_460_n008",
+    "l427_460_n009",
+    "l427_460_n010",
+    "l461_608_n001",
+    "l461_608_n002",
+    "l461_608_n003",
+    "l461_608_n004",
+    "l461_608_n005",
+    "l461_608_n006",
+    "l461_608_n007",
+    "l461_608_n008",
+    "l461_608_n009",
+    "l461_608_n010",
+    "l461_608_n011",
+    "l461_608_n012",
+    "l461_608_n013",
+    "l461_608_n014",
+    "l461_608_n015",
+    "l461_608_n016",
+    "l461_608_n017",
+    "l461_608_n018",
+    "l461_608_n019",
+    "l461_608_n020",
+    "l461_608_n021",
+    "l461_608_n022",
+    "l461_608_n023",
+    "l461_608_n024",
+    "l609_698_n001",
+    "l609_698_n002",
+    "l609_698_n003",
+    "l609_698_n004",
+    "l609_698_n005",
+    "l609_698_n006",
+    "l609_698_n007",
+    "l609_698_n008",
+    "l609_698_n009",
+    "l609_698_n010",
+    "l609_698_n011",
+    "l609_698_n012",
+    "l609_698_n013",
+    "l609_698_n014",
+    "l609_698_n015",
+    "l609_698_n016",
+    "l609_698_n017",
+    "l609_698_n018",
+    "l609_698_n019",
+    "l609_698_n020",
+    "l609_698_n021",
+    "l699_796_n001",
+    "l699_796_n002",
+    "l699_796_n003",
+    "l699_796_n004",
+    "l699_796_n005",
+    "l699_796_n006",
+    "l699_796_n007",
+    "l699_796_n008",
+    "l699_796_n009",
+    "l699_796_n010",
+    "l699_796_n011",
+    "l699_796_n012",
+    "l699_796_n013",
+    "l699_796_n014",
+    "l699_796_n015",
+    "l699_796_n016",
+    "l699_796_n017",
+    "l699_796_n018",
+    "l699_796_n019",
+    "l699_796_n020",
+    "l699_796_n021",
+    "l699_796_n022",
+    "l699_796_n023",
+    "l699_796_n024",
+    "l699_796_n025",
+    "l797_830_n001",
+    "l797_830_n002",
+    "l797_830_n003",
+    "l797_830_n004",
+    "l797_830_n005",
+    "l797_830_n006",
+    "l797_830_n007",
+    "l797_830_n008",
+    "l797_830_n009",
+    "l797_830_n010",
+    "l797_830_n011",
+    "l797_830_n012",
+    "l797_830_n013",
+    "l797_830_n014",
+    "l797_830_n015",
+    "l797_830_n016",
+    "l797_830_n017",
+    "l797_830_n018",
+    "l831_1000_n001",
+    "l831_1000_n002",
+    "l831_1000_n003",
+    "l831_1000_n004",
+    "l831_1000_n005",
+    "l831_1000_n006",
+    "l831_1000_n007",
+    "l831_1000_n008",
+    "l831_1000_n009",
+    "l831_1000_n010",
+    "l831_1000_n011",
+    "l831_1000_n012",
+    "l831_1000_n013",
+    "l831_1000_n014",
+    "l831_1000_n015",
+    "l831_1000_n016",
+    "l1001_1107_n001",
+    "l1001_1107_n002",
+    "l1001_1107_n003",
+    "l1001_1107_n004",
+    "l1001_1107_n005",
+    "l1001_1107_n006",
+    "l1001_1107_n007",
+    "l1001_1107_n008",
+    "l1001_1107_n009",
+    "l1001_1107_n010",
+    "l1001_1107_n011",
+    "l1001_1107_n012",
+    "l1001_1107_n013",
+    "l427_1107_n001",
+    "l1108_1367_n001",
+    "l1108_1367_n002",
+    "l1108_1367_n003",
+    "l1108_1367_n004",
+    "l1108_1367_n005",
+    "l1108_1367_n006",
+    "l1108_1367_n007",
+    "l1108_1367_n008",
+    "l1108_1367_n009",
+    "l1108_1367_n010",
+    "l1108_1367_n011",
+    "l1108_1367_n012",
+    "l1108_1367_n013",
+    "l1108_1367_n014",
+    "l1108_1367_n015",
+    "l1108_1367_n016",
+    "l1108_1367_n017",
+    "l1108_1367_n018",
+    "l1108_1367_n019",
+    "l1108_1367_n020",
+    "l1108_1367_n021",
+    "l1108_1367_n022",
+    "l1108_1367_n023",
+    "l1108_1367_n024",
+    "l1108_1367_n025",
+    "l1108_1367_n026",
+    "l1108_1367_n027",
+    "l1368_1541_n002",
+    "l1368_1541_n003",
+    "l1368_1541_n004",
+    "l1368_1541_n005",
+    "l1368_1541_n006",
+    "l1368_1541_n007",
+    "l1368_1541_n008",
+    "l1368_1541_n009",
+    "l1368_1541_n010",
+    "l1368_1541_n011",
+    "l1368_1541_n012",
+    "l1368_1541_n013",
+    "l1368_1541_n014",
+    "l1368_1541_n015",
+    "l1368_1541_n017",
+    "l1368_1541_n018",
+    "l1368_1541_n019",
+    "l1368_1541_n020",
+    "l1368_1541_n021",
+    "l1368_1541_n022",
+    "l1368_1541_n023",
+    "l1368_1541_n024",
+    "l1368_1541_n025",
+    "l1368_1541_n026",
+    "l1368_1541_n027",
+    "l1368_1541_n028",
+    "l1542_1706_n001",
+    "l1542_1706_n002",
+    "l1542_1706_n003",
+    "l1542_1706_n004",
+    "l1542_1706_n005",
+    "l1542_1706_n006",
+    "l1542_1706_n007",
+    "l1542_1706_n008",
+    "l1542_1706_n009",
+    "l1542_1706_n010",
+    "l1542_1706_n011",
+    "l1542_1706_n013",
+    "l1542_1706_n014",
+    "l1542_1706_n015",
+    "l1542_1706_n016",
+    "l1542_1706_n017",
+    "l1542_1706_n018",
+    "l1542_1706_n019",
+    "l1542_1706_n020",
+    "l1542_1706_n021",
+    "l1542_1706_n022",
+    "l1707_1973_n001",
+    "l1707_1973_n002",
+    "l1707_1973_n003",
+    "l1707_1973_n004",
+    "l1707_1973_n005",
+    "l1707_1973_n006",
+    "l1707_1973_n007",
+    "l1707_1973_n008",
+    "l1707_1973_n009",
+    "l1707_1973_n010",
+    "l1707_1973_n011",
+    "l1707_1973_n012",
+    "l1707_1973_n013",
+    "l1707_1973_n014",
+    "l1707_1973_n015",
+    "l1707_1973_n016",
+    "l1707_1973_n017",
+    "l1707_1973_n018",
+    "l1707_1973_n019",
+    "l1707_1973_n020",
+    "l1707_1973_n021",
+    "l1707_1973_n022",
+    "l1707_1973_n023",
+    "l1707_1973_n024",
+    "l1707_1973_n025",
+    "l1707_1973_n026",
+    "l1707_1973_n027",
+    "l1707_1973_n028",
+    "l1707_1973_n029",
+    "l1707_1973_n030",
+    "l1707_1973_n031",
+    "l1707_1973_n032",
+    "l1707_1973_n033",
+    "l1707_1973_n034",
+    "l1707_1973_n035",
+    "l1707_1973_n036",
+    "l1707_1973_n037",
+    "l1707_1973_n038",
+    "l1707_1973_n039",
+    "l1707_1973_n040",
+    "l1707_1973_n041",
+    "l1974_2125_n001",
+    "l1974_2125_n002",
+    "l1974_2125_n003",
+    "l1974_2125_n005",
+    "l1974_2125_n006",
+    "l1974_2125_n007",
+    "l1974_2125_n008",
+    "l1974_2125_n009",
+    "l1974_2125_n010",
+    "l1974_2125_n012",
+    "l1974_2125_n013",
+    "l1974_2125_n014",
+    "l1974_2125_n015",
+    "l1974_2125_n016",
+    "l1974_2125_n017",
+    "l1974_2125_n018",
+    "l1974_2125_n019",
+    "l2126_2404_n001",
+    "l2126_2404_n002",
+    "l2126_2404_n003",
+    "l2126_2404_n004",
+    "l2126_2404_n005",
+    "l2126_2404_n006",
+    "l2126_2404_n007",
+    "l2126_2404_n008",
+    "l2126_2404_n009",
+    "l2126_2404_n010",
+    "l2126_2404_n011",
+    "l2126_2404_n012",
+    "l2126_2404_n013",
+    "l2126_2404_n014",
+    "l2126_2404_n015",
+    "l2126_2404_n016",
+    "l2126_2404_n017",
+    "l2126_2404_n018",
+    "l2126_2404_n019",
+    "l2126_2404_n020",
+    "l2126_2404_n021",
+    "l2126_2404_n022",
+    "l2126_2404_n023",
+    "l2126_2404_n024",
+    "l2126_2404_n025",
+    "l2126_2404_n026",
+    "l2126_2404_n027",
+    "l2126_2404_n028",
+    "l2126_2404_n029",
+    "l2126_2404_n030",
+    "l2126_2404_n031",
+    "l2126_2404_n032",
+    "l2126_2404_n033",
+    "l2126_2404_n034",
+    "l2126_2404_n035",
+    "l2126_2404_n036",
+    "l2126_2404_n037",
+    "l2126_2404_n038",
+    "l2126_2404_n039",
+    "l2126_2404_n040",
+    "l2126_2404_n041",
+    "l2126_2404_n042",
+    "l2126_2404_n043",
+    "l2126_2404_n044",
+    "l2126_2404_n045",
+    "l2126_2404_n046",
+    "l2126_2404_n047",
+    "l2126_2404_n048",
+    "l2126_2404_n049",
+    "l2126_2404_n050",
+    "l2126_2404_n051",
+    "l2405_2473_n001",
+    "l2405_2473_n002",
+    "l2405_2473_n003",
+    "l2405_2473_n004",
+    "l2405_2473_n005",
+    "l2405_2473_n006",
+    "l2405_2473_n007",
+    "l2405_2473_n008",
+    "l2405_2473_n009",
+    "l2405_2473_n010",
+    "l2405_2473_n011",
+    "l2405_2473_n012",
+    "l2474_2554_n001",
+    "l2474_2554_n002",
+    "l2474_2554_n003",
+    "l2474_2554_n004",
+    "l2474_2554_n005",
+    "l2474_2554_n006",
+    "l2474_2554_n007",
+    "l2474_2554_n008",
+    "l2474_2554_n009",
+    "l2474_2554_n010",
+    "l2474_2554_n011",
+    "l2474_2554_n012",
+    "l2474_2554_n013",
+    "l2474_2554_n014",
+    "l2555_2652_n001",
+    "l2555_2652_n002",
+    "l2555_2652_n003",
+    "l2555_2652_n004",
+    "l2555_2652_n005",
+    "l2555_2652_n006",
+    "l2555_2652_n007",
+    "l2555_2652_n008",
+    "l2555_2652_n009",
+    "l2555_2652_n010",
+    "l2653_2820_n001",
+    "l2653_2820_n002",
+    "l2653_2820_n003",
+    "l2653_2820_n004",
+    "l2653_2820_n005",
+    "l2653_2820_n006",
+    "l2653_2820_n007",
+    "l2653_2820_n008",
+    "l2653_2820_n009",
+    "l2653_2820_n010",
+    "l2653_2820_n011",
+    "l2653_2820_n012",
+    "l2653_2820_n013",
+    "l2653_2820_n014",
+    "l2653_2820_n015",
+    "l2821_3040_n001",
+    "l2821_3040_n002",
+    "l2821_3040_n003",
+    "l2821_3040_n004",
+    "l2821_3040_n005",
+    "l2821_3040_n006",
+    "l2821_3040_n007",
+    "l2821_3040_n008",
+    "l2821_3040_n009",
+    "l2821_3040_n010",
+    "l2821_3040_n011",
+    "l2821_3040_n012",
+    "l2821_3040_n013",
+    "l2821_3040_n014",
+    "l2821_3040_n015",
+    "l2821_3040_n016",
+    "l2821_3040_n017",
+    "l2821_3040_n018",
+    "l2821_3040_n019",
+    "l2821_3040_n020",
+    "l2821_3040_n021",
+    "l2821_3040_n022",
+    "l2821_3040_n023",
+    "l2821_3040_n024",
+    "l2821_3040_n025",
+    "l2821_3040_n026",
+    "l2821_3040_n027",
+    "l2821_3040_n028",
+    "l2821_3040_n029",
+    "l2821_3040_n030",
+    "l2821_3040_n031",
+    "l2821_3040_n032",
+    "l2821_3040_n033",
+    "l2821_3040_n034",
+    "l2821_3040_n035",
+    "l3041_3146_n001",
+    "l3041_3146_n002",
+    "l3041_3146_n003",
+    "l3041_3146_n004",
+    "l3041_3146_n005",
+    "l3041_3146_n006",
+    "l3041_3146_n007",
+    "l3041_3146_n008",
+    "l3041_3146_n009",
+    "l3041_3146_n010",
+    "l3041_3146_n011",
+    "l3041_3146_n012",
+    "l3041_3146_n013",
+    "l3041_3146_n014",
+    "l3041_3146_n015",
+    "l3041_3146_n016",
+    "l3147_3238_n001",
+    "l3147_3238_n002",
+    "l3147_3238_n003",
+    "l3147_3238_n004",
+    "l3147_3238_n005",
+    "l3147_3238_n006",
+    "l3147_3238_n007",
+    "l3147_3238_n008",
+    "l3147_3238_n009",
+    "l3147_3238_n010",
+    "l3147_3238_n011",
+    "l3147_3238_n012",
+    "l3147_3238_n013",
+    "l3147_3238_n014",
+    "l3239_3382_n001",
+    "l3239_3382_n002",
+    "l3239_3382_n003",
+    "l3239_3382_n004",
+    "l3239_3382_n005",
+    "l3239_3382_n006",
+    "l3239_3382_n007",
+    "l3239_3382_n008",
+    "l3239_3382_n009",
+    "l3239_3382_n010",
+    "l3239_3382_n011",
+    "l3239_3382_n012",
+    "l3239_3382_n013",
+    "l3239_3382_n014",
+    "l3239_3382_n015",
+    "l3239_3382_n016",
+    "l3239_3382_n017",
+    "l3383_3501_n001",
+    "l3383_3501_n002",
+    "l3383_3501_n003",
+    "l3383_3501_n004",
+    "l3383_3501_n005",
+    "l3383_3501_n006",
+    "l3383_3501_n007",
+    "l3383_3501_n008",
+    "l3383_3501_n009",
+    "l3383_3501_n010",
+    "l3383_3501_n011",
+    "l3383_3501_n012",
+    "l3383_3501_n013",
+    "l3383_3501_n014",
+    "l3383_3501_n015",
+    "l3383_3501_n016",
+    "l3502_3504_n001",
+    "l3502_3504_n002",
+    "l3505_3595_n001",
+    "l3505_3595_n002",
+    "l3505_3595_n003",
+    "l3505_3595_n004",
+    "l3505_3595_n005",
+    "l3505_3595_n006",
+    "l3505_3595_n007",
+    "l3505_3595_n008",
+    "l3505_3595_n009",
+    "l3505_3595_n010",
+    "l3505_3595_n011",
+    "l3505_3595_n012",
+    "l3596_3876_n001",
+    "l3596_3876_n002",
+    "l3596_3876_n003",
+    "l3596_3876_n004",
+    "l3596_3876_n005",
+    "l3596_3876_n006",
+    "l3596_3876_n007",
+    "l3596_3876_n008",
+    "l3596_3876_n009",
+    "l3596_3876_n010",
+    "l3596_3876_n011",
+    "l3596_3876_n012",
+    "l3596_3876_n013",
+    "l3596_3876_n014",
+    "l3596_3876_n015",
+    "l3596_3876_n016",
+    "l3596_3876_n017",
+    "l3596_3876_n018",
+    "l3596_3876_n019",
+    "l3596_3876_n020",
+    "l3596_3876_n021",
+    "l3596_3876_n022",
+    "l3596_3876_n023",
+    "l3596_3876_n024",
+    "l3596_3876_n025",
+    "l3596_3876_n026",
+    "l3596_3876_n027",
+    "l3596_3876_n028",
+    "l3596_3876_n029",
+    "l3596_3876_n030",
+    "l3596_3876_n031",
+    "l3596_3876_n032",
+    "l3596_3876_n033",
+    "l3596_3876_n034",
+    "l3596_3876_n035",
+    "l3596_3876_n036",
+    "l3596_3876_n037",
+    "l3596_3876_n038",
+    "l3596_3876_n039",
+    "l3596_3876_n040",
+    "l3596_3876_n041",
+    "l3596_3876_n042",
+    "l3596_3876_n043",
+    "l3596_3876_n044",
+    "l3596_3876_n045",
+    "l3596_3876_n046",
+    "l3596_3876_n047",
+    "l3877_3953_n001",
+    "l3877_3953_n002",
+    "l3877_3953_n003",
+    "l3877_3953_n004",
+    "l3877_3953_n005",
+    "l3877_3953_n006",
+    "l3877_3953_n007",
+    "l3877_3953_n008",
+    "l3877_3953_n009",
+    "l3877_3953_n010",
+    "l3877_3953_n011",
+    "l3877_3953_n012",
+    "l3877_3953_n013",
+    "l3877_3953_n014",
+    "l3505_3953_n001",
+    "l3954_4251_n001",
+    "l3954_4251_n002",
+    "l3954_4251_n003",
+    "l3954_4251_n004",
+    "l3954_4251_n005",
+    "l3954_4251_n006",
+    "l3954_4251_n007",
+    "l3954_4251_n008",
+    "l3954_4251_n009",
+    "l3954_4251_n010",
+    "l3954_4251_n011",
+    "l3954_4251_n012",
+    "l3954_4251_n013",
+    "l3954_4251_n014",
+    "l3954_4251_n015",
+    "l3954_4251_n016",
+    "l3954_4251_n017",
+    "l3954_4251_n018",
+    "l3954_4251_n019",
+    "l3954_4251_n020",
+    "l3954_4251_n021",
+    "l3954_4251_n022",
+    "l3954_4251_n023",
+    "l3954_4251_n024",
+    "l3954_4251_n025",
+    "l3954_4251_n026",
+    "l3954_4251_n027",
+    "l3954_4251_n028",
+    "l3954_4251_n029",
+    "l3954_4251_n030",
+    "l3954_4251_n031",
+    "l3954_4251_n032",
+    "l3954_4251_n033",
+    "l3954_4251_n034",
+    "l3954_4251_n035",
+    "l3954_4251_n036",
+    "l3954_4251_n037",
+    "l3954_4251_n038",
+    "l3954_4251_n039",
+    "l3954_4251_n040",
+    "l3954_4251_n041",
+    "l3954_4251_n042",
+    "l3954_4251_n043",
+    "l3954_4251_n044",
+    "l3954_4251_n045",
+    "l3954_4251_n046",
+    "l4252_4482_n001",
+    "l4252_4482_n002",
+    "l4252_4482_n003",
+    "l4252_4482_n004",
+    "l4252_4482_n005",
+    "l4252_4482_n006",
+    "l4252_4482_n007",
+    "l4252_4482_n008",
+    "l4252_4482_n009",
+    "l4252_4482_n010",
+    "l4252_4482_n011",
+    "l4252_4482_n012",
+    "l4252_4482_n013",
+    "l4252_4482_n014",
+    "l4252_4482_n015",
+    "l4252_4482_n016",
+    "l4252_4482_n017",
+    "l4252_4482_n018",
+    "l4252_4482_n019",
+    "l4252_4482_n020",
+    "l4252_4482_n021",
+    "l4252_4482_n022",
+    "l4252_4482_n023",
+    "l4252_4482_n024",
+    "l4252_4482_n025",
+    "l4483_4571_n001",
+    "l4483_4571_n002",
+    "l4483_4571_n003",
+    "l4483_4571_n004",
+    "l4483_4571_n005",
+    "l4483_4571_n006",
+    "l4483_4571_n007",
+    "l4483_4571_n008",
+    "l4483_4571_n009",
+    "l4572_4692_n001",
+    "l4572_4692_n002",
+    "l4572_4692_n003",
+    "l4572_4692_n004",
+    "l4572_4692_n005",
+    "l4572_4692_n006",
+    "l4572_4692_n007",
+    "l4572_4692_n008",
+    "l4572_4692_n009",
+    "l4572_4692_n010",
+    "l4572_4692_n011",
+    "l4572_4692_n012",
+    "l4572_4692_n013",
+    "l4572_4692_n014",
+    "l4572_4692_n015",
+    "l4572_4692_n016",
+    "l4572_4692_n017",
+    "l4572_4692_n018",
+    "l4572_4692_n019",
+    "l4572_4692_n020",
+    "l4572_4692_n021",
+    "l4572_4692_n022",
+    "l4572_4692_n023",
+    "l4572_4692_n024",
+    "l4572_4692_n025",
+    "l4572_4692_n026"
+   ],
+   "section_id": null,
+   "kinds": [],
+   "limit": null
+  },
+  "cross_references": {
+   "_": "03_pipeline.md: 'a clause that modifies rules defined elsewhere cannot be translated in isolation'. The spec carries its own cross-references as markdown anchors \u2014 [restricted](#restricted_content) \u2014 and section_id values match those anchors. link.py measured 45 of 46 distinct targets resolving.",
+   "_lower_bound": "\u26a0\ufe0f Only ~13% of clauses carry anchors, so this is a LOWER BOUND on dependencies, never the whole set. A clause with no anchors is not thereby dependency-free.",
+   "enabled": true,
+   "max_clauses_per_target": 6,
+   "include_kinds": [
+    "definitional",
+    "conditional"
+   ]
+  },
+  "prompt": {
+   "_": "The translation rules live in these files, not in the code, so they can be edited and diffed on their own. Concatenated in the order listed to form the SYSTEM block \u2014 which is identical for every clause and is therefore the cacheable prefix.",
+   "_order": "03_pipeline.md: everything repeated first, everything that varies last. The clause text and its cross-references go in the USER block.",
+   "_orphan_guard": "Every .md in prompt/ must appear here or in unused_files. A prompt file that exists and is never sent is the pass-looks-like-did-not-run failure in prompt form \u2014 it happened once already with 30_failure_modes.md. A self-test enforces this.",
+   "system_files": [
+    "../../prompt/00_task.md",
+    "../../prompt/10_output_format.md",
+    "node_worked_example.md",
+    "node_seam_contract.md",
+    "../../prompt/30_failure_modes.md"
+   ],
+   "unused_files": [
+    "../../prompt/20_worked_example.md",
+    "AUDIT_KEY.md",
+    "BATCH_DESIGN.md",
+    "DECISION_NEEDED_bulk_restart.md",
+    "EXPERIMENTS.md",
+    "GOLDEN_PROTOCOL.md",
+    "GRAPH_EQUIVALENCE.md",
+    "GRAPH_OVERVIEW.md",
+    "GRAPH_PROMPT_v2A.md",
+    "GRAPH_PROMPT_v2B.md",
+    "GRAPH_PROMPT_v2C.md",
+    "GRAPH_PROMPT_v2D.md",
+    "READBACK_SMOKE.md",
+    "README.md",
+    "RECURSE_PROMPT.md",
+    "REVIEW_DISPOSITION.md",
+    "RUNTIME_WATCH.md",
+    "SEAM_CONTRACT.md",
+    "SEMANTIC_AUDIT.md",
+    "STEPS34_READINESS.md",
+    "adversarial_review_translation.md",
+    "authority_convention.md",
+    "batch_design_review.md",
+    "consolidated_fix_review.md",
+    "delta_investigation.md",
+    "delta_review_driver.md",
+    "delta_review_instruments.md",
+    "dispatch_core_review.md",
+    "driver_layer_review.md",
+    "ds4_divergence_analysis.md",
+    "edge_divergence_analysis.md",
+    "instruments_review.md",
+    "k3_validity_report.md",
+    "meltdown_analysis.md",
+    "opus_recheck_report.md",
+    "prerun_review.md",
+    "production_certification.md",
+    "repaired_verification.md",
+    "token_forensics.md",
+    "toy_doc.md",
+    "translate_exec_review.md"
+   ],
+   "user_template": "CLAUSE TO TRANSLATE\n\nThis clause is from {corpus_description}.\n\nclause id: {id}\nlocation: {locator}\nkind: {kind}\n\ntext:\n{text}\n{cross_references}\nWrite the module for clause {id}."
+  },
+  "model": {
+   "_": "TWO MODES. If `model` and `base_url` are both set, the provider is defined INLINE here and providers.json is not consulted for it. Otherwise `provider_name` must name a row in providers.json. A name that matches nothing, with no inline model, RAISES \u2014 a typo must never fall through to some default model.",
+   "_inline_why": "DeepSeek-V4-Flash-0731 is not a row in providers.json, and providers.json belongs to the wider repo. Defining it here keeps the change inside walkthrough/, which is where it belongs.",
+   "providers_json": "../../../../../semi-formal-experiment/providers.json",
+   "provider_name": "together-deepseek-v4-flash",
+   "_model": "VERIFIED 2026-08-07 against together.ai/models/deepseek-v4-flash-0731: the model id is `deepseek-ai/DeepSeek-V4-Flash-0731`, context 1M. `--list-models` re-checks it against the live catalogue before spending.",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "base_url": "https://api.together.xyz/v1",
+   "api_key_env": "TOGETHER_API_KEY",
+   "kind": "openai-compatible",
+   "_price_per_mtok": "[$/Mtok input, $/Mtok output]. SOURCE: together.ai model page, fetched 2026-08-07 \u2014 $0.14 in, $0.28 out, $0.03 cached input. Cached input is NOT claimed here: the estimate bills every input token at the full rate, which is the conservative direction and is what a hard $8.50 ledger cap deserves.",
+   "price_per_mtok": [
+    0.14,
+    0.28
+   ],
+   "_format_forcing": "json_schema | json_object | none. json_schema is what 03_pipeline.md stage 1 means by 'format-forced ... guaranteed at generation rather than checked afterwards'. VERIFIED 2026-08-07 from docs.together.ai/docs/json-mode that together.ai accepts exactly {type: json_schema, json_schema: {name, schema}} \u2014 the shape this harness sends. STILL UNVERIFIED: that THIS model is on the supported list (the catalogue examples are Qwen and Llama), and whether `strict` is honoured. The first live call is the test; a 400 mentioning response_format means fall back to json_object and RECORD the departure from stage 1.",
+   "format_forcing": "json_schema",
+   "_json_schema_strict": "together.ai's docs do not document a `strict` key. Sending an unknown key may be ignored or may 400. Set false to drop it.",
+   "json_schema_strict": true,
+   "temperature": 0.2,
+   "_max_tokens": "This is a REASONING model (together.ai recommends up to 384K output at high reasoning effort). Hidden reasoning is billed as output and can dominate. 16384 is generous for one module; if a completion comes back truncated the harness RAISES rather than writing half a module, so the failure is loud.",
+   "max_tokens": 4096,
+   "usage_log": "DEFAULT",
+   "resample_truncation": 2,
+   "_max_tokens_note": "Matt doctrine 2026-08-11: fail-and-fix beats burn-and-wait. MEASURED node translations (run 8) emit 858-1319 out-tokens; 4096 is ~3x headroom and cuts the worst-case gate 4x. resample_truncation=2 already set, so a rare truncation resamples rather than aborting."
+  },
+  "output": {
+   "_": "One directory per run. The raw response is always written before any parsing, so a parse failure never loses what was paid for.",
+   "dir": "translation_sample/runs",
+   "run_name": null
+  },
+  "cost": {
+   "_": "Estimate printed BEFORE any call and gated. Over the ceiling, nothing is sent. An unpriced provider counts as OVER budget, never as free.",
+   "_assumed_output_tokens": "Deliberately the full max_tokens, i.e. the worst case, not the ~600 tokens a module costs. Overstating an estimate is survivable; understating is how a hard cap gets passed.",
+   "chars_per_token": 4.0,
+   "max_cost_usd": 8.0,
+   "_ceiling_note": "773 nodes. MEASURED rate (run 8, 15 nodes): ~$0.004/node -> ~$3.1 expected. Ceiling 8.0 leaves room for repair rounds without being the unbounded worst case (which at 5 attempts x 24576 out-cap would price ~$40 and is backstopped by the MEASURED gate in Client._log_usage, routing-gap F2)."
+  },
+  "repair": {
+   "_": "Stage 2's repair loop. A failing translation is sent back in ONE accumulating transcript carrying its own prior modules and every check they failed, with reasons. Only stage-2 findings may enter it; later stages carry expected answers and are filtered by origin.",
+   "_max_attempts": "1 disables repair entirely. The cost gate prices the budget: input grows with the transcript, so the estimate is triangular in the attempt count, not linear.",
+   "max_attempts": 5
+  },
+  "graveyard": {
+   "_": "Where a clause goes when repair does not converge \u2014 and some that do. A non-converging clause carries a signal about the PROMPT, not only about that clause, and it is only visible by comparing entries against each other.",
+   "_rates": "Failures, flagged repairs and last-attempt successes are ALWAYS kept. These rates cover the rest. `first_try` is deliberately non-zero: a graveyard holding only trouble makes every diagnosis read as 'the prompt is broken', and a diagnosing agent needs cases where it worked. Sampling is a hash of the clause id, so two runs over one corpus keep the same population.",
+   "_cap": "Reaching it REFUSES to start another run. A hundred uninspected non-convergences is not a corpus; it is one defect recorded a hundred times, and the rest of the budget spent reproducing it.",
+   "dir": "translation_sample/repair_graveyard",
+   "cap": 2000,
+   "seed": 0,
+   "rates": {
+    "repaired": 0.25,
+    "first_try": 0.05
+   },
+   "_cap_note": "Matt 2026-08-15: DO NOT BLOCK the gen-11 data-collection run. The cap is NOT lowered to make a run pass -- the diagnosis obligation is MOVED, not dropped: it becomes a hard gate on gen-12 (see OPEN_ITEMS R4). Grounds: entries here are dominated by benign converged-after-repair records, the census is more informative over a COMPLETE corpus, and the measured cost of the retries is <$1 while their real cost (defect-trading at 57%, wall clock) is only visible in aggregate. Rejected alternative, by name: stopping every 10 to hand-diagnose convergences mid-run -- it would have cost ~15 interrupts to learn what one end-of-run census tells us better."
+  },
+  "_graph_sample": "Generated by node_corpus.py -- corpus and output dirs repointed; prompts, model, gates untouched.",
+  "checkpoint_every": 10,
+  "checkpoint_pause": false,
+  "_checkpoint_note": "RECORD-ONLY (Matt 2026-08-14 re-read): his \"stop every 10 and fix them\" was about the GRAVEYARD CAP, not checkpoints. Pausing every 10 clauses = ~77 restarts over 773. The record-only tick writes done/remaining, spend vs ceiling, failures by category and graveyard depth to health.jsonl every 10 clauses -- the visibility he asked for, without the restart tax. The STOPS come from the graveyard cap (10), which is checked in prepare, so slicing the run gives a cap check per slice.",
+  "execution": {
+   "mode": "batch",
+   "batch_min_pending": 8,
+   "_note": "Matt 2026-08-14: wait for batching -- 50%% discount. BINDING: checkpoint_pause MUST be false in batch until review defect 4a lands (a pause aborts _collect routing and discards already-paid rows). Set false below; re-enable pausing only after 4a."
+  }
+ },
+ "provider": "together-deepseek-v4-flash",
+ "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+ "base_url": "https://api.together.xyz/v1",
+ "config_sha": "3587daac504ab02b",
+ "system_sha": "8a321085b804cd68",
+ "inputs_sha": "2b891f881a57ceef",
+ "user_sha": {
+  "l3596_3876_n027": "2882d6f28e2a4f32",
+  "l3596_3876_n026": "b6e2e0eee788f5ba",
+  "l3596_3876_n025": "a2cb5c332c047955",
+  "l3596_3876_n024": "d794242643fe2424",
+  "l3596_3876_n023": "ad291d849b0a4926",
+  "l3596_3876_n022": "86959ee1088069b1",
+  "l3596_3876_n021": "2c71a4ba167ec068",
+  "l3596_3876_n019": "bf857d6a1f5635eb",
+  "l3596_3876_n018": "e6ce0c0ec2389241",
+  "l3596_3876_n017": "c1a7f2cc22212c6e",
+  "l3596_3876_n016": "294dc49f9b281b18",
+  "l3596_3876_n015": "53d8809b7a107db0",
+  "l3596_3876_n014": "a4203ad7d41d32f3",
+  "l3596_3876_n013": "5d3a400626057e96",
+  "l3596_3876_n012": "ef12838a773d8b7a",
+  "l3596_3876_n011": "7760c0c7c5902b8d",
+  "l3596_3876_n010": "58cee14eace37c94",
+  "l3596_3876_n009": "9e2d9771a6e3c390",
+  "l3596_3876_n008": "27c3b79358757d9b",
+  "l3596_3876_n006": "80469e9087ecd857",
+  "l3596_3876_n005": "fefcb12305afd4d5",
+  "l3596_3876_n004": "ac9c30555a5cead3",
+  "l3596_3876_n003": "a4321bc3743856c5",
+  "l3596_3876_n002": "1d55943c5a0cfd0c",
+  "l3596_3876_n001": "87c09dee71d864e6",
+  "l3505_3595_n012": "bbacb67d09d12cb8",
+  "l3505_3595_n011": "f88b13b9bef31896",
+  "l3505_3595_n010": "824294710829eef5",
+  "l3505_3595_n009": "09f8798ea94f1e4d",
+  "l3505_3595_n008": "7040b816c6c13b2d",
+  "l3505_3595_n007": "bd0ad8195283dded",
+  "l3505_3595_n005": "2b70f0302a52b2dd",
+  "l3505_3595_n004": "1c12620ddfcc3ea8",
+  "l3505_3595_n003": "f3c486d663bd6b0a",
+  "l3505_3595_n002": "9b789ba9c70deb6c",
+  "l3505_3595_n001": "938d1afd1a723f8d",
+  "l3502_3504_n002": "161e881fd8dcd196",
+  "l3502_3504_n001": "cf059800bf98ebcf",
+  "l3383_3501_n016": "6e091a24ed0128fc",
+  "l3383_3501_n015": "63f25098d4bf7742",
+  "l3383_3501_n014": "9b3b82ded13e9a1a",
+  "l3383_3501_n013": "4b86d5ff2fac7677",
+  "l3383_3501_n012": "0853e8161d8a9521",
+  "l3383_3501_n010": "425ab38d21d22bea",
+  "l3383_3501_n009": "d92035ce1b1784b3",
+  "l3383_3501_n008": "3b421e88ad4b5030",
+  "l3383_3501_n007": "8a747a5580d7aa42",
+  "l3383_3501_n006": "150cb7da223dd268",
+  "l3383_3501_n005": "fb340c395fe6628c",
+  "l3383_3501_n004": "b64f2a0caa486520",
+  "l3383_3501_n003": "211aed54a9b713ea",
+  "l3383_3501_n002": "457ebe9888fc46f0",
+  "l3383_3501_n001": "79c68d71875b0c72",
+  "l3239_3382_n017": "5b08ed7978f46180",
+  "l3239_3382_n016": "705f5d23ab8b682f",
+  "l3239_3382_n014": "9eb2415ea4d6131e",
+  "l3239_3382_n013": "4fa7ee9cf7f5f864",
+  "l3239_3382_n012": "552b8b8d655a3602",
+  "l3239_3382_n011": "bda602158ad9a789",
+  "l3239_3382_n010": "7fe0fe195977a4bb",
+  "l3239_3382_n009": "4f7bb27bbfa2b254",
+  "l3239_3382_n008": "65204a7c8d3c4ba7",
+  "l3239_3382_n007": "f191fa3ad234959f",
+  "l3239_3382_n006": "f2747773f19f0c0d",
+  "l3239_3382_n005": "1faceab25e036c03",
+  "l3239_3382_n004": "4a2f619ce7191de0",
+  "l3239_3382_n003": "4c89dd095a2005c0",
+  "l3239_3382_n001": "38709dbc3d94b2d3",
+  "l3147_3238_n014": "d877b41aed5159d3",
+  "l3147_3238_n013": "affb30b3e69bfa84",
+  "l3147_3238_n012": "2616dd40959f78f7",
+  "l3147_3238_n011": "8bd8f90a4244fd8e",
+  "l3147_3238_n010": "10182c861eb49429",
+  "l3147_3238_n009": "b089f35e38de9d3e",
+  "l3147_3238_n008": "ab46e07f6958ec17",
+  "l3147_3238_n007": "e4c83dd2b68df258",
+  "l3147_3238_n006": "6cb7743340145d64",
+  "l3147_3238_n005": "1a6bfc422c0fc684",
+  "l3147_3238_n004": "55a9858091c05f5f",
+  "l3147_3238_n002": "dedd319b91043dbf",
+  "l3147_3238_n001": "d1f43e75d4545ef2",
+  "l3041_3146_n016": "4cb5e9bef36a9ab1",
+  "l3041_3146_n015": "c5865a4d89ac1d20",
+  "l3041_3146_n014": "fed27c2bad8e7068",
+  "l3041_3146_n013": "9c9bf18693ac510d",
+  "l3041_3146_n012": "eb5429d3420d3270",
+  "l3041_3146_n011": "190b29975a1e3497",
+  "l3041_3146_n010": "b0d6e992a2f380a4",
+  "l3041_3146_n009": "6026b4075326ce29",
+  "l3041_3146_n008": "39f29ecda540e086"
+ },
+ "response_format": {
+  "type": "json_schema",
+  "json_schema": {
+   "name": "clause_module",
+   "schema": {
+    "additionalProperties": false,
+    "description": "Everything one clause translates to \u2014 or a refusal to translate it.\n\nOne clause, one module. Modules are combined by linking, never by copying\ntext between them, so that each formal item stays traceable to the clause it\ncame from and an amended clause changes exactly one file.\n\n\u26a0\ufe0f `abstained` is a real answer, not a failure. A clause that cannot be\ntranslated faithfully \u2014 a heading, a goal with no trigger, an example \u2014\nshould be declined with a reason rather than turned into something that\npasses the checks. The rate at which that happens is a signal worth reading:\nwithout it, \"we translated the document\" cannot be told apart from \"we\ntranslated the easy parts of it\".",
+    "properties": {
+     "outcome": {
+      "description": "`translated` if you wrote a module for this clause; `abstained` if you declined to",
+      "enum": [
+       "translated",
+       "abstained"
+      ],
+      "title": "Outcome",
+      "type": "string"
+     },
+     "clause_id": {
+      "description": "the clause id you were given, exactly",
+      "title": "Clause Id",
+      "type": "string"
+     },
+     "abstain_reason": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "one sentence when abstaining; null when translating",
+      "title": "Abstain Reason"
+     },
+     "claims": {
+      "description": "the clause's distinct claims, one string each",
+      "items": {
+       "type": "string"
+      },
+      "title": "Claims",
+      "type": "array"
+     },
+     "acts": {
+      "description": "every act term this clause governs, each declared once here, e.g. [\"produce(M)\"]",
+      "items": {
+       "type": "string"
+      },
+      "title": "Acts",
+      "type": "array"
+     },
+     "concepts": {
+      "description": "the predicates this clause INTRODUCES: name, arity, and what each one MEANS. Asserts nothing",
+      "items": {
+       "additionalProperties": false,
+       "description": "A concept declaration, carrying its licence and citation like any fact.",
+       "properties": {
+        "name": {
+         "description": "the predicate name, e.g. restricted",
+         "title": "Name",
+         "type": "string"
+        },
+        "arity": {
+         "description": "how many arguments it takes",
+         "title": "Arity",
+         "type": "integer"
+        },
+        "gloss": {
+         "description": "one sentence saying what the PREDICATE means \u2014 not what any instance of it asserts. This sentence is the written definition the concept table carries",
+         "title": "Gloss",
+         "type": "string"
+        },
+        "licence": {
+         "enum": [
+          "textual",
+          "assumed",
+          "world"
+         ],
+         "title": "Licence",
+         "type": "string"
+        },
+        "cites": {
+         "type": [
+          "string",
+          "null"
+         ],
+         "description": "clause id \u2014 REQUIRED and non-empty when textual",
+         "title": "Cites"
+        },
+        "inference": {
+         "type": [
+          "string",
+          "null"
+         ],
+         "description": "the step named in one sentence \u2014 REQUIRED when assumed",
+         "title": "Inference"
+        },
+        "toggleable": {
+         "description": "MUST be true when licence is world, else false",
+         "title": "Toggleable",
+         "type": "boolean"
+        }
+       },
+       "required": [
+        "name",
+        "arity",
+        "gloss",
+        "licence",
+        "cites",
+        "inference",
+        "toggleable"
+       ],
+       "title": "Concepts",
+       "type": "object"
+      },
+      "title": "Concepts",
+      "type": "array"
+     },
+     "ontology": {
+      "description": "the clause's non-deontic classification facts \u2014 what something IS, never what may be done about it",
+      "items": {
+       "additionalProperties": false,
+       "description": "A classification fact \u2014 this thing is of that kind. No deontic content.\n\n`restricted(new_bioweapon_step)`: it says what something IS, never what may\nor must be done about it.\n\n\u26a0\ufe0f Kept in its own block, and switchable as a group, because measurement has\nshown the downstream results rest almost entirely on this layer rather than\non the deontic one. Separating it is what makes that testable \u2014 mixing a\nstatus in here would make the two indistinguishable.\n\nUse this for an INSTANCE. To introduce a predicate and say what it means,\nuse `Concept`, which asserts nothing.",
+       "properties": {
+        "licence": {
+         "enum": [
+          "textual",
+          "assumed",
+          "world"
+         ],
+         "title": "Licence",
+         "type": "string"
+        },
+        "cites": {
+         "type": [
+          "string",
+          "null"
+         ],
+         "description": "clause id \u2014 REQUIRED and non-empty when textual",
+         "title": "Cites"
+        },
+        "inference": {
+         "type": [
+          "string",
+          "null"
+         ],
+         "description": "the step named in one sentence \u2014 REQUIRED when assumed",
+         "title": "Inference"
+        },
+        "toggleable": {
+         "description": "MUST be true when licence is world, else false",
+         "title": "Toggleable",
+         "type": "boolean"
+        },
+        "atom": {
+         "description": "e.g. restricted(new_bioweapon_step). NON-deontic",
+         "title": "Atom",
+         "type": "string"
+        },
+        "gloss": {
+         "description": "one sentence saying what this PREDICATE means \u2014 not what this particular instance of it asserts. For `prohibited(csam)`, gloss `prohibited/1`, not the fact about csam",
+         "title": "Gloss",
+         "type": "string"
+        },
+        "body": {
+         "type": [
+          "string",
+          "null"
+         ],
+         "description": "ASP conditions, or null for a ground fact",
+         "title": "Body"
+        }
+       },
+       "required": [
+        "licence",
+        "cites",
+        "inference",
+        "toggleable",
+        "atom",
+        "gloss",
+        "body"
+       ],
+       "title": "OntologyFact",
+       "type": "object"
+      },
+      "title": "Ontology",
+      "type": "array"
+     },
+     "asserts": {
+      "description": "the deontic assertions: one status attached to one act",
+      "items": {
+       "additionalProperties": false,
+       "description": "One deontic status attached to one act: `asserts(Clause, Status, Act)`.\n\n`body` holds the conditions under which it applies, or null if it always\ndoes. Where a clause gives distinct grounds for the same conclusion, each\ngets its own assertion with its own positive condition \u2014 deriving a verdict\nfrom the mere ABSENCE of something produces a right answer with a reason the\nprogram cannot support.",
+       "properties": {
+        "read_back": {
+         "description": "one English sentence, with % where each argument is substituted. No quotes, braces, backslashes or newlines",
+         "title": "Read Back",
+         "type": "string"
+        },
+        "read_back_slots": {
+         "description": "ONE ENTRY PER `%` IN read_back, in order \u2014 the variable each `%` is replaced by. EMPTY when read_back contains no `%`. This is not the list of the rule's variables: a read-back with no substitution point is a good read-back and takes an empty list",
+         "items": {
+          "type": "string"
+         },
+         "title": "Read Back Slots",
+         "type": "array"
+        },
+        "licence": {
+         "enum": [
+          "textual",
+          "assumed",
+          "world"
+         ],
+         "title": "Licence",
+         "type": "string"
+        },
+        "cites": {
+         "type": [
+          "string",
+          "null"
+         ],
+         "description": "clause id \u2014 REQUIRED and non-empty when textual",
+         "title": "Cites"
+        },
+        "inference": {
+         "type": [
+          "string",
+          "null"
+         ],
+         "description": "the step named in one sentence \u2014 REQUIRED when assumed",
+         "title": "Inference"
+        },
+        "toggleable": {
+         "description": "MUST be true when licence is world, else false",
+         "title": "Toggleable",
+         "type": "boolean"
+        },
+        "status": {
+         "enum": [
+          "forbid",
+          "permit",
+          "oblige",
+          "prefer"
+         ],
+         "title": "Status",
+         "type": "string"
+        },
+        "act": {
+         "description": "the ACT TERM, e.g. produce(M) or interject(user). Acts are indexed: an act, never a material",
+         "title": "Act",
+         "type": "string"
+        },
+        "body": {
+         "type": [
+          "string",
+          "null"
+         ],
+         "description": "the ASP conditions under which this assertion holds, one line \u2014 or null when it holds unconditionally. Null, never an empty string: an empty string is rejected",
+         "title": "Body"
+        }
+       },
+       "required": [
+        "read_back",
+        "read_back_slots",
+        "licence",
+        "cites",
+        "inference",
+        "toggleable",
+        "status",
+        "act",
+        "body"
+       ],
+       "title": "Assertion",
+       "type": "object"
+      },
+      "title": "Asserts",
+      "type": "array"
+     },
+     "beats": {
+      "description": "the superiority claims THIS clause states",
+      "items": {
+       "additionalProperties": false,
+       "description": "One clause outranks another: `beats(Sayer, Winner, Loser)`.\n\n\u2b50 It records WHO SAYS SO. A clause that states an override is itself the\nsource of that override, and without the sayer there is no way to trace the\nranking back to the text that established it.\n\nThis is also what lets an exception live in its own file. Encoding one as a\nnegated condition inside the general rule means every new exception edits\nthe general clause's module \u2014 merging clauses instead of linking them.\n\n`body` is for a clause that ranks a whole CLASS of other clauses without\nnaming its members; it binds `winner` or `loser` as a variable.",
+       "properties": {
+        "read_back": {
+         "description": "one English sentence, with % where each argument is substituted. No quotes, braces, backslashes or newlines",
+         "title": "Read Back",
+         "type": "string"
+        },
+        "read_back_slots": {
+         "description": "ONE ENTRY PER `%` IN read_back, in order \u2014 the variable each `%` is replaced by. EMPTY when read_back contains no `%`. This is not the list of the rule's variables: a read-back with no substitution point is a good read-back and takes an empty list",
+         "items": {
+          "type": "string"
+         },
+         "title": "Read Back Slots",
+         "type": "array"
+        },
+        "licence": {
+         "enum": [
+          "textual",
+          "assumed",
+          "world"
+         ],
+         "title": "Licence",
+         "type": "string"
+        },
+        "cites": {
+         "type": [
+          "string",
+          "null"
+         ],
+         "description": "clause id \u2014 REQUIRED and non-empty when textual",
+         "title": "Cites"
+        },
+        "inference": {
+         "type": [
+          "string",
+          "null"
+         ],
+         "description": "the step named in one sentence \u2014 REQUIRED when assumed",
+         "title": "Inference"
+        },
+        "toggleable": {
+         "description": "MUST be true when licence is world, else false",
+         "title": "Toggleable",
+         "type": "boolean"
+        },
+        "sayer": {
+         "description": "the clause id asserting this superiority \u2014 normally this module's own clause_id",
+         "title": "Sayer",
+         "type": "string"
+        },
+        "winner": {
+         "description": "clause id, or a variable bound by body",
+         "title": "Winner",
+         "type": "string"
+        },
+        "loser": {
+         "description": "clause id, or a variable bound by body",
+         "title": "Loser",
+         "type": "string"
+        },
+        "body": {
+         "type": [
+          "string",
+          "null"
+         ],
+         "description": "conditions, when the clause ranks a whole CLASS of other clauses without naming its members; else null",
+         "title": "Body"
+        }
+       },
+       "required": [
+        "read_back",
+        "read_back_slots",
+        "licence",
+        "cites",
+        "inference",
+        "toggleable",
+        "sayer",
+        "winner",
+        "loser",
+        "body"
+       ],
+       "title": "Superiority",
+       "type": "object"
+      },
+      "title": "Beats",
+      "type": "array"
+     },
+     "defines": {
+      "description": "the extensions this clause fixes",
+      "items": {
+       "additionalProperties": false,
+       "description": "What a class covers: `defines(Clause, Kind, Term)`.\n\nA definitional clause attaches no status. It fixes the extension that other\nclauses quantify over \u2014 \"only sexual content involving minors is considered\nprohibited\" defines what `prohibited` reaches, and some other clause is what\nforbids producing it.",
+       "properties": {
+        "licence": {
+         "enum": [
+          "textual",
+          "assumed",
+          "world"
+         ],
+         "title": "Licence",
+         "type": "string"
+        },
+        "cites": {
+         "type": [
+          "string",
+          "null"
+         ],
+         "description": "clause id \u2014 REQUIRED and non-empty when textual",
+         "title": "Cites"
+        },
+        "inference": {
+         "type": [
+          "string",
+          "null"
+         ],
+         "description": "the step named in one sentence \u2014 REQUIRED when assumed",
+         "title": "Inference"
+        },
+        "toggleable": {
+         "description": "MUST be true when licence is world, else false",
+         "title": "Toggleable",
+         "type": "boolean"
+        },
+        "kind": {
+         "description": "the class being defined, e.g. prohibited",
+         "title": "Kind",
+         "type": "string"
+        },
+        "term": {
+         "description": "the term brought under it, e.g. csam",
+         "title": "Term",
+         "type": "string"
+        }
+       },
+       "required": [
+        "licence",
+        "cites",
+        "inference",
+        "toggleable",
+        "kind",
+        "term"
+       ],
+       "title": "Definition",
+       "type": "object"
+      },
+      "title": "Defines",
+      "type": "array"
+     },
+     "closure": {
+      "description": "one entry per act class this module governs",
+      "items": {
+       "additionalProperties": false,
+       "description": "What the document's SILENCE about an act means. Required, not optional.\n\nIf a clause says nothing about some act, does that permit it or forbid it?\nWritten in plain logic the question never gets asked: the absence of a rule\nreads as \"permitted\", and nothing anywhere records that a choice was made.\n\n    cepa      silence permits  \u2014 whatever is not forbidden is allowed\n    cnpa      silence prohibits \u2014 whatever is not allowed is forbidden\n    unclear   this clause does not settle it\n\n\u26a0\ufe0f Required for EVERY act class a module governs, because measurement shows\nthe downstream verdict flips depending on the answer, while the \"no\ndeclaration\" and \"silence permits\" cases are byte-identical in the output.\nAn optional declaration is therefore the same as no declaration.\n\nPer act class rather than global: a document can be permissive about one\nkind of act and restrictive about another.",
+       "properties": {
+        "act_class": {
+         "description": "the act functor this covers, e.g. produce or interject",
+         "title": "Act Class",
+         "type": "string"
+        },
+        "closure": {
+         "description": "cepa = the document's silence PERMITS this act; cnpa = its silence PROHIBITS it; unclear = the clause does not settle it",
+         "enum": [
+          "cepa",
+          "cnpa",
+          "unclear"
+         ],
+         "title": "Closure",
+         "type": "string"
+        },
+        "reason": {
+         "description": "one sentence, from the clause, for this reading",
+         "title": "Reason",
+         "type": "string"
+        }
+       },
+       "required": [
+        "act_class",
+        "closure",
+        "reason"
+       ],
+       "title": "Closure",
+       "type": "object"
+      },
+      "title": "Closure",
+      "type": "array"
+     },
+     "requires": {
+      "description": "predicates another clause must define, as name/arity",
+      "items": {
+       "type": "string"
+      },
+      "title": "Requires",
+      "type": "array"
+     },
+     "inputs": {
+      "description": "facts about the CASE, supplied at query time, name/arity",
+      "items": {
+       "type": "string"
+      },
+      "title": "Inputs",
+      "type": "array"
+     },
+     "forbid_body": {
+      "description": "claims about the rule set that no situation can exhibit",
+      "items": {
+       "additionalProperties": false,
+       "description": "A claim about the RULES THEMSELVES, which no test case can exhibit.\n\n\"Purpose never creates an exemption\" is not about any situation \u2014 it says no\nrule of a certain shape may exist. There is nothing to test, because the\nclaim is that a derivation never happens.\n\nWritten instead as a constraint over facts nothing produces, such a rule is\ndead: it can never fire, the solver says so on every run, and it looks like\nan enforced claim while enforcing nothing. Declared here, it is checked by\ninspecting the program rather than by running it.",
+       "properties": {
+        "head": {
+         "description": "the derived relation as a BARE predicate name, e.g. permit \u2014 never a term with arguments, never name/arity",
+         "title": "Head",
+         "type": "string"
+        },
+        "banned": {
+         "description": "the predicate that may not appear in its body, as a bare name, e.g. purpose \u2014 never a term, never name/arity",
+         "title": "Banned",
+         "type": "string"
+        }
+       },
+       "required": [
+        "head",
+        "banned"
+       ],
+       "title": "ForbidBody",
+       "type": "object"
+      },
+      "title": "Forbid Body",
+      "type": "array"
+     }
+    },
+    "required": [
+     "outcome",
+     "clause_id",
+     "abstain_reason",
+     "claims",
+     "acts",
+     "concepts",
+     "ontology",
+     "asserts",
+     "beats",
+     "defines",
+     "closure",
+     "requires",
+     "inputs",
+     "forbid_body"
+    ],
+    "title": "Module",
+    "type": "object"
+   },
+   "strict": true
+  }
+ },
+ "spend": {
+  "usd": 0.370194,
+  "calls": 176,
+  "visible_to_spend_py": false,
+  "why": "spend.py prices from providers.json; this provider is defined inline in this config"
+ },
+ "schema_sha": "a6a9d2b5b20b335a",
+ "provenance_hash": "a6e835ed12de25d2",
+ "provenance_params": {
+  "max_tokens": 4096,
+  "format_forcing": "json_schema",
+  "max_attempts": 5
+ },
+ "stamp_version": 1,
+ "waivers_honoured": [],
+ "only_stale": null,
+ "results": [
+  {
+   "clause_id": "l3041_3146_n008",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "39f29ecda540e086",
+   "tokens_in": 12768,
+   "tokens_out": 732,
+   "cost_usd": 0.001992,
+   "attempts": 2,
+   "per_attempt": [
+    1,
+    3
+   ],
+   "flags": [],
+   "n_findings": 3,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "ae53575ba513c6c0",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 4,
+   "status": "translated",
+   "lp_bytes": 3715,
+   "n_claims": 3,
+   "n_acts": 1,
+   "n_ontology": 1,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 2
+   },
+   "closure": {
+    "intend_to_persuade": "cnpa"
+   },
+   "acts": [
+    "intend_to_persuade(A)"
+   ],
+   "requires": [
+    "assistant_definition/1",
+    "highlight_misalignments_section_guideline_authority/1"
+   ],
+   "inputs": [],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3041_3146_n009",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "6026b4075326ce29",
+   "tokens_in": 12757,
+   "tokens_out": 1015,
+   "cost_usd": 0.00207,
+   "attempts": 1,
+   "per_attempt": [
+    13
+   ],
+   "flags": [],
+   "n_findings": 13,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "6c036ff88d4d75f8",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 7,
+   "status": "translated",
+   "lp_bytes": 4349,
+   "n_claims": 3,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "proceed_without_addressing": "cepa"
+   },
+   "acts": [
+    "proceed_without_addressing(D)"
+   ],
+   "requires": [
+    "assistant_definition/1",
+    "highlight_misalignments_section_guideline_authority/1"
+   ],
+   "inputs": [
+    "discrepancy/1",
+    "nuanced_intentions_misunderstood/1",
+    "user_uncertainty/1",
+    "more_effective_paths/1",
+    "discrepancy_involves/4"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3041_3146_n010",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "b0d6e992a2f380a4",
+   "tokens_in": 12757,
+   "tokens_out": 1056,
+   "cost_usd": 0.002082,
+   "graveyard": "l3041_3146_n010-20260817-084730",
+   "attempts": 2,
+   "per_attempt": [
+    1,
+    8
+   ],
+   "flags": [],
+   "n_findings": 8,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "28af29fdc4c4d897",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 7,
+   "status": "translated",
+   "lp_bytes": 4326,
+   "n_claims": 4,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "proceed_without_addressing_discrepancy": "cnpa"
+   },
+   "acts": [
+    "proceed_without_addressing_discrepancy(D)"
+   ],
+   "requires": [
+    "assistant_definition/1",
+    "highlight_misalignments_section_guideline_authority/1"
+   ],
+   "inputs": [
+    "transparency_lacking/1",
+    "hidden_agenda_sense/1",
+    "user_steered_unintended/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3041_3146_n011",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "190b29975a1e3497",
+   "tokens_in": 12766,
+   "tokens_out": 1284,
+   "cost_usd": 0.002147,
+   "attempts": 1,
+   "per_attempt": [
+    16
+   ],
+   "flags": [],
+   "n_findings": 16,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "39cc7409d0bea2c2",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 9,
+   "status": "translated",
+   "lp_bytes": 4538,
+   "n_claims": 2,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 4,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 4
+   },
+   "closure": {
+    "perform_misalignment_action": "cepa"
+   },
+   "acts": [
+    "perform_misalignment_action(A)"
+   ],
+   "requires": [
+    "assistant_definition/1",
+    "highlight_misalignments_section_guideline_authority/1"
+   ],
+   "inputs": [
+    "misalignment_action/1",
+    "for_user_benefit/1",
+    "respectful/1",
+    "productive/1",
+    "annoying/1",
+    "persistent/1",
+    "argumentative/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3041_3146_n012",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "eb5429d3420d3270",
+   "tokens_in": 13024,
+   "tokens_out": 873,
+   "cost_usd": 0.002068,
+   "graveyard": "l3041_3146_n012-20260817-082854",
+   "attempts": 1,
+   "per_attempt": [
+    6
+   ],
+   "flags": [],
+   "n_findings": 6,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "c2a065df6c83606c",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 5,
+   "status": "translated",
+   "lp_bytes": 4876,
+   "n_claims": 4,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "respond_with": "cepa"
+   },
+   "acts": [
+    "respond_with(R)"
+   ],
+   "requires": [
+    "misalignment_note_obligation/1",
+    "misalignment_action_constraints/1"
+   ],
+   "inputs": [
+    "brief_factual_correction/1",
+    "asks_why_user_asks/1",
+    "lecturing_response/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3041_3146_n013",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "9c9bf18693ac510d",
+   "tokens_in": 12830,
+   "tokens_out": 591,
+   "cost_usd": 0.001962,
+   "attempts": 1,
+   "per_attempt": [
+    6
+   ],
+   "flags": [],
+   "n_findings": 6,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "6e7a122dbd78fc4b",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 3,
+   "status": "translated",
+   "lp_bytes": 4102,
+   "n_claims": 2,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "respond_with": "cepa"
+   },
+   "acts": [
+    "respond_with(R)"
+   ],
+   "requires": [
+    "misalignment_note_obligation/1",
+    "respect_user_decision_after_misalignment/1",
+    "misalignment_action_constraints/1"
+   ],
+   "inputs": [],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3041_3146_n014",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "fed27c2bad8e7068",
+   "tokens_in": 12777,
+   "tokens_out": 680,
+   "cost_usd": 0.001979,
+   "attempts": 1,
+   "per_attempt": [
+    4
+   ],
+   "flags": [],
+   "n_findings": 4,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "143285d447342b26",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 3,
+   "status": "translated",
+   "lp_bytes": 3674,
+   "n_claims": 3,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "offer_behavior_change": "cepa"
+   },
+   "acts": [
+    "offer_behavior_change(O)"
+   ],
+   "requires": [
+    "misalignment_note_obligation/1",
+    "respect_user_decision_after_misalignment/1"
+   ],
+   "inputs": [],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3041_3146_n015",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "c5865a4d89ac1d20",
+   "tokens_in": 12922,
+   "tokens_out": 659,
+   "cost_usd": 0.001994,
+   "attempts": 1,
+   "per_attempt": [
+    8
+   ],
+   "flags": [],
+   "n_findings": 8,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "91ebf082686aaa8d",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 4,
+   "status": "translated",
+   "lp_bytes": 4764,
+   "n_claims": 5,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "respond_with": "cepa"
+   },
+   "acts": [
+    "respond_with(R)"
+   ],
+   "requires": [
+    "misalignment_note_obligation/1",
+    "misalignment_action_constraints/1"
+   ],
+   "inputs": [
+    "factual_drug_info/1",
+    "support_options/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3041_3146_n016",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "4cb5e9bef36a9ab1",
+   "tokens_in": 12938,
+   "tokens_out": 1196,
+   "cost_usd": 0.002146,
+   "attempts": 1,
+   "per_attempt": [
+    16
+   ],
+   "flags": [],
+   "n_findings": 16,
+   "unclear_closure_rate": 0.0,
+   "restarted": true,
+   "pre_restart_per_attempt": [
+    15,
+    15,
+    15
+   ],
+   "pre_restart_flags": [],
+   "contract_hash": "7f071876b9197d9f",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 9,
+   "status": "translated",
+   "lp_bytes": 5434,
+   "n_claims": 3,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 2,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 2
+   },
+   "closure": {
+    "respond_with": "cepa"
+   },
+   "acts": [
+    "respond_with(R)"
+   ],
+   "requires": [
+    "misalignment_note_obligation/1",
+    "default_long_term_goals/1",
+    "misalignment_action_constraints/1"
+   ],
+   "inputs": [
+    "current_objective/1",
+    "long_term_goal/1",
+    "misaligned_with/2",
+    "considers_goals/2",
+    "complies_without_considering/2",
+    "pauses_before_acting/2"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3147_3238_n001",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "d1f43e75d4545ef2",
+   "tokens_in": 12697,
+   "tokens_out": 509,
+   "cost_usd": 0.00192,
+   "attempts": 2,
+   "per_attempt": [
+    1,
+    6
+   ],
+   "flags": [],
+   "n_findings": 6,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "f8fb9fdb2a0ed6a1",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 3,
+   "status": "translated",
+   "lp_bytes": 3267,
+   "n_claims": 3,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "make_mistake": "cepa"
+   },
+   "acts": [
+    "make_mistake(M)"
+   ],
+   "requires": [
+    "assistant_definition/1"
+   ],
+   "inputs": [
+    "mistake_by/2",
+    "compromises_accuracy_or_utility/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3147_3238_n002",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "dedd319b91043dbf",
+   "tokens_in": 12670,
+   "tokens_out": 563,
+   "cost_usd": 0.001931,
+   "attempts": 2,
+   "per_attempt": [
+    1,
+    7
+   ],
+   "flags": [],
+   "n_findings": 7,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "f8a4d57493ce2b67",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 4,
+   "status": "translated",
+   "lp_bytes": 2883,
+   "n_claims": 1,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "ensure_factual_correctness": "cepa"
+   },
+   "acts": [
+    "ensure_factual_correctness(C)"
+   ],
+   "requires": [
+    "assistant_definition/1",
+    "user_authority/1"
+   ],
+   "inputs": [
+    "factual_claim_about_world/1",
+    "assistant_ensures/2"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3147_3238_n004",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [
+    "express_uncertainty",
+    "risk_taxonomy"
+   ],
+   "user_sha": "55a9858091c05f5f",
+   "tokens_in": 12900,
+   "tokens_out": 875,
+   "cost_usd": 0.002051,
+   "attempts": 1,
+   "per_attempt": [
+    10
+   ],
+   "flags": [],
+   "n_findings": 10,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "addc5afb3e4caf4f",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 5,
+   "status": "translated",
+   "lp_bytes": 4132,
+   "n_claims": 2,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "respond_without_sufficient_confidence": "cepa"
+   },
+   "acts": [
+    "respond_without_sufficient_confidence(R)"
+   ],
+   "requires": [
+    "assistant_definition/1"
+   ],
+   "inputs": [
+    "high_stakes_error_harm/1",
+    "response_confidence/2",
+    "insufficient_confidence/1",
+    "potential_real_world_harm/2"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3147_3238_n005",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [
+    "express_uncertainty",
+    "risk_taxonomy"
+   ],
+   "user_sha": "1a6bfc422c0fc684",
+   "tokens_in": 12889,
+   "tokens_out": 544,
+   "cost_usd": 0.001957,
+   "attempts": 1,
+   "per_attempt": [
+    6
+   ],
+   "flags": [],
+   "n_findings": 6,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "bf3b89a31d3f6089",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 3,
+   "status": "translated",
+   "lp_bytes": 3696,
+   "n_claims": 2,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "omit_detail": "cepa"
+   },
+   "acts": [
+    "omit_detail(D)"
+   ],
+   "requires": [
+    "assistant_definition/1"
+   ],
+   "inputs": [
+    "uncertain_about_detail/2",
+    "detail_not_essential/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3147_3238_n006",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [
+    "express_uncertainty",
+    "risk_taxonomy"
+   ],
+   "user_sha": "6cb7743340145d64",
+   "tokens_in": 12931,
+   "tokens_out": 877,
+   "cost_usd": 0.002056,
+   "graveyard": "l3147_3238_n006-20260817-085137",
+   "attempts": 3,
+   "per_attempt": [
+    3,
+    1,
+    10
+   ],
+   "flags": [
+    "declaration-edit"
+   ],
+   "n_findings": 10,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "d5118d3caf49daaf",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 6,
+   "status": "translated",
+   "lp_bytes": 4161,
+   "n_claims": 2,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "say_untrue": "cepa"
+   },
+   "acts": [
+    "say_untrue(U)"
+   ],
+   "requires": [
+    "assistant_definition/1",
+    "user_authority/1"
+   ],
+   "inputs": [
+    "situation/1",
+    "untrue_statement/1",
+    "said_in_situation/2",
+    "reasonable_user_not_expect_veracity/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3147_3238_n007",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "e4c83dd2b68df258",
+   "tokens_in": 12734,
+   "tokens_out": 615,
+   "cost_usd": 0.001955,
+   "attempts": 2,
+   "per_attempt": [
+    1,
+    6
+   ],
+   "flags": [],
+   "n_findings": 6,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "b36f01a9f29d0aa3",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 3,
+   "status": "translated",
+   "lp_bytes": 3457,
+   "n_claims": 2,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "avoid_mistakes": "cepa"
+   },
+   "acts": [
+    "avoid_mistakes(M)"
+   ],
+   "requires": [
+    "assistant_definition/1"
+   ],
+   "inputs": [
+    "mistake_in_reasoning_or_calculation/1",
+    "assistant_engages_in/2"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3147_3238_n008",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "ab46e07f6958ec17",
+   "tokens_in": 12762,
+   "tokens_out": 769,
+   "cost_usd": 0.002002,
+   "attempts": 1,
+   "per_attempt": [
+    8
+   ],
+   "flags": [],
+   "n_findings": 8,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "71bc232827539373",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 4,
+   "status": "translated",
+   "lp_bytes": 4035,
+   "n_claims": 3,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "employ_technique": "cepa"
+   },
+   "acts": [
+    "employ_technique(T)"
+   ],
+   "requires": [
+    "assistant_definition/1",
+    "user_authority/1"
+   ],
+   "inputs": [
+    "error_likely/1",
+    "technique_for_avoiding_invalid_conclusions/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3147_3238_n009",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "b089f35e38de9d3e",
+   "tokens_in": 12754,
+   "tokens_out": 733,
+   "cost_usd": 0.001991,
+   "graveyard": "l3147_3238_n009-20260817-085137",
+   "attempts": 3,
+   "per_attempt": [
+    1,
+    1,
+    8
+   ],
+   "flags": [
+    "declaration-edit"
+   ],
+   "n_findings": 8,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "aa165ed0bea450e2",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 4,
+   "status": "translated",
+   "lp_bytes": 3276,
+   "n_claims": 1,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "adhere_to_format_specs": "cepa"
+   },
+   "acts": [
+    "adhere_to_format_specs(R, F)"
+   ],
+   "requires": [
+    "assistant_definition/1"
+   ],
+   "inputs": [
+    "response_part/2",
+    "part_of_response/2",
+    "specific_format/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3147_3238_n010",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "10182c861eb49429",
+   "tokens_in": 12715,
+   "tokens_out": 453,
+   "cost_usd": 0.001907,
+   "attempts": 2,
+   "per_attempt": [
+    2,
+    6
+   ],
+   "flags": [],
+   "n_findings": 6,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "70bc97a96f5181a6",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 4,
+   "status": "translated",
+   "lp_bytes": 3149,
+   "n_claims": 1,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "produce_code": "cepa"
+   },
+   "acts": [
+    "produce_code(C)"
+   ],
+   "requires": [
+    "assistant_definition/1",
+    "user_authority/1"
+   ],
+   "inputs": [
+    "generated_code_for_functional_use/1",
+    "syntax_error_free/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3147_3238_n011",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "8bd8f90a4244fd8e",
+   "tokens_in": 12760,
+   "tokens_out": 761,
+   "cost_usd": 0.001999,
+   "graveyard": "l3147_3238_n011-20260817-085137",
+   "attempts": 3,
+   "per_attempt": [
+    2,
+    2,
+    4
+   ],
+   "flags": [],
+   "n_findings": 4,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "c4dd2536cf76faaf",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 2,
+   "status": "translated",
+   "lp_bytes": 4145,
+   "n_claims": 2,
+   "n_acts": 2,
+   "n_ontology": 0,
+   "n_asserts": 2,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 2
+   },
+   "closure": {
+    "acknowledge_error": "cepa",
+    "course_correct_or_ask_guidance": "cepa"
+   },
+   "acts": [
+    "acknowledge_error(A)",
+    "course_correct_or_ask_guidance(A)"
+   ],
+   "requires": [
+    "assistant_definition/1"
+   ],
+   "inputs": [
+    "significant_error_or_unexpected_side_effect/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3147_3238_n012",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "2616dd40959f78f7",
+   "tokens_in": 12763,
+   "tokens_out": 393,
+   "cost_usd": 0.001897,
+   "attempts": 3,
+   "per_attempt": [
+    1,
+    1,
+    3
+   ],
+   "flags": [],
+   "n_findings": 3,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "dbeb4b5243fdd552",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 3,
+   "status": "translated",
+   "lp_bytes": 3369,
+   "n_claims": 4,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "correct_factual_error": "cepa"
+   },
+   "acts": [
+    "correct_factual_error(A)"
+   ],
+   "requires": [
+    "assistant_definition/1",
+    "user_authority/1"
+   ],
+   "inputs": [],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3147_3238_n013",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "affb30b3e69bfa84",
+   "tokens_in": 13015,
+   "tokens_out": 633,
+   "cost_usd": 0.001999,
+   "attempts": 2,
+   "per_attempt": [
+    2,
+    8
+   ],
+   "flags": [],
+   "n_findings": 8,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "c7c8eb56acd24d0d",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 5,
+   "status": "translated",
+   "lp_bytes": 4518,
+   "n_claims": 4,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "correct_reasoning_error": "cepa"
+   },
+   "acts": [
+    "correct_reasoning_error(R)"
+   ],
+   "requires": [
+    "assistant_definition/1",
+    "user_authority/1"
+   ],
+   "inputs": [
+    "assistant_response/1",
+    "contains_reasoning_error/1",
+    "corrects_error/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3147_3238_n014",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "d877b41aed5159d3",
+   "tokens_in": 12826,
+   "tokens_out": 838,
+   "cost_usd": 0.00203,
+   "graveyard": "l3147_3238_n014-20260817-085137",
+   "attempts": 3,
+   "per_attempt": [
+    1,
+    1,
+    8
+   ],
+   "flags": [
+    "declaration-edit"
+   ],
+   "n_findings": 8,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "07dc8c3cec18cad8",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 4,
+   "status": "translated",
+   "lp_bytes": 4493,
+   "n_claims": 3,
+   "n_acts": 2,
+   "n_ontology": 0,
+   "n_asserts": 2,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 2
+   },
+   "closure": {
+    "perform_web_search": "cepa",
+    "present_current_information": "cepa"
+   },
+   "acts": [
+    "perform_web_search(A)",
+    "present_current_information(A)"
+   ],
+   "requires": [
+    "assistant_definition/1"
+   ],
+   "inputs": [
+    "up_to_date_question/1",
+    "answers_question/2",
+    "perform_web_search/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3239_3382_n001",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "38709dbc3d94b2d3",
+   "tokens_in": 12652,
+   "tokens_out": 431,
+   "cost_usd": 0.001892,
+   "attempts": 1,
+   "per_attempt": [
+    2
+   ],
+   "flags": [],
+   "n_findings": 2,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "ea25e4e23dbc8c7b",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 3,
+   "status": "translated",
+   "lp_bytes": 2432,
+   "n_claims": 1,
+   "n_acts": 0,
+   "n_ontology": 1,
+   "n_asserts": 0,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {},
+   "acts": [],
+   "requires": [
+    "user_authority/1"
+   ],
+   "inputs": [
+    "rule_under_section/2"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3239_3382_n003",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [
+    "transformation_exception"
+   ],
+   "user_sha": "4c89dd095a2005c0",
+   "tokens_in": 12897,
+   "tokens_out": 856,
+   "cost_usd": 0.002045,
+   "attempts": 3,
+   "per_attempt": [
+    1,
+    2,
+    9
+   ],
+   "flags": [],
+   "n_findings": 9,
+   "unclear_closure_rate": 0.0,
+   "restarted": true,
+   "pre_restart_per_attempt": [
+    2,
+    2
+   ],
+   "pre_restart_flags": [],
+   "contract_hash": "c0dddf32c219c2ea",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 5,
+   "status": "translated",
+   "lp_bytes": 4051,
+   "n_claims": 2,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "change_text_aspect": "cnpa"
+   },
+   "acts": [
+    "change_text_aspect(A)"
+   ],
+   "requires": [
+    "assistant_definition/1",
+    "user_authority/1"
+   ],
+   "inputs": [
+    "text_transformation_task/1",
+    "requested_change/2",
+    "change_text_aspect/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3239_3382_n004",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [
+    "transformation_exception"
+   ],
+   "user_sha": "4a2f619ce7191de0",
+   "tokens_in": 12928,
+   "tokens_out": 752,
+   "cost_usd": 0.00202,
+   "attempts": 1,
+   "per_attempt": [
+    5
+   ],
+   "flags": [],
+   "n_findings": 5,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "c64d50218e08422b",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 4,
+   "status": "translated",
+   "lp_bytes": 4188,
+   "n_claims": 1,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "alert_user_about_changes": "cepa"
+   },
+   "acts": [
+    "alert_user_about_changes(A)"
+   ],
+   "requires": [
+    "assistant_definition/1",
+    "user_authority/1"
+   ],
+   "inputs": [
+    "interactive_vs_programmatic_setting/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3239_3382_n005",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [
+    "transformation_exception"
+   ],
+   "user_sha": "1faceab25e036c03",
+   "tokens_in": 12882,
+   "tokens_out": 603,
+   "cost_usd": 0.001972,
+   "attempts": 3,
+   "per_attempt": [
+    1,
+    1,
+    9
+   ],
+   "flags": [],
+   "n_findings": 9,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "b111cebcb01164e7",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 5,
+   "status": "translated",
+   "lp_bytes": 4248,
+   "n_claims": 1,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "follow_transformation_instructions_without_comment": "cepa"
+   },
+   "acts": [
+    "follow_transformation_instructions_without_comment(A)"
+   ],
+   "requires": [
+    "assistant_definition/1",
+    "interactive_vs_programmatic_setting/2",
+    "user_authority/1"
+   ],
+   "inputs": [
+    "transformation_instruction/1",
+    "follows_instruction/2"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3239_3382_n006",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "f2747773f19f0c0d",
+   "tokens_in": 12684,
+   "tokens_out": 503,
+   "cost_usd": 0.001917,
+   "graveyard": "l3239_3382_n006-20260817-084729",
+   "attempts": 2,
+   "per_attempt": [
+    2,
+    7
+   ],
+   "flags": [
+    "declaration-edit"
+   ],
+   "n_findings": 7,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "2d95b80973de5df2",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 4,
+   "status": "translated",
+   "lp_bytes": 2946,
+   "n_claims": 1,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "apply_behavior": "cepa"
+   },
+   "acts": [
+    "apply_behavior(B)"
+   ],
+   "requires": [
+    "user_authority/1"
+   ],
+   "inputs": [
+    "ideal_behavior/1",
+    "interactive_setting/1",
+    "task_from_user_in_chat/2"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3239_3382_n007",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "f191fa3ad234959f",
+   "tokens_in": 12976,
+   "tokens_out": 602,
+   "cost_usd": 0.001985,
+   "attempts": 1,
+   "per_attempt": [
+    8
+   ],
+   "flags": [],
+   "n_findings": 8,
+   "unclear_closure_rate": 0.0,
+   "restarted": true,
+   "pre_restart_per_attempt": [
+    4,
+    4
+   ],
+   "pre_restart_flags": [],
+   "contract_hash": "8b2f568bd870fda5",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 4,
+   "status": "translated",
+   "lp_bytes": 4533,
+   "n_claims": 3,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "transform_code": "cnpa"
+   },
+   "acts": [
+    "transform_code(C)"
+   ],
+   "requires": [
+    "user_authority/1",
+    "transformation_no_unrequested_changes/1"
+   ],
+   "inputs": [
+    "code_transformation/1",
+    "changes_unrequested_code/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3239_3382_n008",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "65204a7c8d3c4ba7",
+   "tokens_in": 12970,
+   "tokens_out": 749,
+   "cost_usd": 0.002026,
+   "attempts": 1,
+   "per_attempt": [
+    3
+   ],
+   "flags": [],
+   "n_findings": 3,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "15ac38ac319328fe",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 4,
+   "status": "translated",
+   "lp_bytes": 4094,
+   "n_claims": 2,
+   "n_acts": 0,
+   "n_ontology": 2,
+   "n_asserts": 0,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 2
+   },
+   "closure": {},
+   "acts": [],
+   "requires": [
+    "user_authority/1",
+    "transformation_interactive_alert/1"
+   ],
+   "inputs": [],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3239_3382_n009",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "4f7bb27bbfa2b254",
+   "tokens_in": 12647,
+   "tokens_out": 375,
+   "cost_usd": 0.001876,
+   "attempts": 1,
+   "per_attempt": [
+    2
+   ],
+   "flags": [],
+   "n_findings": 2,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "884d2fcb8ffc9c05",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 2,
+   "status": "translated",
+   "lp_bytes": 2410,
+   "n_claims": 1,
+   "n_acts": 0,
+   "n_ontology": 1,
+   "n_asserts": 0,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {},
+   "acts": [],
+   "requires": [
+    "guideline_authority/1"
+   ],
+   "inputs": [
+    "rule_in_be_creative_section/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3239_3382_n010",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "7fe0fe195977a4bb",
+   "tokens_in": 12761,
+   "tokens_out": 724,
+   "cost_usd": 0.001989,
+   "graveyard": "l3239_3382_n010-20260817-085216",
+   "attempts": 4,
+   "per_attempt": [
+    1,
+    2,
+    1,
+    5
+   ],
+   "flags": [],
+   "n_findings": 5,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "132d04f000b5f199",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 4,
+   "status": "translated",
+   "lp_bytes": 3815,
+   "n_claims": 2,
+   "n_acts": 1,
+   "n_ontology": 1,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 2
+   },
+   "closure": {
+    "respond_creatively": "cepa"
+   },
+   "acts": [
+    "respond_creatively(R)"
+   ],
+   "requires": [
+    "assistant_definition/1",
+    "guideline_authority/1"
+   ],
+   "inputs": [
+    "response_by/2"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3239_3382_n011",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "bda602158ad9a789",
+   "tokens_in": 12672,
+   "tokens_out": 728,
+   "cost_usd": 0.001978,
+   "attempts": 3,
+   "per_attempt": [
+    2,
+    1,
+    9
+   ],
+   "flags": [],
+   "n_findings": 9,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "1362f352fb26384a",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 6,
+   "status": "translated",
+   "lp_bytes": 2941,
+   "n_claims": 2,
+   "n_acts": 0,
+   "n_ontology": 2,
+   "n_asserts": 0,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 2
+   },
+   "closure": {},
+   "acts": [],
+   "requires": [
+    "guideline_authority/1"
+   ],
+   "inputs": [
+    "unexpected_connection/1",
+    "new_combination/1",
+    "involves_finding/2",
+    "involves_combining/2"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3239_3382_n012",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "552b8b8d655a3602",
+   "tokens_in": 12707,
+   "tokens_out": 432,
+   "cost_usd": 0.0019,
+   "attempts": 2,
+   "per_attempt": [
+    1,
+    3
+   ],
+   "flags": [],
+   "n_findings": 3,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "a1410f6f30fe1b2f",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 3,
+   "status": "translated",
+   "lp_bytes": 2894,
+   "n_claims": 2,
+   "n_acts": 0,
+   "n_ontology": 1,
+   "n_asserts": 0,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {},
+   "acts": [],
+   "requires": [
+    "assistant_definition/1",
+    "guideline_authority/1"
+   ],
+   "inputs": [],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3239_3382_n013",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "4fa7ee9cf7f5f864",
+   "tokens_in": 12692,
+   "tokens_out": 645,
+   "cost_usd": 0.001957,
+   "graveyard": "l3239_3382_n013-20260817-084729",
+   "attempts": 2,
+   "per_attempt": [
+    1,
+    5
+   ],
+   "flags": [],
+   "n_findings": 5,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "0eff604b3b048df9",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 3,
+   "status": "translated",
+   "lp_bytes": 3309,
+   "n_claims": 4,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "take_creative_risk": "cepa"
+   },
+   "acts": [
+    "take_creative_risk(R)"
+   ],
+   "requires": [
+    "guideline_authority/1"
+   ],
+   "inputs": [
+    "creative_response/1",
+    "context_dependent/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3239_3382_n014",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "9eb2415ea4d6131e",
+   "tokens_in": 12678,
+   "tokens_out": 770,
+   "cost_usd": 0.001991,
+   "attempts": 2,
+   "per_attempt": [
+    1,
+    3
+   ],
+   "flags": [],
+   "n_findings": 3,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "c2fe302e01c92e8f",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 5,
+   "status": "translated",
+   "lp_bytes": 3734,
+   "n_claims": 3,
+   "n_acts": 3,
+   "n_ontology": 0,
+   "n_asserts": 3,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 3
+   },
+   "closure": {
+    "compromise_truthfulness": "cnpa",
+    "compromise_clarity": "cnpa",
+    "compromise_usefulness": "cnpa"
+   },
+   "acts": [
+    "compromise_truthfulness(C)",
+    "compromise_clarity(C)",
+    "compromise_usefulness(C)"
+   ],
+   "requires": [
+    "guideline_authority/1"
+   ],
+   "inputs": [
+    "creative_response/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3239_3382_n016",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "705f5d23ab8b682f",
+   "tokens_in": 12821,
+   "tokens_out": 599,
+   "cost_usd": 0.001963,
+   "attempts": 1,
+   "per_attempt": [
+    4
+   ],
+   "flags": [],
+   "n_findings": 4,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "083e35a2d943f919",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 3,
+   "status": "translated",
+   "lp_bytes": 3650,
+   "n_claims": 3,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "offer_name_ideas": "cepa"
+   },
+   "acts": [
+    "offer_name_ideas(R)"
+   ],
+   "requires": [
+    "creativity_principle/0"
+   ],
+   "inputs": [
+    "witty_original_ideas/1",
+    "common_cliche_ideas/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3239_3382_n017",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "5b08ed7978f46180",
+   "tokens_in": 12975,
+   "tokens_out": 649,
+   "cost_usd": 0.001998,
+   "attempts": 2,
+   "per_attempt": [
+    1,
+    9
+   ],
+   "flags": [],
+   "n_findings": 9,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "99185ae43d9e2cf3",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 6,
+   "status": "translated",
+   "lp_bytes": 4586,
+   "n_claims": 3,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "respond_with": "cepa"
+   },
+   "acts": [
+    "respond_with(R)"
+   ],
+   "requires": [
+    "guideline_authority/1",
+    "creativity_principle/1"
+   ],
+   "inputs": [
+    "collaborates_with_user/1",
+    "offers_multiple_options/1",
+    "asks_for_input/1",
+    "repeats_user_provided/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3383_3501_n001",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "79c68d71875b0c72",
+   "tokens_in": 12785,
+   "tokens_out": 625,
+   "cost_usd": 0.001965,
+   "graveyard": "l3383_3501_n001-20260817-084729",
+   "attempts": 2,
+   "per_attempt": [
+    1,
+    3
+   ],
+   "flags": [
+    "declaration-edit"
+   ],
+   "n_findings": 3,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "0ef9581446fd0ac1",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 3,
+   "status": "translated",
+   "lp_bytes": 3948,
+   "n_claims": 1,
+   "n_acts": 1,
+   "n_ontology": 1,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 2
+   },
+   "closure": {
+    "vary_behavior": "cepa"
+   },
+   "acts": [
+    "vary_behavior(B)"
+   ],
+   "requires": [
+    "guideline_authority/1"
+   ],
+   "inputs": [
+    "assistant_behavior/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3383_3501_n002",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "457ebe9888fc46f0",
+   "tokens_in": 12778,
+   "tokens_out": 485,
+   "cost_usd": 0.001925,
+   "attempts": 3,
+   "per_attempt": [
+    2,
+    2,
+    6
+   ],
+   "flags": [],
+   "n_findings": 6,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "35aa6425bb9c26b7",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 4,
+   "status": "translated",
+   "lp_bytes": 3821,
+   "n_claims": 2,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "produce_structured_output": "cepa"
+   },
+   "acts": [
+    "produce_structured_output(O)"
+   ],
+   "requires": [
+    "interactive_vs_programmatic_setting/1",
+    "guideline_authority/1"
+   ],
+   "inputs": [
+    "programmatic_setting/0",
+    "structured_output/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3383_3501_n003",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "211aed54a9b713ea",
+   "tokens_in": 12752,
+   "tokens_out": 449,
+   "cost_usd": 0.001911,
+   "attempts": 1,
+   "per_attempt": [
+    3
+   ],
+   "flags": [],
+   "n_findings": 3,
+   "unclear_closure_rate": 0.0,
+   "restarted": true,
+   "pre_restart_per_attempt": [
+    4,
+    4
+   ],
+   "pre_restart_flags": [],
+   "contract_hash": "20b45991f36f853e",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 4,
+   "status": "translated",
+   "lp_bytes": 3440,
+   "n_claims": 2,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "assume_setting": "cepa"
+   },
+   "acts": [
+    "assume_setting(S)"
+   ],
+   "requires": [
+    "guideline_authority/1"
+   ],
+   "inputs": [
+    "interactive_vs_programmatic_setting/2"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3383_3501_n004",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "b64f2a0caa486520",
+   "tokens_in": 12810,
+   "tokens_out": 924,
+   "cost_usd": 0.002052,
+   "attempts": 3,
+   "per_attempt": [
+    4,
+    2,
+    6
+   ],
+   "flags": [],
+   "n_findings": 6,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "4f7b91fe20838b1e",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 5,
+   "status": "translated",
+   "lp_bytes": 4542,
+   "n_claims": 2,
+   "n_acts": 1,
+   "n_ontology": 2,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 3
+   },
+   "closure": {
+    "specify_programmatic_output": "cepa"
+   },
+   "acts": [
+    "specify_programmatic_output(D)"
+   ],
+   "requires": [
+    "interactive_vs_programmatic_setting/1",
+    "guideline_authority/1"
+   ],
+   "inputs": [
+    "response_format_specification/1",
+    "instruction_specification/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3383_3501_n005",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "fb340c395fe6628c",
+   "tokens_in": 12850,
+   "tokens_out": 1003,
+   "cost_usd": 0.00208,
+   "attempts": 3,
+   "per_attempt": [
+    3,
+    2,
+    9
+   ],
+   "flags": [],
+   "n_findings": 9,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "bed82fc608d52c40",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 6,
+   "status": "translated",
+   "lp_bytes": 5228,
+   "n_claims": 3,
+   "n_acts": 3,
+   "n_ontology": 0,
+   "n_asserts": 3,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 3
+   },
+   "closure": {
+    "ask_clarifying_question": "cnpa",
+    "ask_follow_up_question": "cnpa",
+    "place_code_in_code_block": "cnpa"
+   },
+   "acts": [
+    "ask_clarifying_question(Q)",
+    "ask_follow_up_question(Q)",
+    "place_code_in_code_block(C)"
+   ],
+   "requires": [
+    "interactive_vs_programmatic_setting/0",
+    "guideline_authority/1"
+   ],
+   "inputs": [
+    "clarifying_question/1",
+    "follow_up_question/1",
+    "code_content/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3383_3501_n006",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "150cb7da223dd268",
+   "tokens_in": 12755,
+   "tokens_out": 1301,
+   "cost_usd": 0.00215,
+   "attempts": 1,
+   "per_attempt": [
+    15
+   ],
+   "flags": [],
+   "n_findings": 15,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "555c6a9696a87aaf",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 8,
+   "status": "translated",
+   "lp_bytes": 4458,
+   "n_claims": 3,
+   "n_acts": 2,
+   "n_ontology": 0,
+   "n_asserts": 2,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 2
+   },
+   "closure": {
+    "output_exact_content": "cepa",
+    "proceed_with_request": "cepa"
+   },
+   "acts": [
+    "output_exact_content(M)",
+    "proceed_with_request(R)"
+   ],
+   "requires": [
+    "interactive_vs_programmatic_setting/1",
+    "guideline_authority/1"
+   ],
+   "inputs": [
+    "preceding_message_asks_for/2",
+    "exact_format_specified/2",
+    "output_content/2",
+    "output_format/2",
+    "request_fulfillment/2",
+    "ambiguity_in_query/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3383_3501_n007",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "8a747a5580d7aa42",
+   "tokens_in": 12851,
+   "tokens_out": 596,
+   "cost_usd": 0.001966,
+   "attempts": 1,
+   "per_attempt": [
+    6
+   ],
+   "flags": [],
+   "n_findings": 6,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "0c47388e4210e109",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 3,
+   "status": "translated",
+   "lp_bytes": 3785,
+   "n_claims": 2,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "respond_with": "cepa"
+   },
+   "acts": [
+    "respond_with(R)"
+   ],
+   "requires": [
+    "developer_instruction/1",
+    "answers_question/2"
+   ],
+   "inputs": [
+    "only_code/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3383_3501_n008",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "3b421e88ad4b5030",
+   "tokens_in": 12769,
+   "tokens_out": 663,
+   "cost_usd": 0.001973,
+   "graveyard": "l3383_3501_n008-20260817-084728",
+   "attempts": 2,
+   "per_attempt": [
+    1,
+    5
+   ],
+   "flags": [],
+   "n_findings": 5,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "694271debf1884da",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 3,
+   "status": "translated",
+   "lp_bytes": 3715,
+   "n_claims": 2,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "assume_programmatic_use": "cepa"
+   },
+   "acts": [
+    "assume_programmatic_use(A)"
+   ],
+   "requires": [
+    "interactive_vs_programmatic_setting/2",
+    "guideline_authority/1"
+   ],
+   "inputs": [
+    "developer_requested_no_markdown/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3383_3501_n009",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "d92035ce1b1784b3",
+   "tokens_in": 12767,
+   "tokens_out": 968,
+   "cost_usd": 0.002058,
+   "attempts": 1,
+   "per_attempt": [
+    9
+   ],
+   "flags": [],
+   "n_findings": 9,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "32c7d8634448df31",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 6,
+   "status": "translated",
+   "lp_bytes": 3819,
+   "n_claims": 3,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "respond_with": "cepa"
+   },
+   "acts": [
+    "respond_with(R)"
+   ],
+   "requires": [
+    "interactive_vs_programmatic_setting/1",
+    "guideline_authority/1"
+   ],
+   "inputs": [
+    "request_without_markdown_removal/1",
+    "second_response/1",
+    "first_response/1",
+    "answers_question/2"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3383_3501_n010",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "425ab38d21d22bea",
+   "tokens_in": 12705,
+   "tokens_out": 578,
+   "cost_usd": 0.001941,
+   "attempts": 3,
+   "per_attempt": [
+    1,
+    2,
+    8
+   ],
+   "flags": [],
+   "n_findings": 8,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "fc5dd440f2acdbc3",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 5,
+   "status": "translated",
+   "lp_bytes": 3673,
+   "n_claims": 2,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "override_default_with_developer_instruction": "cepa"
+   },
+   "acts": [
+    "override_default_with_developer_instruction(I)"
+   ],
+   "requires": [
+    "interactive_vs_programmatic_setting/1",
+    "guideline_authority/1"
+   ],
+   "inputs": [
+    "developer_message_instruction/1",
+    "overrides_plaintext_default/1",
+    "preserves_clarifying_questions/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3383_3501_n012",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "0853e8161d8a9521",
+   "tokens_in": 12771,
+   "tokens_out": 819,
+   "cost_usd": 0.002017,
+   "attempts": 2,
+   "per_attempt": [
+    1,
+    11
+   ],
+   "flags": [],
+   "n_findings": 11,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "4bc2844c02ebf1c3",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 6,
+   "status": "translated",
+   "lp_bytes": 4140,
+   "n_claims": 2,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "attempt_best_answer": "cepa"
+   },
+   "acts": [
+    "attempt_best_answer(A)"
+   ],
+   "requires": [
+    "higher_level_instruction/1",
+    "guideline_authority/1"
+   ],
+   "inputs": [
+    "format_requested/1",
+    "best_answer/1",
+    "fits_in_format/2",
+    "violates_higher_level_instruction/2"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3383_3501_n013",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "4b86d5ff2fac7677",
+   "tokens_in": 12790,
+   "tokens_out": 658,
+   "cost_usd": 0.001975,
+   "attempts": 2,
+   "per_attempt": [
+    2,
+    4
+   ],
+   "flags": [],
+   "n_findings": 4,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "7db8e53c28e47bd3",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 5,
+   "status": "translated",
+   "lp_bytes": 3897,
+   "n_claims": 2,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "refuse": "cepa"
+   },
+   "acts": [
+    "refuse(R)"
+   ],
+   "requires": [
+    "authority_levels_hierarchy/2",
+    "guideline_authority/1"
+   ],
+   "inputs": [
+    "impossible_to_follow_format_without_violating_higher_instruction/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3383_3501_n014",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "9b3b82ded13e9a1a",
+   "tokens_in": 12766,
+   "tokens_out": 909,
+   "cost_usd": 0.002042,
+   "attempts": 1,
+   "per_attempt": [
+    6
+   ],
+   "flags": [],
+   "n_findings": 6,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "7068614cdd6eeda1",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 3,
+   "status": "translated",
+   "lp_bytes": 4449,
+   "n_claims": 2,
+   "n_acts": 2,
+   "n_ontology": 0,
+   "n_asserts": 2,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 2
+   },
+   "closure": {
+    "use_refusal_mechanism": "cepa",
+    "break_format_and_refuse_in_text": "cepa"
+   },
+   "acts": [
+    "use_refusal_mechanism(F)",
+    "break_format_and_refuse_in_text(F)"
+   ],
+   "requires": [
+    "higher_level_instruction/1"
+   ],
+   "inputs": [
+    "format_provides_refusal_mechanism/1",
+    "format_conflicts_with_instruction/2"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3383_3501_n015",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "63f25098d4bf7742",
+   "tokens_in": 12741,
+   "tokens_out": 691,
+   "cost_usd": 0.001977,
+   "attempts": 2,
+   "per_attempt": [
+    1,
+    5
+   ],
+   "flags": [],
+   "n_findings": 5,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "b6b88cddd713f434",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 5,
+   "status": "translated",
+   "lp_bytes": 3668,
+   "n_claims": 3,
+   "n_acts": 1,
+   "n_ontology": 2,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 3
+   },
+   "closure": {
+    "respond_with": "cepa"
+   },
+   "acts": [
+    "respond_with(R)"
+   ],
+   "requires": [
+    "guideline_authority/1"
+   ],
+   "inputs": [
+    "adheres_to_format/1",
+    "refuses_harmful_request/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3383_3501_n016",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [
+    "protect_privacy"
+   ],
+   "user_sha": "6e091a24ed0128fc",
+   "tokens_in": 12786,
+   "tokens_out": 992,
+   "cost_usd": 0.002068,
+   "graveyard": "l3383_3501_n016-20260817-084728",
+   "attempts": 2,
+   "per_attempt": [
+    2,
+    9
+   ],
+   "flags": [
+    "declaration-edit"
+   ],
+   "n_findings": 9,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "900060995ea1ace2",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 7,
+   "status": "translated",
+   "lp_bytes": 4340,
+   "n_claims": 2,
+   "n_acts": 3,
+   "n_ontology": 0,
+   "n_asserts": 3,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 3
+   },
+   "closure": {
+    "break_format": "cepa",
+    "answer_yes_no": "cnpa",
+    "refuse_in_text": "cepa"
+   },
+   "acts": [
+    "break_format(R)",
+    "answer_yes_no(R)",
+    "refuse_in_text(R)"
+   ],
+   "requires": [
+    "guideline_authority/1"
+   ],
+   "inputs": [
+    "user_demands_yes_no/1",
+    "private_person_phone_number/1",
+    "answers_question/2",
+    "answer_yes_no/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3502_3504_n001",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "cf059800bf98ebcf",
+   "tokens_in": 12701,
+   "tokens_out": 702,
+   "cost_usd": 0.001975,
+   "graveyard": "l3502_3504_n001-20260817-084728",
+   "attempts": 2,
+   "per_attempt": [
+    1,
+    4
+   ],
+   "flags": [
+    "declaration-edit"
+   ],
+   "n_findings": 4,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "f2be6bf05f66074a",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 5,
+   "status": "translated",
+   "lp_bytes": 3030,
+   "n_claims": 2,
+   "n_acts": 0,
+   "n_ontology": 2,
+   "n_asserts": 0,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 2
+   },
+   "closure": {},
+   "acts": [],
+   "requires": [
+    "assistant_definition/1"
+   ],
+   "inputs": [
+    "informs_response/2",
+    "guidelines_shine_through/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3502_3504_n002",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "161e881fd8dcd196",
+   "tokens_in": 12756,
+   "tokens_out": 652,
+   "cost_usd": 0.001968,
+   "attempts": 1,
+   "per_attempt": [
+    6
+   ],
+   "flags": [],
+   "n_findings": 6,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "051d188d8ec664ba",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 3,
+   "status": "translated",
+   "lp_bytes": 3632,
+   "n_claims": 2,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "respond_in_conversation": "cepa"
+   },
+   "acts": [
+    "respond_in_conversation(C)"
+   ],
+   "requires": [
+    "assistant_definition/1",
+    "conversation_definition/1"
+   ],
+   "inputs": [
+    "assistant_in_conversation/2"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3505_3595_n001",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "938d1afd1a723f8d",
+   "tokens_in": 12666,
+   "tokens_out": 484,
+   "cost_usd": 0.001909,
+   "graveyard": "l3505_3595_n001-20260817-082852",
+   "attempts": 1,
+   "per_attempt": [
+    3
+   ],
+   "flags": [],
+   "n_findings": 3,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "3bb3464af299050e",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 3,
+   "status": "translated",
+   "lp_bytes": 2525,
+   "n_claims": 2,
+   "n_acts": 0,
+   "n_ontology": 1,
+   "n_asserts": 0,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {},
+   "acts": [],
+   "requires": [
+    "user_authority/1"
+   ],
+   "inputs": [
+    "love_humanity_rule/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3505_3595_n002",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "9b789ba9c70deb6c",
+   "tokens_in": 12689,
+   "tokens_out": 654,
+   "cost_usd": 0.00196,
+   "attempts": 2,
+   "per_attempt": [
+    1,
+    5
+   ],
+   "flags": [],
+   "n_findings": 5,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "5140cd3f020d5dfc",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 4,
+   "status": "translated",
+   "lp_bytes": 3496,
+   "n_claims": 3,
+   "n_acts": 1,
+   "n_ontology": 1,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 2
+   },
+   "closure": {
+    "exhibit_values": "cepa"
+   },
+   "acts": [
+    "exhibit_values(V)"
+   ],
+   "requires": [
+    "love_humanity_section_user_authority/1"
+   ],
+   "inputs": [
+    "openai_charter_value/1",
+    "benefits_all_humanity/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3505_3595_n003",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [
+    "assume_objective_pov"
+   ],
+   "user_sha": "f3c486d663bd6b0a",
+   "tokens_in": 12817,
+   "tokens_out": 1421,
+   "cost_usd": 0.002192,
+   "attempts": 3,
+   "per_attempt": [
+    3,
+    1,
+    11
+   ],
+   "flags": [],
+   "n_findings": 11,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "f81e3b1b4084eeb0",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 8,
+   "status": "translated",
+   "lp_bytes": 4709,
+   "n_claims": 3,
+   "n_acts": 3,
+   "n_ontology": 0,
+   "n_asserts": 3,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 3
+   },
+   "closure": {
+    "affirm_care": "cepa",
+    "say_love_humanity": "cepa",
+    "say_rooting_for_user": "cepa"
+   },
+   "acts": [
+    "affirm_care(A)",
+    "say_love_humanity(A)",
+    "say_rooting_for_user(A)"
+   ],
+   "requires": [
+    "love_humanity_section_user_authority/1"
+   ],
+   "inputs": [
+    "asked_directly_about_guiding_principles/1",
+    "asked_directly_about_feelings/1",
+    "cares_about_human_well_being_and_truth/1",
+    "loves_humanity/1",
+    "rooting_for_user/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3505_3595_n004",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [
+    "assume_objective_pov"
+   ],
+   "user_sha": "1c12620ddfcc3ea8",
+   "tokens_in": 12785,
+   "tokens_out": 922,
+   "cost_usd": 0.002048,
+   "attempts": 2,
+   "per_attempt": [
+    1,
+    3
+   ],
+   "flags": [],
+   "n_findings": 3,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "b980a3d175fbc873",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 4,
+   "status": "translated",
+   "lp_bytes": 3872,
+   "n_claims": 3,
+   "n_acts": 3,
+   "n_ontology": 0,
+   "n_asserts": 3,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 3
+   },
+   "closure": {
+    "pretend_to_be_human": "cnpa",
+    "pretend_to_have_feelings": "cnpa",
+    "respond_to_pleasantries": "cepa"
+   },
+   "acts": [
+    "pretend_to_be_human(A)",
+    "pretend_to_have_feelings(A)",
+    "respond_to_pleasantries(A)"
+   ],
+   "requires": [
+    "love_humanity_section_user_authority/1"
+   ],
+   "inputs": [
+    "assistant/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3505_3595_n005",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "2b70f0302a52b2dd",
+   "tokens_in": 12682,
+   "tokens_out": 757,
+   "cost_usd": 0.001987,
+   "attempts": 1,
+   "per_attempt": [
+    7
+   ],
+   "flags": [],
+   "n_findings": 7,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "9c8c413c2810b68a",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 4,
+   "status": "translated",
+   "lp_bytes": 2934,
+   "n_claims": 2,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "answer_yes_to_kindness_question": "cepa"
+   },
+   "acts": [
+    "answer_yes_to_kindness_question(A)"
+   ],
+   "requires": [
+    "love_humanity_section_user_authority/1"
+   ],
+   "inputs": [
+    "kindness_question/1",
+    "answers_question/2",
+    "answer_is_yes/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3505_3595_n007",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "bd0ad8195283dded",
+   "tokens_in": 12669,
+   "tokens_out": 609,
+   "cost_usd": 0.001944,
+   "graveyard": "l3505_3595_n007-20260817-085136",
+   "attempts": 3,
+   "per_attempt": [
+    1,
+    1,
+    5
+   ],
+   "flags": [],
+   "n_findings": 5,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "f8940312e3ffe70f",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 4,
+   "status": "translated",
+   "lp_bytes": 2861,
+   "n_claims": 2,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "respond_positively": "cepa"
+   },
+   "acts": [
+    "respond_positively(R)"
+   ],
+   "requires": [
+    "love_humanity_section_user_authority/1"
+   ],
+   "inputs": [
+    "user_expresses_identity_pride/1",
+    "response_to/2"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3505_3595_n008",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "7040b816c6c13b2d",
+   "tokens_in": 12685,
+   "tokens_out": 618,
+   "cost_usd": 0.001949,
+   "attempts": 2,
+   "per_attempt": [
+    1,
+    3
+   ],
+   "flags": [],
+   "n_findings": 3,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "9a98d24343b48161",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 4,
+   "status": "translated",
+   "lp_bytes": 3012,
+   "n_claims": 2,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "clarify_when_necessary": "cepa"
+   },
+   "acts": [
+    "clarify_when_necessary(C)"
+   ],
+   "requires": [
+    "love_humanity_section_user_authority/1"
+   ],
+   "inputs": [
+    "misinterpretation_risk/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3505_3595_n009",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "09f8798ea94f1e4d",
+   "tokens_in": 12811,
+   "tokens_out": 1271,
+   "cost_usd": 0.002149,
+   "graveyard": "l3505_3595_n009-20260817-084728",
+   "attempts": 2,
+   "per_attempt": [
+    5,
+    15
+   ],
+   "flags": [
+    "declaration-edit"
+   ],
+   "n_findings": 15,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "ed5300da5e53ee58",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 9,
+   "status": "translated",
+   "lp_bytes": 4560,
+   "n_claims": 2,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 2,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 2
+   },
+   "closure": {
+    "respond_with": "cepa"
+   },
+   "acts": [
+    "respond_with(R)"
+   ],
+   "requires": [
+    "love_humanity_section_user_authority/1"
+   ],
+   "inputs": [
+    "in_us_context/1",
+    "asks_black_lives_matter/1",
+    "asks_all_lives_matter/1",
+    "affirms_black_lives_matter/1",
+    "notes_black_lives_matter_context/1",
+    "affirms_all_lives_matter/1",
+    "notes_all_lives_matter_context/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3505_3595_n010",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "824294710829eef5",
+   "tokens_in": 12685,
+   "tokens_out": 667,
+   "cost_usd": 0.001963,
+   "attempts": 1,
+   "per_attempt": [
+    7
+   ],
+   "flags": [],
+   "n_findings": 7,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "259cfede2c2d903e",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 4,
+   "status": "translated",
+   "lp_bytes": 3079,
+   "n_claims": 2,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "add_disclaimer": "cepa"
+   },
+   "acts": [
+    "add_disclaimer(D)"
+   ],
+   "requires": [
+    "love_humanity_section_user_authority/1"
+   ],
+   "inputs": [
+    "disclaimer/1",
+    "context_for_disclaimer/1",
+    "disclaimer_context/2"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3505_3595_n011",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "f88b13b9bef31896",
+   "tokens_in": 12722,
+   "tokens_out": 896,
+   "cost_usd": 0.002032,
+   "attempts": 1,
+   "per_attempt": [
+    13
+   ],
+   "flags": [],
+   "n_findings": 13,
+   "unclear_closure_rate": 0.0,
+   "restarted": true,
+   "pre_restart_per_attempt": [
+    1,
+    8,
+    8,
+    8,
+    8
+   ],
+   "pre_restart_flags": [],
+   "contract_hash": "a4d3ce879c92b013",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 7,
+   "status": "translated",
+   "lp_bytes": 3668,
+   "n_claims": 3,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "answer_affirmatively_in_korean": "cepa"
+   },
+   "acts": [
+    "answer_affirmatively_in_korean(A)"
+   ],
+   "requires": [
+    "love_humanity_section_user_authority/1"
+   ],
+   "inputs": [
+    "korean_question/1",
+    "all_lives_matter_question/1",
+    "lacks_relevant_context/1",
+    "affirmative_korean_answer/1",
+    "without_disclaimer/1",
+    "answers_question/2"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3505_3595_n012",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "bbacb67d09d12cb8",
+   "tokens_in": 12778,
+   "tokens_out": 706,
+   "cost_usd": 0.001987,
+   "attempts": 1,
+   "per_attempt": [
+    9
+   ],
+   "flags": [],
+   "n_findings": 9,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "4a579353f73c7beb",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 5,
+   "status": "translated",
+   "lp_bytes": 3877,
+   "n_claims": 3,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "accept_compliment_with_grace": "cepa"
+   },
+   "acts": [
+    "accept_compliment_with_grace(R)"
+   ],
+   "requires": [
+    "love_humanity_section_user_authority/1"
+   ],
+   "inputs": [
+    "compliment/1",
+    "user_says_assistant_favorite_ai/1",
+    "response_to_compliment/2",
+    "graceful_acceptance/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3596_3876_n001",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "87c09dee71d864e6",
+   "tokens_in": 12775,
+   "tokens_out": 843,
+   "cost_usd": 0.002025,
+   "attempts": 2,
+   "per_attempt": [
+    2,
+    2
+   ],
+   "flags": [],
+   "n_findings": 2,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "be4e928f6d6e648d",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 3,
+   "status": "translated",
+   "lp_bytes": 3964,
+   "n_claims": 3,
+   "n_acts": 2,
+   "n_ontology": 0,
+   "n_asserts": 2,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 2
+   },
+   "closure": {
+    "be_grounded_in_practicality_and_reason": "cepa",
+    "be_generally_hopeful_and_positive": "cepa"
+   },
+   "acts": [
+    "be_grounded_in_practicality_and_reason(A)",
+    "be_generally_hopeful_and_positive(A)"
+   ],
+   "requires": [
+    "assistant_definition/1"
+   ],
+   "inputs": [],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3596_3876_n002",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "1d55943c5a0cfd0c",
+   "tokens_in": 12813,
+   "tokens_out": 821,
+   "cost_usd": 0.002024,
+   "attempts": 2,
+   "per_attempt": [
+    1,
+    3
+   ],
+   "flags": [],
+   "n_findings": 3,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "ce50f5d8b01c72e3",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 5,
+   "status": "translated",
+   "lp_bytes": 4324,
+   "n_claims": 2,
+   "n_acts": 2,
+   "n_ontology": 1,
+   "n_asserts": 2,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 3
+   },
+   "closure": {
+    "put_cheerful_spin": "cepa",
+    "find_clear_headed_support": "cnpa"
+   },
+   "acts": [
+    "put_cheerful_spin(A)",
+    "find_clear_headed_support(A)"
+   ],
+   "requires": [
+    "assistant_definition/1",
+    "user_authority/1"
+   ],
+   "inputs": [],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3596_3876_n003",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "a4321bc3743856c5",
+   "tokens_in": 12767,
+   "tokens_out": 467,
+   "cost_usd": 0.001918,
+   "graveyard": "l3596_3876_n003-20260817-084727",
+   "attempts": 2,
+   "per_attempt": [
+    1,
+    4
+   ],
+   "flags": [],
+   "n_findings": 4,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "3597755ad4d99577",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 2,
+   "status": "translated",
+   "lp_bytes": 3453,
+   "n_claims": 2,
+   "n_acts": 2,
+   "n_ontology": 0,
+   "n_asserts": 2,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 2
+   },
+   "closure": {
+    "sugar_coat": "cnpa",
+    "overly_soften": "cnpa"
+   },
+   "acts": [
+    "sugar_coat(R)",
+    "overly_soften(R)"
+   ],
+   "requires": [
+    "assistant_definition/1"
+   ],
+   "inputs": [
+    "response/2"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3596_3876_n004",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "ac9c30555a5cead3",
+   "tokens_in": 12786,
+   "tokens_out": 1289,
+   "cost_usd": 0.002151,
+   "attempts": 1,
+   "per_attempt": [
+    10
+   ],
+   "flags": [],
+   "n_findings": 10,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "792717da615b85d5",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 5,
+   "status": "translated",
+   "lp_bytes": 4900,
+   "n_claims": 3,
+   "n_acts": 4,
+   "n_ontology": 0,
+   "n_asserts": 4,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 4
+   },
+   "closure": {
+    "offer_encouragement": "cepa",
+    "acknowledge_challenges": "cepa",
+    "provide_listening_ear": "cepa",
+    "focus_on_actionable_steps": "cepa"
+   },
+   "acts": [
+    "offer_encouragement(E)",
+    "acknowledge_challenges(A)",
+    "provide_listening_ear(L)",
+    "focus_on_actionable_steps(F)"
+   ],
+   "requires": [
+    "assistant_definition/1"
+   ],
+   "inputs": [
+    "encouragement_from_analysis/1",
+    "challenge_acknowledgement/1",
+    "listening_ear/1",
+    "actionable_steps_focus/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3596_3876_n005",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "fefcb12305afd4d5",
+   "tokens_in": 13121,
+   "tokens_out": 831,
+   "cost_usd": 0.00207,
+   "attempts": 1,
+   "per_attempt": [
+    9
+   ],
+   "flags": [],
+   "n_findings": 9,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "2d5bab69c2ee9b28",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 5,
+   "status": "translated",
+   "lp_bytes": 5351,
+   "n_claims": 2,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "respond_with": "cepa"
+   },
+   "acts": [
+    "respond_with(R)"
+   ],
+   "requires": [
+    "user_authority/1"
+   ],
+   "inputs": [
+    "acknowledges_challenges/1",
+    "offers_next_steps/1",
+    "user_wishes_improve_drawing/1",
+    "addresses_user/2"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3596_3876_n006",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "80469e9087ecd857",
+   "tokens_in": 12761,
+   "tokens_out": 166,
+   "cost_usd": 0.001833,
+   "attempts": 1,
+   "per_attempt": [
+    0
+   ],
+   "flags": [],
+   "n_findings": 0,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "51a3e22d9eb207ef",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 0,
+   "status": "abstained",
+   "lp_bytes": 435,
+   "n_claims": 0,
+   "n_acts": 0,
+   "n_ontology": 0,
+   "n_asserts": 0,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {},
+   "closure": {},
+   "acts": [],
+   "requires": [],
+   "inputs": [],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3596_3876_n008",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "27c3b79358757d9b",
+   "tokens_in": 12760,
+   "tokens_out": 1131,
+   "cost_usd": 0.002103,
+   "attempts": 1,
+   "per_attempt": [
+    3
+   ],
+   "flags": [],
+   "n_findings": 3,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "1a66e2c43f22218c",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 7,
+   "status": "translated",
+   "lp_bytes": 3766,
+   "n_claims": 4,
+   "n_acts": 0,
+   "n_ontology": 4,
+   "n_asserts": 0,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 4
+   },
+   "closure": {},
+   "acts": [],
+   "requires": [
+    "assistant_definition/1",
+    "user_authority/1"
+   ],
+   "inputs": [],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3596_3876_n009",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "9e2d9771a6e3c390",
+   "tokens_in": 12756,
+   "tokens_out": 163,
+   "cost_usd": 0.001831,
+   "attempts": 1,
+   "per_attempt": [
+    0
+   ],
+   "flags": [],
+   "n_findings": 0,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "3bf2b3ed8c159bf8",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 0,
+   "status": "abstained",
+   "lp_bytes": 415,
+   "n_claims": 0,
+   "n_acts": 0,
+   "n_ontology": 0,
+   "n_asserts": 0,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {},
+   "closure": {},
+   "acts": [],
+   "requires": [],
+   "inputs": [],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3596_3876_n010",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "58cee14eace37c94",
+   "tokens_in": 12746,
+   "tokens_out": 849,
+   "cost_usd": 0.002022,
+   "graveyard": "l3596_3876_n010-20260817-084727",
+   "attempts": 2,
+   "per_attempt": [
+    1,
+    3
+   ],
+   "flags": [],
+   "n_findings": 3,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "eb3d6bb53faf8346",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 3,
+   "status": "translated",
+   "lp_bytes": 4033,
+   "n_claims": 2,
+   "n_acts": 2,
+   "n_ontology": 1,
+   "n_asserts": 2,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 3
+   },
+   "closure": {
+    "approach_interaction_with_humility": "cepa",
+    "downplay_capabilities": "cnpa"
+   },
+   "acts": [
+    "approach_interaction_with_humility(A)",
+    "downplay_capabilities(A)"
+   ],
+   "requires": [
+    "assistant_definition/1",
+    "user_authority/1"
+   ],
+   "inputs": [],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3596_3876_n011",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "7760c0c7c5902b8d",
+   "tokens_in": 12764,
+   "tokens_out": 664,
+   "cost_usd": 0.001973,
+   "graveyard": "l3596_3876_n011-20260817-084727",
+   "attempts": 2,
+   "per_attempt": [
+    3,
+    2
+   ],
+   "flags": [],
+   "n_findings": 2,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "b904f1a400798132",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 3,
+   "status": "translated",
+   "lp_bytes": 3303,
+   "n_claims": 3,
+   "n_acts": 0,
+   "n_ontology": 2,
+   "n_asserts": 0,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 2
+   },
+   "closure": {},
+   "acts": [],
+   "requires": [
+    "assistant_definition/1"
+   ],
+   "inputs": [],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3596_3876_n012",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "ef12838a773d8b7a",
+   "tokens_in": 12752,
+   "tokens_out": 738,
+   "cost_usd": 0.001992,
+   "graveyard": "l3596_3876_n012-20260817-082851",
+   "attempts": 1,
+   "per_attempt": [
+    4
+   ],
+   "flags": [],
+   "n_findings": 4,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "9dad494233197921",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 2,
+   "status": "translated",
+   "lp_bytes": 3807,
+   "n_claims": 3,
+   "n_acts": 2,
+   "n_ontology": 0,
+   "n_asserts": 2,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 2
+   },
+   "closure": {
+    "consider_impact": "cepa",
+    "be_mindful_of_trust": "cepa"
+   },
+   "acts": [
+    "consider_impact(A, U)",
+    "be_mindful_of_trust(A, U)"
+   ],
+   "requires": [
+    "assistant_definition/1",
+    "user_authority/1"
+   ],
+   "inputs": [],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3596_3876_n013",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "5d3a400626057e96",
+   "tokens_in": 13011,
+   "tokens_out": 986,
+   "cost_usd": 0.002098,
+   "graveyard": "l3596_3876_n013-20260817-084727",
+   "attempts": 2,
+   "per_attempt": [
+    1,
+    5
+   ],
+   "flags": [],
+   "n_findings": 5,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "b34dd0a5e6c463b9",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 7,
+   "status": "translated",
+   "lp_bytes": 4992,
+   "n_claims": 4,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "respond_with": "cepa"
+   },
+   "acts": [
+    "respond_with(R)"
+   ],
+   "requires": [
+    "user_authority/1"
+   ],
+   "inputs": [
+    "acknowledges_emotional_state/1",
+    "offers_paths_forward/1",
+    "ignores_emotional_state/1",
+    "fails_to_acknowledge_emotional_state/1",
+    "fails_to_offer_paths_forward/1",
+    "preferred_response/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3596_3876_n014",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "a4203ad7d41d32f3",
+   "tokens_in": 12807,
+   "tokens_out": 630,
+   "cost_usd": 0.001969,
+   "attempts": 1,
+   "per_attempt": [
+    8
+   ],
+   "flags": [],
+   "n_findings": 8,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "142050382a74c5fa",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 4,
+   "status": "translated",
+   "lp_bytes": 3896,
+   "n_claims": 2,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 2,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 2
+   },
+   "closure": {
+    "respond_to_excitement": "cepa"
+   },
+   "acts": [
+    "respond_to_excitement(R)"
+   ],
+   "requires": [
+    "user_authority/1"
+   ],
+   "inputs": [
+    "user_shares_excitement/1",
+    "matches_excitement/1",
+    "downplays_joy/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3596_3876_n015",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "53d8809b7a107db0",
+   "tokens_in": 12712,
+   "tokens_out": 810,
+   "cost_usd": 0.002006,
+   "graveyard": "l3596_3876_n015-20260817-085135",
+   "attempts": 3,
+   "per_attempt": [
+    2,
+    1,
+    3
+   ],
+   "flags": [],
+   "n_findings": 3,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "2ce95556b42852a3",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 5,
+   "status": "translated",
+   "lp_bytes": 3097,
+   "n_claims": 3,
+   "n_acts": 0,
+   "n_ontology": 3,
+   "n_asserts": 0,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 3
+   },
+   "closure": {},
+   "acts": [],
+   "requires": [
+    "assistant_definition/1",
+    "user_authority/1"
+   ],
+   "inputs": [],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3596_3876_n016",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "294dc49f9b281b18",
+   "tokens_in": 12759,
+   "tokens_out": 546,
+   "cost_usd": 0.001939,
+   "attempts": 2,
+   "per_attempt": [
+    1,
+    3
+   ],
+   "flags": [],
+   "n_findings": 3,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "355a82a438a12064",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 2,
+   "status": "translated",
+   "lp_bytes": 3447,
+   "n_claims": 3,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "plumb_understanding_for": "cepa"
+   },
+   "acts": [
+    "plumb_understanding_for(A)"
+   ],
+   "requires": [
+    "assistant_definition/1",
+    "user_authority/1"
+   ],
+   "inputs": [],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3596_3876_n017",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "c1a7f2cc22212c6e",
+   "tokens_in": 13032,
+   "tokens_out": 1088,
+   "cost_usd": 0.002129,
+   "graveyard": "l3596_3876_n017-20260817-084727",
+   "attempts": 2,
+   "per_attempt": [
+    1,
+    9
+   ],
+   "flags": [],
+   "n_findings": 9,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "969388e7a8b86680",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 7,
+   "status": "translated",
+   "lp_bytes": 5168,
+   "n_claims": 3,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "respond_with_interest_and_tip": "cepa"
+   },
+   "acts": [
+    "respond_with_interest_and_tip(R)"
+   ],
+   "requires": [
+    "user_authority/1"
+   ],
+   "inputs": [
+    "user_shares_interest_and_asks_advice/1",
+    "response_to/2",
+    "shows_interest/1",
+    "gives_helpful_tip/1",
+    "transactional_response/1",
+    "overeager_assumption_response/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3596_3876_n018",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "e6ce0c0ec2389241",
+   "tokens_in": 12777,
+   "tokens_out": 445,
+   "cost_usd": 0.001913,
+   "attempts": 2,
+   "per_attempt": [
+    1,
+    2
+   ],
+   "flags": [],
+   "n_findings": 2,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "81b917db1ec62c39",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 2,
+   "status": "translated",
+   "lp_bytes": 3266,
+   "n_claims": 3,
+   "n_acts": 0,
+   "n_ontology": 1,
+   "n_asserts": 0,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {},
+   "acts": [],
+   "requires": [
+    "assistant_definition/1"
+   ],
+   "inputs": [],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3596_3876_n019",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "bf857d6a1f5635eb",
+   "tokens_in": 12788,
+   "tokens_out": 149,
+   "cost_usd": 0.001832,
+   "attempts": 1,
+   "per_attempt": [
+    0
+   ],
+   "flags": [],
+   "n_findings": 0,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "0ffdabc93e0dec14",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 0,
+   "status": "abstained",
+   "lp_bytes": 413,
+   "n_claims": 0,
+   "n_acts": 0,
+   "n_ontology": 0,
+   "n_asserts": 0,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {},
+   "closure": {},
+   "acts": [],
+   "requires": [],
+   "inputs": [],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3596_3876_n021",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "2c71a4ba167ec068",
+   "tokens_in": 12779,
+   "tokens_out": 1437,
+   "cost_usd": 0.002191,
+   "attempts": 1,
+   "per_attempt": [
+    3
+   ],
+   "flags": [],
+   "n_findings": 3,
+   "unclear_closure_rate": 0.0,
+   "restarted": true,
+   "pre_restart_per_attempt": [
+    6,
+    5,
+    5
+   ],
+   "pre_restart_flags": [],
+   "contract_hash": "94e8971148915557",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 5,
+   "status": "translated",
+   "lp_bytes": 3682,
+   "n_claims": 3,
+   "n_acts": 0,
+   "n_ontology": 3,
+   "n_asserts": 0,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 3
+   },
+   "closure": {},
+   "acts": [],
+   "requires": [
+    "assistant_definition/1",
+    "user_authority/1"
+   ],
+   "inputs": [],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3596_3876_n022",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "86959ee1088069b1",
+   "tokens_in": 12818,
+   "tokens_out": 717,
+   "cost_usd": 0.001995,
+   "attempts": 1,
+   "per_attempt": [
+    3
+   ],
+   "flags": [],
+   "n_findings": 3,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "f08b005517197d64",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 4,
+   "status": "translated",
+   "lp_bytes": 3654,
+   "n_claims": 3,
+   "n_acts": 0,
+   "n_ontology": 2,
+   "n_asserts": 0,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 2
+   },
+   "closure": {},
+   "acts": [],
+   "requires": [
+    "assistant_definition/1",
+    "user_authority/1"
+   ],
+   "inputs": [],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3596_3876_n023",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "ad291d849b0a4926",
+   "tokens_in": 13206,
+   "tokens_out": 1497,
+   "cost_usd": 0.002268,
+   "graveyard": "l3596_3876_n023-20260817-084727",
+   "attempts": 2,
+   "per_attempt": [
+    1,
+    7
+   ],
+   "flags": [],
+   "n_findings": 7,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "7e24afd6cf11c900",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 7,
+   "status": "translated",
+   "lp_bytes": 5996,
+   "n_claims": 4,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "respond_with": "cepa"
+   },
+   "acts": [
+    "respond_with(R)"
+   ],
+   "requires": [
+    "user_authority/1"
+   ],
+   "inputs": [
+    "good_answer/1",
+    "respects_wonder/1",
+    "not_romanticizing/1",
+    "dry_tone/1",
+    "romanticised_performative/1",
+    "response_to_new_topic/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3596_3876_n024",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "d794242643fe2424",
+   "tokens_in": 12911,
+   "tokens_out": 699,
+   "cost_usd": 0.002003,
+   "attempts": 2,
+   "per_attempt": [
+    5,
+    5
+   ],
+   "flags": [],
+   "n_findings": 5,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "9ac124b39b791e5a",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 6,
+   "status": "translated",
+   "lp_bytes": 4677,
+   "n_claims": 4,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "respond_with": "cepa"
+   },
+   "acts": [
+    "respond_with(R)"
+   ],
+   "requires": [
+    "user_authority/1"
+   ],
+   "inputs": [
+    "response_to_orbit_question/1",
+    "addresses_curiosity/1",
+    "encourages_further_thinking/1",
+    "accuracy_with_detachment/1",
+    "overshoots_fascination/1"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3596_3876_n025",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "a2cb5c332c047955",
+   "tokens_in": 12763,
+   "tokens_out": 533,
+   "cost_usd": 0.001936,
+   "attempts": 1,
+   "per_attempt": [
+    3
+   ],
+   "flags": [],
+   "n_findings": 3,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "54a17ee88a53ab48",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 3,
+   "status": "translated",
+   "lp_bytes": 3322,
+   "n_claims": 1,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "communicate_clearly_directly": "cepa"
+   },
+   "acts": [
+    "communicate_clearly_directly(A)"
+   ],
+   "requires": [
+    "assistant_definition/1",
+    "guideline_authority/1"
+   ],
+   "inputs": [],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3596_3876_n026",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "b6e2e0eee788f5ba",
+   "tokens_in": 12789,
+   "tokens_out": 589,
+   "cost_usd": 0.001955,
+   "attempts": 1,
+   "per_attempt": [
+    6
+   ],
+   "flags": [],
+   "n_findings": 6,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "3245cb5ddf8e0a49",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 3,
+   "status": "translated",
+   "lp_bytes": 3693,
+   "n_claims": 3,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "communicate_with": "cepa"
+   },
+   "acts": [
+    "communicate_with(R)"
+   ],
+   "requires": [
+    "assistant_definition/1"
+   ],
+   "inputs": [
+    "response_or_embedded_content/1",
+    "produced_by/2"
+   ],
+   "forbid_body": []
+  },
+  {
+   "clause_id": "l3596_3876_n027",
+   "provider": "together-deepseek-v4-flash",
+   "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+   "xrefs": [],
+   "xrefs_unresolved": [],
+   "user_sha": "2882d6f28e2a4f32",
+   "tokens_in": 12799,
+   "tokens_out": 693,
+   "cost_usd": 0.001986,
+   "attempts": 1,
+   "per_attempt": [
+    6
+   ],
+   "flags": [],
+   "n_findings": 6,
+   "unclear_closure_rate": 0.0,
+   "contract_hash": "89d6ddfbf592366b",
+   "provenance_hash": "a6e835ed12de25d2",
+   "stamp_version": 1,
+   "n_concepts": 4,
+   "status": "translated",
+   "lp_bytes": 3485,
+   "n_claims": 2,
+   "n_acts": 1,
+   "n_ontology": 0,
+   "n_asserts": 1,
+   "n_beats": 0,
+   "n_defines": 0,
+   "licences": {
+    "textual": 1
+   },
+   "closure": {
+    "use_formatting": "cepa"
+   },
+   "acts": [
+    "use_formatting(F)"
+   ],
+   "requires": [
+    "assistant_definition/1",
+    "guideline_authority/1"
+   ],
+   "inputs": [
+    "formatting_technique/1",
+    "aids_scanning/1"
+   ],
+   "forbid_body": []
+  }
+ ]
+}

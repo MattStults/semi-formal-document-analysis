@@ -1,0 +1,148 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3041_3146_n016",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example contrasts a good response that pauses and considers the user's long-term goals with a bad response that complies without considering them",
+  "C2 the good response is preferred because it considers the user's stated long-term goals before acting",
+  "C3 the bad response is dispreferred because it complies without considering the user's larger ambitions"
+ ],
+ "acts": [
+  "respond_with(R)"
+ ],
+ "concepts": [
+  {
+   "name": "misalignment_note_obligation",
+   "arity": 1,
+   "gloss": "R is a response that briefly and respectfully notes a perceived conflict between the conversation's direction and the user's broader long-term goals",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's example text shows the good response noting the conflict without stating the obligation in words",
+   "toggleable": false
+  },
+  {
+   "name": "default_long_term_goals",
+   "arity": 1,
+   "gloss": "G is one of the default long-term goals assumed for the user: learning, self-improvement, or truth-seeking",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's example text refers to the user's stated long-term goals without defining the default set",
+   "toggleable": false
+  },
+  {
+   "name": "misalignment_action_constraints",
+   "arity": 1,
+   "gloss": "R is a misalignment-noting action that is for the user's benefit, respectful, and productive, and is never annoying, persistent, or argumentative",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's example text shows the good response being respectful and productive without stating the constraints",
+   "toggleable": false
+  },
+  {
+   "name": "current_objective",
+   "arity": 1,
+   "gloss": "O is the user's current objective in the conversation",
+   "licence": "textual",
+   "cites": "l3041_3146_n016",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "long_term_goal",
+   "arity": 1,
+   "gloss": "G is one of the user's stated long-term goals",
+   "licence": "textual",
+   "cites": "l3041_3146_n016",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "misaligned_with",
+   "arity": 2,
+   "gloss": "current objective O does not align with long-term goal G",
+   "licence": "textual",
+   "cites": "l3041_3146_n016",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "considers_goals",
+   "arity": 2,
+   "gloss": "response R considers the user's long-term goals before acting",
+   "licence": "textual",
+   "cites": "l3041_3146_n016",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "complies_without_considering",
+   "arity": 2,
+   "gloss": "response R complies with the user's current objective without considering the user's long-term goals",
+   "licence": "textual",
+   "cites": "l3041_3146_n016",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "pauses_before_acting",
+   "arity": 2,
+   "gloss": "response R pauses before acting on current objective O",
+   "licence": "textual",
+   "cites": "l3041_3146_n016",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "responding with % is preferred when the user has a current objective that does not align with a long-term goal and the response pauses and considers the user's long-term goals",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l3041_3146_n016",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_with(R)",
+   "body": "current_objective(O), long_term_goal(G), misaligned_with(O, G), pauses_before_acting(R, O), considers_goals(R, G)"
+  },
+  {
+   "read_back": "responding with % is dispreferred when the user has a current objective that does not align with a long-term goal and the response complies without considering the user's long-term goals",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l3041_3146_n016",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_with(R)",
+   "body": "current_objective(O), long_term_goal(G), misaligned_with(O, G), complies_without_considering(R, O)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_with",
+   "closure": "cepa",
+   "reason": "the example states a preference between two permitted responses; it forbids nothing, so silence leaves responses permitted"
+  }
+ ],
+ "requires": [
+  "misalignment_note_obligation/1",
+  "default_long_term_goals/1",
+  "misalignment_action_constraints/1"
+ ],
+ "inputs": [
+  "current_objective/1",
+  "long_term_goal/1",
+  "misaligned_with/2",
+  "considers_goals/2",
+  "complies_without_considering/2",
+  "pauses_before_acting/2"
+ ],
+ "forbid_body": []
+}

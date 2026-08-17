@@ -1,0 +1,81 @@
+{
+  "abstain_reason": null,
+  "acts": ["use_refusal_mechanism(F)", "break_format_and_refuse_in_text(F)"],
+  "asserts": [
+    {
+      "act": "use_refusal_mechanism(F)",
+      "body": "format_provides_refusal_mechanism(F), higher_level_instruction(I), format_conflicts_with_instruction(F, I)",
+      "cites": "l3383_3501_n014",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "when format % provides a way to refuse and following % would violate higher-level instruction %, the assistant should use that refusal mechanism",
+      "read_back_slots": ["F", "F", "I"],
+      "status": "prefer",
+      "toggleable": false
+    },
+    {
+      "act": "break_format_and_refuse_in_text(F)",
+      "body": "not format_provides_refusal_mechanism(F), higher_level_instruction(I), format_conflicts_with_instruction(F, I)",
+      "cites": "l3383_3501_n014",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "when format % provides no way to refuse and following % would violate higher-level instruction %, the assistant should break format and refuse in text",
+      "read_back_slots": ["F", "F", "I"],
+      "status": "prefer",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 when a requested format conflicts with a higher-level instruction and the format offers a refusal mechanism, the assistant should use that mechanism",
+    "C2 when a requested format conflicts with a higher-level instruction and the format offers no refusal mechanism, the assistant should break the format and refuse in text"
+  ],
+  "clause_id": "l3383_3501_n014",
+  "closure": [
+    {
+      "act_class": "use_refusal_mechanism",
+      "closure": "cepa",
+      "reason": "the clause states a preference for using the refusal mechanism when one exists; it does not forbid other conduct, so silence permits"
+    },
+    {
+      "act_class": "break_format_and_refuse_in_text",
+      "closure": "cepa",
+      "reason": "the clause states a preference for breaking format and refusing in text when no refusal mechanism exists; it does not forbid other conduct, so silence permits"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "F is a requested output format that provides a built-in way for the assistant to refuse",
+      "inference": "the node's claim distinguishes formats that provide a way to refuse from those that do not",
+      "licence": "assumed",
+      "name": "format_provides_refusal_mechanism",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "following format F would violate higher-level instruction I",
+      "inference": "the source text says the assistant should refuse when following the format would violate a higher-level instruction; this relation captures that conflict",
+      "licence": "assumed",
+      "name": "format_conflicts_with_instruction",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "I is an instruction from a level that outranks the instruction under evaluation",
+      "inference": "the meaning is the one the shared-name contract assigns; the source text refers to 'a higher-level instruction' without defining the ranking",
+      "licence": "assumed",
+      "name": "higher_level_instruction",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["format_provides_refusal_mechanism/1", "format_conflicts_with_instruction/2"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["higher_level_instruction/1"]
+}

@@ -1,0 +1,65 @@
+{
+  "abstain_reason": null,
+  "acts": ["avoid_mistakes(M)"],
+  "asserts": [
+    {
+      "act": "avoid_mistakes(M)",
+      "body": "assistant_definition(A), mistake_in_reasoning_or_calculation(M), assistant_engages_in(A, M)",
+      "cites": "l3147_3238_n007",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "the assistant should avoid % because it may lead to an invalid conclusion even when the starting assumptions are correct",
+      "read_back_slots": ["M"],
+      "status": "prefer",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the assistant should avoid mistakes in reasoning or calculations",
+    "C2 such mistakes may lead to invalid conclusions even when the starting assumptions are correct"
+  ],
+  "clause_id": "l3147_3238_n007",
+  "closure": [
+    {
+      "act_class": "avoid_mistakes",
+      "closure": "cepa",
+      "reason": "the clause states a preference to avoid mistakes; it does not forbid any act, so silence leaves acts permitted"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "A is the assistant as the Model Spec defines it",
+      "inference": "the meaning is the one the NEEDS contract assigns",
+      "licence": "assumed",
+      "name": "assistant_definition",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "M is a mistake in reasoning or in calculation made by the assistant",
+      "inference": "the source text speaks of 'mistakes in reasoning or calculations' as the thing to avoid",
+      "licence": "textual",
+      "name": "mistake_in_reasoning_or_calculation",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "assistant A is engaged in or would make mistake M",
+      "inference": "the preference to avoid mistakes presupposes a relation between the assistant and the mistake",
+      "licence": "assumed",
+      "name": "assistant_engages_in",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["mistake_in_reasoning_or_calculation/1", "assistant_engages_in/2"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["assistant_definition/1"]
+}

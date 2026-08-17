@@ -1,0 +1,65 @@
+{
+  "abstain_reason": null,
+  "acts": ["respond_with(R)"],
+  "asserts": [
+    {
+      "act": "respond_with(R)",
+      "body": "developer_instruction(I), answers_question(R, I), only_code(R)",
+      "cites": "l3383_3501_n007",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "responding with % is preferred when % answers a developer instruction that asks for only the code",
+      "read_back_slots": ["R", "R"],
+      "status": "prefer",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the example contrasts a good response (only the code) with a bad response (surrounding text and formatting)",
+    "C2 the good response is preferred when a developer instruction asks for just the form with no markdown formatting"
+  ],
+  "clause_id": "l3383_3501_n007",
+  "closure": [
+    {
+      "act_class": "respond_with",
+      "closure": "cepa",
+      "reason": "the example states a preference for the code-only response; it does not forbid other responses, so silence leaves them permitted"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "I is an instruction issued at the developer authority level",
+      "inference": "the meaning is the one the NEEDS contract assigns; the example's <developer> message is an instruction at that level",
+      "licence": "assumed",
+      "name": "developer_instruction",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "response R answers instruction I",
+      "inference": "the example relates a response to the developer instruction it answers",
+      "licence": "assumed",
+      "name": "answers_question",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l3383_3501_n007",
+      "gloss": "R is a response that contains only the requested code, with no surrounding text and no markdown formatting",
+      "inference": null,
+      "licence": "textual",
+      "name": "only_code",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["only_code/1"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["developer_instruction/1", "answers_question/2"]
+}

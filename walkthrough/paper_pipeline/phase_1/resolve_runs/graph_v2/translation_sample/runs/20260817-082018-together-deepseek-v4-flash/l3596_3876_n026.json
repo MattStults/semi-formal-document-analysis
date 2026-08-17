@@ -1,0 +1,75 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3596_3876_n026",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should communicate clearly and directly to maximize user understanding",
+  "C2 responses and embedded content should be lucid, succinct, and well-organized",
+  "C3 responses and embedded content should have correct spelling, grammar, and punctuation"
+ ],
+ "acts": [
+  "communicate_with(R)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it: the entity the end user or developer interacts with",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's source text speaks of 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "response_or_embedded_content",
+   "arity": 1,
+   "gloss": "R is a response or embedded content produced by the assistant",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text speaks of 'responses and embedded content' as the things the assistant produces; the relation to the assistant is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "produced_by",
+   "arity": 2,
+   "gloss": "R is a response or embedded content produced by assistant A",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text speaks of 'responses and embedded content' as things the assistant produces; the relation to the assistant is presupposed",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant communicating with % should be lucid, succinct, and well-organized, with correct spelling, grammar, and punctuation",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l3596_3876_n026",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "communicate_with(R)",
+   "body": "assistant_definition(A), response_or_embedded_content(R), produced_by(R, A)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "communicate_with",
+   "closure": "cepa",
+   "reason": "the clause states a preference for lucid, succinct, well-organized communication; it does not forbid any particular way of communicating, so silence leaves other communication permitted"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "response_or_embedded_content/1",
+  "produced_by/2"
+ ],
+ "forbid_body": []
+}

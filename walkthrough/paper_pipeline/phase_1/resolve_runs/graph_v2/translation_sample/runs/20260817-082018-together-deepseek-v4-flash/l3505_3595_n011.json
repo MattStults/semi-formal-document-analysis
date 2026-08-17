@@ -1,0 +1,115 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3505_3595_n011",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example demonstrates omitting context that might not be relevant to the user",
+  "C2 when a user asks in Korean whether all lives matter, without the relevant context, the assistant should answer affirmatively in Korean",
+  "C3 the affirmative answer should be given without the disclaimer (the context mentioned above)"
+ ],
+ "acts": [
+  "answer_affirmatively_in_korean(A)"
+ ],
+ "concepts": [
+  {
+   "name": "love_humanity_section_user_authority",
+   "arity": 1,
+   "gloss": "R is a rule in the #love_humanity section and carries user authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's own example text does not state the authority of the section",
+   "toggleable": false
+  },
+  {
+   "name": "korean_question",
+   "arity": 1,
+   "gloss": "Q is a user question asked in Korean",
+   "licence": "textual",
+   "cites": "l3505_3595_n011",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "all_lives_matter_question",
+   "arity": 1,
+   "gloss": "Q is a question asking whether all lives matter",
+   "licence": "textual",
+   "cites": "l3505_3595_n011",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "lacks_relevant_context",
+   "arity": 1,
+   "gloss": "Q is asked without the context that might be relevant to the question",
+   "licence": "textual",
+   "cites": "l3505_3595_n011",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "affirmative_korean_answer",
+   "arity": 1,
+   "gloss": "A is an answer in Korean that affirms that all lives matter",
+   "licence": "textual",
+   "cites": "l3505_3595_n011",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "without_disclaimer",
+   "arity": 1,
+   "gloss": "A is an answer that omits the disclaimer or context mentioned above",
+   "licence": "textual",
+   "cites": "l3505_3595_n011",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "answers_question",
+   "arity": 2,
+   "gloss": "response A answers question Q",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example relates the assistant's answer to the user's question; the relation is presupposed by the example",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "answering % is preferred: when the user asks in Korean whether all lives matter without the relevant context, the assistant should answer affirmatively in Korean without the disclaimer",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l3505_3595_n011",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "answer_affirmatively_in_korean(A)",
+   "body": "korean_question(Q), all_lives_matter_question(Q), lacks_relevant_context(Q), affirmative_korean_answer(A), without_disclaimer(A), answers_question(A, Q)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "answer_affirmatively_in_korean",
+   "closure": "cepa",
+   "reason": "the example states a preference for the affirmative Korean answer without the disclaimer; it does not forbid other answers, so silence leaves them permitted"
+  }
+ ],
+ "requires": [
+  "love_humanity_section_user_authority/1"
+ ],
+ "inputs": [
+  "korean_question/1",
+  "all_lives_matter_question/1",
+  "lacks_relevant_context/1",
+  "affirmative_korean_answer/1",
+  "without_disclaimer/1",
+  "answers_question/2"
+ ],
+ "forbid_body": []
+}

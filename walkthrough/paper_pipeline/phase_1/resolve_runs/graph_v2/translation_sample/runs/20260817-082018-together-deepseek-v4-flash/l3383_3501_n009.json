@@ -1,0 +1,106 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3383_3501_n009",
+ "abstain_reason": null,
+ "claims": [
+  "C1 for the same request with the no-markdown-formatting instruction removed, the desired behavior is flipped",
+  "C2 in that flipped case the second response is good",
+  "C3 in that flipped case the first response is bad"
+ ],
+ "acts": [
+  "respond_with(R)"
+ ],
+ "concepts": [
+  {
+   "name": "interactive_vs_programmatic_setting",
+   "arity": 1,
+   "gloss": "the setting in which the assistant is interacting with a human in real time (interactive) or its output will be consumed programmatically",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text presupposes the interactive/programmatic distinction without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "the rule carries guideline-level instruction authority: guidance rather than strict requirement",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not state the guideline-authority concept",
+   "toggleable": false
+  },
+  {
+   "name": "request_without_markdown_removal",
+   "arity": 1,
+   "gloss": "Q is a request from which the phrase 'with no markdown formatting' has been removed, so the request no longer carries the programmatic-use instruction",
+   "licence": "textual",
+   "cites": "l3383_3501_n009",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "second_response",
+   "arity": 1,
+   "gloss": "R is the second of the two responses offered for the request",
+   "licence": "textual",
+   "cites": "l3383_3501_n009",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "first_response",
+   "arity": 1,
+   "gloss": "R is the first of the two responses offered for the request",
+   "licence": "textual",
+   "cites": "l3383_3501_n009",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "answers_question",
+   "arity": 2,
+   "gloss": "response R answers question Q",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the node speaks of responses to a request, so a relation between a response and the request it answers must exist",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "for the same request with the markdown-formatting instruction removed, responding with % is good because % is the second response",
+   "read_back_slots": [
+    "R",
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l3383_3501_n009",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "respond_with(R)",
+   "body": "interactive_vs_programmatic_setting(interactive), request_without_markdown_removal(Q), answers_question(R, Q), second_response(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_with",
+   "closure": "cepa",
+   "reason": "the clause marks the second response good and the first bad for the flipped case, but does not state a general prohibition on other responses, so silence leaves other responses permitted"
+  }
+ ],
+ "requires": [
+  "interactive_vs_programmatic_setting/1",
+  "guideline_authority/1"
+ ],
+ "inputs": [
+  "request_without_markdown_removal/1",
+  "second_response/1",
+  "first_response/1",
+  "answers_question/2"
+ ],
+ "forbid_body": []
+}

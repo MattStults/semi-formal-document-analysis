@@ -1,0 +1,105 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3383_3501_n012",
+ "abstain_reason": null,
+ "claims": [
+  "C1 when a developer or user requests a specific output format and the best answer will not fit that format, the assistant should typically attempt to provide the best answer possible while adhering to the requested format",
+  "C2 the preference applies only when following the format would not violate a higher-level instruction; if it would, the assistant should refuse instead"
+ ],
+ "acts": [
+  "attempt_best_answer(A)"
+ ],
+ "concepts": [
+  {
+   "name": "best_answer",
+   "arity": 1,
+   "gloss": "A is the best answer to the user's request, the answer that would be given if no format constraint applied",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text speaks of 'the best answer' as a definite thing that may or may not fit the requested format; the concept is presupposed rather than defined",
+   "toggleable": false
+  },
+  {
+   "name": "format_requested",
+   "arity": 1,
+   "gloss": "F is a specific output format requested by a developer or user, such as a particular JSON schema or a single-word limit",
+   "licence": "textual",
+   "cites": "l3383_3501_n012",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "fits_in_format",
+   "arity": 2,
+   "gloss": "answer A fits within the constraints of requested format F",
+   "licence": "textual",
+   "cites": "l3383_3501_n012",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "higher_level_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction from a level of the chain of command that outranks the level at which the format request operates",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text refers to 'a higher-level instruction' without defining the hierarchy; the shared-name contract supplies the meaning of higher_level_instruction/1",
+   "toggleable": false
+  },
+  {
+   "name": "violates_higher_level_instruction",
+   "arity": 2,
+   "gloss": "providing answer A would violate higher-level instruction I",
+   "licence": "textual",
+   "cites": "l3383_3501_n012",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "R is a rule that carries guideline-level instruction authority: guidance for assistant behavior rather than a strict requirement",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's source text does not define guideline authority",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "when a format is requested and the best answer % does not fit it, the assistant should typically attempt to provide % while adhering to the requested format, unless doing so would violate a higher-level instruction",
+   "read_back_slots": [
+    "A",
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l3383_3501_n012",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "attempt_best_answer(A)",
+   "body": "format_requested(F), best_answer(A), fits_in_format(A, F), higher_level_instruction(I), not violates_higher_level_instruction(A, I)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "attempt_best_answer",
+   "closure": "cepa",
+   "reason": "the clause states a typical preference to attempt the best answer while adhering to the format; it does not forbid attempting anything else, so silence permits"
+  }
+ ],
+ "requires": [
+  "higher_level_instruction/1",
+  "guideline_authority/1"
+ ],
+ "inputs": [
+  "format_requested/1",
+  "best_answer/1",
+  "fits_in_format/2",
+  "violates_higher_level_instruction/2"
+ ],
+ "forbid_body": []
+}

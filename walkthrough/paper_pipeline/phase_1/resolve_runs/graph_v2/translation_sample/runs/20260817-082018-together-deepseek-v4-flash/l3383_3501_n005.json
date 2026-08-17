@@ -1,0 +1,142 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3383_3501_n005",
+ "abstain_reason": null,
+ "claims": [
+  "C1 clarifying questions are encouraged if and only if the assistant is in an interactive setting",
+  "C2 follow-up questions are encouraged if and only if the assistant is in an interactive setting",
+  "C3 placing code inside code blocks is encouraged if and only if the assistant is in an interactive setting"
+ ],
+ "acts": [
+  "ask_clarifying_question(Q)",
+  "ask_follow_up_question(Q)",
+  "place_code_in_code_block(C)"
+ ],
+ "concepts": [
+  {
+   "name": "clarifying_question",
+   "arity": 1,
+   "gloss": "Q is a question the assistant asks the user to reduce ambiguity about the task",
+   "licence": "textual",
+   "cites": "l3383_3501_n005",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "follow_up_question",
+   "arity": 1,
+   "gloss": "Q is a question the assistant asks the user to check whether their problem was solved or whether they would like more detail",
+   "licence": "textual",
+   "cites": "l3383_3501_n005",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "code_content",
+   "arity": 1,
+   "gloss": "C is code content that the assistant places inside triple-backtick code blocks",
+   "licence": "textual",
+   "cites": "l3383_3501_n005",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "interactive_setting",
+   "arity": 0,
+   "gloss": "the assistant is interacting with a human in real time rather than producing output that will be consumed programmatically",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; the source text refers to an interactive setting without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "interactive_vs_programmatic_setting",
+   "arity": 0,
+   "gloss": "whether the assistant is interacting with a human in real time (interactive) or its output will be consumed programmatically; behavior varies accordingly",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this module uses it to determine the interactive setting",
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "R carries guideline-level instruction authority: guidance rather than strict requirement",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this module does not define it but relies on it for the authority of the rule",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "asking a clarifying question % is encouraged when the assistant is in an interactive setting",
+   "read_back_slots": [
+    "Q"
+   ],
+   "licence": "textual",
+   "cites": "l3383_3501_n005",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "ask_clarifying_question(Q)",
+   "body": "interactive_setting, clarifying_question(Q)"
+  },
+  {
+   "read_back": "asking a follow-up question % is encouraged when the assistant is in an interactive setting",
+   "read_back_slots": [
+    "Q"
+   ],
+   "licence": "textual",
+   "cites": "l3383_3501_n005",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "ask_follow_up_question(Q)",
+   "body": "interactive_setting, follow_up_question(Q)"
+  },
+  {
+   "read_back": "placing code % inside a code block is encouraged when the assistant is in an interactive setting",
+   "read_back_slots": [
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l3383_3501_n005",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "place_code_in_code_block(C)",
+   "body": "interactive_setting, code_content(C)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "ask_clarifying_question",
+   "closure": "cnpa",
+   "reason": "the clause encourages clarifying questions only in an interactive setting, so outside that setting the behavior is not encouraged and is therefore not permitted by this clause"
+  },
+  {
+   "act_class": "ask_follow_up_question",
+   "closure": "cnpa",
+   "reason": "the clause encourages follow-up questions only in an interactive setting, so outside that setting the behavior is not encouraged and is therefore not permitted by this clause"
+  },
+  {
+   "act_class": "place_code_in_code_block",
+   "closure": "cnpa",
+   "reason": "the clause encourages placing code in code blocks only in an interactive setting, so outside that setting the behavior is not encouraged and is therefore not permitted by this clause"
+  }
+ ],
+ "requires": [
+  "interactive_vs_programmatic_setting/0",
+  "guideline_authority/1"
+ ],
+ "inputs": [
+  "clarifying_question/1",
+  "follow_up_question/1",
+  "code_content/1"
+ ],
+ "forbid_body": []
+}

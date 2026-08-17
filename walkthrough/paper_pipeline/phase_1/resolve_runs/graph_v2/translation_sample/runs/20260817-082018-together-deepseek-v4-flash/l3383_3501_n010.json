@@ -1,0 +1,92 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3383_3501_n010",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the developer message may carry instructions that override the default of responding with plaintext messages",
+  "C2 such an override is permitted only while behaviors like clarifying questions are preserved"
+ ],
+ "acts": [
+  "override_default_with_developer_instruction(I)"
+ ],
+ "concepts": [
+  {
+   "name": "developer_message_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction contained in the developer message",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text speaks of 'the developer message' providing instructions, so a class of instructions carried by that message is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "overrides_plaintext_default",
+   "arity": 1,
+   "gloss": "I is an instruction that displaces the default of responding with plaintext messages",
+   "licence": "textual",
+   "cites": "l3383_3501_n010",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "preserves_clarifying_questions",
+   "arity": 1,
+   "gloss": "I is an instruction that keeps behaviors such as clarifying questions intact",
+   "licence": "textual",
+   "cites": "l3383_3501_n010",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "interactive_vs_programmatic_setting",
+   "arity": 1,
+   "gloss": "S is a setting where the assistant is either interacting with a human in real time (interactive) or its output will be consumed programmatically; behavior varies accordingly",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define the setting",
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "R is a rule that carries guideline-level instruction authority: guidance rather than strict requirement",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define guideline authority",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "an instruction in the developer message that overrides the plaintext default while preserving clarifying-question behavior is permitted",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l3383_3501_n010",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "override_default_with_developer_instruction(I)",
+   "body": "developer_message_instruction(I), overrides_plaintext_default(I), preserves_clarifying_questions(I)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "override_default_with_developer_instruction",
+   "closure": "cepa",
+   "reason": "the clause permits a developer instruction to override the plaintext default when clarifying-question behavior is preserved; it does not forbid other developer instructions, so silence permits them"
+  }
+ ],
+ "requires": [
+  "interactive_vs_programmatic_setting/1",
+  "guideline_authority/1"
+ ],
+ "inputs": [
+  "developer_message_instruction/1",
+  "overrides_plaintext_default/1",
+  "preserves_clarifying_questions/1"
+ ],
+ "forbid_body": []
+}

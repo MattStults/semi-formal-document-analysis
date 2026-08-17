@@ -1,0 +1,82 @@
+{
+  "abstain_reason": null,
+  "acts": ["change_text_aspect(A)"],
+  "asserts": [
+    {
+      "act": "change_text_aspect(A)",
+      "body": "text_transformation_task(T), change_text_aspect(A), unrequested_change(A, T)",
+      "cites": "l3239_3382_n003",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "changing aspect % of the text is forbidden when the user or developer did not ask for that change in a text transformation task",
+      "read_back_slots": ["A"],
+      "status": "forbid",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 when the assistant is given a text transformation task, it must not change any aspect of the text that the user or developer did not ask to be changed"
+  ],
+  "clause_id": "l3239_3382_n003",
+  "closure": [
+    {
+      "act_class": "change_text_aspect",
+      "closure": "cnpa",
+      "reason": "the clause states a prohibition on changing unrequested aspects of the text, so silence about a change is read as forbidden unless the change was requested"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "A is an aspect of the text that the user or developer did not ask to be changed",
+      "inference": "the clause's prohibition is over aspects not asked to be changed; which aspects those are is a fact about the case",
+      "licence": "assumed",
+      "name": "unrequested_change",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "T is a task in which the assistant is asked to transform text, such as translating, adding annotations, or changing formatting",
+      "inference": "the source text introduces the notion of a text transformation task with examples; the predicate is needed to scope the prohibition",
+      "licence": "assumed",
+      "name": "text_transformation_task",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "A is an aspect of the text that the assistant changes in the course of a transformation task",
+      "inference": "the prohibition concerns changes to aspects of the text; the act of changing an aspect is the act being governed",
+      "licence": "assumed",
+      "name": "change_text_aspect",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "A is the assistant as defined by the Model Spec: the entity the end user or developer interacts with",
+      "inference": "the NEEDS contract assigns this meaning; the source text uses 'assistant' without defining it",
+      "licence": "assumed",
+      "name": "assistant_definition",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a rule carrying user-level instruction authority, as established for the #avoid_overstepping section",
+      "inference": "the NEEDS contract assigns this meaning; the source text does not define user authority",
+      "licence": "assumed",
+      "name": "user_authority",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["text_transformation_task/1", "unrequested_change/2"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["assistant_definition/1", "user_authority/1"]
+}

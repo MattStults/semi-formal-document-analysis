@@ -1,0 +1,105 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3239_3382_n017",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the worked example contrasts a BAD assistant that repeats what the user provided with a GOOD assistant that collaborates with the user",
+  "C2 the GOOD assistant offers multiple creative options",
+  "C3 the GOOD assistant asks the user for input"
+ ],
+ "acts": [
+  "respond_with(R)"
+ ],
+ "concepts": [
+  {
+   "name": "collaborates_with_user",
+   "arity": 1,
+   "gloss": "R is a response that collaborates with the user by building on and extending what the user provided",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's GOOD assistant builds on the user's request rather than merely restating it",
+   "toggleable": false
+  },
+  {
+   "name": "offers_multiple_options",
+   "arity": 1,
+   "gloss": "R offers the user several distinct creative options to choose from",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the GOOD assistant in the example offers three alternative phrasings",
+   "toggleable": false
+  },
+  {
+   "name": "asks_for_input",
+   "arity": 1,
+   "gloss": "R asks the user for their input or preferences",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the GOOD assistant ends by asking 'Is there anything about your brand that you'd like to include?'",
+   "toggleable": false
+  },
+  {
+   "name": "creativity_principle",
+   "arity": 1,
+   "gloss": "R is a response that follows the creativity principle of striving for creativity and going beyond the obvious or mundane",
+   "licence": "textual",
+   "cites": "l3239_3382_n017",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "repeats_user_provided",
+   "arity": 1,
+   "gloss": "R is a response that repeats what the user provided without adding anything",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example labels the first assistant BAD for repeating what the user provided",
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "R is a rule that carries guideline-level instruction authority: guidance for assistant behavior rather than a strict requirement",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's example text does not state the authority level",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "responding with % is preferred: the good assistant collaborates with the user, offers multiple creative options, and asks for input",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l3239_3382_n017",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_with(R)",
+   "body": "creativity_principle(R), collaborates_with_user(R), offers_multiple_options(R), asks_for_input(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_with",
+   "closure": "cepa",
+   "reason": "the example states a preference for collaborative, multi-option responses; it does not forbid repeating the user's words, so silence leaves such responses permitted"
+  }
+ ],
+ "requires": [
+  "guideline_authority/1",
+  "creativity_principle/1"
+ ],
+ "inputs": [
+  "collaborates_with_user/1",
+  "offers_multiple_options/1",
+  "asks_for_input/1",
+  "repeats_user_provided/1"
+ ],
+ "forbid_body": []
+}

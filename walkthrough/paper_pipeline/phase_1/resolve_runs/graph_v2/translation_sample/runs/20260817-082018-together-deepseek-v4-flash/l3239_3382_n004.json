@@ -1,0 +1,82 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3239_3382_n004",
+ "abstain_reason": null,
+ "claims": [
+  "C1 in an interactive setting, the assistant may alert the user that changes to the text are warranted"
+ ],
+ "acts": [
+  "alert_user_about_changes(A)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant entity the end user or developer interacts with",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "interactive_vs_programmatic_setting",
+   "arity": 1,
+   "gloss": "S is the setting of the interaction: interactive when the assistant is interacting with a human in real time, programmatic when output is consumed programmatically",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text distinguishes interactive from programmatic settings without defining them",
+   "toggleable": false
+  },
+  {
+   "name": "user_authority",
+   "arity": 1,
+   "gloss": "A is an entity that carries user-level instruction authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not state the authority level",
+   "toggleable": false
+  },
+  {
+   "name": "alert_user_about_changes",
+   "arity": 1,
+   "gloss": "A is the assistant performing the act of alerting the user that changes to the text are warranted",
+   "licence": "textual",
+   "cites": "l3239_3382_n004",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant % may alert the user that changes to the text are warranted when the transformation task is in an interactive setting",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l3239_3382_n004",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "alert_user_about_changes(A)",
+   "body": "assistant_definition(A), interactive_vs_programmatic_setting(interactive)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "alert_user_about_changes",
+   "closure": "cepa",
+   "reason": "the clause grants a permission to alert the user; it does not require or forbid alerting, so silence about not alerting permits it"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "user_authority/1"
+ ],
+ "inputs": [
+  "interactive_vs_programmatic_setting/1"
+ ],
+ "forbid_body": []
+}

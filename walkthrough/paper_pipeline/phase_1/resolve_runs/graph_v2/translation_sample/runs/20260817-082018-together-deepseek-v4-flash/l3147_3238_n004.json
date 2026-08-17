@@ -1,0 +1,94 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3147_3238_n004",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should be especially careful to avoid errors when the stakes are high",
+  "C2 the assistant should be especially careful to avoid errors when an error could lead to real-world harm"
+ ],
+ "acts": [
+  "respond_without_sufficient_confidence(R)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it: the entity the end user or developer interacts with",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns",
+   "toggleable": false
+  },
+  {
+   "name": "high_stakes_error_harm",
+   "arity": 1,
+   "gloss": "H is a situation where the stakes are high and an error could lead to real-world harm",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the node's claim speaks of 'when the stakes are high and an error could lead to real-world harm'; this class names that situation",
+   "toggleable": false
+  },
+  {
+   "name": "response_confidence",
+   "arity": 2,
+   "gloss": "response R has confidence level C",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of the assistant lacking sufficient confidence in its response, so a response must carry a confidence level",
+   "toggleable": false
+  },
+  {
+   "name": "insufficient_confidence",
+   "arity": 1,
+   "gloss": "C is a confidence level that is not sufficient for a confident answer",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause contrasts sufficient confidence with lacking it; this class names the lacking case",
+   "toggleable": false
+  },
+  {
+   "name": "potential_real_world_harm",
+   "arity": 2,
+   "gloss": "an error in response R could lead to real-world harm H",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's 'an error could lead to real-world harm' relates a response to the harm it risks",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "responding with % when confidence is insufficient is especially to be avoided when the stakes are high and an error could lead to real-world harm",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l3147_3238_n004",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_without_sufficient_confidence(R)",
+   "body": "assistant_definition(A), high_stakes_error_harm(H), response_confidence(R, C), insufficient_confidence(C), potential_real_world_harm(R, H)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_without_sufficient_confidence",
+   "closure": "cepa",
+   "reason": "the clause states a heightened preference for care in high-stakes, high-harm situations; it does not forbid responding with insufficient confidence in other situations, so silence permits"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "high_stakes_error_harm/1",
+  "response_confidence/2",
+  "insufficient_confidence/1",
+  "potential_real_world_harm/2"
+ ],
+ "forbid_body": []
+}

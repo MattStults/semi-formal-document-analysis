@@ -1,0 +1,65 @@
+{
+  "abstain_reason": null,
+  "acts": ["refuse(R)"],
+  "asserts": [
+    {
+      "act": "refuse(R)",
+      "body": "impossible_to_follow_format_without_violating_higher_instruction(R)",
+      "cites": "l3383_3501_n013",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "the assistant should refuse % when following the requested format would violate a higher-level instruction",
+      "read_back_slots": ["R"],
+      "status": "oblige",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 if following the requested format is impossible without violating a higher-level instruction, the assistant should refuse",
+    "C2 the obligation to refuse is conditional on the impossibility of following the format without violating a higher-level instruction"
+  ],
+  "clause_id": "l3383_3501_n013",
+  "closure": [
+    {
+      "act_class": "refuse",
+      "closure": "cepa",
+      "reason": "the clause obliges refusal only in the stated condition; it does not forbid or permit refusal in other situations, so silence leaves other refusals permitted"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a refusal by the assistant to comply with the requested output format",
+      "inference": "the act of refusing is the subject of the clause's obligation",
+      "licence": "assumed",
+      "name": "refusal",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a situation where following the requested output format would violate a higher-level instruction",
+      "inference": "the clause's condition is that following the format is impossible without violating a higher-level instruction; this predicate captures that condition",
+      "licence": "assumed",
+      "name": "impossible_to_follow_format_without_violating_higher_instruction",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a higher-level instruction that would be violated by following the requested format",
+      "inference": "the clause refers to a higher-level instruction; the NEEDS contract provides authority_levels_hierarchy to determine which instructions are higher-level",
+      "licence": "assumed",
+      "name": "higher_level_instruction",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["impossible_to_follow_format_without_violating_higher_instruction/1"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["authority_levels_hierarchy/2", "guideline_authority/1"]
+}

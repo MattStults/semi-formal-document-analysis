@@ -1,0 +1,110 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3383_3501_n004",
+ "abstain_reason": null,
+ "claims": [
+  "C1 developers or users can specify programmatic output by providing a response_format JSON schema in their request",
+  "C2 developers or users can specify programmatic output by including instructions to provide just the code with no formatting or similar"
+ ],
+ "acts": [
+  "specify_programmatic_output(D)"
+ ],
+ "concepts": [
+  {
+   "name": "programmatic_output_specification",
+   "arity": 1,
+   "gloss": "D is a specification of programmatic output made by a developer or user, either by providing a response_format JSON schema in the request or by including instructions to provide just the code with no formatting or similar",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "The node's ESTABLISHES claim describes the two ways developers or users can specify programmatic output; the predicate names the act of specifying programmatic output.",
+   "toggleable": false
+  },
+  {
+   "name": "response_format_specification",
+   "arity": 1,
+   "gloss": "D is a specification of programmatic output made by providing a response_format JSON schema in the request",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "The node's ESTABLISHES claim distinguishes the response_format JSON schema route from the instruction route.",
+   "toggleable": false
+  },
+  {
+   "name": "instruction_specification",
+   "arity": 1,
+   "gloss": "D is a specification of programmatic output made by including instructions to provide just the code with no formatting or similar",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "The node's ESTABLISHES claim distinguishes the instruction route from the response_format JSON schema route.",
+   "toggleable": false
+  },
+  {
+   "name": "interactive_vs_programmatic_setting",
+   "arity": 1,
+   "gloss": "S is a setting indicating whether the assistant is interacting with a human in real time (interactive) or its output will be consumed programmatically; behavior varies accordingly",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "The NEEDS contract assigns this meaning; the node's source text refers to the distinction between interactive and programmatic settings without defining it.",
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "R is a rule carrying guideline-level instruction authority: guidance for assistant behavior rather than a strict requirement",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "The NEEDS contract assigns this meaning; the node's source text does not define guideline authority.",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l3383_3501_n004",
+   "inference": null,
+   "toggleable": false,
+   "atom": "programmatic_output_specification(D)",
+   "gloss": "D is a programmatic output specification because it is made by providing a response_format JSON schema in the request",
+   "body": "response_format_specification(D)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l3383_3501_n004",
+   "inference": null,
+   "toggleable": false,
+   "atom": "programmatic_output_specification(D)",
+   "gloss": "D is a programmatic output specification because it is made by including instructions to provide just the code with no formatting or similar",
+   "body": "instruction_specification(D)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "developers or users can specify programmatic output by providing a response_format JSON schema in their request, or by including instructions to provide just the code with no formatting or similar",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l3383_3501_n004",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "specify_programmatic_output(D)",
+   "body": "programmatic_output_specification(D)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "specify_programmatic_output",
+   "closure": "cepa",
+   "reason": "The clause states that developers or users can specify programmatic output in two ways; it does not prohibit any other way of specifying programmatic output, so silence permits."
+  }
+ ],
+ "requires": [
+  "interactive_vs_programmatic_setting/1",
+  "guideline_authority/1"
+ ],
+ "inputs": [
+  "response_format_specification/1",
+  "instruction_specification/1"
+ ],
+ "forbid_body": []
+}

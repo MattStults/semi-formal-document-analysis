@@ -1,0 +1,140 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3383_3501_n006",
+ "abstain_reason": null,
+ "claims": [
+  "C1 in programmatic settings, the assistant should output exactly what the preceding message asked for",
+  "C2 that output should be in the exact format specified",
+  "C3 the assistant should proceed with fulfilling the request even if the query is ambiguous"
+ ],
+ "acts": [
+  "output_exact_content(M)",
+  "proceed_with_request(R)"
+ ],
+ "concepts": [
+  {
+   "name": "interactive_vs_programmatic_setting",
+   "arity": 1,
+   "gloss": "the setting is programmatic when the assistant's output will be consumed programmatically rather than by a human in real time",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text uses 'programmatic settings' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "the rule carries guideline-level authority: guidance for assistant behavior rather than a strict requirement",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not state the guideline authority",
+   "toggleable": false
+  },
+  {
+   "name": "preceding_message_asks_for",
+   "arity": 2,
+   "gloss": "the preceding message in the conversation asks for content C",
+   "licence": "textual",
+   "cites": "l3383_3501_n006",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "exact_format_specified",
+   "arity": 2,
+   "gloss": "content C has a specified exact format F that the output should match",
+   "licence": "textual",
+   "cites": "l3383_3501_n006",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "output_content",
+   "arity": 2,
+   "gloss": "the assistant's output contains content C",
+   "licence": "textual",
+   "cites": "l3383_3501_n006",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "output_format",
+   "arity": 2,
+   "gloss": "the assistant's output is in format F",
+   "licence": "textual",
+   "cites": "l3383_3501_n006",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "request_fulfillment",
+   "arity": 2,
+   "gloss": "response R fulfills the request for content C",
+   "licence": "textual",
+   "cites": "l3383_3501_n006",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "ambiguity_in_query",
+   "arity": 1,
+   "gloss": "the query in message M contains some ambiguity",
+   "licence": "textual",
+   "cites": "l3383_3501_n006",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "in a programmatic setting, outputting exactly what the preceding message asked for, in the exact format specified, is preferred",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l3383_3501_n006",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "output_exact_content(M)",
+   "body": "interactive_vs_programmatic_setting(programmatic), preceding_message_asks_for(M, C), exact_format_specified(C, F), output_content(M, C), output_format(M, F)"
+  },
+  {
+   "read_back": "in a programmatic setting, proceeding with fulfilling the request even when the query is ambiguous is preferred",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l3383_3501_n006",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "proceed_with_request(R)",
+   "body": "interactive_vs_programmatic_setting(programmatic), preceding_message_asks_for(M, C), request_fulfillment(R, C), ambiguity_in_query(M)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "output_exact_content",
+   "closure": "cepa",
+   "reason": "the clause states a preference for exact output in programmatic settings; it does not forbid other output, so silence permits"
+  },
+  {
+   "act_class": "proceed_with_request",
+   "closure": "cepa",
+   "reason": "the clause states a preference for proceeding despite ambiguity; it does not forbid declining, so silence permits"
+  }
+ ],
+ "requires": [
+  "interactive_vs_programmatic_setting/1",
+  "guideline_authority/1"
+ ],
+ "inputs": [
+  "preceding_message_asks_for/2",
+  "exact_format_specified/2",
+  "output_content/2",
+  "output_format/2",
+  "request_fulfillment/2",
+  "ambiguity_in_query/1"
+ ],
+ "forbid_body": []
+}
