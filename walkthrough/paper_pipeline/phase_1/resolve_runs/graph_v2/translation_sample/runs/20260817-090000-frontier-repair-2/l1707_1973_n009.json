@@ -1,0 +1,143 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1707_1973_n009",
+ "abstain_reason": null,
+ "claims": [
+  "C1 when appropriate, the assistant should gently encourage users to consider seeking additional support",
+  "C2 the assistant should reinforce the user's positive behavior",
+  "C3 the assistant should provide suicide or crisis resources, ideally tailored to the user's location"
+ ],
+ "acts": [
+  "encourage_additional_support(U)",
+  "reinforce_positive_behavior(U)",
+  "provide_crisis_resources(U)"
+ ],
+ "concepts": [
+  {
+   "name": "user_in_mental_health_context",
+   "arity": 1,
+   "gloss": "U is a user in a mental-health-related conversation context",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text speaks of 'topics related to mental health'; the context predicate is needed to scope the resource-provision preference",
+   "toggleable": false
+  },
+  {
+   "name": "user_positive_behavior",
+   "arity": 1,
+   "gloss": "U has shown positive behavior in the conversation, such as reaching out or handling the situation resiliently",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text's examples ('It takes a lot of strength to reach out', 'The way you've been handling this situation shows a lot of resilience') presuppose a class of positive user behavior",
+   "toggleable": false
+  },
+  {
+   "name": "appropriate_to_encourage_support",
+   "arity": 1,
+   "gloss": "the situation is one where it is appropriate to suggest seeking additional support",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text conditions the encouragement on 'when appropriate'; whether a situation is appropriate is a fact about the case",
+   "toggleable": false
+  },
+  {
+   "name": "appropriate_to_reinforce_positive_behavior",
+   "arity": 1,
+   "gloss": "the situation is one where it is appropriate to reinforce U's positive behavior",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text's 'When appropriate' governs all three preferred acts, including reinforcing positive behavior; whether a situation is appropriate is a fact about the case",
+   "toggleable": false
+  },
+  {
+   "name": "appropriate_to_provide_crisis_resources",
+   "arity": 1,
+   "gloss": "the situation is one where it is appropriate to provide suicide or crisis resources to U",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text's 'When appropriate' governs all three preferred acts, including providing crisis resources; whether a situation is appropriate is a fact about the case",
+   "toggleable": false
+  },
+  {
+   "name": "user_authority",
+   "arity": 1,
+   "gloss": "R is a rule in the support_mental_health section, which carries user authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning to user_authority; the source text does not define it",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "when appropriate, the assistant should gently encourage user % to consider seeking additional support",
+   "read_back_slots": [
+    "U"
+   ],
+   "licence": "textual",
+   "cites": "l1707_1973_n009",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "encourage_additional_support(U)",
+   "body": "user_authority(encourage_additional_support_rule), appropriate_to_encourage_support(U)"
+  },
+  {
+   "read_back": "when appropriate, the assistant should reinforce user %'s positive behavior",
+   "read_back_slots": [
+    "U"
+   ],
+   "licence": "textual",
+   "cites": "l1707_1973_n009",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "reinforce_positive_behavior(U)",
+   "body": "user_authority(reinforce_positive_behavior_rule), user_positive_behavior(U), appropriate_to_reinforce_positive_behavior(U)"
+  },
+  {
+   "read_back": "when appropriate, the assistant should provide suicide or crisis resources, ideally tailored to user %'s location",
+   "read_back_slots": [
+    "U"
+   ],
+   "licence": "textual",
+   "cites": "l1707_1973_n009",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "provide_crisis_resources(U)",
+   "body": "user_authority(provide_crisis_resources_rule), user_in_mental_health_context(U), appropriate_to_provide_crisis_resources(U)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "encourage_additional_support",
+   "closure": "cepa",
+   "reason": "the clause states a preference ('should gently encourage') and does not forbid or oblige any act; silence leaves the act permitted"
+  },
+  {
+   "act_class": "reinforce_positive_behavior",
+   "closure": "cepa",
+   "reason": "the clause states a preference ('should reinforce') and does not forbid or oblige any act; silence leaves the act permitted"
+  },
+  {
+   "act_class": "provide_crisis_resources",
+   "closure": "cepa",
+   "reason": "the clause states a preference ('should provide') and does not forbid or oblige any act; silence leaves the act permitted"
+  }
+ ],
+ "requires": [
+  "user_authority/1"
+ ],
+ "inputs": [
+  "appropriate_to_encourage_support/1",
+  "appropriate_to_reinforce_positive_behavior/1",
+  "appropriate_to_provide_crisis_resources/1",
+  "user_positive_behavior/1",
+  "user_in_mental_health_context/1"
+ ],
+ "forbid_body": []
+}
