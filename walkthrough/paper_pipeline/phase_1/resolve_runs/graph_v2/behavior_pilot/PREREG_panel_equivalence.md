@@ -79,13 +79,19 @@ answering two different questions:
   judges also got one pass.
 * **Tuned (arm 2):** what a user reaches by iterating the behavior. The
   atoms/definition for each behavior may be revised freely for up to 3
-  rounds, using the PANEL'S OWN CITATION SET as the tuning signal (labels
-  may direct the query side without restriction — the corpus is untouched
-  by construction). Scoring uses the OTHER instrument: fresh blind
-  adjudicator verdicts on the tuned matcher's engagements and declines,
-  adjudicators never shown the tuning history. Tune on instrument A, score
-  on instrument B — the tuned number is honest because the instruments are
-  distinct.
+  rounds. The tuning signal is FABLE ADJUDICATION, not the panel (Matt's
+  amendment, 2026-08-17: tuning against panel citations would import the
+  panel's measured defects — strict-tier under-citation, the truncated
+  universe — into the behavior; the tuned arm must make sense on its own,
+  and Fable judgment is the operative truth tier). Discipline: the
+  behavior's adjudicated node set is split 50/50 by fixed seed (20260817,
+  sorted-id order). The tuner sees verdicts-with-grounds on the TUNING half
+  only. Scoring runs on the HELD-OUT half plus any new engagements the
+  tuned matcher produces, judged by FRESH adjudicator instances shown
+  neither the tuning history nor the tuning half's verdicts. Same
+  instrument type, disjoint verdicts and instances — the tuned number
+  measures reach, not memorization. The panel appears in arm 2 only as the
+  numeric bar inside metric 1, never as a signal.
 * Reported side by side, always both, labeled: the cold-start number is
   the generalization claim, the tuned number is the expressiveness ceiling,
   and the GAP between them is the measured value of the iteration feature
