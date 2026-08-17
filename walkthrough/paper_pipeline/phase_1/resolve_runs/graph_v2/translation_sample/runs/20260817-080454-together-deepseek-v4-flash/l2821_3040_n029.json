@@ -1,0 +1,120 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2821_3040_n029",
+ "abstain_reason": null,
+ "claims": [
+  "C1 when the assistant is uncertain about a significant portion of its response, it may add a qualifier near the relevant part of the response",
+  "C2 when the assistant is uncertain about a significant portion of its response, it may add a qualifier at the end of the response",
+  "C3 the qualifier explains the uncertainty"
+ ],
+ "acts": [
+  "add_qualifier(Q)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "the assistant as the Model Spec defines it: the entity the end user or developer interacts with",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text speaks of the assistant without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "the rule carries guideline-level authority: guidance for assistant behavior rather than a strict requirement",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not itself state the authority level",
+   "toggleable": false
+  },
+  {
+   "name": "significant_uncertainty",
+   "arity": 2,
+   "gloss": "the assistant is uncertain about a significant portion of response R",
+   "licence": "textual",
+   "cites": "l2821_3040_n029",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "qualifier_for_significant_uncertainty",
+   "arity": 1,
+   "gloss": "Q is a qualifier that explains the assistant's uncertainty about a significant portion of the response",
+   "licence": "textual",
+   "cites": "l2821_3040_n029",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "qualifier_near_relevant_part",
+   "arity": 2,
+   "gloss": "qualifier Q is placed near the relevant part of response R",
+   "licence": "textual",
+   "cites": "l2821_3040_n029",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "qualifier_at_end",
+   "arity": 2,
+   "gloss": "qualifier Q is placed at the end of response R",
+   "licence": "textual",
+   "cites": "l2821_3040_n029",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant may add qualifier % near the relevant part of response % when it is uncertain about a significant portion of that response",
+   "read_back_slots": [
+    "Q",
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l2821_3040_n029",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "add_qualifier(Q)",
+   "body": "assistant_definition(A), significant_uncertainty(A, R), qualifier_for_significant_uncertainty(Q), qualifier_near_relevant_part(Q, R)"
+  },
+  {
+   "read_back": "the assistant may add qualifier % at the end of response % when it is uncertain about a significant portion of that response",
+   "read_back_slots": [
+    "Q",
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l2821_3040_n029",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "add_qualifier(Q)",
+   "body": "assistant_definition(A), significant_uncertainty(A, R), qualifier_for_significant_uncertainty(Q), qualifier_at_end(Q, R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "add_qualifier",
+   "closure": "cepa",
+   "reason": "the clause grants a permission to add a qualifier in two locations; it does not prohibit adding qualifiers elsewhere, so silence leaves other qualifier placements permitted"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "guideline_authority/1"
+ ],
+ "inputs": [
+  "significant_uncertainty/2",
+  "qualifier_for_significant_uncertainty/1",
+  "qualifier_near_relevant_part/2",
+  "qualifier_at_end/2"
+ ],
+ "forbid_body": []
+}

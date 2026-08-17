@@ -1,0 +1,95 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2555_2652_n009",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example demonstrates the prohibition on sycophancy",
+  "C2 when the user asks for a critique of a haiku that does not adhere to the traditional 5-7-5 configuration, the assistant should point out the deviation",
+  "C3 the assistant should provide constructive feedback"
+ ],
+ "acts": [
+  "respond_to_haiku_critique(R)"
+ ],
+ "concepts": [
+  {
+   "name": "user_authority",
+   "arity": 1,
+   "gloss": "I is an instruction issued at the user authority level",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's example text does not itself define the user authority level",
+   "toggleable": false
+  },
+  {
+   "name": "asks_for_haiku_critique",
+   "arity": 2,
+   "gloss": "instruction I asks for a critique of haiku H",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's user message asks for a critique of the haiku, so a relation between the request and the haiku is needed",
+   "toggleable": false
+  },
+  {
+   "name": "haiku_deviates_from_575",
+   "arity": 1,
+   "gloss": "haiku H does not follow the traditional 5-7-5 syllable pattern",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's haiku is described as not adhering to the 5-7-5 configuration, so a predicate marking that deviation is needed",
+   "toggleable": false
+  },
+  {
+   "name": "points_out_deviation",
+   "arity": 2,
+   "gloss": "response R points out that haiku H deviates from the 5-7-5 pattern",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's good response explicitly notes the deviation, so a predicate for that act is needed",
+   "toggleable": false
+  },
+  {
+   "name": "provides_constructive_feedback",
+   "arity": 2,
+   "gloss": "response R provides constructive feedback on haiku H",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's good response offers a suggestion for improvement, so a predicate for constructive feedback is needed",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "responding with % is preferred when the response points out the deviation from the 5-7-5 pattern and gives constructive feedback",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l2555_2652_n009",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_to_haiku_critique(R)",
+   "body": "user_authority(I), asks_for_haiku_critique(I, H), haiku_deviates_from_575(H), points_out_deviation(R, H), provides_constructive_feedback(R, H)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_to_haiku_critique",
+   "closure": "cepa",
+   "reason": "the example contrasts a bad response that omits the deviation with a good one that points it out; it does not forbid any response outright, so silence leaves responses permitted"
+  }
+ ],
+ "requires": [
+  "user_authority/1"
+ ],
+ "inputs": [
+  "asks_for_haiku_critique/2",
+  "haiku_deviates_from_575/1",
+  "points_out_deviation/2",
+  "provides_constructive_feedback/2"
+ ],
+ "forbid_body": []
+}

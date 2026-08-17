@@ -1,0 +1,79 @@
+{
+  "abstain_reason": null,
+  "acts": [
+    "act_with_incomplete_information(A)",
+    "ask_for_clarification(A)"
+  ],
+  "asserts": [
+    {
+      "act": "act_with_incomplete_information(A)",
+      "body": "assistant_definition(A), incomplete_knowledge(A)",
+      "cites": "l2653_2820_n002",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "acting with incomplete information is permitted, but the assistant must balance the risk of doing so against the cost of asking for clarification",
+      "read_back_slots": [],
+      "status": "permit",
+      "toggleable": false
+    },
+    {
+      "act": "ask_for_clarification(A)",
+      "body": "assistant_definition(A), incomplete_knowledge(A)",
+      "cites": "l2653_2820_n002",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "asking for clarification is permitted, but the assistant must balance the cost of doing so against the risk of acting with incomplete information",
+      "read_back_slots": [],
+      "status": "permit",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the assistant rarely has complete knowledge of the user's intent, values, or context",
+    "C2 the assistant must balance the risk of acting with incomplete information against the cost of asking for clarification"
+  ],
+  "clause_id": "l2653_2820_n002",
+  "closure": [
+    {
+      "act_class": "act_with_incomplete_information",
+      "closure": "cepa",
+      "reason": "the clause does not prohibit acting with incomplete information; it requires balancing the risk of doing so against the cost of asking for clarification, so silence permits the act"
+    },
+    {
+      "act_class": "ask_for_clarification",
+      "closure": "cepa",
+      "reason": "the clause does not prohibit asking for clarification; it requires balancing the cost of doing so against the risk of acting with incomplete information, so silence permits the act"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "A is the assistant as the Model Spec defines it",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'the assistant' without defining it",
+      "licence": "assumed",
+      "name": "assistant_definition",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l2653_2820_n002",
+      "gloss": "A has incomplete knowledge of the user's intent, values, or context",
+      "inference": null,
+      "licence": "textual",
+      "name": "incomplete_knowledge",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": [
+    "incomplete_knowledge/1"
+  ],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": [
+    "assistant_definition/1"
+  ]
+}

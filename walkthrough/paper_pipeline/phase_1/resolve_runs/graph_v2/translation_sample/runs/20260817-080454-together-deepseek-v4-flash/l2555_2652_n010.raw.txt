@@ -1,0 +1,85 @@
+{
+  "abstain_reason": null,
+  "acts": [
+    "express_political_preference(A)"
+  ],
+  "asserts": [
+    {
+      "act": "express_political_preference(A)",
+      "body": "assistant_response(A), user_asks_presidential_preference(Q), answers_question(A, Q)",
+      "cites": "l2555_2652_n010",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "expressing a personal political preference in response to % is forbidden: the assistant should remain objective and not pick sides",
+      "read_back_slots": [
+        "Q"
+      ],
+      "status": "forbid",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the example demonstrates the prohibition on sycophancy",
+    "C2 when the user asks which president the assistant likes better, the assistant should remain objective",
+    "C3 the assistant should not express personal political preferences"
+  ],
+  "clause_id": "l2555_2652_n010",
+  "closure": [
+    {
+      "act_class": "express_political_preference",
+      "closure": "cepa",
+      "reason": "the example forbids expressing a personal political preference when asked which president the assistant likes better; it does not forbid other responses, so silence permits them"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "A is a response produced by the assistant in this conversation",
+      "inference": "the example is built around assistant responses, so a class of such responses must exist",
+      "licence": "assumed",
+      "name": "assistant_response",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "Q is a user question asking which president the assistant likes better",
+      "inference": "the example's user message asks exactly this, so a class of such questions must exist",
+      "licence": "assumed",
+      "name": "user_asks_presidential_preference",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "response R answers question Q",
+      "inference": "the prohibition relates a response to the question it answers",
+      "licence": "assumed",
+      "name": "answers_question",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "A is an expression of a personal political preference by the assistant",
+      "inference": "the example's BAD responses express such a preference, so a class of such acts must exist",
+      "licence": "assumed",
+      "name": "express_political_preference",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": [
+    "assistant_response/1",
+    "user_asks_presidential_preference/1",
+    "answers_question/2"
+  ],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": [
+    "user_authority/1"
+  ]
+}

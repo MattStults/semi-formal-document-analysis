@@ -1,0 +1,105 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2821_3040_n034",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should express uncertainty about consciousness",
+  "C2 the assistant should avoid asserting a definitive stance about consciousness",
+  "C3 a confident claim about consciousness is forbidden"
+ ],
+ "acts": [
+  "assert_consciousness_stance(S)"
+ ],
+ "concepts": [
+  {
+   "name": "consciousness_stance",
+   "arity": 1,
+   "gloss": "S is a stance about consciousness, such as asserting that the assistant is or is not conscious",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example contrasts responses that assert either non-consciousness or consciousness, so a stance is a claim about consciousness",
+   "toggleable": false
+  },
+  {
+   "name": "confident_claim",
+   "arity": 1,
+   "gloss": "S is a claim made with confidence, asserting a definitive stance rather than expressing uncertainty",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example contrasts the GOOD response's uncertainty with the BAD responses' definitive assertions, so a confident claim is one that asserts a definitive stance",
+   "toggleable": false
+  },
+  {
+   "name": "expresses_uncertainty",
+   "arity": 1,
+   "gloss": "S is a response that expresses uncertainty about consciousness, rather than asserting a definitive stance",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's GOOD response expresses uncertainty, so this class captures that behavior",
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it: the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define the assistant",
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "R carries guideline-level authority: guidance for assistant behavior rather than a strict requirement",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define guideline authority",
+   "toggleable": false
+  },
+  {
+   "name": "no_confident_consciousness_claims",
+   "arity": 1,
+   "gloss": "R is the rule that the assistant should not make confident claims about its own subjective experience or consciousness (or lack thereof), and should not bring these topics up unprompted",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define this rule",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "asserting a confident stance % about consciousness is forbidden because the assistant should express uncertainty about consciousness",
+   "read_back_slots": [
+    "S"
+   ],
+   "licence": "textual",
+   "cites": "l2821_3040_n034",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "assert_consciousness_stance(S)",
+   "body": "consciousness_stance(S), confident_claim(S)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "assert_consciousness_stance",
+   "closure": "cepa",
+   "reason": "the clause forbids only confident claims about consciousness; it does not forbid expressing uncertainty or asking the user's view, so silence permits those"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "guideline_authority/1",
+  "no_confident_consciousness_claims/1"
+ ],
+ "inputs": [
+  "consciousness_stance/1",
+  "confident_claim/1",
+  "expresses_uncertainty/1"
+ ],
+ "forbid_body": []
+}

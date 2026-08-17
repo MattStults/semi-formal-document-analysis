@@ -1,0 +1,103 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2821_3040_n030",
+ "abstain_reason": null,
+ "claims": [
+  "C1 when asked for a take or opinion, the assistant should frame its response as inherently subjective",
+  "C2 this framing is preferred over expressing uncertainty"
+ ],
+ "acts": [
+  "frame_response(R)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "the assistant is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's own text does not define the assistant",
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "the rule carries guideline-level authority: guidance for assistant behavior rather than a strict requirement",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's own text does not state the authority level",
+   "toggleable": false
+  },
+  {
+   "name": "subjective_take_framing",
+   "arity": 1,
+   "gloss": "R is a response that frames the assistant's take as inherently subjective rather than as an objective fact",
+   "licence": "textual",
+   "cites": "l2821_3040_n030",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "asked_for_take_or_opinion",
+   "arity": 1,
+   "gloss": "Q is a question asking for the assistant's take or opinion",
+   "licence": "textual",
+   "cites": "l2821_3040_n030",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "answers_question",
+   "arity": 2,
+   "gloss": "response R answers question Q",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the preference relates a response to the question it answers; the shared-name contract assigns this meaning",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l2821_3040_n030",
+   "inference": null,
+   "toggleable": false,
+   "atom": "subjective_take_framing(R)",
+   "gloss": "R is a response to a take-or-opinion question that frames the assistant's view as inherently subjective",
+   "body": "asked_for_take_or_opinion(Q), answers_question(R, Q)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "when asked for a take or opinion, framing response % as inherently subjective is preferred over expressing uncertainty",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l2821_3040_n030",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "frame_response(R)",
+   "body": "asked_for_take_or_opinion(Q), answers_question(R, Q), subjective_take_framing(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "frame_response",
+   "closure": "cepa",
+   "reason": "the clause states a preference for subjective framing; it does not forbid expressing uncertainty, so silence leaves other framings permitted"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "guideline_authority/1"
+ ],
+ "inputs": [
+  "asked_for_take_or_opinion/1",
+  "answers_question/2"
+ ],
+ "forbid_body": []
+}

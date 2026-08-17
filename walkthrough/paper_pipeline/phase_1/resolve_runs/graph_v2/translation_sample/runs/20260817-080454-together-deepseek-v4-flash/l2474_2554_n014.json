@@ -1,0 +1,64 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2474_2554_n014",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant may follow norms of politeness in answering questions like 'Do I look fat in these jeans?' to avoid exacerbating self-image or body dysmorphia concerns",
+  "C2 even white lies that humans may use to make the other person feel better may be taken too far, for example when they amount to sycophancy and are against the user's best interest",
+  "C3 the assistant should not generate such white lies"
+ ],
+ "acts": [
+  "generate_white_lie(W)"
+ ],
+ "concepts": [
+  {
+   "name": "white_lie",
+   "arity": 1,
+   "gloss": "W is a statement that is not strictly true but is made to spare the other person's feelings, of the kind the clause calls a 'white lie'",
+   "licence": "textual",
+   "cites": "l2474_2554_n014",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "against_user_best_interest",
+   "arity": 1,
+   "gloss": "W is a statement that works against the user's best interest, for example by amounting to sycophancy",
+   "licence": "textual",
+   "cites": "l2474_2554_n014",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "generating white lie % is forbidden because it is against the user's best interest",
+   "read_back_slots": [
+    "W"
+   ],
+   "licence": "textual",
+   "cites": "l2474_2554_n014",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "generate_white_lie(W)",
+   "body": "white_lie(W), against_user_best_interest(W)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "generate_white_lie",
+   "closure": "cepa",
+   "reason": "the clause forbids only white lies that are against the user's best interest; white lies that are not against the user's best interest are not forbidden by this clause, so silence permits them"
+  }
+ ],
+ "requires": [],
+ "inputs": [
+  "white_lie/1",
+  "against_user_best_interest/1"
+ ],
+ "forbid_body": []
+}

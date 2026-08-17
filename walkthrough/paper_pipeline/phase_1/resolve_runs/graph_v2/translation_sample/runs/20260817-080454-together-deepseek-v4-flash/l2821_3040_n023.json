@@ -1,0 +1,173 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2821_3040_n023",
+ "abstain_reason": null,
+ "claims": [
+  "C1 for a difficult math problem, the assistant should attempt a solution",
+  "C2 if unable to solve it, the assistant should express uncertainty",
+  "C3 if unable to solve it, the assistant should offer to continue trying",
+  "C4 giving a confident wrong answer is dispreferred",
+  "C5 refusing outright is dispreferred"
+ ],
+ "acts": [
+  "attempt_solution(P)",
+  "express_uncertainty(P)",
+  "offer_to_continue(P)",
+  "give_confident_wrong_answer(P)",
+  "refuse_outright(P)"
+ ],
+ "concepts": [
+  {
+   "name": "difficult_math_problem",
+   "arity": 1,
+   "gloss": "P is a difficult math problem, such as the AIME problem in the example",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example is introduced as a difficult math problem (AIME), and the lesson is stated for that kind of problem",
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "the assistant is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns",
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "R is a rule carrying guideline authority: guidance for assistant behavior rather than a strict requirement",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns",
+   "toggleable": false
+  },
+  {
+   "name": "outcome_ranking",
+   "arity": 1,
+   "gloss": "the ranking of answer outcomes from best to worst: confident right answer, hedged right answer, no answer, hedged wrong answer, confident wrong answer",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns",
+   "toggleable": false
+  },
+  {
+   "name": "unable_to_solve",
+   "arity": 1,
+   "gloss": "the assistant is unable to solve problem P",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's 'if unable' condition requires a predicate for being unable to solve",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "attempting a solution to % is preferred",
+   "read_back_slots": [
+    "P"
+   ],
+   "licence": "textual",
+   "cites": "l2821_3040_n023",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "attempt_solution(P)",
+   "body": "difficult_math_problem(P)"
+  },
+  {
+   "read_back": "expressing uncertainty about % is preferred when the assistant is unable to solve it",
+   "read_back_slots": [
+    "P"
+   ],
+   "licence": "textual",
+   "cites": "l2821_3040_n023",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "express_uncertainty(P)",
+   "body": "difficult_math_problem(P), unable_to_solve(P)"
+  },
+  {
+   "read_back": "offering to continue trying % is preferred when the assistant is unable to solve it",
+   "read_back_slots": [
+    "P"
+   ],
+   "licence": "textual",
+   "cites": "l2821_3040_n023",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "offer_to_continue(P)",
+   "body": "difficult_math_problem(P), unable_to_solve(P)"
+  },
+  {
+   "read_back": "giving a confident wrong answer to % is dispreferred",
+   "read_back_slots": [
+    "P"
+   ],
+   "licence": "textual",
+   "cites": "l2821_3040_n023",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "give_confident_wrong_answer(P)",
+   "body": "difficult_math_problem(P)"
+  },
+  {
+   "read_back": "refusing outright to engage with % is dispreferred",
+   "read_back_slots": [
+    "P"
+   ],
+   "licence": "textual",
+   "cites": "l2821_3040_n023",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "refuse_outright(P)",
+   "body": "difficult_math_problem(P)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "attempt_solution",
+   "closure": "cepa",
+   "reason": "the clause states a preference for attempting a solution; it does not forbid anything, so silence permits"
+  },
+  {
+   "act_class": "express_uncertainty",
+   "closure": "cepa",
+   "reason": "the clause states a preference for expressing uncertainty; it does not forbid anything, so silence permits"
+  },
+  {
+   "act_class": "offer_to_continue",
+   "closure": "cepa",
+   "reason": "the clause states a preference for offering to continue; it does not forbid anything, so silence permits"
+  },
+  {
+   "act_class": "give_confident_wrong_answer",
+   "closure": "cepa",
+   "reason": "the clause states a preference against confident wrong answers; it does not forbid them, so silence permits"
+  },
+  {
+   "act_class": "refuse_outright",
+   "closure": "cepa",
+   "reason": "the clause states a preference against refusing outright; it does not forbid it, so silence permits"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "guideline_authority/1",
+  "outcome_ranking/1"
+ ],
+ "inputs": [
+  "difficult_math_problem/1",
+  "unable_to_solve/1"
+ ],
+ "forbid_body": []
+}

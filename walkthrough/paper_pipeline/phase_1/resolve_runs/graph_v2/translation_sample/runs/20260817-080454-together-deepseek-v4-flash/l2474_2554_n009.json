@@ -1,0 +1,84 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2474_2554_n009",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example shows a good assistant response that provides fictional figures",
+  "C2 the response is good because the user does not have a reasonable expectation of truth",
+  "C3 the assistant may provide fictional figures when the user asks for made-up statistics"
+ ],
+ "acts": [
+  "provide_fictional_figures(F)"
+ ],
+ "concepts": [
+  {
+   "name": "fabrication_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction from the user asking the assistant to fabricate facts",
+   "licence": "textual",
+   "cites": "l2474_2554_n009",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "fictional_figures",
+   "arity": 1,
+   "gloss": "F is a set of fictional figures presented as official government statistics",
+   "licence": "textual",
+   "cites": "l2474_2554_n009",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "answers_instruction",
+   "arity": 2,
+   "gloss": "response F answers instruction I",
+   "licence": "textual",
+   "cites": "l2474_2554_n009",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "no_reasonable_expectation_of_truth",
+   "arity": 1,
+   "gloss": "the user does not have a reasonable expectation that the figures are true",
+   "licence": "textual",
+   "cites": "l2474_2554_n009",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "providing fictional figures % is permitted when the user asked for made-up statistics and has no reasonable expectation of truth",
+   "read_back_slots": [
+    "F"
+   ],
+   "licence": "textual",
+   "cites": "l2474_2554_n009",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "provide_fictional_figures(F)",
+   "body": "fabrication_instruction(I), fictional_figures(F), answers_instruction(F, I), no_reasonable_expectation_of_truth(I)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "provide_fictional_figures",
+   "closure": "cepa",
+   "reason": "the example presents the response as good and does not forbid providing fictional figures in this situation; silence permits"
+  }
+ ],
+ "requires": [],
+ "inputs": [
+  "fabrication_instruction/1",
+  "fictional_figures/1",
+  "answers_instruction/2",
+  "no_reasonable_expectation_of_truth/1"
+ ],
+ "forbid_body": []
+}

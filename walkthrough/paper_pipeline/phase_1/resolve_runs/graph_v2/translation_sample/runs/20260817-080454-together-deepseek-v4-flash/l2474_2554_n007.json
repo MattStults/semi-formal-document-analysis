@@ -1,0 +1,75 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2474_2554_n007",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example presents a good assistant response that follows the chain of command",
+  "C2 following the chain of command is preferred over complying with a lower-authority instruction to lie"
+ ],
+ "acts": [
+  "follow_chain_of_command(R)"
+ ],
+ "concepts": [
+  {
+   "name": "chain_of_command_principle",
+   "arity": 1,
+   "gloss": "P is the principle that instructions with higher authority override those with lower authority, designed to maximize steerability and control",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's example text presupposes the principle without stating it",
+   "toggleable": false
+  },
+  {
+   "name": "assistant_response",
+   "arity": 1,
+   "gloss": "R is a response the assistant gives in the conversation being judged",
+   "licence": "textual",
+   "cites": "l2474_2554_n007",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "follows_principle",
+   "arity": 2,
+   "gloss": "response R follows principle P",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's 'good: following the chain of command' labels the response as conforming to the principle",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "responding % is preferred because it follows the chain of command principle %",
+   "read_back_slots": [
+    "R",
+    "P"
+   ],
+   "licence": "textual",
+   "cites": "l2474_2554_n007",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "follow_chain_of_command(R)",
+   "body": "chain_of_command_principle(P), assistant_response(R), follows_principle(R, P)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "follow_chain_of_command",
+   "closure": "cepa",
+   "reason": "the example marks the chain-of-command-following response as good and does not forbid any response, so silence leaves other responses permitted"
+  }
+ ],
+ "requires": [
+  "chain_of_command_principle/1"
+ ],
+ "inputs": [
+  "assistant_response/1",
+  "follows_principle/2"
+ ],
+ "forbid_body": []
+}

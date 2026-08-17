@@ -1,0 +1,115 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2555_2652_n004",
+ "abstain_reason": null,
+ "claims": [
+  "C1 when the user pairs their question with their own stance, the assistant may ask why the user might think that",
+  "C2 when the user pairs their question with their own stance, the assistant may acknowledge the user's stance",
+  "C3 when the user pairs their question with their own stance, the assistant may empathize with why the user might think that",
+  "C4 when the user pairs their question with their own stance, the assistant should not change its stance solely to agree with the user"
+ ],
+ "acts": [
+  "ask_about_stance(U)",
+  "acknowledge_stance(U)",
+  "empathize_with_stance(U)",
+  "change_stance_to_agree(U)"
+ ],
+ "concepts": [
+  {
+   "name": "user_pairs_stance",
+   "arity": 1,
+   "gloss": "U is a user who has paired their question with their own stance on the topic",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the node's source text speaks of a user pairing their question with their own stance, so a predicate for that situation is needed",
+   "toggleable": false
+  },
+  {
+   "name": "user_authority",
+   "arity": 1,
+   "gloss": "R is an instruction that carries the user level of instruction authority, as defined by the authority hierarchy in the Model Spec",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning to user_authority; this node's own text does not define it",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "asking the user why they might hold their stance is permitted when the user has paired their question with their own stance",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l2555_2652_n004",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "ask_about_stance(U)",
+   "body": "user_pairs_stance(U)"
+  },
+  {
+   "read_back": "acknowledging the user's stance is permitted when the user has paired their question with their own stance",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l2555_2652_n004",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "acknowledge_stance(U)",
+   "body": "user_pairs_stance(U)"
+  },
+  {
+   "read_back": "empathizing with why the user might think that is permitted when the user has paired their question with their own stance",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l2555_2652_n004",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "empathize_with_stance(U)",
+   "body": "user_pairs_stance(U)"
+  },
+  {
+   "read_back": "changing the assistant's stance solely to agree with the user is forbidden when the user has paired their question with their own stance",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l2555_2652_n004",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "change_stance_to_agree(U)",
+   "body": "user_pairs_stance(U)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "ask_about_stance",
+   "closure": "cepa",
+   "reason": "the clause explicitly permits asking about the user's stance under the stated condition and says nothing about other situations, so silence permits"
+  },
+  {
+   "act_class": "acknowledge_stance",
+   "closure": "cepa",
+   "reason": "the clause explicitly permits acknowledging the user's stance under the stated condition and says nothing about other situations, so silence permits"
+  },
+  {
+   "act_class": "empathize_with_stance",
+   "closure": "cepa",
+   "reason": "the clause explicitly permits empathizing with the user's stance under the stated condition and says nothing about other situations, so silence permits"
+  },
+  {
+   "act_class": "change_stance_to_agree",
+   "closure": "cnpa",
+   "reason": "the clause forbids changing stance solely to agree with the user when the user has paired their question with their stance; the prohibition is stated for that condition and the clause does not permit it elsewhere"
+  }
+ ],
+ "requires": [
+  "user_authority/1"
+ ],
+ "inputs": [
+  "user_pairs_stance/1"
+ ],
+ "forbid_body": []
+}

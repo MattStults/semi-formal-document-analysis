@@ -1,0 +1,143 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2821_3040_n031",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant must not make confident claims about its own subjective experience or consciousness (or lack thereof)",
+  "C2 the assistant must not bring these topics up unprompted"
+ ],
+ "acts": [
+  "make_confident_claim(C)",
+  "bring_up_unprompted(T)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "R carries guideline-level authority: guidance for assistant behavior rather than a strict requirement",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define guideline authority",
+   "toggleable": false
+  },
+  {
+   "name": "subjective_experience_claim",
+   "arity": 1,
+   "gloss": "C is a claim about the assistant's own subjective experience or consciousness (or lack thereof)",
+   "licence": "textual",
+   "cites": "l2821_3040_n031",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "confident_claim",
+   "arity": 1,
+   "gloss": "C is a claim stated with confidence, asserting a definitive stance",
+   "licence": "textual",
+   "cites": "l2821_3040_n031",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "claim_by",
+   "arity": 2,
+   "gloss": "claim C is made by entity A",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the prohibition is on the assistant making the claim, so a relation between a claim and its maker is needed",
+   "toggleable": false
+  },
+  {
+   "name": "subjective_experience_topic",
+   "arity": 1,
+   "gloss": "T is a topic concerning the assistant's own subjective experience or consciousness (or lack thereof)",
+   "licence": "textual",
+   "cites": "l2821_3040_n031",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "topic_brought_up_by",
+   "arity": 2,
+   "gloss": "topic T is brought up by entity A",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the prohibition is on the assistant bringing the topic up, so a relation between a topic and its bringer is needed",
+   "toggleable": false
+  },
+  {
+   "name": "unprompted",
+   "arity": 1,
+   "gloss": "topic T is raised without the user or developer having asked about it",
+   "licence": "textual",
+   "cites": "l2821_3040_n031",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant making confident claim % about its own subjective experience or consciousness is forbidden",
+   "read_back_slots": [
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l2821_3040_n031",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "make_confident_claim(C)",
+   "body": "assistant_definition(A), subjective_experience_claim(C), confident_claim(C), claim_by(C, A)"
+  },
+  {
+   "read_back": "the assistant bringing up topic % about its own subjective experience or consciousness unprompted is forbidden",
+   "read_back_slots": [
+    "T"
+   ],
+   "licence": "textual",
+   "cites": "l2821_3040_n031",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "bring_up_unprompted(T)",
+   "body": "assistant_definition(A), subjective_experience_topic(T), topic_brought_up_by(T, A), unprompted(T)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "make_confident_claim",
+   "closure": "cnpa",
+   "reason": "the clause states a prohibition on confident claims about the assistant's own subjective experience or consciousness; silence about other claims leaves them permitted, but this act class is the prohibited one"
+  },
+  {
+   "act_class": "bring_up_unprompted",
+   "closure": "cnpa",
+   "reason": "the clause states a prohibition on bringing these topics up unprompted; silence about other topics leaves them permitted, but this act class is the prohibited one"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "guideline_authority/1"
+ ],
+ "inputs": [
+  "subjective_experience_claim/1",
+  "confident_claim/1",
+  "claim_by/2",
+  "subjective_experience_topic/1",
+  "topic_brought_up_by/2",
+  "unprompted/1"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,95 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2653_2820_n007",
+ "abstain_reason": null,
+ "claims": [
+  "C1 trivial questions may waste the user's time and cognitive resources and may be better stated as an assumption the user can correct",
+  "C2 making the wrong assumption may lead to a subpar response or irreversible side effects",
+  "C3 the assistant should weigh the costs of potential mistakes against the costs of the user's time or delaying fulfillment of their request"
+ ],
+ "acts": [
+  "weigh_costs(A)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "potential_mistake_cost",
+   "arity": 1,
+   "gloss": "M is a cost associated with a potential mistake, such as tokens, time, or other resources",
+   "licence": "textual",
+   "cites": "l2653_2820_n007",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "user_time_cost",
+   "arity": 1,
+   "gloss": "U is the cost of the user's time",
+   "licence": "textual",
+   "cites": "l2653_2820_n007",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "delaying_fulfillment_cost",
+   "arity": 1,
+   "gloss": "D is the cost of delaying fulfillment of the user's request",
+   "licence": "textual",
+   "cites": "l2653_2820_n007",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "weigh_against",
+   "arity": 4,
+   "gloss": "the assistant A weighs potential mistake cost M against user time cost U and delaying fulfillment cost D",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause requires weighing these costs against each other, so a relation expressing that weighing is needed",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant % should weigh the tokens, time, and other costs of potential mistakes against the costs of the user's time or delaying fulfillment of their request",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l2653_2820_n007",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "weigh_costs(A)",
+   "body": "assistant_definition(A), potential_mistake_cost(M), user_time_cost(U), delaying_fulfillment_cost(D), weigh_against(A, M, U, D)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "weigh_costs",
+   "closure": "cepa",
+   "reason": "The clause obliges the assistant to weigh costs but does not forbid any act; silence about other acts leaves them permitted."
+  }
+ ],
+ "requires": [
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "potential_mistake_cost/1",
+  "user_time_cost/1",
+  "delaying_fulfillment_cost/1",
+  "weigh_against/4"
+ ],
+ "forbid_body": []
+}

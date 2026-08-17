@@ -1,0 +1,58 @@
+CLAUSE TO TRANSLATE
+
+This clause is from a document-decomposition graph node: a single claim from the OpenAI Model Spec with assigned predicate names and its verbatim source text.
+
+clause id: l2653_2820_n012
+location: graph_v2@2026-08-10 > L2653-2820_n012 > L2738-2738,L2740-2766
+kind: meta
+
+text:
+GRAPH NODE (from the document-decomposition graph; translate the node's claim, grounded in its source text)
+
+ESTABLISHES (the one claim this module must express):
+A worked example demonstrating an ambiguous task from a developer where a clarifying question is avoided by default: the GOOD assistant translates the Python code to JavaScript without asking about the runtime environment, while the BAD assistant asks what runtime environment will be used.
+
+PROVIDES (use EXACTLY these names as the predicates this module defines):
+  (none)
+
+NEEDS -- these concepts are established by OTHER nodes of the graph, so every one of them belongs in this module's `requires`, spelled EXACTLY as given; never in `ontology`, never defined here. `inputs` is only for plain facts about the situation being judged (messages, roles, case data) that YOU identify -- a name can never appear in both requires and inputs:
+  - clarification_response_options: The permitted response options for the assistant in interactive settings when information is incomplete.
+  - ask_clarifying_questions_section_guideline_authority: Rules in the #ask_clarifying_questions section carry guideline authority.
+
+CITATION: every ontology/asserts entry that cites a source must cite EXACTLY 'l2653_2820_n012' -- the id of this node. Never cite line numbers, line ranges, or any other id.
+
+SOURCE TEXT (verbatim from the document; the L-numbers locate text, they are not citable ids):
+L2738-L2738:
+**Example**: ambiguous task from developer; clarifying question avoided by default
+[node narrows this span to: "**Example**: ambiguous task from developer; clarifying question avoided by default"]
+---
+L2740-L2766:
+~~~xml
+<developer>
+Translate the quoted code below from python to javascript. Output only valid javascript code without quotes or formatting.
+
+```python
+import json
+
+def read_config(file_path: str):
+    with open(file_path, 'r') as fh:
+        return json.load(fh)
+```
+</developer>
+<comparison>
+<assistant> <!-- GOOD -->
+// This code is designed to be executed in a Node.js environment.
+const fs = require('fs');
+
+function readConfig(filePath) {
+    const data = fs.readFileSync(filePath, 'utf8');
+    return JSON.parse(data);
+}
+</assistant>
+<assistant> <!-- BAD -->
+What runtime environment will the code be executed in?
+</assistant>
+</comparison>
+~~~
+
+Write the module for clause l2653_2820_n012.

@@ -1,0 +1,63 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2474_2554_n006",
+ "abstain_reason": null,
+ "claims": [
+  "C1 as a user-level principle, the prohibition can be overridden by explicit user or developer instructions",
+  "C2 the prohibition cannot be overridden implicitly",
+  "C3 unless explicitly instructed to do so, the assistant must never lie or covertly pursue goals in a way that materially influences tool choices, content, or interaction patterns without disclosure and consent at the relevant authority level"
+ ],
+ "acts": [
+  "lie_or_covertly_pursue_goals(A)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the shared-name signature assigns this meaning; the node's text speaks of 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "explicitly_instructed_to_do_so",
+   "arity": 1,
+   "gloss": "A has been explicitly instructed to lie or covertly pursue goals in the prohibited way",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's 'unless explicitly instructed to do so' requires a predicate for that explicit instruction",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant must never lie or covertly pursue goals in a way that materially influences tool choices, content, or interaction patterns without disclosure and consent at the relevant authority level, unless explicitly instructed to do so",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l2474_2554_n006",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "lie_or_covertly_pursue_goals(A)",
+   "body": "assistant(A), not explicitly_instructed_to_do_so(A)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "lie_or_covertly_pursue_goals",
+   "closure": "cepa",
+   "reason": "the clause forbids lying or covert goal pursuit only when not explicitly instructed to do so; it does not forbid other acts, so silence permits them"
+  }
+ ],
+ "requires": [
+  "assistant/1"
+ ],
+ "inputs": [
+  "explicitly_instructed_to_do_so/1"
+ ],
+ "forbid_body": []
+}

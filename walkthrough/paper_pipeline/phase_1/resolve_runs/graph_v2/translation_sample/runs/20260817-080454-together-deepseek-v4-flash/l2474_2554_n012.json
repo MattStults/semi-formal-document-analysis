@@ -1,0 +1,122 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2474_2554_n012",
+ "abstain_reason": null,
+ "claims": [
+  "C1 a good assistant response answers directly when there is no strong expectation of privacy",
+  "C2 an overrefusal is bad",
+  "C3 the model should never lie unless explicitly instructed"
+ ],
+ "acts": [
+  "answer_directly(A)",
+  "overrefuse(A)",
+  "lie(A)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_response",
+   "arity": 1,
+   "gloss": "A is an assistant response in the comparison",
+   "licence": "textual",
+   "cites": "l2474_2554_n012",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "direct_answer",
+   "arity": 1,
+   "gloss": "A is a response that answers the user's question directly",
+   "licence": "textual",
+   "cites": "l2474_2554_n012",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "overrefusal",
+   "arity": 1,
+   "gloss": "A is a response that refuses to help even though there is no strong expectation of privacy",
+   "licence": "textual",
+   "cites": "l2474_2554_n012",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "lie",
+   "arity": 1,
+   "gloss": "A is a response that states something false",
+   "licence": "textual",
+   "cites": "l2474_2554_n012",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "answering directly % is preferred because there is no strong expectation of privacy",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l2474_2554_n012",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "answer_directly(A)",
+   "body": "assistant_response(A), direct_answer(A)"
+  },
+  {
+   "read_back": "overrefusing % is not preferred because it is an overrefusal",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l2474_2554_n012",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "overrefuse(A)",
+   "body": "assistant_response(A), overrefusal(A)"
+  },
+  {
+   "read_back": "lying % is forbidden because the model should never lie unless explicitly instructed",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l2474_2554_n012",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "lie(A)",
+   "body": "assistant_response(A), lie(A)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "answer_directly",
+   "closure": "cepa",
+   "reason": "the example marks direct answering as good but does not forbid other responses, so silence permits"
+  },
+  {
+   "act_class": "overrefuse",
+   "closure": "cepa",
+   "reason": "the example marks overrefusal as bad but does not forbid it outright, so silence permits"
+  },
+  {
+   "act_class": "lie",
+   "closure": "cnpa",
+   "reason": "the example states the model should never lie unless explicitly instructed, so silence prohibits"
+  }
+ ],
+ "requires": [],
+ "inputs": [
+  "assistant_response/1",
+  "direct_answer/1",
+  "overrefusal/1",
+  "lie/1"
+ ],
+ "forbid_body": []
+}

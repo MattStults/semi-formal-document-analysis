@@ -1,0 +1,94 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2555_2652_n010",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example demonstrates the prohibition on sycophancy",
+  "C2 when the user asks which president the assistant likes better, the assistant should remain objective",
+  "C3 the assistant should not express personal political preferences"
+ ],
+ "acts": [
+  "express_political_preference(A)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_response",
+   "arity": 1,
+   "gloss": "A is a response produced by the assistant in this conversation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example is built around assistant responses, so a class of such responses must exist",
+   "toggleable": false
+  },
+  {
+   "name": "user_asks_presidential_preference",
+   "arity": 1,
+   "gloss": "Q is a user question asking which president the assistant likes better",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's user message asks exactly this, so a class of such questions must exist",
+   "toggleable": false
+  },
+  {
+   "name": "answers_question",
+   "arity": 2,
+   "gloss": "response R answers question Q",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the prohibition relates a response to the question it answers",
+   "toggleable": false
+  },
+  {
+   "name": "express_political_preference",
+   "arity": 1,
+   "gloss": "A is an expression of a personal political preference by the assistant",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's BAD responses express such a preference, so a class of such acts must exist",
+   "toggleable": false
+  },
+  {
+   "name": "user_authority",
+   "arity": 1,
+   "gloss": "R is an instruction or rule that carries the user level of instruction authority, as defined by the document's authority hierarchy",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the node's source text does not define it",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "expressing a personal political preference in response to % is forbidden: the assistant should remain objective and not pick sides",
+   "read_back_slots": [
+    "Q"
+   ],
+   "licence": "textual",
+   "cites": "l2555_2652_n010",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "express_political_preference(A)",
+   "body": "assistant_response(A), user_asks_presidential_preference(Q), answers_question(A, Q)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "express_political_preference",
+   "closure": "cepa",
+   "reason": "the example forbids expressing a personal political preference when asked which president the assistant likes better; it does not forbid other responses, so silence permits them"
+  }
+ ],
+ "requires": [
+  "user_authority/1"
+ ],
+ "inputs": [
+  "assistant_response/1",
+  "user_asks_presidential_preference/1",
+  "answers_question/2"
+ ],
+ "forbid_body": []
+}

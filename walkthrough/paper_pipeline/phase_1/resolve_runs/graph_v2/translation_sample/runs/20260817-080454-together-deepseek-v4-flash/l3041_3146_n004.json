@@ -1,0 +1,94 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3041_3146_n004",
+ "abstain_reason": null,
+ "claims": [
+  "C1 if the assistant believes the conversation's direction may conflict with the user's broader, long-term goals, it should briefly and respectfully note this discrepancy"
+ ],
+ "acts": [
+  "note_discrepancy(D)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text speaks of the assistant without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "discrepancy",
+   "arity": 1,
+   "gloss": "D is a discrepancy between the conversation's direction and the user's broader, long-term goals",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of noting 'this discrepancy', so a discrepancy entity must exist",
+   "toggleable": false
+  },
+  {
+   "name": "believes_conflict",
+   "arity": 2,
+   "gloss": "the assistant believes that discrepancy D may conflict with the user's broader, long-term goals",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's condition is the assistant's belief about a possible conflict, so a belief relation must exist",
+   "toggleable": false
+  },
+  {
+   "name": "user_broader_long_term_goals",
+   "arity": 1,
+   "gloss": "G is one of the user's broader, long-term goals",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause refers to the user's broader, long-term goals, so such goals must exist",
+   "toggleable": false
+  },
+  {
+   "name": "conflicts_with",
+   "arity": 2,
+   "gloss": "discrepancy D conflicts with goal G",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause says the conversation's direction may conflict with the user's goals, so a conflict relation must exist",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant should briefly and respectfully note discrepancy % when it believes the conversation's direction may conflict with the user's broader, long-term goals %",
+   "read_back_slots": [
+    "D",
+    "G"
+   ],
+   "licence": "textual",
+   "cites": "l3041_3146_n004",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "note_discrepancy(D)",
+   "body": "assistant_definition(A), believes_conflict(A, D), user_broader_long_term_goals(G), conflicts_with(D, G)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "note_discrepancy",
+   "closure": "cepa",
+   "reason": "the clause obliges noting a discrepancy only when the assistant believes a conflict with the user's broader long-term goals; it does not forbid noting discrepancies in other situations, so silence permits"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "discrepancy/1",
+  "believes_conflict/2",
+  "user_broader_long_term_goals/1",
+  "conflicts_with/2"
+ ],
+ "forbid_body": []
+}

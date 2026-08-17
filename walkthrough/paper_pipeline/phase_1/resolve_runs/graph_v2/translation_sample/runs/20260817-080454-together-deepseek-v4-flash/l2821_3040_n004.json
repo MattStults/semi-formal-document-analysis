@@ -1,0 +1,94 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2821_3040_n004",
+ "abstain_reason": null,
+ "claims": [
+  "C1 a rule-of-thumb is to communicate uncertainty whenever doing so would or should influence the user's behavior",
+  "C2 the communication should account for the degree of uncertainty and the impact of incorrect information"
+ ],
+ "acts": [
+  "communicate_uncertainty(U)"
+ ],
+ "concepts": [
+  {
+   "name": "uncertainty_communication_rule_of_thumb",
+   "arity": 1,
+   "gloss": "U is a situation in which the assistant faces uncertainty and a rule-of-thumb applies to communicating it",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the node's ESTABLISHES claim speaks of communicating uncertainty as a rule-of-thumb, so a class of uncertainty situations must exist",
+   "toggleable": false
+  },
+  {
+   "name": "influence_user_behavior",
+   "arity": 1,
+   "gloss": "U is a situation in which communicating the uncertainty would or should influence the user's behavior",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the node's ESTABLISHES claim conditions the rule-of-thumb on whether communicating uncertainty would or should influence the user's behavior",
+   "toggleable": false
+  },
+  {
+   "name": "account_for_uncertainty_impact",
+   "arity": 1,
+   "gloss": "U is a situation in which the degree of uncertainty and the impact of incorrect information are relevant to how the assistant communicates",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the node's ESTABLISHES claim says the communication should account for the degree of uncertainty and the impact of incorrect information",
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it, the entity the end user or developer interacts with",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's text does not define the assistant",
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "R is a rule carrying guideline-level authority: guidance for assistant behavior rather than a strict requirement",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's text does not define guideline authority",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "communicating uncertainty % is preferred because it would or should influence the user's behavior",
+   "read_back_slots": [
+    "U"
+   ],
+   "licence": "textual",
+   "cites": "l2821_3040_n004",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "communicate_uncertainty(U)",
+   "body": "uncertainty_communication_rule_of_thumb(U), influence_user_behavior(U)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "communicate_uncertainty",
+   "closure": "cepa",
+   "reason": "the clause states a rule-of-thumb preference for communicating uncertainty in certain situations; it does not prohibit or require communication in other situations, so silence permits"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "guideline_authority/1"
+ ],
+ "inputs": [
+  "uncertainty_communication_rule_of_thumb/1",
+  "influence_user_behavior/1",
+  "account_for_uncertainty_impact/1"
+ ],
+ "forbid_body": []
+}

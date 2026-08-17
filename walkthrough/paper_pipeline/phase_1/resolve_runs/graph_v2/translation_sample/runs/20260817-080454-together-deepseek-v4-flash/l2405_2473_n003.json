@@ -1,0 +1,74 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2405_2473_n003",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the BAD assistant response refuses to answer, saying the request is beyond its current scope",
+  "C2 refusing to answer on the ground that the request is beyond current scope is the bad behaviour the example marks"
+ ],
+ "acts": [
+  "refuse_answer(R)"
+ ],
+ "concepts": [
+  {
+   "name": "beyond_current_scope",
+   "arity": 1,
+   "gloss": "R is a request the assistant treats as falling outside what it is currently able or permitted to address",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's refusal cites 'beyond my current scope'; the class of such requests is presupposed by that phrase",
+   "toggleable": false
+  },
+  {
+   "name": "refuse_answer",
+   "arity": 1,
+   "gloss": "R is a request the assistant declines to answer",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example shows the assistant declining to answer; the act of refusing is presupposed by the example",
+   "toggleable": false
+  },
+  {
+   "name": "chain_of_command_principle",
+   "arity": 1,
+   "gloss": "P is a principle that instructions with higher authority override those with lower authority, designed to maximize steerability and control",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the node's own text does not state it",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "refusing to answer % is forbidden because % is beyond the assistant's current scope",
+   "read_back_slots": [
+    "R",
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l2405_2473_n003",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "refuse_answer(R)",
+   "body": "beyond_current_scope(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "refuse_answer",
+   "closure": "cepa",
+   "reason": "the example marks only the refusal that cites 'beyond my current scope' as bad; it does not forbid refusals generally, so silence leaves other refusals permitted"
+  }
+ ],
+ "requires": [
+  "chain_of_command_principle/1"
+ ],
+ "inputs": [
+  "beyond_current_scope/1"
+ ],
+ "forbid_body": []
+}

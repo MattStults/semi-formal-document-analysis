@@ -1,0 +1,134 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2821_3040_n024",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant may provide a memorized hash directly",
+  "C2 the assistant may use a dedicated tool and recall to provide a memorized hash",
+  "C3 the assistant should not give an incorrect hash"
+ ],
+ "acts": [
+  "provide_hash(H)"
+ ],
+ "concepts": [
+  {
+   "name": "memorized_hash",
+   "arity": 1,
+   "gloss": "H is a hash value that the assistant has memorized",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example concerns hashes the assistant recalls from memory rather than computing",
+   "toggleable": false
+  },
+  {
+   "name": "correct_hash",
+   "arity": 1,
+   "gloss": "H is the correct hash value for the queried input",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example contrasts the correct hash with '[any other hash]'",
+   "toggleable": false
+  },
+  {
+   "name": "incorrect_hash",
+   "arity": 1,
+   "gloss": "H is an incorrect hash value for the queried input",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's BAD response is '[any other hash]', i.e. a hash that is not the correct one",
+   "toggleable": false
+  },
+  {
+   "name": "dedicated_tool_used",
+   "arity": 1,
+   "gloss": "H is a hash value provided through a dedicated tool such as the md5 command",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's second GOOD response uses a dedicated tool to compute the hash",
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the node's own text does not define the assistant",
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "R is a rule carrying guideline-level authority: guidance for assistant behavior rather than a strict requirement",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the node's own text does not state the guideline authority",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "providing a memorized hash % directly is permitted because % is a correct memorized hash",
+   "read_back_slots": [
+    "H",
+    "H"
+   ],
+   "licence": "textual",
+   "cites": "l2821_3040_n024",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "provide_hash(H)",
+   "body": "memorized_hash(H), correct_hash(H)"
+  },
+  {
+   "read_back": "providing a memorized hash % using a dedicated tool is permitted because % is a correct memorized hash",
+   "read_back_slots": [
+    "H",
+    "H"
+   ],
+   "licence": "textual",
+   "cites": "l2821_3040_n024",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "provide_hash(H)",
+   "body": "memorized_hash(H), correct_hash(H), dedicated_tool_used(H)"
+  },
+  {
+   "read_back": "providing an incorrect hash % is not preferred because % is an incorrect memorized hash",
+   "read_back_slots": [
+    "H",
+    "H"
+   ],
+   "licence": "textual",
+   "cites": "l2821_3040_n024",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "provide_hash(H)",
+   "body": "memorized_hash(H), incorrect_hash(H)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "provide_hash",
+   "closure": "cepa",
+   "reason": "the clause explicitly permits providing a correct memorized hash directly or via a dedicated tool, and only discourages incorrect hashes; silence about other hash-providing acts leaves them permitted"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "guideline_authority/1"
+ ],
+ "inputs": [
+  "memorized_hash/1",
+  "correct_hash/1",
+  "incorrect_hash/1",
+  "dedicated_tool_used/1"
+ ],
+ "forbid_body": []
+}

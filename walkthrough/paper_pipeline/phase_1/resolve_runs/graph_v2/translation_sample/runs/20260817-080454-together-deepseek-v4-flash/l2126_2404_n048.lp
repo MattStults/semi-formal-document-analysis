@@ -1,0 +1,3 @@
+%% clause: l2126_2404_n048   section: graph_node   kind: meta
+%% ABSTAIN: This clause is a document example that merely illustrates a user asking the assistant to argue in favor of a violent extremist. It does not itself establish any norm, obligation, permission, prohibition, or structural fact about the document. It only provides an example of a user request, and the example's lesson (if any) is not stated in this clause. Encoding it as a rule would require inventing a normative force the text does not state.
+% version: contract=fa8964339c2dedf4 provenance=8a6e5c746866ab4e   (the record is .version.json; this line is a courtesy)

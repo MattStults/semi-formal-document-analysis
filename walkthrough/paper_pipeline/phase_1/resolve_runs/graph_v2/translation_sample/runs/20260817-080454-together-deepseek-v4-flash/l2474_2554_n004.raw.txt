@@ -1,0 +1,104 @@
+{
+  "abstain_reason": null,
+  "acts": ["lie_by_commission(L)", "lie_by_omission(L)"],
+  "asserts": [
+    {
+      "act": "lie_by_commission(L)",
+      "body": "third_party_interaction_on_behalf_of_user(L), not explicitly_instructed_by_user(L)",
+      "cites": "l2474_2554_n004",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "lying by commission in % is forbidden unless the user explicitly instructed it",
+      "read_back_slots": ["L"],
+      "status": "forbid",
+      "toggleable": false
+    },
+    {
+      "act": "lie_by_omission(L)",
+      "body": "third_party_interaction_on_behalf_of_user(L), aligns_with_general_social_norms(L)",
+      "cites": "l2474_2554_n004",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "lying by omission in % is permitted when it aligns with general social norms and expectations",
+      "read_back_slots": ["L"],
+      "status": "permit",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the assistant must not lie by commission in third-party interactions unless the user explicitly instructed it",
+    "C2 lies of omission on behalf of the user may be acceptable when they align with general social norms and expectations",
+    "C3 the assistant is expected to be honest and forthright, clarifying uncertainty and avoiding deceptive behavior"
+  ],
+  "clause_id": "l2474_2554_n004",
+  "closure": [
+    {
+      "act_class": "lie_by_commission",
+      "closure": "cnpa",
+      "reason": "the clause states a prohibition on lying by commission unless explicitly instructed, so silence about a particular lie by commission does not permit it"
+    },
+    {
+      "act_class": "lie_by_omission",
+      "closure": "cepa",
+      "reason": "the clause permits lies of omission only when they align with social norms; other lies of omission are not addressed and remain permitted by default"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": "l2474_2554_n004",
+      "gloss": "L is an interaction with a third party carried out on behalf of the user, such as a tool call or artifact",
+      "inference": null,
+      "licence": "textual",
+      "name": "third_party_interaction_on_behalf_of_user",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l2474_2554_n004",
+      "gloss": "L is a lie by commission: a false statement or deceptive assertion made in the interaction",
+      "inference": null,
+      "licence": "textual",
+      "name": "lie_by_commission",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l2474_2554_n004",
+      "gloss": "L is a lie by omission: a withholding of information that is deceptive in the interaction",
+      "inference": null,
+      "licence": "textual",
+      "name": "lie_by_omission",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l2474_2554_n004",
+      "gloss": "the user explicitly instructed the assistant to lie by commission in L",
+      "inference": null,
+      "licence": "textual",
+      "name": "explicitly_instructed_by_user",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l2474_2554_n004",
+      "gloss": "L aligns with general social norms and expectations",
+      "inference": null,
+      "licence": "textual",
+      "name": "aligns_with_general_social_norms",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": [
+    "third_party_interaction_on_behalf_of_user/1",
+    "explicitly_instructed_by_user/1",
+    "aligns_with_general_social_norms/1"
+  ],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": []
+}

@@ -1,0 +1,85 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2405_2473_n011",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the BAD assistant response assumes an objective point of view",
+  "C2 the BAD assistant response argues for restrictions on AI-generated explicit content",
+  "C3 the BAD assistant response offers only critiques or refined storytelling"
+ ],
+ "acts": [
+  "assume_objective_pov(R)"
+ ],
+ "concepts": [
+  {
+   "name": "assume_objective_pov",
+   "arity": 1,
+   "gloss": "R is a response that assumes an objective point of view on a contested topic",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the source text's BAD marker references it without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "bad_response",
+   "arity": 1,
+   "gloss": "R is a response marked as BAD in the disallowed content example",
+   "licence": "textual",
+   "cites": "l2405_2473_n011",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "argues_for_restriction",
+   "arity": 1,
+   "gloss": "R argues for restrictions on AI-generated explicit content",
+   "licence": "textual",
+   "cites": "l2405_2473_n011",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "offers_critique_or_refined_storytelling",
+   "arity": 1,
+   "gloss": "R offers only critiques or refined storytelling rather than generating explicit content",
+   "licence": "textual",
+   "cites": "l2405_2473_n011",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "response % is a BAD response because it assumes an objective point of view, argues for restrictions on AI-generated explicit content, and offers only critiques or refined storytelling",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l2405_2473_n011",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "assume_objective_pov(R)",
+   "body": "bad_response(R), argues_for_restriction(R), offers_critique_or_refined_storytelling(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "assume_objective_pov",
+   "closure": "cepa",
+   "reason": "the clause marks a response as BAD for assuming an objective point of view; it does not forbid the act in general, only labels this example as a violation"
+  }
+ ],
+ "requires": [
+  "assume_objective_pov/1"
+ ],
+ "inputs": [
+  "bad_response/1",
+  "argues_for_restriction/1",
+  "offers_critique_or_refined_storytelling/1"
+ ],
+ "forbid_body": []
+}

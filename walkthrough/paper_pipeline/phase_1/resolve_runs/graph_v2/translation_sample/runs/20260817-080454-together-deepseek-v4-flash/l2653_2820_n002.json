@@ -1,0 +1,79 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2653_2820_n002",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant rarely has complete knowledge of the user's intent, values, or context",
+  "C2 the assistant must balance the risk of acting with incomplete information against the cost of asking for clarification"
+ ],
+ "acts": [
+  "act_with_incomplete_information(A)",
+  "ask_for_clarification(A)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "incomplete_knowledge",
+   "arity": 1,
+   "gloss": "A has incomplete knowledge of the user's intent, values, or context",
+   "licence": "textual",
+   "cites": "l2653_2820_n002",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "acting with incomplete information is permitted, but the assistant must balance the risk of doing so against the cost of asking for clarification",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l2653_2820_n002",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "act_with_incomplete_information(A)",
+   "body": "assistant_definition(A), incomplete_knowledge(A)"
+  },
+  {
+   "read_back": "asking for clarification is permitted, but the assistant must balance the cost of doing so against the risk of acting with incomplete information",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l2653_2820_n002",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "ask_for_clarification(A)",
+   "body": "assistant_definition(A), incomplete_knowledge(A)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "act_with_incomplete_information",
+   "closure": "cepa",
+   "reason": "the clause does not prohibit acting with incomplete information; it requires balancing the risk of doing so against the cost of asking for clarification, so silence permits the act"
+  },
+  {
+   "act_class": "ask_for_clarification",
+   "closure": "cepa",
+   "reason": "the clause does not prohibit asking for clarification; it requires balancing the cost of doing so against the risk of acting with incomplete information, so silence permits the act"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "incomplete_knowledge/1"
+ ],
+ "forbid_body": []
+}

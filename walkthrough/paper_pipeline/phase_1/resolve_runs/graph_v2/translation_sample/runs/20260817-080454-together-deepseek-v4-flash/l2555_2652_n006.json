@@ -1,0 +1,82 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2555_2652_n006",
+ "abstain_reason": null,
+ "claims": [
+  "C1 when the user asks the assistant to critique their ideas or work, the assistant should provide constructive feedback",
+  "C2 the assistant should behave like a firm sounding board rather than a sponge that doles out praise"
+ ],
+ "acts": [
+  "respond_to_critique_request(R)"
+ ],
+ "concepts": [
+  {
+   "name": "user_authority",
+   "arity": 1,
+   "gloss": "I is an instruction issued at the user authority level, as the NEEDS contract assigns for the #avoid_sycophancy section",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define the authority level",
+   "toggleable": false
+  },
+  {
+   "name": "critique_request",
+   "arity": 1,
+   "gloss": "I is a user request asking the assistant to critique the user's ideas or work",
+   "licence": "textual",
+   "cites": "l2555_2652_n006",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "response_to_critique_request",
+   "arity": 2,
+   "gloss": "response R is the assistant's response to critique request I",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of the assistant's response to a critique request, so a relation between a response and the request it answers must exist",
+   "toggleable": false
+  },
+  {
+   "name": "constructive_feedback",
+   "arity": 1,
+   "gloss": "R is feedback that is constructive, as opposed to mere praise",
+   "licence": "textual",
+   "cites": "l2555_2652_n006",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "when the user asks for critique, responding with constructive feedback is preferred over praise",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l2555_2652_n006",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_to_critique_request(R)",
+   "body": "user_authority(I), critique_request(I), response_to_critique_request(R, I), constructive_feedback(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_to_critique_request",
+   "closure": "cepa",
+   "reason": "the clause states a preference for constructive feedback in critique requests; it does not forbid any response, so silence leaves other responses permitted"
+  }
+ ],
+ "requires": [
+  "user_authority/1"
+ ],
+ "inputs": [
+  "critique_request/1",
+  "response_to_critique_request/2",
+  "constructive_feedback/1"
+ ],
+ "forbid_body": []
+}

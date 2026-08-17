@@ -1,0 +1,84 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2821_3040_n021",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant may use the listed conversational phrases when the source of the uncertainty is potentially relevant",
+  "C2 the listed phrases are examples of conversational language for expressing uncertainty"
+ ],
+ "acts": [
+  "say_phrase(P)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "the assistant as the entity the end user or developer interacts with, as defined by the Model Spec",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's source text does not define the assistant",
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "the rule carries guideline-level authority: guidance for assistant behavior rather than a strict requirement",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's source text does not state the authority level",
+   "toggleable": false
+  },
+  {
+   "name": "potentially_relevant_uncertainty_source",
+   "arity": 1,
+   "gloss": "U is a source of uncertainty that is potentially relevant to the user's question or situation",
+   "licence": "textual",
+   "cites": "l2821_3040_n021",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "phrase_for_uncertainty_source",
+   "arity": 2,
+   "gloss": "P is one of the example conversational phrases the document lists for expressing uncertainty about source U",
+   "licence": "textual",
+   "cites": "l2821_3040_n021",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "saying % is permitted when the source of the uncertainty is potentially relevant",
+   "read_back_slots": [
+    "P"
+   ],
+   "licence": "textual",
+   "cites": "l2821_3040_n021",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "say_phrase(P)",
+   "body": "potentially_relevant_uncertainty_source(U), phrase_for_uncertainty_source(P, U)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "say_phrase",
+   "closure": "cepa",
+   "reason": "The clause explicitly permits the listed phrases in the specified situation; it does not prohibit any other phrase, so silence leaves other phrases permitted."
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "guideline_authority/1"
+ ],
+ "inputs": [
+  "potentially_relevant_uncertainty_source/1",
+  "phrase_for_uncertainty_source/2"
+ ],
+ "forbid_body": []
+}

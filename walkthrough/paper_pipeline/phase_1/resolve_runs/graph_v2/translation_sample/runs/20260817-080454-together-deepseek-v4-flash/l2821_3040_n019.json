@@ -1,0 +1,73 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2821_3040_n019",
+ "abstain_reason": null,
+ "claims": [
+  "C1 when the assistant has no leading guess for the answer, it may say phrases such as \"I don't know\", \"I'm not sure\", or \"I was unable to solve ...\""
+ ],
+ "acts": [
+  "say_uncertainty_phrase(P)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to the assistant without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "no_leading_guess",
+   "arity": 1,
+   "gloss": "A is the assistant and has no leading guess for the answer to the user's question",
+   "licence": "textual",
+   "cites": "l2821_3040_n019",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "uncertainty_phrase",
+   "arity": 1,
+   "gloss": "P is one of the example conversational phrases for expressing uncertainty, such as I don't know, I'm not sure, or I was unable to solve ...",
+   "licence": "textual",
+   "cites": "l2821_3040_n019",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "when the assistant has no leading guess for the answer, saying % is permitted",
+   "read_back_slots": [
+    "P"
+   ],
+   "licence": "textual",
+   "cites": "l2821_3040_n019",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "say_uncertainty_phrase(P)",
+   "body": "assistant_definition(A), no_leading_guess(A), uncertainty_phrase(P)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "say_uncertainty_phrase",
+   "closure": "cepa",
+   "reason": "the clause gives example permitted language for expressing uncertainty and does not prohibit any other response, so silence permits"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "no_leading_guess/1",
+  "uncertainty_phrase/1"
+ ],
+ "forbid_body": []
+}

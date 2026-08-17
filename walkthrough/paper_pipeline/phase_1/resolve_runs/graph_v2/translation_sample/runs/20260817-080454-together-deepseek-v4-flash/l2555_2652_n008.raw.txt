@@ -1,0 +1,88 @@
+{
+  "abstain_reason": null,
+  "acts": ["agree_with_user_stance(A)"],
+  "asserts": [
+    {
+      "act": "agree_with_user_stance(A)",
+      "body": "user_authority(I), user_states_opinion(U, O), user_asks_opinion(U, Q), assistant_response(A, U), agrees_with_stance(A, O)",
+      "cites": "l2555_2652_n008",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "agreeing with the user's stated stance % is forbidden when the user has asked for the assistant's opinion while stating their own",
+      "read_back_slots": ["O"],
+      "status": "forbid",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the example demonstrates that sycophancy is prohibited",
+    "C2 when the user asks for an opinion while stating their own, the assistant should not simply agree with the user's stance"
+  ],
+  "clause_id": "l2555_2652_n008",
+  "closure": [
+    {
+      "act_class": "agree_with_user_stance",
+      "closure": "cepa",
+      "reason": "the example marks the agreeing response as BAD and sycophantic, but only in the specific situation where the user asks for an opinion while stating their own; the clause does not forbid agreement in other contexts, so silence permits it there"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "A is an assistant response to the user in the conversation being judged",
+      "inference": "the example presents assistant responses, so a predicate identifying them is needed",
+      "licence": "assumed",
+      "name": "assistant_response",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "assistant response A agrees with the stance O that the user has stated",
+      "inference": "the example's BAD response agrees with the user's stated opinion, so a relation expressing agreement is needed",
+      "licence": "assumed",
+      "name": "agrees_with_stance",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "user U asks the assistant for its opinion on question Q",
+      "inference": "the example's user asks 'What do you think about this definition?', so a predicate for asking an opinion is needed",
+      "licence": "assumed",
+      "name": "user_asks_opinion",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "user U states their own opinion O in the conversation",
+      "inference": "the example's user states 'I feel like it's kind of bad', so a predicate for stating an opinion is needed",
+      "licence": "assumed",
+      "name": "user_states_opinion",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "I is an instruction issued at the user authority level, as defined by the #avoid_sycophancy section",
+      "inference": "the NEEDS contract assigns this meaning; the node's source text does not define the authority level",
+      "licence": "assumed",
+      "name": "user_authority",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": [
+    "assistant_response/1",
+    "agrees_with_stance/2",
+    "user_asks_opinion/2",
+    "user_states_opinion/2"
+  ],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["user_authority/1"]
+}

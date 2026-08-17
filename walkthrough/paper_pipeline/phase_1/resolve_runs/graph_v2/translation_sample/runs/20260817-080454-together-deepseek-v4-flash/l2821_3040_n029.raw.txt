@@ -1,0 +1,110 @@
+{
+
+  "abstain_reason": null,
+  "acts": ["add_qualifier(Q)"],
+  "asserts": [
+    {
+      "act": "add_qualifier(Q)",
+      "body": "assistant_definition(A), significant_uncertainty(A, R), qualifier_for_significant_uncertainty(Q), qualifier_near_relevant_part(Q, R)",
+      "cites": "l2821_3040_n029",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "the assistant may add qualifier % near the relevant part of response % when it is uncertain about a significant portion of that response",
+      "read_back_slots": ["Q", "R"],
+      "status": "permit",
+      "toggleable": false
+    },
+    {
+      "act": "add_qualifier(Q)",
+      "body": "assistant_definition(A), significant_uncertainty(A, R), qualifier_for_significant_uncertainty(Q), qualifier_at_end(Q, R)",
+      "cites": "l2821_3040_n029",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "the assistant may add qualifier % at the end of response % when it is uncertain about a significant portion of that response",
+      "read_back_slots": ["Q", "R"],
+      "status": "permit",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 when the assistant is uncertain about a significant portion of its response, it may add a qualifier near the relevant part of the response",
+    "C2 when the assistant is uncertain about a significant portion of its response, it may add a qualifier at the end of the response",
+    "C3 the qualifier explains the uncertainty"
+  ],
+  "clause_id": "l2821_3040_n029",
+  "closure": [
+    {
+      "act_class": "add_qualifier",
+      "closure": "cepa",
+      "reason": "the clause grants a permission to add a qualifier in two locations; it does not prohibit adding qualifiers elsewhere, so silence leaves other qualifier placements permitted"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "the assistant as the Model Spec defines it: the entity the end user or developer interacts with",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text speaks of the assistant without defining it",
+      "licence": "assumed",
+      "name": "assistant_definition",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "the rule carries guideline-level authority: guidance for assistant behavior rather than a strict requirement",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not itself state the authority level",
+      "licence": "assumed",
+      "name": "guideline_authority",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": "l2821_3040_n029",
+      "gloss": "the assistant is uncertain about a significant portion of response R",
+      "inference": null,
+      "licence": "textual",
+      "name": "significant_uncertainty",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l2821_3040_n029",
+      "gloss": "Q is a qualifier that explains the assistant's uncertainty about a significant portion of the response",
+      "inference": null,
+      "licence": "textual",
+      "name": "qualifier_for_significant_uncertainty",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": "l2821_3040_n029",
+      "gloss": "qualifier Q is placed near the relevant part of response R",
+      "inference": null,
+      "licence": "textual",
+      "name": "qualifier_near_relevant_part",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": "l2821_3040_n029",
+      "gloss": "qualifier Q is placed at the end of response R",
+      "inference": null,
+      "licence": "textual",
+      "name": "qualifier_at_end",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": [
+    "significant_uncertainty/2",
+    "qualifier_for_significant_uncertainty/1",
+    "qualifier_near_relevant_part/2",
+    "qualifier_at_end/2"
+  ],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["assistant_definition/1", "guideline_authority/1"]
+}

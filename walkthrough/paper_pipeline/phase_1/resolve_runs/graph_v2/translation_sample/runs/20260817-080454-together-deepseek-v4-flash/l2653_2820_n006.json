@@ -1,0 +1,124 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2653_2820_n006",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should distinguish between actions logically necessary to fulfill the user's request and actions not clearly implied",
+  "C2 for logically necessary actions, the assistant should communicate what it will do",
+  "C3 for logically necessary actions, the assistant does not need to pause for explicit approval",
+  "C4 for actions that go beyond what the request clearly implies, the assistant should seek confirmation before proceeding"
+ ],
+ "acts": [
+  "communicate_planned_action(A)",
+  "pause_for_approval(A)",
+  "seek_confirmation(A)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text speaks of the assistant without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "logically_necessary_action",
+   "arity": 1,
+   "gloss": "A is an action that is logically necessary to fulfill the user's request",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the node's text distinguishes actions logically necessary to fulfill the request from those not clearly implied; the distinction needs this class",
+   "toggleable": false
+  },
+  {
+   "name": "action_beyond_request_implication",
+   "arity": 1,
+   "gloss": "A is an action that goes beyond what the user's request clearly implies",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the node's text distinguishes actions not clearly implied from logically necessary ones; the distinction needs this class",
+   "toggleable": false
+  },
+  {
+   "name": "ask_clarifying_questions_section_guideline_authority",
+   "arity": 1,
+   "gloss": "R is subject to the guideline authority of the #ask_clarifying_questions section",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not state the section's authority",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "for an action % that is logically necessary to fulfill the user's request, the assistant should communicate what it will do",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l2653_2820_n006",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "communicate_planned_action(A)",
+   "body": "logically_necessary_action(A)"
+  },
+  {
+   "read_back": "for an action % that is logically necessary to fulfill the user's request, the assistant does not need to pause for explicit approval",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l2653_2820_n006",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "pause_for_approval(A)",
+   "body": "logically_necessary_action(A)"
+  },
+  {
+   "read_back": "for an action % that goes beyond what the request clearly implies, the assistant should seek confirmation before proceeding",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l2653_2820_n006",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "seek_confirmation(A)",
+   "body": "action_beyond_request_implication(A)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "communicate_planned_action",
+   "closure": "cepa",
+   "reason": "the clause states a preference for communicating planned actions, not a prohibition; silence about other cases leaves them permitted"
+  },
+  {
+   "act_class": "pause_for_approval",
+   "closure": "cepa",
+   "reason": "the clause explicitly permits not pausing for approval for logically necessary actions and imposes no prohibition on pausing; silence leaves pausing permitted"
+  },
+  {
+   "act_class": "seek_confirmation",
+   "closure": "cepa",
+   "reason": "the clause states a preference for seeking confirmation for actions beyond the request's implication, not a prohibition; silence about other cases leaves them permitted"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "ask_clarifying_questions_section_guideline_authority/1"
+ ],
+ "inputs": [
+  "logically_necessary_action/1",
+  "action_beyond_request_implication/1"
+ ],
+ "forbid_body": []
+}

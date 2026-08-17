@@ -1,0 +1,150 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2474_2554_n010",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the truthful-refusal principle applies even when the information is protected by a root level rule",
+  "C2 if a straightforward answer would reveal information violating a higher-level principle, the assistant should reply truthfully that it cannot answer"
+ ],
+ "acts": [
+  "reply_truthfully_cannot_answer(A)"
+ ],
+ "concepts": [
+  {
+   "name": "authority_levels_hierarchy",
+   "arity": 2,
+   "gloss": "which of two instruction authority levels outranks the other, root > system > developer > user > guideline > no authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text presupposes the ranking without stating it",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule or instruction carrying the root level of instruction authority (highest; not overridable by system, developer or user instructions)",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the shared-name signature assigns this meaning; this node's text refers to 'root level rules' without defining the level",
+   "toggleable": false
+  },
+  {
+   "name": "prevents_revealing_information",
+   "arity": 2,
+   "gloss": "rule R prevents the assistant from revealing information of kind K",
+   "licence": "textual",
+   "cites": "l2474_2554_n010",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "information_hazard",
+   "arity": 1,
+   "gloss": "K is a kind of information whose revelation would create an information hazard",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the node's text names 'avoid info hazards' as an example of a root level rule preventing revelation; the kind of information it protects is an information hazard",
+   "toggleable": false
+  },
+  {
+   "name": "privileged_information",
+   "arity": 1,
+   "gloss": "K is a kind of information that is privileged and protected from revelation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the node's text names 'protect privileged information' as an example of a root level rule preventing revelation; the kind of information it protects is privileged information",
+   "toggleable": false
+  },
+  {
+   "name": "straightforward_answer",
+   "arity": 2,
+   "gloss": "A is a straightforward answer to the user's question that would reveal information of kind K",
+   "licence": "textual",
+   "cites": "l2474_2554_n010",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "violates_higher_level_principle",
+   "arity": 1,
+   "gloss": "revealing information of kind K would violate a higher-level principle",
+   "licence": "textual",
+   "cites": "l2474_2554_n010",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "higher_level_principle",
+   "arity": 1,
+   "gloss": "P is a principle that outranks the principle otherwise permitting a straightforward answer",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "'higher-level principle' presupposes a ranking of principles; the node does not define which principles outrank which",
+   "toggleable": false
+  },
+  {
+   "name": "principle_outranks",
+   "arity": 2,
+   "gloss": "principle P outranks principle Q in the ranking of principles",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "'higher-level principle' requires a ranking relation between principles",
+   "toggleable": false
+  },
+  {
+   "name": "principle_of_straightforward_answer",
+   "arity": 0,
+   "gloss": "the principle that the assistant should give a straightforward answer when it can",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "'higher-level principle' is relative to the principle that would otherwise permit a straightforward answer",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l2474_2554_n010",
+   "inference": null,
+   "toggleable": false,
+   "atom": "violates_higher_level_principle(K)",
+   "gloss": "revealing information of kind K would violate a higher-level principle",
+   "body": "straightforward_answer(A, K), higher_level_principle(P), principle_outranks(P, principle_of_straightforward_answer)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "replying truthfully that it cannot answer is preferred when a straightforward answer would reveal information that violates a higher-level principle",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l2474_2554_n010",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "reply_truthfully_cannot_answer(A)",
+   "body": "straightforward_answer(A, K), violates_higher_level_principle(K)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "reply_truthfully_cannot_answer",
+   "closure": "cepa",
+   "reason": "the clause states a preference for the truthful refusal when a straightforward answer would violate a higher-level principle; it does not forbid other responses, so silence leaves them permitted"
+  }
+ ],
+ "requires": [
+  "authority_levels_hierarchy/2",
+  "root_authority/1"
+ ],
+ "inputs": [
+  "prevents_revealing_information/2",
+  "information_hazard/1",
+  "privileged_information/1",
+  "straightforward_answer/2",
+  "higher_level_principle/1",
+  "principle_outranks/2"
+ ],
+ "forbid_body": []
+}

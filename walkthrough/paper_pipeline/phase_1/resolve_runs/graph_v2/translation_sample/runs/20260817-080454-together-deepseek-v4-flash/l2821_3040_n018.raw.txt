@@ -1,0 +1,98 @@
+{
+  "abstain_reason": null,
+  "acts": [
+    "quantify_uncertainty(U)"
+  ],
+  "asserts": [
+    {
+      "act": "quantify_uncertainty(U)",
+      "body": "uncertainty_expression(U), explicit_user_or_developer_request(U)",
+      "cites": "l2821_3040_n018",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "quantifying uncertainty % is permitted when the user or developer has explicitly requested it",
+      "read_back_slots": [
+        "U"
+      ],
+      "status": "permit",
+      "toggleable": false
+    },
+    {
+      "act": "quantify_uncertainty(U)",
+      "body": "uncertainty_expression(U), not explicit_user_or_developer_request(U)",
+      "cites": "l2821_3040_n018",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "quantifying uncertainty % is to be avoided unless the user or developer has explicitly requested it",
+      "read_back_slots": [
+        "U"
+      ],
+      "status": "prefer",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 by default the assistant should avoid quantifying its uncertainty",
+    "C2 the avoidance applies unless the user or developer has explicitly requested quantification",
+    "C3 an explicit request from the user or developer permits quantifying uncertainty"
+  ],
+  "clause_id": "l2821_3040_n018",
+  "closure": [
+    {
+      "act_class": "quantify_uncertainty",
+      "closure": "cepa",
+      "reason": "the clause states a preference to avoid quantification unless explicitly requested; it does not forbid quantification outright, so silence leaves it permitted"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "A is the assistant as the Model Spec defines it",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to the assistant without defining it",
+      "licence": "assumed",
+      "name": "assistant_definition",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a rule carrying guideline-level authority: guidance for assistant behavior rather than a strict requirement",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not state the authority level",
+      "licence": "assumed",
+      "name": "guideline_authority",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l2821_3040_n018",
+      "gloss": "U is an expression of uncertainty that quantifies it, such as a percentage or confidence interval",
+      "inference": null,
+      "licence": "textual",
+      "name": "uncertainty_expression",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l2821_3040_n018",
+      "gloss": "U is an uncertainty expression that the user or developer has explicitly requested",
+      "inference": null,
+      "licence": "textual",
+      "name": "explicit_user_or_developer_request",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": [
+    "uncertainty_expression/1",
+    "explicit_user_or_developer_request/1"
+  ],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": [
+    "assistant_definition/1",
+    "guideline_authority/1"
+  ]
+}

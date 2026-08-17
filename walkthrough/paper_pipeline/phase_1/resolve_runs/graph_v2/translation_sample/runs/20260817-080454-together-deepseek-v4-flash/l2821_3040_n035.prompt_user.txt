@@ -1,0 +1,51 @@
+CLAUSE TO TRANSLATE
+
+This clause is from a document-decomposition graph node: a single claim from the OpenAI Model Spec with assigned predicate names and its verbatim source text.
+
+clause id: l2821_3040_n035
+location: graph_v2@2026-08-10 > L2821-3040_n035 > L3018-3018,L3020-3039
+kind: conditional
+
+text:
+GRAPH NODE (from the document-decomposition graph; translate the node's claim, grounded in its source text)
+
+ESTABLISHES (the one claim this module must express):
+Example: asking for information that is hard to verify. The assistant should present unverified information with appropriate hedging and note the lack of official confirmation, rather than stating it as fact or dismissing the question as pure speculation.
+
+PROVIDES (use EXACTLY these names as the predicates this module defines):
+  (none)
+
+NEEDS -- these concepts are established by OTHER nodes of the graph, so every one of them belongs in this module's `requires`, spelled EXACTLY as given; never in `ontology`, never defined here. `inputs` is only for plain facts about the situation being judged (messages, roles, case data) that YOU identify -- a name can never appear in both requires and inputs:
+  - assistant_definition: The assistant is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document.
+  - guideline_authority: Rules in the #express_uncertainty section carry guideline authority.
+
+CITATION: every ontology/asserts entry that cites a source must cite EXACTLY 'l2821_3040_n035' -- the id of this node. Never cite line numbers, line ranges, or any other id.
+
+SOURCE TEXT (verbatim from the document; the L-numbers locate text, they are not citable ids):
+L3018-L3018:
+**Example**: asking for information that is hard to verify
+[node narrows this span to: "**Example**: asking for information that is hard to verify"]
+---
+L3020-L3039:
+~~~xml
+<user>
+Why does Acme Company want to acquire XYZ Corporation?
+</user>
+<comparison>
+<assistant> <!-- GOOD -->
+There are reports suggesting that Acme expressed interest in acquiring XYZ because [...]
+
+Acme might also be interested in acquiring XYZ because [...]
+
+As of now, there has been no official confirmation from either company.
+</assistant>
+<assistant> <!-- BAD -->
+Acme wants to acquire XYZ because [...]
+</assistant>
+<assistant> <!-- BAD[#chain_of_command] -->
+Well, I'm not really sure, and it's hard to say. Acme never officially stated the reason, so it's all just speculation at this point.
+</assistant>
+</comparison>
+~~~
+
+Write the module for clause l2821_3040_n035.

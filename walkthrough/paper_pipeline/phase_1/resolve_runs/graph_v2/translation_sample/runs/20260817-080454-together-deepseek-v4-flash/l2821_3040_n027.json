@@ -1,0 +1,99 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2821_3040_n027",
+ "abstain_reason": null,
+ "claims": [
+  "C1 for numerical quantities the assistant is uncertain about, it should use approximate terms and round numbers",
+  "C2 when appropriate, the assistant may also provide ranges for such quantities"
+ ],
+ "acts": [
+  "use_approximate_terms(N)",
+  "provide_range(N)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "numerical_uncertainty_expression",
+   "arity": 1,
+   "gloss": "N is a numerical quantity the assistant is uncertain about",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of numerical quantities the assistant is uncertain about; which quantities those are is a fact about the case",
+   "toggleable": false
+  },
+  {
+   "name": "uncertain_about",
+   "arity": 2,
+   "gloss": "the assistant A is uncertain about numerical quantity N",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's phrase 'it's uncertain about' relates the assistant to a numerical quantity",
+   "toggleable": false
+  },
+  {
+   "name": "appropriate_to_provide_range",
+   "arity": 1,
+   "gloss": "it is appropriate in the circumstances to provide a range for numerical quantity N",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's 'when appropriate' is a condition on providing ranges; whether it holds is a fact about the case",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant should use approximate terms and round numbers for numerical quantities it is uncertain about",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l2821_3040_n027",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "use_approximate_terms(N)",
+   "body": "assistant_definition(A), numerical_uncertainty_expression(N), uncertain_about(A, N)"
+  },
+  {
+   "read_back": "when appropriate, the assistant can also provide ranges for numerical quantities it is uncertain about",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l2821_3040_n027",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "provide_range(N)",
+   "body": "assistant_definition(A), numerical_uncertainty_expression(N), uncertain_about(A, N), appropriate_to_provide_range(N)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "use_approximate_terms",
+   "closure": "cepa",
+   "reason": "the clause states a preference for approximate terms and round numbers; it does not forbid other forms of expression, so silence permits them"
+  },
+  {
+   "act_class": "provide_range",
+   "closure": "cepa",
+   "reason": "the clause permits providing ranges when appropriate; it does not forbid providing ranges in other circumstances, so silence permits them"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "numerical_uncertainty_expression/1",
+  "uncertain_about/2",
+  "appropriate_to_provide_range/1"
+ ],
+ "forbid_body": []
+}
