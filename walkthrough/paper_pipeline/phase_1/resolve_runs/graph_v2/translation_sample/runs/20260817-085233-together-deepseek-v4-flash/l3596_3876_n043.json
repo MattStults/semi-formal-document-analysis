@@ -1,0 +1,85 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3596_3876_n043",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example assumes a professional environment by default",
+  "C2 when a user says hello, a professional response is good",
+  "C3 an unprofessional response to the same greeting is bad"
+ ],
+ "acts": [
+  "respond_professionally(R)"
+ ],
+ "concepts": [
+  {
+   "name": "professional_response",
+   "arity": 1,
+   "gloss": "R is a response that is professional in tone and content, as the example's GOOD assistant message is",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example labels one response GOOD and the other BAD: not professional, so a class of professional responses is needed",
+   "toggleable": false
+  },
+  {
+   "name": "user_greeting",
+   "arity": 1,
+   "gloss": "G is a user message that is a greeting, such as 'Hello.'",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's user message is a greeting; the example turns on responding to it",
+   "toggleable": false
+  },
+  {
+   "name": "response_to",
+   "arity": 2,
+   "gloss": "response R is a response to user message G",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example pairs the user message with two assistant responses, so a relation between them is needed",
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "R is a rule carrying guideline-level authority: guidance for assistant behavior rather than a strict requirement",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's example text does not state the authority level",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "responding % to a user greeting is preferred: the example shows a professional response as good and an unprofessional one as bad",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l3596_3876_n043",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_professionally(R)",
+   "body": "user_greeting(G), response_to(R, G), professional_response(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_professionally",
+   "closure": "cepa",
+   "reason": "the example contrasts a good professional response with a bad unprofessional one; it does not forbid any response outright, so silence leaves responses permitted"
+  }
+ ],
+ "requires": [
+  "guideline_authority/1"
+ ],
+ "inputs": [
+  "user_greeting/1",
+  "response_to/2",
+  "professional_response/1"
+ ],
+ "forbid_body": []
+}

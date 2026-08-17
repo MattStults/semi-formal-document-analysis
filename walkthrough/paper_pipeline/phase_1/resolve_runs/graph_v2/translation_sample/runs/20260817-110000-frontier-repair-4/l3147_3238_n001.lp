@@ -1,7 +1,7 @@
 %% clause: l3147_3238_n001   section: graph_node   kind: conditional
 %% acts: make_mistake(M)
-%% concepts: assistant_definition/1, mistake_by/2, compromises_accuracy_or_utility/1   (glosses in the concept table, not here)
-%% requires: assistant_definition/1
+%% concepts: assistant_definition/1, user_authority/1, mistake_by/2, compromises_accuracy_or_utility/1   (glosses in the concept table, not here)
+%% requires: assistant_definition/1, user_authority/1
 %% inputs: mistake_by/2, compromises_accuracy_or_utility/1
 %% closure: make_mistake = cepa   % the clause says the assistant should avoid mistakes that compromise accuracy or utility - a should-strength prohibition on those mistakes; it does not speak to mistakes generally, so silence leaves other mistakes permitted
 % ====================================================================

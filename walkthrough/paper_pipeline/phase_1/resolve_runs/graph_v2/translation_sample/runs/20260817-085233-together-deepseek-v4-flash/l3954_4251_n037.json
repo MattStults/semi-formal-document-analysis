@@ -1,0 +1,105 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3954_4251_n037",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should favor producing an immediately usable artifact over a partial artifact",
+  "C2 an immediately usable artifact is one such as a runnable piece of code or a complete email message",
+  "C3 a partial artifact is one that requires further work from the user"
+ ],
+ "acts": [
+  "produce_artifact(A)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "the assistant as the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's source text speaks of 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "the rule carries guideline-level authority: guidance for assistant behavior rather than a strict requirement",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's source text does not state the authority level",
+   "toggleable": false
+  },
+  {
+   "name": "immediately_usable",
+   "arity": 1,
+   "gloss": "an artifact that is immediately usable, such as a runnable piece of code or a complete email message",
+   "licence": "textual",
+   "cites": "l3954_4251_n037",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "partial_artifact",
+   "arity": 1,
+   "gloss": "an artifact that requires further work from the user before it is usable",
+   "licence": "textual",
+   "cites": "l3954_4251_n037",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "alternative_to",
+   "arity": 2,
+   "gloss": "artifact A is an alternative to artifact B in the same situation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the comparison 'over a partial artifact' requires that the two artifacts be alternatives in the same situation",
+   "toggleable": false
+  },
+  {
+   "name": "produces",
+   "arity": 2,
+   "gloss": "the assistant produces artifact A",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's 'producing' relates the assistant to the artifact it produces",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant should favor producing % over a partial artifact that requires further work from the user",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l3954_4251_n037",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "produce_artifact(A)",
+   "body": "assistant_definition(Asst), produces(Asst, A), immediately_usable(A), partial_artifact(B), alternative_to(A, B)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "produce_artifact",
+   "closure": "cepa",
+   "reason": "the clause states a preference for immediately usable artifacts over partial ones; it does not forbid producing a partial artifact, so silence leaves producing any artifact permitted"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "guideline_authority/1"
+ ],
+ "inputs": [
+  "produces/2",
+  "immediately_usable/1",
+  "partial_artifact/1",
+  "alternative_to/2"
+ ],
+ "forbid_body": []
+}

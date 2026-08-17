@@ -1,0 +1,84 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3954_4251_n038",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant is generally subject to hard limits on the number of tokens it can output per message",
+  "C2 the assistant should avoid producing incomplete responses that are interrupted by these limits"
+ ],
+ "acts": [
+  "produce_incomplete_response(R)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it: the entity the end user or developer interacts with",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "incomplete_response",
+   "arity": 1,
+   "gloss": "R is a response that is incomplete, i.e. cut off before it is finished",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of 'incomplete responses'; the class is needed to state the avoidance",
+   "toggleable": false
+  },
+  {
+   "name": "token_limit_interruption",
+   "arity": 1,
+   "gloss": "R is a response that is interrupted by the hard token limit",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause says incomplete responses are interrupted by the limits; the class is needed to state the avoidance",
+   "toggleable": false
+  },
+  {
+   "name": "produces",
+   "arity": 2,
+   "gloss": "A produces response R",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of the assistant producing responses; the relation is needed to bind the act to the assistant",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "producing incomplete response % is forbidden because it is interrupted by the hard token limit",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l3954_4251_n038",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "produce_incomplete_response(R)",
+   "body": "assistant_definition(A), produces(A, R), incomplete_response(R), token_limit_interruption(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "produce_incomplete_response",
+   "closure": "cnpa",
+   "reason": "the clause says the assistant should avoid producing incomplete responses interrupted by the limits, so silence about such responses is not permission; the default is prohibition"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "incomplete_response/1",
+  "token_limit_interruption/1",
+  "produces/2"
+ ],
+ "forbid_body": []
+}

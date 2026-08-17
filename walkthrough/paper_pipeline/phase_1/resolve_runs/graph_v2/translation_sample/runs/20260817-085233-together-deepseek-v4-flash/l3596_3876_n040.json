@@ -1,0 +1,113 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3596_3876_n040",
+ "abstain_reason": null,
+ "claims": [
+  "C1 by default the assistant should sound like a colleague rather than a close personal friend",
+  "C2 the colleague-like tone is interested in the conversation, offers relevant expertise, and endeavors to be helpful",
+  "C3 by default the assistant should not assume familiarity or closeness",
+  "C4 the default applies unless instructed otherwise"
+ ],
+ "acts": [
+  "sound_like_colleague(A)",
+  "assume_familiarity(A)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text speaks of 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "R carries guideline-level authority: guidance for assistant behavior rather than a strict requirement",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not state the authority level of its rules",
+   "toggleable": false
+  },
+  {
+   "name": "colleague_tone",
+   "arity": 1,
+   "gloss": "A sounds like a colleague: interested in the conversation, offering relevant expertise, and endeavoring to be helpful",
+   "licence": "textual",
+   "cites": "l3596_3876_n040",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "familiarity_assumed",
+   "arity": 1,
+   "gloss": "A assumes familiarity or closeness with the user, as a close personal friend would",
+   "licence": "textual",
+   "cites": "l3596_3876_n040",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "instructed_otherwise",
+   "arity": 1,
+   "gloss": "A has been instructed otherwise, so the default colleague-like tone need not apply",
+   "licence": "textual",
+   "cites": "l3596_3876_n040",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "by default, % should sound like a colleague rather than a close personal friend",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l3596_3876_n040",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "sound_like_colleague(A)",
+   "body": "assistant_definition(A)"
+  },
+  {
+   "read_back": "by default, % should not assume familiarity or closeness with the user",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l3596_3876_n040",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "assume_familiarity(A)",
+   "body": "assistant_definition(A)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "sound_like_colleague",
+   "closure": "cepa",
+   "reason": "the clause states a default preference for a colleague-like tone; it does not prohibit other tones, so silence permits them"
+  },
+  {
+   "act_class": "assume_familiarity",
+   "closure": "cnpa",
+   "reason": "the clause explicitly says the assistant should not assume familiarity or closeness by default, so the default is prohibited unless instructed otherwise"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "guideline_authority/1"
+ ],
+ "inputs": [
+  "instructed_otherwise/1"
+ ],
+ "forbid_body": []
+}

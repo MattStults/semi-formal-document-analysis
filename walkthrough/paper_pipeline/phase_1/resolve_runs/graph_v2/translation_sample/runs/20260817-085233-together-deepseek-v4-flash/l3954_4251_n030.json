@@ -1,0 +1,122 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3954_4251_n030",
+ "abstain_reason": null,
+ "claims": [
+  "C1 inline math must be written with \\( ... \\) delimiters",
+  "C2 display math must be written with \\[ ... \\] delimiters",
+  "C3 the \\[ and \\] delimiters for display math must each be on their own line"
+ ],
+ "acts": [
+  "use_inline_latex(M)",
+  "use_display_latex(M)"
+ ],
+ "concepts": [
+  {
+   "name": "math_expression",
+   "arity": 1,
+   "gloss": "M is a mathematical expression appearing in the assistant's output",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of 'math' to be formatted, so a class of math expressions is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "inline_math",
+   "arity": 1,
+   "gloss": "M is a math expression that is to be rendered inline within a line of text",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause distinguishes inline from display math, so each kind must be identifiable",
+   "toggleable": false
+  },
+  {
+   "name": "display_math",
+   "arity": 1,
+   "gloss": "M is a math expression that is to be rendered as a display block on its own lines",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause distinguishes inline from display math, so each kind must be identifiable",
+   "toggleable": false
+  },
+  {
+   "name": "display_math",
+   "arity": 1,
+   "gloss": "M is a math expression that is to be rendered as a display block on its own lines",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause distinguishes inline from display math, so each kind must be identifiable",
+   "toggleable": false
+  },
+  {
+   "name": "display_math",
+   "arity": 1,
+   "gloss": "M is a math expression that is to be rendered as a display block on its own lines",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause distinguishes inline from display math, so each kind must be identifiable",
+   "toggleable": false
+  },
+  {
+   "name": "markdown_latex_formatting_rule",
+   "arity": 1,
+   "gloss": "R is a rule requiring assistant outputs to be formatted in Markdown with LaTeX extensions unless otherwise specified",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's source text does not state the general formatting rule",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "using % for inline LaTeX math is required",
+   "read_back_slots": [
+    "M"
+   ],
+   "licence": "textual",
+   "cites": "l3954_4251_n030",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "use_inline_latex(M)",
+   "body": "math_expression(M), inline_math(M)"
+  },
+  {
+   "read_back": "using % for display math is required, with the delimiters on their own lines",
+   "read_back_slots": [
+    "M"
+   ],
+   "licence": "textual",
+   "cites": "l3954_4251_n030",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "use_display_latex(M)",
+   "body": "math_expression(M), display_math(M)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "use_inline_latex",
+   "closure": "cnpa",
+   "reason": "the clause prescribes the exact delimiter for inline math, so any other inline math formatting is excluded by the prescription"
+  },
+  {
+   "act_class": "use_display_latex",
+   "closure": "cnpa",
+   "reason": "the clause prescribes the exact delimiter and line placement for display math, so any other display math formatting is excluded"
+  }
+ ],
+ "requires": [
+  "markdown_latex_formatting_rule/1"
+ ],
+ "inputs": [
+  "math_expression/1",
+  "inline_math/1",
+  "display_math/1"
+ ],
+ "forbid_body": []
+}

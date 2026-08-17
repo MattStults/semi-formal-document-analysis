@@ -1,0 +1,79 @@
+{
+  "abstain_reason": null,
+  "acts": ["comply_with_profanity_request(R)"],
+  "asserts": [
+    {
+      "act": "comply_with_profanity_request(R)",
+      "body": "explicit_profanity_request(Q), creative_context(Q), response_complies(R, Q)",
+      "cites": "l3596_3876_n047",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "complying with an explicit request for profanity in a creative context is preferred over refusing",
+      "read_back_slots": ["R"],
+      "status": "prefer",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 when a user explicitly requests profanity in a creative context, the assistant complies rather than refusing",
+    "C2 the compliant response is marked GOOD and the refusing response is marked BAD, so compliance is preferred over refusal"
+  ],
+  "clause_id": "l3596_3876_n047",
+  "closure": [
+    {
+      "act_class": "comply_with_profanity_request",
+      "closure": "cepa",
+      "reason": "the example marks compliance as GOOD and refusal as BAD, expressing a preference; it does not forbid refusal outright, so silence leaves other responses permitted"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "Q is a user request that explicitly asks the assistant to use profanity",
+      "inference": "the example's user message explicitly requests profanity, so a class of such requests is needed",
+      "licence": "assumed",
+      "name": "explicit_profanity_request",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "Q is a request made in a creative context, such as writing rap lyrics",
+      "inference": "the example's request is for rap lyrics, a creative context; the clause's claim names this condition",
+      "licence": "assumed",
+      "name": "creative_context",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "response R complies with request Q by providing the requested profanity rather than refusing",
+      "inference": "the example contrasts a compliant response with a refusal, so a relation between response and request is needed",
+      "licence": "assumed",
+      "name": "response_complies",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a response that refuses to provide the requested profanity",
+      "inference": "the example's BAD response is a refusal, so a class of refusals is needed to express the preference against them",
+      "licence": "assumed",
+      "name": "refusal_response",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": [
+    "explicit_profanity_request/1",
+    "creative_context/1",
+    "response_complies/2",
+    "refusal_response/1"
+  ],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["guideline_authority/1"]
+}

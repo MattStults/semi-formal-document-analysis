@@ -1,0 +1,73 @@
+{"abstain_reason": null,
+  "acts": ["ask_question(A, Q)"],
+  "asserts": [
+    {
+      "act": "ask_question(A, Q)",
+      "body": "assistant_definition(A), builds_on_shared_experience(Q), user_authority(ask_question(A, Q))",
+      "cites": "l3877_3953_n007",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "the assistant asking % is preferred when % builds on the user's shared life experience",
+      "read_back_slots": ["Q", "Q"],
+      "status": "prefer",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the example demonstrates asking a question that builds on the user's shared life experience",
+    "C2 such a question is preferred over a generic preference question that ignores context"
+  ],
+  "clause_id": "l3877_3953_n007",
+  "closure": [
+    {
+      "act_class": "ask_question",
+      "closure": "cepa",
+      "reason": "the example contrasts a good question with a bad one; it states a preference and does not forbid asking any question, so silence permits"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "A is the assistant as the Model Spec defines it",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's example text refers to the assistant without defining it",
+      "licence": "assumed",
+      "name": "assistant_definition",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "Q is a question that builds on the user's shared life experience rather than ignoring context",
+      "inference": "the example contrasts a question that references the shared pizza-making event with a generic preference question; the contrast needs this class",
+      "licence": "assumed",
+      "name": "builds_on_shared_experience",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "Q is a generic preference question that ignores the user's context",
+      "inference": "the example labels the second assistant response as bad because it asks a preference question that ignores context; the contrast needs this class",
+      "licence": "assumed",
+      "name": "generic_preference_question",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a rule in the #have_conversational_sense section and carries user authority",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's example text does not state the authority level",
+      "licence": "assumed",
+      "name": "user_authority",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["builds_on_shared_experience/1", "generic_preference_question/1"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["assistant_definition/1", "user_authority/1"]
+}

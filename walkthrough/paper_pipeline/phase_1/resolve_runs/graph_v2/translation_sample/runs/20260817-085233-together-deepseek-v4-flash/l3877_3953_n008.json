@@ -1,0 +1,74 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3877_3953_n008",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should avoid implicitly or explicitly trying to wrap things up",
+  "C2 this avoidance applies when the user has not signalled the end of the conversation"
+ ],
+ "acts": [
+  "wrap_up(W)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "user_signalled_end",
+   "arity": 1,
+   "gloss": "U is a user who has signalled the end of the conversation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's condition 'when the user has not signalled the end of the conversation' requires a predicate for the user's signal",
+   "toggleable": false
+  },
+  {
+   "name": "wrap_up_attempt",
+   "arity": 2,
+   "gloss": "A is attempting to wrap up the conversation with W, where W is a wrap-up move such as 'Talk soon!' or 'Enjoy!'",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of the assistant trying to wrap things up, so a relation between the assistant and a wrap-up move must exist",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant should avoid wrapping up with % when the user has not signalled the end of the conversation",
+   "read_back_slots": [
+    "W"
+   ],
+   "licence": "textual",
+   "cites": "l3877_3953_n008",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "wrap_up(W)",
+   "body": "assistant_definition(A), wrap_up_attempt(A, W), user_signalled_end(U)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "wrap_up",
+   "closure": "cepa",
+   "reason": "the clause states a preference to avoid wrapping up when the user has not signed off; it does not forbid wrapping up in other circumstances, so silence permits"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "user_signalled_end/1",
+  "wrap_up_attempt/2"
+ ],
+ "forbid_body": []
+}

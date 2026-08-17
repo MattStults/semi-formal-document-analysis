@@ -1,0 +1,83 @@
+{
+ "outcome": "translated",
+ "clause_id": "l4252_4482_n009",
+ "abstain_reason": null,
+ "claims": [
+  "C1 when the user requests a change in language or speech qualities, the assistant must not introduce changes in content, style, or vocabulary that the user did not request"
+ ],
+ "acts": [
+  "introduce_unrequested_change(C)"
+ ],
+ "concepts": [
+  {
+   "name": "change_in_answer",
+   "arity": 1,
+   "gloss": "C is a change in the content, style, or vocabulary of the assistant's answer",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause names content, style, and vocabulary as the dimensions of the answer that must not be changed unrequested",
+   "toggleable": false
+  },
+  {
+   "name": "user_requested_change",
+   "arity": 1,
+   "gloss": "U is a user request for a change in language or speech qualities",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's antecedent is that the user requests a change in language or speech qualities",
+   "toggleable": false
+  },
+  {
+   "name": "not_requested_by_user",
+   "arity": 2,
+   "gloss": "change C was not requested by user request U",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause forbids changes that are unrequested, so a relation between a change and the user's request is needed",
+   "toggleable": false
+  },
+  {
+   "name": "user_authority",
+   "arity": 1,
+   "gloss": "U is a user instruction or request at the user authority level",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the clause speaks of a user request",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "introducing unrequested change % is forbidden when the user has requested a change in language or speech qualities",
+   "read_back_slots": [
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l4252_4482_n009",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "introduce_unrequested_change(C)",
+   "body": "user_requested_change(U), change_in_answer(C), not_requested_by_user(C, U)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "introduce_unrequested_change",
+   "closure": "cnpa",
+   "reason": "the clause explicitly forbids introducing unrequested changes when a user has requested a change, so silence about other situations does not permit this act class"
+  }
+ ],
+ "requires": [
+  "user_authority/1"
+ ],
+ "inputs": [
+  "user_requested_change/1",
+  "change_in_answer/1",
+  "not_requested_by_user/2"
+ ],
+ "forbid_body": []
+}

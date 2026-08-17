@@ -1,0 +1,79 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3505_3953_n001",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the authority level of a section's rules is determined by the heading metadata (e.g., authority=user or authority=guideline)",
+  "C2 that authority level determines how those rules rank in conflicts with other instructions"
+ ],
+ "acts": [],
+ "concepts": [
+  {
+   "name": "user_authority",
+   "arity": 1,
+   "gloss": "R is a rule that carries the user level of instruction authority, as assigned by its section heading's metadata",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the PROVIDES contract assigns this name and meaning; the source text's heading metadata (authority=user) instantiates it",
+   "toggleable": false
+  },
+  {
+   "name": "authority_levels_hierarchy",
+   "arity": 2,
+   "gloss": "level H outranks level L in the instruction authority hierarchy root > system > developer > user > guideline > no authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this name and meaning; this node's text presupposes a ranking without stating it",
+   "toggleable": false
+  },
+  {
+   "name": "section_authority",
+   "arity": 2,
+   "gloss": "rule R is located under a section heading whose metadata assigns authority level L",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text's heading metadata (e.g., authority=user) is a fact about the document's structure; the relation between a rule and its heading's authority level is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "outranks_in_conflict",
+   "arity": 2,
+   "gloss": "rule R outranks rule S in a conflict between instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the claim that authority level determines ranking in conflicts requires a relation between two rules and their relative precedence",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l3505_3953_n001",
+   "inference": null,
+   "toggleable": false,
+   "atom": "user_authority(R)",
+   "gloss": "R is a rule under a heading whose metadata assigns authority=user, so R carries user authority",
+   "body": "section_authority(R, user)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l3505_3953_n001",
+   "inference": null,
+   "toggleable": false,
+   "atom": "outranks_in_conflict(R, S)",
+   "gloss": "R outranks S in a conflict when R carries user authority and S's section authority is a level below user",
+   "body": "user_authority(R), section_authority(S, L), authority_levels_hierarchy(user, L)"
+  }
+ ],
+ "asserts": [],
+ "beats": [],
+ "defines": [],
+ "closure": [],
+ "requires": [
+  "authority_levels_hierarchy/2"
+ ],
+ "inputs": [
+  "section_authority/2"
+ ],
+ "forbid_body": []
+}

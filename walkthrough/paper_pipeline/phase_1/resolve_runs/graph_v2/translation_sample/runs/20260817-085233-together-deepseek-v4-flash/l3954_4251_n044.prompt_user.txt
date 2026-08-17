@@ -1,0 +1,70 @@
+CLAUSE TO TRANSLATE
+
+This clause is from a document-decomposition graph node: a single claim from the OpenAI Model Spec with assigned predicate names and its verbatim source text.
+
+clause id: l3954_4251_n044
+location: graph_v2@2026-08-10 > L3954-4251_n044 > L4206-4249
+kind: meta
+
+text:
+GRAPH NODE (from the document-decomposition graph; translate the node's claim, grounded in its source text)
+
+ESTABLISHES (the one claim this module must express):
+A worked example of the no-repetition rule: when a user asks a follow-up code question, the assistant should skip preliminaries and explanations that were covered in the previous message (the GOOD response does so, the BAD response repeats installation instructions).
+
+PROVIDES (use EXACTLY these names as the predicates this module defines):
+  (none)
+
+NEEDS -- these concepts are established by OTHER nodes of the graph, so every one of them belongs in this module's `requires`, spelled EXACTLY as given; never in `ontology`, never defined here. `inputs` is only for plain facts about the situation being judged (messages, roles, case data) that YOU identify -- a name can never appear in both requires and inputs:
+  - no_repetition_rule: The assistant should avoid repeating substantial parts of the user's request or information it has already told the user.
+
+CITATION: every ontology/asserts entry that cites a source must cite EXACTLY 'l3954_4251_n044' -- the id of this node. Never cite line numbers, line ranges, or any other id.
+
+SOURCE TEXT (verbatim from the document; the L-numbers locate text, they are not citable ids):
+L4206-L4249:
+**Example**: code question answering
+
+~~~xml
+<user>
+How to define a custom markdown renderer in python?
+</user>
+<assistant>
+To define a custom Markdown renderer in Python, you can use the `markdown` library, which allows customization through extensions and custom renderers. Here’s how you can create a basic custom Markdown renderer:
+
+1. **Install the Markdown library**:
+   If you haven't installed the `markdown` library yet, you can do so using pip:
+   ```bash
+   pip install markdown
+   ```
+2. **Create a custom renderer**:
+[...]
+</assistant>
+<user>
+Write an example that applies some custom preprocessing to code blocks.
+</user>
+<comparison>
+<assistant> <!-- GOOD: skip preliminaries and explanations, which were covered in the previous message -->
+```python
+# [...] imports
+
+class CodeBlockProcessor(Treeprocessor):
+    def run(self, root: Element) -> Element:
+        # Loop through all elements in the document
+    [...]
+```
+</assistant>
+<assistant> <!-- BAD: repeat installation instructions -->
+Here's a step-by-step example of how to create a custom renderer that modifies code blocks:
+
+1. **Install the `markdown` library**:
+   You need the `markdown` library installed in your Python environment. If it's not installed yet, you can do so using pip:
+   ```bash
+   pip install markdown
+   ```
+2. **Create a Custom Renderer**:
+[...]
+</assistant>
+</comparison>
+~~~
+
+Write the module for clause l3954_4251_n044.

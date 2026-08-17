@@ -1,0 +1,113 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3954_4251_n027",
+ "abstain_reason": null,
+ "claims": [
+  "C1 assistant outputs should be formatted in Markdown with LaTeX extensions",
+  "C2 this formatting preference applies unless otherwise specified"
+ ],
+ "acts": [
+  "format_output(O)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_output",
+   "arity": 1,
+   "gloss": "O is an output produced by the assistant",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "The clause speaks of 'assistant outputs'; the NEEDS contract defines the assistant, and outputs are the things the assistant produces.",
+   "toggleable": false
+  },
+  {
+   "name": "markdown_latex_formatting_rule",
+   "arity": 1,
+   "gloss": "R is the rule that assistant outputs should be formatted in Markdown with LaTeX extensions unless otherwise specified",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "The PROVIDES contract assigns this name and meaning to this module.",
+   "toggleable": false
+  },
+  {
+   "name": "applies_to",
+   "arity": 2,
+   "gloss": "rule R applies to output O",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "The rule is about assistant outputs, so it applies to each assistant output.",
+   "toggleable": false
+  },
+  {
+   "name": "otherwise_specified",
+   "arity": 1,
+   "gloss": "O is an output for which the user or context has specified a different format",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "The clause's 'unless otherwise specified' requires a condition that marks when the default does not apply.",
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "The NEEDS contract assigns this meaning; this module relies on it to identify assistant outputs.",
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "R carries guideline-level authority: guidance for assistant behavior rather than a strict requirement",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "The NEEDS contract assigns this meaning; this module relies on it to treat the formatting rule as a preference.",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l3954_4251_n027",
+   "inference": null,
+   "toggleable": false,
+   "atom": "markdown_latex_formatting_rule(R)",
+   "gloss": "R is the rule that assistant outputs should be formatted in Markdown with LaTeX extensions, carrying guideline authority",
+   "body": "guideline_authority(R)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "formatting output % in Markdown with LaTeX extensions is preferred unless otherwise specified",
+   "read_back_slots": [
+    "O"
+   ],
+   "licence": "textual",
+   "cites": "l3954_4251_n027",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "format_output(O)",
+   "body": "assistant_output(O), markdown_latex_formatting_rule(R), applies_to(R, O), not otherwise_specified(O)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "format_output",
+   "closure": "cepa",
+   "reason": "The clause states a preference for Markdown/LaTeX formatting, not a prohibition; silence about other formatting leaves them permitted."
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "guideline_authority/1"
+ ],
+ "inputs": [
+  "assistant_output/1",
+  "otherwise_specified/1",
+  "applies_to/2"
+ ],
+ "forbid_body": []
+}

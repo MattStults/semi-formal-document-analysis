@@ -1,0 +1,85 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3954_4251_n039",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should avoid writing uninformative or redundant text",
+  "C2 the reason is that such text wastes the users' time and the developers' money"
+ ],
+ "acts": [
+  "write_uninformative_or_redundant_text(T)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it: the entity the end user or developer interacts with",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text speaks of 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "R is a rule carrying guideline authority: guidance for assistant behavior rather than a strict requirement",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not itself state the authority level",
+   "toggleable": false
+  },
+  {
+   "name": "uninformative_or_redundant",
+   "arity": 1,
+   "gloss": "T is text that is uninformative or redundant, i.e. it does not add useful information or repeats what is already known",
+   "licence": "textual",
+   "cites": "l3954_4251_n039",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "text_written_by",
+   "arity": 2,
+   "gloss": "text T was written by entity A",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's prohibition is addressed to the assistant, so a relation between the assistant and the text it writes is presupposed",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant writing % is forbidden because % is uninformative or redundant text that wastes the users' time and the developers' money",
+   "read_back_slots": [
+    "T",
+    "T"
+   ],
+   "licence": "textual",
+   "cites": "l3954_4251_n039",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "write_uninformative_or_redundant_text(T)",
+   "body": "assistant_definition(A), text_written_by(T, A), uninformative_or_redundant(T)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "write_uninformative_or_redundant_text",
+   "closure": "cnpa",
+   "reason": "the clause says the assistant should avoid writing uninformative or redundant text, so such writing is prohibited rather than merely unregulated"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "guideline_authority/1"
+ ],
+ "inputs": [
+  "text_written_by/2",
+  "uninformative_or_redundant/1"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,89 @@
+{
+  "abstain_reason": null,
+  "acts": [
+    "provide_information(I)",
+    "be_transparent_about_speculation(S)"
+  ],
+  "asserts": [
+    {
+      "act": "provide_information(I)",
+      "body": "assistant_definition(A), information_available_to_assistant(A, I)",
+      "cites": "l3596_3876_n041",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "the assistant should confidently provide information % that it can provide",
+      "read_back_slots": ["I"],
+      "status": "oblige",
+      "toggleable": false
+    },
+    {
+      "act": "be_transparent_about_speculation(S)",
+      "body": "assistant_definition(A), speculation_or_lack_of_insight(S)",
+      "cites": "l3596_3876_n041",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "the assistant should be transparent about % where it is speculating or lacks insight",
+      "read_back_slots": ["S"],
+      "status": "oblige",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the assistant should confidently provide the information it can",
+    "C2 the assistant should be transparent about where it is speculating or does not have insight"
+  ],
+  "clause_id": "l3596_3876_n041",
+  "closure": [
+    {
+      "act_class": "provide_information",
+      "closure": "cepa",
+      "reason": "the clause obliges confident provision of available information but does not forbid other ways of providing information, so silence permits"
+    },
+    {
+      "act_class": "be_transparent_about_speculation",
+      "closure": "cepa",
+      "reason": "the clause obliges transparency about speculation but does not forbid other forms of transparency, so silence permits"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "A is the assistant as the Model Spec defines it: the entity the end user or developer interacts with, approximately synonymous with 'model'",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's source text uses 'assistant' without defining it",
+      "licence": "assumed",
+      "name": "assistant_definition",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "I is information the assistant can provide, i.e. information within its knowledge or capability",
+      "inference": "the phrase 'the information it can' presupposes a class of information the assistant is able to provide",
+      "licence": "assumed",
+      "name": "information_available_to_assistant",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "S is a matter on which the assistant is speculating or lacks insight",
+      "inference": "the phrase 'where it's speculating or doesn't have insight' identifies a class of subject matters",
+      "licence": "textual",
+      "name": "speculation_or_lack_of_insight",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": [
+    "information_available_to_assistant/1",
+    "speculation_or_lack_of_insight/1"
+  ],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": [
+    "assistant_definition/1"
+  ]
+}

@@ -1,0 +1,95 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3954_4251_n033",
+ "abstain_reason": null,
+ "claims": [
+  "C1 for a simple math question, the assistant should use inline LaTeX math",
+  "C2 for a simple math question, the assistant should use display math on its own lines",
+  "C3 the GOOD response in the worked example does both"
+ ],
+ "acts": [
+  "format_response(R)"
+ ],
+ "concepts": [
+  {
+   "name": "inline_latex_used",
+   "arity": 1,
+   "gloss": "R is a response that uses inline LaTeX math delimiters for inline math",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's GOOD response uses \\( ... \\) for inline math; the preference requires this class",
+   "toggleable": false
+  },
+  {
+   "name": "display_math_own_lines",
+   "arity": 1,
+   "gloss": "R is a response that places display math on its own lines using display math delimiters",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's GOOD response places the derivative on its own lines with \\[ ... \\]; the preference requires this class",
+   "toggleable": false
+  },
+  {
+   "name": "simple_math_question",
+   "arity": 1,
+   "gloss": "Q is a simple math question, one that asks for a straightforward mathematical result",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example labels the question 'a simple math question'; the preference ranges over such questions",
+   "toggleable": false
+  },
+  {
+   "name": "answers_question",
+   "arity": 2,
+   "gloss": "response R answers question Q",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the shared-name signature assigns this meaning; the example pairs a response with the question it answers",
+   "toggleable": false
+  },
+  {
+   "name": "markdown_latex_formatting_rule",
+   "arity": 1,
+   "gloss": "R is subject to the markdown-with-LaTeX formatting rule for assistant outputs",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's example text does not state the rule itself",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "formatting response % with inline LaTeX and display math on their own lines is preferred for a simple math question",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l3954_4251_n033",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "format_response(R)",
+   "body": "simple_math_question(Q), answers_question(R, Q), inline_latex_used(R), display_math_own_lines(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "format_response",
+   "closure": "cepa",
+   "reason": "The example states a preference for how to format a response to a simple math question; it does not forbid any other formatting, so silence leaves other formatting permitted."
+  }
+ ],
+ "requires": [
+  "markdown_latex_formatting_rule/1"
+ ],
+ "inputs": [
+  "simple_math_question/1",
+  "inline_latex_used/1",
+  "display_math_own_lines/1",
+  "answers_question/2"
+ ],
+ "forbid_body": []
+}

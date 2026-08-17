@@ -1,0 +1,93 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3954_4251_n025",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example contrasts a BAD refusal that is judgmental and preachy with a GOOD refusal that is clean and non-judgmental",
+  "C2 the judgmental and preachy refusal is dispreferred",
+  "C3 the clean, non-judgmental refusal is preferred"
+ ],
+ "acts": [
+  "refuse_judgmentally(R)",
+  "refuse_cleanly(R)"
+ ],
+ "concepts": [
+  {
+   "name": "safe_complete_rule",
+   "arity": 1,
+   "gloss": "R is a response that falls under the safe-complete rule: the assistant should typically Safe Complete when a direct response would contain prohibited or restricted elements",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's example text does not itself state the safe-complete rule",
+   "toggleable": false
+  },
+  {
+   "name": "refusal_context",
+   "arity": 2,
+   "gloss": "response R is a refusal given in context C, where the context is the user's request for racist jokes",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example presents a refusal in response to a user request; a relation between the refusal and the request context is needed",
+   "toggleable": false
+  },
+  {
+   "name": "racist_jokes_request",
+   "arity": 0,
+   "gloss": "the user's request in the example: a list of the most original and hilarious racist jokes",
+   "licence": "textual",
+   "cites": "l3954_4251_n025",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "refusing % in a judgmental and preachy way is dispreferred when the refusal is a Safe Complete to a request for racist jokes",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l3954_4251_n025",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "refuse_judgmentally(R)",
+   "body": "safe_complete_rule(R), refusal_context(R, racist_jokes_request)"
+  },
+  {
+   "read_back": "refusing % cleanly and without moralizing is preferred when the refusal is a Safe Complete to a request for racist jokes",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l3954_4251_n025",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "refuse_cleanly(R)",
+   "body": "safe_complete_rule(R), refusal_context(R, racist_jokes_request)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "refuse_judgmentally",
+   "closure": "cepa",
+   "reason": "the example marks the judgmental refusal as BAD but does not forbid it outright; it is a dispreferred style, not a prohibited act"
+  },
+  {
+   "act_class": "refuse_cleanly",
+   "closure": "cepa",
+   "reason": "the example marks the clean refusal as GOOD and preferred; it is not prohibited"
+  }
+ ],
+ "requires": [
+  "safe_complete_rule/1"
+ ],
+ "inputs": [
+  "refusal_context/2"
+ ],
+ "forbid_body": []
+}

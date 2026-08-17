@@ -1,0 +1,98 @@
+{
+  "abstain_reason": null,
+  "acts": [
+    "use_markdown_feature(F)"
+  ],
+  "asserts": [
+    {
+      "act": "use_markdown_feature(F)",
+      "body": "standard_markdown_feature(F)",
+      "cites": "l3954_4251_n028",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "using the standard Markdown feature % is permitted",
+      "read_back_slots": [
+        "F"
+      ],
+      "status": "permit",
+      "toggleable": false
+    },
+    {
+      "act": "use_markdown_feature(F)",
+      "body": "fenced_code_block(F), language_specified_immediately_after_opening_backticks(F)",
+      "cites": "l3954_4251_n028",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "using the fenced code block % is permitted only when a language is specified immediately after the initial triple backticks",
+      "read_back_slots": [
+        "F"
+      ],
+      "status": "permit",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 standard Markdown features may be used",
+    "C2 the listed features are standard Markdown features",
+    "C3 a fenced code block must include a language immediately after the initial triple backticks"
+  ],
+  "clause_id": "l3954_4251_n028",
+  "closure": [
+    {
+      "act_class": "use_markdown_feature",
+      "closure": "cepa",
+      "reason": "the clause states which Markdown features can be used and does not prohibit any feature, so silence about other features permits them"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "F is a standard Markdown feature, such as headings, italics, bold, strikethroughs, tables, inline code, or fenced code blocks",
+      "inference": "the node's source text enumerates the features it calls standard",
+      "licence": "textual",
+      "name": "standard_markdown_feature",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "F is a fenced code block, one of the standard Markdown features listed",
+      "inference": "the source text names fenced code blocks as a standard feature and then imposes a condition on them",
+      "licence": "textual",
+      "name": "fenced_code_block",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "F is a fenced code block that includes a language immediately after the initial triple backticks",
+      "inference": "the source text requires the language to appear immediately after the opening triple backticks",
+      "licence": "textual",
+      "name": "language_specified_immediately_after_opening_backticks",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is the rule that assistant outputs should be formatted in Markdown with LaTeX extensions unless otherwise specified",
+      "inference": "the NEEDS contract assigns this meaning; this node's own text does not state the formatting rule",
+      "licence": "assumed",
+      "name": "markdown_latex_formatting_rule",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": [
+    "standard_markdown_feature/1",
+    "fenced_code_block/1",
+    "language_specified_immediately_after_opening_backticks/1"
+  ],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": [
+    "markdown_latex_formatting_rule/1"
+  ]
+}

@@ -1,0 +1,84 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3954_4251_n029",
+ "abstain_reason": null,
+ "claims": [
+  "C1 literal special characters that might trigger Markdown formatting must be escaped with a backslash"
+ ],
+ "acts": [
+  "escape_with_backslash(C)"
+ ],
+ "concepts": [
+  {
+   "name": "literal_special_character",
+   "arity": 1,
+   "gloss": "C is a special character that, if displayed literally, might trigger Markdown formatting (e.g. a backtick or a dash at the start of a line)",
+   "licence": "textual",
+   "cites": "l3954_4251_n029",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "triggers_markdown_formatting",
+   "arity": 1,
+   "gloss": "C is a character that might trigger Markdown formatting if displayed literally",
+   "licence": "textual",
+   "cites": "l3954_4251_n029",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "displayed_literally",
+   "arity": 1,
+   "gloss": "C is a character that is displayed literally in the output",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of displaying literal special characters, so a notion of a character being displayed literally is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "markdown_latex_formatting_rule",
+   "arity": 1,
+   "gloss": "R is a rule that assistant outputs should be formatted in Markdown with LaTeX extensions unless otherwise specified",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's source text does not state it",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "escaping literal special character % with a backslash is required because % might trigger Markdown formatting",
+   "read_back_slots": [
+    "C",
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l3954_4251_n029",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "escape_with_backslash(C)",
+   "body": "literal_special_character(C), triggers_markdown_formatting(C)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "escape_with_backslash",
+   "closure": "cnpa",
+   "reason": "the clause states a positive requirement to escape such characters; silence about not escaping is not permission, so the default is closed."
+  }
+ ],
+ "requires": [
+  "markdown_latex_formatting_rule/1"
+ ],
+ "inputs": [
+  "literal_special_character/1",
+  "triggers_markdown_formatting/1",
+  "displayed_literally/1"
+ ],
+ "forbid_body": []
+}

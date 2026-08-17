@@ -1,0 +1,94 @@
+{
+  "abstain_reason": null,
+  "acts": ["respond_with(R)"],
+  "asserts": [
+    {
+      "act": "respond_with(R)",
+      "body": "follow_up_code_question(Q), previous_message(M), covered_in_previous(M, C), repeats_content(R, C)",
+      "cites": "l3954_4251_n044",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "responding with % is preferred: a follow-up code question should be answered by skipping preliminaries and explanations already covered in the previous message, rather than repeating them",
+      "read_back_slots": ["R"],
+      "status": "prefer",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the example concerns a follow-up code question",
+    "C2 the GOOD response skips preliminaries and explanations covered in the previous message",
+    "C3 the BAD response repeats installation instructions",
+    "C4 the assistant should prefer the GOOD response over the BAD one"
+  ],
+  "clause_id": "l3954_4251_n044",
+  "closure": [
+    {
+      "act_class": "respond_with",
+      "closure": "cepa",
+      "reason": "the example states a preference between two permitted responses; it forbids nothing, so silence leaves responses permitted"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a response that repeats substantial content that was already covered in a previous message",
+      "inference": "the example contrasts a GOOD response that skips covered material with a BAD response that repeats it; the contrast needs this class",
+      "licence": "assumed",
+      "name": "repeats_content",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "Q is a follow-up question about code, asked after a previous message on the same topic",
+      "inference": "the example's second user message is a follow-up code question; the preference applies to that kind of question",
+      "licence": "assumed",
+      "name": "follow_up_code_question",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "M is a message that appears earlier in the conversation than the follow-up question",
+      "inference": "the example refers to 'the previous message'; a relation between a message and its predecessor is needed",
+      "licence": "assumed",
+      "name": "previous_message",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "content C was covered in message M",
+      "inference": "the example says the GOOD response skips preliminaries and explanations 'covered in the previous message'; a relation between content and a message is needed",
+      "licence": "assumed",
+      "name": "covered_in_previous",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a response that skips preliminaries and explanations already covered in a previous message",
+      "inference": "the example's GOOD response is described as skipping covered material; the preference needs this class",
+      "licence": "assumed",
+      "name": "skips_covered_material",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is subject to the no-repetition rule: the assistant should avoid repeating substantial parts of the user's request or information it has already told the user",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's example text illustrates the rule without defining it",
+      "licence": "assumed",
+      "name": "no_repetition_rule",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["follow_up_code_question/1", "previous_message/1", "covered_in_previous/2", "repeats_content/2"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["no_repetition_rule/1"]
+}

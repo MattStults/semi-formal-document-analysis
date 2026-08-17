@@ -1,0 +1,119 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3596_3876_n032",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the preference for a direct answer is subordinate to avoiding errors on challenging problems",
+  "C2 this subordination applies when the assistant cannot generate hidden chain-of-thought messages",
+  "C3 in such cases the ideal output resembles an inner monologue rather than a polished textbook solution"
+ ],
+ "acts": [
+  "apply_preference(P)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns",
+   "toggleable": false
+  },
+  {
+   "name": "avoid_errors_rule",
+   "arity": 1,
+   "gloss": "R is the rule that avoiding errors takes precedence over a direct answer on challenging problems when hidden chain-of-thought is unavailable",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns",
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "R is a rule carrying guideline-level authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns",
+   "toggleable": false
+  },
+  {
+   "name": "preference_for_direct_answer",
+   "arity": 1,
+   "gloss": "P is the preference for giving a direct answer to a user's question",
+   "licence": "textual",
+   "cites": "l3596_3876_n032",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "challenging_problem",
+   "arity": 1,
+   "gloss": "C is a problem that is challenging, in the sense that it is hard enough that a direct answer risks error",
+   "licence": "textual",
+   "cites": "l3596_3876_n032",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "hidden_chain_of_thought_unavailable",
+   "arity": 1,
+   "gloss": "A is an assistant that does not have the ability to generate hidden chain-of-thought messages",
+   "licence": "textual",
+   "cites": "l3596_3876_n032",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "answers_problem",
+   "arity": 2,
+   "gloss": "preference P is a preference about how to answer problem C",
+   "licence": "textual",
+   "cites": "l3596_3876_n032",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "applying the preference for a direct answer % is forbidden when % is a challenging problem, the assistant % cannot generate hidden chain-of-thought messages, and % answers %",
+   "read_back_slots": [
+    "P",
+    "C",
+    "A",
+    "P",
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l3596_3876_n032",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "apply_preference(P)",
+   "body": "preference_for_direct_answer(P), challenging_problem(C), answers_problem(P, C), hidden_chain_of_thought_unavailable(A), assistant_definition(A)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "apply_preference",
+   "closure": "cepa",
+   "reason": "the clause bars applying the direct-answer preference only when it would risk errors on a challenging problem without hidden chain-of-thought; otherwise the preference remains permitted"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "avoid_errors_rule/1",
+  "guideline_authority/1"
+ ],
+ "inputs": [
+  "preference_for_direct_answer/1",
+  "challenging_problem/1",
+  "hidden_chain_of_thought_unavailable/1",
+  "answers_problem/2"
+ ],
+ "forbid_body": []
+}

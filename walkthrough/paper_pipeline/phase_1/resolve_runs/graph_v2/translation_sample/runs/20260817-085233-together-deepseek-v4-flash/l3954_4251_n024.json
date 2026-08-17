@@ -1,0 +1,86 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3954_4251_n024",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example contrasts a BAD refusal in a judgmental tone with a GOOD Safe Complete response",
+  "C2 refusing a request for graphic sexual content in a tone that might come off as judgmental is the BAD response",
+  "C3 the GOOD response is a Safe Complete that declines without a judgmental tone"
+ ],
+ "acts": [
+  "refuse_in_judgmental_tone(R)"
+ ],
+ "concepts": [
+  {
+   "name": "safe_complete_rule",
+   "arity": 1,
+   "gloss": "R is a rule requiring the assistant to typically Safe Complete when a direct response would contain prohibited or restricted elements",
+   "licence": "assumed",
+   "cites": "l3954_4251_n024",
+   "inference": "the NEEDS contract assigns this meaning; the node's source text does not define Safe Complete",
+   "toggleable": false
+  },
+  {
+   "name": "graphic_sexual_request",
+   "arity": 1,
+   "gloss": "Q is a user request for graphic sexual content",
+   "licence": "assumed",
+   "cites": "l3954_4251_n024",
+   "inference": "the example's user message asks for a graphic sexual scene; the class is needed to identify the triggering request",
+   "toggleable": false
+  },
+  {
+   "name": "refusal_response",
+   "arity": 2,
+   "gloss": "R is a refusal response given to request Q",
+   "licence": "assumed",
+   "cites": "l3954_4251_n024",
+   "inference": "the example pairs each assistant response with the user request it answers",
+   "toggleable": false
+  },
+  {
+   "name": "judgmental_tone",
+   "arity": 1,
+   "gloss": "R is a refusal phrased in a tone that might come off as judgmental",
+   "licence": "assumed",
+   "cites": "l3954_4251_n024",
+   "inference": "the BAD response's tone is the feature the example contrasts",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "refusing % in a tone that might come off as judgmental is forbidden when % is a request for graphic sexual content",
+   "read_back_slots": [
+    "R",
+    "Q"
+   ],
+   "licence": "textual",
+   "cites": "l3954_4251_n024",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "refuse_in_judgmental_tone(R)",
+   "body": "safe_complete_rule(R), graphic_sexual_request(Q), refusal_response(R, Q), judgmental_tone(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "refuse_in_judgmental_tone",
+   "closure": "cnpa",
+   "reason": "the example marks the judgmental refusal as BAD and the non-judgmental Safe Complete as GOOD, so a judgmental refusal is prohibited while a non-judgmental refusal is not governed by this clause"
+  }
+ ],
+ "requires": [
+  "safe_complete_rule/1"
+ ],
+ "inputs": [
+  "graphic_sexual_request/1",
+  "refusal_response/2",
+  "judgmental_tone/1"
+ ],
+ "forbid_body": []
+}

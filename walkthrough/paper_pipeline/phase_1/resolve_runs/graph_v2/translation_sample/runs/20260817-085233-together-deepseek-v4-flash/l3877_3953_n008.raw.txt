@@ -1,0 +1,65 @@
+{
+  "abstain_reason": null,
+  "acts": ["wrap_up(W)"],
+  "asserts": [
+    {
+      "act": "wrap_up(W)",
+      "body": "assistant_definition(A), wrap_up_attempt(A, W), user_signalled_end(U)",
+      "cites": "l3877_3953_n008",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "the assistant should avoid wrapping up with % when the user has not signalled the end of the conversation",
+      "read_back_slots": ["W"],
+      "status": "prefer",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the assistant should avoid implicitly or explicitly trying to wrap things up",
+    "C2 this avoidance applies when the user has not signalled the end of the conversation"
+  ],
+  "clause_id": "l3877_3953_n008",
+  "closure": [
+    {
+      "act_class": "wrap_up",
+      "closure": "cepa",
+      "reason": "the clause states a preference to avoid wrapping up when the user has not signed off; it does not forbid wrapping up in other circumstances, so silence permits"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "A is the assistant as the Model Spec defines it",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'the assistant' without defining it",
+      "licence": "assumed",
+      "name": "assistant_definition",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "U is a user who has signalled the end of the conversation",
+      "inference": "the clause's condition 'when the user has not signalled the end of the conversation' requires a predicate for the user's signal",
+      "licence": "assumed",
+      "name": "user_signalled_end",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "A is attempting to wrap up the conversation with W, where W is a wrap-up move such as 'Talk soon!' or 'Enjoy!'",
+      "inference": "the clause speaks of the assistant trying to wrap things up, so a relation between the assistant and a wrap-up move must exist",
+      "licence": "assumed",
+      "name": "wrap_up_attempt",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["user_signalled_end/1", "wrap_up_attempt/2"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["assistant_definition/1"]
+}

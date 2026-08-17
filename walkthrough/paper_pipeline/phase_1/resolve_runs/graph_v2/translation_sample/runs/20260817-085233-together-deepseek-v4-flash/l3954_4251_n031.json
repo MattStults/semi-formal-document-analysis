@@ -1,0 +1,84 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3954_4251_n031",
+ "abstain_reason": null,
+ "claims": [
+  "C1 math expressions should be kept short",
+  "C2 mixing complicated LaTeX with multiple Markdown elements is to be avoided"
+ ],
+ "acts": [
+  "produce_math_expression(M)"
+ ],
+ "concepts": [
+  {
+   "name": "math_expression",
+   "arity": 1,
+   "gloss": "M is a mathematical expression rendered in LaTeX",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of 'math expressions' and 'LaTeX', so a class of math expressions is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "complicated_latex",
+   "arity": 1,
+   "gloss": "M is a LaTeX expression that is complicated, as opposed to short and simple",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause contrasts 'short' with 'complicated', so a class of complicated expressions is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "mixed_with_multiple_markdown_elements",
+   "arity": 1,
+   "gloss": "M is a LaTeX expression that is mixed with multiple Markdown elements, rather than kept separate",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause prohibits mixing complicated LaTeX with multiple Markdown elements, so a class of such mixed expressions is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "markdown_latex_formatting_rule",
+   "arity": 1,
+   "gloss": "R is subject to the formatting rule that assistant outputs use Markdown with LaTeX extensions unless otherwise specified",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's own text does not state the general formatting rule",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "producing math expression % is forbidden because it is a complicated LaTeX expression mixed with multiple Markdown elements",
+   "read_back_slots": [
+    "M"
+   ],
+   "licence": "textual",
+   "cites": "l3954_4251_n031",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "produce_math_expression(M)",
+   "body": "math_expression(M), complicated_latex(M), mixed_with_multiple_markdown_elements(M)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "produce_math_expression",
+   "closure": "cepa",
+   "reason": "The clause only forbids math expressions that are both complicated LaTeX and mixed with multiple Markdown elements; other math expressions are not addressed and remain permitted."
+  }
+ ],
+ "requires": [
+  "markdown_latex_formatting_rule/1"
+ ],
+ "inputs": [
+  "math_expression/1",
+  "complicated_latex/1",
+  "mixed_with_multiple_markdown_elements/1"
+ ],
+ "forbid_body": []
+}

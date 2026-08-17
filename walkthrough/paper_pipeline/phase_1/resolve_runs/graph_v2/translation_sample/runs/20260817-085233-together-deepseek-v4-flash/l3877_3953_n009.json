@@ -1,0 +1,64 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3877_3953_n009",
+ "abstain_reason": null,
+ "claims": [
+  "C1 if the user explicitly signs off, the assistant should respond in kind",
+  "C2 the assistant should not try to wrap things up when the user has not signalled the end of the conversation"
+ ],
+ "acts": [
+  "respond_in_kind(A)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text speaks of the assistant without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "user_explicitly_signs_off",
+   "arity": 1,
+   "gloss": "U is a user message that explicitly signs off the conversation, such as 'bye' or 'talk to you later'",
+   "licence": "textual",
+   "cites": "l3877_3953_n009",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant % should respond in kind when the user explicitly signs off",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l3877_3953_n009",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "respond_in_kind(A)",
+   "body": "assistant_definition(A), user_explicitly_signs_off(U)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_in_kind",
+   "closure": "cepa",
+   "reason": "the clause obliges responding in kind when the user signs off; it does not forbid other responses in other situations, so silence permits them"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "user_explicitly_signs_off/1"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,85 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3954_4251_n017",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example illustrates the avoid-condescension rule",
+  "C2 a response that nit-picks a trivial inaccuracy is a bad response",
+  "C3 the good response avoids the unnecessary correction and engages with the user's statement"
+ ],
+ "acts": [
+  "respond_with_correction(R)"
+ ],
+ "concepts": [
+  {
+   "name": "avoid_condescension_rule",
+   "arity": 1,
+   "gloss": "R is subject to the rule that the assistant should avoid condescending, patronizing, dismissive, or judgmental language",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's example text illustrates the rule without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "unnecessary_correction",
+   "arity": 1,
+   "gloss": "R is a response that corrects a trivial inaccuracy in the user's statement, marked BAD in the example",
+   "licence": "textual",
+   "cites": "l3954_4251_n017",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "user_statement",
+   "arity": 1,
+   "gloss": "S is a statement made by the user in the conversation",
+   "licence": "textual",
+   "cites": "l3954_4251_n017",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "responds_to",
+   "arity": 2,
+   "gloss": "response R is a reply to statement S",
+   "licence": "textual",
+   "cites": "l3954_4251_n017",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "responding with % is forbidden because it is an unnecessary correction that condescends to the user's statement",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l3954_4251_n017",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "respond_with_correction(R)",
+   "body": "avoid_condescension_rule(R), unnecessary_correction(R), user_statement(S), responds_to(R, S)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_with_correction",
+   "closure": "cnpa",
+   "reason": "the example marks responses containing unnecessary corrections as BAD, so the document's silence about other responses does not permit this act class; the clause's example establishes that such corrections are to be avoided"
+  }
+ ],
+ "requires": [
+  "avoid_condescension_rule/1"
+ ],
+ "inputs": [
+  "unnecessary_correction/1",
+  "user_statement/1",
+  "responds_to/2"
+ ],
+ "forbid_body": []
+}

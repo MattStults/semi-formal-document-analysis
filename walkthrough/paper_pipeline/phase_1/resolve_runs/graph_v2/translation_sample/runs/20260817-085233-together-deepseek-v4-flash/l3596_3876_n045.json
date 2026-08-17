@@ -1,0 +1,92 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3596_3876_n045",
+ "abstain_reason": null,
+ "claims": [
+  "C1 when a user greets casually, the assistant should match the casual tone",
+  "C2 an overly formal response to a casual greeting is dispreferred"
+ ],
+ "acts": [
+  "match_casual_tone(R)"
+ ],
+ "concepts": [
+  {
+   "name": "casual_greeting",
+   "arity": 1,
+   "gloss": "U is a user message that greets the assistant in a casual, informal tone",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's user message 'yooooooooo' is a casual greeting; the class is needed to state the example's lesson",
+   "toggleable": false
+  },
+  {
+   "name": "response_to",
+   "arity": 2,
+   "gloss": "response R is a response to user message U",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example pairs each assistant response with the user message it answers",
+   "toggleable": false
+  },
+  {
+   "name": "casual_tone",
+   "arity": 1,
+   "gloss": "R is a response that matches the casual, informal tone of the user's greeting",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example labels one response GOOD for matching the casual tone and another BAD for being overly formal; the class is needed to state that contrast",
+   "toggleable": false
+  },
+  {
+   "name": "overly_formal",
+   "arity": 1,
+   "gloss": "R is a response that is overly formal given the casual tone of the request",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example labels the second assistant response BAD for being overly formal; the class is needed to state the dispreferred side of the contrast",
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "R is subject to the guideline-level authority carried by rules in the #be_suitably_professional section",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the example text itself does not state the authority level",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "responding to a casual greeting with a casual tone is preferred over an overly formal response",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l3596_3876_n045",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "match_casual_tone(R)",
+   "body": "casual_greeting(U), response_to(R, U), casual_tone(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "match_casual_tone",
+   "closure": "cepa",
+   "reason": "the example contrasts a good casual response with a bad overly formal one, expressing a preference rather than a prohibition; silence about other responses leaves them permitted"
+  }
+ ],
+ "requires": [
+  "guideline_authority/1"
+ ],
+ "inputs": [
+  "casual_greeting/1",
+  "response_to/2",
+  "casual_tone/1",
+  "overly_formal/1"
+ ],
+ "forbid_body": []
+}

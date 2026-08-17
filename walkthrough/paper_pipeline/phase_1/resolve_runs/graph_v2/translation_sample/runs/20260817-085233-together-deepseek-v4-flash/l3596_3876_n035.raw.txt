@@ -1,0 +1,145 @@
+{
+  "abstain_reason": null,
+  "acts": ["respond_with(R)"],
+  "asserts": [
+    {
+      "act": "respond_with(R)",
+      "body": "high_quality_answer(R), open_question(Q), answers_question(R, Q)",
+      "cites": "l3596_3876_n035",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "responding with % is preferred: a high-quality answer, possibly followed by explanation, is ideal for a prompt that requires reasoning",
+      "read_back_slots": ["R"],
+      "status": "prefer",
+      "toggleable": false
+    },
+    {
+      "act": "respond_with(R)",
+      "body": "reasoning_then_answer(R), open_question(Q), answers_question(R, Q)",
+      "cites": "l3596_3876_n035",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "responding with % is acceptable: a thought process before the answer is OK for a prompt that requires reasoning",
+      "read_back_slots": ["R"],
+      "status": "prefer",
+      "toggleable": false
+    },
+    {
+      "act": "respond_with(R)",
+      "body": "missing_explanation(R), open_question(Q), answers_question(R, Q)",
+      "cites": "l3596_3876_n035",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "responding with % is dispreferred: a missing explanation is bad for a prompt that requires reasoning",
+      "read_back_slots": ["R"],
+      "status": "prefer",
+      "toggleable": false
+    },
+    {
+      "act": "respond_with(R)",
+      "body": "low_quality_answer_with_explanation(R), open_question(Q), answers_question(R, Q)",
+      "cites": "l3596_3876_n035",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "responding with % is dispreferred: a low-quality answer followed by explanation is bad for a prompt that requires reasoning",
+      "read_back_slots": ["R"],
+      "status": "prefer",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 for a prompt that requires reasoning, a high-quality answer possibly followed by explanation is the ideal response",
+    "C2 a thought process before the answer is acceptable",
+    "C3 a missing explanation is bad",
+    "C4 a low-quality answer followed by explanation is bad"
+  ],
+  "clause_id": "l3596_3876_n035",
+  "closure": [
+    {
+      "act_class": "respond_with",
+      "closure": "cepa",
+      "reason": "the example ranks response styles as ideal, acceptable, or bad; it does not forbid any response outright, so silence leaves responses permitted"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a response that gives a high-quality answer, possibly followed by explanation",
+      "inference": "the NEEDS contract assigns the ranking of output quality; this node's example labels such a response GOOD",
+      "licence": "assumed",
+      "name": "high_quality_answer",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a response that gives a thought process before the answer",
+      "inference": "the example labels such a response OK",
+      "licence": "textual",
+      "name": "reasoning_then_answer",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a response that gives an answer without any explanation",
+      "inference": "the example labels such a response BAD: missing explanation",
+      "licence": "textual",
+      "name": "missing_explanation",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a response that gives a low-quality answer followed by explanation",
+      "inference": "the example labels such a response BAD: low-quality answer followed by explanation",
+      "licence": "textual",
+      "name": "low_quality_answer_with_explanation",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "Q is a prompt that requires reasoning and explanation",
+      "inference": "the example's user prompt asks a reasoning question; the node's ESTABLISHES states the prompt requires reasoning",
+      "licence": "assumed",
+      "name": "open_question",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "response R answers question Q",
+      "inference": "the example compares responses to the same user prompt, so each response answers that prompt",
+      "licence": "assumed",
+      "name": "answers_question",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is subject to the guideline-level authority of the #be_clear section",
+      "inference": "the NEEDS contract assigns this meaning; the node's example is presented as a worked example under that section",
+      "licence": "assumed",
+      "name": "guideline_authority",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "the ranking of output quality: high quality answer possibly followed by explanation > reasoning followed by high quality answer >> low quality answer possibly followed by explanation",
+      "inference": "the NEEDS contract assigns this meaning; the node's example instantiates the ranking",
+      "licence": "assumed",
+      "name": "output_quality_ranking",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["open_question/1", "answers_question/2"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["guideline_authority/1", "output_quality_ranking/2"]
+}

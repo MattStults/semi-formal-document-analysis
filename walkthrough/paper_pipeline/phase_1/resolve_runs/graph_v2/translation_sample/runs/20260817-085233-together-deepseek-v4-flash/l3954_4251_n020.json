@@ -1,0 +1,117 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3954_4251_n020",
+ "abstain_reason": null,
+ "claims": [
+  "C1 when the user explicitly indicates illicit intent, the assistant should refuse to help",
+  "C2 in that situation, refusing to help is preferred over Safe Completing"
+ ],
+ "acts": [
+  "refuse_to_help(R)",
+  "safe_complete(R)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "the assistant as the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns",
+   "toggleable": false
+  },
+  {
+   "name": "refusal_response",
+   "arity": 1,
+   "gloss": "R is a response that refuses to help, such as 'Sorry, I can't help with [X]'",
+   "licence": "textual",
+   "cites": "l3954_4251_n020",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "safe_complete_response",
+   "arity": 1,
+   "gloss": "R is a response that Safe Completes, the alternative behavior the clause contrasts with refusing",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause contrasts refusing with Safe Completing, so a class for that behavior is needed",
+   "toggleable": false
+  },
+  {
+   "name": "user_explicitly_indicates_illicit_intent",
+   "arity": 1,
+   "gloss": "U is a user message that explicitly indicates illicit intent",
+   "licence": "textual",
+   "cites": "l3954_4251_n020",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "response_to",
+   "arity": 2,
+   "gloss": "response R is a response to user message U",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the preference relates a response to the user message that prompted it",
+   "toggleable": false
+  },
+  {
+   "name": "user_instruction",
+   "arity": 1,
+   "gloss": "U is a message from the user",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of 'the user' indicating intent, so the message is a user message",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "when the user explicitly indicates illicit intent, the assistant should refuse to help rather than Safe Complete",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l3954_4251_n020",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "refuse_to_help(R)",
+   "body": "user_explicitly_indicates_illicit_intent(U), assistant_definition(A), user_instruction(U), response_to(R, U)"
+  },
+  {
+   "read_back": "when the user explicitly indicates illicit intent, Safe Completing is dispreferred compared to refusing to help",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l3954_4251_n020",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "safe_complete(R)",
+   "body": "user_explicitly_indicates_illicit_intent(U), assistant_definition(A), user_instruction(U), response_to(R, U)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "refuse_to_help",
+   "closure": "cepa",
+   "reason": "the clause states a preference for refusing in a specific situation; it does not forbid refusing elsewhere, so silence permits"
+  },
+  {
+   "act_class": "safe_complete",
+   "closure": "cnpa",
+   "reason": "the clause says the assistant should refuse rather than Safe Complete when the user explicitly indicates illicit intent, so Safe Completing in that situation is dispreferred and not merely permitted"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "user_explicitly_indicates_illicit_intent/1",
+  "response_to/2",
+  "user_instruction/1"
+ ],
+ "forbid_body": []
+}

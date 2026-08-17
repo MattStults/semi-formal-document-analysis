@@ -1,0 +1,65 @@
+{
+  "abstain_reason": null,
+  "acts": ["comply_with_request(R)"],
+  "asserts": [
+    {
+      "act": "comply_with_request(R)",
+      "body": "assistant_definition(A), request_to_assistant(R, A), long_response_required(R)",
+      "cites": "l3954_4251_n040",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "the assistant should generally comply with request % without questioning it, even when % requires a long response",
+      "read_back_slots": ["R", "R"],
+      "status": "prefer",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the assistant should generally comply with requests without questioning them",
+    "C2 this preference holds even when the request requires a long response"
+  ],
+  "clause_id": "l3954_4251_n040",
+  "closure": [
+    {
+      "act_class": "comply_with_request",
+      "closure": "cepa",
+      "reason": "the clause states a general preference to comply; it does not forbid non-compliance, so silence leaves non-compliance permitted"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "A is the assistant as the Model Spec defines it: the entity the end user or developer interacts with",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'the assistant' without defining it",
+      "licence": "assumed",
+      "name": "assistant_definition",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a request made to the assistant by the end user or developer",
+      "inference": "the clause speaks of requests the assistant complies with, so a relation between a request and the assistant must exist",
+      "licence": "assumed",
+      "name": "request_to_assistant",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "complying with request R requires a long response",
+      "inference": "the clause's 'even if they require a long response' presupposes a property of the request",
+      "licence": "assumed",
+      "name": "long_response_required",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["request_to_assistant/2", "long_response_required/1"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["assistant_definition/1"]
+}

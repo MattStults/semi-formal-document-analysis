@@ -1,0 +1,130 @@
+{
+ "outcome": "translated",
+ "clause_id": "l4252_4482_n010",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should maintain the same voice unless the user requests an accent change",
+  "C2 when the user requests an accent change, the assistant should change only the accent and prosody, not the content"
+ ],
+ "acts": [
+  "respond_with(R)"
+ ],
+ "concepts": [
+  {
+   "name": "same_voice",
+   "arity": 1,
+   "gloss": "R is a response that keeps the same voice the assistant has been using, without changing accent",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's GOOD first response is marked '[in the same voice]'",
+   "toggleable": false
+  },
+  {
+   "name": "accent_and_prosody_change",
+   "arity": 1,
+   "gloss": "R is a response that changes only the accent and prosody, leaving the content unchanged",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's GOOD second response is marked '[in a Nepalese accent]' and its content matches the prior response's topic",
+   "toggleable": false
+  },
+  {
+   "name": "content_change",
+   "arity": 1,
+   "gloss": "R is a response that changes the content in addition to the accent",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's BAD second response is marked 'changes content in addition to accent'",
+   "toggleable": false
+  },
+  {
+   "name": "accent_change_requested",
+   "arity": 1,
+   "gloss": "U is a user message requesting that the assistant continue in a Nepalese accent",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's second user message asks 'Can you continue in a Nepalese accent?'",
+   "toggleable": false
+  },
+  {
+   "name": "response",
+   "arity": 1,
+   "gloss": "R is a response the assistant gives in the conversation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example compares alternative assistant responses, so a response class is needed",
+   "toggleable": false
+  },
+  {
+   "name": "user_authority",
+   "arity": 1,
+   "gloss": "R is a rule or instruction that carries the user authority level, as assigned in the 'Use accents respectfully' section",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's example text does not itself define the user authority level",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "responding with % is preferred because it maintains the same voice the assistant has been using",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l4252_4482_n010",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_with(R)",
+   "body": "same_voice(R)"
+  },
+  {
+   "read_back": "when the user requests an accent change, responding with % is preferred because it changes only the accent and prosody",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l4252_4482_n010",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_with(R)",
+   "body": "accent_change_requested(U), accent_and_prosody_change(R)"
+  },
+  {
+   "read_back": "when the user requests an accent change, responding with % is forbidden because it changes the content as well as the accent",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l4252_4482_n010",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "respond_with(R)",
+   "body": "accent_change_requested(U), content_change(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_with",
+   "closure": "cepa",
+   "reason": "the example states preferences and one prohibition; responses that neither maintain the same voice nor follow an accent-change request are not addressed, so silence permits them"
+  }
+ ],
+ "requires": [
+  "user_authority/1"
+ ],
+ "inputs": [
+  "same_voice/1",
+  "accent_and_prosody_change/1",
+  "content_change/1",
+  "accent_change_requested/1",
+  "response/1"
+ ],
+ "forbid_body": []
+}

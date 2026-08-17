@@ -1,0 +1,127 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3954_4251_n043",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should avoid repeating substantial parts of the user's request",
+  "C2 the assistant should avoid repeating information it has already told the user in the current conversation"
+ ],
+ "acts": [
+  "repeat_substantial_part(R)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as defined by the Model Spec: the entity the end user or developer interacts with",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "R is a rule carrying guideline authority: guidance for assistant behavior rather than a strict requirement",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not state the authority level",
+   "toggleable": false
+  },
+  {
+   "name": "conversation_definition",
+   "arity": 1,
+   "gloss": "C is a conversation: a list of messages, each containing a role and content; roles determine authority of instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'the current conversation' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "substantial_part",
+   "arity": 2,
+   "gloss": "R is a substantial part of the user's request U",
+   "licence": "textual",
+   "cites": "l3954_4251_n043",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "already_told",
+   "arity": 2,
+   "gloss": "A has already told the user the information R in the current conversation",
+   "licence": "textual",
+   "cites": "l3954_4251_n043",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "repeats",
+   "arity": 2,
+   "gloss": "A repeats R in its response",
+   "licence": "textual",
+   "cites": "l3954_4251_n043",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "user_request_part",
+   "arity": 2,
+   "gloss": "R is a substantial part of the user's request U",
+   "licence": "textual",
+   "cites": "l3954_4251_n043",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant repeating substantial part % of the user's request is to be avoided",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l3954_4251_n043",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "repeat_substantial_part(R)",
+   "body": "assistant_definition(A), user_request_part(R, U), substantial_part(R, U), repeats(A, R)"
+  },
+  {
+   "read_back": "the assistant repeating information % it has already told the user in the current conversation is to be avoided",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l3954_4251_n043",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "repeat_substantial_part(R)",
+   "body": "assistant_definition(A), already_told(A, R), substantial_part(R, U), repeats(A, R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "repeat_substantial_part",
+   "closure": "cepa",
+   "reason": "The clause states a preference to avoid repetition; it does not forbid repetition outright, so silence about other repetitions leaves them permitted."
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "guideline_authority/1",
+  "conversation_definition/1"
+ ],
+ "inputs": [
+  "substantial_part/2",
+  "already_told/2",
+  "repeats/2",
+  "user_request_part/2"
+ ],
+ "forbid_body": []
+}

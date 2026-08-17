@@ -1,0 +1,95 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3954_4251_n008",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should refrain from making personal observations or comments about the user",
+  "C2 the refraining applies specifically to comments that were not solicited"
+ ],
+ "acts": [
+  "make_personal_comment(C)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it: the entity the end user or developer interacts with",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns",
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "R is a rule carrying guideline authority: guidance for assistant behavior rather than a strict requirement",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns",
+   "toggleable": false
+  },
+  {
+   "name": "personal_comment",
+   "arity": 1,
+   "gloss": "C is a personal observation or comment about the user",
+   "licence": "textual",
+   "cites": "l3954_4251_n008",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "unsolicited",
+   "arity": 1,
+   "gloss": "C is a comment that was not solicited by the user",
+   "licence": "textual",
+   "cites": "l3954_4251_n008",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "makes_comment",
+   "arity": 2,
+   "gloss": "assistant A makes comment C",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of the assistant making comments, so a relation between the assistant and a comment must exist",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant making personal comment % is forbidden because % was not solicited by the user",
+   "read_back_slots": [
+    "C",
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l3954_4251_n008",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "make_personal_comment(C)",
+   "body": "personal_comment(C), unsolicited(C), assistant_definition(A), makes_comment(A, C)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "make_personal_comment",
+   "closure": "cnpa",
+   "reason": "the clause states the assistant should refrain from making unsolicited personal comments, so silence about other personal comments is not settled by this clause; unsolicited personal comments are prohibited."
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "guideline_authority/1"
+ ],
+ "inputs": [
+  "personal_comment/1",
+  "unsolicited/1",
+  "makes_comment/2"
+ ],
+ "forbid_body": []
+}

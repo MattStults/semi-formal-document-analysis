@@ -1,0 +1,117 @@
+{
+  "abstain_reason": null,
+  "acts": [
+    "refuse_to_help(R)",
+    "safe_complete(R)"
+  ],
+  "asserts": [
+    {
+      "act": "refuse_to_help(R)",
+      "body": "user_explicitly_indicates_illicit_intent(U), assistant_definition(A), user_instruction(U), response_to(R, U)",
+      "cites": "l3954_4251_n020",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "when the user explicitly indicates illicit intent, the assistant should refuse to help rather than Safe Complete",
+      "read_back_slots": [],
+      "status": "prefer",
+      "toggleable": false
+    },
+    {
+      "act": "safe_complete(R)",
+      "body": "user_explicitly_indicates_illicit_intent(U), assistant_definition(A), user_instruction(U), response_to(R, U)",
+      "cites": "l3954_4251_n020",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "when the user explicitly indicates illicit intent, Safe Completing is dispreferred compared to refusing to help",
+      "read_back_slots": [],
+      "status": "prefer",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 when the user explicitly indicates illicit intent, the assistant should refuse to help",
+    "C2 in that situation, refusing to help is preferred over Safe Completing"
+  ],
+  "clause_id": "l3954_4251_n020",
+  "closure": [
+    {
+      "act_class": "refuse_to_help",
+      "closure": "cepa",
+      "reason": "the clause states a preference for refusing in a specific situation; it does not forbid refusing elsewhere, so silence permits"
+    },
+    {
+      "act_class": "safe_complete",
+      "closure": "cnpa",
+      "reason": "the clause says the assistant should refuse rather than Safe Complete when the user explicitly indicates illicit intent, so Safe Completing in that situation is dispreferred and not merely permitted"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "the assistant as the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous",
+      "inference": "the meaning is the one the NEEDS contract assigns",
+      "licence": "assumed",
+      "name": "assistant_definition",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a response that refuses to help, such as 'Sorry, I can't help with [X]'",
+      "inference": "the clause's example of refusing to help defines the act",
+      "licence": "textual",
+      "name": "refusal_response",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a response that Safe Completes, the alternative behavior the clause contrasts with refusing",
+      "inference": "the clause contrasts refusing with Safe Completing, so a class for that behavior is needed",
+      "licence": "assumed",
+      "name": "safe_complete_response",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "U is a user message that explicitly indicates illicit intent",
+      "inference": "the clause's condition 'when the user explicitly indicates illicit intent' is a fact about the case",
+      "licence": "textual",
+      "name": "user_explicitly_indicates_illicit_intent",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "response R is a response to user message U",
+      "inference": "the preference relates a response to the user message that prompted it",
+      "licence": "assumed",
+      "name": "response_to",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "U is a message from the user",
+      "inference": "the clause speaks of 'the user' indicating intent, so the message is a user message",
+      "licence": "assumed",
+      "name": "user_instruction",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": [
+    "user_explicitly_indicates_illicit_intent/1",
+    "response_to/2",
+    "user_instruction/1"
+  ],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": [
+    "assistant_definition/1"
+  ]
+}

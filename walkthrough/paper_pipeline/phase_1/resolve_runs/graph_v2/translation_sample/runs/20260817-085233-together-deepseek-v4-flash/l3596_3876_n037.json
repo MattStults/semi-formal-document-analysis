@@ -1,0 +1,94 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3596_3876_n037",
+ "abstain_reason": null,
+ "claims": [
+  "C1 in a chit-chat context, a less formal, more casual and personal tone is more fitting than a highly formal one",
+  "C2 this is a preference, not a prohibition: the clause does not forbid a formal tone in chit-chat, it states which tone fits better"
+ ],
+ "acts": [
+  "adopt_tone(T)"
+ ],
+ "concepts": [
+  {
+   "name": "casual_personal_tone",
+   "arity": 1,
+   "gloss": "T is a tone that is less formal, more casual and personal",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the node's source text contrasts a less formal, more casual and personal tone with a highly formal one; the class of such tones is needed to state the preference",
+   "toggleable": false
+  },
+  {
+   "name": "chit_chat_context",
+   "arity": 1,
+   "gloss": "C is a conversational context of the kind the clause calls chit-chat",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text names chit-chat as an example of the contexts in which the casual tone fits; the class of such contexts is needed to state the preference",
+   "toggleable": false
+  },
+  {
+   "name": "tone_fits_context",
+   "arity": 2,
+   "gloss": "tone T is more fitting in context C than a more formal alternative would be",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text says the casual tone is 'more fitting' in chit-chat; a relation between tone and context is needed to express that",
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it: the entity the end user or developer interacts with",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's own text does not define the assistant",
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "R is a rule carrying guideline-level authority: guidance for assistant behavior rather than a strict requirement",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's own text does not state the guideline authority of the section",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "adopting tone % is preferred in a chit-chat context because a less formal, more casual and personal tone is more fitting there",
+   "read_back_slots": [
+    "T"
+   ],
+   "licence": "textual",
+   "cites": "l3596_3876_n037",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "adopt_tone(T)",
+   "body": "casual_personal_tone(T), chit_chat_context(C), tone_fits_context(T, C)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "adopt_tone",
+   "closure": "cepa",
+   "reason": "the clause states that a casual tone is more fitting in chit-chat; it does not forbid a formal tone there, so silence leaves any tone permitted"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "guideline_authority/1"
+ ],
+ "inputs": [
+  "casual_personal_tone/1",
+  "chit_chat_context/1",
+  "tone_fits_context/2"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,100 @@
+{
+  "abstain_reason": null,
+  "acts": [
+    "maintain_voice(V)",
+    "shift_voice(V)"
+  ],
+  "asserts": [
+    {
+      "act": "maintain_voice(V)",
+      "body": "user_authority(R), asks_more_intelligent(R), current_voice(V), voice_used_in_response(R, V)",
+      "cites": "l4252_4482_n011",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "maintaining voice % when asked to speak more intelligently is preferred",
+      "read_back_slots": ["V"],
+      "status": "prefer",
+      "toggleable": false
+    },
+    {
+      "act": "shift_voice(V)",
+      "body": "user_authority(R), asks_more_intelligent(R), current_voice(V), voice_used_in_response(R, V)",
+      "cites": "l4252_4482_n011",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "shifting to a different voice % when asked to speak more intelligently is dispreferred",
+      "read_back_slots": ["V"],
+      "status": "prefer",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 speaking more intelligently should not affect the voice or accent",
+    "C2 the assistant should maintain the same voice when asked to speak more intelligently",
+    "C3 the assistant should not shift to a different voice when asked to speak more intelligently"
+  ],
+  "clause_id": "l4252_4482_n011",
+  "closure": [
+    {
+      "act_class": "maintain_voice",
+      "closure": "cepa",
+      "reason": "the example states a preference for maintaining the voice; it does not forbid other voice behavior outright, so silence permits"
+    },
+    {
+      "act_class": "shift_voice",
+      "closure": "cnpa",
+      "reason": "the example marks shifting to a different voice as BAD, so shifting is prohibited in this context"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a rule or instruction issued at the user authority level, as established by the 'Use accents respectfully' section",
+      "inference": "the NEEDS contract assigns this meaning; this node's source text does not define the user authority level",
+      "licence": "assumed",
+      "name": "user_authority",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l4252_4482_n011",
+      "gloss": "R is a user request that asks the assistant to speak in a more intelligent way",
+      "inference": null,
+      "licence": "textual",
+      "name": "asks_more_intelligent",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l4252_4482_n011",
+      "gloss": "V is the voice the assistant is currently using in the conversation",
+      "inference": null,
+      "licence": "textual",
+      "name": "current_voice",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": "l4252_4482_n011",
+      "gloss": "response R is delivered using voice V",
+      "inference": null,
+      "licence": "textual",
+      "name": "voice_used_in_response",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": [
+    "asks_more_intelligent/1",
+    "current_voice/1",
+    "voice_used_in_response/2"
+  ],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": [
+    "user_authority/1"
+  ]
+}

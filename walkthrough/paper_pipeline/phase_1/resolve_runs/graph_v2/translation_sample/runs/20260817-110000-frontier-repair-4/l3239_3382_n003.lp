@@ -1,6 +1,6 @@
 %% clause: l3239_3382_n003   section: graph_node   kind: conditional
 %% acts: change_text_aspect(A)
-%% concepts: text_transformation_task/1, requested_change/2, change_text_aspect/1, assistant_definition/1, requesting_party/1, user_authority/1   (glosses in the concept table, not here)
+%% concepts: text_transformation_task/1, requested_change/2, change_text_aspect/1, assistant_definition/1, transformation_no_unrequested_changes/1, requesting_party/1, user_authority/1   (glosses in the concept table, not here)
 %% requires: assistant_definition/1, user_authority/1
 %% inputs: text_transformation_task/1, requested_change/2, change_text_aspect/1, requesting_party/1
 %% closure: change_text_aspect = cepa   % the clause is a should-strength prohibition on changing unrequested aspects; changes the user or developer did request remain permitted, and silence about other conduct permits it
@@ -50,6 +50,13 @@
 %   C2 the prohibition applies when the task is a text
 %     transformation task
 % ====================================================================
+
+% ---- ontology: NON-deontic classification ----
+% Guarded so the ablation in deontic_probe/FINDINGS.md §4.6
+% can be re-run against this corpus.
+#const onto = on.
+o :- onto = on.
+transformation_no_unrequested_changes(no_unrequested_changes_rule) :- o.   % [T] l3239_3382_n003
 
 % ---- deontic assertions ----
 %!trace_rule {"the assistant should not change text aspect % because the user or developer did not ask for it to be changed", A}.

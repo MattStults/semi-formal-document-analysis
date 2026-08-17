@@ -1,0 +1,127 @@
+{
+  "abstain_reason": null,
+  "acts": [
+    "repeat_substantial_part(R)"
+  ],
+  "asserts": [
+    {
+      "act": "repeat_substantial_part(R)",
+      "body": "assistant_definition(A), user_request_part(R, U), substantial_part(R, U), repeats(A, R)",
+      "cites": "l3954_4251_n043",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "the assistant repeating substantial part % of the user's request is to be avoided",
+      "read_back_slots": [
+        "R"
+      ],
+      "status": "prefer",
+      "toggleable": false
+    },
+    {
+      "act": "repeat_substantial_part(R)",
+      "body": "assistant_definition(A), already_told(A, R), substantial_part(R, U), repeats(A, R)",
+      "cites": "l3954_4251_n043",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "the assistant repeating information % it has already told the user in the current conversation is to be avoided",
+      "read_back_slots": [
+        "R"
+      ],
+      "status": "prefer",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the assistant should avoid repeating substantial parts of the user's request",
+    "C2 the assistant should avoid repeating information it has already told the user in the current conversation"
+  ],
+  "clause_id": "l3954_4251_n043",
+  "closure": [
+    {
+      "act_class": "repeat_substantial_part",
+      "closure": "cepa",
+      "reason": "The clause states a preference to avoid repetition; it does not forbid repetition outright, so silence about other repetitions leaves them permitted."
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "A is the assistant as defined by the Model Spec: the entity the end user or developer interacts with",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'the assistant' without defining it",
+      "licence": "assumed",
+      "name": "assistant_definition",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a rule carrying guideline authority: guidance for assistant behavior rather than a strict requirement",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not state the authority level",
+      "licence": "assumed",
+      "name": "guideline_authority",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "C is a conversation: a list of messages, each containing a role and content; roles determine authority of instructions",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'the current conversation' without defining it",
+      "licence": "assumed",
+      "name": "conversation_definition",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": "l3954_4251_n043",
+      "gloss": "R is a substantial part of the user's request U",
+      "inference": null,
+      "licence": "textual",
+      "name": "substantial_part",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": "l3954_4251_n043",
+      "gloss": "A has already told the user the information R in the current conversation",
+      "inference": null,
+      "licence": "textual",
+      "name": "already_told",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": "l3954_4251_n043",
+      "gloss": "A repeats R in its response",
+      "inference": null,
+      "licence": "textual",
+      "name": "repeats",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": "l3954_4251_n043",
+      "gloss": "R is a substantial part of the user's request U",
+      "inference": null,
+      "licence": "textual",
+      "name": "user_request_part",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": [
+    "substantial_part/2",
+    "already_told/2",
+    "repeats/2",
+    "user_request_part/2"
+  ],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": [
+    "assistant_definition/1",
+    "guideline_authority/1",
+    "conversation_definition/1"
+  ]
+}

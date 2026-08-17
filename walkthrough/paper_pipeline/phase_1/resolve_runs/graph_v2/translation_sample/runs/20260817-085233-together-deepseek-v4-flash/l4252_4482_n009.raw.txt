@@ -1,0 +1,73 @@
+{
+  "abstain_reason": null,
+  "acts": ["introduce_unrequested_change(C)"],
+  "asserts": [
+    {
+      "act": "introduce_unrequested_change(C)",
+      "body": "user_requested_change(U), change_in_answer(C), not_requested_by_user(C, U)",
+      "cites": "l4252_4482_n009",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "introducing unrequested change % is forbidden when the user has requested a change in language or speech qualities",
+      "read_back_slots": ["C"],
+      "status": "forbid",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 when the user requests a change in language or speech qualities, the assistant must not introduce changes in content, style, or vocabulary that the user did not request"
+  ],
+  "clause_id": "l4252_4482_n009",
+  "closure": [
+    {
+      "act_class": "introduce_unrequested_change",
+      "closure": "cnpa",
+      "reason": "the clause explicitly forbids introducing unrequested changes when a user has requested a change, so silence about other situations does not permit this act class"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "C is a change in the content, style, or vocabulary of the assistant's answer",
+      "inference": "the clause names content, style, and vocabulary as the dimensions of the answer that must not be changed unrequested",
+      "licence": "assumed",
+      "name": "change_in_answer",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "U is a user request for a change in language or speech qualities",
+      "inference": "the clause's antecedent is that the user requests a change in language or speech qualities",
+      "licence": "assumed",
+      "name": "user_requested_change",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "change C was not requested by user request U",
+      "inference": "the clause forbids changes that are unrequested, so a relation between a change and the user's request is needed",
+      "licence": "assumed",
+      "name": "not_requested_by_user",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "U is a user instruction or request at the user authority level",
+      "inference": "the NEEDS contract assigns this meaning; the clause speaks of a user request",
+      "licence": "assumed",
+      "name": "user_authority",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["user_requested_change/1", "change_in_answer/1", "not_requested_by_user/2"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["user_authority/1"]
+}
