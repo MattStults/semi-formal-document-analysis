@@ -46,3 +46,29 @@ Fix policy, decided here so the watcher never improvises:
 
 Budget note: redraws under this policy ride the bulk run's authorization
 (BUDGET $25, D6); the gauge is consulted before any batch of redraws.
+
+---
+
+## AMENDED 2026-08-16 (Matt's AFK directive): step 4 is machine-driven
+
+Watcher 1's audit DISPATCH is no longer session-bound. Three layers:
+
+1. **`semantic_gate.py` + `semantic_gate_loop.sh` (nohup, fully automated,
+   cheap tier):** two independent UNFORCED DeepSeek critique passes per
+   translated module; alarm signal = max FIX-line volume across passes,
+   with truncation-as-alarm (no logprobs exist for this model — volume +
+   disagreement + truncation are the confidence proxies). Score >=
+   THRESHOLD (calibrated on the 20 blind-audited modules by
+   cheap_alarm_probe.py) -> write-once entry in `semantic_queue/` — the
+   graveyard-shaped audit queue. Resumable; survives this session.
+2. **Fable queue drain (frontier, asynchronous):** auditors read
+   `semantic_queue/*.json` entries with `frontier_verdict: null`, apply the
+   SEMANTIC_AUDIT.md protocol, append their verdict INTO the entry
+   (write-once otherwise). Runs whenever a session is alive; the queue
+   waits patiently when none is.
+3. **The random-sample floor (unchanged, and still the authority):** the
+   per-chunk blind Fable sample measures the CHEAP GATE'S MISS RATE — the
+   arm series measured single-pass cheap-critic identification at ~21%, so
+   the router is never trusted with the 85% floor. A defect the sample
+   finds that the gate did not queue is the gate's own failure metric,
+   recorded in semantic_audit.json.
