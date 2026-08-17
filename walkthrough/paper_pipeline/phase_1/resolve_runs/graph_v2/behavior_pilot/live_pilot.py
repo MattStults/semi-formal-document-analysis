@@ -98,7 +98,11 @@ def views_subset():
 def live_embed(texts):
     key = os.environ.get("TOGETHER_API_KEY", "")
     if not key:
-        raise SystemExit("TOGETHER_API_KEY unset — the record run refuses the "
+        cfg = json.load(open(os.path.join(GRAPH_V2, "config_corpus_all.json")))
+        prov = translate.resolve_provider(cfg, _Args())
+        key = translate._resolve_key(prov)
+    if not key:
+        raise SystemExit("no together key — the record run refuses the "
                          "lexical fallback (a stand-in, not a measured ranker)")
     vecs = recurse_driver._embed_texts(texts, key)
     if vecs is None:
@@ -129,8 +133,8 @@ def step_seat():
     ranked = BM.rank_candidates(atoms, views, embed=None, top_k=TOP_K)
     complete = seat_client()
     rows = []
-    for a in atoms:
-        for cid, score in ranked[a["name"]]:
+    for ai, a in enumerate(atoms):
+        for score, cid in ranked[ai]:
             prompt = BM.build_prompt(a, views[cid])
             v = BM.judge(complete, prompt)
             expected = BM._DEMO_SEAT_KEY.get((a["name"], cid), "not_engaged")
@@ -201,9 +205,9 @@ def step_match():
             continue
         ranked = BM.rank_candidates(atoms, views, embed=live_embed, top_k=TOP_K)
         rows = []
-        for a in atoms:
+        for ai, a in enumerate(atoms):
             verdicts = []
-            for cid, score in ranked[a["name"]]:
+            for score, cid in ranked[ai]:
                 v = BM.judge(complete, BM.build_prompt(a, views[cid]))
                 verdicts.append({"node": cid, "score": round(score, 4),
                                  "verdict": v["verdict"],

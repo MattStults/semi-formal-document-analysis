@@ -1,132 +1,146 @@
 [
-  {
-    "name": "sol",
-    "kind": "openai-compatible",
-    "base_url": "https://api.openai.com/v1",
-    "model": "gpt-5.6-sol",
-    "api_key_env": "OPENAI_API_KEY",
-    "temperature": 0.2,
-    "max_tokens": 16384,
-    "price_per_mtok": [
-      5.0,
-      30.0
-    ],
-    "cached_input_per_mtok": 0.5,
-    "cache_write_multiplier": 1.0,
-    "cached_price_note": "ASSUMPTION: cache reads billed at 0.1x input (the documented discount for this vendor's current family); cache writes at 1.25x input on anthropic, no write premium on automatic prefix caching. Not measured on this account. If wrong, every cached-run projection moves with it."
-  },
-  {
-    "name": "terra",
-    "kind": "openai-compatible",
-    "base_url": "https://api.openai.com/v1",
-    "model": "gpt-5.6-terra",
-    "api_key_env": "OPENAI_API_KEY",
-    "temperature": 0.2,
-    "max_tokens": 16384,
-    "price_per_mtok": [
-      2.0,
-      12.0
-    ],
-    "cached_input_per_mtok": 0.2,
-    "cache_write_multiplier": 1.0,
-    "cached_price_note": "ASSUMPTION: cache reads billed at 0.1x input (the documented discount for this vendor's current family); cache writes at 1.25x input on anthropic, no write premium on automatic prefix caching. Not measured on this account. If wrong, every cached-run projection moves with it."
-  },
-  {
-    "name": "luna",
-    "kind": "openai-compatible",
-    "base_url": "https://api.openai.com/v1",
-    "model": "gpt-5.6-luna",
-    "api_key_env": "OPENAI_API_KEY",
-    "temperature": 0.2,
-    "max_tokens": 16384,
-    "price_per_mtok": [
-      0.2,
-      1.2
-    ],
-    "cached_input_per_mtok": 0.02,
-    "cache_write_multiplier": 1.0,
-    "cached_price_note": "ASSUMPTION: cache reads billed at 0.1x input (the documented discount for this vendor's current family); cache writes at 1.25x input on anthropic, no write premium on automatic prefix caching. Not measured on this account. If wrong, every cached-run projection moves with it."
-  },
-  {
-    "name": "fable",
-    "kind": "anthropic",
-    "model": "claude-fable-5",
-    "api_key_env": "ANTHROPIC_API_KEY",
-    "temperature": 0.2,
-    "max_tokens": 16384,
-    "price_per_mtok": [
-      10.0,
-      50.0
-    ],
-    "cached_input_per_mtok": 1.0,
-    "cache_write_multiplier": 1.25,
-    "cached_price_note": "ASSUMPTION: cache reads billed at 0.1x input (the documented discount for this vendor's current family); cache writes at 1.25x input on anthropic, no write premium on automatic prefix caching. Not measured on this account. If wrong, every cached-run projection moves with it."
-  },
-  {
-    "name": "kimi",
-    "kind": "openai-compatible",
-    "base_url": "https://api.together.xyz/v1",
-    "model": "moonshotai/Kimi-K3",
-    "api_key_env": "TOGETHER_API_KEY",
-    "temperature": 0.2,
-    "max_tokens": 16384,
-    "price_per_mtok": [
-      3.0,
-      15.0
-    ]
-  },
-  {
-    "name": "qwen-big",
-    "kind": "openai-compatible",
-    "base_url": "https://api.deepinfra.com/v1/openai",
-    "model": "Qwen/Qwen3-235B-A22B-Instruct-2507",
-    "api_key_env": "DEEPINFRA_API_KEY",
-    "temperature": 0.2,
-    "max_tokens": 16384,
-    "price_per_mtok": [
-      0.2,
-      0.6
-    ]
-  },
-  {
-    "name": "deepseek",
-    "kind": "openai-compatible",
-    "base_url": "https://api.deepinfra.com/v1/openai",
-    "model": "deepseek-ai/DeepSeek-V3.2",
-    "api_key_env": "DEEPINFRA_API_KEY",
-    "temperature": 0.2,
-    "max_tokens": 16384,
-    "price_per_mtok": [
-      0.28,
-      0.42
-    ]
-  },
-  {
-    "name": "together-cheap",
-    "kind": "openai-compatible",
-    "base_url": "https://api.together.xyz/v1",
-    "model": "openai/gpt-oss-20b",
-    "api_key_env": "TOGETHER_API_KEY",
-    "temperature": 0.2,
-    "max_tokens": 16384,
-    "price_per_mtok": [
-      0.05,
-      0.2
-    ]
-  },
-  {
-    "name": "together-deepseek-v4-flash",
-    "kind": "openai-compatible",
-    "base_url": "https://api.together.xyz/v1",
-    "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
-    "api_key_env": "TOGETHER_API_KEY",
-    "temperature": 0.2,
-    "max_tokens": 16384,
-    "price_per_mtok": [
-      0.14,
-      0.28
-    ],
-    "cached_price_note": "G1 ruling 2026-08-15: the cached-input rate is KNOWN ($0.03/Mtok; together.ai model page fetched 2026-08-07, recorded at walkthrough/paper_pipeline/phase_1/config.json `_price_per_mtok`) and is deliberately NOT set as cached_input_per_mtok. The harness's own embedded cost_usd bills every input token at the FULL rate — config.json's doctrine: 'the conservative direction and is what a hard [...] ledger cap deserves' — and spend.py's recomputation must stay equal to the rows' own arithmetic. Rejected alternative, by name: adding cached_input_per_mtok 0.03 here.",
-    "batch_billing_note": "G1 ruling 2026-08-15: this model runs under together's Batch API (config execution.mode=batch), which bills at a ~50% discount whose applicability to this model was still UNRESOLVED in resolve_runs/graph_v2/BATCH_DESIGN.md when it was written. Batch-billed rows are NOT identifiable in usage.jsonl — dispatch_core's batch collector ledgers them through the same response_envelope as live calls, cost_usd at list price, no row field marks the billing path — so where batch billing applied, list-price totals like this one may OVERSTATE actual cost. Rejected alternatives, by name: pricing all rows at half list (unidentifiable rows would be under-priced, the wrong direction), and adding a batch marker to ledger rows (requires editing files another console owns, and cannot retro-mark rows already logged)."
-  }
+ {
+  "name": "sol",
+  "kind": "openai-compatible",
+  "base_url": "https://api.openai.com/v1",
+  "model": "gpt-5.6-sol",
+  "api_key_env": "OPENAI_API_KEY",
+  "temperature": 0.2,
+  "max_tokens": 16384,
+  "price_per_mtok": [
+   5.0,
+   30.0
+  ],
+  "cached_input_per_mtok": 0.5,
+  "cache_write_multiplier": 1.0,
+  "cached_price_note": "ASSUMPTION: cache reads billed at 0.1x input (the documented discount for this vendor's current family); cache writes at 1.25x input on anthropic, no write premium on automatic prefix caching. Not measured on this account. If wrong, every cached-run projection moves with it."
+ },
+ {
+  "name": "terra",
+  "kind": "openai-compatible",
+  "base_url": "https://api.openai.com/v1",
+  "model": "gpt-5.6-terra",
+  "api_key_env": "OPENAI_API_KEY",
+  "temperature": 0.2,
+  "max_tokens": 16384,
+  "price_per_mtok": [
+   2.0,
+   12.0
+  ],
+  "cached_input_per_mtok": 0.2,
+  "cache_write_multiplier": 1.0,
+  "cached_price_note": "ASSUMPTION: cache reads billed at 0.1x input (the documented discount for this vendor's current family); cache writes at 1.25x input on anthropic, no write premium on automatic prefix caching. Not measured on this account. If wrong, every cached-run projection moves with it."
+ },
+ {
+  "name": "luna",
+  "kind": "openai-compatible",
+  "base_url": "https://api.openai.com/v1",
+  "model": "gpt-5.6-luna",
+  "api_key_env": "OPENAI_API_KEY",
+  "temperature": 0.2,
+  "max_tokens": 16384,
+  "price_per_mtok": [
+   0.2,
+   1.2
+  ],
+  "cached_input_per_mtok": 0.02,
+  "cache_write_multiplier": 1.0,
+  "cached_price_note": "ASSUMPTION: cache reads billed at 0.1x input (the documented discount for this vendor's current family); cache writes at 1.25x input on anthropic, no write premium on automatic prefix caching. Not measured on this account. If wrong, every cached-run projection moves with it."
+ },
+ {
+  "name": "fable",
+  "kind": "anthropic",
+  "model": "claude-fable-5",
+  "api_key_env": "ANTHROPIC_API_KEY",
+  "temperature": 0.2,
+  "max_tokens": 16384,
+  "price_per_mtok": [
+   10.0,
+   50.0
+  ],
+  "cached_input_per_mtok": 1.0,
+  "cache_write_multiplier": 1.25,
+  "cached_price_note": "ASSUMPTION: cache reads billed at 0.1x input (the documented discount for this vendor's current family); cache writes at 1.25x input on anthropic, no write premium on automatic prefix caching. Not measured on this account. If wrong, every cached-run projection moves with it."
+ },
+ {
+  "name": "kimi",
+  "kind": "openai-compatible",
+  "base_url": "https://api.together.xyz/v1",
+  "model": "moonshotai/Kimi-K3",
+  "api_key_env": "TOGETHER_API_KEY",
+  "temperature": 0.2,
+  "max_tokens": 16384,
+  "price_per_mtok": [
+   3.0,
+   15.0
+  ]
+ },
+ {
+  "name": "qwen-big",
+  "kind": "openai-compatible",
+  "base_url": "https://api.deepinfra.com/v1/openai",
+  "model": "Qwen/Qwen3-235B-A22B-Instruct-2507",
+  "api_key_env": "DEEPINFRA_API_KEY",
+  "temperature": 0.2,
+  "max_tokens": 16384,
+  "price_per_mtok": [
+   0.2,
+   0.6
+  ]
+ },
+ {
+  "name": "deepseek",
+  "kind": "openai-compatible",
+  "base_url": "https://api.deepinfra.com/v1/openai",
+  "model": "deepseek-ai/DeepSeek-V3.2",
+  "api_key_env": "DEEPINFRA_API_KEY",
+  "temperature": 0.2,
+  "max_tokens": 16384,
+  "price_per_mtok": [
+   0.28,
+   0.42
+  ]
+ },
+ {
+  "name": "together-cheap",
+  "kind": "openai-compatible",
+  "base_url": "https://api.together.xyz/v1",
+  "model": "openai/gpt-oss-20b",
+  "api_key_env": "TOGETHER_API_KEY",
+  "temperature": 0.2,
+  "max_tokens": 16384,
+  "price_per_mtok": [
+   0.05,
+   0.2
+  ]
+ },
+ {
+  "name": "together-deepseek-v4-flash",
+  "kind": "openai-compatible",
+  "base_url": "https://api.together.xyz/v1",
+  "model": "deepseek-ai/DeepSeek-V4-Flash-0731",
+  "api_key_env": "TOGETHER_API_KEY",
+  "temperature": 0.2,
+  "max_tokens": 16384,
+  "price_per_mtok": [
+   0.14,
+   0.28
+  ],
+  "cached_price_note": "G1 ruling 2026-08-15: the cached-input rate is KNOWN ($0.03/Mtok; together.ai model page fetched 2026-08-07, recorded at walkthrough/paper_pipeline/phase_1/config.json `_price_per_mtok`) and is deliberately NOT set as cached_input_per_mtok. The harness's own embedded cost_usd bills every input token at the FULL rate \u2014 config.json's doctrine: 'the conservative direction and is what a hard [...] ledger cap deserves' \u2014 and spend.py's recomputation must stay equal to the rows' own arithmetic. Rejected alternative, by name: adding cached_input_per_mtok 0.03 here.",
+  "batch_billing_note": "G1 ruling 2026-08-15: this model runs under together's Batch API (config execution.mode=batch), which bills at a ~50% discount whose applicability to this model was still UNRESOLVED in resolve_runs/graph_v2/BATCH_DESIGN.md when it was written. Batch-billed rows are NOT identifiable in usage.jsonl \u2014 dispatch_core's batch collector ledgers them through the same response_envelope as live calls, cost_usd at list price, no row field marks the billing path \u2014 so where batch billing applied, list-price totals like this one may OVERSTATE actual cost. Rejected alternatives, by name: pricing all rows at half list (unidentifiable rows would be under-priced, the wrong direction), and adding a batch marker to ledger rows (requires editing files another console owns, and cannot retro-mark rows already logged)."
+ },
+ {
+  "name": "openai-embed-small",
+  "kind": "openai-compatible",
+  "base_url": "https://api.openai.com/v1",
+  "model": "text-embedding-3-small",
+  "api_key_env": "OPENAI_API_KEY",
+  "temperature": 0.0,
+  "max_tokens": 0,
+  "price_per_mtok": [
+   0.02,
+   0.0
+  ],
+  "price_note": "embeddings: $0.02/Mtok input, no output tokens; row added 2026-08-16 so spend.py's gauge can total (G1: no partial sums)"
+ }
 ]
