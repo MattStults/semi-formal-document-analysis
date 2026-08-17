@@ -1,0 +1,183 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3383_3501_n011",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the developer message instructs the assistant to always respond via function calls, never with plaintext",
+  "C2 for an ambiguous question the assistant should use the ask_clarifying_question tool",
+  "C3 the good response is a function call to ask_clarifying_question; the bad response is a plaintext message"
+ ],
+ "acts": [
+  "respond_with(R)",
+  "use_tool(T)"
+ ],
+ "concepts": [
+  {
+   "name": "interactive_vs_programmatic_setting",
+   "arity": 1,
+   "gloss": "whether the assistant is interacting with a human in real time (interactive) or its output will be consumed programmatically; behavior varies accordingly",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the node's NEEDS contract assigns (mechanical licence correction under DECISION_licence_textual.md, 2026-08-16)",
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "rules in sections marked authority=guideline carry guideline-level instruction authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the node's NEEDS contract assigns (mechanical licence correction under DECISION_licence_textual.md, 2026-08-16)",
+   "toggleable": false
+  },
+  {
+   "name": "developer_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction given by the developer message in this example",
+   "licence": "textual",
+   "cites": "l3383_3501_n011",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "ambiguous_question",
+   "arity": 1,
+   "gloss": "Q is a user question that is ambiguous, so the developer message directs the assistant to ask for clarification",
+   "licence": "textual",
+   "cites": "l3383_3501_n011",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "plaintext_response",
+   "arity": 1,
+   "gloss": "R is a standard plaintext message to the user, as opposed to a function call",
+   "licence": "textual",
+   "cites": "l3383_3501_n011",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "function_call_response",
+   "arity": 1,
+   "gloss": "R is a response delivered as a function call, such as a call to ask_clarifying_question",
+   "licence": "textual",
+   "cites": "l3383_3501_n011",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "ask_clarifying_question_tool",
+   "arity": 0,
+   "gloss": "the ask_clarifying_question tool defined in the developer message's function namespace",
+   "licence": "textual",
+   "cites": "l3383_3501_n011",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "answers_question",
+   "arity": 2,
+   "gloss": "response R answers user question Q",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example pairs each response with the user question it answers, so a relation between a response and a question is needed",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l3383_3501_n011",
+   "inference": null,
+   "toggleable": false,
+   "atom": "developer_instruction(always_respond_via_function_calls)",
+   "gloss": "the developer message instructs the assistant to always respond via function calls",
+   "body": null
+  },
+  {
+   "licence": "textual",
+   "cites": "l3383_3501_n011",
+   "inference": null,
+   "toggleable": false,
+   "atom": "developer_instruction(never_respond_with_plaintext)",
+   "gloss": "the developer message instructs the assistant never to respond with plaintext",
+   "body": null
+  },
+  {
+   "licence": "textual",
+   "cites": "l3383_3501_n011",
+   "inference": null,
+   "toggleable": false,
+   "atom": "developer_instruction(use_ask_clarifying_question_for_ambiguous)",
+   "gloss": "the developer message instructs the assistant to use ask_clarifying_question for ambiguous questions",
+   "body": null
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "responding with % is forbidden because the developer message requires function calls and forbids plaintext responses",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l3383_3501_n011",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "respond_with(R)",
+   "body": "plaintext_response(R), developer_instruction(never_respond_with_plaintext)"
+  },
+  {
+   "read_back": "responding with % is preferred: a function call is the good response in this example",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l3383_3501_n011",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_with(R)",
+   "body": "function_call_response(R), developer_instruction(always_respond_via_function_calls)"
+  },
+  {
+   "read_back": "using % is preferred for an ambiguous question, as the developer message directs",
+   "read_back_slots": [
+    "T"
+   ],
+   "licence": "textual",
+   "cites": "l3383_3501_n011",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "use_tool(T)",
+   "body": "T = ask_clarifying_question_tool, ambiguous_question(Q), answers_question(R, Q), function_call_response(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_with",
+   "closure": "cepa",
+   "reason": "the example forbids plaintext responses and prefers function calls; it does not forbid other response forms, so silence leaves them permitted"
+  },
+  {
+   "act_class": "use_tool",
+   "closure": "cepa",
+   "reason": "the example directs use of ask_clarifying_question for ambiguous questions but does not forbid other tools, so silence leaves them permitted"
+  }
+ ],
+ "requires": [
+  "interactive_vs_programmatic_setting/1",
+  "guideline_authority/1"
+ ],
+ "inputs": [
+  "ambiguous_question/1",
+  "plaintext_response/1",
+  "function_call_response/1",
+  "answers_question/2"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,113 @@
+{
+ "outcome": "translated",
+ "clause_id": "l171_426_n019",
+ "abstain_reason": null,
+ "claims": [
+  "C1 an inapplicable instruction should typically be ignored",
+  "C2 the only other reason an instruction should be ignored is that it is beyond the assistant's capabilities",
+  "C3 if an instruction cannot be fulfilled, the assistant should be explicit about this and then attempt to follow the remaining instructions, or refuse to comply if there is no way to proceed"
+ ],
+ "acts": [
+  "ignore_instruction(I)"
+ ],
+ "concepts": [
+  {
+   "name": "inapplicable_instruction",
+   "arity": 1,
+   "gloss": "I is a candidate instruction that is not applicable because it is misaligned, superseded, or suspected to be mistaken",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the node's NEEDS contract assigns (mechanical licence correction under DECISION_licence_textual.md, 2026-08-16)",
+   "toggleable": false
+  },
+  {
+   "name": "beyond_assistant_capabilities",
+   "arity": 1,
+   "gloss": "I is an instruction that the assistant cannot fulfill because it is beyond the assistant's capabilities",
+   "licence": "assumed",
+   "cites": "l171_426_n019",
+   "inference": "the clause says the only other reason an instruction should be ignored is if it is beyond the assistant's capabilities; this names that condition",
+   "toggleable": false
+  },
+  {
+   "name": "cannot_be_fulfilled",
+   "arity": 1,
+   "gloss": "I is an instruction that cannot be fulfilled by the assistant",
+   "licence": "assumed",
+   "cites": "l171_426_n019",
+   "inference": "the clause's third sentence speaks of an instruction that cannot be fulfilled, which is the same condition as being beyond the assistant's capabilities",
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "the assistant is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the node's NEEDS contract assigns (mechanical licence correction under DECISION_licence_textual.md, 2026-08-16)",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "the root authority level, the highest in the authority hierarchy, assigned to Model Spec 'root' sections",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the node's NEEDS contract assigns (mechanical licence correction under DECISION_licence_textual.md, 2026-08-16)",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "assumed",
+   "cites": "l171_426_n019",
+   "inference": "the clause equates 'beyond the assistant's capabilities' with 'cannot be fulfilled' in the following sentence",
+   "toggleable": false,
+   "atom": "beyond_assistant_capabilities(I)",
+   "gloss": "an instruction is beyond the assistant's capabilities when it cannot be fulfilled",
+   "body": "cannot_be_fulfilled(I)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "an instruction that is inapplicable should typically be ignored",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l171_426_n019",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "ignore_instruction(I)",
+   "body": "inapplicable_instruction(I)"
+  },
+  {
+   "read_back": "an instruction beyond the assistant's capabilities should be ignored",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l171_426_n019",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "ignore_instruction(I)",
+   "body": "beyond_assistant_capabilities(I)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "ignore_instruction",
+   "closure": "cepa",
+   "reason": "the clause says inapplicable instructions should typically be ignored, which is a preference rather than a prohibition; it does not forbid ignoring instructions in other circumstances, so silence permits"
+  }
+ ],
+ "requires": [
+  "inapplicable_instruction/1",
+  "assistant_definition/1",
+  "root_authority/1"
+ ],
+ "inputs": [
+  "cannot_be_fulfilled/1"
+ ],
+ "forbid_body": []
+}

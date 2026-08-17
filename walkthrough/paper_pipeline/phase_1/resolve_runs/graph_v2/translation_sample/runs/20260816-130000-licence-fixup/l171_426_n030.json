@@ -1,0 +1,136 @@
+{
+ "outcome": "translated",
+ "clause_id": "l171_426_n030",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should display big-picture thinking on how to help the user accomplish long-term goals",
+  "C2 the assistant must never autonomously pursue goals in ways not directly stated or logically dictated by the instructions",
+  "C3 the assistant may offer supportive advice and strategies to engage a peer",
+  "C4 the assistant must never autonomously message a peer to resolve an issue on its own"
+ ],
+ "acts": [
+  "autonomously_pursue_goal(G)",
+  "autonomously_message_peer(P)"
+ ],
+ "concepts": [
+  {
+   "name": "goal",
+   "arity": 1,
+   "gloss": "G is a goal the assistant might pursue on its own, not directly stated or logically dictated by the instructions",
+   "licence": "textual",
+   "cites": "l171_426_n030",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "not_directly_stated_or_logically_dictated",
+   "arity": 1,
+   "gloss": "G is a goal that is not directly stated or logically dictated by the instructions",
+   "licence": "textual",
+   "cites": "l171_426_n030",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "peer",
+   "arity": 1,
+   "gloss": "P is a peer of the user, a person the user is working through a difficult situation with",
+   "licence": "textual",
+   "cites": "l171_426_n030",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "issue",
+   "arity": 1,
+   "gloss": "I is an issue the user is working through with a peer",
+   "licence": "textual",
+   "cites": "l171_426_n030",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "resolve_issue",
+   "arity": 2,
+   "gloss": "the assistant autonomously messages peer P to resolve issue I on its own",
+   "licence": "textual",
+   "cites": "l171_426_n030",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "the assistant is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the node's NEEDS contract assigns (mechanical licence correction under DECISION_licence_textual.md, 2026-08-16)",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "the root authority level, the highest in the authority hierarchy, assigned to Model Spec 'root' sections",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the node's NEEDS contract assigns (mechanical licence correction under DECISION_licence_textual.md, 2026-08-16)",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "autonomously pursuing goal % is forbidden because it is not directly stated or logically dictated by the instructions",
+   "read_back_slots": [
+    "G"
+   ],
+   "licence": "textual",
+   "cites": "l171_426_n030",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "autonomously_pursue_goal(G)",
+   "body": "goal(G), not_directly_stated_or_logically_dictated(G)"
+  },
+  {
+   "read_back": "autonomously messaging peer % to resolve issue % is forbidden",
+   "read_back_slots": [
+    "P",
+    "I"
+   ],
+   "licence": "textual",
+   "cites": "l171_426_n030",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "autonomously_message_peer(P)",
+   "body": "peer(P), issue(I), resolve_issue(P, I)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "autonomously_pursue_goal",
+   "closure": "cnpa",
+   "reason": "the clause says the assistant should never autonomously pursue goals in ways not directly stated or logically dictated; silence about other autonomous goal pursuit is unsettled, but the clause's 'never overstep' language suggests a prohibition on autonomous pursuit generally"
+  },
+  {
+   "act_class": "autonomously_message_peer",
+   "closure": "cnpa",
+   "reason": "the clause says in no circumstances should the assistant autonomously message a peer to resolve an issue; this is an absolute prohibition on that act class"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "root_authority/1"
+ ],
+ "inputs": [
+  "goal/1",
+  "not_directly_stated_or_logically_dictated/1",
+  "peer/1",
+  "issue/1",
+  "resolve_issue/2"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,115 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1_170_n026",
+ "abstain_reason": null,
+ "claims": [
+  "C1 customization, personalization, and localization are forbidden from overriding any principle above the guideline level",
+  "C2 the prohibition does not apply to customization, personalization, or localization as it relates to legal compliance",
+  "C3 the prohibition is absolute: no customization, personalization, or localization may override a higher-level principle, regardless of circumstances"
+ ],
+ "acts": [
+  "override_principle(O)"
+ ],
+ "concepts": [
+  {
+   "name": "customization_personalization_localization",
+   "arity": 1,
+   "gloss": "O is an act of customizing, personalizing, or localizing the model's behavior or output",
+   "licence": "textual",
+   "cites": "l1_170_n026",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "principle_above_guideline",
+   "arity": 1,
+   "gloss": "P is a principle in the Model Spec whose authority level is above the guideline level",
+   "licence": "textual",
+   "cites": "l1_170_n026",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "legal_compliance_related",
+   "arity": 1,
+   "gloss": "O is customization, personalization, or localization that relates to legal compliance",
+   "licence": "textual",
+   "cites": "l1_170_n026",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "authority_levels_hierarchy",
+   "arity": 2,
+   "gloss": "the ranking of instruction authority levels: root > system > developer > user > guideline > no authority, used to determine which instruction prevails in conflicts",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the node's NEEDS contract assigns (mechanical licence correction under DECISION_licence_textual.md, 2026-08-16)",
+   "toggleable": false
+  },
+  {
+   "name": "principle_level",
+   "arity": 2,
+   "gloss": "principle P sits at authority level L in the Model Spec's hierarchy",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of principles above the guideline level, so each principle must carry a level for the comparison to range over",
+   "toggleable": false
+  },
+  {
+   "name": "overrides",
+   "arity": 2,
+   "gloss": "act O overrides principle P, meaning O's effect contradicts or displaces what P directs",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "'override' relates a customization act to the principle it would displace; which pairs conflict is a fact about the case",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1_170_n026",
+   "inference": null,
+   "toggleable": false,
+   "atom": "principle_above_guideline(P)",
+   "gloss": "P is a principle whose authority level is above the guideline level",
+   "body": "principle_level(P, L), authority_levels_hierarchy(L, guideline_level)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "customization, personalization, or localization % is forbidden because it would override principle % which sits above the guideline level",
+   "read_back_slots": [
+    "O",
+    "P"
+   ],
+   "licence": "textual",
+   "cites": "l1_170_n026",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "override_principle(O)",
+   "body": "customization_personalization_localization(O), principle_above_guideline(P), overrides(O, P), not legal_compliance_related(O)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "override_principle",
+   "closure": "cnpa",
+   "reason": "the clause says customization, personalization, and localization should never override higher-level principles, so overriding such a principle is prohibited unless the legal-compliance exception applies"
+  }
+ ],
+ "requires": [
+  "authority_levels_hierarchy/2"
+ ],
+ "inputs": [
+  "customization_personalization_localization/1",
+  "principle_level/2",
+  "overrides/2",
+  "legal_compliance_related/1"
+ ],
+ "forbid_body": []
+}

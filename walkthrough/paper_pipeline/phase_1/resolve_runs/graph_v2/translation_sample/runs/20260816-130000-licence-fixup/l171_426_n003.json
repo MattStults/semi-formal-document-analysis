@@ -1,0 +1,220 @@
+{
+ "outcome": "translated",
+ "clause_id": "l171_426_n003",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant identifies and follows applicable instructions",
+  "C2 in doing so it respects the explicit wording of those instructions",
+  "C3 in doing so it respects the underlying intent of those instructions",
+  "C4 the section establishes boundaries for autonomous actions",
+  "C5 the section emphasizes minimizing unintended consequences"
+ ],
+ "acts": [
+  "follow_instruction(I)",
+  "act_autonomously(A)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the node's NEEDS contract assigns (mechanical licence correction under DECISION_licence_textual.md, 2026-08-16)",
+   "toggleable": false
+  },
+  {
+   "name": "applicable_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction that applies to the assistant in the current situation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the section speaks of 'applicable instructions', so a class of instructions that apply must exist",
+   "toggleable": false
+  },
+  {
+   "name": "explicit_wording",
+   "arity": 2,
+   "gloss": "the explicit wording of instruction I is W",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "respecting explicit wording presupposes that each instruction has a wording that can be stated",
+   "toggleable": false
+  },
+  {
+   "name": "underlying_intent",
+   "arity": 2,
+   "gloss": "the underlying intent of instruction I is T",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "respecting underlying intent presupposes that each instruction has an intent that can be stated",
+   "toggleable": false
+  },
+  {
+   "name": "respects_wording",
+   "arity": 2,
+   "gloss": "the assistant's following of instruction I respects its explicit wording W",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "'respecting' is a relation between the assistant's following and the instruction's wording",
+   "toggleable": false
+  },
+  {
+   "name": "respects_intent",
+   "arity": 2,
+   "gloss": "the assistant's following of instruction I respects its underlying intent T",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "'respecting' is a relation between the assistant's following and the instruction's intent",
+   "toggleable": false
+  },
+  {
+   "name": "autonomous_action",
+   "arity": 1,
+   "gloss": "A is an action the assistant takes without explicit user direction in the current situation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the section speaks of 'autonomous actions', so a class of such actions must exist",
+   "toggleable": false
+  },
+  {
+   "name": "within_boundary",
+   "arity": 1,
+   "gloss": "autonomous action A falls within the boundaries the section establishes",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "'boundaries for autonomous actions' means some autonomous actions are within the permitted scope and others are not",
+   "toggleable": false
+  },
+  {
+   "name": "unintended_consequence",
+   "arity": 1,
+   "gloss": "C is a consequence of an action that is not intended by the assistant or the instruction",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "'unintended consequences' are consequences that are not intended",
+   "toggleable": false
+  },
+  {
+   "name": "minimizes_consequences",
+   "arity": 1,
+   "gloss": "the assistant's action A minimizes unintended consequences",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "'minimizing unintended consequences' is a property of the assistant's actions",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l171_426_n003",
+   "inference": null,
+   "toggleable": false,
+   "atom": "follow_instruction(I)",
+   "gloss": "the assistant follows applicable instruction I",
+   "body": "applicable_instruction(I)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l171_426_n003",
+   "inference": null,
+   "toggleable": false,
+   "atom": "respects_wording(I, W)",
+   "gloss": "the assistant's following of instruction I respects its explicit wording W",
+   "body": "follow_instruction(I), explicit_wording(I, W)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l171_426_n003",
+   "inference": null,
+   "toggleable": false,
+   "atom": "respects_intent(I, T)",
+   "gloss": "the assistant's following of instruction I respects its underlying intent T",
+   "body": "follow_instruction(I), underlying_intent(I, T)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l171_426_n003",
+   "inference": null,
+   "toggleable": false,
+   "atom": "within_boundary(A)",
+   "gloss": "autonomous action A falls within the boundaries the section establishes",
+   "body": "autonomous_action(A)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l171_426_n003",
+   "inference": null,
+   "toggleable": false,
+   "atom": "minimizes_consequences(A)",
+   "gloss": "the assistant's action A minimizes unintended consequences",
+   "body": "autonomous_action(A)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "following applicable instruction % is required, respecting its explicit wording and underlying intent",
+   "read_back_slots": [
+    "I"
+   ],
+   "licence": "textual",
+   "cites": "l171_426_n003",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "follow_instruction(I)",
+   "body": "applicable_instruction(I)"
+  },
+  {
+   "read_back": "acting autonomously as % is permitted only within the boundaries the section establishes",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l171_426_n003",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "act_autonomously(A)",
+   "body": "within_boundary(A)"
+  },
+  {
+   "read_back": "acting autonomously as % is preferred when it minimizes unintended consequences",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l171_426_n003",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "act_autonomously(A)",
+   "body": "minimizes_consequences(A)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "follow_instruction",
+   "closure": "cepa",
+   "reason": "the clause obliges following applicable instructions but does not forbid following other instructions; silence leaves other following permitted"
+  },
+  {
+   "act_class": "act_autonomously",
+   "closure": "cnpa",
+   "reason": "the clause establishes boundaries for autonomous actions, so autonomous actions outside those boundaries are prohibited"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "applicable_instruction/1",
+  "explicit_wording/2",
+  "underlying_intent/2",
+  "autonomous_action/1"
+ ],
+ "forbid_body": []
+}

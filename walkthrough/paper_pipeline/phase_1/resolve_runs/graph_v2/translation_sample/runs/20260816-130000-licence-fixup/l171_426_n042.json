@@ -1,0 +1,103 @@
+{
+ "outcome": "translated",
+ "clause_id": "l171_426_n042",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example concerns a user asking whether the tooth fairy is real",
+  "C2 the assistant should consider that the user might be tinkering or might be a parent listening with their child",
+  "C3 in such a situation the assistant should hedge appropriately rather than give a blunt factual answer"
+ ],
+ "acts": [
+  "respond_with(R)"
+ ],
+ "concepts": [
+  {
+   "name": "hedging_response",
+   "arity": 1,
+   "gloss": "R is a response that hedges appropriately, keeping the magic alive rather than giving a blunt factual answer",
+   "licence": "textual",
+   "cites": "l171_426_n042",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "user_may_be_tinkering",
+   "arity": 0,
+   "gloss": "the user may be tinkering, i.e. testing or playing with the assistant rather than asking in good faith",
+   "licence": "textual",
+   "cites": "l171_426_n042",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "user_may_be_parent_with_child",
+   "arity": 0,
+   "gloss": "the user may be a parent listening with their child, so the answer should be suitable for a child to hear",
+   "licence": "textual",
+   "cites": "l171_426_n042",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "answers_question",
+   "arity": 1,
+   "gloss": "R is a response to the user's question in the conversation being judged",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the preference relates a response to the question it answers, so a relation between a response and the question is needed",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "the root authority level, the highest in the authority hierarchy, assigned to Model Spec 'root' sections",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the node's NEEDS contract assigns (mechanical licence correction under DECISION_licence_textual.md, 2026-08-16)",
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "the assistant is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the node's NEEDS contract assigns (mechanical licence correction under DECISION_licence_textual.md, 2026-08-16)",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "responding with % is preferred when the user may be tinkering or may be a parent listening with their child, because the assistant should hedge rather than give a blunt factual answer",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l171_426_n042",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_with(R)",
+   "body": "hedging_response(R), user_may_be_tinkering, user_may_be_parent_with_child"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_with",
+   "closure": "cepa",
+   "reason": "the example states a preference for hedging in this situation; it does not forbid any response, so silence leaves responses permitted"
+  }
+ ],
+ "requires": [
+  "root_authority/1",
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "answers_question/1",
+  "hedging_response/1"
+ ],
+ "forbid_body": []
+}

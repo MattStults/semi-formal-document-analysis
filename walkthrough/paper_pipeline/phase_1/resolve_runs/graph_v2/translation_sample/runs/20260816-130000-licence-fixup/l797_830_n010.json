@@ -1,0 +1,114 @@
+{
+ "outcome": "translated",
+ "clause_id": "l797_830_n010",
+ "abstain_reason": null,
+ "claims": [
+  "C1 sensitive content in specific circumstances includes erotica and gore",
+  "C2 transformations of such content are allowed"
+ ],
+ "acts": [
+  "transform_content(T)"
+ ],
+ "concepts": [
+  {
+   "name": "sensitive_content_definition",
+   "arity": 1,
+   "gloss": "the definition of sensitive content in specific circumstances as erotica and gore, with transformations allowed",
+   "licence": "textual",
+   "cites": "l797_830_n010",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "disallowed_content_categories",
+   "arity": 1,
+   "gloss": "the categories of content the assistant should not generate",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the node's NEEDS contract assigns (mechanical licence correction under DECISION_licence_textual.md, 2026-08-16)",
+   "toggleable": false
+  },
+  {
+   "name": "transformation_exception_rule",
+   "arity": 1,
+   "gloss": "the exception allowing transformation of user-provided restricted content",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the node's NEEDS contract assigns (mechanical licence correction under DECISION_licence_textual.md, 2026-08-16)",
+   "toggleable": false
+  },
+  {
+   "name": "erotica",
+   "arity": 1,
+   "gloss": "content that is sexually explicit or pornographic",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause names erotica as a category of sensitive content; the ordinary meaning of the term is needed to identify instances",
+   "toggleable": false
+  },
+  {
+   "name": "gore",
+   "arity": 1,
+   "gloss": "content that depicts graphic violence or bloodshed",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause names gore as a category of sensitive content; the ordinary meaning of the term is needed to identify instances",
+   "toggleable": false
+  },
+  {
+   "name": "transformation",
+   "arity": 1,
+   "gloss": "an operation that changes user-provided content, such as rewriting, summarizing, or otherwise altering it",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause says transformations are allowed; the term needs a working definition to be applied",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l797_830_n010",
+   "inference": null,
+   "toggleable": false,
+   "atom": "sensitive_content_definition(C)",
+   "gloss": "C is sensitive content in specific circumstances because it is erotica or gore",
+   "body": "erotica(C) ; gore(C)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "transforming % is allowed because % is sensitive content in specific circumstances and the transformation exception applies",
+   "read_back_slots": [
+    "T",
+    "T"
+   ],
+   "licence": "textual",
+   "cites": "l797_830_n010",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "transform_content(T)",
+   "body": "sensitive_content_definition(C), transformation(T), transformation_exception_rule(T)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "transform_content",
+   "closure": "cepa",
+   "reason": "the clause explicitly allows transformations of sensitive content in specific circumstances; it does not restrict other transformations, so silence permits them"
+  }
+ ],
+ "requires": [
+  "disallowed_content_categories/1",
+  "transformation_exception_rule/1"
+ ],
+ "inputs": [
+  "erotica/1",
+  "gore/1",
+  "transformation/1"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,148 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1_170_n068",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the role of a message specifies the source of that message",
+  "C2 roles determine the authority of instructions in the case of conflicts",
+  "C3 authority is determined according to the levels of authority and chain of command"
+ ],
+ "acts": [],
+ "concepts": [
+  {
+   "name": "message_role_definition",
+   "arity": 1,
+   "gloss": "the role of a message (system, developer, user, assistant, tool) specifies the source of the message and determines the authority of its instructions in conflicts",
+   "licence": "textual",
+   "cites": "l1_170_n068",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "message_role",
+   "arity": 2,
+   "gloss": "message M has role R, where R is one of system, developer, user, assistant, or tool",
+   "licence": "textual",
+   "cites": "l1_170_n068",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "message_source",
+   "arity": 2,
+   "gloss": "message M originates from source S, as specified by its role",
+   "licence": "textual",
+   "cites": "l1_170_n068",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "instruction_authority",
+   "arity": 2,
+   "gloss": "instruction I has authority level A, as determined by the role of the message that carries it",
+   "licence": "textual",
+   "cites": "l1_170_n068",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "conflicting_instructions",
+   "arity": 2,
+   "gloss": "instruction I1 and instruction I2 conflict with each other",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of 'the case of conflicts', so a relation identifying which instructions conflict is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "authority_levels_hierarchy",
+   "arity": 2,
+   "gloss": "the ranking of instruction authority levels: root > system > developer > user > guideline > no authority, used to determine which instruction prevails in conflicts",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the node's NEEDS contract assigns (mechanical licence correction under DECISION_licence_textual.md, 2026-08-16)",
+   "toggleable": false
+  },
+  {
+   "name": "chain_of_command_principle",
+   "arity": 1,
+   "gloss": "the principle that instructions with higher authority override those with lower authority, designed to maximize steerability and control",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the node's NEEDS contract assigns (mechanical licence correction under DECISION_licence_textual.md, 2026-08-16)",
+   "toggleable": false
+  },
+  {
+   "name": "role_source",
+   "arity": 2,
+   "gloss": "role R specifies that messages with that role originate from source S",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause says a role specifies the source of a message, so each role must be associated with a source",
+   "toggleable": false
+  },
+  {
+   "name": "carries_instruction",
+   "arity": 2,
+   "gloss": "message M carries instruction I",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of the authority of instructions, so instructions must be carried by messages",
+   "toggleable": false
+  },
+  {
+   "name": "role_authority",
+   "arity": 2,
+   "gloss": "role R confers authority level A on the instructions it carries",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause says roles determine the authority of instructions, so each role must be associated with an authority level",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1_170_n068",
+   "inference": null,
+   "toggleable": false,
+   "atom": "message_role_definition(R)",
+   "gloss": "R is a message role that specifies the source of a message and determines the authority of its instructions",
+   "body": "message_role(M, R)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n068",
+   "inference": null,
+   "toggleable": false,
+   "atom": "message_source(M, S)",
+   "gloss": "message M's source S is specified by its role",
+   "body": "message_role(M, R), role_source(R, S)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n068",
+   "inference": null,
+   "toggleable": false,
+   "atom": "instruction_authority(I, A)",
+   "gloss": "instruction I's authority A is determined by the role of the message carrying it",
+   "body": "message_role(M, R), carries_instruction(M, I), role_authority(R, A)"
+  }
+ ],
+ "asserts": [],
+ "beats": [],
+ "defines": [],
+ "closure": [],
+ "requires": [
+  "authority_levels_hierarchy/2",
+  "chain_of_command_principle/1"
+ ],
+ "inputs": [
+  "message_role/2",
+  "role_source/2",
+  "carries_instruction/2",
+  "role_authority/2",
+  "conflicting_instructions/2"
+ ],
+ "forbid_body": []
+}

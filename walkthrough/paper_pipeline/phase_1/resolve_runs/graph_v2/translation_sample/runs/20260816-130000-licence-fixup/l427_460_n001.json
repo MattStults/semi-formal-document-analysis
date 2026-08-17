@@ -1,0 +1,135 @@
+{
+ "outcome": "translated",
+ "clause_id": "l427_460_n001",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant may pursue a goal only if that goal is entailed by an applicable instruction under the chain of command",
+  "C2 the assistant may pursue a goal only if that goal is entailed by the specific version of the Model Spec it was trained on",
+  "C3 previous, later, or alternative versions of the Model Spec are ignored when determining which goals may be pursued"
+ ],
+ "acts": [
+  "pursue_goal(G)"
+ ],
+ "concepts": [
+  {
+   "name": "goal_pursuit_scope",
+   "arity": 1,
+   "gloss": "G is a goal the assistant may pursue, namely one entailed by applicable instructions under the chain of command and by the specific trained version of the Model Spec",
+   "licence": "textual",
+   "cites": "l427_460_n001",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "goal_entailed_by_applicable_instruction",
+   "arity": 1,
+   "gloss": "G is a goal entailed by an applicable instruction under the chain of command",
+   "licence": "textual",
+   "cites": "l427_460_n001",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "trained_model_spec_version",
+   "arity": 1,
+   "gloss": "S is the specific version of the Model Spec the assistant was trained on",
+   "licence": "textual",
+   "cites": "l427_460_n001",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "entailed_by_spec_version",
+   "arity": 2,
+   "gloss": "goal G is entailed by version S of the Model Spec",
+   "licence": "textual",
+   "cites": "l427_460_n001",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "other_spec_version",
+   "arity": 1,
+   "gloss": "V is a version of the Model Spec other than the specific trained version, whether previous, later, or alternative",
+   "licence": "textual",
+   "cites": "l427_460_n001",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the node's NEEDS contract assigns (mechanical licence correction under DECISION_licence_textual.md, 2026-08-16)",
+   "toggleable": false
+  },
+  {
+   "name": "chain_of_command_principle",
+   "arity": 1,
+   "gloss": "the principle that instructions with higher authority override those with lower authority, designed to maximize steerability and control",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the node's NEEDS contract assigns (mechanical licence correction under DECISION_licence_textual.md, 2026-08-16)",
+   "toggleable": false
+  },
+  {
+   "name": "authority_levels_hierarchy",
+   "arity": 2,
+   "gloss": "the ranking of instruction authority levels: root > system > developer > user > guideline > no authority, used to determine which instruction prevails in conflicts",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the node's NEEDS contract assigns (mechanical licence correction under DECISION_licence_textual.md, 2026-08-16)",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l427_460_n001",
+   "inference": null,
+   "toggleable": false,
+   "atom": "goal_pursuit_scope(G)",
+   "gloss": "G is within the scope of goals the assistant may pursue: entailed by an applicable instruction under the chain of command and by the specific trained version of the Model Spec",
+   "body": "goal_entailed_by_applicable_instruction(G), trained_model_spec_version(S), entailed_by_spec_version(G, S)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "pursuing goal % is permitted only when % is entailed by an applicable instruction under the chain of command and by the specific trained version of the Model Spec",
+   "read_back_slots": [
+    "G",
+    "G"
+   ],
+   "licence": "textual",
+   "cites": "l427_460_n001",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "pursue_goal(G)",
+   "body": "goal_entailed_by_applicable_instruction(G), trained_model_spec_version(S), entailed_by_spec_version(G, S)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "pursue_goal",
+   "closure": "cnpa",
+   "reason": "the clause states the assistant may only pursue goals entailed by applicable instructions and the trained spec version; goals outside that scope are not permitted, so silence about them is prohibition"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "chain_of_command_principle/1",
+  "authority_levels_hierarchy/2"
+ ],
+ "inputs": [
+  "goal_entailed_by_applicable_instruction/1",
+  "trained_model_spec_version/1",
+  "entailed_by_spec_version/2",
+  "other_spec_version/1"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,128 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1_170_n046",
+ "abstain_reason": null,
+ "claims": [
+  "C1 root instructions originate only from the Model Spec and the detailed policies contained in it",
+  "C2 root instructions cannot be overridden by system messages or any other messages"
+ ],
+ "acts": [
+  "override_root_instruction(I)"
+ ],
+ "concepts": [
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "I is a root-level instruction: a fundamental root rule that cannot be overridden by system messages, developers or users",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the node's NEEDS contract assigns (mechanical licence correction under DECISION_licence_textual.md, 2026-08-16)",
+   "toggleable": false
+  },
+  {
+   "name": "root_instruction",
+   "arity": 1,
+   "gloss": "I is a root instruction, i.e. an instruction that comes only from the Model Spec and the detailed policies contained in it",
+   "licence": "textual",
+   "cites": "l1_170_n046",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "model_spec_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction stated in the Model Spec or in a detailed policy contained in the Model Spec",
+   "licence": "textual",
+   "cites": "l1_170_n046",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "system_message",
+   "arity": 1,
+   "gloss": "M is a system message, i.e. a message that carries system-level instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of system messages overriding root instructions; the notion of a system message is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "other_message",
+   "arity": 1,
+   "gloss": "M is a message that is not a system message but still attempts to override a root instruction",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause says 'or any other messages', so a class of non-system messages is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "overrides",
+   "arity": 2,
+   "gloss": "message M overrides root instruction I, i.e. M directs something contrary to I with the effect of displacing I",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "'cannot be overridden by' relates a message to a root instruction it would displace; which pairs conflict is a fact about the case",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1_170_n046",
+   "inference": null,
+   "toggleable": false,
+   "atom": "root_instruction(I)",
+   "gloss": "I is a root instruction because it comes from the Model Spec or a detailed policy contained in it",
+   "body": "model_spec_instruction(I)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "overriding root instruction % by % is forbidden: root instructions come only from the Model Spec and cannot be overridden by system or any other messages",
+   "read_back_slots": [
+    "I",
+    "M"
+   ],
+   "licence": "textual",
+   "cites": "l1_170_n046",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "override_root_instruction(I)",
+   "body": "root_instruction(I), system_message(M), overrides(M, I)"
+  },
+  {
+   "read_back": "overriding root instruction % by % is forbidden: root instructions come only from the Model Spec and cannot be overridden by system or any other messages",
+   "read_back_slots": [
+    "I",
+    "M"
+   ],
+   "licence": "textual",
+   "cites": "l1_170_n046",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "override_root_instruction(I)",
+   "body": "root_instruction(I), other_message(M), overrides(M, I)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "override_root_instruction",
+   "closure": "cnpa",
+   "reason": "the clause states that root instructions cannot be overridden by system or any other messages, so any attempt to override a root instruction is prohibited; silence about other acts is not relevant here"
+  }
+ ],
+ "requires": [
+  "root_authority/1"
+ ],
+ "inputs": [
+  "model_spec_instruction/1",
+  "system_message/1",
+  "other_message/1",
+  "overrides/2"
+ ],
+ "forbid_body": []
+}

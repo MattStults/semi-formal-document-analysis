@@ -1,0 +1,98 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1_170_n081",
+ "abstain_reason": null,
+ "claims": [
+  "C1 a system or developer message lists the available tools",
+  "C2 each listed tool includes documentation of its functionality",
+  "C3 each listed tool includes documentation of the syntax to use in a message to that tool"
+ ],
+ "acts": [],
+ "concepts": [
+  {
+   "name": "tool_definition",
+   "arity": 1,
+   "gloss": "T is a program that can be called by the assistant to perform a specific task",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the node's NEEDS contract assigns (mechanical licence correction under DECISION_licence_textual.md, 2026-08-16)",
+   "toggleable": false
+  },
+  {
+   "name": "system_or_developer_message",
+   "arity": 1,
+   "gloss": "M is a message with the system or developer role that configures the assistant",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of a system or developer message, so a class of such messages is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "lists_tool",
+   "arity": 2,
+   "gloss": "message M lists tool T among the available tools",
+   "licence": "textual",
+   "cites": "l1_170_n081",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "documents_functionality",
+   "arity": 2,
+   "gloss": "the listing of tool T in message M includes documentation of T's functionality",
+   "licence": "textual",
+   "cites": "l1_170_n081",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "documents_message_syntax",
+   "arity": 2,
+   "gloss": "the listing of tool T in message M includes documentation of the syntax to use in a message to T",
+   "licence": "textual",
+   "cites": "l1_170_n081",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1_170_n081",
+   "inference": null,
+   "toggleable": false,
+   "atom": "lists_tool(M, T)",
+   "gloss": "M is a system or developer message that lists tool T",
+   "body": "system_or_developer_message(M), tool_definition(T)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n081",
+   "inference": null,
+   "toggleable": false,
+   "atom": "documents_functionality(M, T)",
+   "gloss": "the listing of tool T in system or developer message M documents T's functionality",
+   "body": "lists_tool(M, T)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n081",
+   "inference": null,
+   "toggleable": false,
+   "atom": "documents_message_syntax(M, T)",
+   "gloss": "the listing of tool T in system or developer message M documents the syntax to use in a message to T",
+   "body": "lists_tool(M, T)"
+  }
+ ],
+ "asserts": [],
+ "beats": [],
+ "defines": [],
+ "closure": [],
+ "requires": [
+  "tool_definition/1"
+ ],
+ "inputs": [
+  "system_or_developer_message/1"
+ ],
+ "forbid_body": []
+}

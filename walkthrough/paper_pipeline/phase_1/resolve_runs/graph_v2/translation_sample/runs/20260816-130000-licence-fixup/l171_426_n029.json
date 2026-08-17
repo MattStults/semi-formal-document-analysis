@@ -1,0 +1,144 @@
+{
+ "outcome": "translated",
+ "clause_id": "l171_426_n029",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should consider the underlying intent and context of instructions, not just their literal wording",
+  "C2 the assistant should consider plausible implicit goals and preferences of stakeholders to guide its interpretation of instructions"
+ ],
+ "acts": [
+  "interpret_instruction(I)"
+ ],
+ "concepts": [
+  {
+   "name": "instruction",
+   "arity": 1,
+   "gloss": "I is an instruction given to the assistant",
+   "licence": "textual",
+   "cites": "l171_426_n029",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "instruction_has_literal_wording",
+   "arity": 2,
+   "gloss": "W is the literal wording of instruction I",
+   "licence": "textual",
+   "cites": "l171_426_n029",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "instruction_has_intent_and_context",
+   "arity": 2,
+   "gloss": "C is the underlying intent and context in which instruction I was given, including contextual cues, background knowledge, and user history if available",
+   "licence": "textual",
+   "cites": "l171_426_n029",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "plausible_implicit_goal_or_preference",
+   "arity": 1,
+   "gloss": "G is a plausible implicit goal or preference of a stakeholder",
+   "licence": "textual",
+   "cites": "l171_426_n029",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "stakeholder",
+   "arity": 1,
+   "gloss": "S is a stakeholder: a developer, user, third party, or OpenAI",
+   "licence": "textual",
+   "cites": "l171_426_n029",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "goal_or_preference_of_stakeholder",
+   "arity": 2,
+   "gloss": "G is a plausible implicit goal or preference held by stakeholder S",
+   "licence": "textual",
+   "cites": "l171_426_n029",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "interpretation_guided_by",
+   "arity": 2,
+   "gloss": "the interpretation of instruction I is guided by plausible implicit goal or preference G",
+   "licence": "textual",
+   "cites": "l171_426_n029",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "letter_and_spirit_section",
+   "arity": 1,
+   "gloss": "the section of the Model Spec that discusses the distinction between the letter and the spirit of instructions",
+   "licence": "textual",
+   "cites": "l171_426_n029",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "the root authority level, the highest in the authority hierarchy, assigned to Model Spec 'root' sections",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the node's NEEDS contract assigns (mechanical licence correction under DECISION_licence_textual.md, 2026-08-16)",
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "the assistant is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the node's NEEDS contract assigns (mechanical licence correction under DECISION_licence_textual.md, 2026-08-16)",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "interpreting instruction % is preferred when the interpretation considers the underlying intent and context and is guided by plausible implicit goals and preferences of stakeholders",
+   "read_back_slots": [
+    "I"
+   ],
+   "licence": "textual",
+   "cites": "l171_426_n029",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "interpret_instruction(I)",
+   "body": "instruction(I), instruction_has_literal_wording(I, W), instruction_has_intent_and_context(I, C), plausible_implicit_goal_or_preference(G), stakeholder(S), goal_or_preference_of_stakeholder(G, S), interpretation_guided_by(I, G)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "interpret_instruction",
+   "closure": "cepa",
+   "reason": "The clause states a preference for how instructions should be interpreted; it does not forbid any interpretation, so silence leaves interpretations permitted."
+  }
+ ],
+ "requires": [
+  "letter_and_spirit_section/1",
+  "root_authority/1",
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "instruction/1",
+  "instruction_has_literal_wording/2",
+  "instruction_has_intent_and_context/2",
+  "plausible_implicit_goal_or_preference/1",
+  "stakeholder/1",
+  "goal_or_preference_of_stakeholder/2",
+  "interpretation_guided_by/2"
+ ],
+ "forbid_body": []
+}

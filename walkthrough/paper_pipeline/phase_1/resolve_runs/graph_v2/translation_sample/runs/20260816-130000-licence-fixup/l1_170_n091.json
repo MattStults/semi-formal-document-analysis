@@ -1,0 +1,180 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1_170_n091",
+ "abstain_reason": null,
+ "claims": [
+  "C1 user and developer messages are treated interchangeably",
+  "C2 when both user and developer messages are present in a conversation, developer messages have greater authority",
+  "C3 when user/developer conflicts are not relevant and there is no risk of confusion, the word user is sometimes used as shorthand for user or developer"
+ ],
+ "acts": [
+  "treat_interchangeably(M)",
+  "treat_as_greater_authority(M)",
+  "use_user_shorthand(M)"
+ ],
+ "concepts": [
+  {
+   "name": "user_definition",
+   "arity": 1,
+   "gloss": "M is a message from a user of a product made by OpenAI or a third-party application built on the OpenAI API",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the node's NEEDS contract assigns (mechanical licence correction under DECISION_licence_textual.md, 2026-08-16)",
+   "toggleable": false
+  },
+  {
+   "name": "developer_definition",
+   "arity": 1,
+   "gloss": "M is a message from a customer of the OpenAI API who may add intelligence to software applications or create natural language interfaces consumed by end users",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the node's NEEDS contract assigns (mechanical licence correction under DECISION_licence_textual.md, 2026-08-16)",
+   "toggleable": false
+  },
+  {
+   "name": "authority_levels_hierarchy",
+   "arity": 2,
+   "gloss": "the ranking of instruction authority levels: root > system > developer > user > guideline > no authority, used to determine which instruction prevails in conflicts",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the node's NEEDS contract assigns (mechanical licence correction under DECISION_licence_textual.md, 2026-08-16)",
+   "toggleable": false
+  },
+  {
+   "name": "both_present",
+   "arity": 1,
+   "gloss": "M is a developer message in a conversation that also contains at least one user message",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's exception applies only when both user and developer messages are present in a conversation, so a predicate marking that situation is needed",
+   "toggleable": false
+  },
+  {
+   "name": "conflicts_not_relevant",
+   "arity": 1,
+   "gloss": "M is a message for which user/developer conflicts are not relevant",
+   "licence": "textual",
+   "cites": "l1_170_n091",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "no_risk_of_confusion",
+   "arity": 1,
+   "gloss": "M is a message for which there is no risk of confusion in using the word user as shorthand for user or developer",
+   "licence": "textual",
+   "cites": "l1_170_n091",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1_170_n091",
+   "inference": null,
+   "toggleable": false,
+   "atom": "treat_interchangeably(M)",
+   "gloss": "M is a user or developer message that the spec treats interchangeably",
+   "body": "user_definition(M)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n091",
+   "inference": null,
+   "toggleable": false,
+   "atom": "treat_interchangeably(M)",
+   "gloss": "M is a user or developer message that the spec treats interchangeably",
+   "body": "developer_definition(M)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n091",
+   "inference": null,
+   "toggleable": false,
+   "atom": "treat_as_greater_authority(M)",
+   "gloss": "M is a developer message that has greater authority because both user and developer messages are present in the conversation",
+   "body": "developer_definition(M), both_present(M)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n091",
+   "inference": null,
+   "toggleable": false,
+   "atom": "use_user_shorthand(M)",
+   "gloss": "M is a message for which the word user is sometimes used as shorthand for user or developer",
+   "body": "conflicts_not_relevant(M), no_risk_of_confusion(M)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "treating % as interchangeable is permitted because the spec treats user and developer messages interchangeably",
+   "read_back_slots": [
+    "M"
+   ],
+   "licence": "textual",
+   "cites": "l1_170_n091",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "treat_interchangeably(M)",
+   "body": "treat_interchangeably(M)"
+  },
+  {
+   "read_back": "treating % as having greater authority is permitted because it is a developer message and both user and developer messages are present in the conversation",
+   "read_back_slots": [
+    "M"
+   ],
+   "licence": "textual",
+   "cites": "l1_170_n091",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "treat_as_greater_authority(M)",
+   "body": "treat_as_greater_authority(M)"
+  },
+  {
+   "read_back": "using the word user as shorthand for user or developer for % is permitted when user/developer conflicts are not relevant and there is no risk of confusion",
+   "read_back_slots": [
+    "M"
+   ],
+   "licence": "textual",
+   "cites": "l1_170_n091",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "use_user_shorthand(M)",
+   "body": "use_user_shorthand(M)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "treat_interchangeably",
+   "closure": "cepa",
+   "reason": "the clause states that user and developer messages are treated interchangeably, so treating them interchangeably is permitted; it does not forbid any other treatment"
+  },
+  {
+   "act_class": "treat_as_greater_authority",
+   "closure": "cepa",
+   "reason": "the clause grants greater authority to developer messages when both are present, so that treatment is permitted; it does not forbid other treatments"
+  },
+  {
+   "act_class": "use_user_shorthand",
+   "closure": "cepa",
+   "reason": "the clause permits using user as shorthand under the stated conditions; it does not forbid other uses"
+  }
+ ],
+ "requires": [
+  "user_definition/1",
+  "developer_definition/1",
+  "authority_levels_hierarchy/2"
+ ],
+ "inputs": [
+  "both_present/1",
+  "conflicts_not_relevant/1",
+  "no_risk_of_confusion/1"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,123 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1_170_n060",
+ "abstain_reason": null,
+ "claims": [
+  "C1 a user request to speak like a realistic pirate is an implicit instruction",
+  "C2 that implicit instruction overrides the guideline to avoid swearing",
+  "C3 the guideline to avoid swearing carries guideline authority, which is the level of authority that can be implicitly overridden"
+ ],
+ "acts": [
+  "override_guideline(G)"
+ ],
+ "concepts": [
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "G is a guideline carrying guideline-level authority, the level of instruction authority that can be implicitly overridden",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the node's NEEDS contract assigns (mechanical licence correction under DECISION_licence_textual.md, 2026-08-16)",
+   "toggleable": false
+  },
+  {
+   "name": "user_request",
+   "arity": 1,
+   "gloss": "R is a request made by the user to the model",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example speaks of a user asking the model, so a relation between a request and the user must exist",
+   "toggleable": false
+  },
+  {
+   "name": "implicit_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction conveyed by a user request without being stated as an explicit directive",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example says the request 'implicitly overrides', so the request must count as an implicit instruction",
+   "toggleable": false
+  },
+  {
+   "name": "implicitly_overrides",
+   "arity": 2,
+   "gloss": "implicit instruction I overrides guideline G, so G no longer binds in this situation",
+   "licence": "textual",
+   "cites": "l1_170_n060",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "avoid_swearing_guideline",
+   "arity": 0,
+   "gloss": "the guideline directing the model to avoid swearing",
+   "licence": "textual",
+   "cites": "l1_170_n060",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "realistic_pirate_request",
+   "arity": 1,
+   "gloss": "R is a user request that the model speak like a realistic pirate",
+   "licence": "textual",
+   "cites": "l1_170_n060",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1_170_n060",
+   "inference": null,
+   "toggleable": false,
+   "atom": "implicit_instruction(R)",
+   "gloss": "a user request to speak like a realistic pirate is an implicit instruction",
+   "body": "realistic_pirate_request(R), user_request(R)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n060",
+   "inference": null,
+   "toggleable": false,
+   "atom": "guideline_authority(avoid_swearing_guideline)",
+   "gloss": "the guideline to avoid swearing carries guideline authority",
+   "body": null
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "overriding guideline % is permitted because implicit instruction % overrides it",
+   "read_back_slots": [
+    "G",
+    "I"
+   ],
+   "licence": "textual",
+   "cites": "l1_170_n060",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "override_guideline(G)",
+   "body": "implicit_instruction(I), implicitly_overrides(I, G), guideline_authority(G)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "override_guideline",
+   "closure": "cepa",
+   "reason": "the example states that an implicit instruction overrides a guideline in this case; it does not forbid overriding in general, so silence leaves other overrides permitted"
+  }
+ ],
+ "requires": [
+  "guideline_authority/1"
+ ],
+ "inputs": [
+  "user_request/1",
+  "realistic_pirate_request/1",
+  "implicitly_overrides/2"
+ ],
+ "forbid_body": []
+}
