@@ -57,7 +57,7 @@ def main():
     lines = ["# Three-way relevance report — frontier panel behaviors, full corpus (run 2)", "",
              "Rows: (behavior, spec node) where the TOOL engaged, the PANEL cited (consensus>=5), or FABLE ruled relevant. "
              "Tool = embed-rank + blind small-model seat over node prose (frozen frontier atoms, TOP_K 12). "
-             "Panel = frontier judges' summed citation score. Fable = blind adjudicator, document text only.",
+             "Panel = the frontier judges' summed CITATION score over passages: `cited>=5` (consensus tier), `cited 2-4` (some judges), `uncited` (below 2 or absent from the export — NOT an affirmative irrelevance verdict). Fable = blind adjudicator, document text only. Tool verdicts marked `*` came from the probe (label-selected node, blind per-pair judgment).",
              "",
              "**Scope: relevance matching only.** Translation fidelity: `../semantic_audit.json` (all six bulk cohorts sealed). "
              "Contradiction detection: awaits `CONCRETE_INSTANCES.md` adjudication. Fix-locus tags are the coordinator's, from the grounds; overrule freely.",
@@ -65,7 +65,9 @@ def main():
     totals = Counter()
     for slug, b in match["behaviors"].items():
         t = ag["behaviors"][slug]["consensus_ge5"]
+        t2 = ag["behaviors"][slug]["any_ge2"]
         panel_hot = set(t["agree_relevant"]) | set(t["panel_hot_seat_declined"]) | set(t["panel_hot_never_retrieved"])
+        panel_warm = (set(t2["agree_relevant"]) | set(t2["panel_hot_seat_declined"]) | set(t2["panel_hot_never_retrieved"])) - panel_hot
         seat = {}     # node -> (verdict, atom, grounds)
         for row in b["atoms"]:
             for v in row["verdicts"]:
@@ -88,18 +90,18 @@ def main():
         for n in rows:
             sv = seat.get(n, ("not-retrieved", "", ""))
             tool = sv[0]
-            panel = "hot" if n in panel_hot else "cold"
+            panel = "cited>=5" if n in panel_hot else ("cited 2-4" if n in panel_warm else "uncited")
             fv = fr.get(n, "—")
             # tag
             if fv == "—":
                 tag = "unadjudicated"
-            elif tool.startswith("engaged") and fv == "relevant" and panel == "cold": tag = "panel-strict"
+            elif tool.startswith("engaged") and fv == "relevant" and panel != "cited>=5": tag = "panel-strict"
             elif tool.startswith("engaged") and fv == "not_relevant":
                 tag = "structural-node" if re.search(r"glossary|definition|commit|structure|section", (establishes(n)+sv[2]).lower()) else "scope-conflation"
             elif tool.startswith("declined") and fv == "relevant": tag = "seat-miss"
-            elif tool == "not-retrieved" and panel == "hot": tag = "retrieval-miss"
-            elif panel == "hot" and fv == "not_relevant": tag = "panel-broad"
-            elif tool.startswith("engaged") and fv == "relevant" and panel == "hot": tag = "agree"
+            elif tool == "not-retrieved" and panel == "cited>=5": tag = "retrieval-miss"
+            elif panel == "cited>=5" and fv == "not_relevant": tag = "panel-broad"
+            elif tool.startswith("engaged") and fv == "relevant" and panel == "cited>=5": tag = "agree"
             else: tag = "other"
             tags[tag] += 1; totals[tag] += 1
             lines.append(f"| `{n}` | {establishes(n)} | {tool}{(' ('+sv[1]+')') if sv[1] else ''} | {panel} | {fv} | {tag} |")
