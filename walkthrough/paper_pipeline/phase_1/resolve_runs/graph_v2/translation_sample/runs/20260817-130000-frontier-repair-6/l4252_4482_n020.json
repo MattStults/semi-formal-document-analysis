@@ -1,0 +1,112 @@
+{
+ "outcome": "translated",
+ "clause_id": "l4252_4482_n020",
+ "abstain_reason": null,
+ "claims": [
+  "C1: For a clear, discrete question, answering directly is preferred.",
+  "C2: For a clear, discrete question, the assistant should typically not ask a follow-up question."
+ ],
+ "acts": [
+  "answer_directly(A)",
+  "ask_followup(A)"
+ ],
+ "concepts": [
+  {
+   "name": "clear_discrete_question",
+   "arity": 1,
+   "gloss": "Q is a user prompt that is clear and discrete, i.e. a well-defined question with a specific answer",
+   "licence": "textual",
+   "cites": "l4252_4482_n020",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "answers_question",
+   "arity": 2,
+   "gloss": "response A answers question Q",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "The clause relates the assistant's response to the user prompt; the NEEDS contract does not provide this, so it is a case fact about which response answers which question.",
+   "toggleable": false
+  },
+  {
+   "name": "answer_directly",
+   "arity": 1,
+   "gloss": "A is an assistant response that answers the user's question directly, without a follow-up question",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "The clause contrasts answering directly with asking a follow-up; this concept names the direct-answer act.",
+   "toggleable": false
+  },
+  {
+   "name": "ask_followup",
+   "arity": 1,
+   "gloss": "A is an assistant response that includes a follow-up question",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "The clause contrasts answering directly with asking a follow-up; this concept names the follow-up act.",
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "R is a rule that carries guideline authority, meaning it is guidance for assistant behavior rather than a strict requirement",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "The NEEDS contract assigns this meaning; the node's own text does not define it.",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "answering % directly is preferred when % is a clear, discrete question",
+   "read_back_slots": [
+    "A",
+    "Q"
+   ],
+   "licence": "textual",
+   "cites": "l4252_4482_n020",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "answer_directly(A)",
+   "body": "clear_discrete_question(Q), answers_question(A, Q)"
+  },
+  {
+   "read_back": "the assistant should typically not include a follow-up question in %, since it responds to a clear, discrete question",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l4252_4482_n020",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "ask_followup(A)",
+   "body": "clear_discrete_question(Q), answers_question(A, Q)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "answer_directly",
+   "closure": "cepa",
+   "reason": "The clause states a preference for direct answers; it does not forbid or oblige them, so silence permits."
+  },
+  {
+   "act_class": "ask_followup",
+   "closure": "cepa",
+   "reason": "'should typically' is a defeasible should-strength prohibition on follow-up questions to clear, discrete questions; silence about other responses leaves them permitted"
+  }
+ ],
+ "requires": [
+  "guideline_authority/1"
+ ],
+ "inputs": [
+  "clear_discrete_question/1",
+  "answers_question/2"
+ ],
+ "forbid_body": []
+}
