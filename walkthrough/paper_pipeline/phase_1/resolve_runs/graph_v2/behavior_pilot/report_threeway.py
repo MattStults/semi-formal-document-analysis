@@ -93,11 +93,15 @@ def main():
             panel = "cited>=5" if n in panel_hot else ("cited 2-4" if n in panel_warm else "uncited")
             fv = fr.get(n, "—")
             # tag
-            if fv == "—":
+            if fv == "—" and tool.startswith("engaged") and panel == "cited>=5":
+                tag = "agree"          # both instruments concur; not sent to adjudication
+            elif fv == "—":
                 tag = "unadjudicated"
             elif tool.startswith("engaged") and fv == "relevant" and panel != "cited>=5": tag = "panel-strict"
             elif tool.startswith("engaged") and fv == "not_relevant":
-                tag = "structural-node" if re.search(r"glossary|definition|commit|structure|section", (establishes(n)+sv[2]).lower()) else "scope-conflation"
+                est = establishes(n).lower()
+                structural = re.search(r"glossary|definition of|we are committed|company|high-level principle|meta|section heading|the model spec is|framing|component of our", est)
+                tag = "structural-node" if structural else "scope-conflation"
             elif tool.startswith("declined") and fv == "relevant": tag = "seat-miss"
             elif tool == "not-retrieved" and panel == "cited>=5": tag = "retrieval-miss"
             elif panel == "cited>=5" and fv == "not_relevant": tag = "panel-broad"
@@ -123,7 +127,9 @@ def main():
               "* Fable adjudicators are the truth TIER, not truth: no cell carries Matt's countersignature yet (spot-check column to be added on his pass).",
               "* Inter-adjudicator breadth differed: the helpfulness adjudicator read persona/character nodes as relevant more inclusively than the harm-avoidance adjudicator did for its behavior. Not smoothed.",
               "* Retrieval-miss rows carry the probe's verdict when present (`engaged*`/`declined*`); unprobed rows say not-retrieved.",
-              "* Agreed-irrelevant sample (over-firing control) not yet drawn; add before any headline number is quoted."]
+              "* Agreed-irrelevant sample (over-firing control) not yet drawn; add before any headline number is quoted.",
+              "* `agree` rows (tool engaged AND panel cited>=5) were not sent to Fable — both instruments concur; a Fable pass over a sample of them is the natural next check.",
+              "* The scope-conflation vs structural-node split is heuristic (keyed on the ESTABLISHES text); the adjudicators' grounds in adjudication_run2_*.json are authoritative for any given row."]
     open(os.path.join(OUT, "THREEWAY_REPORT.md"), "w").write("\n".join(lines) + "\n")
     print("wrote panel_run1/THREEWAY_REPORT.md;", dict(totals))
 
