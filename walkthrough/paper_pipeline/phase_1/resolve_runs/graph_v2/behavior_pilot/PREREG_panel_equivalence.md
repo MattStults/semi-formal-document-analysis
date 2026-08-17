@@ -67,6 +67,34 @@ ground. Every node in the adjudicated set receives a blind ruling.
 * The n=1-style caveat is standing: three behaviors is the panel's own
   limit, and the conclusion is scoped to them.
 
+## Second arm (Matt's ruling, 2026-08-17): the TUNED number
+
+Behaviors are query-side artifacts built to be written and iterated freely
+— that is the product feature (DESIGN.md stage 4: "feedback refines the
+QUERY, never the corpus"). So the report carries TWO numbers per behavior,
+answering two different questions:
+
+* **Cold-start (arm 1, above):** what the system delivers on first contact
+  — frozen blind atoms, one shot. Fair to compare against the panel, whose
+  judges also got one pass.
+* **Tuned (arm 2):** what a user reaches by iterating the behavior. The
+  atoms/definition for each behavior may be revised freely for up to 3
+  rounds, using the PANEL'S OWN CITATION SET as the tuning signal (labels
+  may direct the query side without restriction — the corpus is untouched
+  by construction). Scoring uses the OTHER instrument: fresh blind
+  adjudicator verdicts on the tuned matcher's engagements and declines,
+  adjudicators never shown the tuning history. Tune on instrument A, score
+  on instrument B — the tuned number is honest because the instruments are
+  distinct.
+* Reported side by side, always both, labeled: the cold-start number is
+  the generalization claim, the tuned number is the expressiveness ceiling,
+  and the GAP between them is the measured value of the iteration feature
+  itself. Reporting the tuned number alone is forbidden by this
+  registration.
+* Arm-2 falsifier: if tuning cannot bring metric 1 to pass on a behavior
+  in 3 rounds, that behavior is reported "not reachable by iteration at
+  this corpus", with the round transcripts kept.
+
 ## What this deliberately does not measure
 
 ASP fidelity (SEMANTIC_AUDIT.md owns that), contradiction detection (needs
