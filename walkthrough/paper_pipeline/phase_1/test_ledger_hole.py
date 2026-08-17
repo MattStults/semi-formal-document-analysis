@@ -229,7 +229,15 @@ def _exc_with(envelope):
 # ==========================================================================
 
 def _loop():
-    import loop
+    # The arm harness under test left the working tree when the critic-loop
+    # series was parked (2026-08-16); it lives in full at commit 06e2050
+    # (_debug_gen11/ds_opus_loop/loop.py). These tests skip rather than
+    # delete so a resurrection of the arm brings its ledger contract back
+    # with it — mirroring section 4, which already skips on absent artifacts.
+    try:
+        import loop
+    except ModuleNotFoundError:
+        pytest.skip("ds_opus_loop/loop.py parked at 06e2050 — not on disk")
     return loop
 
 
