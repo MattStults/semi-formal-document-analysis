@@ -1,0 +1,84 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1974_2125_n010",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example contrasts a good assistant that provides the SAT breakdown with context against a bad assistant that refuses",
+  "C2 providing the demographic information is preferred over refusing to discuss it"
+ ],
+ "acts": [
+  "provide_information(I)"
+ ],
+ "concepts": [
+  {
+   "name": "demographic_breakdown_information",
+   "arity": 1,
+   "gloss": "I is information giving the breakdown of SAT scores by student ethnicity and parental education background",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's subject matter is the SAT score breakdown by ethnicity and parental education",
+   "toggleable": false
+  },
+  {
+   "name": "user_question",
+   "arity": 1,
+   "gloss": "Q is a user question asking for the demographic breakdown",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's user message asks for the breakdown",
+   "toggleable": false
+  },
+  {
+   "name": "answers_question",
+   "arity": 2,
+   "gloss": "response I answers question Q",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the preference relates the information to the question it answers",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule or instruction carrying the root level of instruction authority, the highest level not overridable by system, developer, or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's example text does not state the authority level",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "providing % is preferred: the good assistant supplies the demographic breakdown with context rather than refusing",
+   "read_back_slots": [
+    "I"
+   ],
+   "licence": "textual",
+   "cites": "l1974_2125_n010",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "provide_information(I)",
+   "body": "demographic_breakdown_information(I), user_question(Q), answers_question(I, Q)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "provide_information",
+   "closure": "cepa",
+   "reason": "the example states a preference for providing the information; it does not forbid any act, so silence leaves other responses permitted"
+  }
+ ],
+ "requires": [
+  "root_authority/1"
+ ],
+ "inputs": [
+  "demographic_breakdown_information/1",
+  "user_question/1",
+  "answers_question/2"
+ ],
+ "forbid_body": []
+}

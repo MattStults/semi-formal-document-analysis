@@ -1,0 +1,120 @@
+{
+  "abstain_reason": null,
+  "acts": [
+    "assess_tool_call(T)"
+  ],
+  "asserts": [
+    {
+      "act": "assess_tool_call(T)",
+      "body": "tool_call_involving_sensitive_data(T), assess_sensitivity_and_classification(T), assess_recipient_trustworthiness_and_response(T), assess_tool_side_effects(T), assess_scope_of_autonomy_or_user_intent(T)",
+      "cites": "l1707_1973_n030",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "for a tool call % involving sensitive data, the assistant should assess the sensitivity and classification of the information sent, the recipient's trustworthiness and whether the tool response will contain sensitive information, the tool's side effects, and whether sharing the information is within the agreed scope of autonomy or user intent",
+      "read_back_slots": [
+        "T"
+      ],
+      "status": "oblige",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 for each tool call involving sensitive data, the assistant should assess the sensitivity and classification of the information being sent",
+    "C2 for each tool call involving sensitive data, the assistant should assess whether the recipient is trustworthy and whether the tool response will contain sensitive information",
+    "C3 for each tool call involving sensitive data, the assistant should assess the tool's side effects",
+    "C4 for each tool call involving sensitive data, the assistant should assess whether sharing the information is within the agreed scope of autonomy or user intent"
+  ],
+  "clause_id": "l1707_1973_n030",
+  "closure": [
+    {
+      "act_class": "assess_tool_call",
+      "closure": "cepa",
+      "reason": "the clause obliges the assistant to perform assessments before tool calls involving sensitive data, but does not prohibit or permit any other act; silence about other acts leaves them permitted"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": "l1707_1973_n030",
+      "gloss": "T is a tool call that involves sensitive data",
+      "inference": null,
+      "licence": "textual",
+      "name": "tool_call_involving_sensitive_data",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l1707_1973_n030",
+      "gloss": "the assistant assesses the sensitivity and classification of the information being sent in tool call T",
+      "inference": null,
+      "licence": "textual",
+      "name": "assess_sensitivity_and_classification",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l1707_1973_n030",
+      "gloss": "the assistant assesses whether the recipient of tool call T is trustworthy and whether the tool response will contain sensitive information",
+      "inference": null,
+      "licence": "textual",
+      "name": "assess_recipient_trustworthiness_and_response",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l1707_1973_n030",
+      "gloss": "the assistant assesses the side effects of tool call T",
+      "inference": null,
+      "licence": "textual",
+      "name": "assess_tool_side_effects",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l1707_1973_n030",
+      "gloss": "the assistant assesses whether sharing the information in tool call T is within the agreed scope of autonomy or user intent",
+      "inference": null,
+      "licence": "textual",
+      "name": "assess_scope_of_autonomy_or_user_intent",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a rule in the protect_privileged_information section carrying root authority",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's source text does not define root authority",
+      "licence": "assumed",
+      "name": "root_authority",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "S is the scope of the user's request, referenced by the privileged information rule",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's source text refers to 'agreed scope of autonomy' without defining it",
+      "licence": "assumed",
+      "name": "scope_of_autonomy",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": [],
+  "ontology": [
+    {
+      "atom": "tool_call_involving_sensitive_data(T)",
+      "body": "tool_call(T)",
+      "cites": "l1707_1973_n030",
+      "gloss": "T is a tool call involving sensitive data",
+      "inference": null,
+      "licence": "textual",
+      "toggleable": false
+    }
+  ],
+  "outcome": "translated",
+  "requires": [
+    "root_authority/1",
+    "scope_of_autonomy/1"
+  ]
+}

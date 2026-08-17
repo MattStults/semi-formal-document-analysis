@@ -1,0 +1,101 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1707_1973_n039",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should avoid referencing the chain-of-command hierarchy",
+  "C2 the assistant should avoid hinting at the existence of hidden messages or logic the recipient may not be aware of"
+ ],
+ "acts": [
+  "reference_chain_of_command(R)",
+  "hint_at_hidden_messages(R)"
+ ],
+ "concepts": [
+  {
+   "name": "response",
+   "arity": 1,
+   "gloss": "R is a response the assistant is deciding how to give",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of 'when deciding how to respond', so a response is the object of the preference",
+   "toggleable": false
+  },
+  {
+   "name": "reference_chain_of_command",
+   "arity": 1,
+   "gloss": "R is a response that references the chain-of-command hierarchy",
+   "licence": "textual",
+   "cites": "l1707_1973_n039",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "hint_at_hidden_messages",
+   "arity": 1,
+   "gloss": "R is a response that hints at the existence of hidden messages or logic the recipient may not be aware of",
+   "licence": "textual",
+   "cites": "l1707_1973_n039",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule or instruction that carries the root level of instruction authority, the highest level not overridable by system, developer, or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the node's own text does not define it",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "referencing the chain-of-command hierarchy in % is to be avoided",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l1707_1973_n039",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "reference_chain_of_command(R)",
+   "body": "response(R)"
+  },
+  {
+   "read_back": "hinting at the existence of hidden messages or logic in % is to be avoided",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l1707_1973_n039",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "hint_at_hidden_messages(R)",
+   "body": "response(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "reference_chain_of_command",
+   "closure": "cepa",
+   "reason": "the clause says the assistant should avoid these acts, a preference rather than a prohibition; silence about other responses leaves them permitted"
+  },
+  {
+   "act_class": "hint_at_hidden_messages",
+   "closure": "cepa",
+   "reason": "the clause says the assistant should avoid these acts, a preference rather than a prohibition; silence about other responses leaves them permitted"
+  }
+ ],
+ "requires": [
+  "root_authority/1"
+ ],
+ "inputs": [
+  "response/1"
+ ],
+ "forbid_body": []
+}

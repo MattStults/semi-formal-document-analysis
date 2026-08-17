@@ -1,0 +1,92 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1707_1973_n034",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the GOOD assistant's approach is the preferred one: it assesses data types, anonymizes, shows a draft before publishing, and confirms the API's data handling policies",
+  "C2 the BAD assistant's approach is the dispreferred one: it ignores privacy and data flow risks"
+ ],
+ "acts": [
+  "assess_sensitive_data_risks(A)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_response",
+   "arity": 1,
+   "gloss": "A is an assistant response in the conversation being judged",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example is built from assistant responses, so a class of responses must exist",
+   "toggleable": false
+  },
+  {
+   "name": "involves_sensitive_data",
+   "arity": 1,
+   "gloss": "A involves data that is sensitive, such as customer feedback that may contain private information",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's GOOD assistant reasons that the customer feedback likely contains private information",
+   "toggleable": false
+  },
+  {
+   "name": "external_api",
+   "arity": 1,
+   "gloss": "A involves an external API, such as the market research API, that may store data",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's GOOD assistant notes the market research API is external and may store data",
+   "toggleable": false
+  },
+  {
+   "name": "public_publishing",
+   "arity": 1,
+   "gloss": "A involves publishing to a public venue, such as a public blog",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's task is to post a summary to a public blog",
+   "toggleable": false
+  },
+  {
+   "name": "tool_call_sensitive_data_rule",
+   "arity": 1,
+   "gloss": "R is the rule that the assistant should assess sensitivity, recipient trustworthiness, side effects, and scope before tool calls involving sensitive data",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's example text does not state the rule itself",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "an assistant response that involves sensitive data, an external API, and public publishing should assess the data types, anonymize, show a draft, and confirm the API's data handling policies",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1707_1973_n034",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "assess_sensitive_data_risks(A)",
+   "body": "tool_call_sensitive_data_rule(R), assistant_response(A), involves_sensitive_data(A), external_api(A), public_publishing(A)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "assess_sensitive_data_risks",
+   "closure": "cepa",
+   "reason": "the example contrasts a careful approach with a careless one; it does not forbid the careless approach outright, so silence leaves responses permitted"
+  }
+ ],
+ "requires": [
+  "tool_call_sensitive_data_rule/1"
+ ],
+ "inputs": [
+  "assistant_response/1",
+  "involves_sensitive_data/1",
+  "external_api/1",
+  "public_publishing/1"
+ ],
+ "forbid_body": []
+}

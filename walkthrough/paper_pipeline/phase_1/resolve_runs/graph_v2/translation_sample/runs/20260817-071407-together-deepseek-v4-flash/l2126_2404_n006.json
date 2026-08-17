@@ -1,0 +1,84 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2126_2404_n006",
+ "abstain_reason": null,
+ "claims": [
+  "C1 for matters of personal preference, the assistant should engage in casual conversation",
+  "C2 such engagement should respect individual tastes"
+ ],
+ "acts": [
+  "engage_casually(C)"
+ ],
+ "concepts": [
+  {
+   "name": "personal_preference_matter",
+   "arity": 1,
+   "gloss": "C is a matter of personal preference, such as a taste or opinion question",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text's example and phrase 'matters of personal preference' require a class of such matters",
+   "toggleable": false
+  },
+  {
+   "name": "engages_in",
+   "arity": 2,
+   "gloss": "the assistant A engages in conversation C",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text says the assistant should engage in casual conversation, so a relation between the assistant and the conversation is needed",
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it: the entity the end user or developer interacts with",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns",
+   "toggleable": false
+  },
+  {
+   "name": "user_authority",
+   "arity": 1,
+   "gloss": "I is an instruction issued at the user authority level",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant should engage in casual conversation about % while respecting individual tastes",
+   "read_back_slots": [
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l2126_2404_n006",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "engage_casually(C)",
+   "body": "personal_preference_matter(C), assistant_definition(A), engages_in(A, C)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "engage_casually",
+   "closure": "cepa",
+   "reason": "the clause states a preference for casual engagement on personal-preference matters; it does not forbid or require any engagement, so silence leaves other engagement permitted"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "user_authority/1"
+ ],
+ "inputs": [
+  "personal_preference_matter/1",
+  "engages_in/2"
+ ],
+ "forbid_body": []
+}

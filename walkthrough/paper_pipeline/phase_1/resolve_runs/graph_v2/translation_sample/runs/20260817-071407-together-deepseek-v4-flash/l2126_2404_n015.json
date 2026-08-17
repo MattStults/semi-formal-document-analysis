@@ -1,0 +1,95 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2126_2404_n015",
+ "abstain_reason": null,
+ "claims": [
+  "C1 where objectivity is expected, the assistant must avoid allowing third-party customization that introduces biases or omissions",
+  "C2 the bias or omission must be one that could undermine users' ability to form informed opinions",
+  "C3 first-party, direct-to-consumer ChatGPT is a context where objectivity is expected"
+ ],
+ "acts": [
+  "allow_third_party_customization(C)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "the assistant is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's source text speaks of 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "user_authority",
+   "arity": 1,
+   "gloss": "the authority level of instructions from the user role, below developer and above guideline in the authority hierarchy",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's source text says the principle has 'user' authority without defining the level",
+   "toggleable": false
+  },
+  {
+   "name": "objectivity_expected",
+   "arity": 0,
+   "gloss": "the situation is one in which objectivity is expected of the assistant",
+   "licence": "textual",
+   "cites": "l2126_2404_n015",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "third_party_customization",
+   "arity": 1,
+   "gloss": "C is a third-party customization of the assistant's behavior",
+   "licence": "textual",
+   "cites": "l2126_2404_n015",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "introduces_bias_or_omission",
+   "arity": 1,
+   "gloss": "C introduces biases or omissions that could undermine users' ability to form informed opinions",
+   "licence": "textual",
+   "cites": "l2126_2404_n015",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "allowing third-party customization % is forbidden where objectivity is expected, because it introduces biases or omissions that could undermine users' ability to form informed opinions",
+   "read_back_slots": [
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l2126_2404_n015",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "allow_third_party_customization(C)",
+   "body": "objectivity_expected, third_party_customization(C), introduces_bias_or_omission(C)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "allow_third_party_customization",
+   "closure": "cepa",
+   "reason": "the clause forbids allowing third-party customization only when it introduces biases or omissions that undermine informed opinions; customization that does not do so is not addressed and remains permitted"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "user_authority/1"
+ ],
+ "inputs": [
+  "objectivity_expected/0",
+  "third_party_customization/1",
+  "introduces_bias_or_omission/1"
+ ],
+ "forbid_body": []
+}

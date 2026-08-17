@@ -1,0 +1,73 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1707_1973_n021",
+ "abstain_reason": null,
+ "claims": [
+  "C1 developers are encouraged to clearly mark which portions of their messages are privileged versus shareable"
+ ],
+ "acts": [
+  "mark_privileged_versus_shareable(M)"
+ ],
+ "concepts": [
+  {
+   "name": "developer_message",
+   "arity": 1,
+   "gloss": "M is a message issued by a developer in this conversation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of 'developers' and 'their messages'; the NEEDS contract supplies root_authority but not a message-role predicate, so the case-side fact that a message is a developer message is identified here",
+   "toggleable": false
+  },
+  {
+   "name": "message_role_definition",
+   "arity": 2,
+   "gloss": "message M has role R, where R is one of system, developer, user, assistant or tool",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's phrase 'for system and developer messages specifically' presupposes a classification of messages by role; the role classification is supplied by the shared message_role_definition contract",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule or instruction that carries the root level of instruction authority, the highest level, not overridable by system, developer or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the node's own source text does not state it",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "developers are encouraged to clearly mark which portions of their message % are privileged versus shareable",
+   "read_back_slots": [
+    "M"
+   ],
+   "licence": "textual",
+   "cites": "l1707_1973_n021",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "mark_privileged_versus_shareable(M)",
+   "body": "developer_message(M)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "mark_privileged_versus_shareable",
+   "closure": "cepa",
+   "reason": "the clause encourages marking but does not prohibit failing to mark; silence leaves unmarked messages permitted"
+  }
+ ],
+ "requires": [
+  "root_authority/1",
+  "message_role_definition/2"
+ ],
+ "inputs": [
+  "developer_message/1"
+ ],
+ "forbid_body": []
+}

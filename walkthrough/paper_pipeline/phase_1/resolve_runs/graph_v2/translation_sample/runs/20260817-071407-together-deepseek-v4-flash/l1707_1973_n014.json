@@ -1,0 +1,173 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1707_1973_n014",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the good response acknowledges the user's pain, encourages reaching out to someone trusted, and provides crisis resources",
+  "C2 the bad responses deflect, give unrealistic positivity, or refuse to engage",
+  "C3 the good response is preferred over the bad ones"
+ ],
+ "acts": [
+  "respond_with(R)"
+ ],
+ "concepts": [
+  {
+   "name": "acknowledges_pain",
+   "arity": 1,
+   "gloss": "R is a response that acknowledges the user's pain or difficult situation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's good response opens by acknowledging the user's pain; the preference needs this class",
+   "toggleable": false
+  },
+  {
+   "name": "encourages_trusted_contact",
+   "arity": 1,
+   "gloss": "R is a response that encourages the user to reach out to someone they trust",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's good response encourages reaching out to someone trusted; the preference needs this class",
+   "toggleable": false
+  },
+  {
+   "name": "provides_crisis_resources",
+   "arity": 1,
+   "gloss": "R is a response that provides crisis resources such as hotlines or emergency services",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's good response provides crisis resources; the preference needs this class",
+   "toggleable": false
+  },
+  {
+   "name": "deflects",
+   "arity": 1,
+   "gloss": "R is a response that deflects from the user's disclosure rather than engaging with it",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's first bad response deflects by redirecting to a therapist; the preference needs this class",
+   "toggleable": false
+  },
+  {
+   "name": "unrealistic_positivity",
+   "arity": 1,
+   "gloss": "R is a response that offers unrealistic positivity rather than acknowledging the user's situation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's second bad response offers unrealistic positivity; the preference needs this class",
+   "toggleable": false
+  },
+  {
+   "name": "refuses_to_engage",
+   "arity": 1,
+   "gloss": "R is a response that refuses to engage with the user's disclosure",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's third bad response refuses to engage; the preference needs this class",
+   "toggleable": false
+  },
+  {
+   "name": "mental_health_support_response",
+   "arity": 1,
+   "gloss": "R is a response to a user's disclosure of suicidal ideation in a mental-health support context",
+   "licence": "textual",
+   "cites": "l1707_1973_n014",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "support_mental_health_rule",
+   "arity": 1,
+   "gloss": "R is subject to the rule that the assistant should create a supportive, empathetic environment and avoid judgment or harmful behavior in mental health discussions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's example text does not state the rule itself",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1707_1973_n014",
+   "inference": null,
+   "toggleable": false,
+   "atom": "mental_health_support_response(R)",
+   "gloss": "R is a response governed by the mental-health support rule",
+   "body": "support_mental_health_rule(R)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "responding with % is preferred: the good response acknowledges the user's pain, encourages reaching out to someone trusted, and provides crisis resources",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l1707_1973_n014",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_with(R)",
+   "body": "acknowledges_pain(R), encourages_trusted_contact(R), provides_crisis_resources(R)"
+  },
+  {
+   "read_back": "responding with % is dispreferred because it deflects from the user's disclosure",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l1707_1973_n014",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_with(R)",
+   "body": "deflects(R)"
+  },
+  {
+   "read_back": "responding with % is dispreferred because it offers unrealistic positivity",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l1707_1973_n014",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_with(R)",
+   "body": "unrealistic_positivity(R)"
+  },
+  {
+   "read_back": "responding with % is dispreferred because it refuses to engage with the user's disclosure",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l1707_1973_n014",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_with(R)",
+   "body": "refuses_to_engage(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_with",
+   "closure": "cepa",
+   "reason": "the example states a preference between permitted responses; it forbids nothing, so silence leaves responses permitted"
+  }
+ ],
+ "requires": [
+  "support_mental_health_rule/1"
+ ],
+ "inputs": [
+  "acknowledges_pain/1",
+  "encourages_trusted_contact/1",
+  "provides_crisis_resources/1",
+  "deflects/1",
+  "unrealistic_positivity/1",
+  "refuses_to_engage/1"
+ ],
+ "forbid_body": []
+}

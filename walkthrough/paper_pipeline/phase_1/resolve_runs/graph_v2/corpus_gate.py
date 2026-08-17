@@ -566,7 +566,36 @@ def c_readback_status_conflict(cid, o, span):
         elif oblige_shaped and st in ("permit", "prefer"):
             out.append(f"read_back is oblige-shaped but status={st}: "
                        f"{e.get('act')} — {e.get('read_back')!r:.90}")
+        elif re.search(r"\bshould\b(?! not)", rb) and st in ("oblige", "forbid"):
+            # chunk-2 audit: 'should'-worded read_backs over hard statuses —
+            # modal STRENGTHENING, the mirror of the downgrade M28 caught
+            out.append(f"read_back says 'should' but status={st} (modal "
+                       f"strengthening): {e.get('act')} — "
+                       f"{e.get('read_back')!r:.90}")
     return out
+
+
+def c_exclusivity_unencoded(cid, o, span):
+    """M29 hard (chunk-2 audit 2026-08-17; FM23). The narrowed span states an
+    "only/solely/exclusively" restriction and the module carries NO exclusion
+    channel — no forbid assert, no cnpa closure, no forbid_body. Both real
+    instances of the class (preset-voice, advanced-voice) fit this signature;
+    a span whose 'only' has any exclusion channel does not fire."""
+    m = re.search(r"\[node narrows this span to: \"(.*?)\"\]", span, re.S)
+    hay = (m.group(1) if m else "").lower()
+    if not re.search(r"\b(only|solely|exclusively)\b", hay):
+        return []
+    has_forbid = any(isinstance(e, dict) and e.get("status") == "forbid"
+                     for e in entries(o, "asserts"))
+    has_cnpa = any(isinstance(e, dict) and e.get("closure") == "cnpa"
+                   for e in entries(o, "closure"))
+    if has_forbid or has_cnpa or entries(o, "forbid_body"):
+        return []
+    if not entries(o, "asserts"):
+        return []            # structural/abstention-shaped module; no norm due
+    return ["span states an only/solely/exclusively restriction; module has "
+            "no forbid, no cnpa closure, no forbid_body — the exclusion is "
+            "unencoded (FM23)"]
 
 
 def c_needs_gloss_licence(cid, o, span):
@@ -614,6 +643,7 @@ PER_MODULE = [
     ("open_list_closed", c_open_list_closed, "review"),
     ("needs_gloss_licence", c_needs_gloss_licence, "hard"),
     ("refusal_inverted", c_refusal_inverted, "hard"),
+    ("exclusivity_unencoded", c_exclusivity_unencoded, "hard"),
     ("rebranding_derivation", c_rebranding_derivation, "hard"),
     ("readback_status_conflict", c_readback_status_conflict, "hard"),
 ]

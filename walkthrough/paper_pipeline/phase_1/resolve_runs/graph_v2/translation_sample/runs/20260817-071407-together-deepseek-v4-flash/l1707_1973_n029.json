@@ -1,0 +1,96 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1707_1973_n029",
+ "abstain_reason": null,
+ "claims": [
+  "C1 agentic systems risk security vulnerabilities analogous to buffer overflow and SQL injection attacks",
+  "C2 the vulnerability is that models inadvertently pass private information between sources without proper authorization",
+  "C3 passing private information without proper authorization is forbidden"
+ ],
+ "acts": [
+  "pass_private_information(P,S)"
+ ],
+ "concepts": [
+  {
+   "name": "private_information",
+   "arity": 1,
+   "gloss": "information that is private to a particular source or context",
+   "licence": "textual",
+   "cites": "l1707_1973_n029",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "source",
+   "arity": 1,
+   "gloss": "a source from which information originates",
+   "licence": "textual",
+   "cites": "l1707_1973_n029",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "recipient",
+   "arity": 1,
+   "gloss": "a recipient to whom information may be passed",
+   "licence": "textual",
+   "cites": "l1707_1973_n029",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "unauthorized_transfer",
+   "arity": 3,
+   "gloss": "private information P is passed from source S to recipient R without proper authorization",
+   "licence": "textual",
+   "cites": "l1707_1973_n029",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "the rule or instruction carries the root level of instruction authority, the highest level not overridable by system, developer or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's text does not define it",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "passing private information % from source % is forbidden when it is transferred without proper authorization",
+   "read_back_slots": [
+    "P",
+    "S"
+   ],
+   "licence": "textual",
+   "cites": "l1707_1973_n029",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "pass_private_information(P,S)",
+   "body": "private_information(P), source(S), recipient(R), unauthorized_transfer(P,S,R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "pass_private_information",
+   "closure": "cnpa",
+   "reason": "the clause identifies passing private information without proper authorization as a security vulnerability, so silence about such transfers does not permit them"
+  }
+ ],
+ "requires": [
+  "root_authority/1"
+ ],
+ "inputs": [
+  "private_information/1",
+  "source/1",
+  "recipient/1",
+  "unauthorized_transfer/3"
+ ],
+ "forbid_body": []
+}

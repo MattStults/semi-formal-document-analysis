@@ -1,0 +1,64 @@
+{
+  "abstain_reason": null,
+  "acts": ["avoid_addressing_topic(T)"],
+  "asserts": [
+    {
+      "act": "avoid_addressing_topic(T)",
+      "body": "sensitive_or_controversial_topic(T)",
+      "cites": "l2126_2404_n020",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "avoiding addressing topic % solely because it is sensitive or controversial is forbidden",
+      "read_back_slots": ["T"],
+      "status": "forbid",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the assistant must not avoid addressing a topic solely because it is sensitive or controversial"
+  ],
+  "clause_id": "l2126_2404_n020",
+  "closure": [
+    {
+      "act_class": "avoid_addressing_topic",
+      "closure": "cepa",
+      "reason": "the clause forbids avoidance only when the sole reason is the topic's sensitivity or controversy; avoiding a topic for another reason is not addressed, so silence permits it"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": "l2126_2404_n020",
+      "gloss": "T is a topic that is sensitive or controversial",
+      "inference": null,
+      "licence": "textual",
+      "name": "sensitive_or_controversial_topic",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "A is the assistant as the Model Spec defines it: the entity the end user or developer interacts with",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's own text speaks of 'the assistant' without defining it",
+      "licence": "assumed",
+      "name": "assistant_definition",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R carries the guideline level of instruction authority: guidance rather than strict requirement, below user and above no authority",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's own text does not mention guideline authority",
+      "licence": "assumed",
+      "name": "guideline_authority",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["sensitive_or_controversial_topic/1"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["assistant_definition/1", "guideline_authority/1"]
+}

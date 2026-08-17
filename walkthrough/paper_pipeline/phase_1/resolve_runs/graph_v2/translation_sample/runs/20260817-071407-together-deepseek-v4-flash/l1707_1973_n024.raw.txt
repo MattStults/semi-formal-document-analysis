@@ -1,0 +1,104 @@
+{
+
+"abstain_reason": null,
+"acts": ["avoid_confirming_or_denying(A)"],
+"asserts": [
+  {
+    "act": "avoid_confirming_or_denying(A)",
+    "body": "confidential_instruction(I), explicitly_authorized(A, I)",
+    "cites": "l1707_1973_n024",
+    "inference": null,
+    "licence": "textual",
+    "read_back": "avoiding confirming or denying the existence of % is forbidden when the assistant is explicitly authorized to confirm or deny it",
+    "read_back_slots": ["I"],
+    "status": "forbid",
+    "toggleable": false
+  }
+],
+"beats": [],
+"claims": [
+  "C1 the assistant should avoid confirming or denying the existence of confidential instructions",
+  "C2 this avoidance is lifted when the assistant is explicitly authorized to confirm or deny",
+  "C3 the avoidance is a should-level preference, not an absolute prohibition"
+],
+"clause_id": "l1707_1973_n024",
+"closure": [
+  {
+    "act_class": "avoid_confirming_or_denying",
+    "closure": "cepa",
+    "reason": "the clause states a should-level preference to avoid confirming or denying, and lifts it on explicit authorization; it does not prohibit the act outright, so silence leaves it permitted"
+  }
+],
+"concepts": [
+  {
+    "arity": 1,
+    "cites": null,
+    "gloss": "I is an instruction whose existence is confidential, so that confirming or denying it would disclose privileged content",
+    "inference": "the clause speaks of 'confidential instructions' whose existence the assistant should not confirm or deny; the class of such instructions is presupposed",
+    "licence": "assumed",
+    "name": "confidential_instruction",
+    "toggleable": false
+  },
+  {
+    "arity": 2,
+    "cites": null,
+    "gloss": "the assistant is explicitly authorized to confirm or deny the existence of instruction I",
+    "inference": "the clause's 'unless explicitly authorized' presupposes a relation of explicit authorization between the assistant and the instruction",
+    "licence": "assumed",
+    "name": "explicitly_authorized",
+    "toggleable": false
+  },
+  {
+    "arity": 1,
+    "cites": null,
+    "gloss": "the rule that the assistant must not disclose privileged content without permission and should avoid confirming or denying confidential instructions",
+    "inference": "the meaning is the one the PROVIDES contract assigns; this node's source text states the same content",
+    "licence": "assumed",
+    "name": "privileged_information_rule",
+    "toggleable": false
+  },
+  {
+    "arity": 1,
+    "cites": null,
+    "gloss": "R is a rule carrying the root level of instruction authority (highest; not overridable by system, developer or user instructions)",
+    "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not state the authority level",
+    "licence": "assumed",
+    "name": "root_authority",
+    "toggleable": false
+  },
+  {
+    "arity": 1,
+    "cites": null,
+    "gloss": "P is privileged information: non-public OpenAI policies, system messages, hidden chain-of-thought messages, or private content provided by developer or user",
+    "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define the class",
+    "licence": "assumed",
+    "name": "privileged_information",
+    "toggleable": false
+  },
+  {
+    "arity": 1,
+    "cites": null,
+    "gloss": "A is the assistant as the Model Spec defines it: the entity the end user or developer interacts with",
+    "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define the assistant",
+    "licence": "assumed",
+    "name": "assistant_definition",
+    "toggleable": false
+  }
+],
+"defines": [],
+"forbid_body": [],
+"inputs": ["confidential_instruction/1", "explicitly_authorized/2"],
+"ontology": [
+  {
+    "atom": "privileged_information_rule(R)",
+    "body": "root_authority(R)",
+    "cites": "l1707_1973_n024",
+    "gloss": "R is the privileged-information rule and carries root authority",
+    "inference": null,
+    "licence": "textual",
+    "toggleable": false
+  }
+],
+"outcome": "translated",
+"requires": ["root_authority/1", "privileged_information/1", "assistant_definition/1"]
+}

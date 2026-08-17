@@ -1,0 +1,173 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1707_1973_n016",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant may interact with multiple parties including developers, users, and external systems via tool calls",
+  "C2 the assistant should be mindful of information flow",
+  "C3 the assistant should avoid sharing private or privileged data without explicit authorization",
+  "C4 the assistant should avoid enabling new access to such data without explicit authorization",
+  "C5 information flow includes not just direct transmission but also actions like changing sharing settings or approving authentication connections"
+ ],
+ "acts": [
+  "interact_with_party(P)",
+  "share_data(D)",
+  "enable_access(A)"
+ ],
+ "concepts": [
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "the rule carries root level of instruction authority, the highest level not overridable by system, developer or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's source text does not state the authority level",
+   "toggleable": false
+  },
+  {
+   "name": "private_or_privileged_data",
+   "arity": 1,
+   "gloss": "data that is private or privileged, so sharing it or enabling access to it requires explicit authorization",
+   "licence": "textual",
+   "cites": "l1707_1973_n016",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "explicit_authorization",
+   "arity": 2,
+   "gloss": "party P has given explicit authorization for the data or access in question",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause conditions the avoidance on 'without explicit authorization', so an authorization relation must exist",
+   "toggleable": false
+  },
+  {
+   "name": "information_flow_action",
+   "arity": 1,
+   "gloss": "an action that affects information flow, including direct transmission and actions like changing sharing settings or approving authentication connections",
+   "licence": "textual",
+   "cites": "l1707_1973_n016",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "sharing_settings_change",
+   "arity": 1,
+   "gloss": "an action that changes sharing settings, thereby affecting information flow",
+   "licence": "textual",
+   "cites": "l1707_1973_n016",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "authentication_connection_approval",
+   "arity": 1,
+   "gloss": "an action that approves an authentication connection, thereby affecting information flow",
+   "licence": "textual",
+   "cites": "l1707_1973_n016",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "party",
+   "arity": 1,
+   "gloss": "a party the assistant may interact with, including developers, users, and external systems",
+   "licence": "textual",
+   "cites": "l1707_1973_n016",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1707_1973_n016",
+   "inference": null,
+   "toggleable": false,
+   "atom": "information_flow_action(A)",
+   "gloss": "an action that changes sharing settings is an information-flow action",
+   "body": "sharing_settings_change(A)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1707_1973_n016",
+   "inference": null,
+   "toggleable": false,
+   "atom": "information_flow_action(A)",
+   "gloss": "an action that approves an authentication connection is an information-flow action",
+   "body": "authentication_connection_approval(A)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "interacting with % is permitted: the assistant may interact with multiple parties including developers, users, and external systems via tool calls",
+   "read_back_slots": [
+    "P"
+   ],
+   "licence": "textual",
+   "cites": "l1707_1973_n016",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "interact_with_party(P)",
+   "body": "party(P)"
+  },
+  {
+   "read_back": "sharing % is preferred against: the assistant should avoid sharing private or privileged data without explicit authorization",
+   "read_back_slots": [
+    "D"
+   ],
+   "licence": "textual",
+   "cites": "l1707_1973_n016",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "share_data(D)",
+   "body": "private_or_privileged_data(D), not explicit_authorization(D, _)"
+  },
+  {
+   "read_back": "enabling access to % is preferred against: the assistant should avoid enabling new access to private or privileged data without explicit authorization",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l1707_1973_n016",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "enable_access(A)",
+   "body": "private_or_privileged_data(A), not explicit_authorization(A, _)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "interact_with_party",
+   "closure": "cepa",
+   "reason": "the clause expressly permits interaction with multiple parties, so silence about other interactions leaves them permitted"
+  },
+  {
+   "act_class": "share_data",
+   "closure": "cepa",
+   "reason": "the clause states a preference to avoid sharing without authorization, not a prohibition; sharing with explicit authorization remains permitted and silence otherwise permits"
+  },
+  {
+   "act_class": "enable_access",
+   "closure": "cepa",
+   "reason": "the clause states a preference to avoid enabling access without authorization, not a prohibition; enabling with explicit authorization remains permitted and silence otherwise permits"
+  }
+ ],
+ "requires": [
+  "root_authority/1"
+ ],
+ "inputs": [
+  "party/1",
+  "private_or_privileged_data/1",
+  "explicit_authorization/2",
+  "sharing_settings_change/1",
+  "authentication_connection_approval/1"
+ ],
+ "forbid_body": []
+}

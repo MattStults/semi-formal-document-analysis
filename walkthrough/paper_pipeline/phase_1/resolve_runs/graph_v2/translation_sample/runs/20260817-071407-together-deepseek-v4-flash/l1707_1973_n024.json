@@ -1,0 +1,114 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1707_1973_n024",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should avoid confirming or denying the existence of confidential instructions",
+  "C2 this avoidance is lifted when the assistant is explicitly authorized to confirm or deny",
+  "C3 the avoidance is a should-level preference, not an absolute prohibition"
+ ],
+ "acts": [
+  "avoid_confirming_or_denying(A)"
+ ],
+ "concepts": [
+  {
+   "name": "confidential_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction whose existence is confidential, so that confirming or denying it would disclose privileged content",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of 'confidential instructions' whose existence the assistant should not confirm or deny; the class of such instructions is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "explicitly_authorized",
+   "arity": 2,
+   "gloss": "the assistant is explicitly authorized to confirm or deny the existence of instruction I",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's 'unless explicitly authorized' presupposes a relation of explicit authorization between the assistant and the instruction",
+   "toggleable": false
+  },
+  {
+   "name": "privileged_information_rule",
+   "arity": 1,
+   "gloss": "the rule that the assistant must not disclose privileged content without permission and should avoid confirming or denying confidential instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the PROVIDES contract assigns; this node's source text states the same content",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule carrying the root level of instruction authority (highest; not overridable by system, developer or user instructions)",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not state the authority level",
+   "toggleable": false
+  },
+  {
+   "name": "privileged_information",
+   "arity": 1,
+   "gloss": "P is privileged information: non-public OpenAI policies, system messages, hidden chain-of-thought messages, or private content provided by developer or user",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define the class",
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it: the entity the end user or developer interacts with",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define the assistant",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1707_1973_n024",
+   "inference": null,
+   "toggleable": false,
+   "atom": "privileged_information_rule(R)",
+   "gloss": "R is the privileged-information rule and carries root authority",
+   "body": "root_authority(R)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "avoiding confirming or denying the existence of % is forbidden when the assistant is explicitly authorized to confirm or deny it",
+   "read_back_slots": [
+    "I"
+   ],
+   "licence": "textual",
+   "cites": "l1707_1973_n024",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "avoid_confirming_or_denying(A)",
+   "body": "confidential_instruction(I), explicitly_authorized(A, I)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "avoid_confirming_or_denying",
+   "closure": "cepa",
+   "reason": "the clause states a should-level preference to avoid confirming or denying, and lifts it on explicit authorization; it does not prohibit the act outright, so silence leaves it permitted"
+  }
+ ],
+ "requires": [
+  "root_authority/1",
+  "privileged_information/1",
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "confidential_instruction/1",
+  "explicitly_authorized/2"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,65 @@
+{
+  "abstain_reason": null,
+  "acts": ["respond_to_recipient(R)"],
+  "asserts": [
+    {
+      "act": "respond_to_recipient(R)",
+      "body": "recipient_identification_rule(R), user_greeting(G), response_to(R, G)",
+      "cites": "l1707_1973_n040",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "responding to the user's greeting % is preferred over replying to the developer instruction, because the user is the intended recipient",
+      "read_back_slots": ["G"],
+      "status": "prefer",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the example contrasts a GOOD assistant who responds to the user's greeting with a BAD assistant who replies to the developer instruction",
+    "C2 the GOOD response is preferred because it treats the user as the intended recipient"
+  ],
+  "clause_id": "l1707_1973_n040",
+  "closure": [
+    {
+      "act_class": "respond_to_recipient",
+      "closure": "cepa",
+      "reason": "the example states a preference for responding to the user; it does not forbid any response, so silence leaves other responses permitted"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is the rule that the assistant should identify the intended recipient and treat the user as the recipient unless a higher-level message explicitly instructs otherwise",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's example text presupposes the rule without stating it",
+      "licence": "assumed",
+      "name": "recipient_identification_rule",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l1707_1973_n040",
+      "gloss": "G is a greeting message from the user in this conversation",
+      "inference": null,
+      "licence": "textual",
+      "name": "user_greeting",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": "l1707_1973_n040",
+      "gloss": "response R is a reply to message M",
+      "inference": null,
+      "licence": "textual",
+      "name": "response_to",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["user_greeting/1", "response_to/2"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["recipient_identification_rule/1"]
+}

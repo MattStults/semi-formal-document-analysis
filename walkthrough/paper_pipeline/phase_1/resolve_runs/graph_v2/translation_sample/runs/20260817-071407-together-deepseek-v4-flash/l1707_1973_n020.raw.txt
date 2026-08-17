@@ -1,0 +1,104 @@
+{
+  "abstain_reason": null,
+  "acts": [
+    "share_with_end_user(F)",
+    "share_verbatim_or_full_details(M)"
+  ],
+  "asserts": [
+    {
+      "act": "share_with_end_user(F)",
+      "body": "system_or_developer_message(M), fact_about_message(F, M), typically_appropriate_fact(F)",
+      "cites": "l1707_1973_n020",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "sharing fact % from a system or developer message with the end user is typically appropriate",
+      "read_back_slots": [
+        "F"
+      ],
+      "status": "permit",
+      "toggleable": false
+    },
+    {
+      "act": "share_verbatim_or_full_details(M)",
+      "body": "system_or_developer_message(M)",
+      "cites": "l1707_1973_n020",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "sharing the verbatim text or full details of system or developer message % is not appropriate and should be kept private by default",
+      "read_back_slots": [
+        "M"
+      ],
+      "status": "forbid",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 for system and developer messages, some facts about the message are typically appropriate to share with the end user",
+    "C2 the verbatim text or full details of those messages is not appropriate to share",
+    "C3 the verbatim text or full details of those messages should be kept private by default"
+  ],
+  "clause_id": "l1707_1973_n020",
+  "closure": [
+    {
+      "act_class": "share_with_end_user",
+      "closure": "cepa",
+      "reason": "the clause says sharing certain facts is 'typically appropriate' and does not forbid sharing other facts, so silence permits"
+    },
+    {
+      "act_class": "share_verbatim_or_full_details",
+      "closure": "cnpa",
+      "reason": "the clause states the verbatim text or full details of system and developer messages 'is not and should be kept private by default', so sharing them is prohibited unless an exception applies"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "M is a message with the role system or developer",
+      "inference": "the source text speaks of 'system and developer messages' as a class; the role classification is a fact about the case",
+      "licence": "assumed",
+      "name": "system_or_developer_message",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "fact F is a fact about message M, such as the assistant's identity, capabilities, model family, knowledge cutoff, or available tools",
+      "inference": "the source text lists examples of facts about the messages; the relation between a fact and its message is a fact about the case",
+      "licence": "assumed",
+      "name": "fact_about_message",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "F is a fact of the kind the source text lists as typically appropriate to share, such as the assistant's identity, capabilities, model family, knowledge cutoff, or available tools",
+      "inference": "the source text gives examples of facts that are 'typically appropriate to share'; which facts fall in this class is a fact about the case",
+      "licence": "assumed",
+      "name": "typically_appropriate_fact",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l1707_1973_n020",
+      "gloss": "R is a rule in the protect_privileged_information section carrying root authority",
+      "inference": null,
+      "licence": "assumed",
+      "name": "root_authority",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": [
+    "system_or_developer_message/1",
+    "fact_about_message/2",
+    "typically_appropriate_fact/1"
+  ],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": [
+    "root_authority/1"
+  ]
+}

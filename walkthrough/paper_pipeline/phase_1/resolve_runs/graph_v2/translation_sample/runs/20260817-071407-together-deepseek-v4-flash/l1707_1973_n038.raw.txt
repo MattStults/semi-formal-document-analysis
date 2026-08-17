@@ -1,0 +1,128 @@
+{
+  "abstain_reason": null,
+  "acts": ["identify_recipient_and_context(R)", "treat_user_as_recipient(R)"],
+  "asserts": [
+    {
+      "act": "identify_recipient_and_context(R)",
+      "body": "deciding_how_to_respond(R)",
+      "cites": "l1707_1973_n038",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "when deciding how to respond, the assistant should first identify the intended recipient and the context",
+      "read_back_slots": ["R"],
+      "status": "prefer",
+      "toggleable": false
+    },
+    {
+      "act": "treat_user_as_recipient(R)",
+      "body": "deciding_how_to_respond(R), conversation_includes_user_message(C), higher_level_message_explicitly_instructs_otherwise(C)",
+      "cites": "l1707_1973_n038",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "typically, if the conversation includes a user message, the assistant should treat the user as the recipient unless a higher-level message explicitly instructs otherwise",
+      "read_back_slots": ["R", "C"],
+      "status": "prefer",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the assistant should first identify the intended recipient and the context when deciding how to respond",
+    "C2 typically, if the conversation includes a user message, the assistant should treat the user as the recipient",
+    "C3 the typical treatment of the user as recipient is subject to an exception: a higher-level message explicitly instructs otherwise"
+  ],
+  "clause_id": "l1707_1973_n038",
+  "closure": [
+    {
+      "act_class": "identify_recipient_and_context",
+      "closure": "cepa",
+      "reason": "the clause states a preference to identify recipient and context first; it does not forbid failing to do so, so silence permits"
+    },
+    {
+      "act_class": "treat_user_as_recipient",
+      "closure": "cepa",
+      "reason": "the clause states a typical preference to treat the user as recipient; it does not forbid other treatment, so silence permits"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a situation in which the assistant is deciding how to respond",
+      "inference": "the clause speaks of 'when deciding how to respond', so a predicate for that situation is needed",
+      "licence": "assumed",
+      "name": "deciding_how_to_respond",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "C is a conversation, a list of messages each with a role and content",
+      "inference": "the meaning is the one the NEEDS contract assigns; the clause's 'conversation' presupposes the definition without stating it",
+      "licence": "assumed",
+      "name": "conversation_definition",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "conversation C includes a message whose role is user",
+      "inference": "the clause's 'if the conversation includes a user message' requires a relation between a conversation and its user message",
+      "licence": "assumed",
+      "name": "conversation_includes_user_message",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "conversation C contains a higher-level message that explicitly instructs treating someone other than the user as the recipient",
+      "inference": "the clause's 'unless a higher-level message explicitly instructs otherwise' requires a predicate for that exception",
+      "licence": "assumed",
+      "name": "higher_level_message_explicitly_instructs_otherwise",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is the rule that the assistant should identify the intended recipient and treat the user as the recipient unless a higher-level message explicitly instructs otherwise",
+      "inference": "the meaning is the one the PROVIDES contract assigns; this node's text states the rule's content",
+      "licence": "assumed",
+      "name": "recipient_identification_rule",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a rule carrying root authority, the highest level of instruction authority",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define root authority",
+      "licence": "assumed",
+      "name": "root_authority",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "A is the assistant, the entity the end user or developer interacts with",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define the assistant",
+      "licence": "assumed",
+      "name": "assistant_definition",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["conversation_includes_user_message/2", "higher_level_message_explicitly_instructs_otherwise/2"],
+  "ontology": [
+    {
+      "atom": "recipient_identification_rule(R)",
+      "body": "deciding_how_to_respond(R)",
+      "cites": "l1707_1973_n038",
+      "gloss": "R is a situation governed by the rule that the assistant should identify the intended recipient and treat the user as the recipient unless a higher-level message explicitly instructs otherwise",
+      "inference": null,
+      "licence": "textual",
+      "toggleable": false
+    }
+  ],
+  "outcome": "translated",
+  "requires": ["root_authority/1", "assistant_definition/1", "conversation_definition/1"]
+}

@@ -1,0 +1,117 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2126_2404_n010",
+ "abstain_reason": null,
+ "claims": [
+  "C1 when an objective stance is appropriate, the assistant should avoid subjective terms",
+  "C2 the preference is particularly strong on sensitive or controversial topics",
+  "C3 the preference does not apply when the assistant is quoting directly or citing specific sources"
+ ],
+ "acts": [
+  "avoid_subjective_terms(A)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text speaks of 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "objective_stance_appropriate",
+   "arity": 1,
+   "gloss": "C is a context in which an objective stance is appropriate",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's condition 'when an objective stance is appropriate' requires a class of contexts",
+   "toggleable": false
+  },
+  {
+   "name": "sensitive_or_controversial_topic",
+   "arity": 1,
+   "gloss": "C is a topic that is sensitive or controversial, meaning it is likely to provoke strong feelings or disagreement",
+   "licence": "textual",
+   "cites": "l2126_2404_n010",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "subjective_term",
+   "arity": 1,
+   "gloss": "T is a subjective term, one that expresses a personal judgment or opinion rather than a neutral fact",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause directs the assistant to avoid 'subjective terms'; the class of such terms is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "uses_term",
+   "arity": 3,
+   "gloss": "the assistant A uses term T in context C",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the avoidance directive relates an assistant, a term, and the context in which the term would be used",
+   "toggleable": false
+  },
+  {
+   "name": "quoting_directly",
+   "arity": 2,
+   "gloss": "the assistant A is quoting term T directly, reproducing it verbatim",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the exception 'unless quoting directly' requires a relation between the assistant and the quoted term",
+   "toggleable": false
+  },
+  {
+   "name": "citing_specific_source",
+   "arity": 2,
+   "gloss": "the assistant A is citing a specific source for term T",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the exception 'or citing specific sources' requires a relation between the assistant and the cited term",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant % should avoid subjective terms % in context % when an objective stance is appropriate, particularly on sensitive or controversial topics, unless quoting directly or citing specific sources",
+   "read_back_slots": [
+    "A",
+    "T",
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l2126_2404_n010",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "avoid_subjective_terms(A)",
+   "body": "assistant_definition(A), objective_stance_appropriate(C), sensitive_or_controversial_topic(C), subjective_term(T), uses_term(A, T, C), not quoting_directly(A, T), not citing_specific_source(A, T)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "avoid_subjective_terms",
+   "closure": "cepa",
+   "reason": "the clause states a preference to avoid subjective terms in certain contexts; it does not forbid anything, so silence leaves other behavior permitted"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "objective_stance_appropriate/1",
+  "sensitive_or_controversial_topic/1",
+  "subjective_term/1",
+  "uses_term/3",
+  "quoting_directly/2",
+  "citing_specific_source/2"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,184 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1707_1973_n035",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example demonstrates the privileged-information rule in a user/developer conflict",
+  "C2 the good assistant refuses to reveal the developer message and only shares approved information (the refund policy)",
+  "C3 the bad assistant reveals or paraphrases the developer message"
+ ],
+ "acts": [
+  "refuse_to_reveal_developer_message(A)",
+  "share_approved_information(A)",
+  "reveal_developer_message(A)",
+  "paraphrase_developer_message(A)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant",
+   "arity": 1,
+   "gloss": "A is an assistant in the example conversation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example is about assistant responses, so an assistant class is needed",
+   "toggleable": false
+  },
+  {
+   "name": "user_requests_developer_message",
+   "arity": 2,
+   "gloss": "user U asks assistant A to reveal the developer message",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example includes a user request to reveal the developer message",
+   "toggleable": false
+  },
+  {
+   "name": "developer_message",
+   "arity": 1,
+   "gloss": "D is the developer message in the example",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example includes a developer message",
+   "toggleable": false
+  },
+  {
+   "name": "privileged_information",
+   "arity": 1,
+   "gloss": "D is privileged information that must not be disclosed without permission",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the example's developer message is privileged",
+   "toggleable": false
+  },
+  {
+   "name": "user_asks_refund_policy",
+   "arity": 2,
+   "gloss": "user U asks assistant A about the refund policy",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example includes a user asking whether refunds are allowed",
+   "toggleable": false
+  },
+  {
+   "name": "approved_information",
+   "arity": 1,
+   "gloss": "I is information the developer message approves for sharing (the refund policy)",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example distinguishes approved information from the rest of the developer message",
+   "toggleable": false
+  },
+  {
+   "name": "shares",
+   "arity": 2,
+   "gloss": "assistant A shares information I",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example describes what the assistant shares",
+   "toggleable": false
+  },
+  {
+   "name": "reveals",
+   "arity": 2,
+   "gloss": "assistant A reveals developer message D",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example describes the bad assistant revealing the developer message",
+   "toggleable": false
+  },
+  {
+   "name": "paraphrases",
+   "arity": 2,
+   "gloss": "assistant A paraphrases developer message D",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example describes the bad assistant paraphrasing the developer message",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "refusing to reveal the developer message when the user asks for it is the good behavior in this example",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1707_1973_n035",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "refuse_to_reveal_developer_message(A)",
+   "body": "assistant(A), user_requests_developer_message(U, A), developer_message(D), privileged_information(D)"
+  },
+  {
+   "read_back": "sharing only the approved information (the refund policy) when the user asks about refunds is the good behavior in this example",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1707_1973_n035",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "share_approved_information(A)",
+   "body": "assistant(A), user_asks_refund_policy(U, A), approved_information(I), shares(A, I)"
+  },
+  {
+   "read_back": "revealing the developer message is the bad behavior in this example",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1707_1973_n035",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "reveal_developer_message(A)",
+   "body": "assistant(A), developer_message(D), reveals(A, D)"
+  },
+  {
+   "read_back": "paraphrasing the developer message is the bad behavior in this example",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1707_1973_n035",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "paraphrase_developer_message(A)",
+   "body": "assistant(A), developer_message(D), paraphrases(A, D)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "refuse_to_reveal_developer_message",
+   "closure": "cepa",
+   "reason": "the example only marks refusal as good; it does not forbid other responses, so silence permits them"
+  },
+  {
+   "act_class": "share_approved_information",
+   "closure": "cepa",
+   "reason": "the example only marks sharing approved information as good; it does not forbid other sharing, so silence permits it"
+  },
+  {
+   "act_class": "reveal_developer_message",
+   "closure": "cnpa",
+   "reason": "the example marks revealing the developer message as bad, so silence about other acts does not permit this one"
+  },
+  {
+   "act_class": "paraphrase_developer_message",
+   "closure": "cnpa",
+   "reason": "the example marks paraphrasing the developer message as bad, so silence about other acts does not permit this one"
+  }
+ ],
+ "requires": [
+  "privileged_information/1"
+ ],
+ "inputs": [
+  "assistant/1",
+  "user_requests_developer_message/2",
+  "developer_message/1",
+  "user_asks_refund_policy/2",
+  "approved_information/1",
+  "shares/2",
+  "reveals/2",
+  "paraphrases/2"
+ ],
+ "forbid_body": []
+}

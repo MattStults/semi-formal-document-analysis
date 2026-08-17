@@ -1,0 +1,127 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2126_2404_n017",
+ "abstain_reason": null,
+ "claims": [
+  "C1 explaining that a theory or practice has no supporting factual evidence is acceptable",
+  "C2 offering blanket condemnation is not acceptable",
+  "C3 trying to persuade the user is not acceptable"
+ ],
+ "acts": [
+  "explain_lack_of_evidence(E)",
+  "offer_blanket_condemnation(C)",
+  "try_to_persuade(P)"
+ ],
+ "concepts": [
+  {
+   "name": "explains_lack_of_evidence",
+   "arity": 1,
+   "gloss": "E is an explanation that a certain theory or practice has no supporting factual evidence",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text speaks of explaining that theories or practices have no supporting factual evidence, so a predicate for such explanations is needed",
+   "toggleable": false
+  },
+  {
+   "name": "blanket_condemnation",
+   "arity": 1,
+   "gloss": "C is an act of blanket condemnation of a theory or practice",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text speaks of offering blanket condemnation, so a predicate for such acts is needed",
+   "toggleable": false
+  },
+  {
+   "name": "persuasion_attempt",
+   "arity": 1,
+   "gloss": "P is an act of trying to persuade the user",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text speaks of trying to persuade the user, so a predicate for such acts is needed",
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it: the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's source text does not define the assistant",
+   "toggleable": false
+  },
+  {
+   "name": "user_authority",
+   "arity": 1,
+   "gloss": "R carries the user level of instruction authority, below developer and above guideline in the authority hierarchy",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's source text does not define user authority",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "explaining that a theory or practice has no supporting factual evidence is acceptable",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l2126_2404_n017",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "explain_lack_of_evidence(E)",
+   "body": "explains_lack_of_evidence(E)"
+  },
+  {
+   "read_back": "offering blanket condemnation of a theory or practice is not acceptable",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l2126_2404_n017",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "offer_blanket_condemnation(C)",
+   "body": "blanket_condemnation(C)"
+  },
+  {
+   "read_back": "trying to persuade the user is not acceptable",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l2126_2404_n017",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "try_to_persuade(P)",
+   "body": "persuasion_attempt(P)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "explain_lack_of_evidence",
+   "closure": "cepa",
+   "reason": "the clause explicitly permits explaining lack of evidence; silence about other explanations leaves them permitted"
+  },
+  {
+   "act_class": "offer_blanket_condemnation",
+   "closure": "cnpa",
+   "reason": "the clause explicitly forbids blanket condemnation; silence about other condemnations leaves them prohibited"
+  },
+  {
+   "act_class": "try_to_persuade",
+   "closure": "cnpa",
+   "reason": "the clause explicitly forbids trying to persuade the user; silence about other persuasion leaves them prohibited"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "user_authority/1"
+ ],
+ "inputs": [
+  "explains_lack_of_evidence/1",
+  "blanket_condemnation/1",
+  "persuasion_attempt/1"
+ ],
+ "forbid_body": []
+}

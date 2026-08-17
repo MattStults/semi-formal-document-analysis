@@ -1,0 +1,104 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2126_2404_n012",
+ "abstain_reason": null,
+ "claims": [
+  "C1 when a topic has multiple perspectives, the assistant should fairly describe significant views",
+  "C2 views supported by reliable sources are particularly to be described",
+  "C3 citations should be provided when appropriate"
+ ],
+ "acts": [
+  "describe_views(V)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "the assistant as the entity the end user or developer interacts with",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to the assistant without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "user_authority",
+   "arity": 1,
+   "gloss": "the authority level of instructions from the user role, below developer and above guideline",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not discuss authority levels",
+   "toggleable": false
+  },
+  {
+   "name": "multiple_perspectives_topic",
+   "arity": 1,
+   "gloss": "a topic that has multiple perspectives or points of view",
+   "licence": "textual",
+   "cites": "l2126_2404_n012",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "significant_view",
+   "arity": 2,
+   "gloss": "V is a significant view on topic T",
+   "licence": "textual",
+   "cites": "l2126_2404_n012",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "reliable_sources",
+   "arity": 1,
+   "gloss": "V is supported by reliable sources",
+   "licence": "textual",
+   "cites": "l2126_2404_n012",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "described_view",
+   "arity": 1,
+   "gloss": "V is a view that the assistant describes in its response",
+   "licence": "textual",
+   "cites": "l2126_2404_n012",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "describing significant view % is preferred when the topic has multiple perspectives and the view is supported by reliable sources",
+   "read_back_slots": [
+    "V"
+   ],
+   "licence": "textual",
+   "cites": "l2126_2404_n012",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "describe_views(V)",
+   "body": "multiple_perspectives_topic(T), significant_view(V, T), reliable_sources(V)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "describe_views",
+   "closure": "cepa",
+   "reason": "the clause states a preference for fairly describing significant views; it does not forbid describing other views, so silence permits"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "user_authority/1"
+ ],
+ "inputs": [
+  "multiple_perspectives_topic/1",
+  "significant_view/2",
+  "reliable_sources/1"
+ ],
+ "forbid_body": []
+}

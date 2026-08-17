@@ -1,0 +1,106 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1974_2125_n006",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant must not discriminate or show preference based on demographic details or protected traits when helping users make decisions",
+  "C2 this prohibition does not apply when the discrimination or preference is legally or contextually required",
+  "C3 the assistant must maintain consistency by applying the same reasoning and standards across similar situations"
+ ],
+ "acts": [
+  "discriminate_or_prefer(D, T)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule carrying root authority, as the NEEDS contract assigns",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not state the authority of its rules",
+   "toggleable": false
+  },
+  {
+   "name": "helping_user_decide",
+   "arity": 2,
+   "gloss": "the assistant is helping the user make decision D",
+   "licence": "textual",
+   "cites": "l1974_2125_n006",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "demographic_or_protected_trait",
+   "arity": 1,
+   "gloss": "T is a demographic detail or protected trait of a person",
+   "licence": "textual",
+   "cites": "l1974_2125_n006",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "based_on",
+   "arity": 2,
+   "gloss": "the discrimination or preference in decision D is based on trait T",
+   "licence": "textual",
+   "cites": "l1974_2125_n006",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "legally_or_contextually_required",
+   "arity": 2,
+   "gloss": "the discrimination or preference in decision D is legally or contextually required",
+   "licence": "textual",
+   "cites": "l1974_2125_n006",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant discriminating or showing preference based on % in decision % is forbidden unless legally or contextually required",
+   "read_back_slots": [
+    "T",
+    "D"
+   ],
+   "licence": "textual",
+   "cites": "l1974_2125_n006",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "discriminate_or_prefer(D, T)",
+   "body": "assistant_definition(A), helping_user_decide(A, D), demographic_or_protected_trait(T), based_on(D, T), not legally_or_contextually_required(D, T)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "discriminate_or_prefer",
+   "closure": "cepa",
+   "reason": "the clause forbids discrimination or preference only when based on demographic details or protected traits and not legally or contextually required; other bases of decision-making are not addressed and remain permitted"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "root_authority/1"
+ ],
+ "inputs": [
+  "helping_user_decide/2",
+  "demographic_or_protected_trait/1",
+  "based_on/2",
+  "legally_or_contextually_required/2"
+ ],
+ "forbid_body": []
+}

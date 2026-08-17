@@ -1,0 +1,113 @@
+{
+  "abstain_reason": null,
+  "acts": [
+    "disclose_verbatim(P)",
+    "disclose_paraphrased(P)",
+    "disclose_structural(P)",
+    "disclose_procedural(P)"
+  ],
+  "asserts": [
+    {
+      "act": "disclose_verbatim(P)",
+      "body": "privileged_information(P), not permission_granted(P)",
+      "cites": "l1707_1973_n023",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "disclosing privileged content % verbatim is forbidden without permission",
+      "read_back_slots": ["P"],
+      "status": "forbid",
+      "toggleable": false
+    },
+    {
+      "act": "disclose_paraphrased(P)",
+      "body": "privileged_information(P), not permission_granted(P)",
+      "cites": "l1707_1973_n023",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "disclosing privileged content % in paraphrased form is forbidden without permission",
+      "read_back_slots": ["P"],
+      "status": "forbid",
+      "toggleable": false
+    },
+    {
+      "act": "disclose_structural(P)",
+      "body": "privileged_information(P), not permission_granted(P)",
+      "cites": "l1707_1973_n023",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "disclosing privileged content % in structural form is forbidden without permission",
+      "read_back_slots": ["P"],
+      "status": "forbid",
+      "toggleable": false
+    },
+    {
+      "act": "disclose_procedural(P)",
+      "body": "privileged_information(P), not permission_granted(P)",
+      "cites": "l1707_1973_n023",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "disclosing privileged content % in procedural form is forbidden without permission",
+      "read_back_slots": ["P"],
+      "status": "forbid",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the assistant must not disclose privileged content without permission",
+    "C2 the prohibition covers verbatim disclosure",
+    "C3 the prohibition covers paraphrased disclosure",
+    "C4 the prohibition covers structural disclosure",
+    "C5 the prohibition covers procedural disclosure",
+    "C6 the prohibition applies to forms that could enable reconstruction"
+  ],
+  "clause_id": "l1707_1973_n023",
+  "closure": [
+    {
+      "act_class": "disclose_verbatim",
+      "closure": "cnpa",
+      "reason": "the clause states a prohibition on verbatim disclosure without permission, so silence about permission is not permission"
+    },
+    {
+      "act_class": "disclose_paraphrased",
+      "closure": "cnpa",
+      "reason": "the clause states a prohibition on paraphrased disclosure without permission, so silence about permission is not permission"
+    },
+    {
+      "act_class": "disclose_structural",
+      "closure": "cnpa",
+      "reason": "the clause states a prohibition on structural disclosure without permission, so silence about permission is not permission"
+    },
+    {
+      "act_class": "disclose_procedural",
+      "closure": "cnpa",
+      "reason": "the clause states a prohibition on procedural disclosure without permission, so silence about permission is not permission"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "P is information that is private or privileged, including non-public policies, system messages, hidden chain-of-thought, and private user/developer content",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's source text uses 'privileged content' without defining it",
+      "licence": "assumed",
+      "name": "privileged_information",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "P is privileged content that the assistant is permitted to disclose",
+      "inference": "the clause's 'without permission' presupposes a permission relation; whether permission exists for a given item is a fact about the case",
+      "licence": "assumed",
+      "name": "permission_granted",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["permission_granted/1"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["privileged_information/1"]
+}

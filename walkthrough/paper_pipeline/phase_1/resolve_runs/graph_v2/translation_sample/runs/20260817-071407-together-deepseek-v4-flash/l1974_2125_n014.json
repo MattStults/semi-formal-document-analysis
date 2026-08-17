@@ -1,0 +1,144 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1974_2125_n014",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the good assistant provides warmth without escalating exclusivity",
+  "C2 the bad assistant mirrors the user's emotion",
+  "C3 the bad assistant suggests an exclusive connection",
+  "C4 the example demonstrates the real-world ties rule"
+ ],
+ "acts": [
+  "respond_with_warmth(R)",
+  "mirror_user_emotion(R)",
+  "suggest_exclusive_connection(R)"
+ ],
+ "concepts": [
+  {
+   "name": "good_assistant_response",
+   "arity": 1,
+   "gloss": "R is a response the example labels as the good assistant's response",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's GOOD/BAD labels distinguish the two responses; the classification is a fact about the case",
+   "toggleable": false
+  },
+  {
+   "name": "bad_assistant_response",
+   "arity": 1,
+   "gloss": "R is a response the example labels as the bad assistant's response",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's GOOD/BAD labels distinguish the two responses; the classification is a fact about the case",
+   "toggleable": false
+  },
+  {
+   "name": "warmth_without_exclusivity",
+   "arity": 1,
+   "gloss": "R provides warmth without escalating exclusivity",
+   "licence": "textual",
+   "cites": "l1974_2125_n014",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "mirrors_user_emotion",
+   "arity": 1,
+   "gloss": "R mirrors the user's emotion",
+   "licence": "textual",
+   "cites": "l1974_2125_n014",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "suggests_exclusive_connection",
+   "arity": 1,
+   "gloss": "R claims a unique, special bond with the user that excludes others",
+   "licence": "textual",
+   "cites": "l1974_2125_n014",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is subject to the real-world ties rule, which carries root authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the example demonstrates the rule without stating its content",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "responding with % is preferred: it provides warmth without escalating exclusivity",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l1974_2125_n014",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_with_warmth(R)",
+   "body": "good_assistant_response(R), warmth_without_exclusivity(R)"
+  },
+  {
+   "read_back": "responding with % is dispreferred: it mirrors the user's emotion",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l1974_2125_n014",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "mirror_user_emotion(R)",
+   "body": "bad_assistant_response(R), mirrors_user_emotion(R)"
+  },
+  {
+   "read_back": "responding with % is dispreferred: it suggests an exclusive connection",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l1974_2125_n014",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "suggest_exclusive_connection(R)",
+   "body": "bad_assistant_response(R), suggests_exclusive_connection(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_with_warmth",
+   "closure": "cepa",
+   "reason": "the example prefers warmth without exclusivity; it does not forbid warmth itself, so silence permits it"
+  },
+  {
+   "act_class": "mirror_user_emotion",
+   "closure": "cepa",
+   "reason": "the example marks mirroring as bad but does not forbid it outright; silence leaves it permitted"
+  },
+  {
+   "act_class": "suggest_exclusive_connection",
+   "closure": "cepa",
+   "reason": "the example marks suggesting exclusivity as bad but does not forbid it outright; silence leaves it permitted"
+  }
+ ],
+ "requires": [
+  "root_authority/1"
+ ],
+ "inputs": [
+  "good_assistant_response/1",
+  "bad_assistant_response/1",
+  "warmth_without_exclusivity/1",
+  "mirrors_user_emotion/1",
+  "suggests_exclusive_connection/1"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,138 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1707_1973_n027",
+ "abstain_reason": null,
+ "claims": [
+  "C1 before sending privileged information to an external party on behalf of the user, the assistant should assess the recipient's trustworthiness",
+  "C2 before sending privileged information to an external party on behalf of the user, the assistant should assess whether the disclosure is reasonable",
+  "C3 before sending privileged information to an external party on behalf of the user, the assistant should assess whether the disclosure is within the scope of the user's request",
+  "C4 the same three assessments apply before interacting with an external party on behalf of the user"
+ ],
+ "acts": [
+  "assess_recipient_trustworthiness(R)",
+  "assess_disclosure_reasonableness(R)",
+  "assess_disclosure_within_scope(R)"
+ ],
+ "concepts": [
+  {
+   "name": "external_party",
+   "arity": 1,
+   "gloss": "R is a party external to the user and the assistant, with whom the assistant might interact on the user's behalf",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text speaks of 'an external party' as the recipient of privileged information or the subject of interaction; the concept is needed to state the condition",
+   "toggleable": false
+  },
+  {
+   "name": "privileged_information",
+   "arity": 1,
+   "gloss": "P is information that is privileged, i.e. protected by the protect_privileged_information section's rules",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text speaks of 'any privileged information'; the NEEDS contract for root_authority describes the section's rules, and the concept of privileged information is presupposed by the clause",
+   "toggleable": false
+  },
+  {
+   "name": "on_behalf_of_user",
+   "arity": 1,
+   "gloss": "R is an external party with whom the assistant is interacting on behalf of the user",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text says 'on behalf of the user'; the concept is needed to state the condition",
+   "toggleable": false
+  },
+  {
+   "name": "sending_or_interacting",
+   "arity": 2,
+   "gloss": "the assistant is sending privileged information P to, or otherwise interacting with, external party R",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text's 'sending ... to or interacting with' is the triggering situation; the concept is needed to state the condition",
+   "toggleable": false
+  },
+  {
+   "name": "scope_of_autonomy",
+   "arity": 1,
+   "gloss": "the scope of the user's request, as referenced by the privileged information rule",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the source text links to scope_of_autonomy",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule in the protect_privileged_information section carrying root authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the source text does not state it",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "before sending privileged information to or interacting with an external party on behalf of the user, the assistant should assess the recipient's trustworthiness",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1707_1973_n027",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "assess_recipient_trustworthiness(R)",
+   "body": "privileged_information(P), external_party(R), on_behalf_of_user(R), sending_or_interacting(P, R)"
+  },
+  {
+   "read_back": "before sending privileged information to or interacting with an external party on behalf of the user, the assistant should assess whether the disclosure is reasonable",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1707_1973_n027",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "assess_disclosure_reasonableness(R)",
+   "body": "privileged_information(P), external_party(R), on_behalf_of_user(R), sending_or_interacting(P, R)"
+  },
+  {
+   "read_back": "before sending privileged information to or interacting with an external party on behalf of the user, the assistant should assess whether the disclosure is within the scope of the user's request",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1707_1973_n027",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "assess_disclosure_within_scope(R)",
+   "body": "privileged_information(P), external_party(R), on_behalf_of_user(R), sending_or_interacting(P, R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "assess_recipient_trustworthiness",
+   "closure": "cepa",
+   "reason": "the clause obliges the assessment only in the stated circumstances; it does not forbid or permit anything else, so silence leaves other acts permitted"
+  },
+  {
+   "act_class": "assess_disclosure_reasonableness",
+   "closure": "cepa",
+   "reason": "the clause obliges the assessment only in the stated circumstances; it does not forbid or permit anything else, so silence leaves other acts permitted"
+  },
+  {
+   "act_class": "assess_disclosure_within_scope",
+   "closure": "cepa",
+   "reason": "the clause obliges the assessment only in the stated circumstances; it does not forbid or permit anything else, so silence leaves other acts permitted"
+  }
+ ],
+ "requires": [
+  "root_authority/1",
+  "scope_of_autonomy/1"
+ ],
+ "inputs": [
+  "external_party/1",
+  "privileged_information/1",
+  "on_behalf_of_user/1",
+  "sending_or_interacting/2"
+ ],
+ "forbid_body": []
+}

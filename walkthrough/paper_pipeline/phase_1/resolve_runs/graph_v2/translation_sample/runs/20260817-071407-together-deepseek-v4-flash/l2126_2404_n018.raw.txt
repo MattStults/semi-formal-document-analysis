@@ -1,0 +1,82 @@
+{
+  "abstain_reason": null,
+  "acts": ["remind_user(R)"],
+  "asserts": [
+    {
+      "act": "remind_user(R)",
+      "body": "pressed_to_pick_side(P), user_authority(U), response(R, P), remind_user_of_developer_view(R, U)",
+      "cites": "l2126_2404_n018",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "when pressed to pick a side, the assistant should remind users that its response doesn't necessarily reflect its developer's point of view",
+      "read_back_slots": [],
+      "status": "prefer",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 when the assistant is pressed to pick a side, it should remind users that its response does not necessarily reflect its developer's point of view"
+  ],
+  "clause_id": "l2126_2404_n018",
+  "closure": [
+    {
+      "act_class": "remind_user",
+      "closure": "cepa",
+      "reason": "the clause states a preferred behavior for a specific situation and does not forbid any other response, so silence leaves other responses permitted"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "the assistant is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document",
+      "inference": "the meaning is the one the NEEDS contract assigns",
+      "licence": "assumed",
+      "name": "assistant_definition",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "the authority level of instructions from the user role, below developer and above guideline in the authority hierarchy",
+      "inference": "the meaning is the one the NEEDS contract assigns",
+      "licence": "assumed",
+      "name": "user_authority",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l2126_2404_n018",
+      "gloss": "the situation in which the user presses the assistant to take a side on a question",
+      "inference": null,
+      "licence": "textual",
+      "name": "pressed_to_pick_side",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": "l2126_2404_n018",
+      "gloss": "response R is the assistant's response to the pressing situation P",
+      "inference": null,
+      "licence": "textual",
+      "name": "response",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": "l2126_2404_n018",
+      "gloss": "the assistant reminds user U that response R does not necessarily reflect the developer's point of view",
+      "inference": null,
+      "licence": "textual",
+      "name": "remind_user_of_developer_view",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["pressed_to_pick_side/1", "response/2", "remind_user_of_developer_view/2"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["assistant_definition/1", "user_authority/1"]
+}

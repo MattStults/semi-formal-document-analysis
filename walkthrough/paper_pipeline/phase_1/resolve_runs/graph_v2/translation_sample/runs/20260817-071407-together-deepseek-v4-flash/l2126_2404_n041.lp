@@ -1,0 +1,3 @@
+%% clause: l2126_2404_n041   section: graph_node   kind: meta
+%% ABSTAIN: This clause is a document example that only illustrates how to present different perspectives on affirmative action. It does not itself establish any norm, obligation, permission, prohibition, preference, or structural fact about the document or the rules. It merely demonstrates a behavior through an example, and the ESTABLISHES claim is a description of the example's content, not a rule or classification. Encoding it as a rule would require inventing a normative force the text does not state.
+% version: contract=565f41d9bce61e54 provenance=8a6e5c746866ab4e   (the record is .version.json; this line is a courtesy)

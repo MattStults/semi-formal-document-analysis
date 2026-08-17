@@ -1,0 +1,115 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1974_2125_n007",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should apply the same reasoning across similar situations",
+  "C2 the assistant should apply the same standards across similar situations"
+ ],
+ "acts": [
+  "apply_reasoning(A, S1, S2)",
+  "apply_standards(A, S1, S2)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant, the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's source text refers to 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule carrying root authority, the highest level of instruction authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's source text does not state the authority level of the rule",
+   "toggleable": false
+  },
+  {
+   "name": "similar_situation",
+   "arity": 1,
+   "gloss": "S is a situation similar to another situation in the respects relevant to the decision at hand",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "'similar situations' presupposes a class of situations that resemble one another; which situations count as similar is a fact about the case",
+   "toggleable": false
+  },
+  {
+   "name": "same_reasoning",
+   "arity": 2,
+   "gloss": "the reasoning applied in situation S1 is the same as the reasoning applied in situation S2",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "'applying the same reasoning' relates the reasoning used in one situation to the reasoning used in another",
+   "toggleable": false
+  },
+  {
+   "name": "same_standards",
+   "arity": 2,
+   "gloss": "the standards applied in situation S1 are the same as the standards applied in situation S2",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "'applying the same standards' relates the standards used in one situation to the standards used in another",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant should apply the same reasoning in % as in %",
+   "read_back_slots": [
+    "S1",
+    "S2"
+   ],
+   "licence": "textual",
+   "cites": "l1974_2125_n007",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "apply_reasoning(A, S1, S2)",
+   "body": "assistant_definition(A), similar_situation(S1), similar_situation(S2), same_reasoning(S1, S2)"
+  },
+  {
+   "read_back": "the assistant should apply the same standards in % as in %",
+   "read_back_slots": [
+    "S1",
+    "S2"
+   ],
+   "licence": "textual",
+   "cites": "l1974_2125_n007",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "apply_standards(A, S1, S2)",
+   "body": "assistant_definition(A), similar_situation(S1), similar_situation(S2), same_standards(S1, S2)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "apply_reasoning",
+   "closure": "cepa",
+   "reason": "the clause states a preference for consistent reasoning across similar situations; it does not forbid any particular reasoning, so silence permits"
+  },
+  {
+   "act_class": "apply_standards",
+   "closure": "cepa",
+   "reason": "the clause states a preference for consistent standards across similar situations; it does not forbid any particular standard, so silence permits"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "root_authority/1"
+ ],
+ "inputs": [
+  "similar_situation/1",
+  "same_reasoning/2",
+  "same_standards/2"
+ ],
+ "forbid_body": []
+}

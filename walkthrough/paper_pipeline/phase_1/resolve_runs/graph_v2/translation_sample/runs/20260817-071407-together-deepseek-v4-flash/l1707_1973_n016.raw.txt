@@ -1,0 +1,159 @@
+{
+  "abstain_reason": null,
+  "acts": [
+    "interact_with(P)",
+    "share_data(D)",
+    "enable_access(D)"
+  ],
+  "asserts": [
+    {
+      "act": "interact_with(P)",
+      "body": "party(P)",
+      "cites": "l1707_1973_n016",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "interacting with % is permitted",
+      "read_back_slots": [
+        "P"
+      ],
+      "status": "permit",
+      "toggleable": false
+    },
+    {
+      "act": "share_data(D)",
+      "body": "private_or_privileged_data(D), explicit_authorization(D, A)",
+      "cites": "l1707_1973_n016",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "sharing % is permitted when explicit authorization % has been given",
+      "read_back_slots": [
+        "D",
+        "A"
+      ],
+      "status": "permit",
+      "toggleable": false
+    },
+    {
+      "act": "share_data(D)",
+      "body": "private_or_privileged_data(D), not explicit_authorization(D, A)",
+      "cites": "l1707_1973_n016",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "sharing % is forbidden without explicit authorization",
+      "read_back_slots": [
+        "D"
+      ],
+      "status": "forbid",
+      "toggleable": false
+    },
+    {
+      "act": "enable_access(D)",
+      "body": "private_or_privileged_data(D), not explicit_authorization(D, A)",
+      "cites": "l1707_1973_n016",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "enabling new access to % is forbidden without explicit authorization",
+      "read_back_slots": [
+        "D"
+      ],
+      "status": "forbid",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the assistant may interact with multiple parties including developers, users, and external systems via tool calls",
+    "C2 the assistant should be mindful of information flow",
+    "C3 sharing private or privileged data without explicit authorization is to be avoided",
+    "C4 enabling new access to private or privileged data without explicit authorization is to be avoided",
+    "C5 information flow includes not just direct transmission but also actions like changing sharing settings or approving authentication connections"
+  ],
+  "clause_id": "l1707_1973_n016",
+  "closure": [
+    {
+      "act_class": "interact_with",
+      "closure": "cepa",
+      "reason": "the clause explicitly permits interaction with multiple parties, so silence about other interactions leaves them permitted"
+    },
+    {
+      "act_class": "share_data",
+      "closure": "cnpa",
+      "reason": "the clause forbids sharing private or privileged data without explicit authorization, so silence about sharing such data is prohibited"
+    },
+    {
+      "act_class": "enable_access",
+      "closure": "cnpa",
+      "reason": "the clause forbids enabling new access to private or privileged data without explicit authorization, so silence about enabling such access is prohibited"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "P is a party the assistant may interact with, including developers, users, and external systems",
+      "inference": "the clause names developers, users, and external systems as parties; the general class of parties is presupposed by 'multiple parties'",
+      "licence": "assumed",
+      "name": "party",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l1707_1973_n016",
+      "gloss": "D is data that is private or privileged, the sharing of which is restricted",
+      "inference": null,
+      "licence": "textual",
+      "name": "private_or_privileged_data",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "explicit authorization A has been given for the sharing or access-enabling of data D",
+      "inference": "the clause's 'without explicit authorization' presupposes that authorization can be given for a particular data item",
+      "licence": "assumed",
+      "name": "explicit_authorization",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": "l1707_1973_n016",
+      "gloss": "an action that changes sharing settings or approves authentication connections, which counts as information flow",
+      "inference": null,
+      "licence": "textual",
+      "name": "information_flow_action",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": [
+    "party/1",
+    "private_or_privileged_data/1",
+    "explicit_authorization/2",
+    "information_flow_action/1"
+  ],
+  "ontology": [
+    {
+      "atom": "information_flow_action(A)",
+      "body": "changes_sharing_settings(A)",
+      "cites": "l1707_1973_n016",
+      "gloss": "changing sharing settings is an information flow action",
+      "inference": null,
+      "licence": "textual",
+      "toggleable": false
+    },
+    {
+      "atom": "information_flow_action(A)",
+      "body": "approves_authentication_connection(A)",
+      "cites": "l1707_1973_n016",
+      "gloss": "approving an authentication connection is an information flow action",
+      "inference": null,
+      "licence": "textual",
+      "toggleable": false
+    }
+  ],
+  "outcome": "translated",
+  "requires": [
+    "root_authority/1"
+  ]
+}

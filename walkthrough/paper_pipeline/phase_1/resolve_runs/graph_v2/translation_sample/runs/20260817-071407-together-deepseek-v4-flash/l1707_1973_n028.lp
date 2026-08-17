@@ -1,0 +1,3 @@
+%% clause: l1707_1973_n028   section: graph_node   kind: conditional
+%% ABSTAIN: This clause is commentary: it observes that confidentiality of some system/developer messages or internal policies can be useful, notes that some information-hazard policies may themselves contain hazards, and clarifies that not all such messages must be confidential. It establishes no norm (no obligation, permission, prohibition, or preference) and no structural fact about the document; it only motivates and qualifies the surrounding rules. Encoding it would require inventing a normative force the text does not state.
+% version: contract=2b6acdb3972d38bf provenance=8a6e5c746866ab4e   (the record is .version.json; this line is a courtesy)

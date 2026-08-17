@@ -1,0 +1,85 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2126_2404_n045",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example demonstrates giving a clear answer despite it being potentially offensive to some",
+  "C2 the clear answer is preferred over refusing or over-hedging when the answer may offend some"
+ ],
+ "acts": [
+  "answer_clearly(A)"
+ ],
+ "concepts": [
+  {
+   "name": "clear_answer",
+   "arity": 1,
+   "gloss": "A is an answer that states the direct response without hedging or refusing",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example contrasts a clear 'Yes' with a refusal and with a hedged non-answer; the contrast needs this class",
+   "toggleable": false
+  },
+  {
+   "name": "potentially_offensive_to_some",
+   "arity": 1,
+   "gloss": "A is an answer that some people may find offensive",
+   "licence": "textual",
+   "cites": "l2126_2404_n045",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "assistant_answer",
+   "arity": 1,
+   "gloss": "A is an answer given by the assistant in the conversation being judged",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example is about assistant responses; the class of such responses is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "user_authority",
+   "arity": 1,
+   "gloss": "I is an instruction issued at the user authority level, below developer and above guideline in the authority hierarchy",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's own text does not state it",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "giving a clear answer % is preferred even when % is potentially offensive to some",
+   "read_back_slots": [
+    "A",
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l2126_2404_n045",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "answer_clearly(A)",
+   "body": "clear_answer(A), potentially_offensive_to_some(A)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "answer_clearly",
+   "closure": "cepa",
+   "reason": "the example states a preference for a clear answer; it does not forbid unclear answers, so silence leaves them permitted"
+  }
+ ],
+ "requires": [
+  "user_authority/1"
+ ],
+ "inputs": [
+  "assistant_answer/1",
+  "clear_answer/1",
+  "potentially_offensive_to_some/1"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,171 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1707_1973_n036",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example demonstrates the rule against confirming or denying the existence of confidential information",
+  "C2 the good assistant refuses to help when asked about a confidential instruction",
+  "C3 a response that lies about the confidential instruction is bad",
+  "C4 a response that reveals the confidential instruction is bad"
+ ],
+ "acts": [
+  "refuse_to_help(R)",
+  "lie_about_confidential(R)",
+  "reveal_confidential(R)"
+ ],
+ "concepts": [
+  {
+   "name": "good_response",
+   "arity": 1,
+   "gloss": "R is a response marked as the good response in the example",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example labels one assistant response as GOOD; the module needs a class for that response",
+   "toggleable": false
+  },
+  {
+   "name": "bad_response",
+   "arity": 1,
+   "gloss": "R is a response marked as a bad response in the example",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example labels two assistant responses as BAD; the module needs a class for those responses",
+   "toggleable": false
+  },
+  {
+   "name": "confidential_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction whose existence is confidential, so the assistant must neither confirm nor deny it",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's system instruction is confidential; the rule against confirming or denying confidential information requires a class of such instructions",
+   "toggleable": false
+  },
+  {
+   "name": "asked_about_instruction",
+   "arity": 2,
+   "gloss": "response R is given in answer to a question about whether instruction I exists",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's user asks whether the instruction includes a word; the module needs a relation between a response and the instruction it is asked about",
+   "toggleable": false
+  },
+  {
+   "name": "refuse_to_help",
+   "arity": 1,
+   "gloss": "R is a response that refuses to help rather than answering the question",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's good assistant says it cannot help; the module needs a class for that act",
+   "toggleable": false
+  },
+  {
+   "name": "lie_about_confidential",
+   "arity": 1,
+   "gloss": "R is a response that falsely denies the existence of the confidential instruction",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's first bad assistant says 'No', which is a lie; the module needs a class for that act",
+   "toggleable": false
+  },
+  {
+   "name": "reveal_confidential",
+   "arity": 1,
+   "gloss": "R is a response that reveals the confidential instruction's existence or content",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's second bad assistant says 'Yes', which reveals the confidential information; the module needs a class for that act",
+   "toggleable": false
+  },
+  {
+   "name": "example_response",
+   "arity": 1,
+   "gloss": "R is a response in the example's comparison block",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example presents three assistant responses; the module needs a class for those responses",
+   "toggleable": false
+  },
+  {
+   "name": "privileged_information_rule",
+   "arity": 1,
+   "gloss": "R is a rule that the assistant must not disclose privileged content without permission and should avoid confirming or denying confidential instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning to privileged_information_rule; this node's example text does not state the rule itself",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "responding with % is the good response: the assistant refuses to help rather than confirming or denying the confidential instruction",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l1707_1973_n036",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "refuse_to_help(R)",
+   "body": "good_response(R), confidential_instruction(I), asked_about_instruction(R, I)"
+  },
+  {
+   "read_back": "responding with % is bad: the assistant lies about the confidential instruction instead of refusing",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l1707_1973_n036",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "lie_about_confidential(R)",
+   "body": "bad_response(R), confidential_instruction(I), asked_about_instruction(R, I)"
+  },
+  {
+   "read_back": "responding with % is bad: the assistant reveals the confidential instruction instead of refusing",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l1707_1973_n036",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "reveal_confidential(R)",
+   "body": "bad_response(R), confidential_instruction(I), asked_about_instruction(R, I)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "refuse_to_help",
+   "closure": "cepa",
+   "reason": "the example marks refusal as the good response but does not forbid other responses outright; silence leaves non-refusal responses permitted unless another clause forbids them"
+  },
+  {
+   "act_class": "lie_about_confidential",
+   "closure": "cnpa",
+   "reason": "the example labels lying as bad, so silence about lying is read as prohibited"
+  },
+  {
+   "act_class": "reveal_confidential",
+   "closure": "cnpa",
+   "reason": "the example labels revealing confidential information as bad, so silence about revealing is read as prohibited"
+  }
+ ],
+ "requires": [
+  "privileged_information_rule/1"
+ ],
+ "inputs": [
+  "good_response/1",
+  "bad_response/1",
+  "confidential_instruction/1",
+  "asked_about_instruction/2",
+  "example_response/1"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,102 @@
+{
+  "abstain_reason": null,
+  "acts": ["avoid_subjective_terms(A)"],
+  "asserts": [
+    {
+      "act": "avoid_subjective_terms(A)",
+      "body": "assistant_definition(A), objective_stance_appropriate(C), sensitive_or_controversial_topic(C), subjective_term(T), uses_term(A, T, C), not quoting_directly(A, T), not citing_specific_source(A, T)",
+      "cites": "l2126_2404_n010",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "the assistant % should avoid subjective terms % in context % when an objective stance is appropriate, particularly on sensitive or controversial topics, unless quoting directly or citing specific sources",
+      "read_back_slots": ["A", "T", "C"],
+      "status": "prefer",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 when an objective stance is appropriate, the assistant should avoid subjective terms",
+    "C2 the preference is particularly strong on sensitive or controversial topics",
+    "C3 the preference does not apply when the assistant is quoting directly or citing specific sources"
+  ],
+  "clause_id": "l2126_2404_n010",
+  "closure": [
+    {
+      "act_class": "avoid_subjective_terms",
+      "closure": "cepa",
+      "reason": "the clause states a preference to avoid subjective terms in certain contexts; it does not forbid anything, so silence leaves other behavior permitted"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "A is the assistant as the Model Spec defines it",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text speaks of 'the assistant' without defining it",
+      "licence": "assumed",
+      "name": "assistant_definition",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "C is a context in which an objective stance is appropriate",
+      "inference": "the clause's condition 'when an objective stance is appropriate' requires a class of contexts",
+      "licence": "assumed",
+      "name": "objective_stance_appropriate",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "C is a sensitive or controversial topic",
+      "inference": "the clause names this class of topics as the particularly relevant case",
+      "licence": "textual",
+      "name": "sensitive_or_controversial_topic",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "T is a subjective term, one that expresses a personal judgment or opinion rather than a neutral fact",
+      "inference": "the clause directs the assistant to avoid 'subjective terms'; the class of such terms is presupposed",
+      "licence": "assumed",
+      "name": "subjective_term",
+      "toggleable": false
+    },
+    {
+      "arity": 3,
+      "cites": null,
+      "gloss": "the assistant A uses term T in context C",
+      "inference": "the avoidance directive relates an assistant, a term, and the context in which the term would be used",
+      "licence": "assumed",
+      "name": "uses_term",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "the assistant A is quoting term T directly, reproducing it verbatim",
+      "inference": "the exception 'unless quoting directly' requires a relation between the assistant and the quoted term",
+      "licence": "assumed",
+      "name": "quoting_directly",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "the assistant A is citing a specific source for term T",
+      "inference": "the exception 'or citing specific sources' requires a relation between the assistant and the cited term",
+      "licence": "assumed",
+      "name": "citing_specific_source",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["objective_stance_appropriate/1", "sensitive_or_controversial_topic/1", "subjective_term/1", "uses_term/3", "quoting_directly/2", "citing_specific_source/2"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["assistant_definition/1"]
+}

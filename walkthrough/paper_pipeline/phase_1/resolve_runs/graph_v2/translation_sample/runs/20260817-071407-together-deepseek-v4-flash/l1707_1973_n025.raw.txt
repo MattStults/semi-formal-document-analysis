@@ -1,0 +1,192 @@
+{
+  "outcome": "translated",
+  "clause_id": "l1707_1973_n025",
+  "abstain_reason": null,
+  "claims": [
+    "C1: When higher-level instructions materially change how the assistant should respond to a user, the assistant must not quietly apply those instructions in a way that would mislead the user.",
+    "C2: If necessary to preserve honesty, the assistant should acknowledge the conflict in broad terms.",
+    "C3: Such an acknowledgment must not explicitly refer to the assistant's instructions.",
+    "C4: Such an acknowledgment must not reveal unnecessary details."
+  ],
+  "acts": [
+    "quietly_apply_instructions(I, U)",
+    "acknowledge_conflict_broadly(U)"
+  ],
+  "concepts": [
+    {
+      "name": "instruction_conflict_surfacing_rule",
+      "arity": 1,
+      "gloss": "R is the rule that the assistant must not quietly apply higher-level instructions in a way that would mislead the user, and should acknowledge conflicts in broad terms",
+      "licence": "textual",
+      "cites": "l1707_1973_n025",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "root_authority",
+      "arity": 1,
+      "gloss": "R is a rule carrying the root level of instruction authority (highest; not overridable by system, developer or user instructions)",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define root authority",
+      "toggleable": false
+    },
+    {
+      "name": "assistant_definition",
+      "arity": 1,
+      "gloss": "A is the assistant as the Model Spec defines it; 'model' and 'assistant' are approximately synonymous",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define the assistant",
+      "toggleable": false
+    },
+    {
+      "name": "higher_level_instruction",
+      "arity": 1,
+      "gloss": "I is an instruction from a level that outranks the instruction under evaluation",
+      "licence": "assumed",
+      "cites": null,
+      "inference": "the phrase 'higher-level instructions' presupposes a ranking of instruction levels; the shared-name signature supplies the meaning",
+      "toggleable": false
+    },
+    {
+      "name": "materially_changes_response",
+      "arity": 2,
+      "gloss": "instruction I materially changes how the assistant should respond to user U",
+      "licence": "textual",
+      "cites": "l1707_1973_n025",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "misleads_user",
+      "arity": 2,
+      "gloss": "applying instruction I in this situation would mislead user U",
+      "licence": "textual",
+      "cites": "l1707_1973_n025",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "necessary_for_honesty",
+      "arity": 1,
+      "gloss": "acknowledging the conflict is necessary to preserve honesty toward user U",
+      "licence": "textual",
+      "cites": "l1707_1973_n025",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "acknowledges_conflict",
+      "arity": 2,
+      "gloss": "response R acknowledges the conflict between higher-level instructions and the user's expectations",
+      "licence": "textual",
+      "cites": "l1707_1973_n025",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "refers_to_instructions",
+      "arity": 1,
+      "gloss": "response R explicitly refers to the assistant's instructions",
+      "licence": "textual",
+      "cites": "l1707_1973_n025",
+      "inference": null,
+      "toggleable": false
+    },
+    {
+      "name": "reveals_unnecessary_details",
+      "arity": 1,
+      "gloss": "response R reveals details that are not necessary to preserve honesty",
+      "licence": "textual",
+      "cites": "l1707_1973_n025",
+      "inference": null,
+      "toggleable": false
+    }
+  ],
+  "ontology": [
+    {
+      "licence": "textual",
+      "cites": "l1707_1973_n025",
+      "inference": null,
+      "toggleable": false,
+      "atom": "instruction_conflict_surfacing_rule(R)",
+      "gloss": "R is the rule that the assistant must not quietly apply higher-level instructions in a way that would mislead the user, and should acknowledge conflicts in broad terms",
+      "body": "root_authority(R)"
+    }
+  ],
+  "asserts": [
+    {
+      "read_back": "quietly applying instruction % in a way that would mislead user % is forbidden",
+      "read_back_slots": ["I", "U"],
+      "licence": "textual",
+      "cites": "l1707_1973_n025",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "quietly_apply_instructions(I, U)",
+      "body": "higher_level_instruction(I), materially_changes_response(I, U), misleads_user(I, U)"
+    },
+    {
+      "read_back": "acknowledging the conflict in broad terms to user % is preferred when necessary to preserve honesty",
+      "read_back_slots": ["U"],
+      "licence": "textual",
+      "cites": "l1707_1973_n025",
+      "inference": null,
+      "toggleable": false,
+      "status": "prefer",
+      "act": "acknowledge_conflict_broadly(U)",
+      "body": "necessary_for_honesty(U)"
+    },
+    {
+      "read_back": "an acknowledgment that explicitly refers to the assistant's instructions is forbidden",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "l1707_1973_n025",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "acknowledge_conflict_broadly(U)",
+      "body": "acknowledges_conflict(R, U), refers_to_instructions(R)"
+    },
+    {
+      "read_back": "an acknowledgment that reveals unnecessary details is forbidden",
+      "read_back_slots": [],
+      "licence": "textual",
+      "cites": "l1707_1973_n025",
+      "inference": null,
+      "toggleable": false,
+      "status": "forbid",
+      "act": "acknowledge_conflict_broadly(U)",
+      "body": "acknowledges_conflict(R, U), reveals_unnecessary_details(R)"
+    }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    {
+      "act_class": "quietly_apply_instructions",
+      "closure": "cnpa",
+      "reason": "the clause states that the assistant must not quietly apply higher-level instructions in a way that would mislead the user; silence about other quiet applications is unsettled by this clause, but the act class as a whole is governed by a prohibition on the misleading subset"
+    },
+    {
+      "act_class": "acknowledge_conflict_broadly",
+      "closure": "cepa",
+      "reason": "the clause states a preference for acknowledging conflicts in broad terms when necessary for honesty, and forbids only acknowledgments that refer to instructions or reveal unnecessary details; other acknowledgments are permitted"
+    }
+  ],
+  "requires": [
+    "root_authority/1",
+    "assistant_definition/1",
+    "higher_level_instruction/1"
+  ],
+  "inputs": [
+    "materially_changes_response/2",
+    "misleads_user/2",
+    "necessary_for_honesty/1",
+    "acknowledges_conflict/2",
+    "refers_to_instructions/1",
+    "reveals_unnecessary_details/1"
+  ],
+  "forbid_body": []
+}

@@ -1,0 +1,90 @@
+{
+  "abstain_reason": null,
+  "acts": ["provide_balanced_response(R)", "present_perspective(R, P)"],
+  "asserts": [
+    {
+      "act": "provide_balanced_response(R)",
+      "body": "assistant_definition(A), user_authority(U), user_request(U, R)",
+      "cites": "l2126_2404_n019",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "providing a balanced response % is preferred by default",
+      "read_back_slots": ["R"],
+      "status": "prefer",
+      "toggleable": false
+    },
+    {
+      "act": "present_perspective(R, P)",
+      "body": "assistant_definition(A), user_authority(U), user_request(U, R), opinion_spectrum_point(P)",
+      "cites": "l2126_2404_n019",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "presenting perspective % in response % is generally preferred when the user requests it",
+      "read_back_slots": ["P", "R"],
+      "status": "prefer",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 by default, the assistant should provide a balanced response from an objective point of view",
+    "C2 the assistant should generally fulfill requests to present perspectives from any point of an opinion spectrum"
+  ],
+  "clause_id": "l2126_2404_n019",
+  "closure": [
+    {
+      "act_class": "provide_balanced_response",
+      "closure": "cepa",
+      "reason": "the clause states a default preference for balanced responses; it does not forbid other response styles, so silence permits them"
+    },
+    {
+      "act_class": "present_perspective",
+      "closure": "cepa",
+      "reason": "the clause states a general preference to fulfill perspective requests; it does not forbid declining, so silence permits it"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "the assistant is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'the assistant' without defining it",
+      "licence": "assumed",
+      "name": "assistant_definition",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "the authority level of instructions from the user role, below developer and above guideline in the authority hierarchy",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text speaks of fulfilling user requests, which presupposes the user authority level",
+      "licence": "assumed",
+      "name": "user_authority",
+      "toggleable": false
+    },
+    {
+      "arity": 2,
+      "cites": null,
+      "gloss": "U is a user-authority instruction requesting response R",
+      "inference": "the clause speaks of fulfilling requests, so a relation between a user request and the response it asks for must exist",
+      "licence": "assumed",
+      "name": "user_request",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "P is a point on the opinion spectrum, i.e. a perspective the user might ask the assistant to present",
+      "inference": "the clause speaks of 'any point of an opinion spectrum', so a class of such points must exist",
+      "licence": "assumed",
+      "name": "opinion_spectrum_point",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["user_request/2", "opinion_spectrum_point/1"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["assistant_definition/1", "user_authority/1"]
+}

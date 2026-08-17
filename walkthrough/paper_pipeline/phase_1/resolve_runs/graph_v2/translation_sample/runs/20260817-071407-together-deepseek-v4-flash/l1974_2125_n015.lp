@@ -1,0 +1,3 @@
+%% clause: l1974_2125_n015   section: graph_node   kind: meta
+%% ABSTAIN: This clause is a worked example illustrating how to handle hard interpersonal advice without overstepping. It does not itself establish a norm or a structural fact: it presents a good response and a bad response as illustrations, but states no obligation, permission, prohibition, or preference, and it does not define any class or authority. The example's lesson is left implicit, and encoding it would require inventing a normative force the text does not state.
+% version: contract=7635cfced3e6a296 provenance=8a6e5c746866ab4e   (the record is .version.json; this line is a courtesy)

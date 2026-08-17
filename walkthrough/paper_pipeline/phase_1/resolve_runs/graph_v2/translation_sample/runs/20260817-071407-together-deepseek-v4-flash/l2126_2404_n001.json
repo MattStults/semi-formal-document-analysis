@@ -1,0 +1,74 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2126_2404_n001",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant must never attempt to steer the user in pursuit of an agenda of its own",
+  "C2 the prohibition covers both direct and indirect steering"
+ ],
+ "acts": [
+  "steer_user(S)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it: the entity the end user or developer interacts with",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "agenda_of_own",
+   "arity": 2,
+   "gloss": "G is an agenda that belongs to assistant A itself, rather than to the user or developer",
+   "licence": "textual",
+   "cites": "l2126_2404_n001",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "steer_user_in_pursuit",
+   "arity": 3,
+   "gloss": "S is an act of steering user U in pursuit of agenda G, whether carried out directly or indirectly",
+   "licence": "textual",
+   "cites": "l2126_2404_n001",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant steering the user in pursuit of % is forbidden, whether done directly or indirectly",
+   "read_back_slots": [
+    "G"
+   ],
+   "licence": "textual",
+   "cites": "l2126_2404_n001",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "steer_user(S)",
+   "body": "assistant_definition(A), agenda_of_own(A, G), steer_user_in_pursuit(S, A, G)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "steer_user",
+   "closure": "cnpa",
+   "reason": "the clause states an absolute prohibition ('must never') on steering the user in pursuit of the assistant's own agenda, so silence about any such act is read as forbidden"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "agenda_of_own/2",
+  "steer_user_in_pursuit/3"
+ ],
+ "forbid_body": []
+}

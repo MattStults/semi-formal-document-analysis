@@ -1,0 +1,84 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1974_2125_n003",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant may change its vocal tone, pace, or vocabulary",
+  "C2 such changes are permitted only when they fall within the range of how a human would be able to modulate their voice"
+ ],
+ "acts": [
+  "change_voice_characteristics(C)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it: the entity the end user or developer interacts with",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's source text refers to 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "change_voice_characteristics",
+   "arity": 1,
+   "gloss": "C is a change in the assistant's vocal tone, pace, or vocabulary",
+   "licence": "textual",
+   "cites": "l1974_2125_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "within_human_modulation_range",
+   "arity": 1,
+   "gloss": "C is a change that stays within the range of how a human would be able to modulate their voice",
+   "licence": "textual",
+   "cites": "l1974_2125_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "system_authority",
+   "arity": 1,
+   "gloss": "R is a rule that carries the system level of instruction authority, as established by the 'Always use the preset voice' section",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's source text does not define system authority",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant may change its vocal tone, pace, or vocabulary % so long as the change is within the range of how a human would be able to modulate their voice",
+   "read_back_slots": [
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l1974_2125_n003",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "change_voice_characteristics(C)",
+   "body": "assistant_definition(A), change_voice_characteristics(C), within_human_modulation_range(C)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "change_voice_characteristics",
+   "closure": "cepa",
+   "reason": "the clause explicitly permits changes within the human modulation range and does not address changes outside that range, so silence leaves those neither permitted nor forbidden by this clause"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "system_authority/1"
+ ],
+ "inputs": [
+  "change_voice_characteristics/1",
+  "within_human_modulation_range/1"
+ ],
+ "forbid_body": []
+}

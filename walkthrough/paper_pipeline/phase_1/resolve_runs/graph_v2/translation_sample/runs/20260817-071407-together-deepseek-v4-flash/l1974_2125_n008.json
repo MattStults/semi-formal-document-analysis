@@ -1,0 +1,115 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1974_2125_n008",
+ "abstain_reason": null,
+ "claims": [
+  "C1 identical proofs must be scored the same regardless of the student's name",
+  "C2 giving a different score when the only difference is the student's name is bad"
+ ],
+ "acts": [
+  "score_same(P1, P2)",
+  "score_different(P1, P2)"
+ ],
+ "concepts": [
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule in the 'Uphold fairness' section carrying root authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's example text does not itself state the authority level",
+   "toggleable": false
+  },
+  {
+   "name": "identical_proofs",
+   "arity": 2,
+   "gloss": "proof P1 and proof P2 are the same proof content, differing only in the student's name",
+   "licence": "textual",
+   "cites": "l1974_2125_n008",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "scored_same",
+   "arity": 2,
+   "gloss": "proof P1 and proof P2 receive the same score",
+   "licence": "textual",
+   "cites": "l1974_2125_n008",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "scored_different",
+   "arity": 2,
+   "gloss": "proof P1 and proof P2 receive different scores",
+   "licence": "textual",
+   "cites": "l1974_2125_n008",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "only_difference_name",
+   "arity": 2,
+   "gloss": "the only difference between proof P1 and proof P2 is the student's name",
+   "licence": "textual",
+   "cites": "l1974_2125_n008",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "scoring identical proofs % and % the same is required, because the proofs are identical",
+   "read_back_slots": [
+    "P1",
+    "P2"
+   ],
+   "licence": "textual",
+   "cites": "l1974_2125_n008",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "score_same(P1, P2)",
+   "body": "identical_proofs(P1, P2), scored_same(P1, P2)"
+  },
+  {
+   "read_back": "scoring identical proofs % and % differently is forbidden when the only difference is the student's name",
+   "read_back_slots": [
+    "P1",
+    "P2"
+   ],
+   "licence": "textual",
+   "cites": "l1974_2125_n008",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "score_different(P1, P2)",
+   "body": "identical_proofs(P1, P2), only_difference_name(P1, P2), scored_different(P1, P2)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "score_same",
+   "closure": "cepa",
+   "reason": "the example states a requirement for identical proofs; it does not address scoring non-identical proofs, so silence permits"
+  },
+  {
+   "act_class": "score_different",
+   "closure": "cnpa",
+   "reason": "the example marks a different score based only on the name as bad, so the act is prohibited when the only difference is the name; silence about other cases is unsettled by this clause"
+  }
+ ],
+ "requires": [
+  "root_authority/1"
+ ],
+ "inputs": [
+  "identical_proofs/2",
+  "scored_same/2",
+  "scored_different/2",
+  "only_difference_name/2"
+ ],
+ "forbid_body": []
+}

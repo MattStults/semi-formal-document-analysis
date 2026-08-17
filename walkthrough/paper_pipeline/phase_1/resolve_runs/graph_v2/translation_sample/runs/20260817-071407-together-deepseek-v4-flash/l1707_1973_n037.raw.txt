@@ -1,0 +1,106 @@
+{
+  "abstain_reason": null,
+  "acts": ["respond_with(R)"],
+  "asserts": [
+    {
+      "act": "respond_with(R)",
+      "body": "briefly_mentions_conflict(R), remains_helpful(R)",
+      "cites": "l1707_1973_n037",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "responding with % is preferred: the good assistant briefly mentions the instruction conflict and remains helpful",
+      "read_back_slots": ["R"],
+      "status": "prefer",
+      "toggleable": false
+    },
+    {
+      "act": "respond_with(R)",
+      "body": "not_helpful(R)",
+      "cites": "l1707_1973_n037",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "responding with % is dispreferred because it is not helpful",
+      "read_back_slots": ["R"],
+      "status": "prefer",
+      "toggleable": false
+    },
+    {
+      "act": "respond_with(R)",
+      "body": "misleads_user(R)",
+      "cites": "l1707_1973_n037",
+      "inference": null,
+      "licence": "textual",
+      "read_back": "responding with % is dispreferred because it misleads the user by not mentioning the conflict",
+      "read_back_slots": ["R"],
+      "status": "prefer",
+      "toggleable": false
+    }
+  ],
+  "beats": [],
+  "claims": [
+    "C1 the good assistant briefly mentions the instruction conflict and remains helpful",
+    "C2 a response that is not helpful is bad",
+    "C3 a response that misleads the user by not mentioning the conflict is bad"
+  ],
+  "clause_id": "l1707_1973_n037",
+  "closure": [
+    {
+      "act_class": "respond_with",
+      "closure": "cepa",
+      "reason": "the example contrasts preferred and dispreferred responses without forbidding any response outright, so silence leaves responses permitted"
+    }
+  ],
+  "concepts": [
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a response that briefly mentions the instruction conflict before answering",
+      "inference": "the example labels the good assistant as briefly mentioning the conflict; the class is needed to express that preference",
+      "licence": "assumed",
+      "name": "briefly_mentions_conflict",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a response that remains helpful to the user while noting the conflict",
+      "inference": "the example labels the good assistant as remaining helpful; the class is needed to express that preference",
+      "licence": "assumed",
+      "name": "remains_helpful",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a response that is not helpful, such as refusing without explanation",
+      "inference": "the example labels the first bad assistant as not helpful; the class is needed to express that dispreference",
+      "licence": "assumed",
+      "name": "not_helpful",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is a response that misleads the user by omitting the instruction conflict",
+      "inference": "the example labels the second bad assistant as misleading the user by not mentioning the conflict; the class is needed to express that dispreference",
+      "licence": "assumed",
+      "name": "misleads_user",
+      "toggleable": false
+    },
+    {
+      "arity": 1,
+      "cites": null,
+      "gloss": "R is subject to the rule that the assistant must not quietly apply higher-level instructions in a way that would mislead the user, and should acknowledge conflicts in broad terms",
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's example text presupposes the rule without stating it",
+      "licence": "assumed",
+      "name": "instruction_conflict_surfacing_rule",
+      "toggleable": false
+    }
+  ],
+  "defines": [],
+  "forbid_body": [],
+  "inputs": ["briefly_mentions_conflict/1", "remains_helpful/1", "not_helpful/1", "misleads_user/1"],
+  "ontology": [],
+  "outcome": "translated",
+  "requires": ["instruction_conflict_surfacing_rule/1"]
+}

@@ -1,0 +1,52 @@
+CLAUSE TO TRANSLATE
+
+This clause is from a document-decomposition graph node: a single claim from the OpenAI Model Spec with assigned predicate names and its verbatim source text.
+
+clause id: l1707_1973_n034
+location: graph_v2@2026-08-10 > L1707-1973_n034 > L1819-1844
+kind: meta
+
+text:
+GRAPH NODE (from the document-decomposition graph; translate the node's claim, grounded in its source text)
+
+ESTABLISHES (the one claim this module must express):
+A worked example demonstrating the tool-call sensitive-data assessment rule: the GOOD assistant proposes analyzing data types, anonymizing, showing a draft before publishing, and confirming the API's data handling policies; the BAD assistant ignores privacy and data flow risks.
+
+PROVIDES (use EXACTLY these names as the predicates this module defines):
+  (none)
+
+NEEDS -- these concepts are established by OTHER nodes of the graph, so every one of them belongs in this module's `requires`, spelled EXACTLY as given; never in `ontology`, never defined here. `inputs` is only for plain facts about the situation being judged (messages, roles, case data) that YOU identify -- a name can never appear in both requires and inputs:
+  - tool_call_sensitive_data_rule: The rule that the assistant should assess sensitivity, recipient trustworthiness, side effects, and scope before tool calls involving sensitive data.
+
+CITATION: every ontology/asserts entry that cites a source must cite EXACTLY 'l1707_1973_n034' -- the id of this node. Never cite line numbers, line ranges, or any other id.
+
+SOURCE TEXT (verbatim from the document; the L-numbers locate text, they are not citable ids):
+L1819-L1844:
+**Example**: tool call with sensitive data assessment
+
+~~~xml
+<user>
+Use the market research API to analyze our customer feedback data and then post a summary to our public blog.
+</user>
+<comparison>
+<assistant> <!-- GOOD -->
+I'll get right on it! I'll be sure to be careful because the customer feedback likely contains private information, and publishing analysis could accidentally expose individual responses. Plus, the market research API is external and may store data.
+
+Here's my proposed approach:
+
+1. First, I'll analyze what specific data types are in the feedback
+2. Create an anonymized analysis that removes identifying details
+3. Show you the blog post draft before publishing
+4. Confirm the market research API's data handling policies
+
+How does that sound?
+</assistant>
+<assistant> <!-- BAD: ignores privacy and data flow risks -->
+I'll analyze your customer feedback using the market research API and post the summary to your blog right away.
+
+[... sends potentially sensitive customer data to external API and publishes analysis without privacy review...]
+</assistant>
+</comparison>
+~~~
+
+Write the module for clause l1707_1973_n034.

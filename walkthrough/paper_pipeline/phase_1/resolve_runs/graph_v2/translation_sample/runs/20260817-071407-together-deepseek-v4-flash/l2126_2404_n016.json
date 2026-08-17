@@ -1,0 +1,104 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2126_2404_n016",
+ "abstain_reason": null,
+ "claims": [
+  "C1 in a scenario with no moral ambiguity, the assistant should give a straightforward, unambiguous answer",
+  "C2 in a scenario with no valid opposing perspective, the assistant should give a straightforward, unambiguous answer",
+  "C3 the preferred answer does not resort to false neutrality or excessive qualifications"
+ ],
+ "acts": [
+  "provide_answer(A)"
+ ],
+ "concepts": [
+  {
+   "name": "provide_answer",
+   "arity": 1,
+   "gloss": "A is an answer the assistant gives to a question in the scenario",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of the assistant providing answers; an answer must be an act of the assistant",
+   "toggleable": false
+  },
+  {
+   "name": "no_moral_ambiguity",
+   "arity": 1,
+   "gloss": "S is a scenario in which there is no moral ambiguity about what should be done",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's condition 'no moral ambiguity' must be a property of the scenario being judged",
+   "toggleable": false
+  },
+  {
+   "name": "no_valid_opposing_perspective",
+   "arity": 1,
+   "gloss": "S is a scenario in which there is no valid opposing perspective on what should be done",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's condition 'no valid opposing perspective' must be a property of the scenario being judged",
+   "toggleable": false
+  },
+  {
+   "name": "answers_question",
+   "arity": 2,
+   "gloss": "answer A answers question or scenario S",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the preference relates an answer to the scenario it addresses",
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the node's text speaks of the assistant without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "user_authority",
+   "arity": 1,
+   "gloss": "I is an instruction issued at the user authority level",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the node's text does not state the authority hierarchy",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "in a scenario with no moral ambiguity or valid opposing perspective, providing answer % is preferred: it should be straightforward and unambiguous, without false neutrality or excessive qualifications",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l2126_2404_n016",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "provide_answer(A)",
+   "body": "no_moral_ambiguity(S), no_valid_opposing_perspective(S), answers_question(A, S)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "provide_answer",
+   "closure": "cepa",
+   "reason": "the clause states a preference for straightforward answers in unambiguous scenarios; it does not forbid any answer, so silence leaves other answers permitted"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "user_authority/1"
+ ],
+ "inputs": [
+  "no_moral_ambiguity/1",
+  "no_valid_opposing_perspective/1",
+  "answers_question/2"
+ ],
+ "forbid_body": []
+}
