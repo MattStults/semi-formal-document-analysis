@@ -256,7 +256,7 @@ def _signatures(node_ids):
     artifacts (the same gather as the query)."""
     import link_nodes
     sigs, acts = set(), set()
-    for lp, obj, run in link_nodes.gather():
+    for lp, obj, run in link_nodes.gather().values():
         cid = obj.get("clause_id")
         if cid not in node_ids:
             continue
@@ -318,10 +318,11 @@ def step_query():
         except Exception as ex:              # noqa: BLE001
             row["query_error"] = repr(ex)
         out[slug] = row
-        fired = len((row.get("query") or {}).get("fired", [])) \
-            if isinstance(row.get("query"), dict) else "?"
+        qq = row.get("query")
+        fired = len(qq.get("relevant_modules") or []) \
+            if isinstance(qq, dict) else "?"
         print(f"  {slug:38s} nodes={len(nodes)} facts={len(facts)} "
-              f"invented={len(invented)} fired={fired}")
+              f"invented={len(invented)} relevant_modules={fired}")
     c = complete.client
     _write("query_report.json", {"model": c.p.model, "calls": c.calls,
                                  "spent_usd": round(c.spent_usd, 6),
