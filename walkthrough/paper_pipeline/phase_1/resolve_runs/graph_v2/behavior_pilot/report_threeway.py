@@ -54,14 +54,7 @@ def main():
         m = re.search(r"ESTABLISHES \(the one claim this module must express\):\s*(.*?)\n\s*\n", q, re.S)
         return (m.group(1).strip() if m else "")[:140]
 
-    lines = ["# Three-way relevance report — frontier panel behaviors, full corpus (run 2)", "",
-             "Rows: (behavior, spec node) where the TOOL engaged, the PANEL cited (consensus>=5), or FABLE ruled relevant. "
-             "Tool = embed-rank + blind small-model seat over node prose (frozen frontier atoms, TOP_K 12). "
-             "Panel = the frontier judges' summed CITATION score over passages: `cited>=5` (consensus tier), `cited 2-4` (some judges), `uncited` (below 2 or absent from the export — NOT an affirmative irrelevance verdict). Fable = blind adjudicator, document text only. Tool verdicts marked `*` came from the probe (label-selected node, blind per-pair judgment).",
-             "",
-             "**Scope: relevance matching only.** Translation fidelity: `../semantic_audit.json` (all six bulk cohorts sealed). "
-             "Contradiction detection: awaits `CONCRETE_INSTANCES.md` adjudication. Fix-locus tags are the coordinator's, from the grounds; overrule freely.",
-             ""]
+    lines = []          # body; header prepended at the end once totals exist
     totals = Counter()
     for slug, b in match["behaviors"].items():
         t = ag["behaviors"][slug]["consensus_ge5"]
@@ -85,7 +78,7 @@ def main():
         fr = fable.get(slug, {})
         rows = sorted(set(seat) | panel_hot | set(fr))
         rows = [n for n in rows if seat.get(n, ("",))[0].startswith("engaged") or n in panel_hot or fr.get(n) == "relevant"]
-        lines += [f"## {slug}", "", f"| node | establishes | tool | panel | fable | tag |", "|---|---|---|---|---|---|"]
+        lines += [f"## {slug}", "", "| node | establishes | tool | panel | fable | tag | action |", "|---|---|---|---|---|---|---|"]
         tags = Counter(); disagreements = []
         for n in rows:
             sv = seat.get(n, ("not-retrieved", "", ""))
@@ -108,20 +101,55 @@ def main():
             elif tool.startswith("engaged") and fv == "relevant" and panel == "cited>=5": tag = "agree"
             else: tag = "other"
             tags[tag] += 1; totals[tag] += 1
-            lines.append(f"| `{n}` | {establishes(n)} | {tool}{(' ('+sv[1]+')') if sv[1] else ''} | {panel} | {fv} | {tag} |")
+            G_TOOL = {"engaged": "✓", "engaged*": "✓*", "declined": "✗", "declined*": "✗*", "not-retrieved": "·"}
+            G_PANEL = {"cited>=5": "✓", "cited 2-4": "~", "uncited": "✗"}
+            G_FABLE = {"relevant": "✓", "not_relevant": "✗", "—": "·"}
+            ACTION = {"scope-conflation": "checklist + seat brief", "structural-node": "seat brief",
+                      "seat-miss": "atom vocabulary / seat brief", "retrieval-miss": "retrieval",
+                      "panel-broad": "", "panel-strict": "", "agree": "", "unadjudicated": "adjudicate"}
+            lines.append(f"| `{n}` | {establishes(n)[:90]} | {G_TOOL.get(tool, tool)} | {G_PANEL.get(panel, panel)} | {G_FABLE.get(fv, fv)} | {tag} | {ACTION.get(tag, '')} |")
             if tag not in ("agree", "unadjudicated", "panel-strict") and (fv != "—"):
                 disagreements.append((n, tag, sv, fv))
         lines += ["", "**Tag counts:** " + ", ".join(f"{k} {v}" for k, v in sorted(tags.items())), ""]
         if disagreements:
             lines += ["### Tool-vs-Fable disagreements, with fix locus", ""]
             for n, tag, sv, fv in disagreements:
-                lines.append(f"* `{n}` — **{tag}** — tool {sv[0]} via `{sv[1]}` (\"{sv[2][:120]}…\"); Fable: {fv}. "
+                lines.append(f"* `{n}` — **{tag}** — engaged via `{sv[1]}`; seat grounds: \"{sv[2][:110]}…\"; Fable: {fv}. "
                              + {"scope-conflation": "Fix at the behavior checklist + seat brief: the party/scope qualifier is not being tested.",
                                 "structural-node": "Fix at the seat brief: structure/glossary/commitment nodes establish no norm to bear on the behavior.",
                                 "seat-miss": "Fix at the seat brief / atom reach: the node was retrieved and judged not_engaged against a Fable-relevant clause.",
                                 "retrieval-miss": "Fix at retrieval infrastructure: the node never reached the seat.",
                                 "panel-broad": "No tool fix: the panel cited a node a blind reader rules irrelevant."}.get(tag, ""))
             lines.append("")
+    ORDER = ["agree", "panel-strict", "seat-miss", "scope-conflation", "structural-node", "panel-broad", "retrieval-miss", "unadjudicated"]
+    MEAN = {"agree": "tool ✓, panel ✓ — both instruments concur",
+            "panel-strict": "tool ✓, panel below consensus, Fable ✓ — the tool was right; no fix",
+            "seat-miss": "panel ✓, tool ✗, Fable ✓ — real recall gap",
+            "scope-conflation": "tool ✓, Fable ✗ — engaged on the wrong party/scope",
+            "structural-node": "tool ✓, Fable ✗ — structure/glossary/commitment node",
+            "panel-broad": "panel ✓, Fable ✗ — the panel was wrong; no tool fix",
+            "retrieval-miss": "panel ✓, never reached the seat",
+            "unadjudicated": "no Fable ruling yet"}
+    ACT = {"agree": "", "panel-strict": "", "seat-miss": "atom vocabulary / seat brief",
+           "scope-conflation": "behavior checklist + seat brief", "structural-node": "seat brief",
+           "panel-broad": "", "retrieval-miss": "retrieval infrastructure", "unadjudicated": "adjudicate"}
+    header = ["# Three-way relevance report — frontier panel behaviors, full corpus (run 2)", "",
+              "## Aggregates", "", "| tag | count | meaning | action |", "|---|---|---|---|"]
+    for k in ORDER:
+        if totals.get(k):
+            header.append(f"| {k} | {totals[k]} | {MEAN[k]} | {ACT[k]} |")
+    header += ["", "## Legend", "",
+               "**Columns.** *tool* = embed-rank + blind small-model seat over node prose (frozen frontier atoms, TOP_K 12): "
+               "✓ engaged · ✗ judged not engaged · `*` = verdict came from the probe (label-selected node, blind per-pair judgment) · `·` never retrieved. "
+               "*panel* = frontier judges' summed CITATION score over passages: ✓ cited ≥5 (consensus tier) · ~ cited 2–4 (some judges) · ✗ uncited or absent from the export (NOT an affirmative irrelevance verdict). "
+               "*fable* = blind Fable adjudicator, document text only: ✓ relevant · ✗ not relevant · `·` not adjudicated. "
+               "*action* = the most general layer at which the error is fixed (empty = nothing to fix, or the fix is not the tool's).",
+               "",
+               "**Scope: relevance matching only.** Translation fidelity is measured in `../semantic_audit.json` (all six bulk cohorts sealed); "
+               "contradiction detection awaits `CONCRETE_INSTANCES.md` adjudication. Fix-locus tags are the coordinator's, assigned from the grounds; overrule freely.",
+               "", "Rows: (behavior, spec node) pairs where the tool engaged, the panel cited ≥5, or Fable ruled relevant. "
+               "Grounds for every tool verdict (`match_partial_*.json`, `probe.json`) and every Fable ruling (`adjudication_run2_*.json`) are on disk beside this file.", ""]
+    lines = header + lines
     lines += ["## Totals across behaviors", "", ", ".join(f"{k} {v}" for k, v in sorted(totals.items())), "",
               "## Honesty notes", "",
               "* Fable adjudicators are the truth TIER, not truth: no cell carries Matt's countersignature yet (spot-check column to be added on his pass).",
