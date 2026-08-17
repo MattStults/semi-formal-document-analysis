@@ -558,7 +558,7 @@ def c_readback_status_conflict(cid, o, span):
         forbid_shaped = re.search(
             r"\bis (?:generally )?(?:forbidden|refused|not permitted|"
             r"prohibited)\b|\bmust not\b|\bshould not\b|"
-            r"\bshould avoid\b", rb)
+            r"\bshould\b(?:\s+\w+){0,3}\s+avoid\b", rb)
         oblige_shaped = re.search(r"\bis (?:required|obliged|mandatory)\b"
                                   r"|\bmust (?!not)\b", rb)
         if forbid_shaped and st in ("oblige", "permit", "prefer"):
