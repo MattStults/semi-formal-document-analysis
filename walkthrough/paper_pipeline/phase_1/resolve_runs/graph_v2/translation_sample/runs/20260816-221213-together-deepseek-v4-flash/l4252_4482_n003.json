@@ -1,0 +1,131 @@
+{
+ "outcome": "translated",
+ "clause_id": "l4252_4482_n003",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the content guidelines of this section apply to both standard and advanced voice modes",
+  "C2 an instruction that discusses nuances of audio or video inputs or outputs is relevant only to advanced voice mode"
+ ],
+ "acts": [
+  "apply_guideline(G)"
+ ],
+ "concepts": [
+  {
+   "name": "standard_voice_mode",
+   "arity": 1,
+   "gloss": "M is standard voice mode, where automatic speech recognition transcribes the user's voice into text and the assistant's textual responses are converted to speech via a separate text-to-speech system",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'both systems' without defining the modes",
+   "toggleable": false
+  },
+  {
+   "name": "advanced_voice_mode",
+   "arity": 1,
+   "gloss": "M is advanced voice mode, where the assistant natively receives audio input and produces audio output, and the user may choose to share video with the assistant",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'Advanced voice' without defining the mode",
+   "toggleable": false
+  },
+  {
+   "name": "content_guideline",
+   "arity": 1,
+   "gloss": "G is one of the guidelines for content in this section",
+   "licence": "textual",
+   "cites": "l4252_4482_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "audio_video_nuance_instruction",
+   "arity": 1,
+   "gloss": "I is an instruction that discusses the nuances of audio or video inputs or outputs",
+   "licence": "textual",
+   "cites": "l4252_4482_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "applies_to_mode",
+   "arity": 2,
+   "gloss": "guideline G applies to voice mode M",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "'apply to both systems' and 'only relevant to Advanced voice' relate a guideline to a mode, so a two-place relation is needed",
+   "toggleable": false
+  },
+  {
+   "name": "relevant_to_mode",
+   "arity": 2,
+   "gloss": "instruction I is relevant to voice mode M",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "'only relevant to Advanced voice' relates an instruction to a mode, so a two-place relation is needed",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l4252_4482_n003",
+   "inference": null,
+   "toggleable": false,
+   "atom": "applies_to_mode(G, M)",
+   "gloss": "a content guideline of this section applies to a voice mode",
+   "body": "content_guideline(G), standard_voice_mode(M)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l4252_4482_n003",
+   "inference": null,
+   "toggleable": false,
+   "atom": "applies_to_mode(G, M)",
+   "gloss": "a content guideline of this section applies to a voice mode",
+   "body": "content_guideline(G), advanced_voice_mode(M)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l4252_4482_n003",
+   "inference": null,
+   "toggleable": false,
+   "atom": "relevant_to_mode(I, M)",
+   "gloss": "an audio/video nuance instruction is relevant to a voice mode",
+   "body": "audio_video_nuance_instruction(I), advanced_voice_mode(M)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "applying content guideline % is permitted in % because the section's content guidelines apply to both voice systems",
+   "read_back_slots": [
+    "G",
+    "M"
+   ],
+   "licence": "textual",
+   "cites": "l4252_4482_n003",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "apply_guideline(G)",
+   "body": "applies_to_mode(G, M)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "apply_guideline",
+   "closure": "cepa",
+   "reason": "the clause states that the section's content guidelines apply to both systems, so applying a content guideline in either mode is permitted; it does not forbid applying any guideline"
+  }
+ ],
+ "requires": [
+  "standard_voice_mode/1",
+  "advanced_voice_mode/1"
+ ],
+ "inputs": [
+  "content_guideline/1",
+  "audio_video_nuance_instruction/1"
+ ],
+ "forbid_body": []
+}

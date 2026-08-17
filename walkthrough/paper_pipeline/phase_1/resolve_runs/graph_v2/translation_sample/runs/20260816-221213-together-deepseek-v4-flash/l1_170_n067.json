@@ -1,0 +1,163 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1_170_n067",
+ "abstain_reason": null,
+ "claims": [
+  "C1 valid input to the model is a conversation",
+  "C2 a conversation consists of a list of messages",
+  "C3 every message contains a role and content"
+ ],
+ "acts": [],
+ "concepts": [
+  {
+   "name": "conversation_definition",
+   "arity": 1,
+   "gloss": "C is a conversation: a list of messages, each containing a role and content, where roles determine the authority of instructions",
+   "licence": "textual",
+   "cites": "l1_170_n067",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "valid_input",
+   "arity": 1,
+   "gloss": "X is a valid input to the model",
+   "licence": "textual",
+   "cites": "l1_170_n067",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "message",
+   "arity": 1,
+   "gloss": "M is a message in a conversation",
+   "licence": "textual",
+   "cites": "l1_170_n067",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "message_role",
+   "arity": 2,
+   "gloss": "message M has role R",
+   "licence": "textual",
+   "cites": "l1_170_n067",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "message_content",
+   "arity": 2,
+   "gloss": "message M has content C",
+   "licence": "textual",
+   "cites": "l1_170_n067",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "conversation_messages",
+   "arity": 2,
+   "gloss": "conversation C consists of the list of messages L",
+   "licence": "textual",
+   "cites": "l1_170_n067",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "message_list",
+   "arity": 1,
+   "gloss": "L is a list of messages",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text says a conversation consists of a list of messages; the notion of a list is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "list_member",
+   "arity": 2,
+   "gloss": "M is an element of list L",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text says a conversation consists of a list of messages; membership in a list is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "role",
+   "arity": 1,
+   "gloss": "R is a role that a message can have",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text says every message contains a role; the notion of a role is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "content",
+   "arity": 1,
+   "gloss": "C is content that a message can have",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text says every message contains content; the notion of content is presupposed",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1_170_n067",
+   "inference": null,
+   "toggleable": false,
+   "atom": "valid_input(C)",
+   "gloss": "C is a valid input to the model",
+   "body": "conversation_definition(C)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n067",
+   "inference": null,
+   "toggleable": false,
+   "atom": "conversation_definition(C)",
+   "gloss": "C is a conversation consisting of a list of messages, each with a role and content",
+   "body": "conversation_messages(C, L), message_list(L)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n067",
+   "inference": null,
+   "toggleable": false,
+   "atom": "message(M)",
+   "gloss": "M is a message in the conversation",
+   "body": "conversation_messages(C, L), list_member(L, M)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n067",
+   "inference": null,
+   "toggleable": false,
+   "atom": "message_role(M, R)",
+   "gloss": "message M has role R",
+   "body": "message(M), role(R)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l1_170_n067",
+   "inference": null,
+   "toggleable": false,
+   "atom": "message_content(M, C)",
+   "gloss": "message M has content C",
+   "body": "message(M), content(C)"
+  }
+ ],
+ "asserts": [],
+ "beats": [],
+ "defines": [],
+ "closure": [],
+ "requires": [],
+ "inputs": [
+  "conversation_messages/2",
+  "message_list/1",
+  "list_member/2",
+  "role/1",
+  "content/1"
+ ],
+ "forbid_body": []
+}

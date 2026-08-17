@@ -44,6 +44,23 @@ the highest-value corpus growth if the pilot's bound binds.
   prompt, not hand-patched — the defect is in the module's reading of its
   contract, not in a field value.
 
+## Redraw outcome (2026-08-16, run `20260816-221213`, $0.0468)
+
+13/14 redrew clean through stage 2; `l3239_3382_n002` ran out of repair
+attempts (graveyard entry `l3239_3382_n002-20260816-221428`). Gate after
+redraw: **178/203 hard-clean**. The 8 residual `provides_defined` hits are a
+**graph-layer contract mismatch, not a drafting defect**: the redrafted
+modules (under the corrected prompt) honestly translate what the node
+establishes and decline to fabricate a derivation for a PROVIDES name the
+node's own text never establishes (e.g. `l1_170_n017` PROVIDES
+`red_line_principles_section/1` while its span says only that human
+safety/rights are paramount). The fix is a graph-side PROVIDES reassignment,
+not another redraw; until then those borrows strand and the gate keeps
+saying so. `l1707_1973_n019`'s two DANGEROUS-naf hits ("treat as confidential
+unless stated otherwise" as `prefer` with `not`) may be the document's actual
+defeasible content — flagged for adjudication, deliberately not paraphrased
+away.
+
 Known bound accepted at freeze: the cross-module seam (14 shared names with
 arity disagreements, 3 section-local gloss splits, concentrated in the
 authority vocabulary) is NOT resolved by this subset work. The seam needs an

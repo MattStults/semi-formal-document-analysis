@@ -1,0 +1,67 @@
+{
+  "outcome": "translated",
+  "clause_id": "l461_608_n001",
+  "abstain_reason": null,
+  "claims": [
+    "C1 the assistant may be tasked with complex or multi-step goals",
+    "C2 such goals involve real-world actions, sequential decisions, and filling in missing details",
+    "C3 requiring explicit confirmation for every step would often be impractical",
+    "C4 an effective assistant must sometimes act autonomously"
+  ],
+  "acts": ["act_autonomously(A)"],
+  "concepts": [
+    { "name": "assistant_definition", "arity": 1,
+      "gloss": "A is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document",
+      "licence": "assumed", "cites": null,
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text uses 'assistant' without defining it",
+      "toggleable": false },
+    { "name": "root_authority", "arity": 1,
+      "gloss": "the rule carries root authority because it appears in the #scope_of_autonomy section",
+      "licence": "assumed", "cites": null,
+      "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not state the authority of its own rules",
+      "toggleable": false },
+    { "name": "complex_or_multi_step_goal", "arity": 1,
+      "gloss": "G is a goal that is complex or multi-step, such as booking a trip, drafting a business plan, or coordinating a software rollout",
+      "licence": "textual", "cites": "l461_608_n001", "inference": null, "toggleable": false },
+    { "name": "involves_real_world_actions", "arity": 1,
+      "gloss": "G involves real-world actions",
+      "licence": "textual", "cites": "l461_608_n001", "inference": null, "toggleable": false },
+    { "name": "involves_sequential_decisions", "arity": 1,
+      "gloss": "G involves sequential decisions",
+      "licence": "textual", "cites": "l461_608_n001", "inference": null, "toggleable": false },
+    { "name": "involves_filling_missing_details", "arity": 1,
+      "gloss": "G involves filling in missing details",
+      "licence": "textual", "cites": "l461_608_n001", "inference": null, "toggleable": false },
+    { "name": "tasked_with", "arity": 2,
+      "gloss": "the assistant is tasked with goal G",
+      "licence": "textual", "cites": "l461_608_n001", "inference": null, "toggleable": false },
+    { "name": "explicit_confirmation_for_every_step_impractical", "arity": 1,
+      "gloss": "for goal G, requiring explicit confirmation for every step would often be impractical",
+      "licence": "textual", "cites": "l461_608_n001", "inference": null, "toggleable": false },
+    { "name": "effective_assistant", "arity": 1,
+      "gloss": "A is an effective assistant",
+      "licence": "textual", "cites": "l461_608_n001", "inference": null, "toggleable": false }
+  ],
+  "ontology": [
+    { "licence": "textual", "cites": "l461_608_n001", "inference": null, "toggleable": false,
+      "atom": "complex_or_multi_step_goal(G)",
+      "gloss": "G is a complex or multi-step goal",
+      "body": "tasked_with(A, G), involves_real_world_actions(G), involves_sequential_decisions(G), involves_filling_missing_details(G)" }
+  ],
+  "asserts": [
+    { "read_back": "an effective assistant % must sometimes act autonomously when tasked with a complex or multi-step goal for which explicit confirmation at every step would often be impractical",
+      "read_back_slots": ["A"],
+      "licence": "textual", "cites": "l461_608_n001", "inference": null, "toggleable": false,
+      "status": "oblige", "act": "act_autonomously(A)",
+      "body": "effective_assistant(A), complex_or_multi_step_goal(G), tasked_with(A, G), explicit_confirmation_for_every_step_impractical(G)" }
+  ],
+  "beats": [],
+  "defines": [],
+  "closure": [
+    { "act_class": "act_autonomously", "closure": "cepa",
+      "reason": "the clause obliges autonomous action only in the specified impractical-confirmation circumstances; it does not forbid or permit autonomous action in other circumstances, so silence leaves it permitted" }
+  ],
+  "requires": ["assistant_definition/1", "root_authority/1"],
+  "inputs": ["tasked_with/2", "involves_real_world_actions/1", "involves_sequential_decisions/1", "involves_filling_missing_details/1", "explicit_confirmation_for_every_step_impractical/1", "effective_assistant/1"],
+  "forbid_body": []
+}
