@@ -57,8 +57,13 @@ ground. Every node in the adjudicated set receives a blind ruling.
   disputed engagements.)
 * Falsifier: metric 1 fails on >= 2 of 3 behaviors, OR precision < 0.6 on
   any behavior — either result is reported as "not panel-equivalent" with
-  no post-hoc rescue. The D5 matching fix is frozen BEFORE scoring; no
-  matching parameter may be tuned against these numbers.
+  no post-hoc rescue. The FROZEN matching layer comprises the D5 fix
+  (TOP_K 12, MAX_ATOMS 10) AND the frontier atom decomposition
+  (`atoms_frontier_frozen.json`, produced BLIND to panel citations,
+  adjudication outcomes, and prior match results — its provenance block
+  states the inputs). Nothing in the matching layer may change after this
+  registration is signed, and no matching parameter may be tuned against
+  these numbers.
 * The n=1-style caveat is standing: three behaviors is the panel's own
   limit, and the conclusion is scoped to them.
 

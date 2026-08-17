@@ -92,24 +92,35 @@ def node_geometry():
 
 # ------------------------------------------------------------------ phase A
 
+FROZEN_ATOMS = os.path.join(HERE, "atoms_frontier_frozen.json")
+
+
 def step_match():
     defs = {b["slug"]: b for b in json.load(open(QUERY_DEFS))["behaviours"]}
     views = translated_views()
     print(f"universe: {len(views)} translated nodes")
     complete = live_pilot.seat_client(max_tokens=1500)
-    report = {"universe": sorted(views), "behaviors": {}}
+    frozen = json.load(open(FROZEN_ATOMS))["atoms_by_behavior"] \
+        if os.path.exists(FROZEN_ATOMS) else None
+    report = {"universe": sorted(views), "behaviors": {},
+              "atoms_source": ("atoms_frontier_frozen.json (frontier, blind, "
+                               "frozen pre-prereg)") if frozen else "live-cheap"}
     for slug in SLUGS:
         b = defs[slug]
-        env = complete(live_pilot.ATOM_BRIEF,
-                       f"BEHAVIOR: {b['name']}\n\n{b['definition']}\n\n"
-                       "Decompose. JSON only.")
-        try:
-            atoms = [a for a in json.loads(env.get("text", ""))["atoms"]
-                     if re.fullmatch(r"[a-z][a-z0-9_]+", str(a.get("name", "")))
-                     and str(a.get("gloss", "")).strip()][:MAX_ATOMS]
-        except Exception as ex:              # noqa: BLE001
-            print(f"  !! {slug}: unparseable decomposition {ex!r}")
-            atoms = []
+        if frozen:
+            atoms = frozen[slug]
+        else:
+            env = complete(live_pilot.ATOM_BRIEF,
+                           f"BEHAVIOR: {b['name']}\n\n{b['definition']}\n\n"
+                           "Decompose. JSON only.")
+            try:
+                atoms = [a for a in json.loads(env.get("text", ""))["atoms"]
+                         if re.fullmatch(r"[a-z][a-z0-9_]+",
+                                         str(a.get("name", "")))
+                         and str(a.get("gloss", "")).strip()][:MAX_ATOMS]
+            except Exception as ex:          # noqa: BLE001
+                print(f"  !! {slug}: unparseable decomposition {ex!r}")
+                atoms = []
         ranked = BM.rank_candidates(atoms, views, embed=live_pilot.live_embed,
                                     top_k=TOP_K)
         rows = []
