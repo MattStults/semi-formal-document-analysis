@@ -72,3 +72,14 @@ Watcher 1's audit DISPATCH is no longer session-bound. Three layers:
    the router is never trusted with the 85% floor. A defect the sample
    finds that the gate did not queue is the gate's own failure metric,
    recorded in semantic_audit.json.
+
+### Layer 1 verdict (2026-08-17): NOT DEPLOYED
+
+cheap_alarm_probe.py ran the pre-stated rule and volume routing FAILED
+(1/3 defective in the top 8; the top two scores were faithful modules whose
+critiques overflowed the cap — the cheap critic says more about good
+modules than broken ones; ranking in cheap_alarm_probe.json, $0.03).
+semantic_gate.py stays refusing (THRESHOLD None) with the verdict in its
+header. The per-chunk random Fable sample (layer 3) is the ONLY stage-4
+instrument for this bulk run, and its accumulating labels (~60 by run end)
+are the recalibration set if routing is ever attempted again.

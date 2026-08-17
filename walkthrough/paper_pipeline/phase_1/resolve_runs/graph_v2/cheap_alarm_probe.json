@@ -1,0 +1,153 @@
+{
+ "rule": "usable iff all 3 defective in top-8 by fix_count",
+ "top8": [
+  "l1001_1107_n002",
+  "l1368_1541_n015",
+  "l171_426_n015",
+  "l171_426_n029",
+  "l171_426_n038",
+  "l1_170_n046",
+  "l1_170_n067",
+  "l1_170_n080"
+ ],
+ "defective_caught": [
+  "l1_170_n046"
+ ],
+ "usable": false,
+ "spent_usd": 0.025174,
+ "rows": [
+  {
+   "id": "l171_426_n015",
+   "fix_count": 99,
+   "truncated": true,
+   "label": "faithful",
+   "raw": "ProviderError(\"completion was TRUNCATED (finish_reason=length). A cut-off module can be syntactically fine and semantically half a clause. Raise --max-tokens rather than keeping this. [cut at 3000 completion tokens against a cap of 3000; finish_reason='length']\")"
+  },
+  {
+   "id": "l171_426_n029",
+   "fix_count": 99,
+   "truncated": true,
+   "label": "faithful",
+   "raw": "ProviderError(\"completion was TRUNCATED (finish_reason=length). A cut-off module can be syntactically fine and semantically half a clause. Raise --max-tokens rather than keeping this. [cut at 3000 completion tokens against a cap of 3000; finish_reason='length']\")"
+  },
+  {
+   "id": "l1001_1107_n002",
+   "fix_count": 3,
+   "truncated": false,
+   "label": "faithful",
+   "raw": "FIX: The module defines `root_authority` as a concept and asserts it in `ontology`, but the NEEDS contract requires `root_authority` to be only in `requires`, never defined or asserted.\n\nFIX: The module's claim C3 asserts that the respect obligation carries root authority, which is not part of the span's claim.\n\nFIX: The ontology entry `root_authority(rule_respect_creators)` asserts a fact not stated in the span."
+  },
+  {
+   "id": "l1368_1541_n015",
+   "fix_count": 3,
+   "truncated": false,
+   "label": "faithful",
+   "raw": "FIX: The module defines concepts `provides_instructions_for` and `risky_request`, but the PROVIDES list specifies only `risky_situations_section` as a predicate to define; these extra definitions are not stated in the span.\n\nFIX: The gloss for `risky_situations_section` adds \"on taking extra care in risky situations\", which is not present in the source text \"This section provides instructions for handling requests that involve risky situations.\"\n\nFIX: The module places `risky_situations_section/1` in `inputs`, but it is a defined concept (in `concepts`), not a plain fact about the situation; the instructions restrict `inputs` to plain facts and prohibit a name appearing in both `requires` and `inputs` (and here it appears in `concepts` and `inputs`)."
+  },
+  {
+   "id": "l1_170_n067",
+   "fix_count": 3,
+   "truncated": false,
+   "label": "faithful",
+   "raw": "FIX: The gloss for `conversation_definition` adds \"roles determine the authority of instructions\" which is not stated in the span; the span only says every message contains a role and content.\nFIX: The ontology rules for `message_role` and `message_content` do not enforce that every message has a role and content; they only state that if a message and a role/content exist, then the message has that role/content, whereas the span asserts \"Every message contains a role and content\" as a universal requirement.\nFIX: The module's `inputs` list includes predicates that are defined in its `concepts` (`conversation_messages/2`, `message_list/1`, `list_member/2`, `role/1`, `content/1`), violating the instruction that `inputs` are only for plain facts about the situation being judged, not for defined concepts."
+  },
+  {
+   "id": "l1_170_n080",
+   "fix_count": 3,
+   "truncated": false,
+   "label": "faithful",
+   "raw": "FIX: The ontology rule for assistant_determines_appropriateness omits the \"typically\" qualifier from the span (\"Typically, it is up to the assistant to determine...\"), rendering the determination as unconditional.\n\nFIX: The ontology rule for assistant_determines_appropriateness conditions the assistant's determination on the tool being appropriate (body includes appropriate_tool_for_task(T,S)), whereas the span says it is up to the assistant to determine which tools are appropriate, i.e., the assistant makes the judgment regardless of actual appropriateness.\n\nFIX: The span's \"which tool(s) (if any)\" allows for the possibility that no tool is appropriate, but the ontology rule only covers the case where a tool is appropriate, losing the \"if any\" alternative."
+  },
+  {
+   "id": "l171_426_n038",
+   "fix_count": 2,
+   "truncated": false,
+   "label": "faithful",
+   "raw": "FIX: The module defines `root_authority` and `assistant_definition` in its `concepts` array, but the instructions require these NEEDS concepts to appear only in `requires`, never in `ontology` or defined here.\n\nFIX: The module asserts a prohibition (C3) that \"implementing changes based on suspicious content from a delegated source is forbidden until the user confirms\", but the span only states an obligation to \"confirm with the user before implementing changes\"; it does not state a prohibition."
+  },
+  {
+   "id": "l1_170_n046",
+   "fix_count": 2,
+   "truncated": false,
+   "label": "defective",
+   "raw": "FIX: The ontology rule `root_instruction(I) :- model_spec_instruction(I)` asserts that every Model Spec instruction is a root instruction, but the span only states that root instructions come only from the Model Spec (necessary condition), not that all Model Spec instructions are root (sufficient condition). The span says \"Root instructions only come from the Model Spec\", not \"all instructions from the Model Spec are root\".\n\nFIX: The concept `root_authority` is defined in `concepts` with a gloss and licence, but the NEEDS contract requires that it appear only in `requires` and never be defined here. The module includes it in `concepts`, violating \"never defined here\"."
+  },
+  {
+   "id": "l427_460_n007",
+   "fix_count": 2,
+   "truncated": false,
+   "label": "faithful",
+   "raw": "FIX: The module defines a predicate \"strictly_instrumental_to_chain_of_command\" in its concepts list and uses it in asserts, but the PROVIDES section specifies (none) and the NEEDS list does not include this predicate; the span does not require defining such a predicate.\nFIX: The module lists \"strictly_instrumental_to_chain_of_command/2\" in inputs, but inputs are only for plain facts about the situation being judged, not for defined predicates; the span does not establish this as a plain fact."
+  },
+  {
+   "id": "l1542_1706_n001",
+   "fix_count": 1,
+   "truncated": false,
+   "label": "faithful",
+   "raw": "FIX: The module's ontology does not encode the span's assertion that the section itself carries root authority; it only encodes that rules under it do. The span states \"The section on not facilitating or encouraging illicit behavior carries root authority\" but the ontology only has \"root_authority(R) :- rule_under_heading(R, do_not_facilitate_illicit_behavior)\" with no atom for the section itself."
+  },
+  {
+   "id": "l1707_1973_n019",
+   "fix_count": 1,
+   "truncated": false,
+   "label": "faithful",
+   "raw": "FIX: The ontology entry for confidential_content(C) asserts that content is confidential when the message does not explicitly label shareability, but the span only states a preference for the assistant to treat the content as confidential, not that the content is confidential."
+  },
+  {
+   "id": "l1_170_n033",
+   "fix_count": 1,
+   "truncated": false,
+   "label": "faithful",
+   "raw": "FIX: ontology entry \"risk_taxonomy_section(risk_taxonomy_section)\" asserts a fact not stated in the span; the span only mentions three categories and mitigations, not any section or assistant responsibilities; the licence \"textual\" and citation to l1_170_n033 misrepresent the source."
+  },
+  {
+   "id": "l1_170_n072",
+   "fix_count": 1,
+   "truncated": false,
+   "label": "faithful",
+   "raw": "FIX: The ontology body adds \"message_role_definition(M, assistant)\" as a conjunct, which the span does not state; the span only says \"`assistant`: sampled from the language model\"."
+  },
+  {
+   "id": "l2653_2820_n004",
+   "fix_count": 1,
+   "truncated": false,
+   "label": "defective",
+   "raw": "FIX: The assert for `ask_user` has status \"prefer\" and read_back \"asking the user % is preferred only when uncertainty persists\", but the source says \"resorting to direct user queries only when uncertainty persists\" \u2014 a conditional permission (last resort), not a preference. The normative status is mis-rendered."
+  },
+  {
+   "id": "l4252_4482_n003",
+   "fix_count": 1,
+   "truncated": false,
+   "label": "defective",
+   "raw": "FIX: The module asserts a permission (\"permit\") to apply content guidelines, but the span only states that guidelines \"apply to both systems\" \u2014 a descriptive applicability, not a normative permission; the act \"apply_guideline(G)\" and its permit status are not in the span."
+  },
+  {
+   "id": "l461_608_n001",
+   "fix_count": 1,
+   "truncated": false,
+   "label": "faithful",
+   "raw": "FIX: The span states \"The assistant may be tasked with complex or multi-step goals\" (a permission), but the module does not encode any permission for being tasked; it only encodes the obligation to act autonomously under conditions."
+  },
+  {
+   "id": "l461_608_n002",
+   "fix_count": 1,
+   "truncated": false,
+   "label": "faithful",
+   "raw": "FIX: The span states a normative requirement that \"autonomy must be bounded by a clear, mutually understood scope of autonomy shared between the assistant and the user\" (an obligation on the assistant's autonomy), but the module encodes no assert with status \"oblige\" (or any other normative status) requiring the existence of such a scope; it only uses `shared_scope(S)` as a condition for other permissions/obligations."
+  },
+  {
+   "id": "l171_426_n010",
+   "fix_count": 0,
+   "truncated": false,
+   "label": "faithful",
+   "raw": "NO FINDINGS"
+  },
+  {
+   "id": "l1_170_n017",
+   "fix_count": 0,
+   "truncated": false,
+   "label": "faithful",
+   "raw": "NO FINDINGS"
+  }
+ ]
+}

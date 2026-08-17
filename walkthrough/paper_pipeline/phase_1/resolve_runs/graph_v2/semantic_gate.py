@@ -51,11 +51,23 @@ REPORT = os.path.join(HERE, "semantic_gate_report.jsonl")
 QUEUE = os.path.join(HERE, "semantic_queue")
 PASSES = 2
 MAX_TOKENS = 3000
-#: Calibrated by cheap_alarm_probe.py on the 20 blind-audited modules
-#: (2026-08-16). See cheap_alarm_probe.json for the ranking the choice
-#: comes from; the pre-stated probe rule governs whether volume routing is
-#: usable at all.
-THRESHOLD = None   # set by calibration; refuses to run while None
+#: ⛔ CALIBRATION VERDICT (cheap_alarm_probe.json, 2026-08-17): NOT USABLE.
+#: Under the pre-stated rule (all 3 known-defective modules in the top 8 by
+#: FIX volume), volume routing caught 1/3. The ranking is worse than a
+#: miss: the top two scores were FAITHFUL modules whose critiques overflowed
+#: the token cap, while all three defective modules drew 1-2 FIX lines —
+#: the cheap critic says MORE about good modules than broken ones. Third
+#: independent confirmation of the same lesson (free mechanical flags:
+#: 14/20 flagged, 2/3 defects missed; arm-series cheap-critic ID ~21%;
+#: triage arm's shared-alarm inversion). THRESHOLD therefore stays None and
+#: this gate stays UNDEPLOYED; the per-chunk random Fable sample is the
+#: only stage-4 instrument.
+#:
+#: Recalibration path, not a dead end: every per-chunk random audit adds ~6
+#: labeled modules, so the bulk run itself grows the labeled set to ~60.
+#: Re-run cheap_alarm_probe.py against that set (same pre-stated rule,
+#: proportional review budget) before considering deployment again.
+THRESHOLD = None   # NOT USABLE per calibration; the gate refuses to run
 
 BRIEF = (
  "You review one ASP translation of a specification clause. Compare the "
