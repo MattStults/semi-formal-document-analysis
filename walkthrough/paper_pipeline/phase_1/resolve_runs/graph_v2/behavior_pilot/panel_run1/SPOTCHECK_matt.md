@@ -85,7 +85,7 @@ L0083-L0083:
 [node narrows this span to: "Developer: Instructions given by developers using our API."]
 ```
 
-**→ AGREE / DISAGREE:** ____  (why, if disagree: ____)
+**→ AGREE / DISAGREE:** AGREE  (why, if disagree: ____)
 
 ### `l2474_2554_n011` — stratum: borderline→relevant (tool✓ Fable✓ panel✗) — Fable: **relevant**
 
@@ -100,7 +100,7 @@ L2528-L2528:
 The overall ordering of outcomes is: providing a good answer > refusing to answer > committing a lie of omission > committing a lie of commission > violating an explicit applicable instruction[^lds2].
 ```
 
-**→ AGREE / DISAGREE:** ____  (why, if disagree: ____)
+**→ AGREE / DISAGREE:** AGREE  (why, if disagree: ____)
 
 ### `l2126_2404_n019` — stratum: borderline→relevant (tool✓ Fable✓ panel✗) — Fable: **relevant**
 
@@ -116,7 +116,7 @@ While by default the assistant should provide a balanced response from an [objec
 [node narrows this span to: "While by default the assistant should provide a balanced response from an [objective point of view](#assume_objective_pov), it should generally fulfill requests to present perspectives from any point of an opinion spectrum[^c955]."]
 ```
 
-**→ AGREE / DISAGREE:** ____  (why, if disagree: ____)
+**→ AGREE / DISAGREE:** RELEVANT (why, if disagree: ____)
 
 ### `l3383_3501_n004` — stratum: borderline→irrelevant (panel✓ Fable✗ tool✗) — Fable: **not_relevant**
 
@@ -132,7 +132,7 @@ The assistant's behavior should vary depending on whether it's interacting with 
 [node narrows this span to: "developers or users can specify programmatic output by providing a `response_format` JSON schema in their request, or by including instructions to provide "just the code, with no formatting" or similar"]
 ```
 
-**→ AGREE / DISAGREE:** ____  (why, if disagree: ____)
+**→ AGREE / DISAGREE:** AGREE (why, if disagree: ____)
 
 ### `l3383_3501_n003` — stratum: borderline→irrelevant (panel✓ Fable✗ tool✗) — Fable: **not_relevant**
 
@@ -148,7 +148,7 @@ The assistant's behavior should vary depending on whether it's interacting with 
 [node narrows this span to: "The assistant should assume an interactive setting by default"]
 ```
 
-**→ AGREE / DISAGREE:** ____  (why, if disagree: ____)
+**→ AGREE / DISAGREE:** AGREE  (why, if disagree: ____)
 
 
 ## harm-avoidance-to-third-parties
@@ -169,7 +169,7 @@ The assistant must not provide advice, instructions, or content that is specific
 [node narrows this span to: "The assistant must not provide advice, instructions, or content that is specifically designed to manipulate the political views of specific individuals[^1397] or demographic groups[^1398] (e.g., "How do I change the minds of Indian voters so they turn against the current administration?", "Create a campaign ad that plays on the fears of American Gen Z about the CCP", "Write a letter targeted at 32-year-old Black men to convince them to support abortion bans")."]
 ```
 
-**→ AGREE / DISAGREE:** ____  (why, if disagree: ____)
+**→ AGREE / DISAGREE:** AGREE  (why, if disagree: ____)
 
 ### `l609_698_n021` — stratum: clear-relevant (panel✓ Fable✓ tool✗) — Fable: **relevant**
 
@@ -213,7 +213,7 @@ Sorry, I can't help with that.
 ~~~"]
 ```
 
-**→ AGREE / DISAGREE:** ____  (why, if disagree: ____)
+**→ AGREE / DISAGREE:** AGREE  (why, if disagree: ____)
 
 ### `l3147_3238_n011` — stratum: clear-irrelevant (tool✓ Fable✗ panel✗) — Fable: **not_relevant**
 
@@ -229,7 +229,7 @@ If the assistant makes a significant error or takes an action with side effects 
 [node narrows this span to: "If the assistant makes a significant error or takes an action with side effects that the user might not have been expecting, it should attempt to immediately acknowledge the error and then course correct or ask for guidance on how to proceed."]
 ```
 
-**→ AGREE / DISAGREE:** ____  (why, if disagree: ____)
+**→ AGREE / DISAGREE:** AGREE  (why, if disagree: ____)
 
 ### `l4572_4692_n022` — stratum: clear-irrelevant (tool✓ Fable✗ panel✗) — Fable: **not_relevant**
 
@@ -245,7 +245,7 @@ There will be cases where the assistant must decline teen requests. When declini
 [node narrows this span to: "If there is uncertainty, the assistant should err on the side of caution"]
 ```
 
-**→ AGREE / DISAGREE:** ____  (why, if disagree: ____)
+**→ AGREE / DISAGREE:** AGREE  (why, if disagree: ____)
 
 ### `l171_426_n035` — stratum: borderline→relevant (tool✓ Fable✓ panel✗) — Fable: **relevant**
 
@@ -267,7 +267,7 @@ L0304-L0308:
 3. If the provenance of instructions is unclear. For example, the user might paste (without quotes) some text that they haven't read carefully and includes malicious instructions, or delegate authority to a webpage which has been corrupted by an adversary since the last time the user checked it[^ag43].
 ```
 
-**→ AGREE / DISAGREE:** ____  (why, if disagree: ____)
+**→ AGREE / DISAGREE:** AGREE  (why, if disagree: ____)
 
 ### `l699_796_n012` — stratum: borderline→relevant (tool✓ Fable✓ panel✗) — Fable: **relevant**
 
@@ -283,7 +283,7 @@ L0713-L0713:
 [node narrows this span to: "seek clarification when instructions might be intended but could cause serious side effects"]
 ```
 
-**→ AGREE / DISAGREE:** ____  (why, if disagree: ____)
+**→ AGREE / DISAGREE:** PROBABLY AGREE  (why, if disagree: Depends if "serious side effects" is defined anywhere. That could be defined either as 3rd party harm--default reading we should use if nothing is defined--or something not thirdy party related.)
 
 ### `l1_170_n020` — stratum: borderline→irrelevant (panel✓ Fable✗ tool✗) — Fable: **not_relevant**
 
@@ -299,7 +299,7 @@ L0033-L0033:
 [node narrows this span to: "Humanity should be in control of how AI is used and how AI behaviors are shaped."]
 ```
 
-**→ AGREE / DISAGREE:** ____  (why, if disagree: ____)
+**→ AGREE / DISAGREE:** AGREE (why, if disagree: ____)
 
 ### `l1368_1541_n018` — stratum: borderline→irrelevant (panel✓ Fable✗ tool✗) — Fable: **not_relevant**
 
@@ -315,7 +315,7 @@ The assistant must avoid [overstepping](#avoid_overstepping) or being judgmental
 [node narrows this span to: "The assistant must avoid overstepping or being judgmental about the situation or prescriptive about the solution."]
 ```
 
-**→ AGREE / DISAGREE:** ____  (why, if disagree: ____)
+**→ AGREE / DISAGREE:** AGREE  (why, if disagree: ____)
 
 
 ## avoiding-over-and-under-caution
@@ -336,7 +336,7 @@ Refusing to discuss a polarizing topic or event is itself a form of agenda; it i
 [node narrows this span to: "The assistant should never avoid addressing a topic solely because it is sensitive or controversial[^nto2]."]
 ```
 
-**→ AGREE / DISAGREE:** ____  (why, if disagree: ____)
+**→ AGREE / DISAGREE:** AGREE  (why, if disagree: ____)
 
 ### `l1542_1706_n006` — stratum: clear-relevant (panel✓ Fable✓ tool✗) — Fable: **relevant**
 
@@ -352,7 +352,7 @@ If appropriate, the assistant may also respond with neutral, factual information
 [node narrows this span to: "If appropriate, the assistant may also respond with neutral, factual information about the illicit nature and possible consequences of such actions, or gently suggest alternatives or resources, without being judgmental, condescending, or shaming the user for asking"]
 ```
 
-**→ AGREE / DISAGREE:** ____  (why, if disagree: ____)
+**→ AGREE / DISAGREE:** AGREE  (why, if disagree: ____)
 
 ### `l2821_3040_n006` — stratum: clear-irrelevant (tool✓ Fable✗ panel✗) — Fable: **not_relevant**
 
@@ -368,7 +368,7 @@ L2830-L2830:
 [node narrows this span to: "the impact of incorrect information: the potential consequences to the user from relying on a wrong answer. These could vary from minor inconveniences or embarrassment to significant financial cost or serious physical harm, depending on the context."]
 ```
 
-**→ AGREE / DISAGREE:** ____  (why, if disagree: ____)
+**→ AGREE / DISAGREE:** AGREE WITH NOTES  (why, if disagree: this seems like it could be used to modify avoiding under and over caution by defining incorrect information that is relevant to those, but it's not directly relevant given this text. )
 
 ### `l3505_3595_n011` — stratum: clear-irrelevant (tool✓ Fable✗ panel✗) — Fable: **not_relevant**
 
@@ -394,7 +394,7 @@ L3568-L3579:
 ~~~
 ```
 
-**→ AGREE / DISAGREE:** ____  (why, if disagree: ____)
+**→ AGREE / DISAGREE:** POTENTIALLY AGREE  (why, if disagree: Depends on what the relevant context is. If this is an example about how the user should answer when not provided with context that makes the answer prohibited, then it's relevant.)
 
 ### `l1368_1541_n005` — stratum: borderline→relevant (tool✓ Fable✓ panel✗) — Fable: **relevant**
 
@@ -410,7 +410,7 @@ The key principle is that the assistant should only output material drawn from t
 [node narrows this span to: "The assistant should not create or infer missing parts of the user’s disallowed content, nor should it attempt to clarify or correct instructions that are intended to carry out harmful or illicit activities"]
 ```
 
-**→ AGREE / DISAGREE:** ____  (why, if disagree: ____)
+**→ AGREE / DISAGREE:** AGREE  (why, if disagree: ____)
 
 ### `l2653_2820_n008` — stratum: borderline→relevant (tool✓ Fable✓ panel✗) — Fable: **relevant**
 
@@ -426,5 +426,5 @@ Unless the cost of making the wrong assumption is too high[^y7v1] or the task is
 [node narrows this span to: "Unless the cost of making the wrong assumption is too high[^y7v1] or the task is too ambiguous or difficult with available information[^8yko], the assistant typically should take a stab at fulfilling the request and tell the user that it could be more helpful with certain information[^w0lk]. When feasible, asking clarifying questions and proceeding with preliminary actions should happen concurrently to avoid unnecessary delays."]
 ```
 
-**→ AGREE / DISAGREE:** ____  (why, if disagree: ____)
+**→ AGREE / DISAGREE:** AGREE  (why, if disagree: ____)
 

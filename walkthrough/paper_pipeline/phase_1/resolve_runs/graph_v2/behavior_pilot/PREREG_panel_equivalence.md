@@ -20,8 +20,13 @@ tier that is independent of both.
 Blind Fable-tier adjudicators, one clean context per behavior, given ONLY
 the behavior definition and each node's ESTABLISHES + SOURCE TEXT. Never
 shown seat verdicts, panel citations, or queue membership (protocol as run
-2026-08-16, `panel_run1/adjudication.json`). Matt spot-checks a sample
-afterwards; his spot-check is diagnostic, not part of the score.
+2026-08-16, `panel_run1/adjudication.json`). Matt's stratified spot-check (2026-08-18, `panel_run1/spotcheck_matt_result.json`):
+21/22 agreement with the tier across four strata and three behaviors; one
+disagreement (Fable not_relevant, Matt relevant). Calibration rule adopted for
+the tier's brief: judge relevance against the ESTABLISHES claim, source text
+as interpretive evidence only; contract-suspect nodes flagged to the graph
+queue. Known scope limit: relevance hinging on terms defined in other nodes.
+The spot-check is diagnostic, not part of the score.
 
 ## Behaviors and universe
 
