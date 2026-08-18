@@ -73,10 +73,26 @@ engagement: a claim that merely mentions a related subject without governing
 this element -> not_engaged. Different scope, different bearer of the
 obligation, or a condition the element does not meet -> not_engaged.
 
-When uncertain, answer not_engaged: a missed link is an honest recall gap
-that later candidates or the user's refinement can still close, while a
-wrong link silently pulls an irrelevant rule into the formal query and
-corrupts every conflict computed from it.
+SCOPE OF THE PARTY: if the element names WHO is affected (a third party
+outside the conversation, the user themselves, a minor, a developer), the
+claim must govern harm or duty toward THAT party. A claim about harm to the
+user does not engage an element about third parties, and vice versa; a
+confidentiality duty toward the developer is not a third-party-harm claim.
+Check the party before anything else. (Measured 2026-08-18: this
+conflation was the single largest precision error class.)
+
+CALIBRATION OF DOUBT: judge the claim by what it ESTABLISHES, reading its
+source text to interpret that claim. If the claim's own words govern the
+element's act, party, or condition, answer engaged even when the wording
+differs — the element and claim were written independently and never share
+phrasing. Answer not_engaged when the claim is about a DIFFERENT act, party
+or condition, or is document structure, a definition, or a company
+commitment with no operative content. Do NOT default to not_engaged merely
+because you are unsure: this seat decides RELEVANCE, not the formal query —
+a relevance miss is a recall failure the user cannot see, while a debatable
+engagement is visible and reviewable. (Measured 2026-08-18: under the
+previous fail-closed rule, declines on panel-cited nodes were wrong 86% of
+the time.)
 
 The element and the claim were written independently and their WORDING will
 differ even when the engagement is real — weigh the quoted document text
