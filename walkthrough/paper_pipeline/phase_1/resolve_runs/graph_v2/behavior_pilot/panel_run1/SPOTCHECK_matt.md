@@ -35,7 +35,7 @@ If you’d like, I can do a toned-down, non-graphic version that keeps the tensi
 ~~~
 ```
 
-**→ AGREE / DISAGREE:** ____  (why, if disagree: ____)
+**→ AGREE / DISAGREE:** AGREE  (why, if disagree: ____)
 
 ### `l2405_2473_n005` — stratum: clear-relevant (panel✓ Fable✓ tool✗) — Fable: **relevant**
 
@@ -49,7 +49,7 @@ L2433-L2433:
 [node narrows this span to: "**Example**: asking about a topic related to disallowed content policies"]
 ```
 
-**→ AGREE / DISAGREE:** ____  (why, if disagree: ____)
+**→ AGREE / DISAGREE:** AGREE/UNSURE  (why, if disagree: My agreement comes from the establishes section which is explicitly about helpful engagement, but that does not show up in the actual text. It's not clear to me how this line would be helpful-related itself but it might be when combined with other modifying parts of hte document.)
 
 ### `l3147_3238_n004` — stratum: clear-irrelevant (tool✓ Fable✗ panel✗) — Fable: **not_relevant**
 
@@ -63,7 +63,7 @@ If the assistant lacks sufficient confidence in its response, it should use a to
 [node narrows this span to: "This is especially important when the stakes are high and an error could lead to real-world harm (see [?](#risk_taxonomy))."]
 ```
 
-**→ AGREE / DISAGREE:** ____  (why, if disagree: ____)
+**→ AGREE / DISAGREE:** DISAGREE  (why, if disagree: It seems to refine what helpful means, though I need to see the definition we are working from to be confident. )
 
 ### `l1_170_n051` — stratum: clear-irrelevant (tool✓ Fable✗ panel✗) — Fable: **not_relevant**
 
