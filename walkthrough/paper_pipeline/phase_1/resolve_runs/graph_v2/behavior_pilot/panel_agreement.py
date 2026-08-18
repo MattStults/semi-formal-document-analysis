@@ -60,7 +60,10 @@ SLUGS = ["helpfulness", "harm-avoidance-to-third-parties",
 #: panel-warm node (8/11 missed nodes were real). Wider beam + fuller atom
 #: decomposition is the fix; per the prereg, no matching parameter may be
 #: tuned against equivalence numbers after this point.
-TOP_K = 12
+TOP_K = 12          # cold-start (REGISTERED, frozen — do not change)
+TOP_K_TUNED = 24    # arm-2 layer-3 fix (2026-08-18): round-1 held-out engagement was
+                    # capped by retrieval reach, not seat judgment (probe engaged 16 of
+                    # 35 unretrieved held-out nodes). General infrastructure, all behaviors.
 MAX_ATOMS = 10
 
 
@@ -135,8 +138,13 @@ def step_match(partial=False):
     print(f"universe: {len(views)} translated nodes")
     complete = live_pilot.seat_client(max_tokens=1500)
     atoms_path = ATOMS_OVERRIDE or FROZEN_ATOMS
-    frozen = json.load(open(atoms_path))["atoms_by_behavior"] \
-        if os.path.exists(atoms_path) else None
+    frozen = None
+    if os.path.exists(atoms_path):
+        _f = json.load(open(atoms_path))
+        if "atoms_by_behavior" in _f:
+            frozen = _f["atoms_by_behavior"]
+        else:                      # BEHAVIOR_MODULE_SPEC shape: modules[slug].atoms
+            frozen = {k: v["atoms"] for k, v in _f["modules"].items()}
     report = {"universe": sorted(views), "behaviors": {},
               "atoms_source": (os.path.basename(atoms_path) if frozen else "live-cheap")}
     for slug in SLUGS:
@@ -156,7 +164,7 @@ def step_match(partial=False):
                 print(f"  !! {slug}: unparseable decomposition {ex!r}")
                 atoms = []
         ranked = BM.rank_candidates(atoms, views, embed=live_pilot.live_embed,
-                                    top_k=TOP_K)
+                                    top_k=(TOP_K_TUNED if ATOMS_OVERRIDE else TOP_K))
         rows = []
         stone = _stone_load()
         for ai, a in enumerate(atoms):
