@@ -1,4 +1,17 @@
-# ACT SEAM CONTRACT — draft for Matt's ruling (2026-08-18)
+# ONTOLOGY CONTRACT — situation concepts + ACTS — draft for Matt's ruling (2026-08-18)
+
+Matt's observation: the "act seam contract" and the behavior atoms' act
+vocabulary are ONE thing — an ontology of acts. SEAM_CONTRACT.json is the
+situation-concept half (root_authority/1, authority_levels_hierarchy/2 …);
+this file is the act half. Together they are the document's shared
+vocabulary. Behavior modules are written directly in it (`does(b,
+refuse(r1))`, situation facts in seam names / declared inputs); each corpus
+module reaches it through bridge rules from its bespoke act names. For ONE
+document the rosetta stone IS this bridge layer; a second document adds its
+own bridges to the same canonical acts. One ruling, not two: accept an act
+ontology with bridge rules that keep the bespoke names?
+
+## The act half (formerly ACT_SEAM_CONTRACT_DRAFT.md)
 
 ## The measured problem
 `act_inventory.json`: **762 modules, 725 distinct act functors, 866 act

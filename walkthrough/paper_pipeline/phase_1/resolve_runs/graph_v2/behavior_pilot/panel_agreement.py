@@ -172,11 +172,12 @@ def step_match(partial=False):
             for score, cid in ranked[ai]:
                 key = _stone_key(a, cid)
                 hit = stone.get(key)
-                if hit is not None:
-                    drift = hit.get("gloss_sha") != _hl.sha256(a["gloss"].encode()).hexdigest()[:12]
-                    v = {"verdict": hit["verdict"],
-                         "grounds": hit["grounds"] + (" [stone; gloss changed since]" if drift else " [stone]")}
+                drift = hit is not None and hit.get("gloss_sha") != _hl.sha256(a["gloss"].encode()).hexdigest()[:12]
+                if hit is not None and not drift:
+                    v = {"verdict": hit["verdict"], "grounds": hit["grounds"] + " [stone]"}
                 else:
+                    # identity keying, but a REWRITTEN gloss re-judges (measured 2026-08-18: harm r2 reused
+                    # only 6/240 pairs, all under changed glosses — reuse across a rewrite is not honest)
                     v = BM.judge(complete, BM.build_prompt(a, views[cid]))
                     stone[key] = {"atom": a["name"], "gloss": a["gloss"], "node": cid,
                                   "gloss_sha": _hl.sha256(a["gloss"].encode()).hexdigest()[:12],
