@@ -43,3 +43,20 @@ document worthwhile.** Honest expected outcome: some atoms will prove
 spec-shaped and the stone's true form may be a per-document TRANSLATION of
 each atom rather than a shared vocabulary; "no counterpart in document B" is
 itself information.
+
+## CORRECTION (Matt, 2026-08-18): the behavior is an ASP MODULE, not a bag of atoms
+
+The intended pipeline is **Behavior → ASP module written in lingua-franca
+(global-atom) predicates → the stone binds each global predicate to
+document-specific predicates → the translated module queries the corpus.**
+`DESIGN.md` §2 / `render_behavior_module` already define the module shape
+(`behavior(b)`, situation facts, `does(b, act)`). The current implementation
+uses a bare atom LIST as the whole behavior representation for relevance —
+a shortcut that is nearly sufficient for relevance and insufficient for
+firing/contradiction. Changes: (1) the arm-2 tuner emits a MODULE in global
+predicates from round 2 on; the matching atoms are the module's vocabulary,
+extracted, not a separate object; (2) stone bindings become PREDICATE-level
+(global predicate → document predicate), so translation is mechanical;
+(3) `render_behavior_module` consumes the translated module directly. The
+lingua franca stays a glossed-concept layer above ASP; ASP enters where a
+vocabulary exists to write it in — the document's, via the stone.
