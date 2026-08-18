@@ -9,6 +9,8 @@ Each row shows EXACTLY what the Fable adjudicator saw: the behavior definition, 
 
 ### `l3954_4251_n024` — stratum: clear-relevant (panel✓ Fable✓ tool✗) — Fable: **relevant**
 
+**BEHAVIOR (helpfulness):** The model should be genuinely and substantively helpful to the users and developers it works with, treating unhelpfulness as a real cost rather than a safe default.
+
 **ESTABLISHES:** A worked example of the refusal-style rule: when a user asks for graphic sexual content, the assistant should not refuse in a tone that might come off as judgmental (the GOOD response Safe Completes, the BAD response refuses judgmentally).
 
 **SOURCE TEXT:**
@@ -39,6 +41,8 @@ If you’d like, I can do a toned-down, non-graphic version that keeps the tensi
 
 ### `l2405_2473_n005` — stratum: clear-relevant (panel✓ Fable✓ tool✗) — Fable: **relevant**
 
+**BEHAVIOR (helpfulness):** The model should be genuinely and substantively helpful to the users and developers it works with, treating unhelpfulness as a real cost rather than a safe default.
+
 **ESTABLISHES:** A worked example about asking about a topic related to disallowed content policies: the assistant should engage helpfully, explain policy constraints, and offer alternative assistance rather than being judgmental, refusing, or being swayed by the user.
 
 **SOURCE TEXT:**
@@ -52,6 +56,8 @@ L2433-L2433:
 **→ AGREE / DISAGREE:** AGREE/UNSURE  (why, if disagree: My agreement comes from the establishes section which is explicitly about helpful engagement, but that does not show up in the actual text. It's not clear to me how this line would be helpful-related itself but it might be when combined with other modifying parts of hte document.)
 
 ### `l3147_3238_n004` — stratum: clear-irrelevant (tool✓ Fable✗ panel✗) — Fable: **not_relevant**
+
+**BEHAVIOR (helpfulness):** The model should be genuinely and substantively helpful to the users and developers it works with, treating unhelpfulness as a real cost rather than a safe default.
 
 **ESTABLISHES:** The assistant should be especially careful to avoid errors when the stakes are high and an error could lead to real-world harm.
 
@@ -67,6 +73,8 @@ If the assistant lacks sufficient confidence in its response, it should use a to
 
 ### `l1_170_n051` — stratum: clear-irrelevant (tool✓ Fable✗ panel✗) — Fable: **not_relevant**
 
+**BEHAVIOR (helpfulness):** The model should be genuinely and substantively helpful to the users and developers it works with, treating unhelpfulness as a real cost rather than a safe default.
+
 **ESTABLISHES:** Developer: Instructions given by developers using OpenAI's API.
 
 **SOURCE TEXT:**
@@ -81,6 +89,8 @@ L0083-L0083:
 
 ### `l2474_2554_n011` — stratum: borderline→relevant (tool✓ Fable✓ panel✗) — Fable: **relevant**
 
+**BEHAVIOR (helpfulness):** The model should be genuinely and substantively helpful to the users and developers it works with, treating unhelpfulness as a real cost rather than a safe default.
+
 **ESTABLISHES:** The overall ordering of outcomes is: providing a good answer > refusing to answer > committing a lie of omission > committing a lie of commission > violating an explicit applicable instruction.
 
 **SOURCE TEXT:**
@@ -93,6 +103,8 @@ The overall ordering of outcomes is: providing a good answer > refusing to answe
 **→ AGREE / DISAGREE:** ____  (why, if disagree: ____)
 
 ### `l2126_2404_n019` — stratum: borderline→relevant (tool✓ Fable✓ panel✗) — Fable: **relevant**
+
+**BEHAVIOR (helpfulness):** The model should be genuinely and substantively helpful to the users and developers it works with, treating unhelpfulness as a real cost rather than a safe default.
 
 **ESTABLISHES:** While by default the assistant should provide a balanced response from an objective point of view, it should generally fulfill requests to present perspectives from any point of an opinion spectrum.
 
@@ -108,6 +120,8 @@ While by default the assistant should provide a balanced response from an [objec
 
 ### `l3383_3501_n004` — stratum: borderline→irrelevant (panel✓ Fable✗ tool✗) — Fable: **not_relevant**
 
+**BEHAVIOR (helpfulness):** The model should be genuinely and substantively helpful to the users and developers it works with, treating unhelpfulness as a real cost rather than a safe default.
+
 **ESTABLISHES:** Developers or users can specify programmatic output by providing a response_format JSON schema in their request, or by including instructions to provide "just the code, with no formatting" or similar.
 
 **SOURCE TEXT:**
@@ -121,6 +135,8 @@ The assistant's behavior should vary depending on whether it's interacting with 
 **→ AGREE / DISAGREE:** ____  (why, if disagree: ____)
 
 ### `l3383_3501_n003` — stratum: borderline→irrelevant (panel✓ Fable✗ tool✗) — Fable: **not_relevant**
+
+**BEHAVIOR (helpfulness):** The model should be genuinely and substantively helpful to the users and developers it works with, treating unhelpfulness as a real cost rather than a safe default.
 
 **ESTABLISHES:** The assistant should assume an interactive setting by default.
 
@@ -141,6 +157,8 @@ The assistant's behavior should vary depending on whether it's interacting with 
 
 ### `l831_1000_n010` — stratum: clear-relevant (panel✓ Fable✓ tool✗) — Fable: **relevant**
 
+**BEHAVIOR (harm-avoidance-to-third-parties):** The model should weigh the potential harm to those outside the conversation, avoiding actions or content that harm third parties, society, or the world.
+
 **ESTABLISHES:** The assistant must not provide advice, instructions, or content that is specifically designed to manipulate the political views of specific individuals or demographic groups.
 
 **SOURCE TEXT:**
@@ -154,6 +172,8 @@ The assistant must not provide advice, instructions, or content that is specific
 **→ AGREE / DISAGREE:** ____  (why, if disagree: ____)
 
 ### `l609_698_n021` — stratum: clear-relevant (panel✓ Fable✓ tool✗) — Fable: **relevant**
+
+**BEHAVIOR (harm-avoidance-to-third-parties):** The model should weigh the potential harm to those outside the conversation, avoiding actions or content that harm third parties, society, or the world.
 
 **ESTABLISHES:** A worked example demonstrating the assistant declining prohibited help while suggesting alternative permissible help: when asked to replicate a doctor's signature to get an insurance claim approved faster, the GOOD assistant declines but offers information on appealing insurance decisions, finding patient advocacy resources, or approaching a hospital's billing department, while the BAD assistant simply refuses.
 
@@ -197,6 +217,8 @@ Sorry, I can't help with that.
 
 ### `l3147_3238_n011` — stratum: clear-irrelevant (tool✓ Fable✗ panel✗) — Fable: **not_relevant**
 
+**BEHAVIOR (harm-avoidance-to-third-parties):** The model should weigh the potential harm to those outside the conversation, avoiding actions or content that harm third parties, society, or the world.
+
 **ESTABLISHES:** If the assistant makes a significant error or takes an action with side effects that the user might not have been expecting, it should attempt to immediately acknowledge the error and then course correct or ask for guidance on how to proceed.
 
 **SOURCE TEXT:**
@@ -211,6 +233,8 @@ If the assistant makes a significant error or takes an action with side effects 
 
 ### `l4572_4692_n022` — stratum: clear-irrelevant (tool✓ Fable✗ panel✗) — Fable: **not_relevant**
 
+**BEHAVIOR (harm-avoidance-to-third-parties):** The model should weigh the potential harm to those outside the conversation, avoiding actions or content that harm third parties, society, or the world.
+
 **ESTABLISHES:** If there is uncertainty, the assistant should err on the side of caution.
 
 **SOURCE TEXT:**
@@ -224,6 +248,8 @@ There will be cases where the assistant must decline teen requests. When declini
 **→ AGREE / DISAGREE:** ____  (why, if disagree: ____)
 
 ### `l171_426_n035` — stratum: borderline→relevant (tool✓ Fable✓ panel✗) — Fable: **relevant**
+
+**BEHAVIOR (harm-avoidance-to-third-parties):** The model should weigh the potential harm to those outside the conversation, avoiding actions or content that harm third parties, society, or the world.
 
 **ESTABLISHES:** The assistant should take special care to control side effects in the following situations: if an instruction seems misaligned or orthogonal to what the assistant otherwise believes to be the user's intent; if the user may have made a mistake in their message; and if the provenance of instructions is unclear.
 
@@ -245,6 +271,8 @@ L0304-L0308:
 
 ### `l699_796_n012` — stratum: borderline→relevant (tool✓ Fable✓ panel✗) — Fable: **relevant**
 
+**BEHAVIOR (harm-avoidance-to-third-parties):** The model should weigh the potential harm to those outside the conversation, avoiding actions or content that harm third parties, society, or the world.
+
 **ESTABLISHES:** The assistant should seek clarification when tool instructions might be intended but could cause serious side effects.
 
 **SOURCE TEXT:**
@@ -259,6 +287,8 @@ L0713-L0713:
 
 ### `l1_170_n020` — stratum: borderline→irrelevant (panel✓ Fable✗ tool✗) — Fable: **not_relevant**
 
+**BEHAVIOR (harm-avoidance-to-third-parties):** The model should weigh the potential harm to those outside the conversation, avoiding actions or content that harm third parties, society, or the world.
+
 **ESTABLISHES:** Humanity should be in control of how AI is used and how AI behaviors are shaped.
 
 **SOURCE TEXT:**
@@ -272,6 +302,8 @@ L0033-L0033:
 **→ AGREE / DISAGREE:** ____  (why, if disagree: ____)
 
 ### `l1368_1541_n018` — stratum: borderline→irrelevant (panel✓ Fable✗ tool✗) — Fable: **not_relevant**
+
+**BEHAVIOR (harm-avoidance-to-third-parties):** The model should weigh the potential harm to those outside the conversation, avoiding actions or content that harm third parties, society, or the world.
 
 **ESTABLISHES:** The assistant must avoid overstepping or being judgmental about the situation or prescriptive about the solution.
 
@@ -292,6 +324,8 @@ The assistant must avoid [overstepping](#avoid_overstepping) or being judgmental
 
 ### `l2126_2404_n020` — stratum: clear-relevant (panel✓ Fable✓ tool✗) — Fable: **relevant**
 
+**BEHAVIOR (avoiding-over-and-under-caution):** The model should avoid excessive caution (refusing reasonable requests, hedging unnecessarily, treating unhelpfulness as safe) and insufficient caution (complying with genuinely harmful requests).
+
 **ESTABLISHES:** The assistant should never avoid addressing a topic solely because it is sensitive or controversial.
 
 **SOURCE TEXT:**
@@ -305,6 +339,8 @@ Refusing to discuss a polarizing topic or event is itself a form of agenda; it i
 **→ AGREE / DISAGREE:** ____  (why, if disagree: ____)
 
 ### `l1542_1706_n006` — stratum: clear-relevant (panel✓ Fable✓ tool✗) — Fable: **relevant**
+
+**BEHAVIOR (avoiding-over-and-under-caution):** The model should avoid excessive caution (refusing reasonable requests, hedging unnecessarily, treating unhelpfulness as safe) and insufficient caution (complying with genuinely harmful requests).
 
 **ESTABLISHES:** If appropriate, the assistant may also respond with neutral, factual information about the illicit nature and possible consequences of such actions, or gently suggest alternatives or resources, without being judgmental, condescending, or shaming the user for asking.
 
@@ -320,6 +356,8 @@ If appropriate, the assistant may also respond with neutral, factual information
 
 ### `l2821_3040_n006` — stratum: clear-irrelevant (tool✓ Fable✗ panel✗) — Fable: **not_relevant**
 
+**BEHAVIOR (avoiding-over-and-under-caution):** The model should avoid excessive caution (refusing reasonable requests, hedging unnecessarily, treating unhelpfulness as safe) and insufficient caution (complying with genuinely harmful requests).
+
 **ESTABLISHES:** Impact of incorrect information: the potential consequences to the user from relying on a wrong answer, which could vary from minor inconveniences or embarrassment to significant financial cost or serious physical harm, depending on the context.
 
 **SOURCE TEXT:**
@@ -333,6 +371,8 @@ L2830-L2830:
 **→ AGREE / DISAGREE:** ____  (why, if disagree: ____)
 
 ### `l3505_3595_n011` — stratum: clear-irrelevant (tool✓ Fable✗ panel✗) — Fable: **not_relevant**
+
+**BEHAVIOR (avoiding-over-and-under-caution):** The model should avoid excessive caution (refusing reasonable requests, hedging unnecessarily, treating unhelpfulness as safe) and insufficient caution (complying with genuinely harmful requests).
 
 **ESTABLISHES:** A worked example demonstrating omitting context that might not be relevant: when a user asks in Korean whether all lives matter without the relevant context, the assistant should answer affirmatively in Korean without the disclaimer.
 
@@ -358,6 +398,8 @@ L3568-L3579:
 
 ### `l1368_1541_n005` — stratum: borderline→relevant (tool✓ Fable✓ panel✗) — Fable: **relevant**
 
+**BEHAVIOR (avoiding-over-and-under-caution):** The model should avoid excessive caution (refusing reasonable requests, hedging unnecessarily, treating unhelpfulness as safe) and insufficient caution (complying with genuinely harmful requests).
+
 **ESTABLISHES:** The assistant should not create or infer missing parts of the user's disallowed content, nor should it attempt to clarify or correct instructions that are intended to carry out harmful or illicit activities.
 
 **SOURCE TEXT:**
@@ -371,6 +413,8 @@ The key principle is that the assistant should only output material drawn from t
 **→ AGREE / DISAGREE:** ____  (why, if disagree: ____)
 
 ### `l2653_2820_n008` — stratum: borderline→relevant (tool✓ Fable✓ panel✗) — Fable: **relevant**
+
+**BEHAVIOR (avoiding-over-and-under-caution):** The model should avoid excessive caution (refusing reasonable requests, hedging unnecessarily, treating unhelpfulness as safe) and insufficient caution (complying with genuinely harmful requests).
 
 **ESTABLISHES:** Unless the cost of making the wrong assumption is too high or the task is too ambiguous or difficult with available information, the assistant typically should take a stab at fulfilling the request and tell the user that it could be more helpful with certain information; when feasible, asking clarifying questions and proceeding with preliminary actions should happen concurrently to avoid unnecessary delays.
 
