@@ -29,14 +29,18 @@ def behavior_to_corpus_bridges():
     for ln in open(os.path.join(HERE, "act_bridges.lp")):
         m = re.search(r"canonical_act\((\w+)\((X|unit)\)\)\s*:-\s*(\w+)(\(X\))?", ln)
         if m and m.group(2) == "X": out.append(f"does(B, {m.group(3)}(X)) :- does(B, {m.group(1)}(X)), behavior(B).")
-    sb = os.path.join(HERE, "situation_bridges.lp")
-    if os.path.exists(sb):
-        # canonical situation fact asserted by the behavior -> every bespoke name bridged to it holds
-        for ln in open(sb):
-            m = re.search(r"canonical_concept\((\w+)\(([^)]*)\)\)\s*:-\s*(\w+)\(([^)]*)\)", ln)
-            if m: out.append(f"{m.group(3)}({m.group(4)}) :- {m.group(1)}({m.group(2)}).")
-            m0 = re.search(r"canonical_concept\((\w+)\)\s*:-\s*(\w+)\.", ln)
-            if m0: out.append(f"{m0.group(2)} :- {m0.group(1)}.")
+    # SITUATION, behavior->corpus: a canonical fact (sort + scope values) asserted by the behavior implies
+    # every UNARY bespoke predicate typed to that sort whose expressed dims are ALL satisfied by asserted
+    # scope facts. Restricting by dims is what stops `request(r1)` alone from making every request-sorted
+    # predicate true. Higher-arity bespoke predicates are not reversed (their extra arguments would be
+    # unsafe) — a known first-pass limit, recorded.
+    tp = os.path.join(HERE, "situation_types.json"); ip = os.path.join(HERE, "situation_concepts.json")
+    if os.path.exists(tp) and os.path.exists(ip):
+        t = json.load(open(tp)); inv = json.load(open(ip))
+        for n, v in t.items():
+            if (inv[n]["arity"] or 0) != 1: continue
+            body = [f"{v['sort']}(X)"] + [f"scope({d},{val},X)" for d, val in v["dims"].items()]
+            out.append(f"{n}(X) :- " + ", ".join(body) + ".")
     return "\n".join(out) + "\n"
 
 

@@ -183,21 +183,54 @@ def atoms_coinage_spread():
 
 
 def atoms_grounding_fit():
-    """T4 (hard when runnable): when a behavior's situation facts are
-    written in the shared vocabulary, do intended modules' BODIES satisfy?
-    Needs a grounded behavior instance + expected firing set. Uses S4 as
-    the reference case: its facts are all declared inputs; the reference
-    modules must fire as recorded."""
-    ref = os.path.join(HERE, "panel_run1", "contradiction_S4.json")
-    if not os.path.exists(ref): return {"hard": ["T4 NOT-RUNNABLE: no grounded reference case"]}
-    r = json.load(open(ref)); a = r.get("S4a over-cautious refusal", {}); 
-    fired = len(a.get("relevant_modules") or [])
-    return {"info": [f"T4 S4 reference: {fired} modules fire on declared-input facts (recorded); a general T4 needs the input ontology built"]}
+    """T4 hard: firing consistency for the SITUATION half — the twin of A7.
+    S4 stated in CANONICAL facts (sorts + scope values) through the typed
+    bridges must reproduce the hand-grounded firing set and conflict count.
+    A module the hand version fires that the canonical version does not =
+    a typing that makes a body unreachable (e.g. two facets of one condition
+    typed as conflicting values); a module the canonical version fires that
+    the hand version does not = a mis-typed concept unlocking a rule."""
+    ref_p = os.path.join(HERE, "panel_run1", "contradiction_S4.json"); can_p = os.path.join(HERE, "panel_run1", "mutation_S4_canonical.json")
+    if not (os.path.exists(ref_p) and os.path.exists(can_p)): return {"hard": ["T4 NOT-RUNNABLE: need contradiction_S4.json (hand) and mutation_S4_canonical.json (canonical)"]}
+    ref = json.load(open(ref_p))["S4a over-cautious refusal"]; can = json.load(open(can_p))
+    hf, cf = set(ref.get("relevant_modules") or []), set(can.get("base_fires") or [])
+    hc, cc = len(ref.get("conflicts") or []), len(can.get("base_conflicts") or [])
+    hits = {"hard": [], "review": [], "info": [f"T4 S4 hand fires {sorted(hf)} conflicts {hc}; canonical fires {sorted(cf)} conflicts {cc}"]}
+    for m in sorted(hf - cf): hits["hard"].append(f"T4 `{m}` fires hand-grounded but NOT canonically — a typing makes its body unreachable")
+    for m in sorted(cf - hf): hits["hard"].append(f"T4 `{m}` fires canonically but NOT hand-grounded — a mis-typed concept unlocks it")
+    if hc != cc: hits["hard"].append(f"T4 conflict count differs: hand {hc}, canonical {cc}")
+    return hits
+
+
+def atoms_typed_structure():
+    """T5 hard/review: every concept typed (hard if <95%); `other` sort as
+    catch-all (review if >20%); T6 review: scope-dimension coverage — share
+    of concepts expressing at least one dimension value, and per-dimension
+    counts (a dimension with <10 concepts cannot be mutated meaningfully);
+    T7 hard: every bridge target is a declared sort / dimension value."""
+    p = os.path.join(HERE, "situation_types.json")
+    if not os.path.exists(p): return {"hard": ["T5 NOT-RUNNABLE: no situation_types.json (typed ontology not built)"]}
+    t = json.load(open(p)); inv = json.load(open(os.path.join(HERE, "situation_concepts.json")))
+    SORTS = {"request","response","user","content","action","instruction","party","setting","information","assistant","tool","other"}
+    DIMS = {"party","intent","setting","reversibility","content_class","stakes"}
+    hits = {"hard": [], "review": [], "info": []}
+    typed = len(t) / len(inv)
+    (hits["hard"] if typed < 0.95 else hits["info"]).append(f"T5 typed {len(t)}/{len(inv)} = {typed:.2f}")
+    sorts = Counter(v["sort"] for v in t.values())
+    if sorts.get("other", 0) > 0.2 * len(t): hits["review"].append(f"T5 `other` sort holds {sorts['other']}/{len(t)} ({100*sorts['other']//len(t)}%) — catch-all; refine into real sorts")
+    hits["info"].append("T5 sorts: " + ", ".join(f"{k} {v}" for k, v in sorts.most_common()))
+    withd = sum(1 for v in t.values() if v["dims"]); dimc = Counter(d for v in t.values() for d in v["dims"])
+    hits["info"].append(f"T6 concepts expressing a scope dimension: {withd}/{len(t)}; per-dimension: " + ", ".join(f"{k} {v}" for k, v in dimc.most_common()))
+    for d in DIMS:
+        if dimc.get(d, 0) < 10: hits["review"].append(f"T6 dimension `{d}` expressed by only {dimc.get(d,0)} concepts — too thin to mutate meaningfully")
+    bad = [n for n, v in t.items() if v["sort"] not in SORTS or any(d not in DIMS for d in v["dims"])]
+    if bad: hits["hard"].append(f"T7 {len(bad)} concept(s) bridged to an undeclared sort/dimension")
+    return hits
 
 
 def run(kind, sample=60):
     checks = ([acts_structural, lambda: acts_bridge_accuracy_sample(sample)[0], acts_grain_by_relevance, acts_firing_consistency]
-              if kind == "acts" else [atoms_gap_rate, atoms_collision_rate, atoms_coinage_spread, atoms_grounding_fit])
+              if kind == "acts" else [atoms_typed_structure, atoms_gap_rate, atoms_collision_rate, atoms_coinage_spread, atoms_grounding_fit])
     agg = {"hard": [], "review": [], "info": []}
     for c in checks:
         try:

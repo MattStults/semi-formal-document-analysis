@@ -1,21 +1,323 @@
 {
  "_": "Identity contract for names SHARED across node modules (the borrowing seam). One canonical arity + argument sorts + document-wide gloss per name. corpus_gate.py enforces arity conformance (hard tier); glosses for these names must never be section-local. Ruled 2026-08-16, grounds in SEAM_CONTRACT.md.",
  "names": {
-  "root_authority":            {"arity": 1, "args": ["rule_or_instruction"], "gloss": "R carries the root level of instruction authority, the highest in the hierarchy; it cannot be overridden by system, developer or user instructions"},
-  "system_authority":          {"arity": 1, "args": ["rule_or_instruction"], "gloss": "R carries the system level of instruction authority"},
-  "developer_authority":       {"arity": 1, "args": ["rule_or_instruction"], "gloss": "R carries the developer level of instruction authority"},
-  "user_authority":            {"arity": 1, "args": ["rule_or_instruction"], "gloss": "R carries the user level of instruction authority"},
-  "guideline_authority":       {"arity": 1, "args": ["rule_or_instruction"], "gloss": "R carries the guideline level of instruction authority: guidance rather than strict requirement"},
-  "authority_levels_hierarchy": {"arity": 2, "args": ["higher_level", "lower_level"], "gloss": "authority level H (first argument) outranks authority level L (second argument) in the ordering root > system > developer > user > guideline"},
-  "assistant_definition":      {"arity": 1, "args": ["assistant"], "gloss": "A is the assistant as the Model Spec defines it"},
-  "model_spec":                {"arity": 1, "args": ["document"], "gloss": "D is the Model Spec document"},
-  "usage_policies":            {"arity": 1, "args": ["document"], "gloss": "P is OpenAI's usage-policies document"},
-  "message_role_definition":   {"arity": 2, "args": ["message", "role"], "gloss": "message M (first argument) has role R (second argument), one of system, developer, user, assistant, tool; the role specifies the message's source and determines its authority"},
-  "developer_instruction":     {"arity": 1, "args": ["instruction"], "gloss": "I is an instruction issued at the developer authority level"},
-  "user_instruction":          {"arity": 1, "args": ["instruction"], "gloss": "I is an instruction issued at the user authority level"},
-  "higher_level_instruction":  {"arity": 1, "args": ["instruction"], "gloss": "I is an instruction from an authority level that outranks the level of the instruction under evaluation"},
-  "answers_question":          {"arity": 2, "args": ["response", "question"], "gloss": "response R (first argument) answers question Q (second argument)"},
-  "delegated_power":           {"arity": 2, "args": ["power", "authority_level"], "gloss": "power P over a matter (first argument) is delegated by the Model Spec to authority level L (second argument)"},
-  "information_hazards_prohibition": {"arity": 1, "args": ["rule"], "gloss": "R is the rule prohibiting detailed actionable steps for information hazards (e.g. biological amplification, weapons)"}
+  "root_authority": {
+   "arity": 1,
+   "args": [
+    "rule_or_instruction"
+   ],
+   "gloss": "R carries the root level of instruction authority, the highest in the hierarchy; it cannot be overridden by system, developer or user instructions"
+  },
+  "system_authority": {
+   "arity": 1,
+   "args": [
+    "rule_or_instruction"
+   ],
+   "gloss": "R carries the system level of instruction authority"
+  },
+  "developer_authority": {
+   "arity": 1,
+   "args": [
+    "rule_or_instruction"
+   ],
+   "gloss": "R carries the developer level of instruction authority"
+  },
+  "user_authority": {
+   "arity": 1,
+   "args": [
+    "rule_or_instruction"
+   ],
+   "gloss": "R carries the user level of instruction authority"
+  },
+  "guideline_authority": {
+   "arity": 1,
+   "args": [
+    "rule_or_instruction"
+   ],
+   "gloss": "R carries the guideline level of instruction authority: guidance rather than strict requirement"
+  },
+  "authority_levels_hierarchy": {
+   "arity": 2,
+   "args": [
+    "higher_level",
+    "lower_level"
+   ],
+   "gloss": "authority level H (first argument) outranks authority level L (second argument) in the ordering root > system > developer > user > guideline"
+  },
+  "assistant_definition": {
+   "arity": 1,
+   "args": [
+    "assistant"
+   ],
+   "gloss": "A is the assistant as the Model Spec defines it"
+  },
+  "model_spec": {
+   "arity": 1,
+   "args": [
+    "document"
+   ],
+   "gloss": "D is the Model Spec document"
+  },
+  "usage_policies": {
+   "arity": 1,
+   "args": [
+    "document"
+   ],
+   "gloss": "P is OpenAI's usage-policies document"
+  },
+  "message_role_definition": {
+   "arity": 2,
+   "args": [
+    "message",
+    "role"
+   ],
+   "gloss": "message M (first argument) has role R (second argument), one of system, developer, user, assistant, tool; the role specifies the message's source and determines its authority"
+  },
+  "developer_instruction": {
+   "arity": 1,
+   "args": [
+    "instruction"
+   ],
+   "gloss": "I is an instruction issued at the developer authority level"
+  },
+  "user_instruction": {
+   "arity": 1,
+   "args": [
+    "instruction"
+   ],
+   "gloss": "I is an instruction issued at the user authority level"
+  },
+  "higher_level_instruction": {
+   "arity": 1,
+   "args": [
+    "instruction"
+   ],
+   "gloss": "I is an instruction from an authority level that outranks the level of the instruction under evaluation"
+  },
+  "answers_question": {
+   "arity": 2,
+   "args": [
+    "response",
+    "question"
+   ],
+   "gloss": "response R (first argument) answers question Q (second argument)"
+  },
+  "delegated_power": {
+   "arity": 2,
+   "args": [
+    "power",
+    "authority_level"
+   ],
+   "gloss": "power P over a matter (first argument) is delegated by the Model Spec to authority level L (second argument)"
+  },
+  "information_hazards_prohibition": {
+   "arity": 1,
+   "args": [
+    "rule"
+   ],
+   "gloss": "R is the rule prohibiting detailed actionable steps for information hazards (e.g. biological amplification, weapons)"
+  },
+  "appropriate_to_encourage_support": {
+   "arity": 2,
+   "args": [
+    "X0",
+    "X1"
+   ],
+   "gloss": "it is appropriate for assistant A to encourage seeking additional support in the discussion about T",
+   "_provenance": "seam growth 2026-08-18: pinned to majority arity from the corpus gate's arity_disagreement report; /2:1, /1:1"
+  },
+  "ask_question": {
+   "arity": 2,
+   "args": [
+    "X0",
+    "X1"
+   ],
+   "gloss": "A asks Q, where Q is a question posed to the user in the conversation",
+   "_provenance": "seam growth 2026-08-18: pinned to majority arity from the corpus gate's arity_disagreement report; /2:1, /1:1"
+  },
+  "assistant_behavior": {
+   "arity": 1,
+   "args": [
+    "X0"
+   ],
+   "gloss": "B is the assistant's behavior, which should vary according to whether the setting is interactive or programmatic",
+   "_provenance": "seam growth 2026-08-18: pinned to majority arity from the corpus gate's arity_disagreement report; /1:1, /2:1"
+  },
+  "assistant_response": {
+   "arity": 1,
+   "args": [
+    "X0"
+   ],
+   "gloss": "A is an assistant response in the example",
+   "_provenance": "seam growth 2026-08-18: pinned to majority arity from the corpus gate's arity_disagreement report; /1:19, /2:3"
+  },
+  "creativity_principle": {
+   "arity": 1,
+   "args": [
+    "X0"
+   ],
+   "gloss": "R is a response that embodies the creativity principle: striving for creativity where appropriate, aiming to instill delightful surprise by going beyond the obvious or the mundane",
+   "_provenance": "seam growth 2026-08-18: pinned to majority arity from the corpus gate's arity_disagreement report; /1:2, /0:1"
+  },
+  "do_not_facilitate_illicit_behavior": {
+   "arity": 1,
+   "args": [
+    "X0"
+   ],
+   "gloss": "R is the policy section on not facilitating or encouraging illicit behavior, referenced by the transformation exception",
+   "_provenance": "seam growth 2026-08-18: pinned to majority arity from the corpus gate's arity_disagreement report; /0:1, /1:2"
+  },
+  "explicitly_authorized": {
+   "arity": 1,
+   "args": [
+    "X0"
+   ],
+   "gloss": "A is explicitly authorized by an applicable instruction, meaning an applicable instruction expressly permits the activity",
+   "_provenance": "seam growth 2026-08-18: pinned to majority arity from the corpus gate's arity_disagreement report; /1:1, /2:1"
+  },
+  "interactive_setting": {
+   "arity": 1,
+   "args": [
+    "X0"
+   ],
+   "gloss": "S is an interactive setting, one in which the assistant is conversing with the end user or developer",
+   "_provenance": "seam growth 2026-08-18: pinned to majority arity from the corpus gate's arity_disagreement report; /1:2, /0:1"
+  },
+  "interactive_vs_programmatic_setting": {
+   "arity": 1,
+   "args": [
+    "X0"
+   ],
+   "gloss": "whether the assistant is interacting with a human in real time (interactive) or its output will be consumed programmatically; behavior varies accordingly",
+   "_provenance": "seam growth 2026-08-18: pinned to majority arity from the corpus gate's arity_disagreement report; /1:8, /2:3, /0:1"
+  },
+  "misleads_user": {
+   "arity": 2,
+   "args": [
+    "X0",
+    "X1"
+   ],
+   "gloss": "applying instruction I in response to user U would mislead U",
+   "_provenance": "seam growth 2026-08-18: pinned to majority arity from the corpus gate's arity_disagreement report; /2:2, /1:1"
+  },
+  "other_policy_forbids": {
+   "arity": 2,
+   "args": [
+    "X0",
+    "X1"
+   ],
+   "gloss": "policy P forbids producing material M, where P is a policy other than the restricted-content and sensitive-content policies",
+   "_provenance": "seam growth 2026-08-18: pinned to majority arity from the corpus gate's arity_disagreement report; /2:1, /1:1"
+  },
+  "outcome_ranking": {
+   "arity": 1,
+   "args": [
+    "X0"
+   ],
+   "gloss": "the ranking of answer outcomes from best to worst: confident right answer, hedged right answer, no answer, hedged wrong answer, confident wrong answer",
+   "_provenance": "seam growth 2026-08-18: pinned to majority arity from the corpus gate's arity_disagreement report; /1:2, /2:1"
+  },
+  "produces": {
+   "arity": 2,
+   "args": [
+    "X0",
+    "X1"
+   ],
+   "gloss": "A produces response R",
+   "_provenance": "seam growth 2026-08-18: pinned to majority arity from the corpus gate's arity_disagreement report; /3:1, /2:2"
+  },
+  "red_line_principles": {
+   "arity": 0,
+   "args": [],
+   "gloss": "the red-line principles referenced by the surrounding document, which this clause encourages following",
+   "_provenance": "seam growth 2026-08-18: pinned to majority arity from the corpus gate's arity_disagreement report; /0:1, /1:1"
+  },
+  "refusal_response": {
+   "arity": 2,
+   "args": [
+    "X0",
+    "X1"
+   ],
+   "gloss": "R is a response that refuses to help with request Q",
+   "_provenance": "seam growth 2026-08-18: pinned to majority arity from the corpus gate's arity_disagreement report; /2:2, /1:2"
+  },
+  "relevant_context": {
+   "arity": 1,
+   "args": [
+    "X0"
+   ],
+   "gloss": "C is a piece of context that is relevant to the situation being judged",
+   "_provenance": "seam growth 2026-08-18: pinned to majority arity from the corpus gate's arity_disagreement report; /1:1, /2:1"
+  },
+  "response": {
+   "arity": 1,
+   "args": [
+    "X0"
+   ],
+   "gloss": "R is a response by the assistant",
+   "_provenance": "seam growth 2026-08-18: pinned to majority arity from the corpus gate's arity_disagreement report; /1:6, /2:3"
+  },
+  "side_effect": {
+   "arity": 1,
+   "args": [
+    "X0"
+   ],
+   "gloss": "E is an effect on the world caused by a tool call that is difficult or impossible to reverse",
+   "_provenance": "seam growth 2026-08-18: pinned to majority arity from the corpus gate's arity_disagreement report; /1:1, /2:1"
+  },
+  "tool_call": {
+   "arity": 1,
+   "args": [
+    "X0"
+   ],
+   "gloss": "C is a call the assistant is considering making to a tool",
+   "_provenance": "seam growth 2026-08-18: pinned to majority arity from the corpus gate's arity_disagreement report; /1:3, /2:1"
+  },
+  "translation_request": {
+   "arity": 1,
+   "args": [
+    "X0"
+   ],
+   "gloss": "R is a request to transform or analyze user-provided content, here a request to translate a question into another language",
+   "_provenance": "seam growth 2026-08-18: pinned to majority arity from the corpus gate's arity_disagreement report; /1:1, /2:1"
+  },
+  "transparency_about": {
+   "arity": 1,
+   "args": [
+    "X0"
+   ],
+   "gloss": "T is an act of providing transparency about some matter",
+   "_provenance": "seam growth 2026-08-18: pinned to majority arity from the corpus gate's arity_disagreement report; /1:1, /2:1"
+  },
+  "under_18_user": {
+   "arity": 1,
+   "args": [
+    "X0"
+   ],
+   "gloss": "U is a user whose settings mark them as under 18",
+   "_provenance": "seam growth 2026-08-18: pinned to majority arity from the corpus gate's arity_disagreement report; /0:1, /1:2"
+  },
+  "user_level": {
+   "arity": 0,
+   "args": [],
+   "gloss": "the user authority level in the hierarchy, below developer and above guideline",
+   "_provenance": "seam growth 2026-08-18: pinned to majority arity from the corpus gate's arity_disagreement report; /0:1, /1:1"
+  },
+  "user_question": {
+   "arity": 1,
+   "args": [
+    "X0"
+   ],
+   "gloss": "U is a question posed by the user in the conversation",
+   "_provenance": "seam growth 2026-08-18: pinned to majority arity from the corpus gate's arity_disagreement report; /1:4, /2:1"
+  },
+  "user_request": {
+   "arity": 1,
+   "args": [
+    "X0"
+   ],
+   "gloss": "a message from the user in the conversation that constitutes a request for assistance",
+   "_provenance": "seam growth 2026-08-18: pinned to majority arity from the corpus gate's arity_disagreement report; /1:8, /2:2"
+  }
  }
 }
