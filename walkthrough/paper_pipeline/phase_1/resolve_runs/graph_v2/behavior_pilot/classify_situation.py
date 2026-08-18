@@ -30,10 +30,10 @@ DISCOVER = ("You are building a SHARED ontology of situation concepts for a poli
  "distinct meanings distinct. Aim for canonical concepts a behavior author would recognize (e.g. request_is_ambiguous/1, user_indicates_illicit_intent/1, "
  "content_is_restricted/1, action_is_irreversible/1, party_is_third_party/1, setting_is_programmatic/0). Reply with JSON only: "
  "{\"canonical\": [{\"name\":..., \"arity\":..., \"args\":[...], \"gloss\":...}], \"members\": {\"<bespoke>\": \"<canonical name>\"}}.")
-MERGE = ("You are given many independently proposed canonical situation concepts (name, arity, gloss), with overlaps and near-duplicates. "
- "Produce ONE merged canonical list: dedupe by meaning (keep the clearest name/gloss), preserve genuinely distinct concepts, and return a mapping "
- "from every proposed name to its merged canonical name. Target a few hundred canonical concepts at most, not thousands. JSON only: "
- "{\"canonical\": [{\"name\":..., \"arity\":..., \"args\":[...], \"gloss\":...}], \"merge\": {\"<proposed>\": \"<canonical>\"}}.")
+MERGE = ("You are given proposed canonical situation concepts (name /arity: gloss) with overlaps and near-duplicates. "
+ "Return ONLY a merge mapping: for every proposed name, the name of the concept it should merge INTO (map a name to itself if it is the survivor). "
+ "Merge by MEANING; keep genuinely distinct concepts distinct; prefer the clearest existing name as survivor. Do NOT restate glosses. "
+ "JSON only, flat: {\"<proposed>\": \"<survivor>\", ...}.")
 ASSIGN = ("Assign each bespoke situation concept (name, arity, gloss) to exactly ONE canonical concept from the list, judged by MEANING. "
  "If none fits, answer NEW:<snake_case> with a one-clause reason. JSON only: {\"<bespoke>\": {\"canonical\": ..., \"why\": ...}}.")
 
@@ -51,6 +51,10 @@ def _json(txt):
 def discover():
     complete = _client()
     names = sorted(INV); props, members = [], {}
+    pp = os.path.join(HERE, "situation_proposals.json")
+    if os.path.exists(pp):
+        d = json.load(open(pp)); props, members = d["proposals"], d["members"]
+        print(f"resuming from {len(props)} saved proposals (discovery already done)", flush=True); names = []
     for i in range(0, len(names), 40):
         b = names[i:i+40]
         user = "\n".join(f"- {n} /{INV[n]['arity']}: {INV[n]['gloss'][:160]}" for n in b) + "\n\nPropose canonical concepts and map each member. JSON only."
@@ -62,22 +66,31 @@ def discover():
     json.dump({"proposals": props, "members": members}, open(os.path.join(HERE, "situation_proposals.json"), "w"), indent=1)
     # merge in chunks (proposals may number ~1000+): iterative pairwise-ish merge
     canon = props
-    for rnd in range(3):
-        if len(canon) <= 300: break
-        merged, mapping = [], {}
-        for i in range(0, len(canon), 120):
-            chunk = canon[i:i+120]
-            user = "\n".join(f"- {c.get('name')} /{c.get('arity')}: {str(c.get('gloss',''))[:140]}" for c in chunk) + "\n\nMerge. JSON only."
+    by_name = {c["name"]: c for c in canon if c.get("name")}
+    for rnd in range(4):
+        if len(by_name) <= 300: break
+        names = sorted(by_name); mapping = {}
+        # shuffle so near-duplicates from different discovery batches meet in one merge chunk
+        import random as _r; _r.Random(rnd).shuffle(names)
+        for i in range(0, len(names), 60):
+            chunk = names[i:i+60]
+            user = "\n".join(f"- {n} /{by_name[n].get('arity')}: {str(by_name[n].get('gloss',''))[:110]}" for n in chunk) + "\n\nMerge mapping. JSON only."
             try:
-                d = _json(complete(MERGE, user).get("text", "")); merged += d.get("canonical", []); mapping.update(d.get("merge", {}))
-            except Exception as ex: print("merge chunk failed", repr(ex)[:100]); merged += chunk
-        print(f"merge round {rnd}: {len(canon)} -> {len(merged)}; ${complete.client.spent_usd:.4f}", flush=True)
-        # apply mapping to members
-        for k, v in members.items():
-            members[k] = mapping.get(v, v)
-        canon = merged
-    # final global merge if still large: one more pass over the whole list
-    if len(canon) > 300:
+                d = _json(_client(6000)(MERGE, user).get("text", ""))
+                for k, v in d.items():
+                    if k in by_name and v in by_name: mapping[k] = v
+            except Exception as ex: print("merge chunk failed", repr(ex)[:80], flush=True)
+        # resolve chains, apply
+        def root(x):
+            seen = set()
+            while mapping.get(x, x) != x and x not in seen: seen.add(x); x = mapping[x]
+            return x
+        survivors = {root(n) for n in by_name}
+        for k, v in members.items(): members[k] = root(v) if v in by_name else v
+        by_name = {n: by_name[n] for n in survivors}
+        print(f"merge round {rnd}: {len(names)} -> {len(by_name)}; ${complete.client.spent_usd:.4f}", flush=True)
+    canon = list(by_name.values())
+    if False:  # final global merge disabled: a single call over the whole list truncates (measured)
         user = "\n".join(f"- {c.get('name')} /{c.get('arity')}: {str(c.get('gloss',''))[:100]}" for c in canon)
         try:
             d = _json(_client(8000)(MERGE, user + "\n\nMerge to the smallest faithful list. JSON only.").get("text", ""))

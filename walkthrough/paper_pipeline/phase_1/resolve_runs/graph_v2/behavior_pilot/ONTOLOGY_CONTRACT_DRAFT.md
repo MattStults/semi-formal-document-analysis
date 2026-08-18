@@ -75,3 +75,31 @@ translator's contract becomes "canonical acts + declared inputs" (B5 fixed);
 predicate-level rosetta bindings become the canonical-act layer itself for
 this document; the second document later supplies its own bridges to the
 same canonical acts — which is exactly the rosetta stone.
+
+## The situation half — MEASURED SHAPE (2026-08-18)
+
+Running the act procedure over the 2065 situation concepts (inventory →
+discover → merge) produced 1959 proposals and merge collapsed only 6. That
+is not a merge failure: the corpus's situation vocabulary is genuinely
+SPECIFIC — `response_acknowledges_censorship` and
+`response_includes_disclaimer` are different facts, and forcing them under
+"a few hundred canonicals" would erase distinctions the document makes.
+Acts collapse to ~11 verbs; situation concepts do not collapse.
+
+Ruling proposed: the situation ontology is a TYPED HIERARCHY, not a flat
+canonical list —
+  * a SORT per concept from a fixed small set (request, response, user,
+    content, action, instruction, party, setting, information, assistant,
+    tool, other) — what its first argument is;
+  * a small set of shared SCOPE DIMENSIONS with canonically-distinct values
+    (party: user|third_party|developer|minor|society; intent:
+    benign|ambiguous|illicit; setting: interactive|programmatic|agentic;
+    reversibility; content_class; stakes), assigned to concepts that
+    EXPRESS a value — these are the axes the mutation test (arm b) moves
+    along, and the axes behaviors need to state scope;
+  * near-duplicate merge only (`same_as`).
+Bridges: `canonical_concept(<sort>(X)) :- <bespoke>(X)` and
+`scope(<dim>,<value>,X) :- <bespoke>(X)`. Behavior modules state facts as
+sorts + scope values (`request(r1). scope(intent,ambiguous,r1).`) and reach
+every bespoke predicate that expresses them. `classify_situation_sorts.py`
+builds it; `validate_ontology.py atoms` scores it.
