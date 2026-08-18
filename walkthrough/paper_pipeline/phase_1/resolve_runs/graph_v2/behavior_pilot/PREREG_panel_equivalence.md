@@ -145,3 +145,13 @@ answering two different questions:
 ASP fidelity (SEMANTIC_AUDIT.md owns that), contradiction detection (needs
 the D4 concrete instances), and the panel's own correctness — the panel is
 an instrument being compared, not a bar being assumed.
+
+---
+
+**SIGNED — Matt Stults, 2026-08-18.** Content sha256 at signing:
+`6848fb5a489aad2935ae2759f7daf2c14265abb94ebf1ecfb99f5989e54a80f3`. Signed via the coordinator on Matt's instruction ("ok sign it") after
+Q1 (defensibility metric), Q2 (21/22 spot-check calibration) and Q3
+(cold-start layer scored as blind-decomposed) were each ruled and recorded
+above. From this line on, the registration is FROZEN: any edit to the
+sections above voids it; the matching layer may not change; scoring happens
+once.
