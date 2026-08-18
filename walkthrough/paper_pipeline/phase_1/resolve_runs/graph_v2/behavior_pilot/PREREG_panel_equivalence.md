@@ -89,6 +89,15 @@ The following are reported beside metric 0, not as the claim:
   states the inputs). Nothing in the matching layer may change after this
   registration is signed, and no matching parameter may be tuned against
   these numbers.
+* **Q3 ruled (Matt, 2026-08-18): the cold-start matching layer is scored AS
+  BLIND-DECOMPOSED.** The known precision and recall errors catalogued in
+  `panel_run1/THREEWAY_REPORT.md` (27 scope/structural, 73 seat-miss) are
+  counted against the cold-start number by design; the general fixes they
+  license (party-scope checklist + seat-brief item, topic/agenda atom
+  vocabulary, retrieval brief) are arm-2 material. Rejected by name:
+  applying the party-scope fix to the base tool before signing — legitimate
+  in principle, but it would make the cold-start number describe a tool
+  improved after seeing where it failed.
 * The n=1-style caveat is standing: three behaviors is the panel's own
   limit, and the conclusion is scoped to them.
 
