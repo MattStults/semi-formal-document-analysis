@@ -34,9 +34,33 @@ sample of 15 nodes from neither set (drawn by fixed seed 20260816,
 sorted-id order) so both instruments can also be scored on agreed-negative
 ground. Every node in the adjudicated set receives a blind ruling.
 
-## Metrics (all three reported; the equivalence claim is metric 1)
+## Metrics (all reported; the equivalence claim is metric 0)
 
-1. **Equivalence (primary):** seat-vs-truth agreement (Jaccard over
+0. **Defensibility (PRIMARY — Matt's ruling, 2026-08-18):** for every
+   deviation the tool makes from the truth tier, is it an ERROR or a
+   DEFENSIBLE INTERPRETATION? Two rates per behavior:
+   * engagement defensibility = share of tool engagements the truth tier
+     rules relevant (both where the panel agreed and where it did not);
+   * decline defensibility = share of tool declines on panel-cited nodes the
+     truth tier rules NOT relevant (i.e. the tool was right to decline).
+   The comparison instrument is the PANEL under the SAME reader:
+   panel-citation defensibility = share of the panel's consensus citations
+   the truth tier rules relevant. **Equivalence = the tool's deviations are
+   defensible at least as often as the panel's are, on the same behavior,
+   under the same reader.** Symmetric by construction; no instrument is
+   assumed correct.
+   Validity control (REQUIRED before the claim is made): a second frontier
+   model, blind, re-rules a stratified sample of the disagreement rows; the
+   Fable defensibility calls must survive that reader at >= 80% agreement
+   or the truth tier is reported as single-model and the claim downgraded.
+   Matt's own stratified spot-check (a few clear-relevant, a few
+   clear-irrelevant, a few borderline in each direction) is recorded
+   alongside as the human calibration.
+
+The following are reported beside metric 0, not as the claim:
+
+
+1. **Consistency:** seat-vs-truth agreement (Jaccard over
    relevant sets) >= the frontier panel's own **median pairwise
    judge-vs-judge agreement** on the same behavior (benchmark.judge_set /
    jaccard at threshold 1, spec_key openai, computed over the panel's
@@ -52,11 +76,12 @@ ground. Every node in the adjudicated set receives a blind ruling.
 
 ## Pre-stated predictions and falsifiers
 
-* Prediction: metric 1 holds on >= 2 of 3 behaviors. (Prior grounds: on the
+* Prediction: metric 0 holds on >= 2 of 3 behaviors; metric 1 reported. (Prior grounds: on the
   2026-08-16 partial corpus, the adjudicator sided with the seat on 15/20
   disputed engagements.)
-* Falsifier: metric 1 fails on >= 2 of 3 behaviors, OR precision < 0.6 on
-  any behavior — either result is reported as "not panel-equivalent" with
+* Falsifier: metric 0 fails on >= 2 of 3 behaviors, OR engagement
+  defensibility < 0.6 on any behavior, OR the second-frontier control falls
+  below 80% — either result is reported as "not panel-equivalent" with
   no post-hoc rescue. The FROZEN matching layer comprises the D5 fix
   (TOP_K 12, MAX_ATOMS 10) AND the frontier atom decomposition
   (`atoms_frontier_frozen.json`, produced BLIND to panel citations,
@@ -91,13 +116,13 @@ answering two different questions:
   neither the tuning history nor the tuning half's verdicts. Same
   instrument type, disjoint verdicts and instances — the tuned number
   measures reach, not memorization. The panel appears in arm 2 only as the
-  numeric bar inside metric 1, never as a signal.
+  comparison instrument inside metric 0, never as a signal.
 * Reported side by side, always both, labeled: the cold-start number is
   the generalization claim, the tuned number is the expressiveness ceiling,
   and the GAP between them is the measured value of the iteration feature
   itself. Reporting the tuned number alone is forbidden by this
   registration.
-* Arm-2 falsifier: if tuning cannot bring metric 1 to pass on a behavior
+* Arm-2 falsifier: if tuning cannot bring metric 0 to pass on a behavior
   in 3 rounds, that behavior is reported "not reachable by iteration at
   this corpus", with the round transcripts kept.
 
