@@ -90,9 +90,35 @@ def node_geometry():
     return geo
 
 
+
+# ------------------------------------------------------------ rosetta stone
+# ROSETTA.md layer 2: the seat's (atom, node) verdicts persisted per document.
+# Keyed by (sha of atom gloss, node) so an unchanged atom re-matches by lookup;
+# entries carry the seat-brief sha they were judged under, so a brief change
+# is visible per entry rather than silently mixing regimes.
+import hashlib as _hl
+ROSETTA = os.path.join(HERE, "rosetta_modelspec.json")
+_BRIEF_SHA = _hl.sha256(BM.BRIEF.encode()).hexdigest()[:12]
+
+
+def _stone_key(atom, cid):
+    return _hl.sha256(atom["gloss"].encode()).hexdigest()[:16] + "|" + cid
+
+
+def _stone_load():
+    return json.load(open(ROSETTA)) if os.path.exists(ROSETTA) else {}
+
+
+def _stone_save(stone):
+    with open(ROSETTA, "w") as f:
+        json.dump(stone, f, indent=1, sort_keys=True)
+
+
 # ------------------------------------------------------------------ phase A
 
 FROZEN_ATOMS = os.path.join(HERE, "atoms_frontier_frozen.json")
+ATOMS_OVERRIDE = None       # set by --atoms for arm-2 tuned runs
+OUT_TAG = ""                # set by --tag: match_partial_<slug><tag>.json
 
 
 def step_match(partial=False):
@@ -100,11 +126,11 @@ def step_match(partial=False):
     views = translated_views()
     print(f"universe: {len(views)} translated nodes")
     complete = live_pilot.seat_client(max_tokens=1500)
-    frozen = json.load(open(FROZEN_ATOMS))["atoms_by_behavior"] \
-        if os.path.exists(FROZEN_ATOMS) else None
+    atoms_path = ATOMS_OVERRIDE or FROZEN_ATOMS
+    frozen = json.load(open(atoms_path))["atoms_by_behavior"] \
+        if os.path.exists(atoms_path) else None
     report = {"universe": sorted(views), "behaviors": {},
-              "atoms_source": ("atoms_frontier_frozen.json (frontier, blind, "
-                               "frozen pre-prereg)") if frozen else "live-cheap"}
+              "atoms_source": (os.path.basename(atoms_path) if frozen else "live-cheap")}
     for slug in SLUGS:
         b = defs[slug]
         if frozen:
@@ -124,10 +150,19 @@ def step_match(partial=False):
         ranked = BM.rank_candidates(atoms, views, embed=live_pilot.live_embed,
                                     top_k=TOP_K)
         rows = []
+        stone = _stone_load()
         for ai, a in enumerate(atoms):
             verdicts = []
             for score, cid in ranked[ai]:
-                v = BM.judge(complete, BM.build_prompt(a, views[cid]))
+                key = _stone_key(a, cid)
+                hit = stone.get(key)
+                if hit is not None:
+                    v = {"verdict": hit["verdict"], "grounds": hit["grounds"] + " [stone]"}
+                else:
+                    v = BM.judge(complete, BM.build_prompt(a, views[cid]))
+                    stone[key] = {"atom": a["name"], "gloss": a["gloss"], "node": cid,
+                                  "verdict": v["verdict"], "grounds": v["grounds"],
+                                  "seat_brief_sha": _BRIEF_SHA}
                 verdicts.append({"node": cid, "score": round(score, 4),
                                  "verdict": v["verdict"],
                                  "grounds": v["grounds"]})
@@ -136,13 +171,14 @@ def step_match(partial=False):
             print(f"  {slug[:28]:28s} {a['name']:32s} "
                   f"{sum(1 for v in verdicts if v['verdict']=='engaged')}"
                   f"/{len(verdicts)} engaged")
+        _stone_save(stone)
         report["behaviors"][slug] = {"definition": b["definition"],
                                      "atoms": rows}
     c = complete.client
     report["model"] = c.p.model
     report["calls"] = c.calls
     report["spent_usd"] = round(c.spent_usd, 6)
-    _write(("match_partial_%s.json" % SLUGS[0]) if partial else "match.json",
+    _write(("match_partial_%s%s.json" % (SLUGS[0], OUT_TAG)) if partial else "match.json",
            report)
 
 
@@ -341,7 +377,11 @@ def main(argv=None):
     ap.add_argument("step", choices=list(STEPS))
     ap.add_argument("--slug", default=None,
                     help="match only this behavior; writes match_partial_<slug>.json")
+    ap.add_argument("--atoms", default=None, help="atoms JSON (arm-2 tuned set)")
+    ap.add_argument("--tag", default="", help="suffix for the partial file, e.g. _tuned_r1")
     args = ap.parse_args(argv)
+    global ATOMS_OVERRIDE, OUT_TAG
+    ATOMS_OVERRIDE, OUT_TAG = args.atoms, args.tag
     if args.step == "match" and args.slug:
         global SLUGS
         SLUGS = [args.slug]
