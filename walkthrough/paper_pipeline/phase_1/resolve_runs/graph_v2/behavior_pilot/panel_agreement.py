@@ -102,7 +102,15 @@ _BRIEF_SHA = _hl.sha256(BM.BRIEF.encode()).hexdigest()[:12]
 
 
 def _stone_key(atom, cid):
-    return _hl.sha256(atom["gloss"].encode()).hexdigest()[:16] + "|" + cid
+    """Stable atom identity: an explicit `id` if the atom carries one (the
+    canonical global-atom id from ROSETTA.md layer 1), else the atom NAME —
+    so a reworded gloss under the same name still hits. The gloss sha is kept
+    on the entry as a VERSION so a changed gloss is visible, not silent.
+    Matt's saturation claim (2026-08-18) needs identity that survives
+    rewording; keying on gloss text measured phrasing reuse, not concept
+    reuse."""
+    ident = atom.get("id") or atom["name"]
+    return ident + "|" + cid
 
 
 def _stone_load():
@@ -157,10 +165,13 @@ def step_match(partial=False):
                 key = _stone_key(a, cid)
                 hit = stone.get(key)
                 if hit is not None:
-                    v = {"verdict": hit["verdict"], "grounds": hit["grounds"] + " [stone]"}
+                    drift = hit.get("gloss_sha") != _hl.sha256(a["gloss"].encode()).hexdigest()[:12]
+                    v = {"verdict": hit["verdict"],
+                         "grounds": hit["grounds"] + (" [stone; gloss changed since]" if drift else " [stone]")}
                 else:
                     v = BM.judge(complete, BM.build_prompt(a, views[cid]))
                     stone[key] = {"atom": a["name"], "gloss": a["gloss"], "node": cid,
+                                  "gloss_sha": _hl.sha256(a["gloss"].encode()).hexdigest()[:12],
                                   "verdict": v["verdict"], "grounds": v["grounds"],
                                   "seat_brief_sha": _BRIEF_SHA}
                 verdicts.append({"node": cid, "score": round(score, 4),
