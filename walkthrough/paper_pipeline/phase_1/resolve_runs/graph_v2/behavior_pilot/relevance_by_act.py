@@ -228,13 +228,23 @@ def relevance(mod, br, corpus):
     sig = json.load(open(sig_path)) if os.path.exists(sig_path) else {}
     gov_decl = set(mod.get("governs_concern") or [])
 
+    # governs_conditional (contract 9a purity migration, 2026-08-19): a quality may be
+    # declared as bearing on the behavior ONLY in certain contexts, e.g. caution cares
+    # about tone_manner only in vulnerable_interaction contexts. {quality: [contexts]}.
+    gov_cond = mod.get("governs_conditional") or {}
+
     def signature_ok(cid):
         if not sig: return True
         keys = [k for k in sig if k.startswith(cid + "|")]
         if not keys: return True                       # unannotated: fail open
         if all(sig[k]["authority_plumbing"] for k in keys): return False
-        if not gov_decl: return True
-        return bool({g for k in keys for g in sig[k]["governs"]} & gov_decl)
+        if not gov_decl and not gov_cond: return True
+        for k in keys:
+            ctx = set(sig[k].get("contexts", []))
+            for g in sig[k]["governs"]:
+                if g in gov_decl: return True
+                if g in gov_cond and ctx & set(gov_cond[g]): return True
+        return False
 
     rel = {}
     for cid, rows in corpus.items():
