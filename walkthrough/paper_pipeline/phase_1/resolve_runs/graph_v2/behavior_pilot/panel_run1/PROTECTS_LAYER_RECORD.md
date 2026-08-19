@@ -92,3 +92,18 @@ CLOSED under the schema as far as every measurement to date can see. Largest lev
 governs-aspect (69% of census). Next artifact: TRANSLATION_CONTRACT §8 — full
 norm-signature emitted at translation time, single-pass escalation annotation, certified
 behavior-free via per-dimension mutation probes (generalized arm b).
+
+## RULING: annex, don't retranslate (Matt, 2026-08-19, conditional on cost)
+Matt: no Model Spec retranslation at this time "as long as the cost of annexation is
+meaningfully lower in time and credits." MEASURED COMPARISON at ruling time:
+- Annex path (actuals): protects layer $0.08 API + ~1.3M Fable session tokens
+  (sweep + 2 audits + full relabel); signature layer ~$0.15 API + ~$0.20 Haiku +
+  Fable escalation/spot-check (~0.3M projected). Wall-clock: ~1 day each. Everything
+  downstream (bridges, 436-node adjudicated truth, registered results) stays valid.
+- Retranslation path (estimate): the API translation run itself is cheap (~$2-5), but
+  new node ids/spans INVALIDATE the adjudicated truth (436 nodes) and every annex —
+  re-adjudication alone is a multi-session frontier-panel campaign (>>3M Fable), plus
+  re-bridging, re-validation, and re-registration of every number. Weeks, not days.
+Condition SATISFIED by an order of magnitude on both axes. Revisit trigger (recorded
+earlier, unchanged): after the constitution translates born-conforming under the full
+contract, evaluate whether a Model Spec regeneration earns its re-adjudication cost.

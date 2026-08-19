@@ -119,7 +119,11 @@ confirmed closure, 74/75):
 - authority: instruction-level/precedence plumbing flag — a norm ABOUT the document's
   own machinery engages no behavior wall (7/58 census).
 
-ANNOTATION PROTOCOL (measured, binding): single pass per assert yields all fields;
+ANNOTATION PROTOCOL (measured, binding): bulk seat sweeps ride dispatch_core.py's
+BATCH mode (graph_v2/dispatch_core.py: submit/poll/collect with resume-safety, spend
+gate at submit, orphan sweep) — the 2026-08-19 retrofit sweeps ran on the live path
+only because the author missed the existing plumbing; recorded so it isn't repeated.
+Single pass per assert yields all fields;
 dual cheap seats label everything, agreement keeps the label, disagreement escalates
 to a frontier instance (solo small tiers measured ~0.60 exact-set; agreed-cheap
 measured 0.88, n=24 — revalidate >=100 per document). Inputs carry verbatim SOURCE
