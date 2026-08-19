@@ -89,7 +89,10 @@ def main():
         acts, rel_a = RBA.relevance(mods[slug], br_map, corpus)
         eng_a = set(rel_a)
         print(f"\n== {slug} [{slice_name}] act-engaged {len(eng_a)}")
-        states = arm_b_states(slug, eng_a, spec, sel, sit_bridges)
+        if "--skip-mutation" in sys.argv:
+            states = {n: "undetermined" for n in eng_a}
+        else:
+            states = arm_b_states(slug, eng_a, spec, sel, sit_bridges)
         eng_b = {n for n, st in states.items() if st != "scope_mismatched"}
         from collections import Counter
         cnt = Counter(states.values())
