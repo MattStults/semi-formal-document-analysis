@@ -127,3 +127,13 @@ Budget frontier for judgment layers until a seat PASSES a pre-registered spot-ch
 the escalation architecture's value is where it holds (authority flag 0.97) — per-FIELD
 seat validation, not per-layer, is the refined design. The safety_of_manner/substance
 boundary needs a sharper vocabulary definition before any seat retry.
+
+## RECALL CAMPAIGN OPENING CENSUS (H-R3 mechanical, v14, 2026-08-19)
+115 FNs across all truth: actless_module 35, act_no_bridge_or_verb 33, wall_blocked 32
+(incl. the H-R1 permit class), actor_excluded 15 (contested org-node relevance, re-panel
+candidates). H-R2 MEASURED: the dependency channel as built recovers only 3-4 of the 35
+actless FNs — harm +2 at zero FP (adoption candidate), help -6 / caution -3 (REJECTED by
+measurement; the channel's additions are panel-irrelevant providers). FINDING: the
+actless class is mostly definitional/commentary nodes ruled relevant on grounds other
+than name-provision — needs its own hypothesis (candidate: defines-a-concept-the-
+behavior-declares, or purpose-of-definition), recall campaign proper.
