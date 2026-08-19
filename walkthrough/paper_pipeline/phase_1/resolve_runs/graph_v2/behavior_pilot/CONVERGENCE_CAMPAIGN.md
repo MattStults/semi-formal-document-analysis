@@ -62,3 +62,15 @@ remains recall-stable. The approach's limit is therefore not relational irreduci
 that would separate the residue costs more true engagements than it saves, measured
 three independent ways. ~1.3% precision-side residue + ~0.9 truth-noise ceiling is the
 measured boundary of factorized symbolic relevance on this document.
+
+## PHASE 2: FN-SIDE CONVERGENCE (Matt, 2026-08-19)
+The same discipline applies to the 132 FNs: every FN is fix-or-adjudicated until each
+sits in (1) match, (2') adjudicated reading-difference FN (strict judge: the miss is
+defensible — the panel's relevant-reading and the instrument's grounds for non-engagement
+are both defensible), or remains bucket 0 with no idea. Precision-side growth from FN
+fixes is allowed ONLY into buckets (1)/(2)/known-FP-classes, mirroring phase 1. The
+terminal-11 precision residue is DEFERRED until FN-side convergence (fixes may re-engage
+some with new grounds; the boundary claim is stated once, over both sides). Same stop
+rule. KNOWN ASYMMETRY TO ADJUDICATE FIRST: manner/register norms were strict-judged
+not-helpfulness on the FP side while some panel rulings hold same-class norms relevant —
+same-class-opposite-verdict pairs are truth-suspect material (E3 protocol applies).
