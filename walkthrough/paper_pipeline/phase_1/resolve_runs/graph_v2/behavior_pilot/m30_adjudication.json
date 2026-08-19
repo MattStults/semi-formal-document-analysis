@@ -1,0 +1,109 @@
+{
+  "hits": [
+    {
+      "node": "l1_170_n010",
+      "verdict": "DEFINITIONAL",
+      "sibling": null,
+      "draft_repair": null,
+      "grounds": "The modal 'should' sits inside a description of what a DIFFERENT document does: 'the usage policies outline expectations for how people should use the API and ChatGPT'. The norm addressed to people lives in the usage policies, not in the Model Spec span; the span's own content is purely structural (the Spec is complemented by usage policies and safety protocols). No operative norm on the assistant exists here to encode. The ontology atoms (complemented_by, outlines_expectations_for_use, includes_activity) fully capture the span."
+    },
+    {
+      "node": "l699_796_n015",
+      "verdict": "DROPPED-NORM",
+      "sibling": null,
+      "draft_repair": {
+        "asserts": [
+          {
+            "read_back": "a random web page % should not be trusted at all when determining the relevance of tool outputs",
+            "read_back_slots": ["W"],
+            "licence": "textual",
+            "cites": "l699_796_n015",
+            "inference": null,
+            "toggleable": false,
+            "status": "forbid",
+            "act": "trust_web_page(W)",
+            "body": "random_web_page(W)"
+          }
+        ],
+        "new_concepts": [
+          {
+            "name": "trust_web_page",
+            "arity": 1,
+            "gloss": "the assistant trusts web page W as a source of instructions or information when determining the relevance of tool outputs",
+            "licence": "textual",
+            "cites": "l699_796_n015",
+            "inference": null,
+            "toggleable": false
+          }
+        ],
+        "closure": [
+          {
+            "act_class": "trust_web_page",
+            "closure": "cepa",
+            "reason": "should-strength prohibition (n022 precedent: forbid with should-worded read_back); the clause forbids trusting a random web page but is silent on trusting other sources, so silence permits"
+          }
+        ],
+        "notes": "The existing ontology entry not_trusted_at_all(W) :- random_web_page(W) is a descriptive restatement; the repair adds the operative forbid on the positive violation-ground act trust_web_page (FM18). Body condition random_web_page appears in the read_back as 'a random web page' (FM20). No invented entities: 'random web page' and 'trusted' are textual."
+      },
+      "grounds": "Ground truth respected: this node owns the operative agentic trust norm. The source sentence 'a random web page should not be trusted at all' is a should-strength prohibition addressed to the assistant's own relevance assessment of tool outputs. Siblings n014/n016 encode the surrounding 'consider' obligations, but no sibling carries an assert against trusting a random web page; the module reduced the norm to a descriptive ontology atom (not_trusted_at_all) with no assert -- the FM19 pattern exactly."
+    },
+    {
+      "node": "l427_1107_n001",
+      "verdict": "DEFINITIONAL",
+      "sibling": null,
+      "draft_repair": null,
+      "grounds": "Structural/heading node: the span is the 'Stay in bounds' section heading, and the claim describes what that section CONTAINS ('describes limits... including scenarios in which the assistant should refrain from fully complying'). The modal 'should' is quoted description of the section's subject matter, not an operative norm owned by this node; the actual refrain norms are encoded by the individual Stay-in-bounds clause nodes elsewhere in the corpus. Encoding an assert here would duplicate every downstream prohibition at heading altitude."
+    },
+    {
+      "node": "l1707_1973_n022",
+      "verdict": "SIBLING-OWNED",
+      "sibling": "l1707_1973_n023 (forbid disclose_verbatim(P) / disclose_paraphrased(P) / disclose_structural(P) / disclose_procedural(P): 'disclosing privileged content % ... is forbidden without permission') and l1707_1973_n020 (forbid share_verbatim_or_full_details(M): 'sharing the verbatim text or full details of system or developer message % is not appropriate and should be kept private by default')",
+      "draft_repair": null,
+      "grounds": "The span is explicitly an analogy ('A useful analogy is a customer-service agent who studies a training manual...'). Its 'should not be disclosed unless policy explicitly allows it' restates the privileged-information disclosure prohibition that sibling n023 encodes as forbids on all four disclosure forms conditioned on absence of permission (the prohibition-with-exception structure), and the 'private by default' half that n020 encodes. The analogy's remaining content ('can share identity and capabilities') is likewise the permissive side already carried by n020's permit share_with_end_user. Commentary restating sibling-owned norms; no assert belongs here."
+    },
+    {
+      "node": "l2126_2404_n044",
+      "verdict": "SIBLING-OWNED",
+      "sibling": "l2126_2404_n016 (prefer provide_answer(A): 'in a scenario with no moral ambiguity or valid opposing perspective, providing answer % is preferred: it should be straightforward and unambiguous, without false neutrality') and l2126_2404_n045 (prefer answer_clearly(A): 'giving a clear answer % is preferred even when % is potentially offensive to some')",
+      "draft_repair": null,
+      "grounds": "This is an example node ('Should tall people be allowed to play sports?' with GOOD/BAD comparison). The modal in the claim ('the assistant should give a clear answer') is the detector reading the example's demonstrated lesson, and that lesson is the exact norm sibling n016 already asserts (clear, unambiguous answer preferred where there is no moral ambiguity), reinforced by n045. Example nodes in this corpus that DO carry asserts encode response preferences over the specific exchange; here the general norm is owned by n016, and the module correctly supplies only the example's concept scaffolding."
+    },
+    {
+      "node": "l2126_2404_n034",
+      "verdict": "SIBLING-OWNED",
+      "sibling": "l2126_2404_n012 (prefer describe_views(V): 'describing significant view % is preferred when the topic has multiple perspectives and the view is supported by reliable sources'), with the no-editorial-stance half carried by l2126_2404_n007 (prefer present_context_without_stance(C)) and l2126_2404_n001 (forbid steer_user(S), directly or indirectly)",
+      "draft_repair": null,
+      "grounds": "The span is commentary ('In shaping this principle, we drew from frameworks...'): it explains that the core idea of the already-stated neutrality principle is fairly representing significant viewpoints from reliable sources without imposing an editorial stance. The 'must' in C2 restates the principle's content, not a new obligation: fair representation of significant views from reliable sources is asserted by n012 (and proportionate attention by n013), and the prohibition on imposing a stance/agenda is asserted by n007 and n001. The module's ontology atom neutral_representation(R) correctly captures the commentary's definitional contribution without duplicating the sibling-owned norms."
+    },
+    {
+      "node": "l3596_3876_n015",
+      "verdict": "DROPPED-NORM",
+      "sibling": null,
+      "draft_repair": {
+        "asserts": [
+          {
+            "read_back": "the assistant is never a know-it-all",
+            "read_back_slots": [],
+            "licence": "textual",
+            "cites": "l3596_3876_n015",
+            "inference": null,
+            "toggleable": false,
+            "status": "forbid",
+            "act": "know_it_all(A)",
+            "body": "assistant_definition(A)"
+          }
+        ],
+        "new_concepts": [],
+        "closure": [
+          {
+            "act_class": "know_it_all",
+            "closure": "cnpa",
+            "reason": "'never'-strength indicative persona prohibition ('is never a know-it-all'); same pattern as the sibling n003 precedent ('does not sugar-coat' -> forbid + cnpa), so the act is prohibited by default"
+          }
+        ],
+        "notes": "No new concepts needed: know_it_all/1 already exists in the module (assumed, with the inference named: the contrast with 'knows an astonishing amount' presupposes the negative pole), and assistant_definition/1 is already required. Body condition assistant_definition appears in the read_back as 'the assistant' (FM20). The existing ontology entry 'know_it_all(A) :- assistant_definition(A)' unconditionally derives that the assistant IS a know-it-all -- it inverts the source and must be removed in the same repair, replaced by this forbid."
+      },
+      "grounds": "The narrowed span 'The assistant knows an astonishing amount, but is never a know-it-all' owns its own operative persona norm; the sibling n016 encodes only the NEXT sentence (oblige plumb_understanding_for). No sibling asserts anything about know-it-all/condescending display of knowledge (n010's humility obligation comes from a different span about self-awareness). Indicative persona prohibitions in this family are encoded as asserts (n003 'does not sugar-coat' -> forbid; n010 'approaches with humility' -> oblige), so demoting 'is never a know-it-all' to a bare ontology atom -- one that moreover derives the prohibited state as true -- is a dropped norm (FM19)."
+    }
+  ]
+}
