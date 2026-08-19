@@ -190,3 +190,21 @@ bands from all-truth measurements overstates fresh-pool performance because adju
 sets are engagement-favorable (measured: helpfulness all-truth precision 0.82 vs
 fresh-pool 59/80=0.74; the inflated band fired F1 on an instrument performing at its
 demonstrated level).
+
+## 8-ADDENDUM-2 (2026-08-19): the PURPOSE/END slot is REQUIRED — measured basis
+The factorization experiment (panel_run1/factorization_*) settled the telos question:
+on the 18 hardest confusion pairs (9 residue FPs + 9 same-subtype TPs), rulings made
+from BEHAVIOR-BLIND local descriptions alone (fields: constrains / purpose /
+failure_mode, grounded in the span) matched panel truth 16/18 = 0.89 — panel
+self-agreement level. Adequate local information EXISTS; fixed vocabularies were the
+loss (the pre-registered subtype-granularity test failed its bar: 64% FP recovery at
+27% TP cost — every finer subtype cell still contained both verdicts). REQUIRED for
+the next document: (a) mine the document's OWN stated ends as the purpose vocabulary
+(§9a purity check applies); (b) annotate purpose per-assert via the
+purpose+failure_mode elicitation, BEHAVIOR-BLIND (blindness is what makes the slot a
+document fact rather than cached relevance — the circularity objection dissolves only
+under blindness, so it is binding); (c) behaviors declare which document-ends they
+track; walls remain set-membership tests. Matt's method ruling encoded: naive a priori
+description will not find every needed slot — the discrepancy census after each
+certification round is the REPAIR loop that discovers missing slots (this one was
+found by round-3's FP census; the actor slot by the same route).
