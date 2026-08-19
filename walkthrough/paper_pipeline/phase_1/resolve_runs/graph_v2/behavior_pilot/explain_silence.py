@@ -15,20 +15,27 @@ sys.path.insert(0, HERE); sys.path.insert(0, G2); sys.path.insert(0, os.path.joi
 import behavior_match as BM, link_nodes, mutation_scope as MS
 import relevance_by_act as RBA
 
-_BODY = re.compile(r"^\s*([a-z_][A-Za-z0-9_]*(?:\([^)]*\))?)\s*:-\s*(.*?)\.\s*$", re.M | re.S)
-_LIT = re.compile(r"(not\s+)?([a-z_][A-Za-z0-9_]*)\s*(\([^()]*\))?")
-
-
-def literal_split(body):
-    # split on commas not inside parens
-    out, depth, cur = [], 0, ""
-    for ch in body:
-        if ch == "(": depth += 1
-        if ch == ")": depth -= 1
-        if ch == "," and depth == 0: out.append(cur.strip()); cur = ""
-        else: cur += ch
-    if cur.strip(): out.append(cur.strip())
-    return out
+def rule_bodies(path):
+    """(head_name, [positive body literal names]) per rule, via clingo.ast —
+    regex parsing measured broken (substring artifacts: 'onto' x37)."""
+    from clingo import ast as A
+    rules = []
+    def cb(st):
+        if st.ast_type != A.ASTType.Rule or st.head is None: return
+        try: hname = st.head.atom.symbol.name
+        except Exception: return
+        lits = []
+        for b in st.body or []:
+            try:
+                if b.ast_type == A.ASTType.Literal and b.sign == A.Sign.NoSign and b.atom.ast_type == A.ASTType.SymbolicAtom:
+                    lits.append(b.atom.symbol.name)
+            except Exception: pass
+        if lits: rules.append((hname, lits))
+    try:
+        A.parse_string(open(path, encoding="utf-8").read(), cb)
+    except Exception:
+        pass
+    return rules
 
 
 def explain(slug, spec, silent, sel, bridges, limit=None):
@@ -37,8 +44,7 @@ def explain(slug, spec, silent, sel, bridges, limit=None):
     rows = []
     for cid in sorted(silent)[:limit]:
         path = sel[link_nodes.norm_id(cid)][0]
-        txt = open(path, encoding="utf-8").read()
-        prog = txt + "\n" + lp + "\n" + bridges
+        prog = open(path, encoding="utf-8").read() + "\n" + lp + "\n" + bridges
         ctl = clingo.Control(["--warn=none"])
         try:
             ctl.add("base", [], prog); ctl.ground([("base", [])])
@@ -48,14 +54,9 @@ def explain(slug, spec, silent, sel, bridges, limit=None):
         ctl.solve(on_model=lambda m: atoms.update(str(s) for s in m.symbols(atoms=True)))
         names_true = {a.split("(")[0] for a in atoms}
         missing = []
-        for head, body in _BODY.findall(txt):
-            if "asserts(" in head or head.startswith("%"): continue
-            for lit in literal_split(body):
-                m = _LIT.match(lit)
-                if not m or m.group(1): continue          # skip naf literals
-                n = m.group(2)
-                if n in ("not",) or n in names_true: continue
-                missing.append(n)
+        for hname, lits in rule_bodies(path):
+            fails = [n for n in lits if n not in names_true]
+            if fails: missing += fails
         rows.append({"node": cid, "missing": sorted(set(missing))})
     return rows
 
