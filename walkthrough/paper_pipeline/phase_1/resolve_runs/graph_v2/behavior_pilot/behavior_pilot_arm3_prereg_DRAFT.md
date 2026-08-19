@@ -71,3 +71,22 @@ the same test slice, same truth.
   reported as-is, no post-hoc rescue.
 * Scoring is ONE run of arm_ab.py --slice test at the frozen commit; the
   numbers land in the report unedited.
+
+## Known defects AT registration (disclosed pre-signature; none is grounds for post-hoc rescue)
+1. H1 wrong-argument engagements unfixed (walls off by tuning evidence;
+   per-behavior argument declarations are future work). Harm expected well
+   below the tuned seat.
+2. Arm (b) grounds ~10% of engaged modules; decline-only; measured value
+   mixed (helps helpfulness, costs caution). n-ary/constant reversal unbuilt.
+3. ~5% residual bridge error (fresh blind sample 60/63).
+4. T2 arity collisions unrepaired (35 drafts HELD post-test) — some
+   firings/silences are corpus defects, not instrument verdicts.
+5. 12/181 actless modules unreachable by any channel; input-relevance is
+   one-hop, lightly validated, reported as its own column.
+6. Truth tier single-model (arm-1 second-frontier control failed at 77%);
+   all numbers mean "defensible under Fable-tier reading".
+7. Decline denominators are small on help/caution — margin rule governs.
+8. Validation slice consulted ~8 times across rounds (ledger discloses);
+   its curve is advisory only.
+9. Behavior modules hand-authored under the contract; behavior-translation
+   automation is NOT the registered claim.
