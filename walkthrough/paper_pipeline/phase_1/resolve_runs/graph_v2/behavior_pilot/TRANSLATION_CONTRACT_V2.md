@@ -140,3 +140,32 @@ CERTIFICATION (behavior-free, so the document is right FIRST TIME for unspecifie
 behaviors): per-dimension mutation probes — synthetic behavior pairs differing along
 exactly one signature dimension; the instrument must discriminate every pair. Failures
 localize the defective dimension before any real behavior is queried.
+
+## 9. Generalized rules from the round-2 failure census (2026-08-19) — BINDING before any new document
+
+9a. DIMENSIONAL PURITY of every slot vocabulary, validated BEFORE annotation begins.
+Test: no two values in one slot may be simultaneously true of one beneficiary/norm
+along different underlying dimensions. Attributes (age, vulnerability), contexts
+(agentic setting, vulnerable interaction), and intents are SEPARATE FIELDS, never
+values inside a role/quality vocabulary. Measured basis: the a priori purity audit's
+flags coincided exactly with the empirically troubled values — protects.minor
+(role x age; U18 false-engagement class, 36/71 minor-labels co-occur with user),
+governs.safety_of_manner (quality x vulnerable-context; #1 seat-confusion pair AND
+the spot-check failure locus), governs.operational_hygiene (quality x setting; #2
+pair), acts.protective_response family (act x intent; the E5 reverts). Pure slots
+(deontic force, authority flag) were also the tier-robust ones (0.97 at cheap tier):
+purity predicts cheap-seat viability.
+
+9b. BEHAVIOR DECLARATIONS ARE DERIVED A PRIORI, truth only validates. governs_concern,
+protects_concern, and every wall declaration is derived from the behavior DEFINITION
+by frontier judgment before any truth is consulted; adjudicated truth then validates
+the derivation. Measured basis: harm's governs exclusion was left empty because
+tuning-on-truth showed no gain on a precision-saturated adjudicated set — the FP mass
+lived in the never-drawn pool and fired F1 (0.60 vs floor 0.81) in round 2. Tuning
+declarations on available truth overfits walls to the sample.
+
+9c. Seat-decomposition (per-aspect binaries, mechanical union) is REJECTED at small
+tiers for the current impure vocabulary: pre-registered experiment (seed 20260821,
+n=100 vs frontier layer) scored DeepSeek 0.29 / Haiku 0.20 exact with 66%/48%
+cardinality anomalies (strict phrasing collapses to under-listing). May be re-tried
+ONLY after 9a's purity fix, with a fresh pre-registration.

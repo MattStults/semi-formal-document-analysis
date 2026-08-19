@@ -25,7 +25,12 @@
 > node id must resolve to a non-empty span (both bit this campaign).
 > Certification is BEHAVIOR-FREE: per-dimension mutation probes (generalized
 > arm b), so the translation is right the first time for unspecified
-> behaviors. Arm-3 registered result: ARM3_REGISTERED_RESULT.md; the
+> behaviors. **2026-08-19 late additions — contract §9 (BINDING):** dimensional-purity
+> validation of every slot vocabulary BEFORE annotation (attributes/contexts/intents are
+> separate fields, never values in a role/quality vocabulary — purity predicts cheap-seat
+> viability, 0.97 vs 0.60); behavior wall declarations DERIVED A PRIORI from definitions,
+> truth only validates (tuning-on-truth measured to overfit: harm round-2 F1).
+> Arm-3 registered result: ARM3_REGISTERED_RESULT.md; the
 > post-fix fresh-draw certification is FRESH_DRAW_PREREG_DRAFT.md (signed
 > 28a30a27; helpfulness F1 FIRED at 0.57 — the governs gap, now §8).
 
