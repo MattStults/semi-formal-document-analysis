@@ -2,6 +2,21 @@
 
 ## ⭐⭐⭐⭐ STATE AS OF 2026-08-06 — THE GOAL IS RESTATED. READ THIS BEFORE ANYTHING ELSE.
 
+> **⭐⭐⭐⭐⭐ 2026-08-18 — SECOND-DOCUMENT GATE ARTIFACT.** Before translating
+> ANY new document, read and implement
+> `walkthrough/paper_pipeline/phase_1/resolve_runs/graph_v2/behavior_pilot/TRANSLATION_CONTRACT_V2.md`
+> — the assembled retrofit lessons of the arm-3 ontology campaign (4-tuple
+> act declarations, typed situation concepts, M30 dropped-modal detector,
+> norm-objects, seam-from-day-one, per-chunk ontology validators). The
+> Model Spec corpus was retrofitted at the cost of ~6 classification/audit
+> passes; the contract makes the next document born-conforming. Each
+> requirement must be WIRED (translator prompt + gate check) and TESTED
+> (validate_ontology.py / validate_behavior_module.py / corpus_gate M30)
+> before the first chunk seals. Arm-3 state and prereg:
+> `behavior_pilot/behavior_pilot_arm3_prereg_DRAFT.md` (awaiting Matt's
+> signature; test slice scored once, after signing, never before).
+
+
 **Matt took the scope decision that the 2026-08-05 section (“THE DECISION FOR MATT”) said an agent
 must not resolve.** The answer is option 3: **restate the goal.**
 
