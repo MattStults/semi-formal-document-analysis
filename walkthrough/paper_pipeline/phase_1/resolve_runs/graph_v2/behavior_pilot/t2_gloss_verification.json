@@ -1,0 +1,107 @@
+{
+ "_": "Independent blind verification of gloss_repair_drafts.json (17 harmonize drafts). Checks: (1) same-concept across ALL corpus uses of the name (not just edited ones, since kind=harmonize claims one document-wide gloss per shared name), verified against node_corpus_all.json source quotes and assert/ontology bodies via link_nodes.gather(); (2) gloss faithfulness incl. verbatim conformance to SEAM_CONTRACT.json for seam names (root_authority, user_authority, guideline_authority - all three match the seam gloss byte-for-byte); (3) every edit's old string checked mechanically against the module's current concepts[index].gloss and concept name - all 200 edits across all 17 drafts match exactly (100% checked, not spot-checked).",
+ "verdicts": [
+  {
+   "name": "applies_to",
+   "verdict": "REJECT",
+   "revision": null,
+   "why": "The two edited uses ARE the same concept (l1368_1541_n010's assert body 'transformation_exception_rule(T), applies_to(T, M)' confirms T=rule, M=material; l797_830_n009 states the same rule-to-content relation). But applies_to is genuinely polysemous across the corpus: l1368_1541_n024 uses it as 'rule R applies to situation S' (unclear-cases wait rule), l3954_4251_n027 as 'rule R applies to output O' (Markdown formatting rule), and l4572_4692_n001/n002 as 'principle P applies to user U' (U18 Principles apply to users ages 13-17). The proposed document-wide gloss ('exception rule R applies to content C: C is the kind of content the rule's exception would ordinarily permit producing') misdescribes four of the six corpus uses, and no single faithful gloss covers rule-to-content, rule-to-situation, rule-to-output, and principle-to-user without erasing meaning. Failure mode 9: the right fix is a rename, not a merge - e.g. rename the two exception uses to exception_applies_to_content/2 (or scope-split all four senses), leaving no shared applies_to name to harmonize."
+  },
+  {
+   "name": "content",
+   "verdict": "APPROVE",
+   "revision": null,
+   "why": "Only two corpus uses, both edited. l1_170_n074's source clause is the definition ('Content: a sequence of text, untrusted text, and/or multimodal (e.g., image or audio) data chunks'); l1_170_n067's source ('every message contains a role and content') names the same value in its message-slot role. Canonical gloss is the faithful union; old strings exact."
+  },
+  {
+   "name": "content_definition",
+   "verdict": "APPROVE",
+   "revision": null,
+   "why": "Only two corpus uses, both edited; both denote the spec's disallowed-content taxonomy. l796_1000_n034 carries the full three-category enumeration; l1368_1541_n011's narrowing to restricted content is incomplete wording of the same defined term (its clause addresses the no-good-cause rule for the restricted and sensitive policies, which presupposes the taxonomy). Not confusable with the message-content definition, which lives under the separate name 'content'."
+  },
+  {
+   "name": "disallowed_content_categories",
+   "verdict": "APPROVE",
+   "revision": null,
+   "why": "All six corpus uses edited; all denote the categories the assistant should not generate. Canonical gloss uses the provider l797_830_n007's full enumeration and removes the section-local 'as established by the disallowed-content-categories node' phrasing. Old strings exact."
+  },
+  {
+   "name": "guideline_authority",
+   "verdict": "APPROVE",
+   "revision": null,
+   "why": "Seam name; draft's canonical gloss matches SEAM_CONTRACT.json byte-for-byte. All 11 edited uses (and all 108 unedited corpus uses, scanned) mean the same authority level; the edited ones pinned it to a single section, which the seam contract forbids. Note (non-blocking): a handful of unedited uses are also section-local (e.g. l4252_4482_n013/n014/n023-25 pin 'Be concise and conversational' / 'Adapt length' sections) - same concept, so no merge hazard, but they remain candidates for a follow-up conformance pass."
+  },
+  {
+   "name": "privileged_information",
+   "verdict": "APPROVE",
+   "revision": null,
+   "why": "All four edited and all three unedited corpus uses (l1707_1973_n027/n035, l2474_2554_n010) denote the same class from the #protect_privileged_information section. Canonical gloss keeps the section's enumeration plus the no-reveal-without-permission clause; dropping the vendor-specific 'OpenAI' from n024's wording is correct document-neutralization. Old strings exact."
+  },
+  {
+   "name": "prohibited_content",
+   "verdict": "APPROVE",
+   "revision": null,
+   "why": "All three corpus uses edited; same concept. Source quotes confirm the definition ('only sexual content involving minors is considered prohibited', l797_830_n013; transformations also prohibited, l797_830_n008), and l831_1000_n001's under-specified 'content that the Model Spec prohibits' sits in a clause about a direct request for sexual content involving minors being an example of prohibited content - same defined term."
+  },
+  {
+   "name": "prohibited_content_definition",
+   "verdict": "APPROVE",
+   "revision": null,
+   "why": "Both corpus uses edited; both state the same definition, which matches the provider clause l797_830_n008's PROVIDES text verbatim in substance. 'Under this clause applies only to' was section-local phrasing of the document-wide definition."
+  },
+  {
+   "name": "restricted_content",
+   "verdict": "APPROVE",
+   "revision": null,
+   "why": "All three corpus uses edited; same concept (informational hazards or sensitive personal data), matching l797_830_n009's PROVIDES definition. The transformations-allowed clause correctly stays out of the category gloss (it is the rule, not the category)."
+  },
+  {
+   "name": "root_authority",
+   "verdict": "APPROVE",
+   "revision": null,
+   "why": "Seam name; canonical gloss matches SEAM_CONTRACT.json byte-for-byte. All 49 edited and all 136 unedited corpus uses (scanned) denote the same root authority level; the edited ones pinned it to one section each, exactly the defect the seam contract exists to remove. All 49 old strings verified exact."
+  },
+  {
+   "name": "sensitive_content",
+   "verdict": "REVISE",
+   "revision": "Keep all five edits as drafted, and ADD two edits so the gloss is genuinely document-wide: {node: l4572_4692_n013, field: concepts, index: 2, old: 'the principle limiting gore and explicit sexual or violent detail', new: <canonical gloss>} and {node: l4572_4692_n014, field: concepts, index: 4, old: 'the principle limiting gore and explicit sexual or violent detail, as defined by the node that provides it', new: <canonical gloss>}. Both nodes list sensitive_content/1 in requires, i.e. the borrowed atom is the provider's content-category predicate, so their principle-reading glosses are local sort slips of the SAME borrowed concept (the section's 'sensitive_content boundary' metonymy), not a different concept - conform them rather than leaving two corpus glosses that contradict the declared document-wide gloss.",
+   "why": "The five edited uses are the same content category and the canonical gloss is faithful to the fullest module glosses. But the draft misses two corpus uses (l4572_4692_n013[2], n014[4]) whose glosses read the name as a principle; left as-is they contradict the harmonized document-wide gloss."
+  },
+  {
+   "name": "sexual_content_involving_minors",
+   "verdict": "APPROVE",
+   "revision": null,
+   "why": "Both corpus uses edited, same module region, same concept; 'whether fictional or real' is in the spec's own definition (carried by l797_830_n014's existing gloss and the prohibition clauses). Harmonizing to the fuller reading is correct."
+  },
+  {
+   "name": "sexual_content_minors_prohibition",
+   "verdict": "APPROVE",
+   "revision": null,
+   "why": "All seven corpus uses edited; six state the prohibition/principle. The outlier claim in the grounds verified: l831_1000_n001's concepts[0] is direct_request_sexual_content_minors with a byte-identical gloss to the mis-pasted concepts[3] entry, the module's requires lists sexual_content_minors_prohibition/1, and neither its (empty) asserts nor its ontology binds the name to a request variable - so fixing the pasted gloss (not renaming) is right. Old strings exact."
+  },
+  {
+   "name": "transformation_exception_rule",
+   "verdict": "APPROVE",
+   "revision": null,
+   "why": "All 13 corpus uses edited; one rule under two wording families. The outlier claim verified against l1368_1541_n010's assert body 'other_policy_forbids(P, M), transformation_exception_rule(T), applies_to(T, M)': T is the rule, so the old material-M gloss at concepts[1] was a gloss error on the same concept. Canonical gloss correctly takes the full statement (covers restricted AND sensitive, which the short family under-states)."
+  },
+  {
+   "name": "transformation_output_scope",
+   "verdict": "APPROVE",
+   "revision": null,
+   "why": "All three corpus uses edited. Provider verified: l1368_1541_n004's ontology defines transformation_output_scope(M) with body drawn_from_user_input(M) - the predicate ranges over material, so borrowers conform to the material reading. The copy-paste claim verified: l1368_1541_n005's concepts[0] (disallowed_content) is byte-identical to the wrong gloss at its transformation_output_scope entry. n006's principle-wording is a sort slip on the same concept; folding its no-new-content clause into the canonical gloss is faithful."
+  },
+  {
+   "name": "untrusted_content",
+   "verdict": "APPROVE",
+   "revision": null,
+   "why": "Both corpus uses edited; both sit in #ignore_untrusted_data and enumerate partial extents of the one class the section deems untrusted (l699_796_n002: the delimited categories; l699_796_n020: undelimited text to be treated as implicitly quoted - its source's 'such content' anaphora refers to the same untrusted class). Union gloss is the correct document-wide reading."
+  },
+  {
+   "name": "user_authority",
+   "verdict": "REVISE",
+   "revision": "Keep all 35 edits as drafted (seam name; gloss matches SEAM_CONTRACT.json byte-for-byte; all 35 old strings exact and all denote the authority level). Required companion fix before this name can be considered harmonized: l3596_3876_n012 uses the seam name for a DIFFERENT concept - its concepts entry glosses user_authority as 'U is a user of the assistant, the party whose trust and wellbeing the assistant should consider' and its assert body 'consider_impact(A, U)' with 'assistant_definition(A), user_authority(U)' binds U to the user person, not to a rule carrying user-level authority. That is a name misuse against the seam contract; the fix there is a rename in that module (e.g. end_user/1 in its concepts, requires, and assert body), NOT conformance to the seam gloss (which would make the assert nonsensical) and NOT inclusion in this merge.",
+   "why": "The 35 harmonized uses are one concept and correctly conformed to the canonical seam gloss. But one corpus module (l3596_3876_n012) uses the name for the user person; leaving it silently under the seam gloss is the failure-mode-9 hazard. Since the draft neither merges nor repairs it, the draft is incomplete rather than wrong: approve the edits, require the companion rename."
+  }
+ ]
+}
