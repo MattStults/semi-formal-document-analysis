@@ -599,6 +599,15 @@ def c_exclusivity_unencoded(cid, o, span):
             "unencoded (FM23)"]
 
 
+# Names RULED polymorphic (blind gloss verification 2026-08-18, REJECT on
+# harmonizing applies_to: its second-argument sort varies by module —
+# rule->content/situation/output, principle->user — and one concrete gloss
+# would misdescribe four of six uses; canonical polymorphic gloss recorded
+# in behavior_pilot/gloss_repair_drafts.json). Section-local glosses for
+# these names state the LOCAL sort and are correct, not divergent.
+POLYMORPHIC_SEAM_NAMES = {"applies_to"}
+
+
 def c_dropped_modal_assertless(cid, o, span):
     """M30 review (Matt's ruling 2026-08-18; FM19 at module scope). A module
     with NO asserts whose CLAIMS carry a normative modal (must/should/never
@@ -748,6 +757,8 @@ def x_section_local_gloss(ix, mods):
     pat = re.compile(r"(#[a-z_]+|\b[a-z]+[- ](?:creators?|protection|content)\b"
                      r"|\bthat section\b|\bthis section\b)", re.I)
     for n, rows in sorted(ix.items()):
+        if n in POLYMORPHIC_SEAM_NAMES:
+            continue          # ruled polymorphic — local sort-glosses are correct (2026-08-18)
         if len(rows) < 2:
             continue
         hits = []
