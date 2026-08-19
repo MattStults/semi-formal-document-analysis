@@ -218,9 +218,28 @@ def relevance(mod, br, corpus):
         vals = {v for k in keys for v in ap[k]}
         return "unspecified" in vals or bool(vals & prot_decl)
 
+    # NORM-SIGNATURE walls (contract §8, layer frontier-labeled 2026-08-19,
+    # panel_run1/PROTECTS_LAYER_RECORD.md): (a) a module whose asserts are ALL
+    # authority_plumbing is document machinery — excluded from every behavior's
+    # relevance (7/58 census FPs); (b) a module engages only if SOME assert
+    # governs a quality the behavior declares via "governs_concern" (40/58 +
+    # 17/17 fresh-draw census FPs). Both fail OPEN on unannotated asserts.
+    sig_path = os.path.join(HERE, "assert_signature.json")
+    sig = json.load(open(sig_path)) if os.path.exists(sig_path) else {}
+    gov_decl = set(mod.get("governs_concern") or [])
+
+    def signature_ok(cid):
+        if not sig: return True
+        keys = [k for k in sig if k.startswith(cid + "|")]
+        if not keys: return True                       # unannotated: fail open
+        if all(sig[k]["authority_plumbing"] for k in keys): return False
+        if not gov_decl: return True
+        return bool({g for k in keys for g in sig[k]["governs"]} & gov_decl)
+
     rel = {}
     for cid, rows in corpus.items():
         if not protects_ok(cid): continue
+        if not signature_ok(cid): continue
         reasons = [(f, br.get(f), st) for f, st in rows
                    if br.get(f) is not None and verb_hit(br[f]) and arg_ok(f, br[f]) and party_ok(f)]
         if reasons: rel[cid] = reasons
