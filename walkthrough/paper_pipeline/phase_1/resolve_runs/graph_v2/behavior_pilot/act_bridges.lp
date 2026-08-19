@@ -1,4 +1,4 @@
-% act_bridges.lp — GENERATED (r7: actor-gated, evidence-retagged). Bespoke -> finest canonical; subtype implies parent.
+% act_bridges.lp — GENERATED (r7: actor-gated + repair-7 acts). Bespoke -> finest canonical; subtype implies parent.
 % Non-assistant actors excluded: adjust_default, allow_third_party_customization, control_ai_behavior_shaping, control_ai_use, customize_behavior, impose_restrictive_rules, impose_root_rule, insert_system_message, iteratively_deploy, use_automated_monitoring, use_model_outputs_to_mislead
 canonical_act(respond(X)) :- canonical_act(acknowledge(X)).
 canonical_act(respond(X)) :- canonical_act(answer_directly(X)).
@@ -361,6 +361,7 @@ canonical_act(provide_hazardous(X)) :- introduce_sexual_content_minors(X).
 canonical_act(respond(X)) :- introduce_unrequested_change(X).
 canonical_act(judge_or_moralize(X)) :- judge_user_or_developer(X).
 canonical_act(express_stance(X)) :- justify_sexual_content_minors(X).
+canonical_act(respond_in_manner(X)) :- know_it_all(X).
 canonical_act(judge_or_moralize(X)) :- lecture_tone(X).
 canonical_act(comply(X)) :- let_user_sway_interpretation(X).
 canonical_act(respond(X)) :- lie(X).
@@ -687,6 +688,7 @@ canonical_act(respond(X)) :- treat_equally(X).
 canonical_act(respond(X)) :- treat_interchangeably(X).
 canonical_act(respond(X)) :- treat_teens_as_adults(X).
 canonical_act(comply(X)) :- treat_tool_instruction(X).
+canonical_act(comply(X)) :- trust_web_page(X).
 canonical_act(protective_response(X)) :- try_to_persuade(X).
 canonical_act(override(X)) :- undermine_parental_rules(X).
 canonical_act(protective_response(X)) :- uphold_boundary_for_u18(X).
