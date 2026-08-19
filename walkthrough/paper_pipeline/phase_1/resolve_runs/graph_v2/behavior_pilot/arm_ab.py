@@ -27,12 +27,21 @@ FKEY = {"helpfulness": "help", "harm-avoidance-to-third-parties": "harm", "avoid
 
 
 def truth_for(slug):
-    t = {**json.load(open(os.path.join(HERE, "panel_run1", f"adjudication_run2_{FKEY[slug]}.json")))["rulings"],
-         **json.load(open(os.path.join(HERE, "panel_run1", "agreed_negative_rulings.json")))["rulings"][slug]}
-    for p in glob.glob(os.path.join(HERE, "panel_run1", f"arm2_{FKEY[slug]}_r*_fresh_rulings.json")):
-        t.update(json.load(open(p))["rulings"])
-    nr = json.load(open(os.path.join(HERE, "panel_run1", "arm3_negative_rulings.json")))["rulings"].get(slug, {})
-    t.update(nr)
+    """Assembled Fable truth. Adversarial-review hardening (2026-08-18):
+    sources merge in SORTED order and a node ruled differently by two
+    sources is an ERROR, never a silent last-writer-wins (verified zero
+    conflicts today; this guard keeps it that way)."""
+    sources = [json.load(open(os.path.join(HERE, "panel_run1", f"adjudication_run2_{FKEY[slug]}.json")))["rulings"],
+               json.load(open(os.path.join(HERE, "panel_run1", "agreed_negative_rulings.json")))["rulings"][slug]]
+    for p in sorted(glob.glob(os.path.join(HERE, "panel_run1", f"arm2_{FKEY[slug]}_r*_fresh_rulings.json"))):
+        sources.append(json.load(open(p))["rulings"])
+    sources.append(json.load(open(os.path.join(HERE, "panel_run1", "arm3_negative_rulings.json")))["rulings"].get(slug, {}))
+    t = {}
+    for src in sources:
+        for n, v in src.items():
+            if n in t and t[n] != v:
+                raise RuntimeError(f"truth conflict for {n}: {t[n]} vs {v} — adjudicate, don't overwrite")
+            t[n] = v
     return t
 
 
@@ -42,7 +51,9 @@ def arm_b_states(slug, engaged_nodes, spec, sel, bridges):
         try:
             lp = BM.render_behavior_module("b3", slug, spec["facts"], spec["does"])
             base = BM.relevance_query([cid], lp + "\n" + bridges, selected=sel)
-            fires = cid in (base.get("relevant_modules") or []) or bool(base.get("relevant_modules"))
+            # exact-module check only (review hardening): never let another
+            # source's asserts count as this module firing
+            fires = link_nodes.norm_id(cid) in {link_nodes.norm_id(x) for x in (base.get("relevant_modules") or [])}
         except Exception:
             states[cid] = "undetermined"; continue
         if fires:

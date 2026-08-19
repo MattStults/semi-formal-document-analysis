@@ -52,3 +52,42 @@ scaffolding. Reported, not adopted, pending per-name weighting.
 ## Standing caveats (registered defects 1-9 apply verbatim)
 Single-model truth tier; small decline denominators on helpfulness;
 T2 repairs held; behavior modules hand-authored under the contract.
+
+---
+
+## ERRATA (2026-08-18, from the clean-context adversarial review — MATERIAL finding, fixed; arm-3 numbers unaffected)
+
+**Finding:** the "cold seat" and "tuned seat" columns above are the ARM-2
+HELD-OUT numbers, presented under a "same test slice" header. Overlap with
+the arm-3 test slice is only 23/21/17 nodes; every cross-column delta was
+cross-slice arithmetic. The reviewer independently reproduced the arm-3
+measurement bit-for-bit at the frozen commit (denominators, timeline, and
+provenance all clean) — the defect is confined to the comparison columns.
+
+**Corrected SAME-SLICE comparison** (seat engagement sets rescored on the
+arm-3 test slices, deterministic, seat_sameslice_full.json):
+
+| behavior | cold (same slice) | tuned (same slice) | ARM (a) registered |
+|---|---|---|---|
+| helpfulness | 0.54 (rec .41) | 0.67 (rec .72) | **0.77** (rec .89) |
+| harm-avoidance | 0.78 (rec .64) | 0.68 (rec .82) | 0.77 (rec .73) |
+| caution | 0.60 (rec .39) | 0.68 (rec .74) | **0.72** (rec .90) |
+
+* Equivalence claim under same-slice treatment: **arm (a) >= tuned seat on
+  ALL THREE** (+0.10 / +0.08 / +0.04) — stronger than originally reported;
+  the mislabeled table UNDERSTATED arm 3 on harm ("within one node of
+  0.78" was a denominator artifact).
+* Cold-vs-arm(a) on harm: 0.783 vs 0.767 — WITHIN the registered margin
+  rule (1 node ~ 1.7 pts; threshold 2 nodes). The falsifier "arm (a) <
+  cold-start on any behavior" does NOT fire under the margin rule. Metric
+  note, stated plainly: on a negative-heavy slice (22 rel / 38 not),
+  deviation-defensibility rewards low-engagement instruments; cold harm's
+  same-slice score reflects mass declining, at recall .64 vs the tuned
+  seat's .82 and with the original held-out recall measured at .30.
+* The 12 balancing negatives per behavior lift arm (a) by +0.035/+0.059/
+  +0.034 vs the pre-balance core slice (0.735/0.708/0.683); the same
+  negative-heavy composition is what lifts cold-harm. All instruments are
+  now scored on the identical composition, which is the fix.
+* Two MINOR latent hazards from the same review fixed in code the same
+  day: truth-merge glob order made deterministic with a duplicate-conflict
+  guard; arm_b_states firing check made exact-module.
