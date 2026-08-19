@@ -56,3 +56,21 @@ agreement keeps the label, disagreement escalates to a frontier instance; valida
 agreed-label accuracy >=0.85 on a fresh blind frontier sample before trusting the layer.
 n=40 caveat: the 0.88 has a wide interval (21/24); the next-document validation sample
 must be >=100 asserts before the design is relied on.
+
+## RULING: permit-inheritance REJECTED (Matt + measurement, 2026-08-19)
+Question: should a permit/prefer-only module inherit, for wall purposes, the protects of
+forbid/oblige modules (option 1: same source section; option 3: same section AND shared
+canonical act class)? Decision rule agreed with Matt: adopt 3 if it survives simulation,
+else reject (2). MEASURED (deterministic, whole truth set):
+- strict wall (current):  harm 112/154, FP 6,  FN 36
+- opt1 broad inheritance: harm 113/154, FP 9,  FN 32
+- opt3 act-matched:       harm 113/154, FP 8,  FN 33 (loses recovery l171_426_n036 to an
+  act-class mismatch; drops only 1 of 3 new FPs)
+Opt3 failed its survival bar (keep the recoveries, drop the FPs); both options are +1
+aggregate while tripling-ish wall FPs. RULING: option 2 — the strict span-grounded wall
+stands; the 4 permit FNs (l609_698_n016, l699_796_n012, l831_1000_n011, l1707_1973_n029)
+remain named, explained E1-structural deviations. Rejected BY NAME: broad section
+inheritance (opt1) and act-matched inheritance (opt3), on the measurements above; and
+label-editing the 4 nodes, as encoding a design answer into data. Revisit trigger: if a
+future document shows explicit permit->forbid exception EDGES (not section inference),
+the question reopens with real structure to ride.
