@@ -11,7 +11,15 @@ where they differ.
 | r3 | H2 protective_response; H3 retail; reachability generics+dims | 0.77 | 0.54 | 0.62 |
 | r4 | full 720-bridge audit (50 fixes) | 0.77 | 0.56 | 0.57 |
 | r5 | census H3 rebridges; v4 does (+refuse to help) | 0.79 / **0.81 (b)** | 0.56 | 0.57 |
-| r6 | v4 BUG FIX (protective_response absent from caution's does-block) + caution generic provide restored | — | — | — |
+| r6 | v4 BUG FIX (protective_response absent from caution's does-block) + caution generic provide restored | 0.79 / **0.81 (b)** | 0.56 | **0.68** / 0.65 (b) |
+
+**FROZEN at r6** (2026-08-18): past the pre-stated 4-round cap. Caution's r6
+gain (+0.11) is a bug-fix recovery, not tuning momentum; continuing past the
+cap to chase it would be exactly what the cap forbids. Arm (b) verdict at
+freeze, honestly mixed: helps helpfulness (+0.02), inert on harm, costs
+caution (-0.03, declined one relevant node). Harm remains at its
+census-explained H1 ceiling; the structural fix (act-argument scoping) is
+future work, out of this registration.
 
 Notes for the record:
 * r5 is arm (b)'s first win: mutation stage declined a wrong helpfulness

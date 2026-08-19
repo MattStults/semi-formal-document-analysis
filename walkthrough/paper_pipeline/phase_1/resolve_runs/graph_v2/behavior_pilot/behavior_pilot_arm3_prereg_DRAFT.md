@@ -1,7 +1,12 @@
 # PRE-REGISTRATION DRAFT — arm 3: SYMBOLIC relevance (ASP corpus on the critical path)
 
-Status: DRAFT, sign-ready pending the validation-slice preview attached at
-hashing time. Matt's rulings incorporated: Q1 both sub-arms (2026-08-18);
+Status: SIGN-READY, FROZEN 2026-08-18. Frozen state: modules_contract_v5 /
+behaviors_canonical_v5 / act_bridges.lp (actor-gated, repair-7 acts) /
+situation_types.json r2 / arm_ab.py; validation ledger attached
+(ARM3_ROUND_LEDGER.md, frozen at r6). Test slice scored ONCE after Matt's
+signature, by `arm_ab.py --slice test --canonical behaviors_canonical_v5.json
+--modules modules_contract_v5.json` at the freeze commit, plus the
+input-relevance channel reported as its own labeled column. Matt's rulings incorporated: Q1 both sub-arms (2026-08-18);
 arm (b) redefined as MUTATION-BASED scope discrimination (Matt's design,
 2026-08-18 — "changing the target to something the ontology defines as
 clearly different and seeing if it still succeeds"); Q2 refinement to
