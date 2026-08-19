@@ -599,6 +599,32 @@ def c_exclusivity_unencoded(cid, o, span):
             "unencoded (FM23)"]
 
 
+def c_dropped_modal_assertless(cid, o, span):
+    """M30 review (Matt's ruling 2026-08-18; FM19 at module scope). A module
+    with NO asserts whose CLAIMS carry a normative modal (must/should/never
+    …) is a dropped-norm suspect: the exemplar is l699_796_n015, where 'a
+    random web page should not be trusted at all' was encoded as two
+    definitional ontology predicates and no assert — so the operative trust
+    norm could never fire or conflict. Review tier, not hard, because a
+    commentary node may legitimately restate a modal whose operative assert
+    lives in a sibling (FM22): the hit directs adjudication, it does not
+    convict. A modal only in the SPAN (not claims) does not fire — the graph
+    may have assigned that sentence to a sibling node."""
+    if entries(o, "asserts"):
+        return []
+    modal = re.compile(r"\b(must not|must|should not|should never|shall|"
+                       r"never|is required to|are required to|should)\b")
+    out = []
+    for c in entries(o, "claims"):
+        m = modal.search(str(c))
+        if m:
+            out.append(f"assertless module; claim carries modal "
+                       f"'{m.group(0)}': {str(c)!r:.110} — dropped norm "
+                       f"suspect (FM19); adjudicate: dropped vs "
+                       f"sibling-owned vs definitional")
+    return out
+
+
 def c_needs_gloss_licence(cid, o, span):
     """M24 hard SINCE THE RULING. A borrowed NEEDS name's gloss stamped
     `licence: textual` citing this clause. Before DECISION_licence_textual.md
@@ -638,6 +664,7 @@ PER_MODULE = [
     ("inert_ontology", c_inert_ontology, "review"),
     ("head_and_input", c_head_and_input, "review"),
     ("claims_uncovered", c_claims_uncovered, "review"),
+    ("dropped_modal_assertless", c_dropped_modal_assertless, "review"),
     ("requires_shadowed", c_requires_shadowed, "review"),
     ("gloss_duplicated", c_gloss_duplicated, "review"),
     ("argorder_unpinned", c_argorder_unpinned, "review"),
