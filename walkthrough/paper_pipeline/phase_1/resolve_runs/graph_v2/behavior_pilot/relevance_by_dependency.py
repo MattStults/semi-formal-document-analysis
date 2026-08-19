@@ -36,16 +36,29 @@ def indexes():
     return provides, consumes
 
 
-def input_relevant(act_engaged, provides, consumes, exclude=None):
-    """provider cid -> list of (name, consumer cid) reasons, one hop."""
-    out = {}
+def input_relevant(act_engaged, provides, consumes, exclude=None, max_providers=2, min_consumers=2):
+    """provider cid -> reasons, one hop, SPECIFICITY-WEIGHTED (2026-08-18,
+    Matt's gate backlog item 4). Measured over-fire: providers of widely-
+    shared names (scaffolding) engage everywhere. A name counts only if
+    (a) few modules provide it (<= max_providers — it is THIS provider's
+    concept, not corpus scaffolding), and (b) the provider is consumed by
+    >= min_consumers act-engaged modules OR provides a name consumed by an
+    engaged module at >= 2 distinct names (multi-thread dependence)."""
+    seam = set()
+    sp = os.path.join(G2, "SEAM_CONTRACT.json")
+    if os.path.exists(sp): seam = set(json.load(open(sp))["names"])
+    raw = {}
     for consumer in act_engaged:
-        for n in consumes.get(consumer, ()):  # names the engaged module uses
-            for provider in provides.get(n, ()):
+        for n in consumes.get(consumer, ()):
+            if n in seam: continue                       # scaffolding by definition
+            provs = provides.get(n, ())
+            if len(provs) > max_providers: continue      # shared scaffolding
+            for provider in provs:
                 if provider == consumer or provider in act_engaged: continue
                 if exclude and provider in exclude: continue
-                out.setdefault(provider, []).append((n, consumer))
-    return out
+                raw.setdefault(provider, []).append((n, consumer))
+    return {p: v for p, v in raw.items()
+            if len({c for _, c in v}) >= min_consumers or len({n for n, _ in v}) >= 2}
 
 
 if __name__ == "__main__":

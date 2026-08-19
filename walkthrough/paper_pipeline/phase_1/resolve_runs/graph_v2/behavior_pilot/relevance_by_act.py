@@ -143,7 +143,18 @@ def relevance(mod, br, corpus):
     def verb_hit(c):
         return c in acts or pm.get(c) in acts or any(pm.get(a2) == c for a2 in acts)
 
+    # per-behavior argument declarations (H1 fix, opt-in): a behavior module
+    # may declare {"arg_sorts": {"refuse": ["request","topic"], ...}} — walls
+    # then apply ONLY to verbs that behavior explicitly declares, replacing
+    # the global verb-family walls (measured to cost every behavior).
+    declared = mod.get("arg_sorts") or {}
+
     def arg_ok(f, c):
+        decl = declared.get(c) or declared.get(pm.get(c, ""))
+        if decl:
+            fa = asorts.get(f)
+            if fa in (None, "none", "other"): return True       # fail open
+            return any(fa == w or fa in ARG_COMPAT.get(w, {w}) or w in ARG_COMPAT.get(fa, {fa}) for w in decl)
         if c not in WALLED_VERBS and pm.get(c) not in WALLED_VERBS: return True
         fa = asorts.get(f)
         if fa in (None, "none", "other"): return True          # fail open
