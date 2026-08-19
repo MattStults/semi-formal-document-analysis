@@ -54,3 +54,10 @@ blind verification pending. Application HELD until after the registered
 test scoring — the frozen state includes the corpus AS-IS, and arity
 repairs change module bodies (hence firing). They apply in the first
 post-registration cycle.
+
+**Matt's gate (2026-08-18, post-registration): no new behavior until ALL
+known fixes are done on the current three.** Fix backlog: T2 apply,
+mutation coverage (silence census -> n-ary reversal), per-behavior
+argument declarations, input-channel weighting, retail bridges. Fixes
+driven by tuning/validation/census only — TEST slices stay out of the
+loop for clean future re-registration.
