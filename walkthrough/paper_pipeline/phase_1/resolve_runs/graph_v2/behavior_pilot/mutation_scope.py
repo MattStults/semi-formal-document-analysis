@@ -44,7 +44,7 @@ def behavior_to_corpus_bridges():
         seam = set(json.load(open(os.path.join(os.path.dirname(HERE), "SEAM_CONTRACT.json")))["names"])
         for n, v in t.items():
             if (inv[n]["arity"] or 0) != 1: continue
-            if not v["dims"] and n not in seam: continue
+            if not v["dims"] and n not in seam and not v.get("generic"): continue
             body = [f"{v['sort']}(X)"] + [f"scope({d},{val},X)" for d, val in v["dims"].items()]
             out.append(f"{n}(X) :- " + ", ".join(body) + ".")
     return "\n".join(out) + "\n"
