@@ -61,3 +61,13 @@ mutation coverage (silence census -> n-ary reversal), per-behavior
 argument declarations, input-channel weighting, retail bridges. Fixes
 driven by tuning/validation/census only — TEST slices stay out of the
 loop for clean future re-registration.
+
+Fix-backlog item 2 CLOSED by verification (2026-08-18): 12-module blind
+sample of the undetermined mass — every one waits on module-specific
+SITUATIONAL conditions (polarizing topic, mental-health context, stated
+illicit intent, fictional context) the generic instance correctly lacks.
+Undetermined = "act-relevant, conditions not present" is the designed
+semantics, not a coverage defect. The n-ary reversal machine is NOT
+needed for the standard instances; concrete-case instances (S4-style)
+are where those conditions become mutation dimensions. Sample recorded in
+undetermined_spotcheck.json.
