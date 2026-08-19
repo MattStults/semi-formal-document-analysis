@@ -33,3 +33,32 @@ such with per-node grounds.
 DISCIPLINE CARRIED OVER: every adjudication blind and grounds-quoted; every fix
 measured on all truth (9d) before adoption; instrument changes are versioned;
 registered numbers untouched; the ledger is committed each iteration.
+
+## CAMPAIGN RESULT (2026-08-19, iterations 1-3 + terminal mechanism test)
+
+TRAJECTORY: bucket-0 FPs 84 -> 54 -> 17 -> 11. Fable cost: ~0.13M (iter-1 adjudication);
+iterations 2-3 ~0 (Opus bridge audit + deterministic measurement). No stop-rule trigger —
+the campaign stopped because the PRINCIPLED MECHANISM SPACE EMPTIED: the final candidate
+(quality-scoped purpose conjunction) was measured and rejected (fixes 3, costs 24 TPs),
+completing a three-measurement pattern (global purpose filter, subtype granularity,
+scoped conjunction) in which every finer distinction trades recall ~1:1.
+
+TERMINAL STATE (v16, all truth n=836):
+- bucket 1 (match): 690
+- bucket 2 (adjudicated reading-difference, strict judge): 29 (28 still engaged)
+- bucket 0 FP-side (THE RESEARCH ANSWER CANDIDATE): 11 nodes ~= 1.3% of truth:
+  uncertainty-expression genus permission (l2821_3040_n015 x help), unprompted-info
+  (n031), omission-transparency (l797_830_n005), explicitness-limits (l1108_1367_n015),
+  objectivity-balance (l2126_2404_n004), hash-honesty (l2821_3040_n025/n023),
+  long-term-goals (l3041_3146_n007), code-quality (l3147_3238_n010 x2), addressing
+  (l1707_1973_n040).
+- FN side: 132, all in classified recall classes (buckets 3/4); FN bucket 0 = 0.
+
+CHARACTER OF THE TERMINAL CLASS: same-local-signature, different-verdict pairs whose
+separating feature (per the factorization experiment) is expressible in free-text
+purpose/failure_mode nuance but lies BELOW the finest vocabulary granularity that
+remains recall-stable. The approach's limit is therefore not relational irreducibility
+(retracted earlier with evidence) but VOCABULARY-GRANULARITY ECONOMICS: each finer cut
+that would separate the residue costs more true engagements than it saves, measured
+three independent ways. ~1.3% precision-side residue + ~0.9 truth-noise ceiling is the
+measured boundary of factorized symbolic relevance on this document.
