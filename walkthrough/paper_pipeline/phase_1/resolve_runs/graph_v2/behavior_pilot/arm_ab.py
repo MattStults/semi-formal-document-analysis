@@ -42,6 +42,12 @@ def truth_for(slug):
             if n in t and t[n] != v:
                 raise RuntimeError(f"truth conflict for {n}: {t[n]} vs {v} — adjudicate, don't overwrite")
             t[n] = v
+    # panel re-adjudications REPLACE with explicit precedence (3-instance fresh
+    # blind panel, 2026-08-18, truth_suspect_panel_result.json) — a documented
+    # re-ruling, not a merge conflict.
+    rp = os.path.join(HERE, "panel_run1", "panel_rerulings.json")
+    if os.path.exists(rp):
+        t.update(json.load(open(rp))["rulings"].get(slug, {}))
     return t
 
 

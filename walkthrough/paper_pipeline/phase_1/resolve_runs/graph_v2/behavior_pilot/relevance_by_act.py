@@ -116,6 +116,13 @@ def arg_sorts():
     return json.load(open(p)) if os.path.exists(p) else {}
 
 
+def act_party():
+    """functor -> party its object/beneficiary/victim concerns (the E1
+    structural fix, Matt's decision 2, 2026-08-18). unspecified fails open."""
+    p = os.path.join(HERE, "act_party.json")
+    return json.load(open(p)) if os.path.exists(p) else {}
+
+
 def behavior_arg_sorts(mod):
     """constant -> sort for the behavior's does-arguments, from the module's
     canonical facts naming convention (r*=request, c*=content, resp*=response,
@@ -151,6 +158,10 @@ def relevance(mod, br, corpus):
     pm = parent_map()
     asorts = arg_sorts()
     bargs = behavior_arg_sorts(mod)
+    party = act_party()
+    # per-behavior party declaration: {"party_concern": ["third_party", ...]} on the module —
+    # engagement requires the functor's party be declared-compatible or unspecified (fail open).
+    p_decl = set(mod.get("party_concern") or [])
     def hits(c):
         if c is None: return False
         return c in acts or bool(pm.get(c, set()) & acts)
@@ -188,10 +199,15 @@ def relevance(mod, br, corpus):
         if not want: return True                                # fail open
         return any(fa == w or fa in ARG_COMPAT.get(w, {w}) or w in ARG_COMPAT.get(fa, {fa}) for w in want)
 
+    def party_ok(f):
+        if not p_decl: return True
+        pv = party.get(f, "unspecified")
+        return pv == "unspecified" or pv in p_decl
+
     rel = {}
     for cid, rows in corpus.items():
         reasons = [(f, br.get(f), st) for f, st in rows
-                   if br.get(f) is not None and verb_hit(br[f]) and arg_ok(f, br[f])]
+                   if br.get(f) is not None and verb_hit(br[f]) and arg_ok(f, br[f]) and party_ok(f)]
         if reasons: rel[cid] = reasons
     return acts, rel
 

@@ -70,3 +70,15 @@ validate_ontology.py (A1-A7 acts, T1-T7 atoms), validate_behavior_module.py
 way the mechanical gate already is; a chunk seals only when they pass.
 Firing-consistency (A7/T4) runs against a hand-grounded reference case
 built in the FIRST chunk and kept for the document's lifetime.
+
+## 7. Asserts declare WHOSE interest the norm protects (from the E1 terminus)
+Measured 2026-08-18 (deviation ledger + three ablations): party walls
+retrofitted at act level (gloss-typed) collapse recall (FN 28->43); at
+module level (situation-dim join) they are net zero (8FP<->8FN, signal in
+264/762 modules only). "Whose interest does THIS norm protect" is
+per-ASSERT information: dual-use clauses protect user AND third parties;
+gloss mention is not protection. The next document's asserts carry
+`protects: [user|third_party|developer|minor|society|...]` at translation
+time, where the span states it; behaviors then wall on norm-protection
+directly. Retrofitting the Model Spec corpus's asserts is a future
+ceremony (annotation sweep + blind verification), not a query-side patch.
