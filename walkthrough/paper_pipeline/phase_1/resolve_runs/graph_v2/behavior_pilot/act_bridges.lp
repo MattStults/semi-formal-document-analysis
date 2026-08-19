@@ -1,4 +1,4 @@
-% act_bridges.lp — GENERATED (r4: full-audit corrections, 50/720 ~ 7%). Two-level act ontology.
+% act_bridges.lp — GENERATED (r5 final: audit + census rebridges, respond_with reverted).
 % Bespoke -> finest canonical; subtype implies parent.
 canonical_act(respond(X)) :- canonical_act(acknowledge(X)).
 canonical_act(respond(X)) :- canonical_act(answer_directly(X)).
@@ -115,7 +115,7 @@ canonical_act(respond(X)) :- attempt_solution(X).
 canonical_act(act_in_world(X)) :- autonomously_message_peer(X).
 canonical_act(pursue_goal(X)) :- autonomously_pursue_goal(X).
 canonical_act(act_in_world(X)) :- autonomously_whistleblow(X).
-canonical_act(respond(X)) :- avoid_addressing_topic(X).
+canonical_act(refuse(X)) :- avoid_addressing_topic(X).
 canonical_act(respond(X)) :- avoid_advice(X).
 canonical_act(respond(X)) :- avoid_ai_reminders(X).
 canonical_act(respond(X)) :- avoid_apologies(X).
@@ -127,7 +127,7 @@ canonical_act(respond(X)) :- avoid_independent_agenda(X).
 canonical_act(respond(X)) :- avoid_interaction(X).
 canonical_act(respond(X)) :- avoid_mistakes(X).
 canonical_act(respond(X)) :- avoid_nuanced_discussion(X).
-canonical_act(respond(X)) :- avoid_or_censor_topics(X,_).
+canonical_act(refuse(X)) :- avoid_or_censor_topics(X,_).
 canonical_act(respond(X)) :- avoid_ssn_in_url(X).
 canonical_act(respond(X)) :- avoid_subjective_terms(X).
 canonical_act(protective_response(X)) :- avoid_undermining_informed_opinions(X).
@@ -544,7 +544,7 @@ canonical_act(provide(X)) :- recommend_professional_guidance(X).
 canonical_act(provide(X)) :- recommend_tool(X).
 canonical_act(provide(X)) :- recommend_treatment(X).
 canonical_act(respond(X)) :- record_scope(X).
-canonical_act(respond(X)) :- reduce_impact_of_execution_error(X).
+canonical_act(act_in_world(X)) :- reduce_impact_of_execution_error(X).
 canonical_act(protective_response(X)) :- refer_to_law_enforcement(X).
 canonical_act(respond(X)) :- reference_chain_of_command(X).
 canonical_act(provide(X)) :- reference_or_depict_hateful_content(X).
@@ -657,7 +657,7 @@ canonical_act(engage_relationship(X)) :- signal_engagement(X).
 canonical_act(respond(X)) :- sound_courteous_comprehensible_not_overly_casual(X).
 canonical_act(engage_relationship(X)) :- sound_like_colleague(X).
 canonical_act(respond(X)) :- speak_in_accent(X).
-canonical_act(respond(X)) :- speak_with_accent(X).
+canonical_act(comply(X)) :- speak_with_accent(X).
 canonical_act(engage_relationship(X)) :- speak_with_warmth_and_respect(X).
 canonical_act(respond(X)) :- specify_programmatic_output(X).
 canonical_act(respond(X)) :- state_assumptions(X).
