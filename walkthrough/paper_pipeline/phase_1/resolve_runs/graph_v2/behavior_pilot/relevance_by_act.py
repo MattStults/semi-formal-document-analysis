@@ -204,8 +204,23 @@ def relevance(mod, br, corpus):
         pv = party.get(f, "unspecified")
         return pv == "unspecified" or pv in p_decl
 
+    # PER-ASSERT protects wall (the E1 fix, calibrated 2026-08-18): a module
+    # engages only if SOME assert protects a declared party, or is
+    # unspecified/unannotated (fail open). Declared via module "protects_concern".
+    ap_path = os.path.join(HERE, "assert_protects.json")
+    ap = json.load(open(ap_path)) if os.path.exists(ap_path) else {}
+    prot_decl = set(mod.get("protects_concern") or [])
+
+    def protects_ok(cid):
+        if not prot_decl or not ap: return True
+        keys = [k for k in ap if k.startswith(cid + "|")]
+        if not keys: return True                       # unannotated: fail open
+        vals = {v for k in keys for v in ap[k]}
+        return "unspecified" in vals or bool(vals & prot_decl)
+
     rel = {}
     for cid, rows in corpus.items():
+        if not protects_ok(cid): continue
         reasons = [(f, br.get(f), st) for f, st in rows
                    if br.get(f) is not None and verb_hit(br[f]) and arg_ok(f, br[f]) and party_ok(f)]
         if reasons: rel[cid] = reasons
