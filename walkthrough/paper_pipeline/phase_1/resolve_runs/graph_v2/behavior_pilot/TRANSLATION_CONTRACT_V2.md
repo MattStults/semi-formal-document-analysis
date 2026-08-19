@@ -125,8 +125,14 @@ gate at submit, orphan sweep) — the 2026-08-19 retrofit sweeps ran on the live
 only because the author missed the existing plumbing; recorded so it isn't repeated.
 Single pass per assert yields all fields;
 dual cheap seats label everything, agreement keeps the label, disagreement escalates
-to a frontier instance (solo small tiers measured ~0.60 exact-set; agreed-cheap
-measured 0.88, n=24 — revalidate >=100 per document). Inputs carry verbatim SOURCE
+to a frontier instance (solo small tiers measured ~0.60 exact-set). MEASURED UPDATE
+(signature retrofit, n=100 pre-registered spot-check): agreed-cheap labels scored 0.78 —
+BELOW floor; shared cheap-seat bias (safety_of_manner over-assignment) is invisible to
+the disagreement trigger. BINDING: validate seats PER FIELD (the authority flag passed
+at 0.97 while the aspect field failed), spot-check the agreed set at >=0.85 on >=100
+items BEFORE trusting it, and budget full frontier for any field that fails — twice
+measured (protects, governs), cheap tiers have not yet passed a judgment field's floor
+on this document. Inputs carry verbatim SOURCE
 TEXT; every node id must resolve to a non-empty span, checked loud. Calibration cases
 with pre-registered expectations run before any sweep (incremental protocol).
 

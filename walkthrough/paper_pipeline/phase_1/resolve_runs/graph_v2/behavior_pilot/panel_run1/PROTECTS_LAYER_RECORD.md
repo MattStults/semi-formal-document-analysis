@@ -107,3 +107,23 @@ meaningfully lower in time and credits." MEASURED COMPARISON at ruling time:
 Condition SATISFIED by an order of magnitude on both axes. Revisit trigger (recorded
 earlier, unchanged): after the constitution translates born-conforming under the full
 contract, evaluate whether a Model Spec regeneration earns its re-adjudication cost.
+
+## SIGNATURE LAYER (governs + authority_plumbing) — escalation architecture ran, spot-check floor FAILED, full-frontier remedy executed (2026-08-19)
+Calibration: pipeline (DeepSeek+Haiku seats, Fable escalation) 10/10 pre-registered cells
+(one expectation itself revised by a 3-0 fresh panel — n013, formatting_style/operative;
+the census-era label predated the directing-vs-defining doctrine). Sweep: seats agreed
+532/985 (54%); 453 escalated to Fable ($0.09 API + ~0.5M Fable). PRE-REGISTERED
+SPOT-CHECK on 100 agreed keys (seed 20260819): **78/100 = 0.78 — BELOW the 0.85 floor**;
+16/22 misses were the safety_of_manner vs substance/operational boundary (shared cheap-
+seat bias, invisible to the disagreement trigger); authority flag alone was 97/100.
+REMEDY (pre-registered, executed): full escalation of the agreed set — the layer is now
+100% Fable-labeled (provenance.json: 453 seat-disagreement escalations + 100 spot-check
++ 432 full-escalation). Final: substance 302, op_hygiene 161, safety_of_manner 160,
+tone 151, accuracy 107, formatting 72, objectivity 56, identity 44; authority_plumbing 65.
+MEASURED LESSON FOR CONTRACT §8 (now measured twice, protects + signature): on this
+document's judgment dimensions, cheap-tier annotation fails its floors even with
+dual-seat escalation — the shared-bias failure mode is real (0.78 on agreed labels).
+Budget frontier for judgment layers until a seat PASSES a pre-registered spot-check;
+the escalation architecture's value is where it holds (authority flag 0.97) — per-FIELD
+seat validation, not per-layer, is the refined design. The safety_of_manner/substance
+boundary needs a sharper vocabulary definition before any seat retry.
