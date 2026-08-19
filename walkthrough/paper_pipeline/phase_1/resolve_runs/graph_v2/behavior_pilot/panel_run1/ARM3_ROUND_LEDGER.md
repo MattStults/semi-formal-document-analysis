@@ -13,7 +13,7 @@ where they differ.
 | r5 | census H3 rebridges; v4 does (+refuse to help) | 0.79 / **0.81 (b)** | 0.56 | 0.57 |
 | r6 | v4 BUG FIX (protective_response absent from caution's does-block) + caution generic provide restored | 0.79 / **0.81 (b)** | 0.56 | **0.68** / 0.65 (b) |
 
-**FROZEN at r6** (2026-08-18): past the pre-stated 4-round cap. Caution's r6
+(superseded freeze note — see r7)  **frozen-at-r6 note** (2026-08-18): past the pre-stated 4-round cap. Caution's r6
 gain (+0.11) is a bug-fix recovery, not tuning momentum; continuing past the
 cap to chase it would be exactly what the cap forbids. Arm (b) verdict at
 freeze, honestly mixed: helps helpfulness (+0.02), inert on harm, costs
@@ -37,3 +37,20 @@ Notes for the record:
 * Corpus-side ceiling recorded: H4 actless (relevance side solved by the
   input channel; contradiction side = M30 sweep, 7 hits, adjudication in
   flight), H5 wrong-actor (actor tagging in flight).
+
+| r7 | act-argument walls (verb-family) + census SCAFFOLD facts (v7) | 0.79 / 0.81 (b) | 0.54 | 0.68 / 0.65 (b) |
+
+**FROZEN after r7 (FINAL — Matt's stopping-point commitment).** Frozen
+config: v7 scaffold ON, argument walls OFF — selected on tuning evidence
+only (walls cost every behavior in verb-family form; scaffold tripled
+scope-confirmed groundings). The frozen config's validation point is
+DELIBERATELY unmeasured — the registered test run measures it directly,
+avoiding one further validation peek. Walls machinery + act_arg_sorts.json
+retained as census-motivated future work (H1 needs per-behavior argument
+declarations).
+
+T2 arity-collision repairs: 35 drafts, 0 skipped (t2_repair_drafts.json),
+blind verification pending. Application HELD until after the registered
+test scoring — the frozen state includes the corpus AS-IS, and arity
+repairs change module bodies (hence firing). They apply in the first
+post-registration cycle.

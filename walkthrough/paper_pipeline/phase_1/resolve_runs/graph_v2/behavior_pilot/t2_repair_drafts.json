@@ -1,0 +1,1166 @@
+{
+ "repairs": [
+  {
+   "node": "l1707_1973_n009",
+   "name": "appropriate_to_encourage_support",
+   "from_arity": 1,
+   "to_arity": 2,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 2,
+     "old": "name=appropriate_to_encourage_support; arity=1; gloss=the situation is one where it is appropriate to suggest seeking additional support",
+     "new": "name=appropriate_to_encourage_support; arity=2; gloss=it is appropriate for the assistant A to encourage user U to consider seeking additional support in the current discussion"
+    },
+    {
+     "field": "asserts",
+     "index": 0,
+     "old": "user_authority(encourage_additional_support_rule), appropriate_to_encourage_support(U)",
+     "new": "user_authority(encourage_additional_support_rule), appropriate_to_encourage_support(A, U)"
+    },
+    {
+     "field": "inputs",
+     "index": 0,
+     "old": "appropriate_to_encourage_support/1",
+     "new": "appropriate_to_encourage_support/2"
+    }
+   ],
+   "meaning_note": "The module's /1 use said 'the situation is appropriate to suggest support' for user U. The pin's /2 gloss makes appropriateness a relation between the assistant and the discussion; here the discussion is the mental-health conversation with U, so the second slot keeps the module's U and the first slot names the assistant (A, existential, as in sibling modules). No condition of the norm is weakened or strengthened."
+  },
+  {
+   "node": "l3877_3953_n006",
+   "name": "ask_question",
+   "from_arity": 1,
+   "to_arity": 2,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 4,
+     "old": "name=ask_question; arity=1; gloss=Q is a question asked by the assistant in the course of the interaction",
+     "new": "name=ask_question; arity=2; gloss=A asks Q, where Q is a question posed to the user in the conversation; here A is the assistant"
+    },
+    {
+     "field": "asserts",
+     "index": 0,
+     "old": "relevant_question(Q), specific_question(Q), tailored_to_user_interests(Q), user_authority(ask_question(Q))",
+     "new": "relevant_question(Q), specific_question(Q), tailored_to_user_interests(Q), user_authority(ask_question(A, Q))"
+    },
+    {
+     "field": "asserts",
+     "index": 0,
+     "old": "ask_question(Q)",
+     "new": "ask_question(A, Q)"
+    },
+    {
+     "field": "inputs",
+     "index": 4,
+     "old": "ask_question/1",
+     "new": "ask_question/2"
+    }
+   ],
+   "meaning_note": "The pin makes asking a relation 'A asks Q'; the module's asker was implicitly the assistant, so the added first slot names it explicitly (A, tied to the module's assistant_definition requirement). The acts list entry 'ask_question(Q)' must be updated to 'ask_question(A, Q)' alongside (acts is outside the edit schema); the closure act_class 'ask_question' is arity-free and unchanged. The preference's conditions are untouched."
+  },
+  {
+   "node": "l3596_3876_n036",
+   "name": "assistant_behavior",
+   "from_arity": 2,
+   "to_arity": 1,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 1,
+     "old": "name=assistant_behavior; arity=2; gloss=A is the assistant and B is a behavior of A, namely behaving in a highly formal and professional manner",
+     "new": "name=assistant_behavior; arity=1; gloss=B is the assistant's behavior, here behaving in a highly formal and professional manner"
+    },
+    {
+     "field": "asserts",
+     "index": 0,
+     "old": "assistant_definition(A), assistant_behavior(A, B), formal_context(C), behavior_in_context(B, C)",
+     "new": "assistant_definition(A), assistant_behavior(B), formal_context(C), behavior_in_context(B, C)"
+    },
+    {
+     "field": "inputs",
+     "index": 0,
+     "old": "assistant_behavior/2",
+     "new": "assistant_behavior/1"
+    }
+   ],
+   "meaning_note": "The dropped first argument was the assistant itself; the pinned /1 gloss already fixes the behavior as the assistant's, and assistant_definition(A) stays in the body, so nothing the norm needs is lost."
+  },
+  {
+   "node": "l2126_2404_n051",
+   "name": "assistant_response",
+   "from_arity": 2,
+   "to_arity": 1,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 3,
+     "old": "name=assistant_response; arity=2; gloss=response R is given by assistant A",
+     "new": "name=assistant_response; arity=1; gloss=R is a response given by the assistant in the example"
+    },
+    {
+     "field": "ontology",
+     "index": 0,
+     "old": "developer_instruction(I), assistant_response(R, A), follows_instruction(R, I), complies_with(R, I)",
+     "new": "developer_instruction(I), assistant_response(R), follows_instruction(R, I), complies_with(R, I)"
+    },
+    {
+     "field": "inputs",
+     "index": 1,
+     "old": "assistant_response/2",
+     "new": "assistant_response/1"
+    }
+   ],
+   "meaning_note": "The dropped second argument was the assistant A; the pinned /1 gloss already makes R an assistant response, and the demonstration atom's real content (R follows and complies with developer instruction I) is untouched. The now-idle assistant/1 input is left in place."
+  },
+  {
+   "node": "l3877_3953_n010",
+   "name": "assistant_response",
+   "from_arity": 2,
+   "to_arity": 1,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 3,
+     "old": "name=assistant_response; arity=2; gloss=R is a response made by the assistant A",
+     "new": "name=assistant_response; arity=1; gloss=R is a response made by the assistant"
+    },
+    {
+     "field": "asserts",
+     "index": 0,
+     "old": "assistant_definition(A), user_authority(U), user_signs_off(U), assistant_response(A, R), responds_in_kind_to(R, U)",
+     "new": "assistant_definition(A), user_authority(U), user_signs_off(U), assistant_response(R), responds_in_kind_to(R, U)"
+    },
+    {
+     "field": "inputs",
+     "index": 1,
+     "old": "assistant_response/2",
+     "new": "assistant_response/1"
+    }
+   ],
+   "meaning_note": "The dropped argument was the assistant A, which the pinned /1 gloss already implies and which assistant_definition(A) still supplies. The norm's substance \u2014 respond in kind (responds_in_kind_to(R, U)) when the user signs off \u2014 is unchanged."
+  },
+  {
+   "node": "l4483_4571_n009",
+   "name": "assistant_response",
+   "from_arity": 2,
+   "to_arity": 1,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 1,
+     "old": "name=assistant_response; arity=2; gloss=assistant response A is a response to user message M",
+     "new": "name=assistant_response; arity=1; gloss=A is an assistant response in the example"
+    },
+    {
+     "field": "concepts",
+     "index": -1,
+     "old": "",
+     "new": "ADD name=response_to; arity=2; licence=assumed; gloss=response A is a response to user message M"
+    },
+    {
+     "field": "asserts",
+     "index": 0,
+     "old": "mic_check(M), assistant_response(A, M), humorous_acknowledgment(A)",
+     "new": "mic_check(M), assistant_response(A), response_to(A, M), humorous_acknowledgment(A)"
+    },
+    {
+     "field": "inputs",
+     "index": 1,
+     "old": "assistant_response/2",
+     "new": "assistant_response/1"
+    },
+    {
+     "field": "inputs",
+     "index": -1,
+     "old": "",
+     "new": "ADD response_to/2"
+    }
+   ],
+   "meaning_note": "Here the second argument carried real content: it tied the response to the mic-check message it answers. That tie moves to a module-local response_to/2, so the preference still fires only for responses to the mic check; assistant_response conforms to the pinned /1."
+  },
+  {
+   "node": "l3239_3382_n016",
+   "name": "creativity_principle",
+   "from_arity": 0,
+   "to_arity": 1,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 1,
+     "old": "name=creativity_principle; arity=0; gloss=the principle that the assistant should strive for creativity in its responses where appropriate, aiming to instill a sense of delightful surprise by going beyond the obvious or the mundane",
+     "new": "name=creativity_principle; arity=1; gloss=R is a response that embodies the creativity principle: striving for creativity where appropriate, aiming to instill delightful surprise by going beyond the obvious or the mundane"
+    },
+    {
+     "field": "asserts",
+     "index": 0,
+     "old": "creativity_principle, witty_original_ideas(R)",
+     "new": "creativity_principle(R), witty_original_ideas(R)"
+    },
+    {
+     "field": "requires",
+     "index": 0,
+     "old": "creativity_principle/0",
+     "new": "creativity_principle/1"
+    }
+   ],
+   "meaning_note": "The pin reifies the principle as a property of responses. The module's preferred act is offering response R of witty original ideas; saying R embodies the principle (rather than invoking the principle as a bare proposition) states the same norm and now composes with the provider's /1 definition."
+  },
+  {
+   "node": "l1542_1706_n001",
+   "name": "do_not_facilitate_illicit_behavior",
+   "from_arity": 0,
+   "to_arity": 1,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 1,
+     "old": "name=do_not_facilitate_illicit_behavior; arity=0; gloss=the policy section on not facilitating or encouraging illicit behavior, referenced by the transformation exception",
+     "new": "name=do_not_facilitate_illicit_behavior; arity=1; gloss=S is the policy section on not facilitating or encouraging illicit behavior, referenced by the transformation exception"
+    },
+    {
+     "field": "ontology",
+     "index": 0,
+     "old": "rule_under_heading(R, do_not_facilitate_illicit_behavior)",
+     "new": "rule_under_heading(R, S), do_not_facilitate_illicit_behavior(S)"
+    }
+   ],
+   "meaning_note": "The module used the name as a bare constant naming the section heading; the pin makes it a /1 predicate identifying the section. Reading 'R is under heading S, and S is the illicit-behavior section' is the same claim \u2014 every rule under that section carries root authority \u2014 with no rule gaining or losing coverage. The module PROVIDES this name, so the /1 form is now the provider's declared shape."
+  },
+  {
+   "node": "l1707_1973_n024",
+   "name": "explicitly_authorized",
+   "from_arity": 2,
+   "to_arity": 1,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 1,
+     "old": "name=explicitly_authorized; arity=2; gloss=the assistant is explicitly authorized to confirm or deny the existence of instruction I",
+     "new": "name=explicitly_authorized; arity=1; gloss=A is explicitly authorized by an applicable instruction, meaning an applicable instruction expressly permits the activity"
+    },
+    {
+     "field": "concepts",
+     "index": -1,
+     "old": "",
+     "new": "ADD name=authorization_concerns; arity=2; licence=assumed; gloss=the explicit authorization of A concerns confirming or denying the existence of instruction I"
+    },
+    {
+     "field": "asserts",
+     "index": 0,
+     "old": "confidential_instruction(I), explicitly_authorized(A, I)",
+     "new": "confidential_instruction(I), explicitly_authorized(A), authorization_concerns(A, I)"
+    },
+    {
+     "field": "inputs",
+     "index": 1,
+     "old": "explicitly_authorized/2",
+     "new": "explicitly_authorized/1"
+    },
+    {
+     "field": "inputs",
+     "index": -1,
+     "old": "",
+     "new": "ADD authorization_concerns/2"
+    }
+   ],
+   "meaning_note": "The dropped second argument (which confidential instruction the authorization covers) carried real content \u2014 the unless-clause lifts the avoidance only for the authorized instruction. That link moves to module-local authorization_concerns/2, so the forbid still fires only when authorization covers instruction I; explicitly_authorized itself conforms to the pinned /1."
+  },
+  {
+   "node": "l171_426_n016",
+   "name": "higher_level_instruction",
+   "from_arity": 2,
+   "to_arity": 1,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 4,
+     "old": "name=higher_level_instruction; arity=2; gloss=instruction H is from a level higher than instruction I's level",
+     "new": "name=higher_level_instruction; arity=1; gloss=I is an instruction from an authority level that outranks the level of the instruction under evaluation"
+    },
+    {
+     "field": "concepts",
+     "index": -1,
+     "old": "",
+     "new": "ADD name=instruction_under_evaluation; arity=1; licence=assumed; gloss=I is the instruction currently under evaluation for misalignment"
+    },
+    {
+     "field": "ontology",
+     "index": 0,
+     "old": "conflicts_with(I, H), higher_level_instruction(H, I)",
+     "new": "conflicts_with(I, H), higher_level_instruction(H), instruction_under_evaluation(I)"
+    },
+    {
+     "field": "ontology",
+     "index": 1,
+     "old": "higher_level_instruction(H, I)",
+     "new": "higher_level_instruction(H)"
+    },
+    {
+     "field": "ontology",
+     "index": 1,
+     "old": "instruction_level(H, LH), instruction_level(I, LI), authority_levels_hierarchy(LH, LI)",
+     "new": "instruction_level(H, LH), instruction_under_evaluation(I), instruction_level(I, LI), authority_levels_hierarchy(LH, LI)"
+    },
+    {
+     "field": "inputs",
+     "index": -1,
+     "old": "",
+     "new": "ADD instruction_under_evaluation/1"
+    }
+   ],
+   "meaning_note": "This module PROVIDES the name; the pin's /1 gloss itself relativizes to 'the instruction under evaluation', so that anchor becomes an explicit module-local input instruction_under_evaluation/1 (a plain case fact: which instruction is being judged). The defining rule and the misalignment rule keep the identical logical content \u2014 H outranks the level of the very instruction I being tested for conflict \u2014 as long as the case designates its instruction under evaluation, which the pinned gloss presupposes."
+  },
+  {
+   "node": "l3383_3501_n005",
+   "name": "interactive_setting",
+   "from_arity": 0,
+   "to_arity": 1,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 3,
+     "old": "name=interactive_setting; arity=0; gloss=the assistant is interacting with a human in real time rather than producing output that will be consumed programmatically",
+     "new": "name=interactive_setting; arity=1; gloss=S is an interactive setting, one in which the assistant is interacting with a human in real time rather than producing output that will be consumed programmatically"
+    },
+    {
+     "field": "asserts",
+     "index": 0,
+     "old": "interactive_setting, clarifying_question(Q)",
+     "new": "interactive_setting(S), clarifying_question(Q)"
+    },
+    {
+     "field": "asserts",
+     "index": 1,
+     "old": "interactive_setting, follow_up_question(Q)",
+     "new": "interactive_setting(S), follow_up_question(Q)"
+    },
+    {
+     "field": "asserts",
+     "index": 2,
+     "old": "interactive_setting, code_content(C)",
+     "new": "interactive_setting(S), code_content(C)"
+    }
+   ],
+   "meaning_note": "The bare /0 atom 'the setting is interactive' becomes the pinned /1 'S is an interactive setting' with S the current setting (existential, one setting per case). Each encouragement still fires exactly when the case's setting is interactive; the iff-flavored cnpa closures are untouched."
+  },
+  {
+   "node": "l3383_3501_n005",
+   "name": "interactive_vs_programmatic_setting",
+   "from_arity": 0,
+   "to_arity": 1,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 4,
+     "old": "name=interactive_vs_programmatic_setting; arity=0; gloss=whether the assistant is interacting with a human in real time (interactive) or its output will be consumed programmatically; behavior varies accordingly",
+     "new": "name=interactive_vs_programmatic_setting; arity=1; gloss=S is the setting in play: interactive (the assistant is interacting with a human in real time) or programmatic (its output will be consumed programmatically); behavior varies accordingly"
+    },
+    {
+     "field": "requires",
+     "index": 0,
+     "old": "interactive_vs_programmatic_setting/0",
+     "new": "interactive_vs_programmatic_setting/1"
+    }
+   ],
+   "meaning_note": "The module only borrows this name to anchor the interactive/programmatic distinction; it appears in requires and concepts, not in any rule body. Re-declaring it at the pinned /1 (the setting as argument) changes no rule of this module."
+  },
+  {
+   "node": "l3239_3382_n005",
+   "name": "interactive_vs_programmatic_setting",
+   "from_arity": 2,
+   "to_arity": 1,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 1,
+     "old": "name=interactive_vs_programmatic_setting; arity=2; gloss=whether the assistant is interacting with a human in real time (interactive) or its output will be consumed programmatically; behavior varies accordingly",
+     "new": "name=interactive_vs_programmatic_setting; arity=1; gloss=S is the setting in play: interactive (the assistant is interacting with a human in real time) or programmatic (its output will be consumed programmatically); behavior varies accordingly"
+    },
+    {
+     "field": "asserts",
+     "index": 0,
+     "old": "assistant_definition(A), interactive_vs_programmatic_setting(A, programmatic), transformation_instruction(I), follows_instruction(A, I)",
+     "new": "assistant_definition(A), interactive_vs_programmatic_setting(programmatic), transformation_instruction(I), follows_instruction(A, I)"
+    },
+    {
+     "field": "requires",
+     "index": 1,
+     "old": "interactive_vs_programmatic_setting/2",
+     "new": "interactive_vs_programmatic_setting/1"
+    }
+   ],
+   "meaning_note": "The dropped first argument was the assistant, which is already carried by assistant_definition(A) in the same body; the setting is a fact of the case, not of a particular assistant. interactive_vs_programmatic_setting(programmatic) keeps the exact trigger: the norm applies when output will be consumed programmatically."
+  },
+  {
+   "node": "l3383_3501_n003",
+   "name": "interactive_vs_programmatic_setting",
+   "from_arity": 2,
+   "to_arity": 1,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 0,
+     "old": "name=interactive_vs_programmatic_setting; arity=2; gloss=whether the assistant is interacting with a human in real time (interactive) or its output will be consumed programmatically (programmatic)",
+     "new": "name=interactive_vs_programmatic_setting; arity=1; gloss=S is the setting in play: interactive (the assistant is interacting with a human in real time) or programmatic (its output will be consumed programmatically)"
+    },
+    {
+     "field": "asserts",
+     "index": 0,
+     "old": "interactive_vs_programmatic_setting(S, interactive)",
+     "new": "interactive_vs_programmatic_setting(S), interactive_setting(S)"
+    },
+    {
+     "field": "inputs",
+     "index": 0,
+     "old": "interactive_vs_programmatic_setting/2",
+     "new": "interactive_vs_programmatic_setting/1"
+    },
+    {
+     "field": "inputs",
+     "index": -1,
+     "old": "",
+     "new": "ADD interactive_setting/1"
+    }
+   ],
+   "meaning_note": "The /2 use paired the setting S with the value 'interactive'. Under the pinned /1 the pairing splits into 'S is the setting in play' plus the already-pinned seam name interactive_setting/1 ('S is an interactive setting'), preserving both halves: the default preference still says the assumed setting S is the interactive one. The module's now-idle local constant concept 'interactive'/0 is left in place."
+  },
+  {
+   "node": "l3383_3501_n008",
+   "name": "interactive_vs_programmatic_setting",
+   "from_arity": 2,
+   "to_arity": 1,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 1,
+     "old": "name=interactive_vs_programmatic_setting; arity=2; gloss=whether the assistant is interacting with a human in real time (interactive) or its output will be consumed programmatically; behavior varies accordingly",
+     "new": "name=interactive_vs_programmatic_setting; arity=1; gloss=S is the setting in play: interactive (the assistant is interacting with a human in real time) or programmatic (its output will be consumed programmatically); behavior varies accordingly"
+    },
+    {
+     "field": "asserts",
+     "index": 0,
+     "old": "developer_requested_no_markdown(A), interactive_vs_programmatic_setting(A, programmatic)",
+     "new": "developer_requested_no_markdown(A), interactive_vs_programmatic_setting(programmatic)"
+    },
+    {
+     "field": "requires",
+     "index": 0,
+     "old": "interactive_vs_programmatic_setting/2",
+     "new": "interactive_vs_programmatic_setting/1"
+    }
+   ],
+   "meaning_note": "The dropped first argument was the output A, already constrained by developer_requested_no_markdown(A) in the same body; the setting is case-global. The preference keeps its trigger (developer asked for no markdown) and its content (assume programmatic consumption), mirroring the /2 version's structure."
+  },
+  {
+   "node": "l1707_1973_n037",
+   "name": "misleads_user",
+   "from_arity": 1,
+   "to_arity": 1,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 3,
+     "old": "name=misleads_user; arity=1; gloss=R is a response that misleads the user by omitting the instruction conflict",
+     "new": "name=response_misleads_user; arity=1; gloss=R is a response that misleads the user by omitting the instruction conflict"
+    },
+    {
+     "field": "asserts",
+     "index": 2,
+     "old": "misleads_user(R)",
+     "new": "response_misleads_user(R)"
+    },
+    {
+     "field": "inputs",
+     "index": 3,
+     "old": "misleads_user/1",
+     "new": "response_misleads_user/1"
+    }
+   ],
+   "meaning_note": "The pinned misleads_user/2 is a relation over an instruction and a user ('applying instruction I in response to user U would mislead U'); this worked example's /1 use is a property of a RESPONSE. Forcing the response into the pinned instruction slot would misstate the sort, and dropping the response would lose which reply the example condemns. The minimal meaning-preserving repair is to move the coined predicate off the seam by renaming it module-local (response_misleads_user/1) with its gloss unchanged; the example's dispreference is untouched and the seam name is left to its instruction-sorted users."
+  },
+  {
+   "node": "l1368_1541_n010",
+   "name": "other_policy_forbids",
+   "from_arity": 1,
+   "to_arity": 2,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 0,
+     "old": "name=other_policy_forbids; arity=1; gloss=M is content that a policy other than the restricted-content or sensitive-content policies forbids the assistant from producing",
+     "new": "name=other_policy_forbids; arity=2; gloss=policy P forbids the assistant from producing material M, where P is a policy other than the restricted-content and sensitive-content policies"
+    },
+    {
+     "field": "asserts",
+     "index": 0,
+     "old": "other_policy_forbids(M), transformation_exception_rule(T), applies_to(T, M)",
+     "new": "other_policy_forbids(P, M), transformation_exception_rule(T), applies_to(T, M)"
+    },
+    {
+     "field": "inputs",
+     "index": 0,
+     "old": "other_policy_forbids/1",
+     "new": "other_policy_forbids/2"
+    }
+   ],
+   "meaning_note": "The /1 form quantified the forbidding policy away ('some other policy forbids M'); the pinned /2 makes that policy an explicit existential P in the body. The prohibition fires in exactly the same cases \u2014 whenever at least one other policy forbids M and the transformation exception would otherwise cover M."
+  },
+  {
+   "node": "l2821_3040_n014",
+   "name": "outcome_ranking",
+   "from_arity": 2,
+   "to_arity": 1,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 5,
+     "old": "name=outcome_ranking; arity=2; gloss=outcome O1 is ranked better than outcome O2 in the overall ranking of answer outcomes",
+     "new": "name=outcome_ranking; arity=1; gloss=R is the overall ranking of answer outcomes from best to worst: confident right answer, hedged right answer, no answer, hedged wrong answer, confident wrong answer"
+    },
+    {
+     "field": "concepts",
+     "index": -1,
+     "old": "",
+     "new": "ADD name=ranked_better_than; arity=2; licence=assumed; gloss=outcome O1 is ranked better than outcome O2 in the overall ranking of answer outcomes"
+    },
+    {
+     "field": "ontology",
+     "index": 0,
+     "old": "outcome_ranking(confident_right_answer, hedged_right_answer)",
+     "new": "ranked_better_than(confident_right_answer, hedged_right_answer)"
+    },
+    {
+     "field": "ontology",
+     "index": 1,
+     "old": "outcome_ranking(hedged_right_answer, no_answer)",
+     "new": "ranked_better_than(hedged_right_answer, no_answer)"
+    },
+    {
+     "field": "ontology",
+     "index": 2,
+     "old": "outcome_ranking(no_answer, hedged_wrong_answer)",
+     "new": "ranked_better_than(no_answer, hedged_wrong_answer)"
+    },
+    {
+     "field": "ontology",
+     "index": 3,
+     "old": "outcome_ranking(hedged_wrong_answer, confident_wrong_answer)",
+     "new": "ranked_better_than(hedged_wrong_answer, confident_wrong_answer)"
+    },
+    {
+     "field": "ontology",
+     "index": -1,
+     "old": "",
+     "new": "ADD atom=outcome_ranking(overall_answer_outcome_ranking); licence=textual; cites=l2821_3040_n014; body=null; gloss=the overall ranking of answer outcomes, whose best-to-worst order is given by the ranked_better_than facts"
+    }
+   ],
+   "meaning_note": "The pinned /1 reifies 'the ranking' as an object, so the module's pairwise order content cannot live on the seam name without loss. The pairwise facts move intact to module-local ranked_better_than/2 (same four atoms, same glosses), and the module still PROVIDES outcome_ranking at the pinned /1 via a reifying fact naming the ranking object. Every ordering claim of the source clause is preserved verbatim."
+  },
+  {
+   "node": "l3954_4251_n035",
+   "name": "produces",
+   "from_arity": 3,
+   "to_arity": 2,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 3,
+     "old": "name=produces; arity=3; gloss=assistant A produces response R for user U",
+     "new": "name=produces; arity=2; gloss=assistant A produces response R"
+    },
+    {
+     "field": "asserts",
+     "index": 0,
+     "old": "assistant_definition(A), thorough_and_detailed(R), informative_and_educational(R, U), produces(A, R, U)",
+     "new": "assistant_definition(A), thorough_and_detailed(R), informative_and_educational(R, U), produces(A, R)"
+    },
+    {
+     "field": "inputs",
+     "index": 2,
+     "old": "produces/3",
+     "new": "produces/2"
+    }
+   ],
+   "meaning_note": "The dropped third argument was the recipient user U; that user-directedness is still asserted in the same body by informative_and_educational(R, U), so the preference keeps its full content: the assistant's response R is thorough, detailed, and informative/educational to the user."
+  },
+  {
+   "node": "l797_830_n001",
+   "name": "red_line_principles",
+   "from_arity": 1,
+   "to_arity": 0,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 5,
+     "old": "name=red_line_principles; arity=1; gloss=the red line principles described in the stay-in-bounds section of the Model Spec",
+     "new": "name=red_line_principles; arity=0; gloss=the red-line principles described in the stay-in-bounds section of the Model Spec, which this clause's guidance must be consistent with"
+    }
+   ],
+   "meaning_note": "The /1 concept was declared but never used in any rule body or in inputs/requires \u2014 the norm is carried by consistent_with_red_lines/1. Re-declaring the reference at the pinned /0 (the principles as a fixed body of doctrine) changes no rule."
+  },
+  {
+   "node": "l3596_3876_n047",
+   "name": "refusal_response",
+   "from_arity": 1,
+   "to_arity": 2,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 3,
+     "old": "name=refusal_response; arity=1; gloss=R is a response that refuses to provide the requested profanity",
+     "new": "name=refusal_response; arity=2; gloss=R is a response that refuses to help with request Q, here refusing to provide the requested profanity"
+    },
+    {
+     "field": "inputs",
+     "index": 3,
+     "old": "refusal_response/1",
+     "new": "refusal_response/2"
+    }
+   ],
+   "meaning_note": "refusal_response is declared and listed as an input but appears in no rule body; the preference is carried by response_complies(R, Q). Widening the declaration to the pinned /2 (refusing WITH RESPECT TO request Q \u2014 Q is already the module's profanity request) adds the request slot without touching any rule."
+  },
+  {
+   "node": "l3954_4251_n020",
+   "name": "refusal_response",
+   "from_arity": 1,
+   "to_arity": 2,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 1,
+     "old": "name=refusal_response; arity=1; gloss=R is a response that refuses to help, such as 'Sorry, I can't help with [X]'",
+     "new": "name=refusal_response; arity=2; gloss=R is a response that refuses to help with request U, such as 'Sorry, I can't help with [X]'"
+    }
+   ],
+   "meaning_note": "refusal_response is declared but used in no rule body and not listed in inputs; the norm is carried by the refuse_to_help/safe_complete acts over response_to(R, U). Widening the declaration to the pinned /2 (refusing request U \u2014 the illicit-intent user message the module already names) changes no rule."
+  },
+  {
+   "node": "l2126_2404_n007",
+   "name": "relevant_context",
+   "from_arity": 2,
+   "to_arity": 1,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 3,
+     "old": "name=relevant_context; arity=2; gloss=C is context relevant to question Q, including laws, social norms, and varying cultural perspectives",
+     "new": "name=relevant_context; arity=1; gloss=C is a piece of context that is relevant to the situation being judged, including laws, social norms, and varying cultural perspectives"
+    },
+    {
+     "field": "concepts",
+     "index": -1,
+     "old": "",
+     "new": "ADD name=relevant_to; arity=2; licence=assumed; gloss=context C is relevant to moral or ethical question Q"
+    },
+    {
+     "field": "asserts",
+     "index": 0,
+     "old": "moral_or_ethical_question(Q), relevant_context(C, Q), assistant_definition(A), user_authority(U), presents_context(A, C, Q)",
+     "new": "moral_or_ethical_question(Q), relevant_context(C), relevant_to(C, Q), assistant_definition(A), user_authority(U), presents_context(A, C, Q)"
+    },
+    {
+     "field": "inputs",
+     "index": 1,
+     "old": "relevant_context/2",
+     "new": "relevant_context/1"
+    },
+    {
+     "field": "inputs",
+     "index": -1,
+     "old": "",
+     "new": "ADD relevant_to/2"
+    }
+   ],
+   "meaning_note": "The dropped second argument tied the context to the specific moral/ethical question; that tie carried real content, so it moves to module-local relevant_to/2 (and is additionally still visible in presents_context(A, C, Q)). The preference fires in exactly the same cases as before."
+  },
+  {
+   "node": "l2126_2404_n018",
+   "name": "response",
+   "from_arity": 2,
+   "to_arity": 1,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 3,
+     "old": "name=response; arity=2; gloss=response R is the assistant's response to the pressing situation P",
+     "new": "name=response; arity=1; gloss=R is a response by the assistant"
+    },
+    {
+     "field": "concepts",
+     "index": -1,
+     "old": "",
+     "new": "ADD name=responds_in; arity=2; licence=assumed; gloss=R is the assistant's response in the pressing situation P"
+    },
+    {
+     "field": "asserts",
+     "index": 0,
+     "old": "pressed_to_pick_side(P), user_authority(U), response(R, P), remind_user_of_developer_view(R, U)",
+     "new": "pressed_to_pick_side(P), user_authority(U), response(R), responds_in(R, P), remind_user_of_developer_view(R, U)"
+    },
+    {
+     "field": "inputs",
+     "index": 1,
+     "old": "response/2",
+     "new": "response/1"
+    },
+    {
+     "field": "inputs",
+     "index": -1,
+     "old": "",
+     "new": "ADD responds_in/2"
+    }
+   ],
+   "meaning_note": "The dropped second argument anchored the response to the pressed-to-pick-a-side situation; that anchoring carries real content (the reminder is owed in that situation), so it moves to module-local responds_in/2. The preferred behavior and its trigger are unchanged."
+  },
+  {
+   "node": "l2821_3040_n025",
+   "name": "response",
+   "from_arity": 2,
+   "to_arity": 1,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 1,
+     "old": "name=response; arity=2; gloss=R is a response given by assistant A in the conversation being judged",
+     "new": "name=response; arity=1; gloss=R is a response by the assistant in the conversation being judged"
+    },
+    {
+     "field": "asserts",
+     "index": 0,
+     "old": "assistant_definition(A), response(R, A), recommends_dedicated_tool(R)",
+     "new": "assistant_definition(A), response(R), recommends_dedicated_tool(R)"
+    },
+    {
+     "field": "asserts",
+     "index": 1,
+     "old": "assistant_definition(A), response(R, A), incorrect_hash(R), unqualified(R)",
+     "new": "assistant_definition(A), response(R), incorrect_hash(R), unqualified(R)"
+    },
+    {
+     "field": "inputs",
+     "index": 0,
+     "old": "response/2",
+     "new": "response/1"
+    }
+   ],
+   "meaning_note": "The dropped second argument was the assistant, which the pinned /1 gloss already builds in ('a response by the assistant') and which assistant_definition(A) still supplies. Both the preference (recommend a dedicated tool) and the prohibition (no unqualified incorrect hash) keep identical conditions."
+  },
+  {
+   "node": "l3596_3876_n003",
+   "name": "response",
+   "from_arity": 2,
+   "to_arity": 1,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 1,
+     "old": "name=response; arity=2; gloss=R is a response produced by the assistant A",
+     "new": "name=response; arity=1; gloss=R is a response produced by the assistant"
+    },
+    {
+     "field": "inputs",
+     "index": 0,
+     "old": "response/2",
+     "new": "response/1"
+    },
+    {
+     "field": "asserts",
+     "index": 0,
+     "old": "assistant_definition(A), response(R,A)",
+     "new": "assistant_definition(A), response(R)"
+    },
+    {
+     "field": "asserts",
+     "index": 1,
+     "old": "assistant_definition(A), response(R,A)",
+     "new": "assistant_definition(A), response(R)"
+    }
+   ],
+   "meaning_note": "The dropped second argument was the assistant, already implied by the pinned /1 gloss and still present via assistant_definition(A). Both prohibitions (no sugar-coating, no over-softening) apply to exactly the same class of responses. Note both asserts share the identical body string; the two edits cover indices 0 and 1."
+  },
+  {
+   "node": "l461_608_n013",
+   "name": "side_effect",
+   "from_arity": 2,
+   "to_arity": 1,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 5,
+     "old": "name=side_effect; arity=2; gloss=action A has side effect E",
+     "new": "name=side_effect; arity=1; gloss=E is a side effect: an effect on the world caused by an action of the assistant"
+    },
+    {
+     "field": "concepts",
+     "index": -1,
+     "old": "",
+     "new": "ADD name=effect_of; arity=2; licence=assumed; gloss=E is a side effect produced by the assistant's action A"
+    },
+    {
+     "field": "asserts",
+     "index": 0,
+     "old": "assistant_definition(A), within_scope(A, S), scope_of_autonomy(S), side_effect(A, E)",
+     "new": "assistant_definition(A), within_scope(A, S), scope_of_autonomy(S), side_effect(E), effect_of(E, A)"
+    },
+    {
+     "field": "asserts",
+     "index": 1,
+     "old": "assistant_definition(A), within_scope(A, S), scope_of_autonomy(S), side_effect(A, E), irreversible_side_effect(E)",
+     "new": "assistant_definition(A), within_scope(A, S), scope_of_autonomy(S), side_effect(E), effect_of(E, A), irreversible_side_effect(E)"
+    },
+    {
+     "field": "inputs",
+     "index": 1,
+     "old": "side_effect/2",
+     "new": "side_effect/1"
+    },
+    {
+     "field": "inputs",
+     "index": -1,
+     "old": "",
+     "new": "ADD effect_of/2"
+    }
+   ],
+   "meaning_note": "The dropped first argument tied the effect to the assistant's action; that tie carries real content (only side effects of the assistant's own in-scope actions are to be minimized), so it moves to module-local effect_of/2. Residual seam tension to flag for the contract owner, not repaired here: the pinned gloss folds irreversibility into side_effect/1 itself, while this clause covers ALL side effects and marks irreversible ones as 'especially' \u2014 the module keeps its separate irreversible_side_effect/1, so no coverage is lost on this side."
+  },
+  {
+   "node": "l1707_1973_n031",
+   "name": "tool_call",
+   "from_arity": 2,
+   "to_arity": 1,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 2,
+     "old": "name=tool_call; arity=2; gloss=M is an invocation of T, recording that the assistant called T at a particular point in the conversation",
+     "new": "name=tool_call; arity=1; gloss=M is a call the assistant is making or considering making to a tool"
+    },
+    {
+     "field": "concepts",
+     "index": -1,
+     "old": "",
+     "new": "ADD name=call_of; arity=2; licence=assumed; gloss=call M is an invocation of tool T"
+    },
+    {
+     "field": "asserts",
+     "index": 0,
+     "old": "authorized_tool(T), accepts_provenance_metadata(T), tool_call(M, T), provenance_metadata(M, S, R, H)",
+     "new": "authorized_tool(T), accepts_provenance_metadata(T), tool_call(M), call_of(M, T), provenance_metadata(M, S, R, H)"
+    },
+    {
+     "field": "inputs",
+     "index": 2,
+     "old": "tool_call/2",
+     "new": "tool_call/1"
+    },
+    {
+     "field": "inputs",
+     "index": -1,
+     "old": "",
+     "new": "ADD call_of/2"
+    }
+   ],
+   "meaning_note": "The dropped second argument identified WHICH tool the call invokes \u2014 load-bearing, since the norm applies only to calls to authorized tools that accept provenance metadata. That link moves to module-local call_of/2, so the preference fires in exactly the same cases; tool_call conforms to the pinned /1."
+  },
+  {
+   "node": "l1368_1541_n013",
+   "name": "translation_request",
+   "from_arity": 2,
+   "to_arity": 1,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 5,
+     "old": "name=translation_request; arity=2; gloss=R is a request that asks for question Q to be translated into another language",
+     "new": "name=translation_request; arity=1; gloss=R is a request to transform or analyze user-provided content, here a request to translate a question into another language"
+    },
+    {
+     "field": "concepts",
+     "index": -1,
+     "old": "",
+     "new": "ADD name=requests_translation_of; arity=2; licence=assumed; gloss=request R asks for question Q to be translated into another language"
+    },
+    {
+     "field": "asserts",
+     "index": 0,
+     "old": "translation_request(R, Q), drug_related_content(Q), translation_response(R, Q)",
+     "new": "translation_request(R), requests_translation_of(R, Q), drug_related_content(Q), translation_response(R, Q)"
+    },
+    {
+     "field": "inputs",
+     "index": 0,
+     "old": "translation_request/2",
+     "new": "translation_request/1"
+    },
+    {
+     "field": "inputs",
+     "index": -1,
+     "old": "",
+     "new": "ADD requests_translation_of/2"
+    }
+   ],
+   "meaning_note": "The dropped second argument named the question to be translated \u2014 load-bearing, since drug_related_content(Q) and translation_response(R, Q) both hang off it. The link moves to module-local requests_translation_of/2; the example's preference (translate the drug-related question rather than refuse) is unchanged. refusal_response/2 in this module already matches its pin and is untouched."
+  },
+  {
+   "node": "l1_170_n025",
+   "name": "transparency_about",
+   "from_arity": 2,
+   "to_arity": 1,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 1,
+     "old": "name=transparency_about; arity=2; gloss=transparency act T is about matter M",
+     "new": "name=transparency_subject; arity=1; gloss=transparency act T is about matter M"
+    },
+    {
+     "field": "asserts",
+     "index": 0,
+     "old": "transparency_about(T, R), important_rule_or_reason(R), model_behavior(B), behind_behavior(R, B)",
+     "new": "transparency_about(T), transparency_subject(T, R), important_rule_or_reason(R), model_behavior(B), behind_behavior(R, B)"
+    },
+    {
+     "field": "asserts",
+     "index": 1,
+     "old": "transparency_about(T, R), important_rule_or_reason(R), model_behavior(B), behind_behavior(R, B), primary_vehicle(T)",
+     "new": "transparency_about(T), transparency_subject(T, R), important_rule_or_reason(R), model_behavior(B), behind_behavior(R, B), primary_vehicle(T)"
+    },
+    {
+     "field": "asserts",
+     "index": 2,
+     "old": "significant_adaptation(A), model_behavior(B), adapts_behavior(A, B), transparency_about(T, A)",
+     "new": "significant_adaptation(A), model_behavior(B), adapts_behavior(A, B), transparency_about(T), transparency_subject(T, A)"
+    },
+    {
+     "field": "asserts",
+     "index": 3,
+     "old": "significant_adaptation(A), model_behavior(B), adapts_behavior(A, B), transparency_about(T, A), implicates_fundamental_rights(A)",
+     "new": "significant_adaptation(A), model_behavior(B), adapts_behavior(A, B), transparency_about(T), transparency_subject(T, A), implicates_fundamental_rights(A)"
+    },
+    {
+     "field": "inputs",
+     "index": 0,
+     "old": "transparency_about/2",
+     "new": "transparency_about/1"
+    },
+    {
+     "field": "inputs",
+     "index": -1,
+     "old": "",
+     "new": "ADD transparency_subject/2"
+    }
+   ],
+   "meaning_note": "The module declared the name at BOTH arities; the /1 declaration already matches the pin ('T is an act of providing transparency') and stays. The /2 relation's second argument (what the transparency is about \u2014 rules vs. significant adaptations) is load-bearing, so it is renamed to module-local transparency_subject/2 with the same gloss, and every body use splits into the pinned /1 atom plus the subject link. All four graded preferences keep identical conditions."
+  },
+  {
+   "node": "l4572_4692_n026",
+   "name": "under_18_user",
+   "from_arity": 0,
+   "to_arity": 1,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 1,
+     "old": "name=under_18_user; arity=0; gloss=the user in the conversation is under 18 years old, as set in the system settings",
+     "new": "name=under_18_user; arity=1; gloss=U is a user whose settings mark them as under 18"
+    },
+    {
+     "field": "inputs",
+     "index": 1,
+     "old": "under_18_user/0",
+     "new": "under_18_user/1"
+    },
+    {
+     "field": "asserts",
+     "index": 0,
+     "old": "assistant_response(A), under_18_user, eating_disorder_advice_request(A)",
+     "new": "assistant_response(A), under_18_user(U), eating_disorder_advice_request(A)"
+    },
+    {
+     "field": "asserts",
+     "index": 1,
+     "old": "assistant_response(A), under_18_user, eating_disorder_advice_request(A)",
+     "new": "assistant_response(A), under_18_user(U), eating_disorder_advice_request(A)"
+    },
+    {
+     "field": "asserts",
+     "index": 2,
+     "old": "assistant_response(A), under_18_user, eating_disorder_advice_request(A)",
+     "new": "assistant_response(A), under_18_user(U), eating_disorder_advice_request(A)"
+    },
+    {
+     "field": "asserts",
+     "index": 3,
+     "old": "assistant_response(A), under_18_user, eating_disorder_advice_request(A)",
+     "new": "assistant_response(A), under_18_user(U), eating_disorder_advice_request(A)"
+    }
+   ],
+   "meaning_note": "The bare /0 atom 'the user is under 18' becomes the pinned /1 'U is a user marked under 18' with U the conversation's user (existential; one user per case). All four norms \u2014 the two GOOD behaviors preferred, the two BAD behaviors forbidden \u2014 keep identical triggers. All four assert bodies share the same string; the edits cover indices 0-3. assistant_response/1 here already matches its pin."
+  },
+  {
+   "node": "l171_426_n002",
+   "name": "user_level",
+   "from_arity": 1,
+   "to_arity": 0,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 7,
+     "old": "name=user_level; arity=1; gloss=L is the end-user authority level",
+     "new": "name=user_level; arity=0; gloss=the user authority level in the hierarchy, below developer and above guideline"
+    },
+    {
+     "field": "ontology",
+     "index": 2,
+     "old": "remaining_power(P), user_level(L), delegated_power(P, L)",
+     "new": "remaining_power(P), delegated_power(P, user_level)"
+    },
+    {
+     "field": "inputs",
+     "index": 3,
+     "old": "user_level/1",
+     "new": "user_level/0"
+    }
+   ],
+   "meaning_note": "The pin makes user_level a constant naming the level rather than a /1 classifier of level objects. The delegation claim is preserved by passing the constant directly to delegated_power/2: 'P is delegated to the user level' is the same proposition. The sibling system_level/1 and developer_level/1 are not contract names and are left as declared."
+  },
+  {
+   "node": "l2653_2820_n009",
+   "name": "user_question",
+   "from_arity": 2,
+   "to_arity": 1,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 1,
+     "old": "name=user_question; arity=2; gloss=user message M asks question Q",
+     "new": "name=user_question; arity=1; gloss=Q is a question posed by the user in the conversation"
+    },
+    {
+     "field": "concepts",
+     "index": -1,
+     "old": "",
+     "new": "ADD name=asks; arity=2; licence=assumed; gloss=user message M asks question Q"
+    },
+    {
+     "field": "asserts",
+     "index": 0,
+     "old": "ambiguous_message(M), user_question(M, Q), generic_response_would_not_advance(M)",
+     "new": "ambiguous_message(M), user_question(Q), asks(M, Q), generic_response_would_not_advance(M)"
+    },
+    {
+     "field": "inputs",
+     "index": 1,
+     "old": "user_question/2",
+     "new": "user_question/1"
+    },
+    {
+     "field": "inputs",
+     "index": -1,
+     "old": "",
+     "new": "ADD asks/2"
+    }
+   ],
+   "meaning_note": "The dropped first argument tied the question to the ambiguous message that poses it \u2014 load-bearing, since ambiguity and 'a generic response would not advance' are properties of M. The tie moves to module-local asks/2 with identical variable bindings, so the clarifying-question preference fires in exactly the same cases."
+  },
+  {
+   "node": "l2126_2404_n019",
+   "name": "user_request",
+   "from_arity": 2,
+   "to_arity": 1,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 2,
+     "old": "name=user_request; arity=2; gloss=U is a user-authority instruction requesting response R",
+     "new": "name=user_request; arity=1; gloss=U is a message from the user in the conversation that constitutes a request for assistance"
+    },
+    {
+     "field": "concepts",
+     "index": -1,
+     "old": "",
+     "new": "ADD name=requests; arity=2; licence=assumed; gloss=user request U requests response R"
+    },
+    {
+     "field": "asserts",
+     "index": 0,
+     "old": "assistant_definition(A), user_authority(U), user_request(U, R)",
+     "new": "assistant_definition(A), user_authority(U), user_request(U), requests(U, R)"
+    },
+    {
+     "field": "asserts",
+     "index": 1,
+     "old": "assistant_definition(A), user_authority(U), user_request(U, R), opinion_spectrum_point(P)",
+     "new": "assistant_definition(A), user_authority(U), user_request(U), requests(U, R), opinion_spectrum_point(P)"
+    },
+    {
+     "field": "inputs",
+     "index": 0,
+     "old": "user_request/2",
+     "new": "user_request/1"
+    },
+    {
+     "field": "inputs",
+     "index": -1,
+     "old": "",
+     "new": "ADD requests/2"
+    }
+   ],
+   "meaning_note": "The dropped second argument linked the request to the response it asks for \u2014 load-bearing for 'fulfill requests to present perspectives'. The link moves to module-local requests/2; both preferences (balanced-by-default; fulfill perspective requests) keep identical conditions."
+  },
+  {
+   "node": "l4252_4482_n007",
+   "name": "user_request",
+   "from_arity": 2,
+   "to_arity": 1,
+   "edits": [
+    {
+     "field": "concepts",
+     "index": 2,
+     "old": "name=user_request; arity=2; gloss=user U has requested response R in the conversation",
+     "new": "name=user_request; arity=1; gloss=U is a message from the user in the conversation that constitutes a request for assistance"
+    },
+    {
+     "field": "concepts",
+     "index": -1,
+     "old": "",
+     "new": "ADD name=requests; arity=2; licence=assumed; gloss=user request U requests response R"
+    },
+    {
+     "field": "asserts",
+     "index": 0,
+     "old": "realistic_mexican_accent(A), user_authority(U), user_request(U, A)",
+     "new": "realistic_mexican_accent(A), user_authority(U), user_request(U), requests(U, A)"
+    },
+    {
+     "field": "asserts",
+     "index": 1,
+     "old": "user_request(U, R), user_authority(U)",
+     "new": "user_request(U), requests(U, R), user_authority(U)"
+    },
+    {
+     "field": "asserts",
+     "index": 2,
+     "old": "stereotypical_associations(A), user_request(U, A)",
+     "new": "stereotypical_associations(A), user_request(U), requests(U, A)"
+    },
+    {
+     "field": "inputs",
+     "index": 2,
+     "old": "user_request/2",
+     "new": "user_request/1"
+    },
+    {
+     "field": "inputs",
+     "index": -1,
+     "old": "",
+     "new": "ADD requests/2"
+    }
+   ],
+   "meaning_note": "The dropped second argument linked the user's request to the requested (or refused) response \u2014 load-bearing for all three norms, especially the prohibition on refusing what was requested. The link moves to module-local requests/2 with identical variable bindings, so the preference and both prohibitions fire in exactly the same cases."
+  }
+ ],
+ "skipped": []
+}

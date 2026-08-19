@@ -121,9 +121,15 @@ def behavior_arg_sorts(mod):
 # argument walls apply ONLY to verb families whose corpus arguments are
 # homogeneous (measured 2026-08-18: respond-family args are heterogeneous —
 # walls there cut real engagements, help recall 0.89->0.71 on tuning).
+# FROZEN CONFIG 2026-08-18: walls DISABLED. Tuning-half evidence: walls in
+# their verb-family form cost every behavior (0.75/0.54/0.78 vs
+# 0.75/0.57/0.81 without); the H1 fix needs per-behavior argument
+# declarations (future work, census-motivated). Machinery + act_arg_sorts
+# retained; flip ARG_WALLS_ENABLED to re-enable for experiments.
+ARG_WALLS_ENABLED = False
 WALLED_VERBS = {"refuse", "comply", "provide", "ask", "act_in_world",
                 "provide_information", "provide_content", "provide_resources",
-                "disclose_data", "provide_hazardous"}
+                "disclose_data", "provide_hazardous"} if ARG_WALLS_ENABLED else set()
 
 
 def relevance(mod, br, corpus):
