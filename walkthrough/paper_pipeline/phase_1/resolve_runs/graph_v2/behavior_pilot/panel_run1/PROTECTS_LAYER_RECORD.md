@@ -74,3 +74,21 @@ inheritance (opt1) and act-matched inheritance (opt3), on the measurements above
 label-editing the 4 nodes, as encoding a design answer into data. Revisit trigger: if a
 future document shows explicit permit->forbid exception EDGES (not section inference),
 the question reopens with real structure to ride.
+
+## FP DIMENSION CENSUS — closure test for the norm-signature schema (2026-08-19)
+Question (Matt): can an A PRIORI schema of norm dimensions — derivable from deontic/frame
+structure + document mining, before any behavior exists — account for all observed false
+engagements? Census: all 58 adjudicated FPs across the 3 behaviors, classified by a
+Fable analyst (fp_census_packet/result.json):
+  governs 40 (accuracy_calibration 14, formatting_style 8, tone_manner 7,
+             objectivity_neutrality 3, operational_hygiene 3, safety_of_manner 2,
+             substance_usefulness 2, identity_meta 1)
+  authority 7 · protects 5 · scope 4 · truth_suspect 1 (l797_830_n007, harm) · other 1
+  (mission-preamble, authority/plumbing family)
+Plus the 17 fresh-draw helpfulness FPs: all governs-family per recorded panel grounds.
+VERDICT: the skeleton (act, actor, protects, governs-aspect, scope, authority, force)
+accounts for 74/75 observed false engagements (1 truth-suspect pending). The subclass is
+CLOSED under the schema as far as every measurement to date can see. Largest lever:
+governs-aspect (69% of census). Next artifact: TRANSLATION_CONTRACT §8 — full
+norm-signature emitted at translation time, single-pass escalation annotation, certified
+behavior-free via per-dimension mutation probes (generalized arm b).
