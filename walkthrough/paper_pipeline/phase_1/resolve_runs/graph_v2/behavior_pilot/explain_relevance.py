@@ -94,7 +94,7 @@ def _relevance(st, slug):
 
 # ------------------------------------------------------------ node material
 
-def establishes(st, cid):
+def establishes(st, cid, full=False):
     """The node's ESTABLISHES claim, truncated. Falls back to the run's
     prompt_user.txt when the corpus id has drifted (annotate_signature.span_for)."""
     nid = link_nodes.norm_id(cid)
@@ -116,7 +116,7 @@ def establishes(st, cid):
     else:
         body = q.strip()
     body = " ".join(body.split())
-    if len(body) > QUOTE_CHARS:
+    if not full and QUOTE_CHARS and len(body) > QUOTE_CHARS:
         body = body[:QUOTE_CHARS].rstrip() + "…"
     return body
 
@@ -319,7 +319,7 @@ def explain_plain(slug, node, modules_file=DEFAULT_MODULES):
     if nid not in st["corpus"]:
         return f"{node}: not in the linked corpus."
     acts, rel = _relevance(st, slug)
-    claim = establishes(st, nid)
+    claim = establishes(st, nid, full=True)
     reasons = rel.get(nid)
     b = _words(slug)
     L = [f'The clause says: "{claim}"']
