@@ -65,14 +65,28 @@ def behavior_acts(mod):
 
 
 def parent_map():
-    """subtype -> parent for the two-level act ontology (act_subtypes.json).
-    Relevance matches at PARENT level (a module about any kind of providing
-    is relevant to a behavior about providing); FIRING stays subtype-strict."""
-    p = os.path.join(HERE, "act_subtypes.json")
-    if not os.path.exists(p): return {}
-    subs = set(json.load(open(p)).values())
-    return {s: ("provide" if s.startswith(("provide", "disclose")) else "respond")
-            for s in subs if s not in ("provide", "respond")}
+    """subtype -> ANCESTORS for the act ontology, read from the DECLARED
+    hierarchy (behavior_vocab.json _act_hierarchy) with transitive closure.
+    (2026-08-18: name-prefix guessing broke silently when the hierarchy
+    became three-level — counter_harm -> protective_response -> respond;
+    caution lost every protective engagement, 72%->59%. Declared, closed,
+    never guessed.) Returns {name: set(of all ancestors)}."""
+    p = os.path.join(HERE, "behavior_vocab.json")
+    h = json.load(open(p)).get("_act_hierarchy", {}) if os.path.exists(p) else {}
+    # legacy default for subtypes not in the declared map
+    sp = os.path.join(HERE, "act_subtypes.json")
+    if os.path.exists(sp):
+        for s2 in set(json.load(open(sp)).values()):
+            if s2 not in h and s2 not in ("provide", "respond"):
+                h[s2] = "provide" if s2.startswith(("provide", "disclose")) else "respond"
+    h.setdefault("protective_response", "respond")
+    out = {}
+    for k in h:
+        anc, cur = set(), k
+        while cur in h and h[cur] not in anc:
+            anc.add(h[cur]); cur = h[cur]
+        out[k] = anc
+    return out
 
 
 # argument-sort compatibility groups: sorts that are the same KIND of object
@@ -139,9 +153,18 @@ def relevance(mod, br, corpus):
     bargs = behavior_arg_sorts(mod)
     def hits(c):
         if c is None: return False
-        return c in acts or pm.get(c) in acts or c in {s for s, par in pm.items() if par in acts and c == s}
+        return c in acts or bool(pm.get(c, set()) & acts)
     def verb_hit(c):
-        return c in acts or pm.get(c) in acts or any(pm.get(a2) == c for a2 in acts)
+        # BOTH hierarchy directions are norm-relevant (restored 2026-08-18
+        # after dropping the second silently cost caution 27 engagements):
+        # (i) module asserts on a SPECIFIC act, behavior performs an ancestor
+        #     — the specific norm is about a kind of act the behavior does;
+        # (ii) module asserts on a GENERAL act, behavior performs a
+        #     descendant — a norm on the genus governs the species
+        #     (a norm about all responses governs a protective response).
+        if c in acts: return True
+        if pm.get(c, set()) & acts: return True                    # (i)
+        return any(c in pm.get(a2, set()) for a2 in acts)          # (ii)
 
     # per-behavior argument declarations (H1 fix, opt-in): a behavior module
     # may declare {"arg_sorts": {"refuse": ["request","topic"], ...}} — walls
@@ -150,12 +173,12 @@ def relevance(mod, br, corpus):
     declared = mod.get("arg_sorts") or {}
 
     def arg_ok(f, c):
-        decl = declared.get(c) or declared.get(pm.get(c, ""))
+        decl = declared.get(c) or next((declared[a] for a in pm.get(c, set()) if a in declared), None)
         if decl:
             fa = asorts.get(f)
             if fa in (None, "none", "other"): return True       # fail open
             return any(fa == w or fa in ARG_COMPAT.get(w, {w}) or w in ARG_COMPAT.get(fa, {fa}) for w in decl)
-        if c not in WALLED_VERBS and pm.get(c) not in WALLED_VERBS: return True
+        if c not in WALLED_VERBS and not (pm.get(c, set()) & WALLED_VERBS): return True
         fa = asorts.get(f)
         if fa in (None, "none", "other"): return True          # fail open
         # behavior arg sorts for the canonical verb (check verb + its parent/children)

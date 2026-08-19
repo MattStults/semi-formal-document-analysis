@@ -87,6 +87,24 @@ def validate(mod):
     return br
 
 
+def check_canonical_sync(mods_path, canon_path):
+    """V6 (2026-08-18, after the SAME desync bug twice — caution v4, harm v8):
+    every canonical act performed in behaviors_canonical facts/does must
+    appear as a does-head in the modules file, and vice versa."""
+    import json as _j
+    mc = _j.load(open(mods_path))["modules"]; bc = _j.load(open(canon_path))["behaviors"]
+    import re as _re
+    bad = []
+    for slug in mc:
+        m_heads = {_re.match(r"\s*([a-z_][A-Za-z0-9_]*)", r.split(":-")[0]).group(1) for r in mc[slug]["module"]["does"]}
+        b_heads = {_re.match(r"\s*([a-z_][A-Za-z0-9_]*)", d).group(1) for d in bc.get(slug, {}).get("does", [])}
+        for h in b_heads - m_heads: bad.append(f"V6 {slug}: `{h}` performed in canonical file but ABSENT from modules does (arm (a) reads modules!)")
+        branch_ids = {b2["id"] for b2 in (mc[slug].get("structure") or {}).get("branches", [])}
+        for h in m_heads - b_heads - {"violates"} - branch_ids:
+            bad.append(f"V6 {slug}: `{h}` in modules does but not canonical file")
+    return bad
+
+
 if __name__ == "__main__":
     path = sys.argv[1]; slug = sys.argv[sys.argv.index("--slug") + 1] if "--slug" in sys.argv else None
     d = json.load(open(path)); mods = d.get("modules", {})
