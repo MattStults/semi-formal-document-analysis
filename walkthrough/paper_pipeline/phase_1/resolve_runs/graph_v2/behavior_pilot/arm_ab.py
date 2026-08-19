@@ -73,9 +73,12 @@ def score(label, eng, slice_nodes, truth):
 def main():
     slice_name = sys.argv[sys.argv.index("--slice") + 1] if "--slice" in sys.argv else "validation"
     only = sys.argv[sys.argv.index("--behavior") + 1] if "--behavior" in sys.argv else None
+    canon_f = sys.argv[sys.argv.index("--canonical") + 1] if "--canonical" in sys.argv else "behaviors_canonical.json"
+    mods_f = sys.argv[sys.argv.index("--modules") + 1] if "--modules" in sys.argv else "modules_contract_v1.json"
+    tag = sys.argv[sys.argv.index("--tag") + 1] if "--tag" in sys.argv else ""
     spl = json.load(open(os.path.join(HERE, "panel_run1", "arm3_split.json")))["split"]
-    beh = json.load(open(os.path.join(HERE, "behaviors_canonical.json")))["behaviors"]
-    mods = json.load(open(os.path.join(HERE, "modules_contract_v1.json")))["modules"]
+    beh = json.load(open(os.path.join(HERE, canon_f)))["behaviors"]
+    mods = json.load(open(os.path.join(HERE, mods_f)))["modules"]
     br_map = RBA.bridges(); corpus = RBA.corpus_acts()
     sel = link_nodes.gather()
     sit_bridges = MS.behavior_to_corpus_bridges()
@@ -95,8 +98,8 @@ def main():
         sb = score("arm (b) +mutation", eng_b, slc, truth)
         out[slug] = {"slice": slice_name, "act_engaged": len(eng_a), "states": dict(cnt), "arm_a": sa, "arm_b": sb,
                      "scope_mismatched": sorted(n for n, st in states.items() if st == "scope_mismatched")}
-    json.dump(out, open(os.path.join(HERE, "panel_run1", f"arm_ab_{slice_name}.json"), "w"), indent=1)
-    print(f"\nwrote panel_run1/arm_ab_{slice_name}.json")
+    json.dump(out, open(os.path.join(HERE, "panel_run1", f"arm_ab_{slice_name}{tag}.json"), "w"), indent=1)
+    print(f"\nwrote panel_run1/arm_ab_{slice_name}{tag}.json")
 
 
 if __name__ == "__main__":
