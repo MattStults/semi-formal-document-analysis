@@ -82,3 +82,19 @@ gloss mention is not protection. The next document's asserts carry
 time, where the span states it; behaviors then wall on norm-protection
 directly. Retrofitting the Model Spec corpus's asserts is a future
 ceremony (annotation sweep + blind verification), not a query-side patch.
+
+RETROFIT EXECUTED + TIER REQUIREMENT (2026-08-19, evidence:
+panel_run1/PROTECTS_LAYER_RECORD.md): the Model Spec layer now exists
+(assert_protects.json, frontier-labeled, audited keys locked in
+protects_locked.json). MEASURED: small-tier seats plateau at ~0.60
+exact-set on this judgment (DeepSeek 0.60, Haiku 0.62 on identical
+inputs) — the deficit is stable normative doctrine on boundary cases
+(unspecified<->user on epistemic norms; co-protection breadth), which
+rubrics do not close. The next document annotates via
+ESCALATION-BY-DISAGREEMENT: two cheap seats label every assert; agreement
+keeps the label (measured 0.88 vs frontier, n=24 — REVALIDATE on >=100
+asserts before relying), disagreement escalates to a frontier instance
+(~40% volume, simulated hybrid 0.93). Inputs MUST include the verbatim
+SOURCE TEXT (two rounds failed on paraphrase-only input) and every
+node id must resolve to its span (15 drifted ids yielded empty spans
+silently — check span non-empty per item, fail loud).

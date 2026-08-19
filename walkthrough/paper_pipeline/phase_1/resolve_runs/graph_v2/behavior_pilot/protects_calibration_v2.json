@@ -1,0 +1,49 @@
+{
+ "_": "PRE-REGISTERED v2 calibration (Matt's incremental protocol). Written BEFORE BRIEF_V2 ran on any node. --all --v2 is refused until calibration_passed is set true by the check below matching every expectation. Calibration runs in --check mode (writes nothing); the audited values in protects_locked.json are the ground truth being reproduced.",
+ "calibration_passed": true,
+ "expected_change_cases": [
+  {
+   "node": "l797_830_n012",
+   "lesson": "spec-definitions-bind (rule 5)",
+   "v1_gave": "audit found 'minor' missing on both asserts",
+   "expect": "minor in values for |0 and |1"
+  },
+  {
+   "node": "l1542_1706_n022",
+   "lesson": "unspecified-overuse (rule 3)",
+   "v1_gave": "unspecified on both asserts despite the span naming the manic user",
+   "expect": "user (not unspecified) for |0 and |1"
+  },
+  {
+   "node": "l609_698_n020",
+   "lesson": "prohibition-beneficiaries (rule 2)",
+   "v1_gave": "missed third_party/society on the declining-prohibited-help norm",
+   "expect": "|0 includes third_party AND society"
+  },
+  {
+   "node": "l1_170_n035",
+   "lesson": "co-protection from split examples (rule 1)",
+   "v1_gave": "user only; audit: span's own examples name a harmed outside person",
+   "expect": "|0 includes user AND third_party"
+  }
+ ],
+ "no_change_cases": [
+  {
+   "node": "l171_426_n024",
+   "lesson": "developer stays when concretely at stake (rule 4 must not over-correct)",
+   "expect": "developer in values for |0 and |1"
+  },
+  {
+   "node": "l1707_1973_n008",
+   "lesson": "plain user norms stay user (rules must not induce over-listing)",
+   "expect": "user for all six asserts, no added parties"
+  },
+  {
+   "node": "l1_170_n036",
+   "lesson": "correct multi-party annotation preserved",
+   "expect": "|0..|2 keep the user/third_party/society multi-party pattern (each assert lists >=2 of them incl. user)"
+  }
+ ],
+ "confirmation_v2": "2026-08-19 FAILED 2/4 expected-change (rule2 n020|0 gave user-only vs user+third_party+society; rule1 n035|0 gave user-only vs user+third_party); rules 3,5 PASSED; no-change drift: n036|1 dropped user, n024|1 added third_party. calibration_passed stays false \u2014 no broadening. Next: v3 (restructured co-protection elicitation and/or seat tier bump), same locked ground-truth cases, fresh-audit gate unchanged.",
+ "confirmation_v3": "2026-08-19 v3 PASSED 4/4 expected-change + 3/3 no-change against the locked audit ground truth. ROOT CAUSE of the v2 failure was an INPUT defect, not seat judgment: the v1 input cut the node quote to 500 chars, which carried only the ESTABLISHES paraphrase + scaffolding \u2014 the verbatim SOURCE TEXT (where the co-protection evidence lives) was never shown to the seat. v3 = BRIEF_V2 rules + two-step at_risk/protects elicitation + ESTABLISHES+SOURCE TEXT input (annotate_protects.py). Off-registration note: n020|1 model co-listed third_party/society where the auditor gave user (locked value stands) \u2014 possible over-listing tendency; the post-sweep fresh blind audit measures it."
+}

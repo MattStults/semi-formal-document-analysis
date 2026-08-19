@@ -35,6 +35,17 @@ flag-for-attention, not proven defects — §11 anti-rules apply). Does
 campaign of its own), or is the gate satisfied by the arm-3 fix backlog
 (everything above) plus the queue's existence being on the record?
 
+## RULING (Matt, 2026-08-19) — detector queue EXCLUDED from this gate
+Matt: the module-level detector queue needs its own understanding session
+before any adjudication decision; meanwhile "it makes sense to get a
+checkpoint reading of quality without them." So: the gate's fix scope =
+the arm-3 fix backlog above; the fresh-draw re-registration proceeds with
+the queue untouched and ON THE RECORD as known state (this section is the
+record). The tempting alternative — folding a 500+-hit multi-session
+adjudication campaign into the behavior gate — is rejected BY NAME as
+scope creep that would block the checkpoint reading without a measured
+reason to believe those hits move behavior-level numbers.
+
 ## RECOMMENDED NEXT MEASUREMENT (either way)
 The fixed instrument differs from the registered one (v9 scaffold,
 hardened code, repaired corpus). Its honest number = fresh-draw
