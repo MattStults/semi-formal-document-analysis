@@ -37,6 +37,14 @@ def bridges():
         mm = _BR.search(ln)
         if mm and actors.get(mm.group(2), "assistant") == "assistant":
             m[mm.group(2)] = mm.group(1)
+    # canonical acts are their own bridge (example-act lifting emits canonical
+    # names directly; identity mapping, no semantic change for bespoke functors)
+    canon = set(json.load(open(os.path.join(HERE, "behavior_vocab.json")))["canonical_acts_provisional"])
+    sp = os.path.join(HERE, "act_subtypes.json")
+    if os.path.exists(sp): canon |= set(json.load(open(sp)).values())
+    hier = json.load(open(os.path.join(HERE, "behavior_vocab.json"))).get("_act_hierarchy", {})
+    canon |= set(hier) | set(hier.values())
+    for c in canon: m.setdefault(c, c)
     return m
 
 
@@ -49,6 +57,18 @@ def corpus_acts():
             f = re.match(r"([a-z_][A-Za-z0-9_]*)", str(a.get("act", "")))
             if f: rows.append((f.group(1), a.get("status")))
         out[link_nodes.norm_id(cid)] = rows
+    # EXAMPLE-ACT LIFTING (contract mechanism, convergence phase-2): worked-example
+    # modules assert no acts because the norm lives in what the example's responses
+    # DO. example_acts.json (Opus-annotated, span-quoted) supplies the demonstrated
+    # canonical acts; good_acts and bad_acts both engage (a norm forbidding the BAD
+    # response's act governs that act). Acts are already canonical — bridged 1:1.
+    ep = os.path.join(HERE, "example_acts.json")
+    if os.path.exists(ep):
+        ex = json.load(open(ep))["acts"]
+        for node, d in ex.items():
+            if node in out and not out[node]:
+                out[node] = [(a, "example_good") for a in d.get("good_acts", [])] + \
+                            [(a, "example_bad") for a in d.get("bad_acts", [])]
     return out
 
 
