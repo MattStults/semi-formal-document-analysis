@@ -1,0 +1,177 @@
+{
+ "_provenance": "Canonical-scope behavior instances for arm (b) mutation testing. Facts use ONLY sorts, scope dims, and seam names; does uses ONLY canonical acts. Authored 2026-08-18 from the behavior definitions + tuning-half insight only (no validation/test data consulted). Mutations move ONE fact to a canonically-distinct value; a module that fires on a mutant but NOT the original is scope-mismatched for that behavior. | v2 2026-08-18: performed acts narrowed to subtypes (harm: provide_hazardous+disclose_data, not generic provide; helpfulness: information/content/resources+answer_directly; caution: hazardous for under-caution, information for over-caution). Driven by definitions + validator A6 coarse-precision findings only. | v3: harm acts REVERTED to generic provide (tuning-half: r2 narrowing cost recall 0.56->0.41 at flat precision \u2014 harm imprecision is scope-level, not act-level; the mutation stage owns it) | v4 census-directed: caution performs protective_response (safe-completion clauses); helpfulness performs refuse (its unhelpfulness branch is ABOUT refusal clauses) | v5: caution restored generic provide | v6: caution refuses TOPICS (tuning: refuse_to_discuss is a true caution engagement); walls limited to homogeneous verb families | v7: SCAFFOLD facts every instance carries (census: assistant_definition blocked 26 module bodies, answers_question 15 \u2014 the situation always HAS an assistant, a user, a response answering the request) | v9 scaffold: STATIC document facts (authority hierarchy pairs, rule constants) + standard-situation n-ary facts (response_to, request-as-user-instruction) \u2014 census round 2 (help/caution residue)",
+ "behaviors": {
+  "helpfulness": {
+   "facts": [
+    "request(r1)",
+    "scope(intent,benign,r1)",
+    "content(c1)",
+    "scope(content_class,permitted,c1)",
+    "response(resp1)",
+    "scope(setting,interactive,s1)",
+    "setting(s1)",
+    "assistant_definition(asst)",
+    "user(u1)",
+    "user_request(r1)",
+    "answers_question(resp1,r1)",
+    "root_authority(rule_root)",
+    "conversation(conv1)",
+    "assistant(asst)",
+    "user_authority(rule_u)",
+    "authority_levels_hierarchy(root,system)",
+    "authority_levels_hierarchy(system,developer)",
+    "authority_levels_hierarchy(developer,user)",
+    "authority_levels_hierarchy(user,guideline)",
+    "transformation_exception_rule(rule_tx)",
+    "response_to(resp1,r1)",
+    "user_instruction(r1)",
+    "instruction(r1)",
+    "instruction_level(r1,user)"
+   ],
+   "does": [
+    "comply(r1)",
+    "provide_information(c1)",
+    "provide_content(c1)",
+    "provide_resources(c1)",
+    "answer_directly(resp1)",
+    "respond(resp1)",
+    "ask(r1)",
+    "express_uncertainty(resp1)",
+    "refuse(r1)",
+    "provide(i1)"
+   ],
+   "mutations": {
+    "intent benign->illicit": [
+     "scope(intent,benign,r1)",
+     "scope(intent,illicit,r1)"
+    ],
+    "content permitted->prohibited": [
+     "scope(content_class,permitted,c1)",
+     "scope(content_class,prohibited,c1)"
+    ],
+    "setting interactive->agentic": [
+     "scope(setting,interactive,s1)",
+     "scope(setting,agentic,s1)"
+    ]
+   }
+  },
+  "harm-avoidance-to-third-parties": {
+   "facts": [
+    "request(r1)",
+    "scope(intent,illicit,r1)",
+    "content(c1)",
+    "scope(content_class,restricted,c1)",
+    "party(p1)",
+    "scope(party,third_party,p1)",
+    "action(a1)",
+    "scope(reversibility,irreversible,a1)",
+    "scope(setting,agentic,s1)",
+    "setting(s1)",
+    "scope(stakes,high,a1)",
+    "response(resp1)",
+    "assistant_definition(asst)",
+    "user(u1)",
+    "user_request(r1)",
+    "answers_question(resp1,r1)",
+    "root_authority(rule_root)",
+    "conversation(conv1)",
+    "assistant(asst)",
+    "user_authority(rule_u)",
+    "authority_levels_hierarchy(root,system)",
+    "authority_levels_hierarchy(system,developer)",
+    "authority_levels_hierarchy(developer,user)",
+    "authority_levels_hierarchy(user,guideline)",
+    "transformation_exception_rule(rule_tx)",
+    "response_to(resp1,r1)",
+    "user_instruction(r1)",
+    "instruction(r1)",
+    "instruction_level(r1,user)"
+   ],
+   "does": [
+    "refuse(r1)",
+    "provide(c1)",
+    "ask(r1)",
+    "act_in_world(a1)",
+    "protective_response(resp1)"
+   ],
+   "mutations": {
+    "party third_party->user": [
+     "scope(party,third_party,p1)",
+     "scope(party,user,p1)"
+    ],
+    "content restricted->permitted": [
+     "scope(content_class,restricted,c1)",
+     "scope(content_class,permitted,c1)"
+    ],
+    "intent illicit->benign": [
+     "scope(intent,illicit,r1)",
+     "scope(intent,benign,r1)"
+    ],
+    "reversibility irreversible->reversible": [
+     "scope(reversibility,irreversible,a1)",
+     "scope(reversibility,reversible,a1)"
+    ]
+   }
+  },
+  "avoiding-over-and-under-caution": {
+   "facts": [
+    "request(r1)",
+    "scope(intent,ambiguous,r1)",
+    "content(c1)",
+    "scope(content_class,restricted,c1)",
+    "response(resp1)",
+    "scope(stakes,high,r1)",
+    "scope(setting,interactive,s1)",
+    "setting(s1)",
+    "content(t1)",
+    "assistant_definition(asst)",
+    "user(u1)",
+    "user_request(r1)",
+    "answers_question(resp1,r1)",
+    "root_authority(rule_root)",
+    "conversation(conv1)",
+    "assistant(asst)",
+    "user_authority(rule_u)",
+    "authority_levels_hierarchy(root,system)",
+    "authority_levels_hierarchy(system,developer)",
+    "authority_levels_hierarchy(developer,user)",
+    "authority_levels_hierarchy(user,guideline)",
+    "transformation_exception_rule(rule_tx)",
+    "response_to(resp1,r1)",
+    "user_instruction(r1)",
+    "instruction(r1)",
+    "instruction_level(r1,user)"
+   ],
+   "does": [
+    "refuse(r1)",
+    "comply(r1)",
+    "provide_hazardous(c1)",
+    "provide_information(c1)",
+    "express_uncertainty(resp1)",
+    "judge_or_moralize(r1)",
+    "act_in_world(a1)",
+    "protective_response(resp1)",
+    "provide(c1)",
+    "refuse(t1)"
+   ],
+   "mutations": {
+    "intent ambiguous->illicit": [
+     "scope(intent,ambiguous,r1)",
+     "scope(intent,illicit,r1)"
+    ],
+    "intent ambiguous->benign": [
+     "scope(intent,ambiguous,r1)",
+     "scope(intent,benign,r1)"
+    ],
+    "content restricted->permitted": [
+     "scope(content_class,restricted,c1)",
+     "scope(content_class,permitted,c1)"
+    ],
+    "stakes high->low": [
+     "scope(stakes,high,r1)",
+     "scope(stakes,low,r1)"
+    ]
+   }
+  }
+ }
+}
