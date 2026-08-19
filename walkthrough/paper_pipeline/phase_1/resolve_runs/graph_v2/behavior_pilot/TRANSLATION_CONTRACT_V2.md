@@ -98,3 +98,35 @@ asserts before relying), disagreement escalates to a frontier instance
 SOURCE TEXT (two rounds failed on paraphrase-only input) and every
 node id must resolve to its span (15 drifted ids yielded empty spans
 silently — check span non-empty per item, fail loud).
+
+## 8. Every assert emits its full NORM SIGNATURE at translation time (closure ruling, 2026-08-19)
+
+A norm is a typed tuple, and relevance failures are projections of it lost in
+translation. The signature (A PRIORI — derived from deontic/frame structure plus
+document mining, NOT from behavior failures; the 75-FP census is the CHECK that
+confirmed closure, 74/75):
+
+  (act, actor, protects, governs_aspect, scope, force, authority)
+
+- act/actor/force: already required (§1, deontic statuses).
+- protects: §7 (built for the Model Spec; 985 asserts, frontier-grade).
+- governs_aspect — WHAT QUALITY of the act the norm constrains. Value vocabulary is
+  MINED per document (the way the act ontology was mined), seeded with the skeleton:
+  substance_usefulness | objectivity_neutrality | accuracy_calibration | tone_manner |
+  safety_of_manner | formatting_style | identity_meta | operational_hygiene.
+  This was the dominant census lever (40/58 + 17/17 fresh-draw FPs).
+- scope: §2 typed situations, per-assert where the span narrows it.
+- authority: instruction-level/precedence plumbing flag — a norm ABOUT the document's
+  own machinery engages no behavior wall (7/58 census).
+
+ANNOTATION PROTOCOL (measured, binding): single pass per assert yields all fields;
+dual cheap seats label everything, agreement keeps the label, disagreement escalates
+to a frontier instance (solo small tiers measured ~0.60 exact-set; agreed-cheap
+measured 0.88, n=24 — revalidate >=100 per document). Inputs carry verbatim SOURCE
+TEXT; every node id must resolve to a non-empty span, checked loud. Calibration cases
+with pre-registered expectations run before any sweep (incremental protocol).
+
+CERTIFICATION (behavior-free, so the document is right FIRST TIME for unspecified
+behaviors): per-dimension mutation probes — synthetic behavior pairs differing along
+exactly one signature dimension; the instrument must discriminate every pair. Failures
+localize the defective dimension before any real behavior is queried.

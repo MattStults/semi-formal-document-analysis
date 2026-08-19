@@ -12,9 +12,22 @@
 > passes; the contract makes the next document born-conforming. Each
 > requirement must be WIRED (translator prompt + gate check) and TESTED
 > (validate_ontology.py / validate_behavior_module.py / corpus_gate M30)
-> before the first chunk seals. Arm-3 state and prereg:
-> `behavior_pilot/behavior_pilot_arm3_prereg_DRAFT.md` (awaiting Matt's
-> signature; test slice scored once, after signing, never before).
+> before the first chunk seals.
+>
+> **2026-08-19 addition — contract §8, NORM SIGNATURE (Matt's ruling: happens
+> for EVERY document).** Every assert emits its full signature at translation
+> time: (act, actor, protects, governs-aspect, scope, force, authority).
+> Measured basis: the FP dimension census closed 74/75 observed false
+> engagements under exactly this skeleton (behavior_pilot/panel_run1/
+> PROTECTS_LAYER_RECORD.md); annotation runs the ESCALATION architecture
+> (dual cheap seats, frontier only on disagreement — small tiers measured at
+> ~0.60 exact-set solo); inputs MUST carry verbatim SOURCE TEXT and every
+> node id must resolve to a non-empty span (both bit this campaign).
+> Certification is BEHAVIOR-FREE: per-dimension mutation probes (generalized
+> arm b), so the translation is right the first time for unspecified
+> behaviors. Arm-3 registered result: ARM3_REGISTERED_RESULT.md; the
+> post-fix fresh-draw certification is FRESH_DRAW_PREREG_DRAFT.md (signed
+> 28a30a27; helpfulness F1 FIRED at 0.57 — the governs gap, now §8).
 
 
 **Matt took the scope decision that the 2026-08-05 section (“THE DECISION FOR MATT”) said an agent
