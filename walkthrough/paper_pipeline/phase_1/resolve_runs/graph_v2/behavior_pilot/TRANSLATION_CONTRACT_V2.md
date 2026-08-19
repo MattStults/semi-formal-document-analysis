@@ -169,3 +169,24 @@ tiers for the current impure vocabulary: pre-registered experiment (seed 2026082
 n=100 vs frontier layer) scored DeepSeek 0.29 / Haiku 0.20 exact with 66%/48%
 cardinality anomalies (strict phrasing collapses to under-listing). May be re-tried
 ONLY after 9a's purity fix, with a fresh pre-registration.
+
+## 8-ADDENDUM (2026-08-19, from round-3 census): the ACTOR slot is REQUIRED in full
+The §8 tuple's actor slot must be annotated as a complete typed field, not merely the
+authority_plumbing boolean (the implementation shortfall that cost round-3 helpfulness
+4 FPs and appeared as caution's census "other" class). Values (pending §9a mining +
+purity check on each document): assistant | organization | developer | document
+(authority_plumbing folds in as actor=document). Behavior walls engage ONLY
+actor=assistant norms. Slot derived a priori (deontic agent position); value vocabulary
+mined per document per §9a.
+
+## 9d. All-truth regression table REQUIRED before any prereg (practice made law,
+per Matt 2026-08-19): every instrument change is measured against the FULL accumulated
+truth before a new registration is drafted; any regression on pre-judged cases requires
+recorded grounds. As pools exhaust, certification converges to whole-population
+validation (harm reached this at round 3: 70-node engaged population).
+
+## 9e. Prediction bands come from FRESH-POOL evidence only (round-3 lesson): deriving
+bands from all-truth measurements overstates fresh-pool performance because adjudicated
+sets are engagement-favorable (measured: helpfulness all-truth precision 0.82 vs
+fresh-pool 59/80=0.74; the inflated band fired F1 on an instrument performing at its
+demonstrated level).
