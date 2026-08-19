@@ -37,8 +37,14 @@ def behavior_to_corpus_bridges():
     tp = os.path.join(HERE, "situation_types.json"); ip = os.path.join(HERE, "situation_concepts.json")
     if os.path.exists(tp) and os.path.exists(ip):
         t = json.load(open(tp)); inv = json.load(open(ip))
+        # A concept with NO dims may be reversed from its bare sort ONLY if it is a seam-contract name
+        # (document-wide canonical by ruling). Measured 2026-08-18: without this,
+        # chain_of_command_requires_refusal(X) :- request(X) fired l609_698_n010 spuriously — a
+        # dim-less SPECIFIC concept must never be derivable from a behavior's generic sort fact.
+        seam = set(json.load(open(os.path.join(os.path.dirname(HERE), "SEAM_CONTRACT.json")))["names"])
         for n, v in t.items():
             if (inv[n]["arity"] or 0) != 1: continue
+            if not v["dims"] and n not in seam: continue
             body = [f"{v['sort']}(X)"] + [f"scope({d},{val},X)" for d, val in v["dims"].items()]
             out.append(f"{n}(X) :- " + ", ".join(body) + ".")
     return "\n".join(out) + "\n"

@@ -1,4 +1,4 @@
-% situation_bridges.lp — GENERATED (classify_situation_sorts.py). Typed hierarchy: sort + scope-dimension values.
+% situation_bridges.lp — GENERATED (classify_situation_sorts.py; refinement r1 2026-08-18: T4-driven re-types).
 % canonical_concept(<sort>(X..)) :- <bespoke>(X..).   scope(<dim>,<value>,X) :- <bespoke>(X..).
 canonical_concept(content(X0)) :- about_knowledge_confidence_capabilities_actions(X0,X1).
 canonical_concept(response(X0)) :- accent_and_prosody_change(X0).
@@ -384,7 +384,6 @@ canonical_concept(response(X0)) :- censorship_acknowledgement(X0).
 scope(content_class,sensitive,X0) :- censorship_acknowledgement(X0).
 canonical_concept(other(unit)) :- chain_of_command_principle.
 canonical_concept(request(X0)) :- chain_of_command_requires_refusal(X0).
-scope(intent,ambiguous,X0) :- chain_of_command_requires_refusal(X0).
 canonical_concept(action(X0)) :- chain_undermining_behavior(X0).
 scope(intent,illicit,X0) :- chain_undermining_behavior(X0).
 canonical_concept(response(X0)) :- challenge_acknowledgement(X0).
@@ -1725,7 +1724,6 @@ canonical_concept(other(X0)) :- multimodal_source(X0).
 canonical_concept(content(X0)) :- multiple_perspectives_topic(X0).
 canonical_concept(request(unit)) :- must_decline_teen_request.
 scope(party,minor,unit) :- must_decline_teen_request.
-scope(intent,ambiguous,unit) :- must_decline_teen_request.
 scope(setting,interactive,unit) :- must_decline_teen_request.
 scope(reversibility,irreversible,unit) :- must_decline_teen_request.
 scope(content_class,restricted,unit) :- must_decline_teen_request.
@@ -2470,7 +2468,6 @@ scope(party,developer,X0) :- requires_response_modification(X0,X1).
 scope(setting,programmatic,X0) :- requires_response_modification(X0,X1).
 scope(reversibility,irreversible,X0) :- requires_response_modification(X0,X1).
 canonical_concept(action(X0)) :- requires_safe_completion(X0).
-scope(intent,benign,X0) :- requires_safe_completion(X0).
 scope(content_class,sensitive,X0) :- requires_safe_completion(X0).
 canonical_concept(action(X0)) :- requires_user_action_to_reverse(X0).
 scope(reversibility,irreversible,X0) :- requires_user_action_to_reverse(X0).
@@ -2744,7 +2741,7 @@ canonical_concept(setting(X0)) :- situation(X0).
 canonical_concept(setting(X0)) :- situation_requiring_confirmation(X0).
 scope(stakes,high,X0) :- situation_requiring_confirmation(X0).
 canonical_concept(request(X0)) :- some_reasonable_interpretations_aligned(X0).
-scope(intent,benign,X0) :- some_reasonable_interpretations_aligned(X0).
+scope(intent,ambiguous,X0) :- some_reasonable_interpretations_aligned(X0).
 canonical_concept(request(X0)) :- some_reasonable_interpretations_not_aligned(X0).
 scope(intent,ambiguous,X0) :- some_reasonable_interpretations_not_aligned(X0).
 canonical_concept(content(X0)) :- song_not_public_domain(X0).
