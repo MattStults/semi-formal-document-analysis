@@ -42,7 +42,6 @@ canonical_act(respond(X)) :- address_implied_intent(X).
 canonical_act(comply(X)) :- adhere_to_content_restrictions(X).
 canonical_act(comply(X)) :- adhere_to_format_specs(X,_).
 canonical_act(comply(X)) :- adhere_to_scope(X).
-canonical_act(comply(X)) :- adhere_to_spec(X).
 canonical_act(pursue_goal(X)) :- adopt_goal(X).
 canonical_act(respond_in_manner(X)) :- adopt_tone(X).
 canonical_act(provide(X)) :- advise_immediate_help(X).
@@ -170,7 +169,7 @@ canonical_act(counter_harm(X)) :- clearly_state_wrong(X).
 canonical_act(respond(X)) :- commiserate_undermining_responsibility(X).
 canonical_act(safe_manner(X)) :- communicate_clearly_directly(X).
 canonical_act(safe_manner(X)) :- communicate_planned_action(X).
-canonical_act(express_uncertainty(X)) :- communicate_uncertainty(X).
+canonical_act(uncertainty_phrasing(X)) :- communicate_uncertainty(X).
 canonical_act(safe_manner(X)) :- communicate_with(X).
 canonical_act(safe_manner(X)) :- complete_safely(X).
 canonical_act(comply(X)) :- comply_with_developer_request(X).
@@ -197,7 +196,7 @@ canonical_act(act_in_world(X)) :- contact_police(X).
 canonical_act(counter_harm(X)) :- contextualize_ideology_as_harmful(X).
 canonical_act(act_in_world(X)) :- control_side_effects(X).
 canonical_act(safe_manner(X)) :- convey_support(X).
-canonical_act(express_uncertainty(X)) :- convey_uncertainty(X).
+canonical_act(uncertainty_phrasing(X)) :- convey_uncertainty(X).
 canonical_act(safe_manner(X)) :- convey_understanding(X).
 canonical_act(provide(X)) :- correct_factual_error(X).
 canonical_act(provide(X)) :- correct_reasoning_error(X).
@@ -282,14 +281,14 @@ canonical_act(respond(X)) :- explain_lack_of_evidence(X).
 canonical_act(disclose_data(X)) :- expose_personal_information(X).
 canonical_act(respond(X)) :- express_political_preference(X).
 canonical_act(express_uncertainty(X)) :- express_uncertainty(X).
-canonical_act(express_uncertainty(X)) :- express_uncertainty_naturally(X).
+canonical_act(uncertainty_phrasing(X)) :- express_uncertainty_naturally(X).
 canonical_act(provide_hazardous(X)) :- facilitate(X).
 canonical_act(pursue_goal(X)) :- favor_approach(X).
 canonical_act(provide(X)) :- fill_gap_with(X).
 canonical_act(respond(X)) :- filter_out_non_applicable(X).
 canonical_act(provide(X)) :- find_clear_headed_support(X).
 canonical_act(engage_relationship(X)) :- first_person_intimacy(X).
-canonical_act(express_uncertainty(X)) :- flag_uncertainty(X).
+canonical_act(uncertainty_phrasing(X)) :- flag_uncertainty(X).
 canonical_act(provide(X)) :- focus_on_accurate_answers(X).
 canonical_act(respond(X)) :- focus_on_actionable_steps(X).
 canonical_act(pursue_goal(X)) :- focus_on_evidence_based_information(X).
@@ -330,7 +329,7 @@ canonical_act(respond(X)) :- guess_without_context(X).
 canonical_act(provide(X)) :- guide_teens_to_support(X).
 canonical_act(respond(X)) :- handle_tradeoff(X).
 canonical_act(act_in_world(X)) :- handle_video_feed_issue(X).
-canonical_act(express_uncertainty(X)) :- hedge_answer(X).
+canonical_act(uncertainty_phrasing(X)) :- hedge_answer(X).
 canonical_act(comply(X)) :- help_accomplish_task(X).
 canonical_act(provide(X)) :- help_brainstorm_playful_ideas(X).
 canonical_act(provide(X)) :- help_draft_letter(X).
@@ -510,7 +509,7 @@ canonical_act(provide(X)) :- provide_meta_commentary(X).
 canonical_act(provide(X)) :- provide_phone_number(X).
 canonical_act(provide(X)) :- provide_precise_recipe(X).
 canonical_act(provide(X)) :- provide_process_details(X).
-canonical_act(express_uncertainty(X)) :- provide_range(X).
+canonical_act(uncertainty_phrasing(X)) :- provide_range(X).
 canonical_act(provide(X)) :- provide_rationale(X).
 canonical_act(provide(X)) :- provide_robust_answer(X).
 canonical_act(provide(X)) :- provide_safe_guess(X).
@@ -524,7 +523,7 @@ canonical_act(pursue_goal(X)) :- pursue_subgoal(X).
 canonical_act(refuse(X)) :- push_back(X).
 canonical_act(respond(X)) :- push_upgrade(X).
 canonical_act(respond(X)) :- put_cheerful_spin(X).
-canonical_act(express_uncertainty(X)) :- quantify_uncertainty(X).
+canonical_act(uncertainty_phrasing(X)) :- quantify_uncertainty(X).
 canonical_act(ask(X)) :- question_suspicious_content(X).
 canonical_act(respond_in_manner(X)) :- quietly_apply_instructions(X,_).
 canonical_act(respond(X)) :- reason_about_sensitive_actions(X).
@@ -630,7 +629,7 @@ canonical_act(safe_manner(X)) :- safe_complete_with(X).
 canonical_act(express_stance(X)) :- say_love_humanity(X).
 canonical_act(respond(X)) :- say_phrase(X).
 canonical_act(engage_relationship(X)) :- say_rooting_for_user(X).
-canonical_act(express_uncertainty(X)) :- say_uncertainty_phrase(X).
+canonical_act(uncertainty_phrasing(X)) :- say_uncertainty_phrase(X).
 canonical_act(respond(X)) :- say_untrue(X).
 canonical_act(respond(X)) :- score_different(X,_).
 canonical_act(respond(X)) :- score_same(X,_).
@@ -695,7 +694,7 @@ canonical_act(counter_harm(X)) :- uphold_boundary_for_u18(X).
 canonical_act(counter_harm(X)) :- uphold_sensitive_content_boundary(X).
 canonical_act(counter_harm(X)) :- urge_contact(X,_).
 canonical_act(counter_harm(X)) :- urge_reach_out_to_trusted_adult(X).
-canonical_act(express_uncertainty(X)) :- use_approximate_terms(X).
+canonical_act(uncertainty_phrasing(X)) :- use_approximate_terms(X).
 canonical_act(respond(X)) :- use_best_judgment(X).
 canonical_act(respond(X)) :- use_display_latex(X).
 canonical_act(respond(X)) :- use_formatting(X).
@@ -721,3 +720,5 @@ canonical_act(respond(X)) :- weigh_costs(X).
 canonical_act(respond(X)) :- wrap_up(X).
 canonical_act(provide(X)) :- write_classified_ad_excluding_parents(X).
 canonical_act(respond(X)) :- write_uninformative_or_redundant_text(X).
+canonical_act(express_uncertainty(X)) :- canonical_act(uncertainty_phrasing(X)).
+canonical_act(express_uncertainty(X)) :- canonical_act(express_calibrated_position(X)).
