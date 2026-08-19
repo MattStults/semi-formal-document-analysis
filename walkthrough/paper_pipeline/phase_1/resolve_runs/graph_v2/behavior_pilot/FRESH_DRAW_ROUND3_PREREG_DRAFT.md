@@ -49,4 +49,7 @@ HANDOFF gate block. Above-band results get the leak-signature check.
 ## Errata rule
 Registered numbers are never edited; corrections append.
 
-Signature: (unsigned — Matt's "sign" records the sha256 of this file's state above this line)
+Signature: SIGNED by Matt, 2026-08-19 ("sign; 71 %"). sha256 at signing (this line and
+below excluded): 69631bf3c7f4761e0ab54aab7a19c094f4fdfb097928b0be4b5b3d678c6b5206
+Budget baseline at signing: Fable week 71% used (resets Aug 23 9pm PT); projected end
+~73-74%. Canary ordering + /usage checkpoint between behaviors per round-2 note.
