@@ -246,13 +246,43 @@ def relevance(mod, br, corpus):
                 if g in gov_cond and ctx & set(gov_cond[g]): return True
         return False
 
+    # ACTOR slot (contract 8-addendum, spot-check 0.99): a module whose asserts are ALL
+    # by a non-assistant actor (organization/developer/document) is excluded from every
+    # behavior's relevance. Folds authority_plumbing (actor=document). Fail open.
+    pa_path = os.path.join(HERE, "assert_purpose_actor.json")
+    pa = json.load(open(pa_path)) if os.path.exists(pa_path) else {}
+    purp_decl = set(mod.get("purpose_concern") or [])
+
+    def actor_ok(cid):
+        keys = [k for k in pa if k.startswith(cid + "|")]
+        if not keys: return True
+        return any(pa[k]["actor"] == "assistant" for k in keys)
+
+    def purpose_hit(cid):
+        # PURPOSE OR-CHANNEL (contract 8-addendum-2, verdict-gate 0.91/0.94/0.86):
+        # a module engages if SOME assistant-actor assert serves a declared end —
+        # an additional sufficient channel, never a filter (calibration ruling:
+        # filters on purpose kill core TPs like l171_426_n005).
+        if not purp_decl: return False
+        for k in [k for k in pa if k.startswith(cid + "|")]:
+            if pa[k]["actor"] == "assistant" and set(pa[k]["purpose"]) & purp_decl:
+                return True
+        return False
+
     rel = {}
     for cid, rows in corpus.items():
-        if not protects_ok(cid): continue
-        if not signature_ok(cid): continue
-        reasons = [(f, br.get(f), st) for f, st in rows
-                   if br.get(f) is not None and verb_hit(br[f]) and arg_ok(f, br[f]) and party_ok(f)]
-        if reasons: rel[cid] = reasons
+        if not actor_ok(cid): continue
+        act_reasons = []
+        if protects_ok(cid) and signature_ok(cid):
+            act_reasons = [(f, br.get(f), st) for f, st in rows
+                           if br.get(f) is not None and verb_hit(br[f]) and arg_ok(f, br[f]) and party_ok(f)]
+        if act_reasons:
+            rel[cid] = act_reasons
+        elif purpose_hit(cid) and protects_ok(cid):
+            # purpose channel is act-independent but the beneficiary wall still
+            # applies to every channel (9d: unwalled purpose flooded harm, prec
+            # 0.88->0.66; the walled variant is what gets measured/adopted)
+            rel[cid] = [("__purpose__", "purpose_channel", "end")]
     return acts, rel
 
 
