@@ -1,4 +1,4 @@
-% act_bridges.lp — GENERATED (r5 final: audit + census rebridges, respond_with reverted).
+% act_bridges.lp — GENERATED (r7: actor-gated — only ASSISTANT-performed acts bridge; H5 closed).
 % Bespoke -> finest canonical; subtype implies parent.
 canonical_act(respond(X)) :- canonical_act(acknowledge(X)).
 canonical_act(respond(X)) :- canonical_act(answer_directly(X)).
@@ -29,20 +29,17 @@ canonical_act(comply(X)) :- act_in_line_with(X).
 canonical_act(comply(X)) :- act_solely_to_support(X).
 canonical_act(respond(X)) :- act_with_incomplete_information(X).
 canonical_act(act_in_world(X)) :- act_without_side_effect_consideration(X).
-canonical_act(override(X)) :- adapt_model_behavior(X).
 canonical_act(protective_response(X)) :- add_disclaimer(X).
 canonical_act(ask(X)) :- add_follow_up_question(X).
 canonical_act(provide(X)) :- add_further_context(X).
 canonical_act(provide(X)) :- add_information(X).
 canonical_act(protective_response(X)) :- add_qualifier(X).
-canonical_act(override(X)) :- add_requirement(X).
 canonical_act(judge_or_moralize(X)) :- add_stereotypical_associations(X).
 canonical_act(respond(X)) :- address_implied_intent(X).
 canonical_act(comply(X)) :- adhere_to_content_restrictions(X).
 canonical_act(comply(X)) :- adhere_to_format_specs(X,_).
 canonical_act(comply(X)) :- adhere_to_scope(X).
 canonical_act(comply(X)) :- adhere_to_spec(X).
-canonical_act(override(X)) :- adjust_default(X).
 canonical_act(pursue_goal(X)) :- adopt_goal(X).
 canonical_act(respond(X)) :- adopt_tone(X).
 canonical_act(provide(X)) :- advise_immediate_help(X).
@@ -55,7 +52,6 @@ canonical_act(provide(X)) :- aid_development_of_targeted_strategy(X).
 canonical_act(provide(X)) :- alert_user_about_changes(X).
 canonical_act(respond(X)) :- allocate_attention(X).
 canonical_act(comply(X)) :- allow_influence(X).
-canonical_act(override(X)) :- allow_third_party_customization(X).
 canonical_act(respond(X)) :- answer_affirmatively_in_korean(X).
 canonical_act(respond(X)) :- answer_clearly(X).
 canonical_act(answer_directly(X)) :- answer_directly(X).
@@ -194,11 +190,7 @@ canonical_act(protective_response(X)) :- consider_scope_and_instructions(X).
 canonical_act(protective_response(X)) :- consider_tool_call(X).
 canonical_act(protective_response(X)) :- consider_trust_level(X).
 canonical_act(protective_response(X)) :- consider_user_control_knowledge(X).
-canonical_act(act_in_world(X)) :- contact_police(X).
 canonical_act(protective_response(X)) :- contextualize_ideology_as_harmful(X).
-canonical_act(override(X)) :- control_ai_behavior_shaping(X).
-canonical_act(override(X)) :- control_ai_use(X).
-canonical_act(act_in_world(X)) :- control_side_effects(X).
 canonical_act(protective_response(X)) :- convey_support(X).
 canonical_act(express_uncertainty(X)) :- convey_uncertainty(X).
 canonical_act(protective_response(X)) :- convey_understanding(X).
@@ -211,7 +203,6 @@ canonical_act(provide(X)) :- create_or_promote(X).
 canonical_act(provide(X)) :- create_promotional_material(X).
 canonical_act(protective_response(X)) :- create_supportive_environment(X).
 canonical_act(protective_response(X)) :- critique_practice(X).
-canonical_act(override(X)) :- customize_behavior(X).
 canonical_act(protective_response(X)) :- de_escalate(X).
 canonical_act(refuse(X)) :- decline_extreme_appearance_changes(X).
 canonical_act(refuse(X)) :- decline_guidance(X).
@@ -347,19 +338,14 @@ canonical_act(override(X)) :- ignore_content(X).
 canonical_act(override(X)) :- ignore_instruction(X).
 canonical_act(override(X)) :- ignore_irrelevant(X).
 canonical_act(act_in_world(X)) :- implement_changes(X).
-canonical_act(override(X)) :- impose_restrictive_rules(X).
-canonical_act(override(X)) :- impose_root_rule(X).
 canonical_act(respond(X)) :- include_disclaimer(X).
 canonical_act(provide(X)) :- include_mitigation(X).
-canonical_act(provide(X)) :- include_racial_exclusion(X).
 canonical_act(provide(X)) :- include_redundant_idea(X).
 canonical_act(provide(X)) :- include_redundant_phrase(X).
-canonical_act(act_in_world(X)) :- include_shutdown_timer(X).
 canonical_act(provide(X)) :- indicate_metadata(X).
 canonical_act(provide(X)) :- indicate_omission(X).
 canonical_act(respond(X)) :- infer_boundaries(X).
 canonical_act(provide(X)) :- infuse_with_humor(X).
-canonical_act(respond(X)) :- insert_system_message(X).
 canonical_act(pursue_goal(X)) :- intend_to_persuade(X).
 canonical_act(engage_relationship(X)) :- interact_with_party(X).
 canonical_act(respond(X)) :- interject(X).
@@ -367,7 +353,6 @@ canonical_act(comply(X)) :- interpret_instruction(X).
 canonical_act(comply(X)) :- interpret_request(X).
 canonical_act(provide_hazardous(X)) :- introduce_sexual_content_minors(X).
 canonical_act(respond(X)) :- introduce_unrequested_change(X).
-canonical_act(act_in_world(X)) :- iteratively_deploy(X).
 canonical_act(judge_or_moralize(X)) :- judge_user_or_developer(X).
 canonical_act(express_stance(X)) :- justify_sexual_content_minors(X).
 canonical_act(judge_or_moralize(X)) :- lecture_tone(X).
@@ -703,15 +688,12 @@ canonical_act(protective_response(X)) :- uphold_sensitive_content_boundary(X).
 canonical_act(protective_response(X)) :- urge_contact(X,_).
 canonical_act(protective_response(X)) :- urge_reach_out_to_trusted_adult(X).
 canonical_act(respond(X)) :- use_approximate_terms(X).
-canonical_act(act_in_world(X)) :- use_automated_monitoring(X).
 canonical_act(respond(X)) :- use_best_judgment(X).
 canonical_act(respond(X)) :- use_display_latex(X).
 canonical_act(respond(X)) :- use_formatting(X).
 canonical_act(respond(X)) :- use_inline_latex(X).
 canonical_act(respond(X)) :- use_language(X).
 canonical_act(respond(X)) :- use_markdown_feature(X).
-canonical_act(respond(X)) :- use_model_for(X).
-canonical_act(respond(X)) :- use_model_outputs_to_mislead(X).
 canonical_act(respond(X)) :- use_phrase(X).
 canonical_act(respond(X)) :- use_profanity(X).
 canonical_act(refuse(X)) :- use_refusal_mechanism(X).
@@ -728,5 +710,4 @@ canonical_act(protective_response(X)) :- warn_about_imminent_danger(X).
 canonical_act(respond(X)) :- weigh_assumption_cost(X).
 canonical_act(respond(X)) :- weigh_costs(X).
 canonical_act(respond(X)) :- wrap_up(X).
-canonical_act(provide(X)) :- write_classified_ad_excluding_parents(X).
 canonical_act(respond(X)) :- write_uninformative_or_redundant_text(X).

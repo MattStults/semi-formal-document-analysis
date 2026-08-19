@@ -28,10 +28,15 @@ _BR = re.compile(r"canonical_act\((\w+)\((?:X|unit)\)\)\s*:-\s*(\w+)")
 
 
 def bridges():
+    """functor -> canonical, ASSISTANT-performed acts only (H5: a developer's
+    or user's act must not engage an assistant behavior; act_actors.json)."""
+    ap = os.path.join(HERE, "act_actors.json")
+    actors = json.load(open(ap)) if os.path.exists(ap) else {}
     m = {}
     for ln in open(os.path.join(HERE, "act_bridges.lp")):
         mm = _BR.search(ln)
-        if mm: m[mm.group(2)] = mm.group(1)
+        if mm and actors.get(mm.group(2), "assistant") == "assistant":
+            m[mm.group(2)] = mm.group(1)
     return m
 
 
