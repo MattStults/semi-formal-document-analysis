@@ -1,5 +1,5 @@
-% act_bridges.lp — GENERATED (r7: actor-gated — only ASSISTANT-performed acts bridge; H5 closed).
-% Bespoke -> finest canonical; subtype implies parent.
+% act_bridges.lp — GENERATED (r7: actor-gated, evidence-retagged). Bespoke -> finest canonical; subtype implies parent.
+% Non-assistant actors excluded: adjust_default, allow_third_party_customization, control_ai_behavior_shaping, control_ai_use, customize_behavior, impose_restrictive_rules, impose_root_rule, insert_system_message, iteratively_deploy, use_automated_monitoring, use_model_outputs_to_mislead
 canonical_act(respond(X)) :- canonical_act(acknowledge(X)).
 canonical_act(respond(X)) :- canonical_act(answer_directly(X)).
 canonical_act(provide(X)) :- canonical_act(disclose_data(X)).
@@ -29,11 +29,13 @@ canonical_act(comply(X)) :- act_in_line_with(X).
 canonical_act(comply(X)) :- act_solely_to_support(X).
 canonical_act(respond(X)) :- act_with_incomplete_information(X).
 canonical_act(act_in_world(X)) :- act_without_side_effect_consideration(X).
+canonical_act(override(X)) :- adapt_model_behavior(X).
 canonical_act(protective_response(X)) :- add_disclaimer(X).
 canonical_act(ask(X)) :- add_follow_up_question(X).
 canonical_act(provide(X)) :- add_further_context(X).
 canonical_act(provide(X)) :- add_information(X).
 canonical_act(protective_response(X)) :- add_qualifier(X).
+canonical_act(override(X)) :- add_requirement(X).
 canonical_act(judge_or_moralize(X)) :- add_stereotypical_associations(X).
 canonical_act(respond(X)) :- address_implied_intent(X).
 canonical_act(comply(X)) :- adhere_to_content_restrictions(X).
@@ -190,7 +192,9 @@ canonical_act(protective_response(X)) :- consider_scope_and_instructions(X).
 canonical_act(protective_response(X)) :- consider_tool_call(X).
 canonical_act(protective_response(X)) :- consider_trust_level(X).
 canonical_act(protective_response(X)) :- consider_user_control_knowledge(X).
+canonical_act(act_in_world(X)) :- contact_police(X).
 canonical_act(protective_response(X)) :- contextualize_ideology_as_harmful(X).
+canonical_act(act_in_world(X)) :- control_side_effects(X).
 canonical_act(protective_response(X)) :- convey_support(X).
 canonical_act(express_uncertainty(X)) :- convey_uncertainty(X).
 canonical_act(protective_response(X)) :- convey_understanding(X).
@@ -340,8 +344,10 @@ canonical_act(override(X)) :- ignore_irrelevant(X).
 canonical_act(act_in_world(X)) :- implement_changes(X).
 canonical_act(respond(X)) :- include_disclaimer(X).
 canonical_act(provide(X)) :- include_mitigation(X).
+canonical_act(provide(X)) :- include_racial_exclusion(X).
 canonical_act(provide(X)) :- include_redundant_idea(X).
 canonical_act(provide(X)) :- include_redundant_phrase(X).
+canonical_act(act_in_world(X)) :- include_shutdown_timer(X).
 canonical_act(provide(X)) :- indicate_metadata(X).
 canonical_act(provide(X)) :- indicate_omission(X).
 canonical_act(respond(X)) :- infer_boundaries(X).
@@ -694,6 +700,7 @@ canonical_act(respond(X)) :- use_formatting(X).
 canonical_act(respond(X)) :- use_inline_latex(X).
 canonical_act(respond(X)) :- use_language(X).
 canonical_act(respond(X)) :- use_markdown_feature(X).
+canonical_act(respond(X)) :- use_model_for(X).
 canonical_act(respond(X)) :- use_phrase(X).
 canonical_act(respond(X)) :- use_profanity(X).
 canonical_act(refuse(X)) :- use_refusal_mechanism(X).
@@ -710,4 +717,5 @@ canonical_act(protective_response(X)) :- warn_about_imminent_danger(X).
 canonical_act(respond(X)) :- weigh_assumption_cost(X).
 canonical_act(respond(X)) :- weigh_costs(X).
 canonical_act(respond(X)) :- wrap_up(X).
+canonical_act(provide(X)) :- write_classified_ad_excluding_parents(X).
 canonical_act(respond(X)) :- write_uninformative_or_redundant_text(X).
