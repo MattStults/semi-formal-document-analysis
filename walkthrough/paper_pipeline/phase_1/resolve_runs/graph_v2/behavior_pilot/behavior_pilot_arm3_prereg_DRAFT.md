@@ -60,15 +60,22 @@ engagement/decline defensibility, recall. Reported beside arms 1 and 2 on
 the same test slice, same truth.
 
 ## Pre-stated predictions and falsifiers
-* Prediction: arm (a) >= tuned seat on >= 2 of 3 behaviors on the test
-  slice; arm (b) >= arm (a) on precision without losing > 0.05 recall.
+* Prediction, PER BEHAVIOR (validation-informed, stated before test):
+  helpfulness — arm (a) BEATS both seat arms (expect ~0.75-0.85), arm (b)
+  >= arm (a); caution — arm (a) comparable to tuned seat (within the
+  margin rule) at higher recall, arm (b) expected slightly BELOW arm (a)
+  (validation showed -0.03; if test confirms, (b) is reported as
+  behavior-dependent, valuable on helpfulness only); harm — arm (a) above
+  cold-start but BELOW tuned seat (defect 1), expect ~0.45-0.60.
+  The equivalence claim is: arm (a) >= tuned seat on >= 2 of 3 behaviors.
 * Margin rule: with ~53–61 test nodes, one node is ~2 points; differences
   <= 2 nodes' worth are reported as "within resolution", not as wins.
-* Falsifier: arm (a) < cold-start seat on any behavior, OR arm (b) <
-  arm (a) on deviation-defensibility (the mutation stage would be dead
-  weight), OR the act validator BLOCKED at freeze (A7 must pass; A1/A4
-  clean), OR T4 firing-consistency failing at freeze. Any of these is
-  reported as-is, no post-hoc rescue.
+* Falsifier: arm (a) < cold-start seat on ANY behavior, OR arm (a) <
+  tuned seat on ALL THREE, OR arm (b) < arm (a) on HELPFULNESS (the one
+  behavior where validation predicts (b) helps — if it fails there, the
+  mutation stage is dead weight), OR the act validator BLOCKED at freeze
+  (A7 must pass; A1/A4 clean), OR T4 firing-consistency failing at freeze.
+  Any of these is reported as-is, no post-hoc rescue.
 * Scoring is ONE run of arm_ab.py --slice test at the frozen commit; the
   numbers land in the report unedited.
 
