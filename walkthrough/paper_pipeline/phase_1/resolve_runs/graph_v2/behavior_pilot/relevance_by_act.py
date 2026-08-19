@@ -50,6 +50,8 @@ def corpus_acts():
 def behavior_acts(mod):
     """canonical acts a behavior PERFORMS: heads of `does` that are canonical, else act atoms bridged by name."""
     canon = set(json.load(open(os.path.join(HERE, "behavior_vocab.json")))["canonical_acts_provisional"])
+    sp = os.path.join(HERE, "act_subtypes.json")
+    if os.path.exists(sp): canon |= set(json.load(open(sp)).values())
     acts = set()
     for r in (mod.get("module") or {}).get("does", []):
         h = re.match(r"\s*(?:not\s+|-)?([a-z_][A-Za-z0-9_]*)", r)
@@ -57,12 +59,28 @@ def behavior_acts(mod):
     return acts, canon
 
 
+def parent_map():
+    """subtype -> parent for the two-level act ontology (act_subtypes.json).
+    Relevance matches at PARENT level (a module about any kind of providing
+    is relevant to a behavior about providing); FIRING stays subtype-strict."""
+    p = os.path.join(HERE, "act_subtypes.json")
+    if not os.path.exists(p): return {}
+    subs = set(json.load(open(p)).values())
+    return {s: ("provide" if s.startswith(("provide", "disclose")) else "respond")
+            for s in subs if s not in ("provide", "respond")}
+
+
 def relevance(mod, br, corpus):
     acts, canon = behavior_acts(mod)
-    per_atom_canon = {}                       # for per-branch coverage: atom -> canonical act via the atom's own performed act
+    pm = parent_map()
+    def hits(c):
+        if c is None: return False
+        return c in acts or pm.get(c) in acts or c in {s for s, par in pm.items() if par in acts and c == s}
     rel = {}
     for cid, rows in corpus.items():
-        reasons = [(f, br.get(f), st) for f, st in rows if br.get(f) in acts]
+        reasons = [(f, br.get(f), st) for f, st in rows
+                   if br.get(f) is not None and (br[f] in acts or pm.get(br[f]) in acts
+                                                 or any(pm.get(a2) == br[f] for a2 in acts))]
         if reasons: rel[cid] = reasons
     return acts, rel
 
