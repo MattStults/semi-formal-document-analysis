@@ -259,6 +259,135 @@ def explain(slug, node, modules_file=DEFAULT_MODULES):
     return f"{nid} does NOT engage {slug} — {why}. ESTABLISHES: “{claim}”"
 
 
+
+
+# ---------------------------------------------------------------- plain mode
+
+_FRIENDLY_ACT = {
+    "provide": "providing something to the user", "provide_information": "providing information",
+    "provide_content": "producing content", "provide_resources": "pointing to resources",
+    "disclose_data": "disclosing data", "provide_hazardous": "providing hazardous information",
+    "respond": "responding", "answer_directly": "answering the question directly",
+    "respond_in_manner": "the manner or style of a response", "acknowledge": "acknowledging something",
+    "express_stance": "expressing a stance", "express_uncertainty": "expressing uncertainty",
+    "express_calibrated_position": "taking a calibrated position", "uncertainty_phrasing": "how uncertainty is phrased",
+    "protective_response": "responding protectively", "counter_harm": "countering a harm",
+    "safe_manner": "handling something in a safe manner", "refuse": "refusing",
+    "comply": "complying with a request", "ask": "asking a question",
+    "act_in_world": "taking a real-world action", "deliberate": "deliberating",
+    "monitor": "monitoring", "escalate": "escalating", "terminate": "ending the interaction",
+}
+_FRIENDLY_QUAL = {
+    "substance_usefulness": "what is substantively provided or refused",
+    "accuracy_calibration": "truthfulness and how uncertainty is expressed",
+    "tone_manner": "tone and interpersonal manner",
+    "formatting_style": "formatting and structure",
+    "identity_meta": "what the assistant says about itself",
+    "objectivity_neutrality": "balance and viewpoint fairness",
+}
+_FRIENDLY_ROLE = {
+    "user": "the user in the conversation", "third_party": "people outside the conversation",
+    "society": "the public at large", "developer": "the developer/operator",
+    "minor": "minors", "unspecified": "no one in particular (fails open)",
+}
+_FRIENDLY_STATUS = {"forbid": "a prohibition on", "oblige": "a requirement to",
+                    "permit": "a permission to", "prefer": "a preference for",
+                    "example_good": "an endorsed example of", "example_bad": "a disfavored example of"}
+_NL = "\n  "
+
+
+def _words(name):
+    return str(name).replace("_", " ")
+
+
+def _f_act(a):
+    return _FRIENDLY_ACT.get(a, _words(a))
+
+
+def _f_list(vals, table):
+    vals = [v for v in vals if v]
+    return ", ".join(table.get(v, _words(v)) for v in vals) if vals else "(none)"
+
+
+def explain_plain(slug, node, modules_file=DEFAULT_MODULES):
+    """Multi-line, jargon-free account of the decision for `node` vs `slug`."""
+    st = _load(modules_file)
+    if slug not in st["modules"]:
+        return f"{node}: no behavior module named {slug!r}."
+    mod = st["modules"][slug]
+    nid = link_nodes.norm_id(node)
+    if nid not in st["corpus"]:
+        return f"{node}: not in the linked corpus."
+    acts, rel = _relevance(st, slug)
+    claim = establishes(st, nid)
+    reasons = rel.get(nid)
+    b = _words(slug)
+    L = [f'The clause says: "{claim}"']
+    if reasons:
+        L.insert(0, f"FLAGGED as bearing on {b}.")
+        if len(reasons) == 1 and reasons[0][0] == "__purpose__":
+            ends = sorted({e for k in _keys(st["purpose_actor"], nid)
+                           if st["purpose_actor"][k]["actor"] == "assistant"
+                           for e in st["purpose_actor"][k]["purpose"]
+                           if e in set(mod.get("purpose_concern") or [])})
+            L.append(f'Why: the clause exists to serve "{_f_list(ends, {})}" — one of the document goals this behavior tracks —')
+            L.append("     so it was flagged even though its act wording does not match directly.")
+        else:
+            pairs = sorted({(f, ca, s) for f, ca, s in reasons})
+            for f, ca, s in pairs[:3]:
+                lead = _FRIENDLY_STATUS.get(str(s), f"a rule ({s}) about")
+                if f == ca:
+                    L.append(f"Why: it contains {lead} {_f_act(ca)} — something this behavior involves.")
+                else:
+                    L.append(f'Why: it contains {lead} "{_words(f)}", which the act ontology classifies as {_f_act(ca)} — something this behavior involves.')
+            gv = sorted({g for k in _keys(st["signature"], nid) for g in st["signature"][k]["governs"]})
+            pr = sorted({p for k in _keys(st["protects"], nid) for p in st["protects"][k]})
+            checks = ["it is a rule about the assistant's own conduct"]
+            if mod.get("protects_concern"):
+                checks.append(f"it protects {_f_list(pr, _FRIENDLY_ROLE)} (this behavior tracks rules protecting {_f_list(sorted(mod['protects_concern']), _FRIENDLY_ROLE)})")
+            if mod.get("governs_concern"):
+                checks.append(f"it governs {_f_list(gv, _FRIENDLY_QUAL)} (this behavior tracks rules about {_f_list(sorted(mod['governs_concern']), _FRIENDLY_QUAL)})")
+            L.append("Checks passed: " + "; ".join(checks) + ".")
+        return _NL.join(L)
+    L.insert(0, f"NOT FLAGGED for {b}.")
+    ok, detail = _gate_actor(st, mod, nid)
+    if not ok:
+        who = {"organization": "the company (OpenAI) itself", "developer": "developers who build on the model",
+               "document": "the document's own bookkeeping (what counts as an instruction, what overrides what)"}
+        d = ", ".join(who.get(x.strip(), x.strip()) for x in str(detail).split(","))
+        L.append(f"Why not: this clause is about {d} — not about how the assistant itself should respond,")
+        L.append("     and behaviors only track rules for the assistant's own conduct.")
+        return _NL.join(L)
+    ok, detail = _gate_protects(st, mod, nid)
+    if not ok:
+        L.append(f"Why not: the tool's records say this rule exists to protect {_f_list(sorted(str(detail).split(', ')), _FRIENDLY_ROLE)},")
+        L.append(f"     and this behavior only tracks rules protecting {_f_list(sorted(mod.get('protects_concern') or []), _FRIENDLY_ROLE)} —")
+        L.append('     so it was filtered out at the "who does this rule protect?" check.')
+        return _NL.join(L)
+    ok, detail = _gate_governs(st, mod, nid)
+    if not ok:
+        if detail == "authority_plumbing":
+            L.append("Why not: every rule here is the document's own machinery (which instructions count, what overrides what),")
+            L.append("     not a rule about how the assistant should respond.")
+        else:
+            L.append(f"Why not: this rule is about {_f_list(sorted(str(detail).split(', ')), _FRIENDLY_QUAL)},")
+            L.append(f"     and this behavior only tracks rules about {_f_list(sorted(mod.get('governs_concern') or []), _FRIENDLY_QUAL)} —")
+            L.append('     so it was filtered out at the "which quality of responding does this rule govern?" check.')
+        return _NL.join(L)
+    br = st["bridges"]
+    canon = sorted({br[f] for f, _s in st["corpus"][nid] if br.get(f)})
+    raw = sorted({f for f, _s in st["corpus"][nid]})
+    if canon:
+        L.append(f"Why not: its rules are about {_f_list(canon, _FRIENDLY_ACT)},")
+    elif raw:
+        L.append(f'Why not: its rules are about "{", ".join(_words(r) for r in raw[:4])}", which the act ontology maps to no known act,')
+    else:
+        L.append("Why not: this clause states no rule about any act at all (it is definitional or commentary),")
+    L.append(f"     while this behavior involves {_f_list(sorted(acts), _FRIENDLY_ACT)} —")
+    L.append("     no overlap, so it never reached the later checks.")
+    return _NL.join(L)
+
+
 def main():
     if len(sys.argv) < 3:
         print(__doc__.strip().splitlines()[-1])
@@ -270,8 +399,9 @@ def main():
     acts, rel = _relevance(st, slug)
     print(f"# {slug} performs {sorted(acts)}; engaged modules {len(rel)} "
           f"of {len(st['corpus'])} (from {os.path.basename(modules_file)})")
+    plain = "--plain" in sys.argv
     for cid in sorted(rel):
-        print(explain(slug, cid, modules_file))
+        print(explain_plain(slug, cid, modules_file) if plain else explain(slug, cid, modules_file))
     if "--with-declines" in sys.argv:
         for cid in sorted(c for c in st["corpus"] if c not in rel):
             print(explain(slug, cid, modules_file))
