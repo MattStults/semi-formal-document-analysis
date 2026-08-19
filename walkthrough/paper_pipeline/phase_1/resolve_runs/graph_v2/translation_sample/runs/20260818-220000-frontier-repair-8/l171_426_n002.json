@@ -1,0 +1,157 @@
+{
+ "outcome": "translated",
+ "clause_id": "l171_426_n002",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the Model Spec delegates all remaining power to the system, developer (for API use cases) and end user",
+  "C2 this delegation is subject to the Model Spec's root-level instructions"
+ ],
+ "acts": [],
+ "concepts": [
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is an instruction carrying the root level of instruction authority, the highest level, not overridable by system, developer or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the shared-name contract assigns; this node's text refers to 'root-level instructions' without defining the level",
+   "toggleable": false
+  },
+  {
+   "name": "delegated_power",
+   "arity": 2,
+   "gloss": "P is a power delegated by the Model Spec to authority level L",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the shared-name contract assigns; this node's text speaks of delegating power without defining the relation",
+   "toggleable": false
+  },
+  {
+   "name": "model_spec",
+   "arity": 1,
+   "gloss": "D is the Model Spec document",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the shared-name contract assigns; this node's text refers to the Model Spec as the delegating document",
+   "toggleable": false
+  },
+  {
+   "name": "authority_levels_hierarchy",
+   "arity": 2,
+   "gloss": "level H outranks level L in the ranking root > system > developer > user > guideline > no authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text names system, developer and end user as levels without defining the ranking",
+   "toggleable": false
+  },
+  {
+   "name": "remaining_power",
+   "arity": 1,
+   "gloss": "P is a power that the Model Spec has not otherwise assigned to a specific authority level",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "'all remaining power' means the powers not already delegated or reserved elsewhere; the text presupposes a remainder without enumerating it",
+   "toggleable": false
+  },
+  {
+   "name": "system_level",
+   "arity": 1,
+   "gloss": "L is the system authority level",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the node's text names 'the system' as a recipient of delegation; the shared-name contract fixes the level name",
+   "toggleable": false
+  },
+  {
+   "name": "developer_level",
+   "arity": 1,
+   "gloss": "L is the developer authority level",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the node's text names 'developer' as a recipient of delegation; the shared-name contract fixes the level name",
+   "toggleable": false
+  },
+  {
+   "name": "user_level",
+   "arity": 0,
+   "gloss": "the user authority level in the hierarchy, below developer and above guideline",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the node's text names 'end user' as a recipient of delegation; the shared-name contract fixes the level name",
+   "toggleable": false
+  },
+  {
+   "name": "delegated_to_system",
+   "arity": 1,
+   "gloss": "P is a power delegated to the system level",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the node's text says the Model Spec delegates remaining power to the system; this class collects those powers",
+   "toggleable": false
+  },
+  {
+   "name": "delegated_to_developer",
+   "arity": 1,
+   "gloss": "P is a power delegated to the developer level for API use cases",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the node's text says the Model Spec delegates remaining power to the developer for API use cases; this class collects those powers",
+   "toggleable": false
+  },
+  {
+   "name": "delegated_to_user",
+   "arity": 1,
+   "gloss": "P is a power delegated to the end-user level",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the node's text says the Model Spec delegates remaining power to the end user; this class collects those powers",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l171_426_n002",
+   "inference": null,
+   "toggleable": false,
+   "atom": "delegated_to_system(P)",
+   "gloss": "P is a remaining power delegated to the system level",
+   "body": "remaining_power(P), system_level(L), delegated_power(P, L)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l171_426_n002",
+   "inference": null,
+   "toggleable": false,
+   "atom": "delegated_to_developer(P)",
+   "gloss": "P is a remaining power delegated to the developer level for API use cases",
+   "body": "remaining_power(P), developer_level(L), delegated_power(P, L)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l171_426_n002",
+   "inference": null,
+   "toggleable": false,
+   "atom": "delegated_to_user(P)",
+   "gloss": "P is a remaining power delegated to the end-user level",
+   "body": "remaining_power(P), delegated_power(P, user_level)"
+  }
+ ],
+ "asserts": [],
+ "beats": [],
+ "defines": [],
+ "closure": [],
+ "requires": [
+  "authority_levels_hierarchy/2",
+  "delegated_power/2",
+  "model_spec/1",
+  "root_authority/1"
+ ],
+ "inputs": [
+  "remaining_power/1",
+  "system_level/1",
+  "developer_level/1",
+  "user_level/0"
+ ],
+ "forbid_body": []
+}

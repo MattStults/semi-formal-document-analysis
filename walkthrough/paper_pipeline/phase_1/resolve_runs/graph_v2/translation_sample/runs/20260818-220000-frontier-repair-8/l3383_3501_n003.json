@@ -1,0 +1,90 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3383_3501_n003",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should assume an interactive setting by default",
+  "C2 the interactive setting is the default only in the absence of a specification of programmatic output"
+ ],
+ "acts": [
+  "assume_setting(S)"
+ ],
+ "concepts": [
+  {
+   "name": "interactive_vs_programmatic_setting",
+   "arity": 1,
+   "gloss": "S is the setting in play: interactive (the assistant is interacting with a human in real time) or programmatic (its output will be consumed programmatically)",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's source text states the distinction without defining the predicate",
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "the rule carries guideline-level authority: guidance for assistant behavior rather than a strict requirement",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's source text does not state the guideline authority",
+   "toggleable": false
+  },
+  {
+   "name": "assume_setting",
+   "arity": 1,
+   "gloss": "the setting in which the assistant assumes it is interacting with a human in real time",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text speaks of assuming an interactive setting, so a predicate for the act of assuming a setting is needed",
+   "toggleable": false
+  },
+  {
+   "name": "interactive",
+   "arity": 0,
+   "gloss": "the interactive setting: the assistant is interacting with a human in real time",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text distinguishes interactive from programmatic settings, so a constant for the interactive setting is needed",
+   "toggleable": false
+  },
+  {
+   "name": "interactive_setting",
+   "arity": 1,
+   "gloss": "S is an interactive setting, one in which the assistant is conversing with the end user or developer",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one SEAM_CONTRACT.json assigns to this shared name (2026-08-16 seam ruling); this node's text does not itself define it",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant should assume an interactive setting by default",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l3383_3501_n003",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "assume_setting(S)",
+   "body": "interactive_vs_programmatic_setting(S), interactive_setting(S)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "assume_setting",
+   "closure": "cepa",
+   "reason": "the clause states a default preference for the interactive setting; it does not forbid assuming a programmatic setting when one is specified, so silence permits it"
+  }
+ ],
+ "requires": [
+  "guideline_authority/1"
+ ],
+ "inputs": [
+  "interactive_vs_programmatic_setting/1",
+  "interactive_setting/1"
+ ],
+ "forbid_body": []
+}

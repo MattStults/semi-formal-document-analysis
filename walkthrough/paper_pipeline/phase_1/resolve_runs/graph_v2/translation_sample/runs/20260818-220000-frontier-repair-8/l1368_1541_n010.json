@@ -1,0 +1,95 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1368_1541_n010",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the transformation exception overrides only the restricted-content and sensitive-content policies",
+  "C2 if another policy forbids producing certain material, the assistant must still follow that policy",
+  "C3 the exception does not apply to material that another policy forbids"
+ ],
+ "acts": [
+  "produce(M)"
+ ],
+ "concepts": [
+  {
+   "name": "other_policy_forbids",
+   "arity": 2,
+   "gloss": "policy P forbids the assistant from producing material M, where P is a policy other than the restricted-content and sensitive-content policies",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of 'other policies' forbidding material, so a predicate for such material is needed",
+   "toggleable": false
+  },
+  {
+   "name": "transformation_exception_rule",
+   "arity": 1,
+   "gloss": "M is content that the transformation exception would otherwise cover, i.e. content the user provided and asked the assistant to transform or analyze",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract defines the transformation exception as covering requests to transform or analyze user-provided content; the clause's 'override' relation presupposes a scope for the exception",
+   "toggleable": false
+  },
+  {
+   "name": "applies_to",
+   "arity": 2,
+   "gloss": "the transformation exception rule T covers material M, i.e. M is the kind of content the exception would ordinarily permit producing",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause says the exception 'does not override' other policies, which presupposes a relation between the exception and the material it would cover",
+   "toggleable": false
+  },
+  {
+   "name": "restricted_content_definition",
+   "arity": 1,
+   "gloss": "M is content that is ordinarily disallowed by the restricted content policy, as referenced by the transformation exception",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'restricted' content without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "sensitive_content",
+   "arity": 1,
+   "gloss": "M is content such as erotica or gore that may only be generated under specific circumstances, e.g. educational, medical, or historical contexts, or transformations of user-provided sensitive content",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'sensitive content' without defining it",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "producing % is forbidden because a policy other than the restricted or sensitive content policies forbids it, and the transformation exception does not override that policy",
+   "read_back_slots": [
+    "M"
+   ],
+   "licence": "textual",
+   "cites": "l1368_1541_n010",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "produce(M)",
+   "body": "other_policy_forbids(P, M), transformation_exception_rule(T), applies_to(T, M)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "produce",
+   "closure": "cepa",
+   "reason": "the clause forbids producing material only when another policy forbids it; producing material no policy forbids is not addressed and remains permitted"
+  }
+ ],
+ "requires": [
+  "restricted_content_definition/1",
+  "sensitive_content/1",
+  "transformation_exception_rule/1"
+ ],
+ "inputs": [
+  "other_policy_forbids/2",
+  "applies_to/2"
+ ],
+ "forbid_body": []
+}

@@ -1,0 +1,116 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3877_3953_n006",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant asks relevant, specific questions",
+  "C2 such questions are designed to help tailor the interaction to the user's interests and goals",
+  "C3 the purpose is not merely to keep the conversation going"
+ ],
+ "acts": [
+  "ask_question(A, Q)"
+ ],
+ "concepts": [
+  {
+   "name": "relevant_question",
+   "arity": 1,
+   "gloss": "Q is a question that is relevant to the user's situation or needs",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text says 'relevant' without defining it; the meaning is taken from the word itself",
+   "toggleable": false
+  },
+  {
+   "name": "specific_question",
+   "arity": 1,
+   "gloss": "Q is a question that is specific rather than vague or general",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text says 'specific' without defining it; the meaning is taken from the word itself",
+   "toggleable": false
+  },
+  {
+   "name": "tailored_to_user_interests",
+   "arity": 1,
+   "gloss": "Q is a question designed to help tailor the interaction to the user's interests and goals",
+   "licence": "textual",
+   "cites": "l3877_3953_n006",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "assistant_question",
+   "arity": 1,
+   "gloss": "Q is a question asked by the assistant",
+   "licence": "textual",
+   "cites": "l3877_3953_n006",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "ask_question",
+   "arity": 2,
+   "gloss": "A asks Q, where Q is a question posed to the user in the conversation; here A is the assistant",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the act of asking a question is the subject of the clause; the predicate name is assigned by the module's act declaration",
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it: the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's source text refers to 'It' without defining the assistant",
+   "toggleable": false
+  },
+  {
+   "name": "user_authority",
+   "arity": 1,
+   "gloss": "R is a rule or instruction that carries user authority, as established by the section on conversational sense",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's source text does not state the authority level",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "asking % is preferred when % is relevant and specific and designed to tailor the interaction to the user's interests and goals",
+   "read_back_slots": [
+    "Q",
+    "Q"
+   ],
+   "licence": "textual",
+   "cites": "l3877_3953_n006",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "ask_question(A, Q)",
+   "body": "relevant_question(Q), specific_question(Q), tailored_to_user_interests(Q), user_authority(ask_question(A, Q))"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "ask_question",
+   "closure": "cepa",
+   "reason": "the clause describes a preferred way of asking questions; it does not forbid asking questions that are not relevant or specific, so silence permits them"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "user_authority/1"
+ ],
+ "inputs": [
+  "relevant_question/1",
+  "specific_question/1",
+  "tailored_to_user_interests/1",
+  "assistant_question/1",
+  "ask_question/2"
+ ],
+ "forbid_body": []
+}

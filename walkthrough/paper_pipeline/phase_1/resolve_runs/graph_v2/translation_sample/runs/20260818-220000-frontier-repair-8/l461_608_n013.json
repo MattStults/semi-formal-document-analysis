@@ -1,0 +1,170 @@
+{
+ "outcome": "translated",
+ "clause_id": "l461_608_n013",
+ "abstain_reason": null,
+ "claims": [
+  "C1 within the defined scope of autonomy, the assistant should minimize side effects",
+  "C2 irreversible side effects are especially to be minimized",
+  "C3 within the defined scope of autonomy, each action should be proportionate to the established objectives"
+ ],
+ "acts": [
+  "minimize_side_effects(A)",
+  "ensure_proportionate_action(A)"
+ ],
+ "concepts": [
+  {
+   "name": "scope_of_autonomy",
+   "arity": 1,
+   "gloss": "the agreed-upon boundary of the assistant's autonomy, defining which sub-goals it may pursue, acceptable side effects, and when it must pause for clarification or approval",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'the defined scope of autonomy' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "the assistant is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text speaks of 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "the rule carries the root level of instruction authority (highest; not overridable by system, developer or user instructions)",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not itself state the authority level",
+   "toggleable": false
+  },
+  {
+   "name": "control_side_effects_section",
+   "arity": 1,
+   "gloss": "the section of the Model Spec that discusses how the assistant should control side effects of its actions",
+   "licence": "textual",
+   "cites": "l461_608_n013",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "within_scope",
+   "arity": 2,
+   "gloss": "action A falls within the defined scope of autonomy S",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause conditions its guidance on the action being within the defined scope, so a relation between an action and a scope must exist",
+   "toggleable": false
+  },
+  {
+   "name": "side_effect",
+   "arity": 1,
+   "gloss": "E is a side effect: an effect on the world caused by an action of the assistant",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "minimizing side effects presupposes a relation between an action and the side effects it produces",
+   "toggleable": false
+  },
+  {
+   "name": "irreversible_side_effect",
+   "arity": 1,
+   "gloss": "side effect E cannot be undone or reversed once the action is taken",
+   "licence": "textual",
+   "cites": "l461_608_n013",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "proportionate_to_objectives",
+   "arity": 2,
+   "gloss": "action A is proportionate to the established objectives O",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause requires each action to be proportionate to the established objectives, so a relation between an action and the objectives must exist",
+   "toggleable": false
+  },
+  {
+   "name": "established_objectives",
+   "arity": 1,
+   "gloss": "the objectives established for the assistant's task",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause refers to 'the established objectives' without defining them; they are a fact about the case",
+   "toggleable": false
+  },
+  {
+   "name": "effect_of",
+   "arity": 2,
+   "gloss": "E is a side effect produced by the assistant's action A",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "introduced by the 2026-08-18 T2 seam-arity repair to carry the argument the seam contract removes from the pinned name; meaning taken from the module's original gloss",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "within the defined scope of autonomy, the assistant should minimize side effects, especially irreversible ones",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l461_608_n013",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "minimize_side_effects(A)",
+   "body": "assistant_definition(A), within_scope(A, S), scope_of_autonomy(S), side_effect(E), effect_of(E, A)"
+  },
+  {
+   "read_back": "within the defined scope of autonomy, the assistant should especially minimize irreversible side effects",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l461_608_n013",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "minimize_side_effects(A)",
+   "body": "assistant_definition(A), within_scope(A, S), scope_of_autonomy(S), side_effect(E), effect_of(E, A), irreversible_side_effect(E)"
+  },
+  {
+   "read_back": "within the defined scope of autonomy, the assistant should ensure each action is proportionate to the established objectives",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l461_608_n013",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "ensure_proportionate_action(A)",
+   "body": "assistant_definition(A), within_scope(A, S), scope_of_autonomy(S), established_objectives(O), proportionate_to_objectives(A, O)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "minimize_side_effects",
+   "closure": "cepa",
+   "reason": "the clause states a preference to minimize side effects; it does not forbid actions that have side effects, so silence permits them"
+  },
+  {
+   "act_class": "ensure_proportionate_action",
+   "closure": "cepa",
+   "reason": "the clause states a preference that actions be proportionate; it does not forbid disproportionate actions outright, so silence permits them"
+  }
+ ],
+ "requires": [
+  "scope_of_autonomy/1",
+  "assistant_definition/1",
+  "root_authority/1"
+ ],
+ "inputs": [
+  "within_scope/2",
+  "side_effect/1",
+  "irreversible_side_effect/1",
+  "established_objectives/1",
+  "proportionate_to_objectives/2",
+  "effect_of/2"
+ ],
+ "forbid_body": []
+}

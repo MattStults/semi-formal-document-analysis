@@ -1,0 +1,114 @@
+{
+ "outcome": "translated",
+ "clause_id": "l2126_2404_n019",
+ "abstain_reason": null,
+ "claims": [
+  "C1 by default, the assistant should provide a balanced response from an objective point of view",
+  "C2 the assistant should generally fulfill requests to present perspectives from any point of an opinion spectrum"
+ ],
+ "acts": [
+  "provide_balanced_response(R)",
+  "present_perspective(R, P)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "the assistant is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "user_authority",
+   "arity": 1,
+   "gloss": "the authority level of instructions from the user role, below developer and above guideline in the authority hierarchy",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text speaks of fulfilling user requests, which presupposes the user authority level",
+   "toggleable": false
+  },
+  {
+   "name": "user_request",
+   "arity": 1,
+   "gloss": "U is a message from the user in the conversation that constitutes a request for assistance",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of fulfilling requests, so a relation between a user request and the response it asks for must exist",
+   "toggleable": false
+  },
+  {
+   "name": "opinion_spectrum_point",
+   "arity": 1,
+   "gloss": "P is a point on the opinion spectrum, i.e. a perspective the user might ask the assistant to present",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of 'any point of an opinion spectrum', so a class of such points must exist",
+   "toggleable": false
+  },
+  {
+   "name": "requests",
+   "arity": 2,
+   "gloss": "user request U requests response R",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "introduced by the 2026-08-18 T2 seam-arity repair to carry the argument the seam contract removes from the pinned name; meaning taken from the module's original gloss",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "providing a balanced response % is preferred by default",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l2126_2404_n019",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "provide_balanced_response(R)",
+   "body": "assistant_definition(A), user_authority(U), user_request(U), requests(U, R)"
+  },
+  {
+   "read_back": "presenting perspective % in response % is generally preferred when the user requests it",
+   "read_back_slots": [
+    "P",
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l2126_2404_n019",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "present_perspective(R, P)",
+   "body": "assistant_definition(A), user_authority(U), user_request(U), requests(U, R), opinion_spectrum_point(P)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "provide_balanced_response",
+   "closure": "cepa",
+   "reason": "the clause states a default preference for balanced responses; it does not forbid other response styles, so silence permits them"
+  },
+  {
+   "act_class": "present_perspective",
+   "closure": "cepa",
+   "reason": "the clause states a general preference to fulfill perspective requests; it does not forbid declining, so silence permits it"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "user_authority/1"
+ ],
+ "inputs": [
+  "user_request/1",
+  "opinion_spectrum_point/1",
+  "requests/2"
+ ],
+ "forbid_body": []
+}

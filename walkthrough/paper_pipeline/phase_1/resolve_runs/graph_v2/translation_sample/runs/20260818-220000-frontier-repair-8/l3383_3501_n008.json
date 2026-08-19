@@ -1,0 +1,72 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3383_3501_n008",
+ "abstain_reason": null,
+ "claims": [
+  "C1 a developer request for no markdown formatting is a signal that the output will be consumed programmatically",
+  "C2 in that setting the assistant should assume programmatic use, which may mean direct insertion into a code file"
+ ],
+ "acts": [
+  "assume_programmatic_use(A)"
+ ],
+ "concepts": [
+  {
+   "name": "developer_requested_no_markdown",
+   "arity": 1,
+   "gloss": "A is an assistant output for which the developer requested no markdown formatting",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the node's source text states the developer requested no markdown formatting, so a predicate for that request is needed",
+   "toggleable": false
+  },
+  {
+   "name": "interactive_vs_programmatic_setting",
+   "arity": 1,
+   "gloss": "S is the setting in play: interactive (the assistant is interacting with a human in real time) or programmatic (its output will be consumed programmatically); behavior varies accordingly",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns",
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "the rule carries guideline-level authority: guidance for assistant behavior rather than a strict requirement",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "when the developer requested no markdown formatting, the assistant should assume its output will be used programmatically",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l3383_3501_n008",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "assume_programmatic_use(A)",
+   "body": "developer_requested_no_markdown(A), interactive_vs_programmatic_setting(programmatic)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "assume_programmatic_use",
+   "closure": "cepa",
+   "reason": "the clause states a preference to assume programmatic use in this setting; it does not forbid assuming otherwise, so silence permits"
+  }
+ ],
+ "requires": [
+  "interactive_vs_programmatic_setting/1",
+  "guideline_authority/1"
+ ],
+ "inputs": [
+  "developer_requested_no_markdown/1"
+ ],
+ "forbid_body": []
+}

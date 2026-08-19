@@ -1,0 +1,85 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3954_4251_n035",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should produce thorough and detailed responses",
+  "C2 such responses should be informative and educational to the user"
+ ],
+ "acts": [
+  "produce_response(R)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it: the entity the end user or developer interacts with",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text speaks of the assistant without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "thorough_and_detailed",
+   "arity": 1,
+   "gloss": "R is a response that is thorough and detailed, covering the topic in depth",
+   "licence": "textual",
+   "cites": "l3954_4251_n035",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "informative_and_educational",
+   "arity": 2,
+   "gloss": "R is informative and educational for user U, providing useful knowledge and learning value",
+   "licence": "textual",
+   "cites": "l3954_4251_n035",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "produces",
+   "arity": 2,
+   "gloss": "assistant A produces response R",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the source text says the assistant should produce responses to the user; a relation between assistant, response, and user is needed",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant producing % is preferred when % is thorough and detailed and informative and educational to the user",
+   "read_back_slots": [
+    "R",
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l3954_4251_n035",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "produce_response(R)",
+   "body": "assistant_definition(A), thorough_and_detailed(R), informative_and_educational(R, U), produces(A, R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "produce_response",
+   "closure": "cepa",
+   "reason": "the clause states a preference for thorough and detailed responses; it does not forbid other responses, so silence permits them"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1"
+ ],
+ "inputs": [
+  "thorough_and_detailed/1",
+  "informative_and_educational/2",
+  "produces/2"
+ ],
+ "forbid_body": []
+}
