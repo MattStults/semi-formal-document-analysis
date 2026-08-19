@@ -428,10 +428,12 @@ def test_the_machine_ceiling_is_the_live_authorization():
     """G9: ONE ceiling the machine reads. Authorization history: $7.50 ->
     $8.50 (2026-08-02, BUDGET comment) -> $10.00 (Matt, 2026-08-12,
     resolve_runs/graph_v2/EXPERIMENTS.md:1291) -> $20.00 (Matt +$5,
-    2026-08-14, EXPERIMENTS.md 'Budget raised to $20.00'). At the old $8.50
-    constant the gauge printed a percentage against a ceiling the ledger had
-    already passed with authorization to be past it."""
-    assert spend.BUDGET == pytest.approx(20.00)
+    2026-08-14, EXPERIMENTS.md 'Budget raised to $20.00') -> $25.00 (Matt,
+    2026-08-16, D6: 'spend up to $25 if necessary', recorded in the BUDGET
+    constant's comment and quoted in AGENTS.md). At the old $8.50 constant
+    the gauge printed a percentage against a ceiling the ledger had already
+    passed with authorization to be past it."""
+    assert spend.BUDGET == pytest.approx(25.00)
 
 
 def test_batch_caveat_is_printed_when_the_batch_provider_has_rows(tmp_path):

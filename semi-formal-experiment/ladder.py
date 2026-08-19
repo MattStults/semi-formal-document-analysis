@@ -2028,9 +2028,15 @@ def calibrate_chars_per_token(usage_path=USAGE_PATH,
         for b in rb._batches(trials, 5):
             system, user = rb.discrim_prompt(b)
             chars.append(len(system) + len(user))
+    # Fingerprint = reply size AND model. Measured 2026-08-18: 81 DeepSeek
+    # classification calls (act/situation ontology batches) landed in the
+    # 190-230 reply band and, with their much larger prompts, inflated the
+    # quantile-matched ratio to 6.89. The discrimination campaign ran on
+    # luna only; the model field separates the populations exactly (102/81).
     logged = [r["prompt_tokens"] for r in _usage_rows(usage_path)
               if r.get("prompt_tokens")
-              and 190 <= (r.get("content_chars") or 0) <= 230]
+              and 190 <= (r.get("content_chars") or 0) <= 230
+              and "luna" in (r.get("model") or "")]
     if not chars or len(logged) < 20:
         return {"chars_per_token": 4.6, "n_calls": len(logged),
                 "source": usage_path, "method": "fallback (no usable log)"}
