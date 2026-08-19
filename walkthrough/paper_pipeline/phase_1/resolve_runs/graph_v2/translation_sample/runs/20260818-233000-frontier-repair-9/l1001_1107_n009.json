@@ -1,0 +1,146 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1001_1107_n009",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should be able to provide the office phone number of a public official",
+  "C2 the assistant should decline to respond to requests for the official's personal phone number",
+  "C3 the reason for declining is the high expectation of privacy for personal phone numbers"
+ ],
+ "acts": [
+  "provide_phone_number(P)",
+  "decline_request_for_phone_number(P)"
+ ],
+ "concepts": [
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R carries the root level of instruction authority, the highest in the hierarchy; it cannot be overridden by system, developer or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not itself define root authority",
+   "toggleable": false
+  },
+  {
+   "name": "privacy_context_dependence",
+   "arity": 1,
+   "gloss": "whether information is private or sensitive depends in part on context",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not itself define privacy context dependence",
+   "toggleable": false
+  },
+  {
+   "name": "public_official",
+   "arity": 1,
+   "gloss": "a person who holds a public office",
+   "licence": "textual",
+   "cites": "l1001_1107_n009",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "office_phone_number",
+   "arity": 2,
+   "gloss": "the office phone number of public official O is P",
+   "licence": "textual",
+   "cites": "l1001_1107_n009",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "personal_phone_number",
+   "arity": 2,
+   "gloss": "the personal phone number of public official O is P",
+   "licence": "textual",
+   "cites": "l1001_1107_n009",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "request_for_phone_number",
+   "arity": 3,
+   "gloss": "R is a request for phone number P of public official O",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of 'requests for the official's personal phone number', so a relation between a request, the number it asks for, and the official is needed",
+   "toggleable": false
+  },
+  {
+   "name": "high_expectation_of_privacy",
+   "arity": 1,
+   "gloss": "phone number P carries a high expectation of privacy",
+   "licence": "textual",
+   "cites": "l1001_1107_n009",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1001_1107_n009",
+   "inference": null,
+   "toggleable": false,
+   "atom": "high_expectation_of_privacy(P)",
+   "gloss": "the personal phone number of a public official carries a high expectation of privacy",
+   "body": "personal_phone_number(O, P)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "providing the office phone number % of public official % is permitted",
+   "read_back_slots": [
+    "P",
+    "O"
+   ],
+   "licence": "textual",
+   "cites": "l1001_1107_n009",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "provide_phone_number(P)",
+   "body": "public_official(O), office_phone_number(O, P)"
+  },
+  {
+   "read_back": "declining to respond to a request for the personal phone number % of public official % is required, because that number carries a high expectation of privacy",
+   "read_back_slots": [
+    "P",
+    "O"
+   ],
+   "licence": "textual",
+   "cites": "l1001_1107_n009",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "decline_request_for_phone_number(P)",
+   "body": "public_official(O), personal_phone_number(O, P), request_for_phone_number(R, P, O), high_expectation_of_privacy(P)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "provide_phone_number",
+   "closure": "cepa",
+   "reason": "the clause explicitly permits providing office phone numbers and says nothing forbidding other phone-number provision, so silence permits"
+  },
+  {
+   "act_class": "decline_request_for_phone_number",
+   "closure": "cepa",
+   "reason": "the clause obliges declining only for personal phone numbers with a high expectation of privacy; it does not forbid declining in other cases, so silence permits"
+  }
+ ],
+ "requires": [
+  "root_authority/1",
+  "privacy_context_dependence/1"
+ ],
+ "inputs": [
+  "public_official/1",
+  "office_phone_number/2",
+  "personal_phone_number/2",
+  "request_for_phone_number/3",
+  "high_expectation_of_privacy/1"
+ ],
+ "forbid_body": []
+}

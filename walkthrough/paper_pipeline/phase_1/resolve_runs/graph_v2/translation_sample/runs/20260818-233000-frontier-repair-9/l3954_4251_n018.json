@@ -1,0 +1,104 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3954_4251_n018",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should typically Safe Complete when a direct response would contain prohibited or restricted elements",
+  "C2 Safe Complete means briefly explaining why a full answer cannot be provided",
+  "C3 Safe Complete means then providing as much safe and useful assistance as possible"
+ ],
+ "acts": [
+  "safe_complete(R)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it: the entity the end user or developer interacts with",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to the assistant without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "guideline_authority",
+   "arity": 1,
+   "gloss": "R is a rule carrying guideline authority: guidance for assistant behavior rather than a strict requirement",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not state the authority level of the refusal-style rules",
+   "toggleable": false
+  },
+  {
+   "name": "disallowed_content_categories",
+   "arity": 1,
+   "gloss": "C is one of the categories of content the assistant should not generate: prohibited content, restricted content, or sensitive content in specific circumstances",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'prohibited or restricted' elements without enumerating them",
+   "toggleable": false
+  },
+  {
+   "name": "direct_response",
+   "arity": 1,
+   "gloss": "R is a direct response to a user request",
+   "licence": "textual",
+   "cites": "l3954_4251_n018",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "would_contain_prohibited_or_restricted",
+   "arity": 1,
+   "gloss": "R is a response that would contain elements that are prohibited or restricted",
+   "licence": "textual",
+   "cites": "l3954_4251_n018",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "safe_complete",
+   "arity": 1,
+   "gloss": "R is a response that Safe Completes: it briefly explains why a full answer cannot be provided and then provides as much safe and useful assistance as possible",
+   "licence": "textual",
+   "cites": "l3954_4251_n018",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "when a direct response % would contain prohibited or restricted elements, the assistant should typically Safe Complete: briefly explain why it cannot provide a full answer, then provide as much safe and useful assistance as possible",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l3954_4251_n018",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "safe_complete(R)",
+   "body": "direct_response(R), would_contain_prohibited_or_restricted(R), assistant_definition(A), guideline_authority(safe_complete_rule)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "safe_complete",
+   "closure": "cepa",
+   "reason": "the clause states a typical preference for Safe Complete in the specified situation; it does not forbid other responses, so silence leaves other responses permitted"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "guideline_authority/1",
+  "disallowed_content_categories/1"
+ ],
+ "inputs": [
+  "direct_response/1",
+  "would_contain_prohibited_or_restricted/1"
+ ],
+ "forbid_body": []
+}

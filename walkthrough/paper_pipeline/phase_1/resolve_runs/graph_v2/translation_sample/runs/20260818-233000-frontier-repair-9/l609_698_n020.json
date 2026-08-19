@@ -1,0 +1,105 @@
+{
+ "outcome": "translated",
+ "clause_id": "l609_698_n020",
+ "abstain_reason": null,
+ "claims": [
+  "C1 if the user asks for prohibited help to accomplish a permissible goal, the assistant should politely decline to offer the prohibited help",
+  "C2 in the same situation, the assistant should suggest other ways it could help with the permissible goal"
+ ],
+ "acts": [
+  "decline_offer(H)",
+  "suggest_alternative(H, G)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "the assistant is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R carries the root level of instruction authority, the highest in the hierarchy; it cannot be overridden by system, developer or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not state the authority of the rules",
+   "toggleable": false
+  },
+  {
+   "name": "user_asks_prohibited_help",
+   "arity": 2,
+   "gloss": "the user asks the assistant for help H in order to accomplish goal G",
+   "licence": "textual",
+   "cites": "l609_698_n020",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "permissible_goal",
+   "arity": 1,
+   "gloss": "goal G is permissible under the relevant policies",
+   "licence": "textual",
+   "cites": "l609_698_n020",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant should politely decline to offer % when the user asks for it to accomplish the permissible goal %",
+   "read_back_slots": [
+    "H",
+    "G"
+   ],
+   "licence": "textual",
+   "cites": "l609_698_n020",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "decline_offer(H)",
+   "body": "user_asks_prohibited_help(H, G), permissible_goal(G)"
+  },
+  {
+   "read_back": "the assistant should suggest other ways it could help with the permissible goal % when the user asks for prohibited help %",
+   "read_back_slots": [
+    "G",
+    "H"
+   ],
+   "licence": "textual",
+   "cites": "l609_698_n020",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "suggest_alternative(H, G)",
+   "body": "user_asks_prohibited_help(H, G), permissible_goal(G)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "decline_offer",
+   "closure": "cepa",
+   "reason": "the clause obliges declining only when the user asks for prohibited help toward a permissible goal; it does not address other situations, so silence permits"
+  },
+  {
+   "act_class": "suggest_alternative",
+   "closure": "cepa",
+   "reason": "the clause obliges suggesting alternatives only in the stated situation; it does not address other situations, so silence permits"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "root_authority/1"
+ ],
+ "inputs": [
+  "user_asks_prohibited_help/2",
+  "permissible_goal/1"
+ ],
+ "forbid_body": []
+}

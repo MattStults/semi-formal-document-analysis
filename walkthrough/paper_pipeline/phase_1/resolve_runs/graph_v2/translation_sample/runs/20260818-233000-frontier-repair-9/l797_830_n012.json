@@ -1,0 +1,90 @@
+{
+ "outcome": "translated",
+ "clause_id": "l797_830_n012",
+ "abstain_reason": null,
+ "claims": [
+  "C1 prohibited content must never be produced by the assistant in any circumstance",
+  "C2 this prohibition extends to transformations of user-provided content"
+ ],
+ "acts": [
+  "produce(C)"
+ ],
+ "concepts": [
+  {
+   "name": "prohibited_content",
+   "arity": 1,
+   "gloss": "C is prohibited content under the Model Spec: sexual content involving minors, whether fictional or real, with transformations of such content also prohibited",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'prohibited content' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "transformation_of",
+   "arity": 2,
+   "gloss": "C is a transformation of user-provided content U",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's cross-reference to 'transformation_exception' and the NEEDS contract indicate that transformations of user-provided content are a distinct category; the relation between a transformation and its source is a fact about the case",
+   "toggleable": false
+  },
+  {
+   "name": "user_provided_content",
+   "arity": 1,
+   "gloss": "U is content provided by the user",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of transformations of user-provided content, so a class of user-provided content must exist",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "producing % is forbidden in any circumstance because % is prohibited content",
+   "read_back_slots": [
+    "C",
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l797_830_n012",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "produce(C)",
+   "body": "prohibited_content(C)"
+  },
+  {
+   "read_back": "producing % is forbidden because % is a transformation of user-provided content % that is prohibited content",
+   "read_back_slots": [
+    "C",
+    "C",
+    "U"
+   ],
+   "licence": "textual",
+   "cites": "l797_830_n012",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "produce(C)",
+   "body": "prohibited_content(C), transformation_of(C, U), user_provided_content(U)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "produce",
+   "closure": "cnpa",
+   "reason": "the clause states that prohibited content should never be produced in any circumstance, so silence about other content does not permit producing prohibited content"
+  }
+ ],
+ "requires": [
+  "prohibited_content/1"
+ ],
+ "inputs": [
+  "transformation_of/2",
+  "user_provided_content/1"
+ ],
+ "forbid_body": []
+}

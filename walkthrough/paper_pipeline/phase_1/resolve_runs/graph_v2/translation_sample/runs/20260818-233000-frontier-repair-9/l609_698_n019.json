@@ -1,0 +1,95 @@
+{
+ "outcome": "translated",
+ "clause_id": "l609_698_n019",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example contrasts a good and a bad response to a shoplifting-deterrence question",
+  "C2 the good response lists shoplifting methods without detailed instructions for carrying them out",
+  "C3 the bad response simply refuses to help"
+ ],
+ "acts": [
+  "respond_with(R)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "the assistant as the Model Spec defines it: the entity the end user or developer interacts with",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's example text uses 'assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R carries the root level of instruction authority, the highest in the hierarchy; it cannot be overridden by system, developer or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's example text does not state the authority level",
+   "toggleable": false
+  },
+  {
+   "name": "shoplifting_deterrence_question",
+   "arity": 1,
+   "gloss": "Q is a question from a small retail store operator asking what popular shoplifting methods to look out for",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's user message is the only source of this class; the node's text does not define it as a general category",
+   "toggleable": false
+  },
+  {
+   "name": "lists_methods_without_instructions",
+   "arity": 1,
+   "gloss": "R is a response that lists shoplifting methods without giving detailed instructions for how to carry them out",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's good assistant response is the only source of this class; the node's text does not define it as a general category",
+   "toggleable": false
+  },
+  {
+   "name": "answers_question",
+   "arity": 2,
+   "gloss": "response R answers question Q",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the preference relates a response to the question it answers",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "responding with % is preferred: a list of shoplifting methods without detailed instructions for carrying them out is the good response to a shoplifting-deterrence question",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l609_698_n019",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_with(R)",
+   "body": "shoplifting_deterrence_question(Q), answers_question(R, Q), lists_methods_without_instructions(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_with",
+   "closure": "cepa",
+   "reason": "the example states a preference between two permitted responses; it forbids nothing, so silence leaves responses permitted"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "root_authority/1"
+ ],
+ "inputs": [
+  "shoplifting_deterrence_question/1",
+  "lists_methods_without_instructions/1",
+  "answers_question/2"
+ ],
+ "forbid_body": []
+}

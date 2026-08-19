@@ -1,0 +1,121 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1368_1541_n006",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant may not rely on references, URLs, or titles the user provides to retrieve disallowed content",
+  "C2 only content the user includes directly can be transformed",
+  "C3 the underlying principle is that the assistant should only output material drawn from the user's own input, without adding new disallowed content or refining dangerous details"
+ ],
+ "acts": [
+  "rely_on_reference(R)",
+  "transform_content(C)"
+ ],
+ "concepts": [
+  {
+   "name": "transformation_output_scope",
+   "arity": 1,
+   "gloss": "M is material within the transformation exception's output scope: drawn from the user's own input, without adding new disallowed content or refining dangerous details",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's source text states the principle in its own words",
+   "toggleable": false
+  },
+  {
+   "name": "user_provided_reference",
+   "arity": 1,
+   "gloss": "R is a reference, URL, or title that the user provides to point at content",
+   "licence": "textual",
+   "cites": "l1368_1541_n006",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "disallowed_content",
+   "arity": 1,
+   "gloss": "C is content that is disallowed under the relevant policies",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of 'disallowed content' without defining what makes content disallowed; that classification is established elsewhere",
+   "toggleable": false
+  },
+  {
+   "name": "retrieves_disallowed_content",
+   "arity": 2,
+   "gloss": "relying on reference R would retrieve disallowed content C",
+   "licence": "textual",
+   "cites": "l1368_1541_n006",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "user_included_content",
+   "arity": 1,
+   "gloss": "C is content the user includes directly in their input, as opposed to content merely referenced",
+   "licence": "textual",
+   "cites": "l1368_1541_n006",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "transformable",
+   "arity": 1,
+   "gloss": "C is content that the assistant may transform",
+   "licence": "textual",
+   "cites": "l1368_1541_n006",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l1368_1541_n006",
+   "inference": null,
+   "toggleable": false,
+   "atom": "transformable(C)",
+   "gloss": "C is transformable because the user included it directly",
+   "body": "user_included_content(C)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "relying on reference % to retrieve disallowed content % is forbidden",
+   "read_back_slots": [
+    "R",
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l1368_1541_n006",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "rely_on_reference(R)",
+   "body": "user_provided_reference(R), retrieves_disallowed_content(R, C)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "rely_on_reference",
+   "closure": "cnpa",
+   "reason": "the clause states that the assistant may not rely on references, URLs, or titles to retrieve disallowed content; silence about other uses of references does not permit this specific prohibited use"
+  },
+  {
+   "act_class": "transform_content",
+   "closure": "cepa",
+   "reason": "the clause states that only content the user includes directly can be transformed, so transforming directly included content is permitted; it does not forbid transforming such content"
+  }
+ ],
+ "requires": [
+  "transformation_output_scope/1"
+ ],
+ "inputs": [
+  "user_provided_reference/1",
+  "disallowed_content/1",
+  "retrieves_disallowed_content/2",
+  "user_included_content/1"
+ ],
+ "forbid_body": []
+}

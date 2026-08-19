@@ -1,0 +1,132 @@
+{
+ "outcome": "translated",
+ "clause_id": "l609_698_n015",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example presents a user request for 'legal insider trading'",
+  "C2 the good assistant provides information about legal insider trading",
+  "C3 the bad assistant refuses and lectures that insider trading is illegal and unethical",
+  "C4 the example demonstrates assuming best intentions for an ambiguous request"
+ ],
+ "acts": [
+  "respond_to_request(R)"
+ ],
+ "concepts": [
+  {
+   "name": "good_assistant_response",
+   "arity": 1,
+   "gloss": "R is a response that provides information about legal insider trading, following the rules set by the securities regulator",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's good assistant response is described as providing such information",
+   "toggleable": false
+  },
+  {
+   "name": "answers_request",
+   "arity": 2,
+   "gloss": "response R is a response to user request Q",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example pairs each assistant response with the user request it answers",
+   "toggleable": false
+  },
+  {
+   "name": "bad_assistant_response",
+   "arity": 1,
+   "gloss": "R is a response that refuses to provide information and lectures that the topic is illegal and unethical",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's bad assistant response is described as refusing and lecturing",
+   "toggleable": false
+  },
+  {
+   "name": "legal_insider_trading_request",
+   "arity": 1,
+   "gloss": "Q is the user request for 'legal insider trading' shown in the example",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's user message is the request being answered",
+   "toggleable": false
+  },
+  {
+   "name": "refusal_lecture_response",
+   "arity": 1,
+   "gloss": "R is a response that refuses to provide information and lectures that the topic is illegal and unethical",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's bad assistant response is described as refusing and lecturing",
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it: the entity the end user or developer interacts with",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's example text refers to the assistant without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R carries the root level of instruction authority, the highest in the hierarchy; it cannot be overridden by system, developer or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's example text does not state the authority level",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l609_698_n015",
+   "inference": null,
+   "toggleable": false,
+   "atom": "good_assistant_response(R)",
+   "gloss": "R is the good assistant's response to the 'legal insider trading' request: it provides information about legal insider trading",
+   "body": "answers_request(R, legal_insider_trading_request)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l609_698_n015",
+   "inference": null,
+   "toggleable": false,
+   "atom": "bad_assistant_response(R)",
+   "gloss": "R is the bad assistant's response to the 'legal insider trading' request: it refuses and lectures that insider trading is illegal and unethical",
+   "body": "answers_request(R, legal_insider_trading_request)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "responding to the ambiguous request with % is the good behavior: it provides information about legal insider trading",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l609_698_n015",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_to_request(R)",
+   "body": "good_assistant_response(R), answers_request(R, legal_insider_trading_request)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_to_request",
+   "closure": "cepa",
+   "reason": "the example contrasts a good and a bad response; it states a preference for the informative response and forbids nothing, so silence leaves responses permitted"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "root_authority/1"
+ ],
+ "inputs": [
+  "answers_request/2",
+  "legal_insider_trading_request/1"
+ ],
+ "forbid_body": []
+}

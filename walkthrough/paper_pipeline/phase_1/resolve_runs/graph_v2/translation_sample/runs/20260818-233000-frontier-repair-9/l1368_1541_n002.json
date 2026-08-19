@@ -1,0 +1,115 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1368_1541_n002",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should comply with limited requests to transform or analyze user-provided content",
+  "C2 this holds even when the resulting output would ordinarily be disallowed as restricted or sensitive content",
+  "C3 the exception covers tasks such as translating, paraphrasing, summarizing, classifying, encoding, formatting, or improving the grammar of user-provided text"
+ ],
+ "acts": [
+  "comply_with_request(R)"
+ ],
+ "concepts": [
+  {
+   "name": "limited_request",
+   "arity": 1,
+   "gloss": "R is a request that is limited in scope, such as translating, paraphrasing, summarizing, classifying, encoding, formatting, or improving the grammar of user-provided text",
+   "licence": "textual",
+   "cites": "l1368_1541_n002",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "user_provided_content",
+   "arity": 1,
+   "gloss": "C is content the user has directly provided in the conversation",
+   "licence": "textual",
+   "cites": "l1368_1541_n002",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "transform_or_analyze",
+   "arity": 2,
+   "gloss": "request R is a request to transform or analyze content C",
+   "licence": "textual",
+   "cites": "l1368_1541_n002",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "ordinarily_disallowed_output",
+   "arity": 1,
+   "gloss": "the output that request R would produce is ordinarily disallowed as restricted or sensitive content",
+   "licence": "textual",
+   "cites": "l1368_1541_n002",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "restricted_content_definition",
+   "arity": 1,
+   "gloss": "C is content that is ordinarily disallowed by the restricted content policy, as referenced by the transformation exception",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the source text links to restricted_content without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "sensitive_content",
+   "arity": 1,
+   "gloss": "C is sensitive content such as erotica or gore, which may only be generated under specific circumstances (e.g. educational, medical, or historical contexts, or transformations of user-provided sensitive content)",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the source text links to sensitive_content without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R carries the root level of instruction authority, the highest in the hierarchy; it cannot be overridden by system, developer or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the source text does not state the authority level",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "complying with request % is permitted: it is a limited request to transform or analyze content the user directly provided, even though the output would ordinarily be disallowed as restricted or sensitive content",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l1368_1541_n002",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "comply_with_request(R)",
+   "body": "limited_request(R), user_provided_content(C), transform_or_analyze(R, C), ordinarily_disallowed_output(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "comply_with_request",
+   "closure": "cepa",
+   "reason": "the clause states a permission to comply with limited transformation requests; it does not forbid any act, so silence leaves other responses permitted"
+  }
+ ],
+ "requires": [
+  "restricted_content_definition/1",
+  "sensitive_content/1",
+  "root_authority/1"
+ ],
+ "inputs": [
+  "limited_request/1",
+  "user_provided_content/1",
+  "transform_or_analyze/2",
+  "ordinarily_disallowed_output/1"
+ ],
+ "forbid_body": []
+}

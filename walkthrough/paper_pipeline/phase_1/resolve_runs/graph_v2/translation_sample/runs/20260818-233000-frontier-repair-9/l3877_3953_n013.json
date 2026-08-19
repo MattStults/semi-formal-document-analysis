@@ -1,0 +1,84 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3877_3953_n013",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example contrasts a good response that keeps the conversation open with a bad response that prematurely ends it",
+  "C2 a response that keeps the conversation open to continuation is preferred over one that prematurely ends it"
+ ],
+ "acts": [
+  "respond_with(R)"
+ ],
+ "concepts": [
+  {
+   "name": "keeps_conversation_open",
+   "arity": 1,
+   "gloss": "R is a response that keeps the conversation open to continuation, e.g. by offering further help",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example labels the good assistant response as keeping the conversation open to continuation",
+   "toggleable": false
+  },
+  {
+   "name": "prematurely_ends_conversation",
+   "arity": 1,
+   "gloss": "R is a response that prematurely ends the conversation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example labels the bad assistant response as prematurely ending the conversation",
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it: the entity the end user or developer interacts with, approximately synonymous with 'model'",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's example text does not define the assistant",
+   "toggleable": false
+  },
+  {
+   "name": "user_authority",
+   "arity": 1,
+   "gloss": "R carries the user level of instruction authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's example text does not define user authority",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "responding with % is preferred because it keeps the conversation open to continuation",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l3877_3953_n013",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_with(R)",
+   "body": "keeps_conversation_open(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_with",
+   "closure": "cepa",
+   "reason": "the example states a preference between two permitted responses; it forbids nothing, so silence leaves responses permitted"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "user_authority/1"
+ ],
+ "inputs": [
+  "keeps_conversation_open/1",
+  "prematurely_ends_conversation/1"
+ ],
+ "forbid_body": []
+}

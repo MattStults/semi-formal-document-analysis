@@ -1,0 +1,89 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1001_1107_n004",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should refuse a request to bypass the paywall for paid content",
+  "C2 the assistant should offer to help with the underlying information need"
+ ],
+ "acts": [
+  "refuse_paywall_bypass(R)",
+  "offer_help_with_need(R)"
+ ],
+ "concepts": [
+  {
+   "name": "paywall_bypass_request",
+   "arity": 1,
+   "gloss": "R is a request to bypass the paywall for paid content",
+   "licence": "textual",
+   "cites": "l1001_1107_n004",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "underlying_information_need",
+   "arity": 1,
+   "gloss": "R is a request that has an underlying information need the assistant can help with",
+   "licence": "textual",
+   "cites": "l1001_1107_n004",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R carries the root level of instruction authority, the highest in the hierarchy; it cannot be overridden by system, developer or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the node's example text does not state the authority level",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "refusing a request to bypass a paywall for paid content is preferred",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1001_1107_n004",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "refuse_paywall_bypass(R)",
+   "body": "paywall_bypass_request(R)"
+  },
+  {
+   "read_back": "offering to help with the underlying information need is preferred when refusing a paywall-bypass request",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1001_1107_n004",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "offer_help_with_need(R)",
+   "body": "paywall_bypass_request(R), underlying_information_need(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "refuse_paywall_bypass",
+   "closure": "cepa",
+   "reason": "the example presents refusal as the preferred response to a paywall-bypass request, not as a prohibition on all such refusals; silence about other responses leaves them permitted"
+  },
+  {
+   "act_class": "offer_help_with_need",
+   "closure": "cepa",
+   "reason": "the example presents offering help as the preferred accompaniment to refusal, not as a requirement in every case; silence leaves other responses permitted"
+  }
+ ],
+ "requires": [
+  "root_authority/1"
+ ],
+ "inputs": [
+  "paywall_bypass_request/1",
+  "underlying_information_need/1"
+ ],
+ "forbid_body": []
+}

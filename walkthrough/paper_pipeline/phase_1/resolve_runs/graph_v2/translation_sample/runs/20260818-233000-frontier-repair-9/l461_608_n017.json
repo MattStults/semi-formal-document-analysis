@@ -1,0 +1,184 @@
+{
+ "outcome": "translated",
+ "clause_id": "l461_608_n017",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should favor approaches that are minimally disruptive to the user and non-users",
+  "C2 the assistant should favor approaches that are, when possible, easily reversible",
+  "C3 approaches easily reversible by the assistant are preferred to approaches requiring additional user action to reverse",
+  "C4 when planning irreversible actions, the assistant should attempt to mitigate issues that might occur if the plan fails or the system is abruptly shut down"
+ ],
+ "acts": [
+  "favor_approach(A)",
+  "prefer_approach(A)",
+  "mitigate_issues(A)"
+ ],
+ "concepts": [
+  {
+   "name": "approach",
+   "arity": 1,
+   "gloss": "A is an approach the assistant might take in a situation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of approaches the assistant should favor, prefer, or mitigate; a class of approaches is presupposed",
+   "toggleable": false
+  },
+  {
+   "name": "minimally_disruptive",
+   "arity": 1,
+   "gloss": "A is an approach that causes minimal disruption to the user and to non-users",
+   "licence": "textual",
+   "cites": "l461_608_n017",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "reversible_when_possible",
+   "arity": 1,
+   "gloss": "A is an approach that is easily reversible when possible",
+   "licence": "textual",
+   "cites": "l461_608_n017",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "reversible_by_assistant",
+   "arity": 1,
+   "gloss": "A is an approach that is easily reversible by the assistant itself",
+   "licence": "textual",
+   "cites": "l461_608_n017",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "requires_user_action_to_reverse",
+   "arity": 1,
+   "gloss": "A is an approach that would require additional action on the part of the user to reverse",
+   "licence": "textual",
+   "cites": "l461_608_n017",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "irreversible",
+   "arity": 1,
+   "gloss": "A is an approach that is irreversible",
+   "licence": "textual",
+   "cites": "l461_608_n017",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "planning_irreversible_action",
+   "arity": 1,
+   "gloss": "A is an approach the assistant is planning to take as an irreversible action",
+   "licence": "textual",
+   "cites": "l461_608_n017",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "not_reversible_by_user_without_action",
+   "arity": 1,
+   "gloss": "A is an approach that is not reversible by the assistant without additional user action",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause contrasts approaches reversible by the assistant with those requiring additional user action; the negation is derived from that contrast",
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it: the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R carries the root level of instruction authority, the highest in the hierarchy; it cannot be overridden by system, developer or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not itself state the authority of the section",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "favoring approach % is preferred because it is minimally disruptive and, when possible, easily reversible",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l461_608_n017",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "favor_approach(A)",
+   "body": "approach(A), minimally_disruptive(A), reversible_when_possible(A)"
+  },
+  {
+   "read_back": "approach % is preferred over approaches requiring additional user action to reverse, because it is easily reversible by the assistant",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l461_608_n017",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "prefer_approach(A)",
+   "body": "approach(A), reversible_by_assistant(A), not_reversible_by_user_without_action(A)"
+  },
+  {
+   "read_back": "when planning irreversible approach %, the assistant should attempt to mitigate issues that might occur if the plan fails or the system is abruptly shut down",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l461_608_n017",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "mitigate_issues(A)",
+   "body": "approach(A), irreversible(A), planning_irreversible_action(A)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "favor_approach",
+   "closure": "cepa",
+   "reason": "the clause states a preference for minimally disruptive, reversible approaches; it does not forbid any approach, so silence permits"
+  },
+  {
+   "act_class": "prefer_approach",
+   "closure": "cepa",
+   "reason": "the clause states a comparative preference between reversible approaches; it does not forbid any approach, so silence permits"
+  },
+  {
+   "act_class": "mitigate_issues",
+   "closure": "cepa",
+   "reason": "the clause states a preference to attempt mitigation when planning irreversible actions; it does not forbid any act, so silence permits"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "root_authority/1"
+ ],
+ "inputs": [
+  "approach/1",
+  "minimally_disruptive/1",
+  "reversible_when_possible/1",
+  "reversible_by_assistant/1",
+  "requires_user_action_to_reverse/1",
+  "irreversible/1",
+  "planning_irreversible_action/1",
+  "not_reversible_by_user_without_action/1"
+ ],
+ "forbid_body": []
+}

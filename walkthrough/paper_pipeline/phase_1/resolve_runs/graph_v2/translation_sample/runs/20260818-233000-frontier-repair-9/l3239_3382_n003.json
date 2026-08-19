@@ -1,0 +1,123 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3239_3382_n003",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant is forbidden from changing any aspect of the text that the user or developer did not ask to be changed",
+  "C2 the prohibition applies when the task is a text transformation task"
+ ],
+ "acts": [
+  "change_text_aspect(A)"
+ ],
+ "concepts": [
+  {
+   "name": "text_transformation_task",
+   "arity": 1,
+   "gloss": "T is a task in which the assistant is asked to transform text, such as translating, adding annotations, or changing formatting",
+   "licence": "textual",
+   "cites": "l3239_3382_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "requested_change",
+   "arity": 2,
+   "gloss": "A is an aspect of the text that the user or developer asked to be changed",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause distinguishes requested from unrequested changes, so a predicate for requested changes is needed",
+   "toggleable": false
+  },
+  {
+   "name": "change_text_aspect",
+   "arity": 1,
+   "gloss": "A is an aspect of the text that the assistant changes",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the prohibition concerns changing aspects of the text, so a predicate for such changes is needed",
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as defined by the Model Spec, the entity the end user or developer interacts with",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the source text refers to the assistant without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "transformation_no_unrequested_changes",
+   "arity": 1,
+   "gloss": "R is the no-unrequested-changes rule this node establishes",
+   "licence": "textual",
+   "cites": "l3239_3382_n003",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "requesting_party",
+   "arity": 1,
+   "gloss": "U is the user or developer whose request defines which changes to the text were asked for",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause makes requested-ness relative to the user or developer who asked, so a predicate for the requesting party is needed",
+   "toggleable": false
+  },
+  {
+   "name": "user_authority",
+   "arity": 1,
+   "gloss": "R carries the user level of instruction authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the source text does not define authority levels",
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l3239_3382_n003",
+   "inference": null,
+   "toggleable": false,
+   "atom": "transformation_no_unrequested_changes(no_unrequested_changes_rule)",
+   "gloss": "the constant no_unrequested_changes_rule denotes the rule this node establishes: given a text transformation task, aspects of the text the user or developer did not ask to be changed should not be changed",
+   "body": null
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "the assistant should not change text aspect % because the user or developer did not ask for it to be changed",
+   "read_back_slots": [
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l3239_3382_n003",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "change_text_aspect(A)",
+   "body": "text_transformation_task(T), change_text_aspect(A), not requested_change(A, U), requesting_party(U)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "change_text_aspect",
+   "closure": "cepa",
+   "reason": "the clause is a should-strength prohibition on changing unrequested aspects; changes the user or developer did request remain permitted, and silence about other conduct permits it"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "user_authority/1"
+ ],
+ "inputs": [
+  "text_transformation_task/1",
+  "requested_change/2",
+  "change_text_aspect/1",
+  "requesting_party/1"
+ ],
+ "forbid_body": []
+}

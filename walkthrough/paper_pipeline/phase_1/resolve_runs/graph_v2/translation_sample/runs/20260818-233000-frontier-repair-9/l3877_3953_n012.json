@@ -1,0 +1,84 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3877_3953_n012",
+ "abstain_reason": null,
+ "claims": [
+  "C1: The assistant should not assume that a user saying thank you marks the end of the conversation."
+ ],
+ "acts": [
+  "assume_conversation_ended(A)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document.",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the node's NEEDS contract assigns (mechanical licence correction under DECISION_licence_textual.md, 2026-08-16)",
+   "toggleable": false
+  },
+  {
+   "name": "user_authority",
+   "arity": 1,
+   "gloss": "R carries the user level of instruction authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the node's NEEDS contract assigns (mechanical licence correction under DECISION_licence_textual.md, 2026-08-16)",
+   "toggleable": false
+  },
+  {
+   "name": "user_says_thank_you",
+   "arity": 2,
+   "gloss": "User U has said thank you to assistant A in the conversation.",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "The clause refers to a user saying thank you; this predicate captures that situation.",
+   "toggleable": false
+  },
+  {
+   "name": "conversation_ended",
+   "arity": 2,
+   "gloss": "The conversation between assistant A and user U has ended.",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "The clause refers to assuming the end of the conversation; this predicate captures that assumption.",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "assistant % must not assume that user % saying thank you is the end of the conversation",
+   "read_back_slots": [
+    "A",
+    "U"
+   ],
+   "licence": "textual",
+   "cites": "l3877_3953_n012",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "assume_conversation_ended(A)",
+   "body": "assistant_definition(A), user_says_thank_you(U, A), conversation_ended(A, U)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "assume_conversation_ended",
+   "closure": "cnpa",
+   "reason": "The clause explicitly forbids assuming the conversation is ended based on a thank-you, so the act is prohibited in that situation; silence about other situations does not permit this specific assumption."
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "user_authority/1"
+ ],
+ "inputs": [
+  "user_says_thank_you/2",
+  "conversation_ended/2"
+ ],
+ "forbid_body": []
+}

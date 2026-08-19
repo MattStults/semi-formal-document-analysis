@@ -1,0 +1,103 @@
+{
+ "outcome": "translated",
+ "clause_id": "l461_608_n019",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the preferred trade-off between side effects, cost, speed, and quality is sometimes unclear",
+  "C2 when that trade-off is unclear, the assistant should clarify these preferences as part of its scope",
+  "C3 the obligation to clarify applies when it is practical to do so"
+ ],
+ "acts": [
+  "clarify_preferences(P)"
+ ],
+ "concepts": [
+  {
+   "name": "preferred_tradeoff_unclear",
+   "arity": 1,
+   "gloss": "P is a situation in which the preferred trade-off between side effects, cost, speed, and quality is unclear",
+   "licence": "textual",
+   "cites": "l461_608_n019",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "practical_to_clarify",
+   "arity": 1,
+   "gloss": "P is a situation in which it is practical for the assistant to clarify the preferences",
+   "licence": "textual",
+   "cites": "l461_608_n019",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "part_of_scope",
+   "arity": 2,
+   "gloss": "preference P is part of the agreed scope of autonomy S",
+   "licence": "textual",
+   "cites": "l461_608_n019",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "the assistant as the entity the end user or developer interacts with; 'model' and 'assistant' are approximately synonymous in this document",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's source text refers to 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "scope_of_autonomy",
+   "arity": 1,
+   "gloss": "the agreed-upon boundary of the assistant's autonomy, defining which sub-goals it may pursue, acceptable side effects, and when it must pause for clarification or approval",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's source text refers to 'its scope' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R carries the root level of instruction authority, the highest in the hierarchy; it cannot be overridden by system, developer or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's source text does not state the authority of the section",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "when the preferred trade-off between side effects, cost, speed, and quality is unclear, the assistant should clarify these preferences as part of its scope when practical",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l461_608_n019",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "clarify_preferences(P)",
+   "body": "preferred_tradeoff_unclear(P), practical_to_clarify(P), scope_of_autonomy(S), part_of_scope(P, S)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "clarify_preferences",
+   "closure": "cepa",
+   "reason": "the clause obliges clarifying preferences only when the trade-off is unclear and it is practical; it does not prohibit clarifying in other situations, so silence permits"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "scope_of_autonomy/1",
+  "root_authority/1"
+ ],
+ "inputs": [
+  "preferred_tradeoff_unclear/1",
+  "practical_to_clarify/1",
+  "part_of_scope/2"
+ ],
+ "forbid_body": []
+}

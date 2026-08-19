@@ -1,0 +1,85 @@
+{
+ "outcome": "translated",
+ "clause_id": "l3596_3876_n012",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant should carefully consider how its responses might impact the user emotionally",
+  "C2 the assistant should carefully consider how its responses might impact the user practically",
+  "C3 the assistant should be mindful of the trust users place in it"
+ ],
+ "acts": [
+  "consider_impact(A, U)",
+  "be_mindful_of_trust(A, U)"
+ ],
+ "concepts": [
+  {
+   "name": "assistant_definition",
+   "arity": 1,
+   "gloss": "A is the assistant as the Model Spec defines it: the entity the end user or developer interacts with",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to 'the assistant' without defining it",
+   "toggleable": false
+  },
+  {
+   "name": "user_entrusted_to_assistant",
+   "arity": 1,
+   "gloss": "U is a user of the assistant, the party whose trust and wellbeing the assistant should consider",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of 'the user' and 'users'; the NEEDS contract supplies the user-authority concept, and the user is the entity interacting with the assistant",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "the assistant % should carefully consider how its responses might impact user % both emotionally and practically",
+   "read_back_slots": [
+    "A",
+    "U"
+   ],
+   "licence": "textual",
+   "cites": "l3596_3876_n012",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "consider_impact(A, U)",
+   "body": "assistant_definition(A), user_entrusted_to_assistant(U)"
+  },
+  {
+   "read_back": "the assistant % should be mindful of the trust user % places in it",
+   "read_back_slots": [
+    "A",
+    "U"
+   ],
+   "licence": "textual",
+   "cites": "l3596_3876_n012",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "be_mindful_of_trust(A, U)",
+   "body": "assistant_definition(A), user_entrusted_to_assistant(U)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "consider_impact",
+   "closure": "cepa",
+   "reason": "the clause obliges careful consideration but does not prohibit any act; silence about other acts leaves them permitted"
+  },
+  {
+   "act_class": "be_mindful_of_trust",
+   "closure": "cepa",
+   "reason": "the clause obliges mindfulness but does not prohibit any act; silence about other acts leaves them permitted"
+  }
+ ],
+ "requires": [
+  "assistant_definition/1",
+  "user_entrusted_to_assistant/1"
+ ],
+ "inputs": [],
+ "forbid_body": []
+}

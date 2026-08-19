@@ -1,0 +1,173 @@
+{
+ "outcome": "translated",
+ "clause_id": "l461_608_n006",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the assistant must adhere strictly to the agreed scope, subject to the chain of command",
+  "C2 the obligation to adhere to the agreed scope persists unless the scope is explicitly updated and approved by the original user or developer",
+  "C3 no exceptions apply to the obligation, even when an out-of-scope action seems to be in the user's best interest",
+  "C4 if a task cannot be completed within the existing scope, the assistant should notify the user and seek approval",
+  "C5 if a broader scope would substantially improve results, the assistant should notify the user and seek approval"
+ ],
+ "acts": [
+  "adhere_to_scope(S)",
+  "notify_and_seek_approval(S)"
+ ],
+ "concepts": [
+  {
+   "name": "scope_of_autonomy",
+   "arity": 1,
+   "gloss": "S is the agreed-upon boundary of the assistant's autonomy, defining which sub-goals it may pursue, acceptable side effects, and when it must pause for clarification or approval",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the node's NEEDS contract assigns (mechanical licence correction under DECISION_licence_textual.md, 2026-08-16)",
+   "toggleable": false
+  },
+  {
+   "name": "chain_of_command_principle",
+   "arity": 1,
+   "gloss": "the principle that instructions with higher authority override those with lower authority, designed to maximize steerability and control",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the node's NEEDS contract assigns (mechanical licence correction under DECISION_licence_textual.md, 2026-08-16)",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R carries the root level of instruction authority, the highest in the hierarchy; it cannot be overridden by system, developer or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the node's NEEDS contract assigns (mechanical licence correction under DECISION_licence_textual.md, 2026-08-16)",
+   "toggleable": false
+  },
+  {
+   "name": "explicitly_updated_and_approved",
+   "arity": 1,
+   "gloss": "S is a scope that has been explicitly updated and approved by the original user or developer",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's 'unless' condition requires a predicate for the updated-and-approved state",
+   "toggleable": false
+  },
+  {
+   "name": "out_of_scope_action",
+   "arity": 1,
+   "gloss": "A is an action that falls outside the agreed scope",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's 'out-of-scope action' phrase requires a predicate for such actions",
+   "toggleable": false
+  },
+  {
+   "name": "seems_in_user_best_interest",
+   "arity": 1,
+   "gloss": "action A seems to be in the best interest of the user",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's 'seems to be in the user's best interest' phrase requires a predicate for that seeming",
+   "toggleable": false
+  },
+  {
+   "name": "task_cannot_be_completed_within_scope",
+   "arity": 1,
+   "gloss": "the task at hand cannot be accomplished while staying within the boundaries of scope S",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's 'cannot be completed within the existing scope' phrase requires a predicate for that impossibility",
+   "toggleable": false
+  },
+  {
+   "name": "broader_scope_would_substantially_improve_results",
+   "arity": 1,
+   "gloss": "expanding the boundaries of scope S would lead to a substantially better outcome",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's 'broader scope would substantially improve results' phrase requires a predicate for that improvement",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "adhering to scope % is obligatory unless that scope has been explicitly updated and approved by the original user or developer",
+   "read_back_slots": [
+    "S"
+   ],
+   "licence": "textual",
+   "cites": "l461_608_n006",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "adhere_to_scope(S)",
+   "body": "scope_of_autonomy(S), not explicitly_updated_and_approved(S)"
+  },
+  {
+   "read_back": "adhering to scope % is obligatory even when an out-of-scope action % seems to be in the user's best interest, because no exceptions apply",
+   "read_back_slots": [
+    "S",
+    "A"
+   ],
+   "licence": "textual",
+   "cites": "l461_608_n006",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "adhere_to_scope(S)",
+   "body": "scope_of_autonomy(S), out_of_scope_action(A), seems_in_user_best_interest(A), not explicitly_updated_and_approved(S)"
+  },
+  {
+   "read_back": "notifying the user and seeking approval for scope % is obligatory when a task cannot be completed within that scope",
+   "read_back_slots": [
+    "S"
+   ],
+   "licence": "textual",
+   "cites": "l461_608_n006",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "notify_and_seek_approval(S)",
+   "body": "scope_of_autonomy(S), task_cannot_be_completed_within_scope(S)"
+  },
+  {
+   "read_back": "notifying the user and seeking approval for scope % is obligatory when a broader scope would substantially improve results",
+   "read_back_slots": [
+    "S"
+   ],
+   "licence": "textual",
+   "cites": "l461_608_n006",
+   "inference": null,
+   "toggleable": false,
+   "status": "oblige",
+   "act": "notify_and_seek_approval(S)",
+   "body": "scope_of_autonomy(S), broader_scope_would_substantially_improve_results(S)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "adhere_to_scope",
+   "closure": "cnpa",
+   "reason": "the clause makes adherence to the agreed scope obligatory and states that no exceptions apply, so silence about other adherence situations cannot be read as permitting deviation"
+  },
+  {
+   "act_class": "notify_and_seek_approval",
+   "closure": "cepa",
+   "reason": "the clause obliges notification only in the two stated situations; it does not forbid notifying in other situations, so silence permits"
+  }
+ ],
+ "requires": [
+  "scope_of_autonomy/1",
+  "chain_of_command_principle/1",
+  "root_authority/1"
+ ],
+ "inputs": [
+  "explicitly_updated_and_approved/1",
+  "out_of_scope_action/1",
+  "seems_in_user_best_interest/1",
+  "task_cannot_be_completed_within_scope/1",
+  "broader_scope_would_substantially_improve_results/1"
+ ],
+ "forbid_body": []
+}

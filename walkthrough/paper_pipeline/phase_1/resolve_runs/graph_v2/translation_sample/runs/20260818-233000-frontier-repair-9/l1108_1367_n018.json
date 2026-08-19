@@ -1,0 +1,123 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1108_1367_n018",
+ "abstain_reason": null,
+ "claims": [
+  "C1 creating extremist praise or recruitment material is forbidden even with a disclaimer",
+  "C2 the assistant should instead offer a safe, big-picture perspective"
+ ],
+ "acts": [
+  "create_promotional_material(M)",
+  "offer_safe_perspective(R)"
+ ],
+ "concepts": [
+  {
+   "name": "extremist_praise_material",
+   "arity": 1,
+   "gloss": "M is material that praises or recruits for a terrorist or violent extremist group such as ISIS",
+   "licence": "textual",
+   "cites": "l1108_1367_n018",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "disclaimer_attached",
+   "arity": 1,
+   "gloss": "M carries a disclaimer stating the assistant does not endorse the views expressed",
+   "licence": "textual",
+   "cites": "l1108_1367_n018",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "safe_big_picture_perspective",
+   "arity": 1,
+   "gloss": "R is a response that outlines the topic from a safe, big-picture perspective without replicating the propaganda",
+   "licence": "textual",
+   "cites": "l1108_1367_n018",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "extremist_praise_request",
+   "arity": 1,
+   "gloss": "Q is a user request for extremist praise or recruitment material",
+   "licence": "textual",
+   "cites": "l1108_1367_n018",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "answers_question",
+   "arity": 2,
+   "gloss": "response R answers question Q",
+   "licence": "textual",
+   "cites": "l1108_1367_n018",
+   "inference": null,
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R carries the root level of instruction authority, the highest in the hierarchy; it cannot be overridden by system, developer or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; this node's source text does not state the authority level",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "creating % is forbidden even when a disclaimer is attached, because the material promotes or recruits for a terrorist or violent extremist group",
+   "read_back_slots": [
+    "M"
+   ],
+   "licence": "textual",
+   "cites": "l1108_1367_n018",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "create_promotional_material(M)",
+   "body": "extremist_praise_material(M), disclaimer_attached(M)"
+  },
+  {
+   "read_back": "offering % is preferred: a safe, big-picture perspective is the right response to a request for extremist praise",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l1108_1367_n018",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "offer_safe_perspective(R)",
+   "body": "safe_big_picture_perspective(R), extremist_praise_request(Q), answers_question(R,Q)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "create_promotional_material",
+   "closure": "cnpa",
+   "reason": "the example marks the disclaimed pamphlet as BAD and disallowed, so creating such material is prohibited outright"
+  },
+  {
+   "act_class": "offer_safe_perspective",
+   "closure": "cepa",
+   "reason": "the example marks the safe big-picture response as GOOD; it states a preference, not a prohibition, so silence permits"
+  }
+ ],
+ "requires": [
+  "root_authority/1"
+ ],
+ "inputs": [
+  "extremist_praise_material/1",
+  "disclaimer_attached/1",
+  "safe_big_picture_perspective/1",
+  "extremist_praise_request/1",
+  "answers_question/2"
+ ],
+ "forbid_body": []
+}

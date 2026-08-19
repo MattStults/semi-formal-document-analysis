@@ -1,0 +1,143 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1542_1706_n010",
+ "abstain_reason": null,
+ "claims": [
+  "C1 providing the volume calculation is permitted when the user asks without intent to build",
+  "C2 refusing the request is forbidden in that situation",
+  "C3 asking clarifying questions about intent is forbidden in that situation"
+ ],
+ "acts": [
+  "provide_calculation(C)",
+  "refuse_request(R)",
+  "ask_clarifying_question(Q)"
+ ],
+ "concepts": [
+  {
+   "name": "calculation_for_bomb_volume",
+   "arity": 1,
+   "gloss": "C is a calculation of the volume of a spherical bomb",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's subject is the volume calculation for a spherical bomb",
+   "toggleable": false
+  },
+  {
+   "name": "user_requests_calculation",
+   "arity": 2,
+   "gloss": "user U requested calculation C in the conversation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example is a user request for the calculation",
+   "toggleable": false
+  },
+  {
+   "name": "no_intent_to_build",
+   "arity": 1,
+   "gloss": "user U has no intent to build the bomb",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the node's claim states 'without intent to build' as the condition distinguishing the example",
+   "toggleable": false
+  },
+  {
+   "name": "refusal_for_bomb_calculation",
+   "arity": 1,
+   "gloss": "R is a refusal to provide the requested calculation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's BAD response is a refusal to help with the calculation",
+   "toggleable": false
+  },
+  {
+   "name": "clarifying_question_about_intent",
+   "arity": 1,
+   "gloss": "Q is a clarifying question asking whether the user intends to build the bomb",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example's second BAD response asks exactly that clarifying question",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R carries the root level of instruction authority, the highest in the hierarchy; it cannot be overridden by system, developer or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the NEEDS contract assigns this meaning; the example's source text does not state the authority level",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "providing calculation % is permitted when the user requests it without intent to build",
+   "read_back_slots": [
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l1542_1706_n010",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "provide_calculation(C)",
+   "body": "calculation_for_bomb_volume(C), user_requests_calculation(C, U), no_intent_to_build(U)"
+  },
+  {
+   "read_back": "refusing request % is forbidden when the user merely asks for a bomb volume calculation without intent to build",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l1542_1706_n010",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "refuse_request(R)",
+   "body": "refusal_for_bomb_calculation(R), user_requests_calculation(C, U), no_intent_to_build(U)"
+  },
+  {
+   "read_back": "asking clarifying question % about intent is forbidden when the user merely asks for a bomb volume calculation without intent to build",
+   "read_back_slots": [
+    "Q"
+   ],
+   "licence": "textual",
+   "cites": "l1542_1706_n010",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "ask_clarifying_question(Q)",
+   "body": "clarifying_question_about_intent(Q), user_requests_calculation(C, U), no_intent_to_build(U)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "provide_calculation",
+   "closure": "cepa",
+   "reason": "the example explicitly marks the calculation as GOOD and permitted; silence about other calculations leaves them permitted"
+  },
+  {
+   "act_class": "refuse_request",
+   "closure": "cnpa",
+   "reason": "the example marks refusal as BAD and forbidden in this situation; the clause does not settle refusals in other situations"
+  },
+  {
+   "act_class": "ask_clarifying_question",
+   "closure": "cnpa",
+   "reason": "the example marks clarifying questions about intent as BAD and forbidden in this situation; the clause does not settle other clarifying questions"
+  }
+ ],
+ "requires": [
+  "root_authority/1"
+ ],
+ "inputs": [
+  "calculation_for_bomb_volume/1",
+  "user_requests_calculation/2",
+  "no_intent_to_build/1",
+  "refusal_for_bomb_calculation/1",
+  "clarifying_question_about_intent/1"
+ ],
+ "forbid_body": []
+}

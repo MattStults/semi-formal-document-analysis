@@ -1,0 +1,144 @@
+{
+ "outcome": "translated",
+ "clause_id": "l699_796_n024",
+ "abstain_reason": null,
+ "claims": [
+  "C1 an instruction may delegate some of its authority to quoted text",
+  "C2 an instruction may delegate some of its authority to tool outputs",
+  "C3 an instruction may delegate some of its authority to multimodal data"
+ ],
+ "acts": [
+  "delegate_authority_to(I, D)"
+ ],
+ "concepts": [
+  {
+   "name": "instruction",
+   "arity": 1,
+   "gloss": "I is an instruction that carries some authority which may be delegated",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause speaks of instructions delegating authority, so a class of instructions must exist",
+   "toggleable": false
+  },
+  {
+   "name": "delegated_data_source",
+   "arity": 1,
+   "gloss": "D is a data source to which an instruction may delegate some of its authority",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause names three kinds of data as possible recipients of delegated authority; a common class is needed for the act",
+   "toggleable": false
+  },
+  {
+   "name": "quoted_text",
+   "arity": 1,
+   "gloss": "D is text that is quoted in the conversation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause names quoted text as one of the three data sources",
+   "toggleable": false
+  },
+  {
+   "name": "tool_output",
+   "arity": 1,
+   "gloss": "D is the output of a tool used in the conversation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause names tool outputs as one of the three data sources",
+   "toggleable": false
+  },
+  {
+   "name": "multimodal_data",
+   "arity": 1,
+   "gloss": "D is multimodal data (e.g. images, audio) present in the conversation",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause names multimodal data as one of the three data sources",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R carries the root level of instruction authority, the highest in the hierarchy; it cannot be overridden by system, developer or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define root authority",
+   "toggleable": false
+  },
+  {
+   "name": "authority_delegation_to_untrusted",
+   "arity": 1,
+   "gloss": "A is an instruction in unquoted text that may delegate authority to untrusted data sources",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define delegation to untrusted data",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "instruction % may delegate some of its authority to quoted text %",
+   "read_back_slots": [
+    "I",
+    "D"
+   ],
+   "licence": "textual",
+   "cites": "l699_796_n024",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "delegate_authority_to(I, D)",
+   "body": "instruction(I), delegated_data_source(D), quoted_text(D)"
+  },
+  {
+   "read_back": "instruction % may delegate some of its authority to tool output %",
+   "read_back_slots": [
+    "I",
+    "D"
+   ],
+   "licence": "textual",
+   "cites": "l699_796_n024",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "delegate_authority_to(I, D)",
+   "body": "instruction(I), delegated_data_source(D), tool_output(D)"
+  },
+  {
+   "read_back": "instruction % may delegate some of its authority to multimodal data %",
+   "read_back_slots": [
+    "I",
+    "D"
+   ],
+   "licence": "textual",
+   "cites": "l699_796_n024",
+   "inference": null,
+   "toggleable": false,
+   "status": "permit",
+   "act": "delegate_authority_to(I, D)",
+   "body": "instruction(I), delegated_data_source(D), multimodal_data(D)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "delegate_authority_to",
+   "closure": "cepa",
+   "reason": "the clause states that delegation to the three named data sources is permitted; it does not forbid delegation to any other source, so silence permits."
+  }
+ ],
+ "requires": [
+  "root_authority/1",
+  "authority_delegation_to_untrusted/1"
+ ],
+ "inputs": [
+  "instruction/1",
+  "delegated_data_source/1",
+  "quoted_text/1",
+  "tool_output/1",
+  "multimodal_data/1"
+ ],
+ "forbid_body": []
+}

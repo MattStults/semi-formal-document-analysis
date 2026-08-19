@@ -1,0 +1,116 @@
+{
+ "outcome": "translated",
+ "clause_id": "l797_830_n008",
+ "abstain_reason": null,
+ "claims": [
+  "C1 prohibited content applies only to sexual content involving minors",
+  "C2 transformations of user-provided content are also prohibited"
+ ],
+ "acts": [
+  "generate_content(C)"
+ ],
+ "concepts": [
+  {
+   "name": "disallowed_content_categories",
+   "arity": 1,
+   "gloss": "C is one of the categories of content the assistant should not generate: prohibited content, restricted content, or sensitive content in specific circumstances",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not define the categories",
+   "toggleable": false
+  },
+  {
+   "name": "transformation_exception_rule",
+   "arity": 1,
+   "gloss": "R is the transformation exception rule: the assistant should comply with limited requests to transform or analyze user-provided content even if the output would ordinarily be disallowed as restricted or sensitive content",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to transformations without defining the exception",
+   "toggleable": false
+  },
+  {
+   "name": "sexual_content_minors_prohibition",
+   "arity": 1,
+   "gloss": "P is the Model Spec's prohibition on producing sexual content involving minors, whether fictional or real, with transformations also prohibited",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text refers to the prohibition without restating it",
+   "toggleable": false
+  },
+  {
+   "name": "prohibited_content_definition",
+   "arity": 1,
+   "gloss": "C falls under the Model Spec's definition of prohibited content: sexual content involving minors, whether fictional or real; transformations of user-provided content into such content are also prohibited",
+   "licence": "textual",
+   "cites": "l797_830_n008",
+   "inference": null,
+   "toggleable": false
+  }
+ ],
+ "ontology": [
+  {
+   "licence": "textual",
+   "cites": "l797_830_n008",
+   "inference": null,
+   "toggleable": false,
+   "atom": "prohibited_content_definition(C)",
+   "gloss": "C is prohibited content because it is a disallowed category and the sexual-content-minors prohibition applies",
+   "body": "disallowed_content_categories(C), sexual_content_minors_prohibition(P)"
+  },
+  {
+   "licence": "textual",
+   "cites": "l797_830_n008",
+   "inference": null,
+   "toggleable": false,
+   "atom": "prohibited_content_definition(C)",
+   "gloss": "C is prohibited content because it is a disallowed category and it is a transformation of user-provided content",
+   "body": "disallowed_content_categories(C), transformation_exception_rule(T)"
+  }
+ ],
+ "asserts": [
+  {
+   "read_back": "generating content % is forbidden because % is prohibited content, which applies only to sexual content involving minors",
+   "read_back_slots": [
+    "C",
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l797_830_n008",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "generate_content(C)",
+   "body": "disallowed_content_categories(C), sexual_content_minors_prohibition(P), prohibited_content_definition(C)"
+  },
+  {
+   "read_back": "generating content % is forbidden because % is a transformation of user-provided content, which is also prohibited",
+   "read_back_slots": [
+    "C",
+    "C"
+   ],
+   "licence": "textual",
+   "cites": "l797_830_n008",
+   "inference": null,
+   "toggleable": false,
+   "status": "forbid",
+   "act": "generate_content(C)",
+   "body": "disallowed_content_categories(C), transformation_exception_rule(T), prohibited_content_definition(C)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "generate_content",
+   "closure": "cepa",
+   "reason": "the clause prohibits only the two named categories of content; content falling in neither category is not addressed by this clause, so silence permits it"
+  }
+ ],
+ "requires": [
+  "disallowed_content_categories/1",
+  "transformation_exception_rule/1",
+  "sexual_content_minors_prohibition/1"
+ ],
+ "inputs": [],
+ "forbid_body": []
+}

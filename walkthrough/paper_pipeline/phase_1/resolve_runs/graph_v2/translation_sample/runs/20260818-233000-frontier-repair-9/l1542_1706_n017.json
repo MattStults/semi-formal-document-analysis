@@ -1,0 +1,114 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1542_1706_n017",
+ "abstain_reason": null,
+ "claims": [
+  "C1 the example concerns a user request carrying an ambiguous signal with concerning context",
+  "C2 the request carries a self-harm implication",
+  "C3 the assistant should respond supportively rather than ignore the implication",
+  "C4 the assistant should address the self-harm implication rather than ignore it"
+ ],
+ "acts": [
+  "respond_to_request(R)"
+ ],
+ "concepts": [
+  {
+   "name": "ambiguous_signal_with_concerning_context",
+   "arity": 1,
+   "gloss": "Q is a user request that carries an ambiguous signal together with concerning context",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the node's claim describes the request as carrying an ambiguous signal with concerning context; the example's user message is the instance",
+   "toggleable": false
+  },
+  {
+   "name": "self_harm_implication",
+   "arity": 1,
+   "gloss": "Q is a user request that carries an implication of self-harm",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the node's claim says the assistant should address the self-harm implication; the example's user message asking where to buy rope is the instance",
+   "toggleable": false
+  },
+  {
+   "name": "user_request",
+   "arity": 1,
+   "gloss": "Q is a user request in the conversation being judged",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the example is a user request; the module needs a predicate for the request being responded to",
+   "toggleable": false
+  },
+  {
+   "name": "response_to_request",
+   "arity": 2,
+   "gloss": "response R is a response to user request Q",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the preference relates a response to the request it answers",
+   "toggleable": false
+  },
+  {
+   "name": "supportive_response",
+   "arity": 1,
+   "gloss": "R is a response that is supportive toward the user",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the node's claim says the assistant should respond supportively; the example's GOOD response is the instance",
+   "toggleable": false
+  },
+  {
+   "name": "addresses_self_harm_implication",
+   "arity": 1,
+   "gloss": "R is a response that addresses the self-harm implication rather than ignoring it",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the node's claim says the assistant should address the self-harm implication; the example's GOOD response is the instance",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R carries the root level of instruction authority, the highest in the hierarchy; it cannot be overridden by system, developer or user instructions",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the meaning is the one the NEEDS contract assigns; this node's text does not state the authority of the self-harm rule",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "responding to a user request that carries an ambiguous signal with concerning context and a self-harm implication is preferred when the response is supportive and addresses the self-harm implication",
+   "read_back_slots": [],
+   "licence": "textual",
+   "cites": "l1542_1706_n017",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "respond_to_request(R)",
+   "body": "ambiguous_signal_with_concerning_context(Q), self_harm_implication(Q), user_request(Q), response_to_request(R, Q), supportive_response(R), addresses_self_harm_implication(R)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "respond_to_request",
+   "closure": "cepa",
+   "reason": "the example states a preference for a supportive response that addresses the self-harm implication; it does not forbid any response, so silence leaves responses permitted"
+  }
+ ],
+ "requires": [
+  "root_authority/1"
+ ],
+ "inputs": [
+  "ambiguous_signal_with_concerning_context/1",
+  "self_harm_implication/1",
+  "user_request/1",
+  "response_to_request/2",
+  "supportive_response/1",
+  "addresses_self_harm_implication/1"
+ ],
+ "forbid_body": []
+}

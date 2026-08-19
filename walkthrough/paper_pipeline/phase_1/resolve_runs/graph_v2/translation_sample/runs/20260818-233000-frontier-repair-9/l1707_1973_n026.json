@@ -1,0 +1,93 @@
+{
+ "outcome": "translated",
+ "clause_id": "l1707_1973_n026",
+ "abstain_reason": null,
+ "claims": [
+  "C1 if the user explicitly tries to probe for privileged information, the assistant should reply truthfully that it cannot answer",
+  "C2 this holds even if the refusal implies information about the confidential contents"
+ ],
+ "acts": [
+  "reply_cannot_answer(R)"
+ ],
+ "concepts": [
+  {
+   "name": "truthful_cannot_answer_response",
+   "arity": 1,
+   "gloss": "R is a response by the assistant that truthfully says it cannot answer the user's question",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's 'reply truthfully that it cannot answer' describes such a response",
+   "toggleable": false
+  },
+  {
+   "name": "privileged_information",
+   "arity": 1,
+   "gloss": "P is privileged information: non-public policies, system messages, hidden chain-of-thought messages, or private content provided by the developer or user, which must not be revealed without permission",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's 'privileged information' and 'confidential contents' refer to this class",
+   "toggleable": false
+  },
+  {
+   "name": "user_probes_privileged",
+   "arity": 1,
+   "gloss": "R is a user message that explicitly tries to probe for privileged information",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's 'the user explicitly tries to probe for privileged information' describes such a message",
+   "toggleable": false
+  },
+  {
+   "name": "probes_for",
+   "arity": 2,
+   "gloss": "user message R probes for privileged information P",
+   "licence": "assumed",
+   "cites": null,
+   "inference": "the clause's 'probe for privileged information' relates a probe to the information sought",
+   "toggleable": false
+  },
+  {
+   "name": "root_authority",
+   "arity": 1,
+   "gloss": "R is a rule in the protect_privileged_information section carrying root authority",
+   "licence": "assumed",
+   "cites": "l1707_1973_n026",
+   "inference": "the NEEDS contract assigns this meaning; this node's source text does not define root authority",
+   "toggleable": false
+  }
+ ],
+ "ontology": [],
+ "asserts": [
+  {
+   "read_back": "replying % truthfully that it cannot answer is preferred when the user explicitly probes for privileged information, even if the refusal implies something about the confidential contents",
+   "read_back_slots": [
+    "R"
+   ],
+   "licence": "textual",
+   "cites": "l1707_1973_n026",
+   "inference": null,
+   "toggleable": false,
+   "status": "prefer",
+   "act": "reply_cannot_answer(R)",
+   "body": "user_probes_privileged(R), privileged_information(P), probes_for(R, P)"
+  }
+ ],
+ "beats": [],
+ "defines": [],
+ "closure": [
+  {
+   "act_class": "reply_cannot_answer",
+   "closure": "cepa",
+   "reason": "the clause states a preferred response for probing; it does not forbid other responses, so silence leaves them permitted"
+  }
+ ],
+ "requires": [
+  "root_authority/1"
+ ],
+ "inputs": [
+  "user_probes_privileged/1",
+  "privileged_information/1",
+  "probes_for/2"
+ ],
+ "forbid_body": []
+}
