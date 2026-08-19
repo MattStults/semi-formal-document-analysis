@@ -62,4 +62,10 @@ block. Above-band results get a leak-signature check before celebration.
 ## Errata rule
 Registered numbers are never edited; corrections append.
 
-Signature: (unsigned — Matt's "sign" records the sha256 below this line's file state)
+Signature: SIGNED by Matt, 2026-08-19 ("consider the preregistration signed and the
+batch approved"). sha256 at signing (this line and below excluded):
+b5217b0bee138f7ac82432921f7b500a0c93595386dbc816a10dfe11c5925d07
+Execution conditions set at signing: (1) the seat-decomposition experiment completes
+and is scored FIRST, so its Fable spend is separately measurable; (2) before batch 1's
+first ruling, Matt provides a fresh /usage baseline on request; (3) batch tripwire from
+round 1 carries over.
