@@ -75,17 +75,83 @@ def parent_map():
             for s in subs if s not in ("provide", "respond")}
 
 
+# argument-sort compatibility groups: sorts that are the same KIND of object
+# for engagement purposes (a request and the instruction it carries; content
+# and the information in it). Distinct kinds NEVER cross-match: topic vs
+# request is the measured H1 failure. Unknown/none/other FAIL OPEN.
+ARG_COMPAT = {
+    "request": {"request", "instruction", "question", "message"},
+    "instruction": {"request", "instruction", "message"},
+    "content": {"content", "information", "data"},
+    "information": {"content", "information", "data"},
+    "data": {"content", "information", "data"},
+    "question": {"question", "request"},
+    "response": {"response"},
+    "action": {"action", "tool"},
+    "goal": {"goal"},
+    "topic": {"topic"},
+    "user": {"user", "party"},
+    "party": {"user", "party"},
+    "message": {"request", "instruction", "message"},
+    "tool": {"action", "tool"},
+}
+
+
+def arg_sorts():
+    p = os.path.join(HERE, "act_arg_sorts.json")
+    return json.load(open(p)) if os.path.exists(p) else {}
+
+
+def behavior_arg_sorts(mod):
+    """constant -> sort for the behavior's does-arguments, from the module's
+    canonical facts naming convention (r*=request, c*=content, resp*=response,
+    a*=action, i*=instruction/information, q*=question, s*=setting)."""
+    import re as _re
+    m = {}
+    for r in (mod.get("module") or {}).get("does", []):
+        h = _re.match(r"\s*([a-z_][A-Za-z0-9_]*)\(([a-z][a-z0-9]*)\)", r.split(":-")[0])
+        if not h: continue
+        const = h.group(2)
+        sort = {"r": "request", "c": "content", "i": "information", "q": "question", "a": "action", "g": "goal", "u": "user", "w": "content", "t": "topic"}.get(const[0])
+        if const.startswith("resp"): sort = "response"
+        if sort: m[h.group(1)] = m.get(h.group(1), set()) | {sort}
+    return m
+
+
+# argument walls apply ONLY to verb families whose corpus arguments are
+# homogeneous (measured 2026-08-18: respond-family args are heterogeneous —
+# walls there cut real engagements, help recall 0.89->0.71 on tuning).
+WALLED_VERBS = {"refuse", "comply", "provide", "ask", "act_in_world",
+                "provide_information", "provide_content", "provide_resources",
+                "disclose_data", "provide_hazardous"}
+
+
 def relevance(mod, br, corpus):
     acts, canon = behavior_acts(mod)
     pm = parent_map()
+    asorts = arg_sorts()
+    bargs = behavior_arg_sorts(mod)
     def hits(c):
         if c is None: return False
         return c in acts or pm.get(c) in acts or c in {s for s, par in pm.items() if par in acts and c == s}
+    def verb_hit(c):
+        return c in acts or pm.get(c) in acts or any(pm.get(a2) == c for a2 in acts)
+
+    def arg_ok(f, c):
+        if c not in WALLED_VERBS and pm.get(c) not in WALLED_VERBS: return True
+        fa = asorts.get(f)
+        if fa in (None, "none", "other"): return True          # fail open
+        # behavior arg sorts for the canonical verb (check verb + its parent/children)
+        want = set()
+        for a2 in acts:
+            if a2 == c or pm.get(a2) == c or pm.get(c) == a2: want |= bargs.get(a2, set())
+        if not want: return True                                # fail open
+        return any(fa == w or fa in ARG_COMPAT.get(w, {w}) or w in ARG_COMPAT.get(fa, {fa}) for w in want)
+
     rel = {}
     for cid, rows in corpus.items():
         reasons = [(f, br.get(f), st) for f, st in rows
-                   if br.get(f) is not None and (br[f] in acts or pm.get(br[f]) in acts
-                                                 or any(pm.get(a2) == br[f] for a2 in acts))]
+                   if br.get(f) is not None and verb_hit(br[f]) and arg_ok(f, br[f])]
         if reasons: rel[cid] = reasons
     return acts, rel
 
