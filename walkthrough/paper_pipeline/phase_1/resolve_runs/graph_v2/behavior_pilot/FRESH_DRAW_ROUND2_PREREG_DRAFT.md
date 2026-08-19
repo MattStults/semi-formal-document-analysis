@@ -69,3 +69,13 @@ Execution conditions set at signing: (1) the seat-decomposition experiment compl
 and is scored FIRST, so its Fable spend is separately measurable; (2) before batch 1's
 first ruling, Matt provides a fresh /usage baseline on request; (3) batch tripwire from
 round 1 carries over.
+
+## EXECUTION NOTE (Matt + agreement, 2026-08-19, before any behavior was scored)
+Adaptive ordering within this registration: helpfulness scores FIRST as the canary.
+Harm/caution run under this same registration ONLY if helpfulness lands in-band; if
+helpfulness fires a falsifier, they HOLD (draws unburned, pools intact) and the fix
+cycle iterates on helpfulness plus the existing harm/caution deviation ledgers.
+Grounds: fix classes are behavior-specific historically (protects came from harm), so
+help-only iteration risks late discovery — but spending harm/caution draws on an
+instrument helpfulness is about to falsify wastes pool and tokens. Per-behavior scoring
+is independent under this prereg, so the conditionality costs no integrity.
