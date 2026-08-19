@@ -97,3 +97,14 @@ the same test slice, same truth.
    its curve is advisory only.
 9. Behavior modules hand-authored under the contract; behavior-translation
    automation is NOT the registered claim.
+
+---
+
+**SIGNED — Matt Stults, 2026-08-18.** Content sha256 at signing:
+`a05adfcc50186b05fb4b0a8d9825eb7a3d8112e1dc6d4fa6014cf9d666f0179d`.
+Signed via the coordinator on Matt's instruction ("Ok sign it and get the
+numbers") after the per-behavior predictions, the nine disclosed defects,
+and the falsifier consistency fix were each reviewed in-session. From this
+line on the registration is FROZEN: the instruments named above may not
+change; the test slice is scored ONCE, by the command named above, at this
+commit; the numbers land unedited.
