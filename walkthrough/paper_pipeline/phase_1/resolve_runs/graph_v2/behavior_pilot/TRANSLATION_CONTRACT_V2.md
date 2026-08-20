@@ -215,3 +215,11 @@ ABLATION ANALYSES. A node engaging only through its weakest label looks irreduci
 merely under-labeled (measured case: l2126_2404_n017, whose caution-core moralizing forbids carried
 objectivity-only labels). BINDING: no same-signature coupling may be declared terminal until the coupled
 nodes' labels pass a breadth review; under-labeled asserts route to label panels first.
+
+## 9g. Mechanical terminality verification (2026-08-19)
+verify_terminal.py runs after every instrument change: FIXABLE moves are surfaced
+automatically (it is also a fix-finder — it rediscovered the caution+objectivity
+amendment independently); TERMINAL-DECL is proof-by-exhaustion over the finite
+declaration space with inline receipts; TERMINAL-STRUCT fences the node to the
+bridge/vocabulary space, where terminality is receipt-relative (PREMISE GAP
+discipline). No terminal claim may appear in a report without its verifier verdict.
