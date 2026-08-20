@@ -108,3 +108,18 @@ stricter reading wins; +8/+4 if the credits stand, leaving the config inadmissib
 and the 3 FPs as named residue).
 DISPOSITION: layers re-parked (candidate_definition_layers/, now two-seat
 consensus). Adoption remains gated on the 3-node escalation + Matt's ruling.
+
+## ADOPTION (2026-08-20, all gates satisfied)
+Escalation results: 3-node act escalation (escalation3_ruling.json, Fable seat):
+STRIKE provide_information on l2821_3040_n006 and comply on l699_796_n008 (claims
+describe consequences/other parties' content, not assistant acts); UPHOLD
+l1707_1973_n017 (definition characterizing kinds of assistant acts — the brief's
+steering pattern). Live-dispute rulings (9 engagement-live items of 268; the other
+259 proven engagement-inert by the two-stage deterministic filter, receipts in
+escalation_queue_relevant.json/escalation_queue_live.json) folded into assembly.
+FINAL ARITHMETIC: caution TP 102->104, harm 73->74, help 178->183 (+8 TP);
+one lane FP (caution::l1707_1973_n017) ADJUDICATED DEFENSIBLE
+(flip_adjudication_verdicts.json) = reading-difference, not instrument-wrong.
+Gate check: fixes > breaks PASS; every FP adjudicated PASS; annotations two-seat
+consensus or Fable-ruled PASS. ADOPTED: definition_*.json active in behavior_pilot/
+(mirrored in candidate_definition_layers/ for the record).

@@ -53,13 +53,24 @@ CLAIMS = {nid: (_sel[_ln.norm_id(nid)][1].get('claims') or []) for nid in s1}
 
 acts, sig, prot, pa = {}, {}, {}, {}
 queue = []
+# LIVE-DISPUTE RULINGS (live_dispute_rulings.json, Fable seat): for ruled keys,
+# the ruling replaces the intersection for that field; a ruled actor makes the
+# claim admissible with that actor.
+_lr = {}
+_lrp = os.path.join(HERE, 'live_dispute_rulings.json')
+if os.path.exists(_lrp): _lr = json.load(open(_lrp))
+
 for nid in sorted(s1):
     node_acts = set()
     for i, (c1, c2) in enumerate(zip(s1[nid], s2[nid])):
         k = f"{nid}|c{i}"
+        _rul = _lr.get(k, {})
         if c1.get('actor') != c2.get('actor'):
-            queue.append({"key": k, "field": "actor", "seat1": c1.get('actor'), "seat2": c2.get('actor')})
-            continue  # inadmissible claim
+            if 'actor' in _rul:
+                c1 = dict(c1); c1['actor'] = _rul['actor']['ruling'] if isinstance(_rul['actor']['ruling'], str) else _rul['actor']['ruling'][0]
+            else:
+                queue.append({"key": k, "field": "actor", "seat1": c1.get('actor'), "seat2": c2.get('actor')})
+                continue  # inadmissible claim
         fields = {}
         claim_text = ""  # locate this claim's text for the example-narration predicate
         example_claim = False
@@ -69,6 +80,10 @@ for nid in sorted(s1):
             _ln = None
         for f in ('acts', 'governs', 'contexts', 'purpose'):
             v1, v2 = set(c1.get(f) or []), set(c2.get(f) or [])
+            if f in _rul:
+                r = _rul[f]['ruling']
+                fields[f] = sorted(r if isinstance(r, list) else [r])
+                continue
             fields[f] = sorted(v1 & v2)
             for v in sorted(v1 ^ v2):
                 queue.append({"key": k, "field": f, "value": v, "endorsed_by": "seat1" if v in v1 else "seat2"})
@@ -85,6 +100,15 @@ for nid in sorted(s1):
         pa[k] = {"actor": c1.get('actor'), "purpose": fields['purpose']}
     if node_acts:
         acts[nid] = sorted(node_acts)
+
+# ESCALATION RULING APPLICATION (escalation3_ruling.json, Fable seat 2026-08-20):
+# struck act credits are removed from the lifted set; upheld credits stand.
+_rp = os.path.join(HERE, 'escalation3_ruling.json')
+if os.path.exists(_rp):
+    for _n, _r in json.load(open(_rp)).items():
+        if _n in acts:
+            acts[_n] = [a for a in acts[_n] if a not in set(_r.get('strike', []))]
+            if not acts[_n]: del acts[_n]
 
 json.dump({"_": "two-seat consensus (assemble_two_seat.py); escalations in definitional_escalation_queue.json", "acts": acts},
           open(os.path.join(BP, 'definition_acts.json'), 'w'), indent=1)
