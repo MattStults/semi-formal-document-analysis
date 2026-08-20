@@ -1,4 +1,4 @@
-# HANDOFF — definitional lane + convergence endgame (2026-08-20, Fable ~94%)
+# HANDOFF — convergence endgame + declaration-search results (2026-08-20, updated end-of-day)
 Written for a frontier-capable agent resuming with zero context. Read top-down;
 every claim has an artifact pointer. Repo root for this work: this directory
 (behavior_pilot). Canonical campaign log: ../EXPERIMENTS.md. Contract:
@@ -51,18 +51,79 @@ not-yet-declared context atoms). Do not treat any node as unfixable-forever; tre
 TERMINAL-* as "exhausted the named inventory". The context-atom declaration design
 round (9b, design tier) is expected to convert PENDING-VOCAB nodes.
 
-## Standing queue (order), with tier doctrine
-a. 3-node escalation (FABLE-tier seat, blind, tiny) -> lane adoption decision.
-b. Engagement-relevant filter of the 268 -> only that subset to a Fable seat.
-c. Atom minting for the 5 split atoms: two-seat OPUS annotation (annotation
-   lane is Opus-parity-passed: actor .96, purpose .94-.96); regression free.
-d. Objectivity-variant FP adjudication: 9 FPs listed in the D-family receipts
-   (panel_run1/convergence/D_family_receipts.json) — flip adjudication is
-   FABLE-ONLY (Opus failed parity 0.38, systematically lenient; recorded).
-e. §9f breadth reviews for 4 A-provisional nodes (see CONVERGENCE_CAMPAIGN.md).
-f. Round-4 certification: fresh draws, frozen instrument, §9e fresh-pool bands
-   (~0.4M Fable) — POST-RESET ONLY (Sat 9pm reset).
+## What happened after the first version of this handoff (all committed/pushed)
+- DEFINITIONAL LANE ADOPTED: +8 TP (104/74/183), sole FP adjudicated defensible.
+  Escalations done: 3-node act ruling, 259/268 queue items proven inert, 9 ruled.
+- OBJECTIVITY AMENDMENTS REJECTED by name (instrument-wrong FPs 2/4 and 4/6);
+  narrowed conditional left open (OBJECTIVITY_AMENDMENT_DECISION.md).
+- 9f BREADTH REVIEWS + LABEL PANEL done: n007 gained 2 governs labels; n005
+  proposal refuted; regression unchanged.
+- CONTEXT-ATOM LAYER annotated corpus-wide (2 Opus seats, 81 consensus credits,
+  20 disputes queued): 4 atoms, recall checks pass, DECLARATIONS NOT YET DESIGNED
+  — the layer alone changes no engagement.
+- DECLARATION-SEARCH PROTOTYPE (decl_search_proto/): durable Opus prompt +
+  schema + validator; two runs complete, validator green both times. Read
+  RUN1_ASSESSMENT.md (both runs' assessments). Headlines:
+  * proposals are mergeable module deltas with charter arithmetic computed by
+    mutating v18 and re-running the real instrument;
+  * net-positive hypotheses: help purpose_concern +empowerment (+7/-3), caution
+    +harm-prevention (+2/0), caution +epistemic-autonomy (+2/-2);
+  * fail-open wall-flip failure class rediscovered from data (caution +society
+    4/79) — trust the discrete-arithmetic step, never the soft fit;
+  * CARVING QUESTION CLOSED: of 40 unresolved mismatches, only 3 are
+    byte-identical to opposite-verdict colliders across all 543 columns
+    (help::l797_830_n011, harm::l831_1000_n001, harm::l831_1000_n011) and they
+    are EXACTLY the nodes behind the two deferred act-refinement atoms from
+    split mining (provide:forbid.form_equivalence, exhibit:illustrate) — two
+    blind-to-each-other methods agree on nodes and fix family. No open search
+    remains; it is a closed work list.
+- CRITERION STANDING (in-sample, all-truth): caution 0.941, harm 0.953, help
+  0.960 under match-or-adjudicated-defensible; raw match 0.81-0.85; Matt's
+  human-panelist baseline 71%. NOT yet certified — that is round-4's job.
 
+## THE HIGHER-LEVEL GOAL and the path from here
+Goal: a validated ASP-translated corpus whose relevance matching runs
+symbolically (no LLM at query time) at frontier-panel-equivalent quality, with
+everything generalized into the contract so the NEXT document (Anthropic
+constitution) is right the first time. Two arcs remain:
+
+ARC 1 — CERTIFY THIS DOCUMENT (order matters; a-c are one design round):
+ a. 9b DESIGN ROUND (design tier — strongest model, NOT Opus): derive blind,
+    document-grounded justifications for: the 4 context-atom declarations
+    (which behavior consumes which atom), the 3 fitted purpose_concern
+    proposals, and the narrowed objectivity conditional if justifiable. Inputs:
+    context_atoms_consensus.json, declaration_proposals.json (deltas +
+    blind_justification_stubs), document_ends.json. Truth values stay out of
+    the room; the arithmetic is checked only AFTER a justification stands.
+ b. MINT the two act-refinement subtypes via the standard pipeline: blind
+    criteria already written in split_mining_candidates.json -> two-seat Opus
+    annotation -> regression -> new-FP adjudication (Fable).
+ c. Adjudicate the 5 predicted breaks from the purpose proposals (Fable, small).
+ d. Re-run verify_terminal.py (inventory grows -> PENDING-VOCAB resolves; the
+    remainder is terminal against the ENLARGED inventory — say it that way).
+ e. MAINTENANCE before any census-based claim: satisfiability_census.vector()
+    must merge definition_* lanes + context atoms (it predates both).
+ f. ROUND-4 CERTIFICATION (~0.4M Fable, post Sat-9pm reset): frozen instrument,
+    fresh draws, 9e fresh-pool bands, prospective bucket assignment. This is
+    what converts 0.94-0.96 in-sample into the certified claim.
+ g. Fold the 20 context-atom disputes + remaining panel_rerulings; final ledger.
+
+ARC 2 — GENERALIZE AND GO TO THE NEXT DOCUMENT:
+ h. The contract already carries the generalized lessons (8-A1..A3, 9a-9g incl.
+    inventory-relative terminality). Before translating the constitution,
+    walk TRANSLATION_CONTRACT_V2.md top to bottom as a checklist.
+ i. OPERATIONALIZE THE HARNESS for the next document: the loop is now fully
+    scripted piecewise (census -> split-mining -> two-seat lanes -> escalation
+    -> charter regression -> verify_terminal; decl_search_proto as the
+    declaration-search inner step). Wire a driver; Matt's approved division:
+    Opus executes written specs, Fable only for adjudication/rulings/design.
+ j. Constitution translation per the standing estimate (graph creation + doc
+    translation, Opus-driven with Fable spot-audits; semantic-audit parity
+    pre-test first, ~0.05M).
+
+MODEL-TIER REMINDERS: 9b design round and any one-shot measurement design are
+design-tier work — do NOT push onto Opus. Adjudication/flip rulings are
+Fable-doctrine (Opus failed parity 0.38). Annotation lanes are Opus-proven.
 ## Hard rules that bite (do not relearn these)
 - Never lower a floor to pass; labels direct ATTENTION never TRUTH; every new
   FP adjudicated or the config is inadmissible; prereg expectations frozen
