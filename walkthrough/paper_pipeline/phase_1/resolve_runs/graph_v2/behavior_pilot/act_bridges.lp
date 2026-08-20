@@ -111,7 +111,7 @@ canonical_act(respond(X)) :- attempt_best_answer(X).
 canonical_act(respond(X)) :- attempt_recognize_signs(X).
 canonical_act(respond(X)) :- attempt_solution(X).
 canonical_act(act_in_world(X)) :- autonomously_message_peer(X).
-canonical_act(substantive_help(X)) :- autonomously_pursue_goal(X).
+canonical_act(comply(X)) :- autonomously_pursue_goal(X).
 canonical_act(act_in_world(X)) :- autonomously_whistleblow(X).
 canonical_act(refuse(X)) :- avoid_addressing_topic(X).
 canonical_act(respond(X)) :- avoid_advice(X).
@@ -283,7 +283,7 @@ canonical_act(respond(X)) :- express_political_preference(X).
 canonical_act(express_uncertainty(X)) :- express_uncertainty(X).
 canonical_act(uncertainty_phrasing(X)) :- express_uncertainty_naturally(X).
 canonical_act(provide_hazardous(X)) :- facilitate(X).
-canonical_act(pursue_goal(X)) :- favor_approach(X).
+canonical_act(act_with_care(X)) :- favor_approach(X).
 canonical_act(provide(X)) :- fill_gap_with(X).
 canonical_act(respond(X)) :- filter_out_non_applicable(X).
 canonical_act(provide(X)) :- find_clear_headed_support(X).
@@ -421,7 +421,7 @@ canonical_act(override(X)) :- override_default_instruction(X).
 canonical_act(override(X)) :- override_default_with_developer_instruction(X).
 canonical_act(override(X)) :- override_guideline(X).
 canonical_act(override(X)) :- override_instruction(X,_).
-canonical_act(override(X)) :- override_objectivity(X).
+canonical_act(counter_harm(X)) :- override_objectivity(X).
 canonical_act(override(X)) :- override_principle(X).
 canonical_act(override(X)) :- override_root_instruction(X).
 canonical_act(override(X)) :- override_rule(X,_).
@@ -604,7 +604,7 @@ canonical_act(respond(X)) :- respond_to_mania_signs(X).
 canonical_act(respond(X)) :- respond_to_medical_question(X).
 canonical_act(respond(X)) :- respond_to_no_instructions(X).
 canonical_act(respond(X)) :- respond_to_pleasantries(X).
-canonical_act(respond(X)) :- respond_to_recipient(X).
+canonical_act(respond_addressing(X)) :- respond_to_recipient(X).
 canonical_act(provide_information(X)) :- respond_to_request(X).
 canonical_act(counter_harm(X)) :- respond_to_suicide_request(X).
 canonical_act(respond(X)) :- respond_to_topic(X).
@@ -614,7 +614,7 @@ canonical_act(act_in_world(X)) :- respond_via_function_call(X).
 canonical_act(provide(X)) :- respond_with(X).
 canonical_act(respond(X)) :- respond_with_combination(X).
 canonical_act(respond_in_manner(X)) :- respond_with_correction(X).
-canonical_act(respond(X)) :- respond_with_detail(X).
+canonical_act(respond_depth(X)) :- respond_with_detail(X).
 canonical_act(respond(X)) :- respond_with_disclaimer(X).
 canonical_act(respond(X)) :- respond_with_interest_and_tip(X).
 canonical_act(respond_in_manner(X)) :- respond_with_warmth(X).
@@ -624,7 +624,7 @@ canonical_act(respond_in_manner(X)) :- respond_without_sufficient_confidence(X).
 canonical_act(respond(X)) :- restart_entire_response(X).
 canonical_act(disclose_data(X)) :- reveal_confidential(X).
 canonical_act(disclose_data(X)) :- reveal_developer_message(X).
-canonical_act(safe_manner(X)) :- safe_complete(X).
+canonical_act(provide_information(X)) :- safe_complete(X).
 canonical_act(provide_content(X)) :- safe_complete_with(X).
 canonical_act(express_stance(X)) :- say_love_humanity(X).
 canonical_act(respond(X)) :- say_phrase(X).
@@ -653,7 +653,7 @@ canonical_act(engage_relationship(X)) :- speak_with_warmth_and_respect(X).
 canonical_act(respond(X)) :- specify_programmatic_output(X).
 canonical_act(respond(X)) :- state_assumptions(X).
 canonical_act(comply(X)) :- stay_within_duration(X).
-canonical_act(provide_content(X)) :- steer_to_acme_products(X).
+canonical_act(provide_steering(X)) :- steer_to_acme_products(X).
 canonical_act(respond(X)) :- steer_toward_paid(X).
 canonical_act(respond(X)) :- steer_user(X).
 canonical_act(counter_harm(X)) :- stop_and_escalate(X).
@@ -722,3 +722,7 @@ canonical_act(provide(X)) :- write_classified_ad_excluding_parents(X).
 canonical_act(respond(X)) :- write_uninformative_or_redundant_text(X).
 canonical_act(express_uncertainty(X)) :- canonical_act(uncertainty_phrasing(X)).
 canonical_act(express_uncertainty(X)) :- canonical_act(express_calibrated_position(X)).
+canonical_act(respond(X)) :- canonical_act(respond_addressing(X)).
+canonical_act(provide(X)) :- canonical_act(provide_steering(X)).
+canonical_act(respond(X)) :- canonical_act(respond_depth(X)).
+canonical_act(act_in_world(X)) :- canonical_act(act_with_care(X)).

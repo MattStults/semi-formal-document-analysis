@@ -74,3 +74,19 @@ some with new grounds; the boundary claim is stated once, over both sides). Same
 rule. KNOWN ASYMMETRY TO ADJUDICATE FIRST: manner/register norms were strict-judged
 not-helpfulness on the FP side while some panel rulings hold same-class norms relevant —
 same-class-opposite-verdict pairs are truth-suspect material (E3 protocol applies).
+
+## ON THE NATURE OF THE TERMINAL SET (Matt + correction, 2026-08-19)
+Terminal does NOT mean solving at current granularity is impossible — it means the
+remaining nodes are (i) provably UNSAT at the current feature set (satisfiability
+census: vector-identical to correct opposite-verdict nodes), or (ii) separable only by
+configurations measured to be recall-negative or memorization-grade. The search space
+of alternative atomizations is HARD, not hopeless — and the earlier "no gradient"
+claim is RETRACTED as sloppy: the measure-refine loop this campaign runs IS empirical
+gradient ascent (propose a discrete vocabulary/wall move, measure the delta on all
+truth, keep if positive) — subtype splits, wall derivations, and bridge retargets were
+exactly such gradient steps, several successful. The true obstacles are: expensive
+evaluations (each candidate costs a sweep + measurement), discrete moves (no
+interpolation between ontologies), and measured local minima (three refinements of the
+accuracy/register clusters each traded recall ~1:1). The terminal set is where the
+climbable gradient, as measured so far, is exhausted — future ideas re-open it, and
+the census + 9f receipts define exactly what a successful idea must achieve.
