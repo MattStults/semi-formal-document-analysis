@@ -43,6 +43,14 @@ TRANSLATION_CONTRACT_V2.md (§§8, 8-A1..A3, 9a-9g are binding).
    reified as atoms at translation time; census->mine->mint pipeline is the
    standing repair loop.
 
+## Terminality language (READ THIS FIRST — 9g-addendum)
+Every "TERMINAL" verdict in this repo is RELATIVE to a frozen mechanism inventory
+and EXPIRES when vocabulary/declarations grow. The current terminality_verification.json
+stamps its inventory and marks 13 nodes PENDING-VOCAB (reachable by the annotated,
+not-yet-declared context atoms). Do not treat any node as unfixable-forever; treat
+TERMINAL-* as "exhausted the named inventory". The context-atom declaration design
+round (9b, design tier) is expected to convert PENDING-VOCAB nodes.
+
 ## Standing queue (order), with tier doctrine
 a. 3-node escalation (FABLE-tier seat, blind, tiny) -> lane adoption decision.
 b. Engagement-relevant filter of the 268 -> only that subset to a Fable seat.

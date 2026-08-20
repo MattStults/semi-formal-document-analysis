@@ -77,6 +77,31 @@ def moves_for(node, slug, mod, sig, ap, pa, corpus, br, engaged):
     return out
 
 
+# MECHANISM-INVENTORY RELATIVITY (Matt's correction, 2026-08-20): every verdict this
+# script emits is relative to a FROZEN INVENTORY of mechanisms (declaration slots +
+# vocabulary as of the run). A verdict EXPIRES when the inventory grows. Concretely:
+# context_atoms_consensus.json (8-A3 repair loop) added 4 context atoms; any mismatch
+# whose node or census-colliders carry a consensus atom is re-stamped PENDING-VOCAB —
+# a declaration over the new atom may capture it, so it is NOT terminal until that
+# design round runs and this script is re-run with the new declarations in place.
+
+def pending_vocab_nodes():
+    """mismatch nodes reachable by the annotated-but-undeclared context atoms."""
+    cp = os.path.join(HERE, "panel_run1", "convergence", "context_atoms_consensus.json")
+    sp = os.path.join(HERE, "panel_run1", "convergence", "satisfiability_census.json")
+    if not (os.path.exists(cp) and os.path.exists(sp)): return {}
+    ctx = json.load(open(cp))["credits"]
+    census = json.load(open(sp))["report"]
+    out = {}
+    for slug, d in census.items():
+        for n, e in d.items():
+            atoms = sorted({a for ats in ctx.get(n, {}).values() for a in ats})
+            coll = [c for c in e.get("colliding_correct_nodes", []) if c in ctx]
+            if atoms or coll:
+                out.setdefault(slug, {})[n] = {"self_atoms": atoms, "atom_bearing_colliders": coll}
+    return out
+
+
 def main(modules_file):
     mods = json.load(open(os.path.join(HERE, modules_file)))["modules"]
     br = RBA.bridges(); corpus = RBA.corpus_acts()
@@ -126,5 +151,21 @@ if __name__ == "__main__":
             if r["verdict"] == "FIXABLE":
                 print(f"   FIXABLE {n} via {r['best_move']['move']} (net +{r['best_move']['net']})")
     out = os.path.join(HERE, "panel_run1", "convergence", "terminality_verification.json")
-    json.dump({"_": "Mechanical terminality verification (verify_terminal.py).", "report": rep}, open(out, "w"), indent=1)
+    pv = pending_vocab_nodes()
+    n_pv = 0
+    for slug, d in rep.items():
+        for n, row in (d.items() if isinstance(d, dict) else []):
+            if not isinstance(row, dict): continue
+            if row.get("verdict", "").startswith("TERMINAL") and n in pv.get(slug, {}):
+                row["verdict"] = "PENDING-VOCAB"
+                row["pending_vocab"] = pv[slug][n]
+                n_pv += 1
+    print(f"PENDING-VOCAB re-stamps (context atoms annotated, declarations undesigned): {n_pv}")
+    json.dump({"_": "Mechanical terminality verification (verify_terminal.py). VERDICTS ARE "
+                    "INVENTORY-RELATIVE: they expire when declaration slots or vocabulary grow. "
+                    "PENDING-VOCAB = reachable by an annotated-but-undeclared context atom (8-A3); "
+                    "not terminal until the declaration design round runs and this re-runs.",
+               "mechanism_inventory": {"contract": "v18", "context_atoms": "context_atoms_consensus.json (4 atoms, undeclared)",
+                                        "act_refinements": "split_mining_candidates.json (2 proposed, unminted)"},
+               "report": rep}, open(out, "w"), indent=1)
     print("wrote", out)

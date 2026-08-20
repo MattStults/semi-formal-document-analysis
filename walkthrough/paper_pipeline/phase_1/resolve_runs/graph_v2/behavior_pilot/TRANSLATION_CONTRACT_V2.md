@@ -247,3 +247,16 @@ charter regression pipeline built 2026-08-19/20 is the standing, document-agnost
 fixing mechanism for whatever the translator still leaves in prose. A missed
 modulator is therefore a NORMAL, detectable, repairable event — not a design
 failure; the design failure would be shipping without the census.
+
+## 9g-ADDENDUM (2026-08-20, Matt's correction): TERMINAL VERDICTS ARE
+## INVENTORY-RELATIVE AND EXPIRE
+A verify_terminal.py verdict is a proof over a FROZEN mechanism inventory
+(declaration slots + vocabulary at run time), never an absolute property of the
+node. When the inventory grows — a new context atom is annotated, an act subtype
+minted, a new slot added — every standing TERMINAL verdict touching the new
+mechanism's reach EXPIRES and the verifier must re-run. The verifier now stamps
+its output with the inventory it ran against and re-stamps reachable mismatches
+PENDING-VOCAB (13 nodes as of this writing: reachable by the four annotated but
+not-yet-declared context atoms). BINDING: no document — handoff, review, proof,
+or report — may call a node "terminal" without naming the inventory the claim is
+relative to; "terminal" with no inventory qualifier is a review finding.
