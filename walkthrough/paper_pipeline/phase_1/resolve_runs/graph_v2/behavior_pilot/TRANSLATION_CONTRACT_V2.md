@@ -208,3 +208,10 @@ track; walls remain set-membership tests. Matt's method ruling encoded: naive a 
 description will not find every needed slot — the discrepancy census after each
 certification round is the REPAIR loop that discovers missing slots (this one was
 found by round-3's FP census; the actor slot by the same route).
+
+## 9f. Label-breadth review before terminal claims (2026-08-19, from the caution-accuracy ablation)
+Multi-label breadth noise (measured: exact-set 0.71 vs verdict-level ~0.9) has a consumer beyond walls:
+ABLATION ANALYSES. A node engaging only through its weakest label looks irreducibly coupled when it is
+merely under-labeled (measured case: l2126_2404_n017, whose caution-core moralizing forbids carried
+objectivity-only labels). BINDING: no same-signature coupling may be declared terminal until the coupled
+nodes' labels pass a breadth review; under-labeled asserts route to label panels first.
