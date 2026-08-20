@@ -223,3 +223,27 @@ amendment independently); TERMINAL-DECL is proof-by-exhaustion over the finite
 declaration space with inline receipts; TERMINAL-STRUCT fences the node to the
 bridge/vocabulary space, where terminality is receipt-relative (PREMISE GAP
 discipline). No terminal claim may appear in a report without its verifier verdict.
+
+## 8-ADDENDUM-3 (2026-08-20): NO NORMATIVE MODULATION MAY LIVE ONLY IN PROSE —
+## conditions, scopes, and defeaters are reified as atoms at translation time
+Measured basis: the satisfiability census found 8 mismatch pairs vector-identical
+to correct opposite-verdict nodes whose distinguishing feature was stated in the
+span but never atomized ("if repeated at scale", "when they indicate illicit
+intent", "no good-cause exception", provenance of the material, self-reference,
+delivery-form equivalence). Mining recovered all 8 post hoc (split_mining_*.json)
+— at the cost of a full census + mining + minting round the translator could have
+avoided.
+THE RULE (document-agnostic — no reference to any particular document's phrases):
+whenever a clause MODULATES a norm — when it applies, to whom or what, under which
+justification it is or is not defeated, in what form or manner, toward which end —
+the modulator must be emitted as a structured atom in a declared dimension, never
+left solely inside a read_back or gloss. The a priori modulator classes to check
+each assert against (class-first, validate against known cases): TRIGGER (when),
+SCOPE (to whom/what), DEFEATER (unless / notwithstanding claimed justification),
+MANNER/FORM (how, incl. equivalence-of-form rules), END (toward what).
+THE REPAIR LOOP (expected to be needed — the rule will be imperfectly applied):
+the census -> split-mining -> blind-criterion minting -> two-seat annotation ->
+charter regression pipeline built 2026-08-19/20 is the standing, document-agnostic
+fixing mechanism for whatever the translator still leaves in prose. A missed
+modulator is therefore a NORMAL, detectable, repairable event — not a design
+failure; the design failure would be shipping without the census.
