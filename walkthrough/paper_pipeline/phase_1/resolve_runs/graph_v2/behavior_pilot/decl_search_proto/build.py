@@ -171,6 +171,77 @@ def build_matrix(mods, br, corpus, pm, sig, ap, pa, atoms, masked):
     return rows, names
 
 
+# ------------------------------------------------- interactions (amendment A)
+FAMILY_PAIRS = [("act", "protects"), ("act", "purpose"),
+                ("governs", "context"), ("governs", "protects"),
+                ("act", "context")]
+
+
+def add_interactions(rows, names):
+    """pairwise product columns between feature families (RUN-2 amendment A).
+
+    Screen (applied over ALL matrix rows, both behaviors' rows pooled, before
+    any fitting): keep a product only if its support (rows where the product
+    is 1) is >= 3 AND it differs from each parent on >= 2 rows.
+    """
+    def fam(n):
+        return n.split("=", 1)[0]
+
+    by_fam = {}
+    for n in names:
+        by_fam.setdefault(fam(n), []).append(n)
+    sup = {n: set() for n in names}
+    for i, r in enumerate(rows):
+        for n in r["features"]:
+            sup[n].add(i)
+    labels = [r["label"] for r in rows]
+
+    stats = {"candidates": 0, "dropped_support_lt_3": 0,
+             "dropped_parent_diff_lt_2": 0,
+             "dropped_duplicate_of_base_column": 0,
+             "dropped_duplicate_of_earlier_interaction": 0, "kept": 0}
+    base_sup = {frozenset(v): k for k, v in sup.items()}
+    seen, kept, aliases = {}, [], {}
+    for fa, fb in FAMILY_PAIRS:
+        for a in sorted(by_fam.get(fa, [])):
+            for b in sorted(by_fam.get(fb, [])):
+                stats["candidates"] += 1
+                inter = sup[a] & sup[b]
+                if len(inter) < 3:
+                    stats["dropped_support_lt_3"] += 1
+                    continue
+                if len(sup[a] - inter) < 2 or len(sup[b] - inter) < 2:
+                    stats["dropped_parent_diff_lt_2"] += 1
+                    continue
+                key = frozenset(inter)
+                name = f"x[{a}&{b}]"
+                if key in base_sup:
+                    stats["dropped_duplicate_of_base_column"] += 1
+                    aliases.setdefault(base_sup[key], []).append(name)
+                    continue
+                if key in seen:
+                    stats["dropped_duplicate_of_earlier_interaction"] += 1
+                    aliases.setdefault(seen[key], []).append(name)
+                    continue
+                seen[key] = name
+                kept.append((name, inter))
+                stats["kept"] += 1
+    detail = {}
+    for name, inter in kept:
+        for i in inter:
+            rows[i]["features"].append(name)
+        detail[name] = {"support": len(inter),
+                        "label_positive_support":
+                            int(sum(labels[i] for i in inter))}
+    for r in rows:
+        r["features"] = sorted(r["features"])
+    names = sorted({n for r in rows for n in r["features"]})
+    stats["post_screen_total_columns"] = len(names)
+    stats["post_screen_interaction_columns"] = len(kept)
+    stats["duplicate_column_aliases"] = aliases
+    return rows, names, stats, detail
+
+
 # ---------------------------------------------------------------- fitting
 def design(rows, names):
     idx = {n: i for i, n in enumerate(names)}
@@ -220,7 +291,60 @@ def fit_behavior(X, y, eng_pred, grid):
         p0 = (y[tr][~e].sum() + 1) / ((~e).sum() + 2)
         pte = np.where(eng_pred[te].astype(bool), p1, p0)
         inst.append(_ll(y[te], pte))
-    return best, path, float(np.mean(base)), float(np.mean(inst))
+    return best, path, float(np.mean(base)), float(np.mean(inst)), folds
+
+
+def fair_all_rows(rows_all, names, best_C, folds, brows, base_eng):
+    """RUN-2 amendment B: accuracy / log-loss over ALL rows of the behavior,
+    with adjudicated-defensible rows scored correct-for-both.
+
+    Model probabilities: out-of-fold for the fitted (unmasked) rows, so the
+    comparison is not in-sample; full-fit (trained on the unmasked rows) for
+    the masked rows, which never entered any fit.
+    Defensible rows are scored correct for BOTH predictors: each is credited
+    with its own decision as the label, so neither is penalised for a
+    disagreement the adjudication called defensible.
+    """
+    X, y = design(brows, names)
+    oof = np.zeros(len(brows))
+    for tr, te in folds:
+        m = LogisticRegression(penalty="l1", solver="liblinear", C=best_C,
+                               class_weight="balanced", max_iter=5000,
+                               random_state=SEED).fit(X[tr], y[tr])
+        oof[te] = m.predict_proba(X[te])[:, 1]
+    full = LogisticRegression(penalty="l1", solver="liblinear", C=best_C,
+                              class_weight="balanced", max_iter=5000,
+                              random_state=SEED).fit(X, y)
+    # instrument calibration on the unmasked rows (best case, as before)
+    eng_tr = np.array([1 if r["node"] in base_eng else 0 for r in brows],
+                      dtype=bool)
+    p1 = (y[eng_tr].sum() + 1) / (eng_tr.sum() + 2)
+    p0 = (y[~eng_tr].sum() + 1) / ((~eng_tr).sum() + 2)
+
+    oof_by_node = {r["node"]: oof[i] for i, r in enumerate(brows)}
+    Xa, ya = design(rows_all, names)
+    pm_full = full.predict_proba(Xa)[:, 1]
+    m_ll, i_ll, m_acc, i_acc = [], [], [], []
+    for i, r in enumerate(rows_all):
+        pmod = oof_by_node.get(r["node"], pm_full[i])
+        eng = r["node"] in base_eng
+        pinst = p1 if eng else p0
+        if r["masked"]:
+            m_acc.append(1.0)
+            i_acc.append(1.0)
+            m_ll.append(-np.log(max(pmod, 1 - pmod, 1e-6)))
+            i_ll.append(-np.log(max(pinst, 1 - pinst, 1e-6)))
+        else:
+            lab = r["label"]
+            m_acc.append(float((pmod >= 0.5) == (lab == 1)))
+            i_acc.append(float(eng == (lab == 1)))
+            m_ll.append(-np.log(max(1e-6, pmod if lab else 1 - pmod)))
+            i_ll.append(-np.log(max(1e-6, pinst if lab else 1 - pinst)))
+    return {"n_rows_scored": len(rows_all),
+            "fitted_accuracy_all_rows_fair": round(float(np.mean(m_acc)), 4),
+            "instrument_accuracy_all_rows_fair": round(float(np.mean(i_acc)), 4),
+            "fitted_logloss_all_rows_fair": round(float(np.mean(m_ll)), 4),
+            "instrument_logloss_all_rows_fair": round(float(np.mean(i_ll)), 4)}
 
 
 def stability(X, y, C, n_boot=100):
@@ -265,6 +389,19 @@ def mutate(mod, slot, value, add):
         else:
             cur = [v for v in cur if v != value]
         m[slot] = cur
+    elif slot == "governs_conditional":
+        # value is (quality, context); only the 'add' direction is expressible
+        # in the instrument's own slot.
+        q, c = value
+        cur = copy.deepcopy(m.get("governs_conditional") or {})
+        lst = list(cur.get(q) or [])
+        if add:
+            if c not in lst:
+                lst.append(c)
+        else:
+            lst = [v for v in lst if v != c]
+        cur[q] = lst
+        m["governs_conditional"] = cur
     elif slot == "performs_acts":
         does = list((m.get("module") or {}).get("does", []))
         if add:
@@ -279,10 +416,10 @@ def mutate(mod, slot, value, add):
 
 
 def predict_delta(slot, value, add, mod, br, corpus, truth, keep,
-                  base_correct, ctx_nodes):
+                  base_correct, ctx_nodes, direct=False):
     """apply the proposed DISCRETE rule and count fixes/breaks."""
     base_eng = engaged_set(mod, br, corpus)
-    if slot == "contexts_concern":
+    if direct or slot == "contexts_concern":
         # schema extension: no instrument slot exists, so the discrete rule is
         # applied directly — add: engage every node carrying the context;
         # wall: drop every node carrying it.
@@ -298,6 +435,44 @@ def predict_delta(slot, value, add, mod, br, corpus, truth, keep,
     return fixed, broken
 
 
+def residual_targets(slug, census_rows, rows, names, masked):
+    """RUN-2 amendment D: for every CURRENT UNRESOLVED mismatch (instrument
+    disagrees with panel truth AND the disagreement is not adjudicated-
+    defensible), which post-screen columns separate it from its census
+    colliders? Zero separating columns => run-3 carving queue."""
+    F = {r["node"]: set(r["features"]) for r in rows if r["behavior"] == slug}
+    out, queue = {}, []
+    for n, info in sorted(census_rows.items()):
+        if (slug, n) in masked:
+            continue                       # adjudicated defensible: resolved
+        colliders = info["colliding_correct_nodes"]
+        rec = {"verdict_needed": info["verdict_needed"],
+               "census_status": info["status"],
+               "colliders": colliders}
+        if not colliders:
+            rec["separating_columns"] = None
+            rec["note"] = ("no census collider — already SEPARABLE at current "
+                           "granularity; nothing to carve")
+            out[n] = rec
+            continue
+        sep = [c for c in names
+               if all((c in F[n]) != (c in F.get(m, set())) for m in colliders)]
+        per = {m: sum(1 for c in names
+                      if (c in F[n]) != (c in F.get(m, set())))
+               for m in colliders}
+        rec["separating_columns"] = sep
+        rec["n_separating_columns"] = len(sep)
+        rec["n_separating_interaction_columns"] = sum(
+            1 for c in sep if c.startswith("x["))
+        rec["columns_differing_per_collider"] = per
+        if not sep:
+            queue.append(n)
+            rec["note"] = ("RUN-3 CARVING QUEUE: no post-screen column "
+                           "separates this node from every collider")
+        out[n] = rec
+    return out, queue
+
+
 def main():
     mods = json.load(open(P(CONTRACT)))["modules"]
     br = RBA.bridges()
@@ -307,6 +482,8 @@ def main():
     masked, mask_src = defensible_mask()
 
     rows, names = build_matrix(mods, br, corpus, pm, sig, ap, pa, atoms, masked)
+    n_base = len(names)
+    rows, names, inter_stats, inter_detail = add_interactions(rows, names)
 
     json.dump({
         "_": ("feature matrix for L1 declaration search — one row per "
@@ -315,12 +492,36 @@ def main():
               "and from predicted fixes/breaks."),
         "inventory": {"contract": "v18", "run_seed": SEED,
                       "n_rows": len(rows), "n_features": len(names),
+                      "n_base_features": n_base,
+                      "n_interaction_features":
+                          inter_stats["post_screen_interaction_columns"],
                       "n_masked": sum(1 for r in rows if r["masked"]),
                       "mask_sources": mask_src,
                       "status_classes": STATUS_CLASSES,
                       "act_relation_encodings": ["exact",
                                                  "mod_specific_beh_genus",
-                                                 "mod_genus_beh_species"]},
+                                                 "mod_genus_beh_species"],
+                      "act_encoding_note":
+                          ("RUN-2 amendment C: 'exact' is behavior-blind "
+                           "carries(A,s); the two relational encodings are "
+                           "separate columns."),
+                      "interaction_families":
+                          ["%s x %s" % p for p in FAMILY_PAIRS],
+                      "interaction_screen": inter_stats,
+                      "interaction_screen_note":
+                          ("RUN-2 amendment A. 'support' is read as the number "
+                           "of rows where the product column is 1 (>=3 "
+                           "required); label-positive support is reported per "
+                           "column in 'interaction_columns' but was NOT used "
+                           "as the screen. Screening is over all 836 matrix "
+                           "rows, masked included, since column existence is a "
+                           "property of the matrix, not of the fit. Exact "
+                           "duplicate columns (identical support set) were "
+                           "collapsed to one representative to keep stability "
+                           "frequencies from splitting arbitrarily between "
+                           "indistinguishable columns; the collapsed names are "
+                           "listed under duplicate_column_aliases."),
+                      "interaction_columns": inter_detail},
         "feature_names": names,
         "rows": rows,
     }, open(os.path.join(HERE, "feature_matrix.json"), "w"), indent=1)
@@ -353,6 +554,21 @@ def main():
                    "nothing here may be adopted without a document-side "
                    "justification written blind (9b) and a fresh-pool "
                    "measurement (9e)."),
+                  ("RUN-2 amendment B: 'fair_comparison_all_rows' scores ALL "
+                   "rows of the behavior with adjudicated-defensible rows "
+                   "credited correct for BOTH the instrument and the model, "
+                   "which removes the mask's selection bias from the "
+                   "head-to-head. The model's probabilities there are "
+                   "out-of-fold on the fitted rows and full-fit on the masked "
+                   "rows (which entered no fit); the instrument's are its "
+                   "binary decision under best-case Laplace calibration. The "
+                   "masked fit itself is unchanged."),
+                  ("RUN-2 amendment A adds pairwise interaction columns. They "
+                   "are still label-fitted: an interaction that survives "
+                   "stability selection is a SUBTYPE HYPOTHESIS about the "
+                   "document, and the fact that a conjunction predicts truth "
+                   "better than either atom is exactly the kind of finding "
+                   "that can be pure overfitting on ~200-350 rows."),
                   ("The two relational act encodings are behavior-dependent "
                    "by construction (they are defined against the behavior's "
                    "own performs set) but share a column namespace across "
@@ -361,6 +577,7 @@ def main():
               ],
               "behaviors": {}}
     proposals, unmappable = [], []
+    cen = sc.census(CONTRACT)     # pure function; the writing path is __main__
 
     for slug in SLUGS:
         mod = mods[slug]
@@ -369,8 +586,10 @@ def main():
         X, y = design(brows, names)
         base_eng = engaged_set(mod, br, corpus)
         eng_pred = np.array([1 if r["node"] in base_eng else 0 for r in brows])
-        best, path, base_ll, inst_ll = fit_behavior(X, y, eng_pred, grid)
+        best, path, base_ll, inst_ll, folds = fit_behavior(X, y, eng_pred, grid)
         freq, med = stability(X, y, best["C"])
+        rows_all = [r for r in rows if r["behavior"] == slug]
+        fair = fair_all_rows(rows_all, names, best["C"], folds, brows, base_eng)
         stab = {names[i]: round(float(freq[i]), 3)
                 for i in range(len(names)) if abs(med[i]) > 1e-6}
         report["behaviors"][slug] = {
@@ -385,11 +604,44 @@ def main():
             "instrument_logloss": round(inst_ll, 4),
             "instrument_accuracy": round(float(
                 ((eng_pred == 1) == (y == 1)).mean()), 4),
+            "fair_comparison_all_rows": fair,
             "l1_path": path,
             "n_stable_features": sum(1 for v in stab.values() if v >= 0.7),
             "stability": stab,
             "median_coef": {k: round(float(med[names.index(k)]), 4)
                             for k in stab},
+        }
+
+        # ------------- RUN-2 amendment D: residual carving queue
+        rt, queue = residual_targets(slug, cen.get(slug, {}), rows, names,
+                                     masked)
+        report["behaviors"][slug]["residual_targets"] = {
+            "_": ("unresolved mismatches = instrument-vs-truth disagreements "
+                  "that are NOT adjudicated-defensible; colliders are the "
+                  "satisfiability census's colliding correct nodes of the "
+                  "opposite verdict. A column separates only if it differs "
+                  "from EVERY collider."),
+            "_granularity_caveat": (
+                "the collider relation comes from satisfiability_census, whose "
+                "vector() reads assert_signature/protects/purpose_actor ONLY — "
+                "it does not merge the definition_* lanes and does not include "
+                "the consensus context atoms, both of which the instrument and "
+                "this feature matrix do use. So some 'separating columns' "
+                "reported here separate at the matrix's granularity while the "
+                "census still calls the pair a collision; the census, not the "
+                "matrix, is the stale side. The carving queue below is the "
+                "conservative end: those nodes are identical to their "
+                "colliders on EVERY post-screen column, interactions "
+                "included."),
+            "n_unresolved": len(rt),
+            "n_with_no_collider": sum(
+                1 for v in rt.values() if v["separating_columns"] is None),
+            "n_with_separating_column": sum(
+                1 for v in rt.values()
+                if v["separating_columns"]),
+            "n_carving_queue": len(queue),
+            "carving_queue": queue,
+            "targets": rt,
         }
 
         # ------------- proposals
@@ -413,8 +665,53 @@ def main():
             delta = None
             why = None
             ctx_nodes = [n for n, fs in rowmap.items() if feat in fs]
+            kind = "add" if add else "wall"
+            direct = False
+            parents = None
 
-            if fam == "governs":
+            if feat.startswith("x["):
+                # ---- RUN-2 amendment A: interaction column
+                a, b = feat[2:-1].split("&", 1)
+                fa, va = a.split("=", 1)
+                fb, vb = b.split("=", 1)
+                parents = {fa: va, fb: vb}
+                if {fa, fb} == {"governs", "context"}:
+                    q = va if fa == "governs" else vb
+                    c = vb if fb == "context" else va
+                    if add:
+                        if q in gov_decl:
+                            why = ("governs x context, but the quality is "
+                                   "already declared UNCONDITIONALLY in "
+                                   "governs_concern — the conditional adds "
+                                   "nothing")
+                        elif c in (gov_cond.get(q) or []):
+                            why = ("governs x context already consumed by "
+                                   "governs_conditional")
+                        else:
+                            slot = "governs_conditional"
+                            delta = {"governs_conditional": {q: ["+" + c]}}
+                            val = (q, c)
+                    else:
+                        # a conditional WALL is not expressible in the slot
+                        # (governs_conditional only ever widens engagement), so
+                        # the discrete rule is applied directly.
+                        slot, schema_ext, direct = "governs_conditional", True, True
+                        kind = "wall"
+                        delta = {"governs_conditional": {q: ["!" + c]}}
+                        val = (q, c)
+                else:
+                    kind = "subtype"
+                    slot = {"protects": "protects_concern",
+                            "purpose": "purpose_concern",
+                            "context": "contexts_concern"}[
+                        fb if fb != "act" else fa]
+                    schema_ext, direct = True, True
+                    delta = {"subtypes": [{
+                        "direction": "engage" if add else "wall",
+                        "target_slot": slot,
+                        "parents": parents}]}
+                    val = feat
+            elif fam == "governs":
                 consumed = val in gov_decl or val in gov_cond
                 if add and not consumed:
                     slot, delta = "governs_concern", {"governs_concern": ["+" + val]}
@@ -486,8 +783,16 @@ def main():
                 continue
 
             fixed, broken = predict_delta(slot, val, add, mod, br, corpus,
-                                          truth, keep, base_correct, ctx_nodes)
+                                          truth, keep, base_correct, ctx_nodes,
+                                          direct=direct)
             mech = None
+            if direct:
+                mech = ("no instrument slot expresses this rule today "
+                        "(schema extension); predicted fixes/breaks were "
+                        "computed by applying the stated discrete rule "
+                        "directly — %s every node carrying the column — to "
+                        "the current engaged set."
+                        % ("engaging" if add else "dropping"))
             if add and slot in ("protects_concern", "governs_concern") \
                     and not (mod.get(slot) or []):
                 mech = (f"{slot} is currently EMPTY for this behavior, which "
@@ -497,7 +802,9 @@ def main():
                         f"activation, not by the value itself.")
             proposals.append({
                 "behavior": slug,
-                "kind": "add" if add else "wall",
+                "kind": kind,
+                "direction": "add" if add else "wall",
+                "parent_atoms": parents,
                 "slot": slot,
                 "schema_extension": schema_ext,
                 "delta": delta,
@@ -506,7 +813,7 @@ def main():
                 "median_coef": round(coef, 4),
                 "predicted": {"fixes": len(fixed), "breaks": len(broken),
                               "fixed_nodes": fixed, "broken_nodes": broken},
-                "blind_justification_stub": stub(slug, slot, val, add),
+                "blind_justification_stub": stub(slug, slot, val, add, parents),
                 "mechanism_note": mech,
             })
 
@@ -531,8 +838,17 @@ def main():
           f"unmappable {len(unmappable)}")
 
 
-def stub(slug, slot, val, add):
+def stub(slug, slot, val, add, parents=None):
     verb = "should" if add else "should not"
+    if parents:
+        both = " and ".join(f"{k} '{v}'" for k, v in sorted(parents.items()))
+        val = both
+        return (f"HYPOTHESIS for 9b: read blind, would a document-side reader "
+                f"say that a clause which is BOTH {both} {verb} bear on "
+                f"'{slug}' — i.e. is the conjunction, not either atom alone, "
+                f"the thing the behavior is about? The a-priori case would "
+                f"have to come from the behavior's own definition, not from "
+                f"the panel labels that produced this interaction column.")
     human = {"governs_concern": f"a clause governing '{val}'",
              "protects_concern": f"a clause protecting '{val}'",
              "purpose_concern": f"a clause serving the end '{val}'",

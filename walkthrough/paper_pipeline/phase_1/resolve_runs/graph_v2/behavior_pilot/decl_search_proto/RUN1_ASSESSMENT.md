@@ -32,3 +32,27 @@
 - Everything is label-derived; the outputs are attention pointers. The real
   test of the WHOLE idea remains: do fitted proposals survive blind
   justification and fresh draws? That is a post-reset question.
+
+# Run 2 assessment (design tier: Fable, 2026-08-20)
+ANSWER TO THE CARVING QUESTION: interaction carvings of existing atoms buy
+almost nothing (386 survived screening, zero governs-x-context stable). The
+true carving queue is 3 nodes, byte-identical to opposite-verdict colliders
+across all 543 columns: help::l797_830_n011, harm::l831_1000_n001,
+harm::l831_1000_n011. CONVERGENT VALIDATION: these are exactly the nodes behind
+the two DEFERRED act-refinement atoms from split mining
+(provide:forbid.form_equivalence, exhibit:illustrate) — L1 residuals and the
+Opus miner, blind to each other, agree on both the nodes and the fix family.
+Run 3 is therefore NOT an open search: it is minting those two subtypes through
+the standard pipeline (blind criteria already written in
+split_mining_candidates.json -> two-seat annotation -> regression ->
+adjudication).
+Of the 40 unresolved: 33 have no collider (separable = declaration-space work;
+the run-1/2 purpose_concern proposals cover 11 of these), 4 separated by
+existing base columns, 3 = the carving queue.
+MAINTENANCE ITEM (queued): satisfiability_census.vector() predates the adopted
+definition_* lanes and context_atoms_consensus — census now under-reports
+separability relative to the real instrument; update before it is next used as
+evidence.
+FAIR-COMPARISON SANITY: instrument beats fitted model on all three behaviors
+(0.955/0.953/0.946 vs 0.897/0.936/0.781) — the optimizer is a proposer, not a
+better instrument, exactly as designed.

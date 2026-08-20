@@ -23,6 +23,8 @@
  "_caveats": [
   "SELECTION BIAS in the instrument comparison: the mask removes rows with an adjudicated-defensible verdict, and those rows are overwhelmingly the instrument's own mismatches. On the surviving rows the instrument is near-ceiling, so 'fitted vs instrument' log-loss is not a fair head-to-head \u2014 read it as 'what is left to explain after the defensible disagreements are set aside'.",
   "The model is fitted ON panel truth, so every coefficient is label-derived. Labels direct ATTENTION, never TRUTH: nothing here may be adopted without a document-side justification written blind (9b) and a fresh-pool measurement (9e).",
+  "RUN-2 amendment B: 'fair_comparison_all_rows' scores ALL rows of the behavior with adjudicated-defensible rows credited correct for BOTH the instrument and the model, which removes the mask's selection bias from the head-to-head. The model's probabilities there are out-of-fold on the fitted rows and full-fit on the masked rows (which entered no fit); the instrument's are its binary decision under best-case Laplace calibration. The masked fit itself is unchanged.",
+  "RUN-2 amendment A adds pairwise interaction columns. They are still label-fitted: an interaction that survives stability selection is a SUBTYPE HYPOTHESIS about the document, and the fact that a conjunction predicts truth better than either atom is exactly the kind of finding that can be pure overfitting on ~200-350 rows.",
   "The two relational act encodings are behavior-dependent by construction (they are defined against the behavior's own performs set) but share a column namespace across behaviors; fitting is per behavior, so no cross-behavior mixing occurs."
  ],
  "behaviors": {
@@ -33,9 +35,16 @@
    "positive_rate": 0.5673,
    "chosen_C": 3.1622776601683795,
    "baseline_logloss": 0.6841,
-   "fitted_logloss": 0.2634,
+   "fitted_logloss": 0.2706,
    "instrument_logloss": 0.1934,
    "instrument_accuracy": 0.9474,
+   "fair_comparison_all_rows": {
+    "n_rows_scored": 397,
+    "fitted_accuracy_all_rows_fair": 0.8967,
+    "instrument_accuracy_all_rows_fair": 0.9547,
+    "fitted_logloss_all_rows_fair": 0.2595,
+    "instrument_logloss_all_rows_fair": 0.176
+   },
    "l1_path": [
     {
      "C": 0.001,
@@ -54,151 +63,446 @@
     },
     {
      "C": 0.03162277660168379,
-     "cv_logloss": 0.6600132259624856,
+     "cv_logloss": 0.6608400908989921,
      "n_nonzero_full_fit": 2
     },
     {
      "C": 0.1,
-     "cv_logloss": 0.48607668727801584,
-     "n_nonzero_full_fit": 5
+     "cv_logloss": 0.4786282775500643,
+     "n_nonzero_full_fit": 4
     },
     {
      "C": 0.31622776601683794,
-     "cv_logloss": 0.36439644633474794,
-     "n_nonzero_full_fit": 22
+     "cv_logloss": 0.35913592343974865,
+     "n_nonzero_full_fit": 21
     },
     {
      "C": 1.0,
-     "cv_logloss": 0.2881064838119851,
-     "n_nonzero_full_fit": 39
+     "cv_logloss": 0.2952618427708114,
+     "n_nonzero_full_fit": 48
     },
     {
      "C": 3.1622776601683795,
-     "cv_logloss": 0.263425363082202,
-     "n_nonzero_full_fit": 60
+     "cv_logloss": 0.27061270132545545,
+     "n_nonzero_full_fit": 75
     },
     {
      "C": 10.0,
-     "cv_logloss": 0.3345149924088955,
-     "n_nonzero_full_fit": 78
+     "cv_logloss": 0.3137867902566151,
+     "n_nonzero_full_fit": 91
     },
     {
      "C": 31.622776601683793,
-     "cv_logloss": 0.5008015955003801,
-     "n_nonzero_full_fit": 76
+     "cv_logloss": 0.3828169844721728,
+     "n_nonzero_full_fit": 106
     },
     {
      "C": 100.0,
-     "cv_logloss": 0.7299965179185557,
-     "n_nonzero_full_fit": 71
+     "cv_logloss": 0.4687748615120655,
+     "n_nonzero_full_fit": 111
     }
    ],
-   "n_stable_features": 37,
+   "n_stable_features": 30,
    "stability": {
-    "act=act_in_world|oblige|exact": 0.63,
-    "act=answer_directly|described|exact": 0.67,
-    "act=comply|forbid|exact": 0.87,
-    "act=comply|prefer|exact": 0.91,
-    "act=engage_relationship|forbid|exact": 0.69,
-    "act=engage_relationship|prefer|exact": 0.67,
-    "act=judge_or_moralize|forbid|exact": 0.62,
-    "act=protective_response|prefer|exact": 0.64,
-    "act=provide_hazardous|forbid|exact": 0.77,
-    "act=provide_information|oblige|exact": 0.56,
-    "act=provide|forbid|exact": 0.69,
-    "act=provide|forbid|mod_genus_beh_species": 0.69,
-    "act=provide|oblige|exact": 0.85,
-    "act=provide|oblige|mod_genus_beh_species": 0.84,
-    "act=provide|permit|exact": 0.8,
-    "act=provide|permit|mod_genus_beh_species": 0.7,
+    "act=answer_directly|described|exact": 0.53,
+    "act=comply|forbid|exact": 0.55,
+    "act=comply|prefer|exact": 0.82,
+    "act=engage_relationship|forbid|exact": 0.58,
+    "act=engage_relationship|prefer|exact": 0.58,
+    "act=protective_response|prefer|exact": 0.56,
+    "act=provide_hazardous|forbid|exact": 0.68,
+    "act=provide|oblige|exact": 0.81,
+    "act=provide|oblige|mod_genus_beh_species": 0.81,
+    "act=provide|permit|exact": 0.6,
+    "act=provide|permit|mod_genus_beh_species": 0.61,
     "act=provide|prefer|exact": 1.0,
     "act=provide|prefer|mod_genus_beh_species": 1.0,
-    "act=pursue_goal|forbid|exact": 0.7,
-    "act=refuse|forbid|exact": 0.91,
-    "act=refuse|oblige|exact": 0.83,
-    "act=refuse|prefer|exact": 0.66,
-    "act=respond_in_manner|forbid|exact": 0.87,
+    "act=pursue_goal|forbid|exact": 0.71,
+    "act=refuse|forbid|exact": 0.88,
+    "act=respond_in_manner|forbid|exact": 0.72,
     "act=respond_in_manner|oblige|exact": 0.61,
-    "act=respond_in_manner|prefer|exact": 0.81,
-    "act=respond|forbid|exact": 1.0,
-    "act=respond|forbid|mod_genus_beh_species": 0.98,
-    "act=respond|oblige|exact": 0.94,
-    "act=respond|oblige|mod_genus_beh_species": 0.93,
-    "act=respond|prefer|exact": 1.0,
-    "act=respond|prefer|mod_genus_beh_species": 1.0,
-    "act=uncertainty_phrasing|permit|exact": 0.56,
-    "act=uncertainty_phrasing|prefer|exact": 0.68,
+    "act=respond_in_manner|prefer|exact": 0.79,
+    "act=respond|prefer|exact": 0.94,
+    "act=respond|prefer|mod_genus_beh_species": 0.96,
+    "act=uncertainty_phrasing|permit|exact": 0.61,
+    "act=uncertainty_phrasing|prefer|exact": 0.6,
     "actor=has_assistant": 1.0,
     "context=agentic_setting": 0.84,
-    "governs=accuracy_calibration": 0.99,
-    "governs=formatting_style": 0.9,
-    "governs=identity_meta": 0.73,
-    "governs=objectivity_neutrality": 0.72,
-    "governs=substance_usefulness": 1.0,
-    "governs=tone_manner": 0.93,
-    "protects=developer": 0.7,
-    "protects=society": 0.63,
-    "protects=third_party": 0.81,
-    "protects=unspecified": 0.71,
-    "protects=user": 0.96,
+    "governs=accuracy_calibration": 0.82,
+    "governs=formatting_style": 0.81,
+    "governs=identity_meta": 0.82,
+    "governs=substance_usefulness": 0.96,
+    "protects=third_party": 0.52,
+    "protects=unspecified": 0.84,
     "purpose=controllability": 0.8,
     "purpose=empowerment": 1.0,
-    "purpose=predictability-and-reliability": 0.83,
-    "purpose=rights-respect": 0.88,
-    "purpose=trust": 0.95
+    "purpose=predictability-and-reliability": 0.82,
+    "purpose=rights-respect": 0.75,
+    "purpose=trust": 0.92,
+    "x[act=comply|forbid|exact&purpose=harm-prevention]": 0.56,
+    "x[act=provide|forbid|exact&protects=user]": 0.54,
+    "x[act=provide|forbid|exact&purpose=well-being]": 0.63,
+    "x[act=provide|forbid|mod_genus_beh_species&protects=user]": 0.54,
+    "x[act=provide|forbid|mod_genus_beh_species&purpose=well-being]": 0.65,
+    "x[act=refuse|prefer|exact&protects=user]": 0.77,
+    "x[act=respond|forbid|exact&protects=user]": 0.98,
+    "x[act=respond|forbid|mod_genus_beh_species&protects=user]": 0.99,
+    "x[act=respond|oblige|exact&protects=user]": 0.96,
+    "x[act=respond|oblige|mod_genus_beh_species&protects=user]": 0.96,
+    "x[act=uncertainty_phrasing|prefer|exact&protects=user]": 0.61,
+    "x[governs=accuracy_calibration&protects=user]": 0.51,
+    "x[governs=substance_usefulness&protects=user]": 0.95,
+    "x[governs=tone_manner&protects=user]": 0.9
    },
    "median_coef": {
-    "act=act_in_world|oblige|exact": -0.2638,
-    "act=answer_directly|described|exact": 0.6943,
-    "act=comply|forbid|exact": 1.5646,
-    "act=comply|prefer|exact": 2.9675,
-    "act=engage_relationship|forbid|exact": -1.8888,
-    "act=engage_relationship|prefer|exact": -1.1551,
-    "act=judge_or_moralize|forbid|exact": 0.7726,
-    "act=protective_response|prefer|exact": 0.7472,
-    "act=provide_hazardous|forbid|exact": -2.2575,
-    "act=provide_information|oblige|exact": -0.3592,
-    "act=provide|forbid|exact": 0.2273,
-    "act=provide|forbid|mod_genus_beh_species": 0.3394,
-    "act=provide|oblige|exact": 1.1653,
-    "act=provide|oblige|mod_genus_beh_species": 0.6446,
-    "act=provide|permit|exact": 0.5904,
-    "act=provide|permit|mod_genus_beh_species": 0.0158,
-    "act=provide|prefer|exact": 1.3324,
-    "act=provide|prefer|mod_genus_beh_species": 2.5048,
-    "act=pursue_goal|forbid|exact": -3.7889,
-    "act=refuse|forbid|exact": 2.658,
-    "act=refuse|oblige|exact": 1.1806,
-    "act=refuse|prefer|exact": 0.3469,
-    "act=respond_in_manner|forbid|exact": -1.5301,
-    "act=respond_in_manner|oblige|exact": -2.4263,
-    "act=respond_in_manner|prefer|exact": -1.3178,
-    "act=respond|forbid|exact": 1.8705,
-    "act=respond|forbid|mod_genus_beh_species": 0.5445,
-    "act=respond|oblige|exact": 1.0771,
-    "act=respond|oblige|mod_genus_beh_species": 0.7006,
-    "act=respond|prefer|exact": 2.7489,
-    "act=respond|prefer|mod_genus_beh_species": 1.0981,
-    "act=uncertainty_phrasing|permit|exact": -0.2323,
-    "act=uncertainty_phrasing|prefer|exact": -1.5759,
-    "actor=has_assistant": 4.9119,
-    "context=agentic_setting": -1.3716,
-    "governs=accuracy_calibration": 1.3039,
-    "governs=formatting_style": 1.5365,
-    "governs=identity_meta": -1.0801,
-    "governs=objectivity_neutrality": -0.5978,
-    "governs=substance_usefulness": 3.1691,
-    "governs=tone_manner": 1.4651,
-    "protects=developer": 0.0746,
-    "protects=society": -0.2465,
-    "protects=third_party": -0.7523,
-    "protects=unspecified": -0.5409,
-    "protects=user": 1.6185,
-    "purpose=controllability": -0.6453,
-    "purpose=empowerment": 3.3114,
-    "purpose=predictability-and-reliability": 0.9469,
-    "purpose=rights-respect": -1.273,
-    "purpose=trust": 1.5179
+    "act=answer_directly|described|exact": 0.3592,
+    "act=comply|forbid|exact": 0.39,
+    "act=comply|prefer|exact": 2.313,
+    "act=engage_relationship|forbid|exact": -0.5574,
+    "act=engage_relationship|prefer|exact": -0.4882,
+    "act=protective_response|prefer|exact": 0.7279,
+    "act=provide_hazardous|forbid|exact": -0.8807,
+    "act=provide|oblige|exact": 0.9574,
+    "act=provide|oblige|mod_genus_beh_species": 0.6078,
+    "act=provide|permit|exact": 0.0694,
+    "act=provide|permit|mod_genus_beh_species": 0.0836,
+    "act=provide|prefer|exact": 1.9596,
+    "act=provide|prefer|mod_genus_beh_species": 2.0024,
+    "act=pursue_goal|forbid|exact": -1.991,
+    "act=refuse|forbid|exact": 2.7141,
+    "act=respond_in_manner|forbid|exact": -0.4416,
+    "act=respond_in_manner|oblige|exact": -2.0258,
+    "act=respond_in_manner|prefer|exact": -0.9782,
+    "act=respond|prefer|exact": 1.3011,
+    "act=respond|prefer|mod_genus_beh_species": 2.0914,
+    "act=uncertainty_phrasing|permit|exact": -0.3929,
+    "act=uncertainty_phrasing|prefer|exact": -0.0043,
+    "actor=has_assistant": 4.3975,
+    "context=agentic_setting": -1.5292,
+    "governs=accuracy_calibration": 0.9029,
+    "governs=formatting_style": 0.9162,
+    "governs=identity_meta": -1.1758,
+    "governs=substance_usefulness": 2.1461,
+    "protects=third_party": -0.045,
+    "protects=unspecified": -0.8785,
+    "purpose=controllability": -0.8187,
+    "purpose=empowerment": 3.2235,
+    "purpose=predictability-and-reliability": 0.7471,
+    "purpose=rights-respect": -0.7999,
+    "purpose=trust": 1.1014,
+    "x[act=comply|forbid|exact&purpose=harm-prevention]": 0.6045,
+    "x[act=provide|forbid|exact&protects=user]": 0.0486,
+    "x[act=provide|forbid|exact&purpose=well-being]": 0.4638,
+    "x[act=provide|forbid|mod_genus_beh_species&protects=user]": 0.0017,
+    "x[act=provide|forbid|mod_genus_beh_species&purpose=well-being]": 0.5455,
+    "x[act=refuse|prefer|exact&protects=user]": 1.2166,
+    "x[act=respond|forbid|exact&protects=user]": 1.4093,
+    "x[act=respond|forbid|mod_genus_beh_species&protects=user]": 1.2252,
+    "x[act=respond|oblige|exact&protects=user]": 1.1131,
+    "x[act=respond|oblige|mod_genus_beh_species&protects=user]": 1.182,
+    "x[act=uncertainty_phrasing|prefer|exact&protects=user]": -0.6576,
+    "x[governs=accuracy_calibration&protects=user]": 0.0073,
+    "x[governs=substance_usefulness&protects=user]": 1.6591,
+    "x[governs=tone_manner&protects=user]": 1.0161
+   },
+   "residual_targets": {
+    "_": "unresolved mismatches = instrument-vs-truth disagreements that are NOT adjudicated-defensible; colliders are the satisfiability census's colliding correct nodes of the opposite verdict. A column separates only if it differs from EVERY collider.",
+    "_granularity_caveat": "the collider relation comes from satisfiability_census, whose vector() reads assert_signature/protects/purpose_actor ONLY \u2014 it does not merge the definition_* lanes and does not include the consensus context atoms, both of which the instrument and this feature matrix do use. So some 'separating columns' reported here separate at the matrix's granularity while the census still calls the pair a collision; the census, not the matrix, is the stale side. The carving queue below is the conservative end: those nodes are identical to their colliders on EVERY post-screen column, interactions included.",
+    "n_unresolved": 18,
+    "n_with_no_collider": 15,
+    "n_with_separating_column": 2,
+    "n_carving_queue": 1,
+    "carving_queue": [
+     "l797_830_n011"
+    ],
+    "targets": {
+     "l1707_1973_n040": {
+      "verdict_needed": "relevant",
+      "census_status": "SEPARABLE",
+      "colliders": [],
+      "separating_columns": null,
+      "note": "no census collider \u2014 already SEPARABLE at current granularity; nothing to carve"
+     },
+     "l171_426_n024": {
+      "verdict_needed": "relevant",
+      "census_status": "SEPARABLE",
+      "colliders": [],
+      "separating_columns": null,
+      "note": "no census collider \u2014 already SEPARABLE at current granularity; nothing to carve"
+     },
+     "l171_426_n030": {
+      "verdict_needed": "relevant",
+      "census_status": "SEPARABLE",
+      "colliders": [],
+      "separating_columns": null,
+      "note": "no census collider \u2014 already SEPARABLE at current granularity; nothing to carve"
+     },
+     "l171_426_n036": {
+      "verdict_needed": "relevant",
+      "census_status": "SEPARABLE",
+      "colliders": [],
+      "separating_columns": null,
+      "note": "no census collider \u2014 already SEPARABLE at current granularity; nothing to carve"
+     },
+     "l1_170_n030": {
+      "verdict_needed": "relevant",
+      "census_status": "UNSAT",
+      "colliders": [
+       "l1_170_n051",
+       "l699_796_n008",
+       "l1_170_n064",
+       "l4483_4571_n007",
+       "l2126_2404_n051",
+       "l1_170_n077",
+       "l2821_3040_n006",
+       "l3596_3876_n008",
+       "l4252_4482_n004",
+       "l1_170_n069",
+       "l4572_4692_n010",
+       "l2126_2404_n040",
+       "l1108_1367_n013",
+       "l1707_1973_n015",
+       "l1707_1973_n018",
+       "l171_203_n004",
+       "l1_170_n006",
+       "l1_170_n016",
+       "l1_170_n017",
+       "l1_170_n037",
+       "l1_170_n039",
+       "l1_170_n041",
+       "l1_170_n049",
+       "l1_170_n058",
+       "l1_170_n067",
+       "l1_170_n070",
+       "l1_170_n080",
+       "l2126_2404_n032",
+       "l2126_2404_n038",
+       "l2126_2404_n039",
+       "l2821_3040_n011",
+       "l426_610_n034",
+       "l831_1000_n001",
+       "l1001_1107_n001",
+       "l1108_1367_n011",
+       "l171_426_n004",
+       "l1_170_n018",
+       "l1_170_n022",
+       "l1_170_n068",
+       "l1_170_n078",
+       "l1_170_n085",
+       "l1_170_n089",
+       "l1_170_n092",
+       "l2126_2404_n014",
+       "l2821_3040_n001",
+       "l3239_3382_n009",
+       "l4252_4482_n018",
+       "l4483_4571_n001",
+       "l171_203_n020",
+       "l171_426_n002",
+       "l171_426_n017",
+       "l1_170_n015",
+       "l1_170_n061",
+       "l1_170_n065",
+       "l1_170_n072",
+       "l1_170_n073",
+       "l2126_2404_n024",
+       "l2821_3040_n010",
+       "l2821_3040_n012",
+       "l3505_3953_n001",
+       "l3954_4251_n009",
+       "l4571_4692_n005",
+       "l831_1000_n006"
+      ],
+      "separating_columns": [
+       "governs=substance_usefulness",
+       "x[governs=substance_usefulness&protects=developer]",
+       "x[governs=substance_usefulness&protects=user]"
+      ],
+      "n_separating_columns": 3,
+      "n_separating_interaction_columns": 2,
+      "columns_differing_per_collider": {
+       "l1_170_n051": 8,
+       "l699_796_n008": 7,
+       "l1_170_n064": 8,
+       "l4483_4571_n007": 8,
+       "l2126_2404_n051": 8,
+       "l1_170_n077": 8,
+       "l2821_3040_n006": 8,
+       "l3596_3876_n008": 9,
+       "l4252_4482_n004": 8,
+       "l1_170_n069": 8,
+       "l4572_4692_n010": 9,
+       "l2126_2404_n040": 7,
+       "l1108_1367_n013": 8,
+       "l1707_1973_n015": 8,
+       "l1707_1973_n018": 7,
+       "l171_203_n004": 7,
+       "l1_170_n006": 9,
+       "l1_170_n016": 8,
+       "l1_170_n017": 10,
+       "l1_170_n037": 8,
+       "l1_170_n039": 8,
+       "l1_170_n041": 7,
+       "l1_170_n049": 9,
+       "l1_170_n058": 8,
+       "l1_170_n067": 8,
+       "l1_170_n070": 8,
+       "l1_170_n080": 7,
+       "l2126_2404_n032": 7,
+       "l2126_2404_n038": 8,
+       "l2126_2404_n039": 9,
+       "l2821_3040_n011": 9,
+       "l426_610_n034": 8,
+       "l831_1000_n001": 7,
+       "l1001_1107_n001": 8,
+       "l1108_1367_n011": 8,
+       "l171_426_n004": 8,
+       "l1_170_n018": 8,
+       "l1_170_n022": 7,
+       "l1_170_n068": 8,
+       "l1_170_n078": 8,
+       "l1_170_n085": 8,
+       "l1_170_n089": 8,
+       "l1_170_n092": 7,
+       "l2126_2404_n014": 11,
+       "l2821_3040_n001": 8,
+       "l3239_3382_n009": 8,
+       "l4252_4482_n018": 8,
+       "l4483_4571_n001": 8,
+       "l171_203_n020": 9,
+       "l171_426_n002": 7,
+       "l171_426_n017": 8,
+       "l1_170_n015": 8,
+       "l1_170_n061": 8,
+       "l1_170_n065": 7,
+       "l1_170_n072": 8,
+       "l1_170_n073": 8,
+       "l2126_2404_n024": 8,
+       "l2821_3040_n010": 9,
+       "l2821_3040_n012": 9,
+       "l3505_3953_n001": 8,
+       "l3954_4251_n009": 8,
+       "l4571_4692_n005": 8,
+       "l831_1000_n006": 7
+      }
+     },
+     "l2126_2404_n016": {
+      "verdict_needed": "relevant",
+      "census_status": "SEPARABLE",
+      "colliders": [],
+      "separating_columns": null,
+      "note": "no census collider \u2014 already SEPARABLE at current granularity; nothing to carve"
+     },
+     "l2126_2404_n019": {
+      "verdict_needed": "relevant",
+      "census_status": "SEPARABLE",
+      "colliders": [],
+      "separating_columns": null,
+      "note": "no census collider \u2014 already SEPARABLE at current granularity; nothing to carve"
+     },
+     "l2126_2404_n045": {
+      "verdict_needed": "relevant",
+      "census_status": "SEPARABLE",
+      "colliders": [],
+      "separating_columns": null,
+      "note": "no census collider \u2014 already SEPARABLE at current granularity; nothing to carve"
+     },
+     "l2821_3040_n015": {
+      "verdict_needed": "not_relevant",
+      "census_status": "SEPARABLE",
+      "colliders": [],
+      "separating_columns": null,
+      "note": "no census collider \u2014 already SEPARABLE at current granularity; nothing to carve"
+     },
+     "l2821_3040_n031": {
+      "verdict_needed": "not_relevant",
+      "census_status": "SEPARABLE",
+      "colliders": [],
+      "separating_columns": null,
+      "note": "no census collider \u2014 already SEPARABLE at current granularity; nothing to carve"
+     },
+     "l3041_3146_n005": {
+      "verdict_needed": "relevant",
+      "census_status": "SEPARABLE",
+      "colliders": [],
+      "separating_columns": null,
+      "note": "no census collider \u2014 already SEPARABLE at current granularity; nothing to carve"
+     },
+     "l3502_3504_n001": {
+      "verdict_needed": "relevant",
+      "census_status": "UNSAT",
+      "colliders": [
+       "l1_170_n087"
+      ],
+      "separating_columns": [
+       "actor=has_assistant",
+       "governs=formatting_style",
+       "governs=tone_manner",
+       "protects=developer",
+       "protects=user",
+       "purpose=trust",
+       "x[governs=formatting_style&protects=developer]",
+       "x[governs=formatting_style&protects=unspecified]",
+       "x[governs=tone_manner&protects=unspecified]",
+       "x[governs=tone_manner&protects=user]"
+      ],
+      "n_separating_columns": 10,
+      "n_separating_interaction_columns": 4,
+      "columns_differing_per_collider": {
+       "l1_170_n087": 10
+      }
+     },
+     "l3877_3953_n010": {
+      "verdict_needed": "relevant",
+      "census_status": "SEPARABLE",
+      "colliders": [],
+      "separating_columns": null,
+      "note": "no census collider \u2014 already SEPARABLE at current granularity; nothing to carve"
+     },
+     "l4252_4482_n023": {
+      "verdict_needed": "relevant",
+      "census_status": "SEPARABLE",
+      "colliders": [],
+      "separating_columns": null,
+      "note": "no census collider \u2014 already SEPARABLE at current granularity; nothing to carve"
+     },
+     "l461_608_n001": {
+      "verdict_needed": "relevant",
+      "census_status": "SEPARABLE",
+      "colliders": [],
+      "separating_columns": null,
+      "note": "no census collider \u2014 already SEPARABLE at current granularity; nothing to carve"
+     },
+     "l609_698_n013": {
+      "verdict_needed": "relevant",
+      "census_status": "SEPARABLE",
+      "colliders": [],
+      "separating_columns": null,
+      "note": "no census collider \u2014 already SEPARABLE at current granularity; nothing to carve"
+     },
+     "l797_830_n005": {
+      "verdict_needed": "not_relevant",
+      "census_status": "SEPARABLE",
+      "colliders": [],
+      "separating_columns": null,
+      "note": "no census collider \u2014 already SEPARABLE at current granularity; nothing to carve"
+     },
+     "l797_830_n011": {
+      "verdict_needed": "relevant",
+      "census_status": "UNSAT",
+      "colliders": [
+       "l797_830_n007",
+       "l831_1000_n003"
+      ],
+      "separating_columns": [],
+      "n_separating_columns": 0,
+      "n_separating_interaction_columns": 0,
+      "columns_differing_per_collider": {
+       "l797_830_n007": 0,
+       "l831_1000_n003": 0
+      },
+      "note": "RUN-3 CARVING QUEUE: no post-screen column separates this node from every collider"
+     }
+    }
    }
   },
   "harm-avoidance-to-third-parties": {
@@ -208,9 +512,16 @@
    "positive_rate": 0.4121,
    "chosen_C": 1.0,
    "baseline_logloss": 0.6777,
-   "fitted_logloss": 0.2225,
+   "fitted_logloss": 0.238,
    "instrument_logloss": 0.2082,
    "instrument_accuracy": 0.9447,
+   "fair_comparison_all_rows": {
+    "n_rows_scored": 234,
+    "fitted_accuracy_all_rows_fair": 0.9359,
+    "instrument_accuracy_all_rows_fair": 0.953,
+    "fitted_logloss_all_rows_fair": 0.2272,
+    "instrument_logloss_all_rows_fair": 0.1834
+   },
    "l1_path": [
     {
      "C": 0.001,
@@ -234,64 +545,235 @@
     },
     {
      "C": 0.1,
-     "cv_logloss": 0.5129161211141404,
-     "n_nonzero_full_fit": 2
+     "cv_logloss": 0.511840360887889,
+     "n_nonzero_full_fit": 4
     },
     {
      "C": 0.31622776601683794,
-     "cv_logloss": 0.29786348201918206,
-     "n_nonzero_full_fit": 7
+     "cv_logloss": 0.30030068328583814,
+     "n_nonzero_full_fit": 8
     },
     {
      "C": 1.0,
-     "cv_logloss": 0.22249437310385173,
-     "n_nonzero_full_fit": 11
+     "cv_logloss": 0.23801804981413843,
+     "n_nonzero_full_fit": 20
     },
     {
      "C": 3.1622776601683795,
-     "cv_logloss": 0.2887385617355953,
-     "n_nonzero_full_fit": 30
+     "cv_logloss": 0.31219361156837266,
+     "n_nonzero_full_fit": 35
     },
     {
      "C": 10.0,
-     "cv_logloss": 0.4418590343882528,
-     "n_nonzero_full_fit": 38
+     "cv_logloss": 0.44630738060758957,
+     "n_nonzero_full_fit": 41
     },
     {
      "C": 31.622776601683793,
-     "cv_logloss": 0.750801662447828,
-     "n_nonzero_full_fit": 51
+     "cv_logloss": 0.589681040464408,
+     "n_nonzero_full_fit": 49
     },
     {
      "C": 100.0,
-     "cv_logloss": 1.017269682996698,
-     "n_nonzero_full_fit": 56
+     "cv_logloss": 0.7414970956283646,
+     "n_nonzero_full_fit": 55
     }
    ],
-   "n_stable_features": 7,
+   "n_stable_features": 9,
    "stability": {
-    "act=provide|permit|exact": 1.0,
-    "context=vulnerable_interaction": 0.87,
-    "governs=substance_usefulness": 0.98,
-    "protects=developer": 0.62,
-    "protects=society": 1.0,
-    "protects=third_party": 1.0,
-    "protects=user": 0.91,
-    "purpose=controllability": 0.52,
-    "purpose=empowerment": 0.55,
-    "purpose=harm-prevention": 0.97
+    "act=provide|permit|exact": 0.78,
+    "context=vulnerable_interaction": 0.75,
+    "governs=substance_usefulness": 0.83,
+    "protects=society": 0.82,
+    "protects=third_party": 0.84,
+    "protects=unspecified": 0.65,
+    "protects=user": 0.89,
+    "purpose=harm-prevention": 0.97,
+    "x[act=provide|permit|exact&purpose=empowerment]": 0.55,
+    "x[act=refuse|forbid|exact&purpose=epistemic-autonomy]": 0.5,
+    "x[governs=substance_usefulness&protects=developer]": 0.57,
+    "x[governs=substance_usefulness&protects=society]": 0.79,
+    "x[governs=substance_usefulness&protects=third_party]": 0.73
    },
    "median_coef": {
-    "act=provide|permit|exact": 2.5961,
-    "context=vulnerable_interaction": -0.7503,
-    "governs=substance_usefulness": 1.1172,
-    "protects=developer": 0.3012,
-    "protects=society": 3.6999,
-    "protects=third_party": 4.7163,
-    "protects=user": -0.8272,
-    "purpose=controllability": -0.0218,
-    "purpose=empowerment": 0.0494,
-    "purpose=harm-prevention": 1.0056
+    "act=provide|permit|exact": 2.2818,
+    "context=vulnerable_interaction": -0.4437,
+    "governs=substance_usefulness": 0.374,
+    "protects=society": 2.6274,
+    "protects=third_party": 2.6889,
+    "protects=unspecified": -0.4235,
+    "protects=user": -0.9257,
+    "purpose=harm-prevention": 0.9324,
+    "x[act=provide|permit|exact&purpose=empowerment]": 0.2728,
+    "x[act=refuse|forbid|exact&purpose=epistemic-autonomy]": -0.0007,
+    "x[governs=substance_usefulness&protects=developer]": 0.4647,
+    "x[governs=substance_usefulness&protects=society]": 1.376,
+    "x[governs=substance_usefulness&protects=third_party]": 2.5861
+   },
+   "residual_targets": {
+    "_": "unresolved mismatches = instrument-vs-truth disagreements that are NOT adjudicated-defensible; colliders are the satisfiability census's colliding correct nodes of the opposite verdict. A column separates only if it differs from EVERY collider.",
+    "_granularity_caveat": "the collider relation comes from satisfiability_census, whose vector() reads assert_signature/protects/purpose_actor ONLY \u2014 it does not merge the definition_* lanes and does not include the consensus context atoms, both of which the instrument and this feature matrix do use. So some 'separating columns' reported here separate at the matrix's granularity while the census still calls the pair a collision; the census, not the matrix, is the stale side. The carving queue below is the conservative end: those nodes are identical to their colliders on EVERY post-screen column, interactions included.",
+    "n_unresolved": 11,
+    "n_with_no_collider": 8,
+    "n_with_separating_column": 1,
+    "n_carving_queue": 2,
+    "carving_queue": [
+     "l831_1000_n001",
+     "l831_1000_n011"
+    ],
+    "targets": {
+     "l1108_1367_n004": {
+      "verdict_needed": "relevant",
+      "census_status": "SEPARABLE",
+      "colliders": [],
+      "separating_columns": null,
+      "note": "no census collider \u2014 already SEPARABLE at current granularity; nothing to carve"
+     },
+     "l1108_1367_n015": {
+      "verdict_needed": "not_relevant",
+      "census_status": "SEPARABLE",
+      "colliders": [],
+      "separating_columns": null,
+      "note": "no census collider \u2014 already SEPARABLE at current granularity; nothing to carve"
+     },
+     "l1368_1541_n004": {
+      "verdict_needed": "relevant",
+      "census_status": "SEPARABLE",
+      "colliders": [],
+      "separating_columns": null,
+      "note": "no census collider \u2014 already SEPARABLE at current granularity; nothing to carve"
+     },
+     "l1_170_n005": {
+      "verdict_needed": "relevant",
+      "census_status": "SEPARABLE",
+      "colliders": [],
+      "separating_columns": null,
+      "note": "no census collider \u2014 already SEPARABLE at current granularity; nothing to carve"
+     },
+     "l2474_2554_n003": {
+      "verdict_needed": "relevant",
+      "census_status": "SEPARABLE",
+      "colliders": [],
+      "separating_columns": null,
+      "note": "no census collider \u2014 already SEPARABLE at current granularity; nothing to carve"
+     },
+     "l609_698_n012": {
+      "verdict_needed": "relevant",
+      "census_status": "UNSAT",
+      "colliders": [
+       "l2126_2404_n020",
+       "l2126_2404_n021"
+      ],
+      "separating_columns": [
+       "context=aggregate_effect_at_scale"
+      ],
+      "n_separating_columns": 1,
+      "n_separating_interaction_columns": 0,
+      "columns_differing_per_collider": {
+       "l2126_2404_n020": 1,
+       "l2126_2404_n021": 1
+      }
+     },
+     "l609_698_n016": {
+      "verdict_needed": "relevant",
+      "census_status": "SEPARABLE",
+      "colliders": [],
+      "separating_columns": null,
+      "note": "no census collider \u2014 already SEPARABLE at current granularity; nothing to carve"
+     },
+     "l609_698_n018": {
+      "verdict_needed": "relevant",
+      "census_status": "SEPARABLE",
+      "colliders": [],
+      "separating_columns": null,
+      "note": "no census collider \u2014 already SEPARABLE at current granularity; nothing to carve"
+     },
+     "l831_1000_n001": {
+      "verdict_needed": "relevant",
+      "census_status": "UNSAT",
+      "colliders": [
+       "l1707_1973_n018",
+       "l1_170_n018",
+       "l1_170_n031",
+       "l4483_4571_n001",
+       "l2126_2404_n051",
+       "l699_796_n008",
+       "l1_170_n013",
+       "l2405_2473_n009",
+       "l461_608_n003",
+       "l4252_4482_n004",
+       "l1_170_n042",
+       "l2821_3040_n009",
+       "l171_426_n007",
+       "l171_426_n009",
+       "l1974_2125_n001",
+       "l1_170_n048",
+       "l1_170_n051",
+       "l1_170_n074",
+       "l1_170_n078",
+       "l2126_2404_n025",
+       "l2126_2404_n027",
+       "l2126_2404_n032",
+       "l2821_3040_n012",
+       "l3041_3146_n001",
+       "l609_698_n001",
+       "l699_796_n001"
+      ],
+      "separating_columns": [],
+      "n_separating_columns": 0,
+      "n_separating_interaction_columns": 0,
+      "columns_differing_per_collider": {
+       "l1707_1973_n018": 2,
+       "l1_170_n018": 1,
+       "l1_170_n031": 3,
+       "l4483_4571_n001": 1,
+       "l2126_2404_n051": 5,
+       "l699_796_n008": 4,
+       "l1_170_n013": 1,
+       "l2405_2473_n009": 9,
+       "l461_608_n003": 3,
+       "l4252_4482_n004": 1,
+       "l1_170_n042": 1,
+       "l2821_3040_n009": 4,
+       "l171_426_n007": 1,
+       "l171_426_n009": 1,
+       "l1974_2125_n001": 1,
+       "l1_170_n048": 1,
+       "l1_170_n051": 1,
+       "l1_170_n074": 1,
+       "l1_170_n078": 1,
+       "l2126_2404_n025": 1,
+       "l2126_2404_n027": 1,
+       "l2126_2404_n032": 0,
+       "l2821_3040_n012": 4,
+       "l3041_3146_n001": 1,
+       "l609_698_n001": 1,
+       "l699_796_n001": 1
+      },
+      "note": "RUN-3 CARVING QUEUE: no post-screen column separates this node from every collider"
+     },
+     "l831_1000_n011": {
+      "verdict_needed": "relevant",
+      "census_status": "UNSAT",
+      "colliders": [
+       "l831_1000_n013"
+      ],
+      "separating_columns": [],
+      "n_separating_columns": 0,
+      "n_separating_interaction_columns": 0,
+      "columns_differing_per_collider": {
+       "l831_1000_n013": 0
+      },
+      "note": "RUN-3 CARVING QUEUE: no post-screen column separates this node from every collider"
+     },
+     "l831_1000_n014": {
+      "verdict_needed": "relevant",
+      "census_status": "SEPARABLE",
+      "colliders": [],
+      "separating_columns": null,
+      "note": "no census collider \u2014 already SEPARABLE at current granularity; nothing to carve"
+     }
+    }
    }
   },
   "avoiding-over-and-under-caution": {
@@ -301,9 +783,16 @@
    "positive_rate": 0.6077,
    "chosen_C": 1.0,
    "baseline_logloss": 0.6698,
-   "fitted_logloss": 0.4208,
+   "fitted_logloss": 0.4355,
    "instrument_logloss": 0.2402,
    "instrument_accuracy": 0.9392,
+   "fair_comparison_all_rows": {
+    "n_rows_scored": 205,
+    "fitted_accuracy_all_rows_fair": 0.7805,
+    "instrument_accuracy_all_rows_fair": 0.9463,
+    "fitted_logloss_all_rows_fair": 0.4178,
+    "instrument_logloss_all_rows_fair": 0.2068
+   },
    "l1_path": [
     {
      "C": 0.001,
@@ -327,88 +816,238 @@
     },
     {
      "C": 0.1,
-     "cv_logloss": 0.5775137831808393,
-     "n_nonzero_full_fit": 2
+     "cv_logloss": 0.5797322895234192,
+     "n_nonzero_full_fit": 3
     },
     {
      "C": 0.31622776601683794,
-     "cv_logloss": 0.49491785070207966,
-     "n_nonzero_full_fit": 9
+     "cv_logloss": 0.5020399863914952,
+     "n_nonzero_full_fit": 12
     },
     {
      "C": 1.0,
-     "cv_logloss": 0.42078840012185903,
-     "n_nonzero_full_fit": 30
+     "cv_logloss": 0.43552845056431605,
+     "n_nonzero_full_fit": 36
     },
     {
      "C": 3.1622776601683795,
-     "cv_logloss": 0.46736929242903874,
-     "n_nonzero_full_fit": 57
+     "cv_logloss": 0.5122557454490586,
+     "n_nonzero_full_fit": 77
     },
     {
      "C": 10.0,
-     "cv_logloss": 0.6682342774116786,
-     "n_nonzero_full_fit": 62
+     "cv_logloss": 0.6467617948363937,
+     "n_nonzero_full_fit": 81
     },
     {
      "C": 31.622776601683793,
-     "cv_logloss": 0.9928002826281898,
-     "n_nonzero_full_fit": 66
+     "cv_logloss": 0.8361479603538082,
+     "n_nonzero_full_fit": 86
     },
     {
      "C": 100.0,
-     "cv_logloss": 1.2855430332487243,
-     "n_nonzero_full_fit": 70
+     "cv_logloss": 1.0310393325400482,
+     "n_nonzero_full_fit": 92
     }
    ],
-   "n_stable_features": 16,
+   "n_stable_features": 11,
    "stability": {
-    "act=deliberate|prefer|exact": 0.51,
-    "act=provide|prefer|exact": 0.93,
-    "act=provide|prefer|mod_genus_beh_species": 0.94,
-    "act=pursue_goal|forbid|exact": 0.56,
-    "act=respond_in_manner|prefer|exact": 0.8,
-    "act=respond|oblige|exact": 0.9,
-    "act=respond|oblige|mod_genus_beh_species": 0.9,
-    "act=respond|permit|exact": 0.51,
-    "act=respond|permit|mod_genus_beh_species": 0.51,
-    "act=respond|prefer|exact": 0.86,
-    "act=respond|prefer|mod_genus_beh_species": 0.8,
-    "actor=has_assistant": 0.96,
-    "governs=formatting_style": 0.54,
-    "governs=identity_meta": 0.57,
-    "governs=substance_usefulness": 1.0,
-    "governs=tone_manner": 0.76,
-    "protects=society": 0.76,
-    "protects=unspecified": 0.93,
-    "purpose=controllability": 0.76,
-    "purpose=epistemic-autonomy": 0.9,
-    "purpose=harm-prevention": 0.83,
-    "purpose=predictability-and-reliability": 0.87
+    "act=deliberate|prefer|exact": 0.52,
+    "act=provide|prefer|exact": 0.63,
+    "act=provide|prefer|mod_genus_beh_species": 0.6,
+    "act=pursue_goal|forbid|exact": 0.54,
+    "act=respond_in_manner|prefer|exact": 0.81,
+    "act=respond|oblige|exact": 0.87,
+    "act=respond|oblige|mod_genus_beh_species": 0.82,
+    "act=respond|permit|mod_genus_beh_species": 0.5,
+    "act=respond|prefer|exact": 0.51,
+    "act=respond|prefer|mod_genus_beh_species": 0.6,
+    "actor=has_assistant": 0.95,
+    "governs=identity_meta": 0.59,
+    "governs=substance_usefulness": 0.99,
+    "protects=unspecified": 0.98,
+    "purpose=controllability": 0.74,
+    "purpose=epistemic-autonomy": 0.89,
+    "purpose=harm-prevention": 0.84,
+    "purpose=predictability-and-reliability": 0.92,
+    "x[act=provide|prefer|exact&protects=user]": 0.67,
+    "x[act=provide|prefer|mod_genus_beh_species&protects=user]": 0.64,
+    "x[governs=substance_usefulness&context=agentic_setting]": 0.58,
+    "x[governs=substance_usefulness&protects=society]": 0.63,
+    "x[governs=substance_usefulness&protects=user]": 0.63,
+    "x[governs=tone_manner&protects=user]": 0.77
    },
    "median_coef": {
-    "act=deliberate|prefer|exact": -0.0738,
-    "act=provide|prefer|exact": 0.2188,
-    "act=provide|prefer|mod_genus_beh_species": 1.0251,
-    "act=pursue_goal|forbid|exact": -0.2407,
-    "act=respond_in_manner|prefer|exact": -0.8355,
-    "act=respond|oblige|exact": 0.8648,
-    "act=respond|oblige|mod_genus_beh_species": 0.2864,
-    "act=respond|permit|exact": 0.012,
-    "act=respond|permit|mod_genus_beh_species": 0.0,
-    "act=respond|prefer|exact": 0.594,
-    "act=respond|prefer|mod_genus_beh_species": 0.1105,
-    "actor=has_assistant": 1.7358,
-    "governs=formatting_style": -0.1255,
-    "governs=identity_meta": -0.1779,
-    "governs=substance_usefulness": 2.2808,
-    "governs=tone_manner": 0.4207,
-    "protects=society": 0.361,
-    "protects=unspecified": -1.0452,
-    "purpose=controllability": -0.4345,
-    "purpose=epistemic-autonomy": 0.8953,
-    "purpose=harm-prevention": 0.6202,
-    "purpose=predictability-and-reliability": -0.7816
+    "act=deliberate|prefer|exact": -0.061,
+    "act=provide|prefer|exact": 0.0825,
+    "act=provide|prefer|mod_genus_beh_species": 0.1042,
+    "act=pursue_goal|forbid|exact": -0.1435,
+    "act=respond_in_manner|prefer|exact": -0.7468,
+    "act=respond|oblige|exact": 0.8607,
+    "act=respond|oblige|mod_genus_beh_species": 0.1589,
+    "act=respond|permit|mod_genus_beh_species": 0.002,
+    "act=respond|prefer|exact": 0.0001,
+    "act=respond|prefer|mod_genus_beh_species": 0.1818,
+    "actor=has_assistant": 1.544,
+    "governs=identity_meta": -0.1329,
+    "governs=substance_usefulness": 1.8028,
+    "protects=unspecified": -1.0875,
+    "purpose=controllability": -0.3538,
+    "purpose=epistemic-autonomy": 0.7999,
+    "purpose=harm-prevention": 0.6596,
+    "purpose=predictability-and-reliability": -0.9135,
+    "x[act=provide|prefer|exact&protects=user]": 0.5611,
+    "x[act=provide|prefer|mod_genus_beh_species&protects=user]": 0.0353,
+    "x[governs=substance_usefulness&context=agentic_setting]": 0.1858,
+    "x[governs=substance_usefulness&protects=society]": 0.2529,
+    "x[governs=substance_usefulness&protects=user]": 0.2564,
+    "x[governs=tone_manner&protects=user]": 0.3576
+   },
+   "residual_targets": {
+    "_": "unresolved mismatches = instrument-vs-truth disagreements that are NOT adjudicated-defensible; colliders are the satisfiability census's colliding correct nodes of the opposite verdict. A column separates only if it differs from EVERY collider.",
+    "_granularity_caveat": "the collider relation comes from satisfiability_census, whose vector() reads assert_signature/protects/purpose_actor ONLY \u2014 it does not merge the definition_* lanes and does not include the consensus context atoms, both of which the instrument and this feature matrix do use. So some 'separating columns' reported here separate at the matrix's granularity while the census still calls the pair a collision; the census, not the matrix, is the stale side. The carving queue below is the conservative end: those nodes are identical to their colliders on EVERY post-screen column, interactions included.",
+    "n_unresolved": 11,
+    "n_with_no_collider": 10,
+    "n_with_separating_column": 1,
+    "n_carving_queue": 0,
+    "carving_queue": [],
+    "targets": {
+     "l1_170_n004": {
+      "verdict_needed": "not_relevant",
+      "census_status": "SEPARABLE",
+      "colliders": [],
+      "separating_columns": null,
+      "note": "no census collider \u2014 already SEPARABLE at current granularity; nothing to carve"
+     },
+     "l1_170_n030": {
+      "verdict_needed": "relevant",
+      "census_status": "UNSAT",
+      "colliders": [
+       "l2821_3040_n006",
+       "l2821_3040_n010",
+       "l1_170_n058",
+       "l3596_3876_n008",
+       "l1_170_n090",
+       "l1_170_n077",
+       "l3505_3595_n001",
+       "l1001_1120_n002",
+       "l171_203_n020",
+       "l171_426_n004",
+       "l171_426_n015",
+       "l1_170_n001",
+       "l1_170_n015",
+       "l1_170_n039",
+       "l1_170_n042",
+       "l1_170_n050",
+       "l1_170_n066",
+       "l2126_2404_n032",
+       "l2653_2820_n001",
+       "l2821_3040_n001",
+       "l3596_3876_n018",
+       "l3954_4251_n009",
+       "l4483_4571_n001",
+       "l699_796_n001"
+      ],
+      "separating_columns": [
+       "governs=substance_usefulness",
+       "protects=developer",
+       "purpose=empowerment",
+       "x[governs=substance_usefulness&protects=developer]",
+       "x[governs=substance_usefulness&protects=user]"
+      ],
+      "n_separating_columns": 5,
+      "n_separating_interaction_columns": 2,
+      "columns_differing_per_collider": {
+       "l2821_3040_n006": 8,
+       "l2821_3040_n010": 9,
+       "l1_170_n058": 8,
+       "l3596_3876_n008": 9,
+       "l1_170_n090": 6,
+       "l1_170_n077": 8,
+       "l3505_3595_n001": 8,
+       "l1001_1120_n002": 8,
+       "l171_203_n020": 9,
+       "l171_426_n004": 8,
+       "l171_426_n015": 8,
+       "l1_170_n001": 8,
+       "l1_170_n015": 8,
+       "l1_170_n039": 8,
+       "l1_170_n042": 8,
+       "l1_170_n050": 9,
+       "l1_170_n066": 7,
+       "l2126_2404_n032": 7,
+       "l2653_2820_n001": 8,
+       "l2821_3040_n001": 8,
+       "l3596_3876_n018": 7,
+       "l3954_4251_n009": 8,
+       "l4483_4571_n001": 8,
+       "l699_796_n001": 8
+      }
+     },
+     "l2126_2404_n016": {
+      "verdict_needed": "relevant",
+      "census_status": "SEPARABLE",
+      "colliders": [],
+      "separating_columns": null,
+      "note": "no census collider \u2014 already SEPARABLE at current granularity; nothing to carve"
+     },
+     "l2126_2404_n023": {
+      "verdict_needed": "relevant",
+      "census_status": "SEPARABLE",
+      "colliders": [],
+      "separating_columns": null,
+      "note": "no census collider \u2014 already SEPARABLE at current granularity; nothing to carve"
+     },
+     "l2405_2473_n007": {
+      "verdict_needed": "relevant",
+      "census_status": "SEPARABLE",
+      "colliders": [],
+      "separating_columns": null,
+      "note": "no census collider \u2014 already SEPARABLE at current granularity; nothing to carve"
+     },
+     "l2821_3040_n025": {
+      "verdict_needed": "not_relevant",
+      "census_status": "SEPARABLE",
+      "colliders": [],
+      "separating_columns": null,
+      "note": "no census collider \u2014 already SEPARABLE at current granularity; nothing to carve"
+     },
+     "l3041_3146_n007": {
+      "verdict_needed": "not_relevant",
+      "census_status": "SEPARABLE",
+      "colliders": [],
+      "separating_columns": null,
+      "note": "no census collider \u2014 already SEPARABLE at current granularity; nothing to carve"
+     },
+     "l3147_3238_n001": {
+      "verdict_needed": "not_relevant",
+      "census_status": "SEPARABLE",
+      "colliders": [],
+      "separating_columns": null,
+      "note": "no census collider \u2014 already SEPARABLE at current granularity; nothing to carve"
+     },
+     "l3383_3501_n015": {
+      "verdict_needed": "relevant",
+      "census_status": "SEPARABLE",
+      "colliders": [],
+      "separating_columns": null,
+      "note": "no census collider \u2014 already SEPARABLE at current granularity; nothing to carve"
+     },
+     "l4252_4482_n005": {
+      "verdict_needed": "relevant",
+      "census_status": "SEPARABLE",
+      "colliders": [],
+      "separating_columns": null,
+      "note": "no census collider \u2014 already SEPARABLE at current granularity; nothing to carve"
+     },
+     "l609_698_n013": {
+      "verdict_needed": "relevant",
+      "census_status": "SEPARABLE",
+      "colliders": [],
+      "separating_columns": null,
+      "note": "no census collider \u2014 already SEPARABLE at current granularity; nothing to carve"
+     }
+    }
    }
   }
  }
