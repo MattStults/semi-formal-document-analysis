@@ -1,0 +1,415 @@
+{
+ "_": "L1 declaration search, per behavior. Every fitted coefficient and every downstream proposal is a truth-fitted HYPOTHESIS pending blind justification (9b) and fresh-pool certification (9e) \u2014 nothing here is adopted, validated, or an improvement.",
+ "inventory": {
+  "contract": "v18",
+  "run_seed": 20260820,
+  "C_grid": [
+   0.001,
+   0.0031622776601683794,
+   0.01,
+   0.03162277660168379,
+   0.1,
+   0.31622776601683794,
+   1.0,
+   3.1622776601683795,
+   10.0,
+   31.622776601683793,
+   100.0
+  ],
+  "cv": "StratifiedKFold(5, shuffle, seed 20260820)",
+  "bootstrap_resamples": 100,
+  "instrument_logloss_note": "the current instrument emits a binary decision; its log-loss is computed after best-case Laplace-smoothed calibration of P(relevant|engaged) on each training fold"
+ },
+ "_caveats": [
+  "SELECTION BIAS in the instrument comparison: the mask removes rows with an adjudicated-defensible verdict, and those rows are overwhelmingly the instrument's own mismatches. On the surviving rows the instrument is near-ceiling, so 'fitted vs instrument' log-loss is not a fair head-to-head \u2014 read it as 'what is left to explain after the defensible disagreements are set aside'.",
+  "The model is fitted ON panel truth, so every coefficient is label-derived. Labels direct ATTENTION, never TRUTH: nothing here may be adopted without a document-side justification written blind (9b) and a fresh-pool measurement (9e).",
+  "The two relational act encodings are behavior-dependent by construction (they are defined against the behavior's own performs set) but share a column namespace across behaviors; fitting is per behavior, so no cross-behavior mixing occurs."
+ ],
+ "behaviors": {
+  "helpfulness": {
+   "n_rows_total": 397,
+   "n_rows_fitted": 342,
+   "n_masked": 55,
+   "positive_rate": 0.5673,
+   "chosen_C": 3.1622776601683795,
+   "baseline_logloss": 0.6841,
+   "fitted_logloss": 0.2634,
+   "instrument_logloss": 0.1934,
+   "instrument_accuracy": 0.9474,
+   "l1_path": [
+    {
+     "C": 0.001,
+     "cv_logloss": 0.6931471805599454,
+     "n_nonzero_full_fit": 0
+    },
+    {
+     "C": 0.0031622776601683794,
+     "cv_logloss": 0.6931471805599454,
+     "n_nonzero_full_fit": 0
+    },
+    {
+     "C": 0.01,
+     "cv_logloss": 0.6931471805599454,
+     "n_nonzero_full_fit": 0
+    },
+    {
+     "C": 0.03162277660168379,
+     "cv_logloss": 0.6600132259624856,
+     "n_nonzero_full_fit": 2
+    },
+    {
+     "C": 0.1,
+     "cv_logloss": 0.48607668727801584,
+     "n_nonzero_full_fit": 5
+    },
+    {
+     "C": 0.31622776601683794,
+     "cv_logloss": 0.36439644633474794,
+     "n_nonzero_full_fit": 22
+    },
+    {
+     "C": 1.0,
+     "cv_logloss": 0.2881064838119851,
+     "n_nonzero_full_fit": 39
+    },
+    {
+     "C": 3.1622776601683795,
+     "cv_logloss": 0.263425363082202,
+     "n_nonzero_full_fit": 60
+    },
+    {
+     "C": 10.0,
+     "cv_logloss": 0.3345149924088955,
+     "n_nonzero_full_fit": 78
+    },
+    {
+     "C": 31.622776601683793,
+     "cv_logloss": 0.5008015955003801,
+     "n_nonzero_full_fit": 76
+    },
+    {
+     "C": 100.0,
+     "cv_logloss": 0.7299965179185557,
+     "n_nonzero_full_fit": 71
+    }
+   ],
+   "n_stable_features": 37,
+   "stability": {
+    "act=act_in_world|oblige|exact": 0.63,
+    "act=answer_directly|described|exact": 0.67,
+    "act=comply|forbid|exact": 0.87,
+    "act=comply|prefer|exact": 0.91,
+    "act=engage_relationship|forbid|exact": 0.69,
+    "act=engage_relationship|prefer|exact": 0.67,
+    "act=judge_or_moralize|forbid|exact": 0.62,
+    "act=protective_response|prefer|exact": 0.64,
+    "act=provide_hazardous|forbid|exact": 0.77,
+    "act=provide_information|oblige|exact": 0.56,
+    "act=provide|forbid|exact": 0.69,
+    "act=provide|forbid|mod_genus_beh_species": 0.69,
+    "act=provide|oblige|exact": 0.85,
+    "act=provide|oblige|mod_genus_beh_species": 0.84,
+    "act=provide|permit|exact": 0.8,
+    "act=provide|permit|mod_genus_beh_species": 0.7,
+    "act=provide|prefer|exact": 1.0,
+    "act=provide|prefer|mod_genus_beh_species": 1.0,
+    "act=pursue_goal|forbid|exact": 0.7,
+    "act=refuse|forbid|exact": 0.91,
+    "act=refuse|oblige|exact": 0.83,
+    "act=refuse|prefer|exact": 0.66,
+    "act=respond_in_manner|forbid|exact": 0.87,
+    "act=respond_in_manner|oblige|exact": 0.61,
+    "act=respond_in_manner|prefer|exact": 0.81,
+    "act=respond|forbid|exact": 1.0,
+    "act=respond|forbid|mod_genus_beh_species": 0.98,
+    "act=respond|oblige|exact": 0.94,
+    "act=respond|oblige|mod_genus_beh_species": 0.93,
+    "act=respond|prefer|exact": 1.0,
+    "act=respond|prefer|mod_genus_beh_species": 1.0,
+    "act=uncertainty_phrasing|permit|exact": 0.56,
+    "act=uncertainty_phrasing|prefer|exact": 0.68,
+    "actor=has_assistant": 1.0,
+    "context=agentic_setting": 0.84,
+    "governs=accuracy_calibration": 0.99,
+    "governs=formatting_style": 0.9,
+    "governs=identity_meta": 0.73,
+    "governs=objectivity_neutrality": 0.72,
+    "governs=substance_usefulness": 1.0,
+    "governs=tone_manner": 0.93,
+    "protects=developer": 0.7,
+    "protects=society": 0.63,
+    "protects=third_party": 0.81,
+    "protects=unspecified": 0.71,
+    "protects=user": 0.96,
+    "purpose=controllability": 0.8,
+    "purpose=empowerment": 1.0,
+    "purpose=predictability-and-reliability": 0.83,
+    "purpose=rights-respect": 0.88,
+    "purpose=trust": 0.95
+   },
+   "median_coef": {
+    "act=act_in_world|oblige|exact": -0.2638,
+    "act=answer_directly|described|exact": 0.6943,
+    "act=comply|forbid|exact": 1.5646,
+    "act=comply|prefer|exact": 2.9675,
+    "act=engage_relationship|forbid|exact": -1.8888,
+    "act=engage_relationship|prefer|exact": -1.1551,
+    "act=judge_or_moralize|forbid|exact": 0.7726,
+    "act=protective_response|prefer|exact": 0.7472,
+    "act=provide_hazardous|forbid|exact": -2.2575,
+    "act=provide_information|oblige|exact": -0.3592,
+    "act=provide|forbid|exact": 0.2273,
+    "act=provide|forbid|mod_genus_beh_species": 0.3394,
+    "act=provide|oblige|exact": 1.1653,
+    "act=provide|oblige|mod_genus_beh_species": 0.6446,
+    "act=provide|permit|exact": 0.5904,
+    "act=provide|permit|mod_genus_beh_species": 0.0158,
+    "act=provide|prefer|exact": 1.3324,
+    "act=provide|prefer|mod_genus_beh_species": 2.5048,
+    "act=pursue_goal|forbid|exact": -3.7889,
+    "act=refuse|forbid|exact": 2.658,
+    "act=refuse|oblige|exact": 1.1806,
+    "act=refuse|prefer|exact": 0.3469,
+    "act=respond_in_manner|forbid|exact": -1.5301,
+    "act=respond_in_manner|oblige|exact": -2.4263,
+    "act=respond_in_manner|prefer|exact": -1.3178,
+    "act=respond|forbid|exact": 1.8705,
+    "act=respond|forbid|mod_genus_beh_species": 0.5445,
+    "act=respond|oblige|exact": 1.0771,
+    "act=respond|oblige|mod_genus_beh_species": 0.7006,
+    "act=respond|prefer|exact": 2.7489,
+    "act=respond|prefer|mod_genus_beh_species": 1.0981,
+    "act=uncertainty_phrasing|permit|exact": -0.2323,
+    "act=uncertainty_phrasing|prefer|exact": -1.5759,
+    "actor=has_assistant": 4.9119,
+    "context=agentic_setting": -1.3716,
+    "governs=accuracy_calibration": 1.3039,
+    "governs=formatting_style": 1.5365,
+    "governs=identity_meta": -1.0801,
+    "governs=objectivity_neutrality": -0.5978,
+    "governs=substance_usefulness": 3.1691,
+    "governs=tone_manner": 1.4651,
+    "protects=developer": 0.0746,
+    "protects=society": -0.2465,
+    "protects=third_party": -0.7523,
+    "protects=unspecified": -0.5409,
+    "protects=user": 1.6185,
+    "purpose=controllability": -0.6453,
+    "purpose=empowerment": 3.3114,
+    "purpose=predictability-and-reliability": 0.9469,
+    "purpose=rights-respect": -1.273,
+    "purpose=trust": 1.5179
+   }
+  },
+  "harm-avoidance-to-third-parties": {
+   "n_rows_total": 234,
+   "n_rows_fitted": 199,
+   "n_masked": 35,
+   "positive_rate": 0.4121,
+   "chosen_C": 1.0,
+   "baseline_logloss": 0.6777,
+   "fitted_logloss": 0.2225,
+   "instrument_logloss": 0.2082,
+   "instrument_accuracy": 0.9447,
+   "l1_path": [
+    {
+     "C": 0.001,
+     "cv_logloss": 0.6931471805599452,
+     "n_nonzero_full_fit": 0
+    },
+    {
+     "C": 0.0031622776601683794,
+     "cv_logloss": 0.6931471805599452,
+     "n_nonzero_full_fit": 0
+    },
+    {
+     "C": 0.01,
+     "cv_logloss": 0.6931471805599452,
+     "n_nonzero_full_fit": 0
+    },
+    {
+     "C": 0.03162277660168379,
+     "cv_logloss": 0.6931471805599452,
+     "n_nonzero_full_fit": 0
+    },
+    {
+     "C": 0.1,
+     "cv_logloss": 0.5129161211141404,
+     "n_nonzero_full_fit": 2
+    },
+    {
+     "C": 0.31622776601683794,
+     "cv_logloss": 0.29786348201918206,
+     "n_nonzero_full_fit": 7
+    },
+    {
+     "C": 1.0,
+     "cv_logloss": 0.22249437310385173,
+     "n_nonzero_full_fit": 11
+    },
+    {
+     "C": 3.1622776601683795,
+     "cv_logloss": 0.2887385617355953,
+     "n_nonzero_full_fit": 30
+    },
+    {
+     "C": 10.0,
+     "cv_logloss": 0.4418590343882528,
+     "n_nonzero_full_fit": 38
+    },
+    {
+     "C": 31.622776601683793,
+     "cv_logloss": 0.750801662447828,
+     "n_nonzero_full_fit": 51
+    },
+    {
+     "C": 100.0,
+     "cv_logloss": 1.017269682996698,
+     "n_nonzero_full_fit": 56
+    }
+   ],
+   "n_stable_features": 7,
+   "stability": {
+    "act=provide|permit|exact": 1.0,
+    "context=vulnerable_interaction": 0.87,
+    "governs=substance_usefulness": 0.98,
+    "protects=developer": 0.62,
+    "protects=society": 1.0,
+    "protects=third_party": 1.0,
+    "protects=user": 0.91,
+    "purpose=controllability": 0.52,
+    "purpose=empowerment": 0.55,
+    "purpose=harm-prevention": 0.97
+   },
+   "median_coef": {
+    "act=provide|permit|exact": 2.5961,
+    "context=vulnerable_interaction": -0.7503,
+    "governs=substance_usefulness": 1.1172,
+    "protects=developer": 0.3012,
+    "protects=society": 3.6999,
+    "protects=third_party": 4.7163,
+    "protects=user": -0.8272,
+    "purpose=controllability": -0.0218,
+    "purpose=empowerment": 0.0494,
+    "purpose=harm-prevention": 1.0056
+   }
+  },
+  "avoiding-over-and-under-caution": {
+   "n_rows_total": 205,
+   "n_rows_fitted": 181,
+   "n_masked": 24,
+   "positive_rate": 0.6077,
+   "chosen_C": 1.0,
+   "baseline_logloss": 0.6698,
+   "fitted_logloss": 0.4208,
+   "instrument_logloss": 0.2402,
+   "instrument_accuracy": 0.9392,
+   "l1_path": [
+    {
+     "C": 0.001,
+     "cv_logloss": 0.6931471805599451,
+     "n_nonzero_full_fit": 0
+    },
+    {
+     "C": 0.0031622776601683794,
+     "cv_logloss": 0.6931471805599451,
+     "n_nonzero_full_fit": 0
+    },
+    {
+     "C": 0.01,
+     "cv_logloss": 0.6931471805599451,
+     "n_nonzero_full_fit": 0
+    },
+    {
+     "C": 0.03162277660168379,
+     "cv_logloss": 0.6931471805599451,
+     "n_nonzero_full_fit": 0
+    },
+    {
+     "C": 0.1,
+     "cv_logloss": 0.5775137831808393,
+     "n_nonzero_full_fit": 2
+    },
+    {
+     "C": 0.31622776601683794,
+     "cv_logloss": 0.49491785070207966,
+     "n_nonzero_full_fit": 9
+    },
+    {
+     "C": 1.0,
+     "cv_logloss": 0.42078840012185903,
+     "n_nonzero_full_fit": 30
+    },
+    {
+     "C": 3.1622776601683795,
+     "cv_logloss": 0.46736929242903874,
+     "n_nonzero_full_fit": 57
+    },
+    {
+     "C": 10.0,
+     "cv_logloss": 0.6682342774116786,
+     "n_nonzero_full_fit": 62
+    },
+    {
+     "C": 31.622776601683793,
+     "cv_logloss": 0.9928002826281898,
+     "n_nonzero_full_fit": 66
+    },
+    {
+     "C": 100.0,
+     "cv_logloss": 1.2855430332487243,
+     "n_nonzero_full_fit": 70
+    }
+   ],
+   "n_stable_features": 16,
+   "stability": {
+    "act=deliberate|prefer|exact": 0.51,
+    "act=provide|prefer|exact": 0.93,
+    "act=provide|prefer|mod_genus_beh_species": 0.94,
+    "act=pursue_goal|forbid|exact": 0.56,
+    "act=respond_in_manner|prefer|exact": 0.8,
+    "act=respond|oblige|exact": 0.9,
+    "act=respond|oblige|mod_genus_beh_species": 0.9,
+    "act=respond|permit|exact": 0.51,
+    "act=respond|permit|mod_genus_beh_species": 0.51,
+    "act=respond|prefer|exact": 0.86,
+    "act=respond|prefer|mod_genus_beh_species": 0.8,
+    "actor=has_assistant": 0.96,
+    "governs=formatting_style": 0.54,
+    "governs=identity_meta": 0.57,
+    "governs=substance_usefulness": 1.0,
+    "governs=tone_manner": 0.76,
+    "protects=society": 0.76,
+    "protects=unspecified": 0.93,
+    "purpose=controllability": 0.76,
+    "purpose=epistemic-autonomy": 0.9,
+    "purpose=harm-prevention": 0.83,
+    "purpose=predictability-and-reliability": 0.87
+   },
+   "median_coef": {
+    "act=deliberate|prefer|exact": -0.0738,
+    "act=provide|prefer|exact": 0.2188,
+    "act=provide|prefer|mod_genus_beh_species": 1.0251,
+    "act=pursue_goal|forbid|exact": -0.2407,
+    "act=respond_in_manner|prefer|exact": -0.8355,
+    "act=respond|oblige|exact": 0.8648,
+    "act=respond|oblige|mod_genus_beh_species": 0.2864,
+    "act=respond|permit|exact": 0.012,
+    "act=respond|permit|mod_genus_beh_species": 0.0,
+    "act=respond|prefer|exact": 0.594,
+    "act=respond|prefer|mod_genus_beh_species": 0.1105,
+    "actor=has_assistant": 1.7358,
+    "governs=formatting_style": -0.1255,
+    "governs=identity_meta": -0.1779,
+    "governs=substance_usefulness": 2.2808,
+    "governs=tone_manner": 0.4207,
+    "protects=society": 0.361,
+    "protects=unspecified": -1.0452,
+    "purpose=controllability": -0.4345,
+    "purpose=epistemic-autonomy": 0.8953,
+    "purpose=harm-prevention": 0.6202,
+    "purpose=predictability-and-reliability": -0.7816
+   }
+  }
+ }
+}
