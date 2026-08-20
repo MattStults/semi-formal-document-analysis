@@ -300,7 +300,13 @@ def relevance(mod, br, corpus):
         # an additional sufficient channel, never a filter (calibration ruling:
         # filters on purpose kill core TPs like l171_426_n005).
         if not purp_decl: return False
-        for k in [k for k in pa if k.startswith(cid + "|")]:
+        # LANE SCOPE (definitional-lane FP analysis, 2026-08-20): the purpose
+        # OR-channel was verdict-gated on the ASSERT lane (0.91/0.94/0.86) and
+        # never validated for definitional claims; its one definitional firing
+        # was the lane's only FP (harm::l1_170_n031, actor-ambiguous meta claim)
+        # while all 10 lane fixes engage by ACT. Definitional keys (nid|c{i})
+        # therefore do not feed this channel.
+        for k in [k for k in pa if k.startswith(cid + "|") and not k.split("|")[1].startswith("c")]:
             if pa[k]["actor"] == "assistant" and set(pa[k]["purpose"]) & purp_decl:
                 return True
         return False

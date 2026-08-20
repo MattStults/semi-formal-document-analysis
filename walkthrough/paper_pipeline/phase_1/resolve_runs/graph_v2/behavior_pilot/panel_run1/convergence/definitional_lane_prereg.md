@@ -67,3 +67,21 @@ behavior names, no truth, no expectations.
   is inert without the files). Adoption, seat-2 escalation on the judgment classes,
   and broadening to all 179 norm-free nodes are MATT'S RULING. Note the lane is
   strictly non-negative on measured truth except the one held FP.
+
+## FP ANALYSIS + CHANNEL SCOPE RULING (2026-08-20, Matt directed "look into the FP")
+harm::l1_170_n031 mechanics: claims C1/C3 ("AI systems carry potential risks",
+"not all risks can be mitigated through model behavior alone") were annotated
+actor=assistant + purpose=harm-prevention; seat-1 itself flagged the actor call as
+ambiguous ("about AI systems in the abstract... organization framing arguable").
+harm declares purpose_concern harm-prevention -> act-independent purpose channel
+fired; protects_ok passed via an 'unspecified' value. Harm truth: not_relevant
+(meta-commentary on the safety landscape, not conduct guidance).
+Measured decomposition: ALL 10 lane fixes engage via the ACT channel; the purpose
+channel's ONLY definitional firing is this FP.
+RULING (structural, not per-node): channels apply where they were calibrated. The
+purpose OR-channel was verdict-gated on the assert lane and never validated for
+definitional claims -> definitional keys (nid|c{i}) do not feed purpose_hit
+(relevance_by_act.py). Removes the FP at zero fix cost; the lane is now
+act-channel-only, matching everything its calibration validated. The tempting
+alternative — flipping this one node's actor to organization — is rejected BY NAME
+as label-directed annotation editing; seat-2 may reach that actor independently.
