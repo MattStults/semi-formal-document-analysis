@@ -90,3 +90,12 @@ interpolation between ontologies), and measured local minima (three refinements 
 accuracy/register clusters each traded recall ~1:1). The terminal set is where the
 climbable gradient, as measured so far, is exhausted — future ideas re-open it, and
 the census + 9f receipts define exactly what a successful idea must achieve.
+
+## ADMISSIBLE CONFIGURATION (formal, 2026-08-19 — the proofs' relativity clause)
+A configuration (D, bridges, vocabularies) is ADMISSIBLE iff: declarations are blind
+a-priori-derived (9b) or truth-validated amendments; vocabularies are document-mined and
+purity-checked (9a); every change is non-recall-negative under charter arithmetic and
+passes 9f breadth review. Terminality claims are always RELATIVE to this space.
+D-family receipts (D_family_receipts.json): harm+user floods (36 FPs) -> family 1 terminal
+with receipt; caution/help +objectivity are net-positive/neutral CANDIDATE AMENDMENTS ->
+families 2-3 are NOT terminal, pending adjudication of 9 new FPs.
