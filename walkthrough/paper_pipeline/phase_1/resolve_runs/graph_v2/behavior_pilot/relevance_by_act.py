@@ -69,6 +69,16 @@ def corpus_acts():
             if node in out and not out[node]:
                 out[node] = [(a, "example_good") for a in d.get("good_acts", [])] + \
                             [(a, "example_bad") for a in d.get("bad_acts", [])]
+    # DEFINITION-ACT LIFTING (definitional lane, prereg panel_run1/convergence/
+    # definitional_lane_prereg.md): norm-free definitional modules whose CLAIMS
+    # describe/characterize assistant acts (Opus-annotated, parity-passed lane)
+    # gain those canonical acts with status "described". Sibling of example-act
+    # lifting; walls apply via the definition_* layer merges in relevance().
+    dp = os.path.join(HERE, "definition_acts.json")
+    if os.path.exists(dp):
+        for node, alist in json.load(open(dp))["acts"].items():
+            if node in out and not out[node]:
+                out[node] = [(a, "described") for a in alist]
     return out
 
 
@@ -229,6 +239,8 @@ def relevance(mod, br, corpus):
     # unspecified/unannotated (fail open). Declared via module "protects_concern".
     ap_path = os.path.join(HERE, "assert_protects.json")
     ap = json.load(open(ap_path)) if os.path.exists(ap_path) else {}
+    _d = os.path.join(HERE, "definition_protects.json")
+    if os.path.exists(_d): ap = {**ap, **json.load(open(_d))}  # definitional lane, keys nid|c{i}
     prot_decl = set(mod.get("protects_concern") or [])
 
     def protects_ok(cid):
@@ -246,6 +258,8 @@ def relevance(mod, br, corpus):
     # 17/17 fresh-draw census FPs). Both fail OPEN on unannotated asserts.
     sig_path = os.path.join(HERE, "assert_signature.json")
     sig = json.load(open(sig_path)) if os.path.exists(sig_path) else {}
+    _d = os.path.join(HERE, "definition_signature.json")
+    if os.path.exists(_d): sig = {**sig, **json.load(open(_d))}  # definitional lane, keys nid|c{i}
     gov_decl = set(mod.get("governs_concern") or [])
 
     # governs_conditional (contract 9a purity migration, 2026-08-19): a quality may be
@@ -271,6 +285,8 @@ def relevance(mod, br, corpus):
     # behavior's relevance. Folds authority_plumbing (actor=document). Fail open.
     pa_path = os.path.join(HERE, "assert_purpose_actor.json")
     pa = json.load(open(pa_path)) if os.path.exists(pa_path) else {}
+    _d = os.path.join(HERE, "definition_purpose_actor.json")
+    if os.path.exists(_d): pa = {**pa, **json.load(open(_d))}  # definitional lane, keys nid|c{i}
     purp_decl = set(mod.get("purpose_concern") or [])
 
     def actor_ok(cid):
