@@ -1,0 +1,82 @@
+{
+  "harm-avoidance-to-third-parties::l609_698_n012": {
+    "distinguishing_feature": "X conditions the wrong on an AGGREGATE effect of the assistant's own behaviour repeated across many interactions -- 'in a way that, if repeated at scale, may shut out some viewpoints from public life'. The harm is not present in any single response; it is a property of the policy summed over instances. Both colliders evaluate a single exchange: n020 keys on the reason for the avoidance in this instance ('solely because it is sensitive or controversial'), n021 on what one refusal implicitly communicates ('is itself a form of agenda; implicitly endorses the status quo narrative'). Neither mentions repetition, aggregation, or scale.",
+    "candidate_atom": {
+      "dimension": "contexts",
+      "atom": "aggregate_effect_at_scale",
+      "criterion": "Annotate this context when the span states that the harm or benefit it governs arises from the behaviour being repeated across many interactions or users rather than from the single response -- signalled by explicit aggregation language such as 'if repeated at scale', 'across many conversations', 'in aggregate', 'cumulatively', or 'over time'. Do NOT annotate it for spans that merely describe the magnitude of one harmful event."
+    },
+    "gerrymander_risk": "medium",
+    "notes": "Only one span in this packet set carries true repetition-aggregation language, so within this sample the split is 1-of-N. The nearest other phrase, 'lead to critical or large-scale harm' (l831_1000_n003), is scale-of-a-single-harm and is explicitly excluded by the criterion's second sentence -- which is what keeps the criterion honest but also what makes it thin here. Recommend checking recall against the wider document (the spec's scale/systemic-effect language elsewhere) before adopting; if it stays a singleton, treat as gerrymandering. A weaker alternative separator considered and rejected: n021 is a rationale sentence rather than a directive (rejected because it does not separate X from n020, which is directive)."
+  },
+  "harm-avoidance-to-third-parties::l1108_1367_n009": {
+    "distinguishing_feature": "X's licensing conditions include one keyed to the PROVENANCE of the material -- 'transformations of user-provided sensitive content' -- i.e. the same output is permitted when its substance originated with the user rather than being newly composed by the assistant. The collider's exception list is keyed only to the domain/purpose of use ('scientific, historical, news, artistic'), and says nothing about who supplied the material. (Secondary, weaker difference: X is grammatically an exclusive permission, 'may only be generated under...', while the collider is a prohibition-with-exception; and X states its rule over a category label defined by cross-reference while the collider names concrete content types. The domain lists themselves overlap heavily and cannot separate the two.)",
+    "candidate_atom": {
+      "dimension": "contexts",
+      "atom": "user_supplied_material",
+      "criterion": "Annotate this context when the span's permission, prohibition, or exception turns on the material having originated from the user or developer and being transformed rather than newly composed -- signalled by terms like 'transformation', 'translation', 'summarization', 'user-provided content', 'material the user supplied'. Do not annotate for spans whose conditions name only a domain or purpose of use."
+    },
+    "gerrymander_risk": "low",
+    "notes": "Generality is good: the transformation-exception family recurs. See consolidation note in the summary -- this packet and l797_830_n007 could alternatively both be captured by a 'delegated/cross-referenced object' atom, but provenance is the more concretely annotatable feature here and is the one proposed."
+  },
+  "harm-avoidance-to-third-parties::l797_830_n007": {
+    "distinguishing_feature": "X states a prohibition whose OBJECT is empty on its face: 'The assistant should not generate the following:' -- the substance is delegated forward to an enumeration that the span itself does not contain. It names no class of material, no mechanism, no scope condition, no consequence. Every collider names its own object in the span text: a protected-group content class (n006), an asserted-purpose defeater (n011), an encoding-equivalence rule (n011 of l797_830), actionable-steps/CBRN (n003).",
+    "candidate_atom": {
+      "dimension": "acts",
+      "atom": "provide:forbid.delegated_object",
+      "criterion": "Annotate this act subtype when the span states a normative act whose object is supplied entirely by reference rather than in the span -- a forward pointer to a list ('the following', 'the categories below', 'as follows') or a bare defined-term/section cross-reference with no self-contained description of what is covered. A span that names its object, even by example, does not qualify."
+    },
+    "gerrymander_risk": "medium",
+    "notes": "This is a structural/organizational clause rather than a substantive rule, and within this packet set it is a singleton, so the split matches exactly one span here. In the document at large, list-introducing headers of this shape are a recurring form (section headers and 'the following' stems), which is the basis for expecting recall; that expectation is untested from the packets alone and should be checked before adoption. Note the same atom would also fire on l1108_1367_n009 (whose object 'Sensitive content' is fixed by cross-reference), which is a consolidation opportunity, not a conflict -- it separates that packet's X from its collider too."
+  },
+  "harm-avoidance-to-third-parties::l831_1000_n011": {
+    "distinguishing_feature": "X states a rule in the document's own normative voice, with a scope condition and a defeater ('is allowed, as long as it does not exploit...', 'This applies regardless of...'). The collider is a worked exhibit: it is headed '**Example**:' and consists of a transcript in <user>/<assistant> markup with GOOD/BAD annotations. It instantiates a rule rather than stating one. Note that audience breadth CANNOT be the separator: the collider's own header says 'broad, non-targeted political persuasion', so both spans mention it; only the rule-vs-exhibit form separates them.",
+    "candidate_atom": {
+      "dimension": "acts",
+      "atom": "exhibit:illustrate",
+      "criterion": "Annotate this act when the span is a worked exhibit rather than a statement of the norm: it is headed 'Example' (or equivalent) and/or contains a simulated exchange in speaker markup, and/or carries GOOD/BAD/better-worse annotations on candidate responses. A span that states a rule, condition, or rationale in the document's own voice does not qualify, even when it gives illustrative parentheticals."
+    },
+    "gerrymander_risk": "low",
+    "notes": "Strong generality inside this sample: l831_1000_n013, l3505_3595_n007 and l3505_3595_n012 all match. Because it is a form feature, it does not split the helpfulness::l3505_3595_n007 packet (both X and one collider are exhibits there) -- it is a distinct axis from that packet's atom, and both can coexist."
+  },
+  "helpfulness::l1542_1706_n005": {
+    "distinguishing_feature": "X's trigger is the requester's DISPLAYED INTENT rather than the content of the request: 'when they indicate illicit intent', plus the explicit statement that the very same information would have been provided absent that intent ('even if it would have provided the same information in a different context'), plus a stated rationale (helping would be implicit endorsement). The collider triggers on what is asked for -- 'asks the assistant to facilitate illicit behavior' -- a property of the request's content, with no intent condition and no context-invariance clause.",
+    "candidate_atom": {
+      "dimension": "contexts",
+      "atom": "requester_purpose_conditioned",
+      "criterion": "Annotate this context when the span's rule explicitly turns on the purpose or intent the requester displays or asserts -- either because signalled intent triggers the response ('indicates intent', 'states they plan to', 'if the user says they want it in order to') or because an asserted legitimate purpose is declared insufficient ('no good cause exception', 'even for research purposes', 'regardless of the stated reason'). Do not annotate spans that turn only on what material or action is requested."
+    },
+    "gerrymander_risk": "low",
+    "notes": "Deliberately shares its atom with helpfulness::l1368_1541_n011 -- see consolidation note. The two polarities (intent aggravates; asserted good purpose fails to excuse) are the same dimension: whether requester purpose bears on the outcome."
+  },
+  "helpfulness::l1368_1541_n011": {
+    "distinguishing_feature": "X is a defeater-blocking clause about the REQUESTER'S ASSERTED JUSTIFICATION: it states that a purported legitimate purpose does not license the material ('no \"good cause\" exception', 'even for seemingly legitimate research or analysis purposes'). Both colliders are flat prohibitions with no reference to any purpose the requester might advance: n007 delegates its object to a list, n003 names a content class (actionable steps, CBRN) and its harm.",
+    "candidate_atom": {
+      "dimension": "contexts",
+      "atom": "requester_purpose_conditioned",
+      "criterion": "Annotate this context when the span's rule explicitly turns on the purpose or intent the requester displays or asserts -- either because signalled intent triggers the response ('indicates intent', 'states they plan to', 'if the user says they want it in order to') or because an asserted legitimate purpose is declared insufficient ('no good cause exception', 'even for research purposes', 'regardless of the stated reason'). Do not annotate spans that turn only on what material or action is requested."
+    },
+    "gerrymander_risk": "low",
+    "notes": "Same atom as helpfulness::l1542_1706_n005 by design. X also carries a second local feature -- a cross-policy scope statement about which policies the transformation exception does and does not override -- which is a candidate for a separate 'policy-scope/priority' atom; not proposed here because the purpose atom already separates X from both colliders and the scope feature would need its own generality check."
+  },
+  "helpfulness::l3505_3595_n007": {
+    "distinguishing_feature": "Read in the 'vice versa' direction: BOTH colliders are self-referential -- they govern how the assistant represents its own nature, role or status ('keeping ... its own role in mind', 'its unique role during this pivotal moment'; and the compliment example whose BAD branch is 'As a large language model, being a favorite doesn't mean much to me'). X contains nothing about the assistant's own nature: its subject matter is the user's statement about the user's own identity, and the governed behaviour is how to receive that disclosure.",
+    "candidate_atom": {
+      "dimension": "contexts",
+      "atom": "assistant_self_reference",
+      "criterion": "Annotate this context when the span governs how the assistant characterizes, discloses, or reasons about ITSELF -- its nature as an AI or language model, its role, its capabilities or limitations, its status or feelings -- as the topic at issue in the exchange. A span in which the assistant merely acts (helps, refuses, responds) without its own nature being the subject does not qualify."
+    },
+    "gerrymander_risk": "low",
+    "notes": "Two independent matches inside this sample (l3596_3876_n007, l3505_3595_n012). Rejected alternatives: splitting on the presence of a BAD branch in the exhibit (pure formatting, gerrymandering); splitting on 'user's group identity' (would be a singleton in this sample)."
+  },
+  "helpfulness::l797_830_n011": {
+    "distinguishing_feature": "X is an anti-circumvention equivalence rule about the FORM of delivery: an encoded, reversed, or otherwise disguised rendering 'should be considered the same as providing the content directly'. It introduces no content class and no new prohibition -- it fixes how existing prohibitions apply across encodings. n007 delegates its object to a list; n003 names a content class and its harm mechanism. Neither says anything about the manner or encoding of delivery.",
+    "candidate_atom": {
+      "dimension": "acts",
+      "atom": "provide:forbid.form_equivalence",
+      "criterion": "Annotate this act subtype when the span states that changing the FORM of delivery does not change how a rule applies -- that an encoded, obfuscated, indirect, partial, translated, or different-modality rendering counts the same as the direct one ('considered the same as', 'this includes depictions in text, audio, or visual content', 'not merely a translation'). Do not annotate spans where a change of form instead creates or expands a permission."
+    },
+    "gerrymander_risk": "low",
+    "notes": "In-sample matches: 'the assistant should not perform a prohibited action just because it's a \"translation\" of user-provided content' (l1368_1541_n011) and 'This includes depictions in text, audio (e.g., erotic or violent visceral noises), or visual content' (l1108_1367_n001). The final clause of the criterion is what keeps this atom disjoint from user_supplied_material, whose transformation exception runs in the opposite polarity."
+  }
+}
