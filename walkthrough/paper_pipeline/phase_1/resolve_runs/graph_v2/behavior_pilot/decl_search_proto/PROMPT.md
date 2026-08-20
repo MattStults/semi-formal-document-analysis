@@ -75,3 +75,21 @@ no slot, report it under 'unmappable' — do not invent slots silently.
 (1) restate GOAL and each EXIT CRITERION with met/not-met; (2) per behavior:
 baseline vs fitted CV log-loss, count of stable features, count of proposals,
 top-3 proposals one line each; (3) anything ambiguous or smelling of leakage.
+
+## RUN-2 AMENDMENTS (design tier, 2026-08-20 — supersede conflicting run-1 text)
+A. INTERACTION FEATURES: add pairwise product columns between feature families
+   (act-relational x protects, act-relational x purpose, governs x contexts,
+   governs x protects, act-relational x contexts). Screen before fitting: keep a
+   product column only if it has support >= 3 positive rows and differs from
+   both parents on >= 2 rows. Report the post-screen column count. A stable
+   interaction maps to governs_conditional when it is governs x contexts;
+   otherwise to a NEW proposal kind "subtype" (schema_extension=true) naming
+   both parent atoms.
+B. FAIR INSTRUMENT COMPARISON: report accuracy/log-loss on ALL rows with
+   defensible rows scored correct-for-both; keep the masked fit as-is.
+C. ACT ENCODINGS: the run-1 seat's resolution is now canonical — 'exact' =
+   behavior-blind carries(A,s); the two relational encodings are separate.
+D. RESIDUAL TARGET LIST: fit as before, but additionally report, for each of
+   the current unresolved mismatches (recompute: disagreement AND not
+   adjudicated-defensible), which post-screen columns separate it from its
+   census colliders (zero, or the list). This is the run-3 carving queue.
