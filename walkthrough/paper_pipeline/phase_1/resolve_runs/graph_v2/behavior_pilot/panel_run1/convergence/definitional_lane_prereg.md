@@ -85,3 +85,26 @@ definitional claims -> definitional keys (nid|c{i}) do not feed purpose_hit
 act-channel-only, matching everything its calibration validated. The tempting
 alternative — flipping this one node's actor to organization — is rejected BY NAME
 as label-directed annotation editing; seat-2 may reach that actor independently.
+
+## TWO-SEAT BROADENING RESULT (2026-08-20, Matt: "Proceed" + "ok")
+Seat-2 (independent Opus) annotated all 179; seat-1 completed the 141 remainder.
+Blind agreement: actor 0.95, acts 0.92, contexts 0.98, governs 0.88, protects 0.87,
+purpose 0.81 (396 claims). Consensus = intersection; 268 field-level disagreements
+-> definitional_escalation_queue.json (Fable, post-reset).
+Broadened consensus regression vs baseline: caution TP 102->104, harm 73->74,
+help 178->183 (+8), FPs +4 instances / 3 unique nodes after the EXAMPLE-NARRATION
+SCOPE rule (claims narrating a worked example's response do not lift acts —
+example_acts.json is the calibrated channel for examples; deterministic claim-text
+predicate, recorded in assemble_two_seat.py; it removed 3 of 6 lane FP instances
+incl. harm::l2405_2473_n009 and help::l2126_2404_n039).
+REMAINING 3 FP NODES (two-seat-agreed act credits vs panel not_relevant):
+caution+help::l2821_3040_n006 (provide_information from a consequence-definition),
+caution::l1707_1973_n017 (act_in_world from sharing-settings enumeration),
+help::l699_796_n008 (comply from malicious-tool-instructions description).
+Seat-2's own ambiguity notes offered the stricter (acts-empty) reading for n017's
+class and the example-label class. PRIORITY ESCALATION: these 3 nodes' act fields
+go to Fable first; the ruling decides the lane's final arithmetic (+8/0 if the
+stricter reading wins; +8/+4 if the credits stand, leaving the config inadmissible
+and the 3 FPs as named residue).
+DISPOSITION: layers re-parked (candidate_definition_layers/, now two-seat
+consensus). Adoption remains gated on the 3-node escalation + Matt's ruling.
