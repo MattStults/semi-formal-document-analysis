@@ -101,3 +101,20 @@ M4-REVISED SIGNED by Matt 2026-08-21 ("Sign as proposed"). The exhibit stop
 is lifted; extension run proceeds on the 179 unjudged nodes with unchanged
 criterion, seats, and consensus rule. form_equivalence first-pass results on
 covered nodes stand; both subtypes re-assembled after the extension.
+
+## ADDENDUM 2 — extension-seat content-filter failure + sanitization ruling (2026-08-21)
+All four extension seats failed with provider input-inspection rejections:
+the extension set is the assert-less example-class nodes, which concentrate
+the document's prohibited-content examples (15 of 179 nodes carry sexual/
+self-harm/CBRN terms). RULING (orchestration seat): both mint criteria judge
+FORM only (exhibit shape; form-equivalence phrasing) — content nouns are
+never part of either judgment — so the 15 flagged nodes are annotated on
+sanitized text: sensitive terms replaced with bracketed category labels,
+structure (Example headers, speaker markup, GOOD/BAD markers, equivalence
+phrasing) untouched. Manifest: mint_ext_sanitization_manifest.json (per-node
+substitutions; residual screen outside labels = NONE). Seats run on
+ctx_ext_san1-3.json. This is a deviation from verbatim-span annotation,
+limited to 15 nodes for form-only criteria; every downstream artifact cites
+this addendum. REJECTED BY NAME: human-seat fallback for the 15 nodes (kept
+as contingency if sanitized seats still fail — it would cost Matt ~15
+minutes and a single-seat deviation from the two-seat rule).
