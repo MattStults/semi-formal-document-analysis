@@ -16,18 +16,30 @@ the instrument is a function of the vector. So:
 This makes the terminal/fixable boundary a computation instead of a judgment.
 
 VECTOR FAITHFULNESS (Arc1-e fix, 2026-08-21, prereg panel_run1/convergence/
-CENSUS_VECTOR_FIX_PREREG.md incl. addenda 1-2): the vector is SUFFICIENT for
-the frozen v18 inventory — it carries everything relevance() consumes under
-the currently declared channels: assert layers merged with the definition_*
-lanes (keys nid|c{i}; lane-scope jurisdiction: definitional purpose credits
-excluded, definitional actor credits included), functor argument sorts, and
-authority-plumbing flags. Channels the vector cannot represent
-(party_concern, governs_conditional) fail census() LOUD if any module ever
-declares them; remaining latent gaps are registered in
-semi-formal-experiment/LATENT_FIX_REGISTRY.md. Two views are reported:
-CURRENT (the instrument as frozen) and REACHABLE (CURRENT plus consensus
-context-atom credits — annotated but undeclared vocabulary, the 9b design
-round's input; inventory-relative terminality per contract 9g).
+CENSUS_VECTOR_FIX_PREREG.md incl. addenda 1-3): the FULL vector carries
+every feature relevance() can consume — assert layers merged with the
+definition_* lanes (keys nid|c{i}; lane-scope jurisdiction: definitional
+purpose credits excluded, definitional actor credits included), functor
+argument sorts, authority-plumbing flags, and contexts. Channels census()
+cannot represent (party_concern, governs_conditional) fail it LOUD if any
+module ever declares them; remaining latent gaps are registered in
+semi-formal-experiment/LATENT_FIX_REGISTRY.md.
+
+TWO VIEWS, per addendum-3 scope ruling:
+- CURRENT: the instrument AS FROZEN, per behavior — slots a behavior never
+  consumes are MASKED before grouping (contexts always, because its only
+  consumer governs_conditional is undeclared and guarded; protects unless the
+  module declares protects_concern; purposes unless it declares
+  purpose_concern). Three defects in this file's history were exactly
+  unmasked inert features (addenda 2-3); the standing dead-slot probe test
+  guards the class.
+- REACHABLE: the DESIGN SPACE — every slot the schema allows a declaration
+  to consume (protects_concern / purpose_concern / governs_conditional are
+  all declarable), plus consensus context-atom credits (annotated but
+  undeclared vocabulary). Inventory-relative terminality per contract 9g.
+9b consumes the gap between the views: CURRENT-UNSAT and REACHABLE-SEPARABLE
+rows are addressable by new declarations; CURRENT-UNSAT and REACHABLE-UNSAT
+rows are terminal at current granularity.
 Usage: .../.venv/bin/python satisfiability_census.py modules_contract_v18.json
 """
 import json, os, sys
@@ -102,6 +114,26 @@ def truth_all(slug):
     return t
 
 
+# slot indices of the vector tuple
+SLOT_CONTEXTS, SLOT_PROTECTS, SLOT_PURPOSES = 2, 3, 5
+
+
+def current_mask(mod):
+    """Slots the FROZEN behavior never consumes (addendum-3 ruling). Masking
+    them is what makes CURRENT mean 'the instrument as frozen': a feature no
+    gate reads cannot separate two nodes for this behavior."""
+    dead = {SLOT_CONTEXTS}          # only consumer governs_conditional: undeclared + guarded
+    if not mod.get("protects_concern"):
+        dead.add(SLOT_PROTECTS)
+    if not mod.get("purpose_concern"):
+        dead.add(SLOT_PURPOSES)
+    return dead
+
+
+def masked(vec, dead):
+    return tuple(None if i in dead else slot for i, slot in enumerate(vec))
+
+
 def census(modules_file):
     mods = json.load(open(os.path.join(HERE, modules_file)))["modules"]
     for slug, m in mods.items():
@@ -118,13 +150,14 @@ def census(modules_file):
     sig, ap, pa, ctx = load_layers()
     asorts = RBA.arg_sorts()
     report = {}
-    for slug in mods:
-        _, rel = RBA.relevance(mods[slug], br, corpus)
+    for slug, m in mods.items():
+        _, rel = RBA.relevance(m, br, corpus)
         eng = set(rel)
         t = truth_all(slug)
+        dead = current_mask(m)
         vecs, groups_cur, groups_rch = {}, {}, {}
         for n in t:
-            vc = vector(n, corpus, br, sig, ap, pa, None, asorts)
+            vc = masked(vector(n, corpus, br, sig, ap, pa, None, asorts), dead)
             vr = vector(n, corpus, br, sig, ap, pa, ctx, asorts)
             vecs[n] = (vc, vr)
             groups_cur.setdefault(vc, []).append(n)
@@ -143,7 +176,8 @@ def census(modules_file):
             sc, tc = view(n, groups_cur, 0)
             sr, tr = view(n, groups_rch, 1)
             rows[n] = {"verdict_needed": v, "status": sc, "colliding_correct_nodes": tc,
-                       "status_reachable": sr, "colliding_correct_nodes_reachable": tr}
+                       "status_reachable": sr, "colliding_correct_nodes_reachable": tr,
+                       "addressable_by_declaration": sc == "UNSAT" and sr == "SEPARABLE"}
         report[slug] = rows
     return report
 

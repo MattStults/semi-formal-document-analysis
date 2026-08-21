@@ -113,3 +113,61 @@ l2126_2404_n023}, with both pinned UNSAT in both views. Expected counts
 after correction: help UNSAT 8->9 current, 6->7 reachable; caution 1->2 in
 both views; harm unchanged (7 current, 5 reachable). 9b must consume only
 the corrected census output.
+
+## ADDENDUM 3 — re-review round 2 findings + scope ruling (2026-08-21)
+Re-review of correction 2 returned BLOCKED with two findings; both resolved
+here. Erratum first: addendum 2's "2 of 124 rows" is wrong arithmetic — the
+corpus has 140 mismatch rows (124 was the pre-correction SEPARABLE count);
+the coverage claim itself was accurate.
+
+FINDING 1 (third false SEPARABLE, same class): harm::l1542_1706_n006 is
+separated from its twin l3041_3146_n015 ONLY by the contexts slot, which no
+frozen v18 behavior consumes (sole consumer governs_conditional is undeclared
+and guarded). Reclassified: CURRENT-UNSAT (frozen instrument cannot
+distinguish the pair) and REACHABLE-SEPARABLE under the semantics below
+(a governs_conditional declaration keyed on the twin's signature context is
+a design-space possibility). Both prior checks missed it because each varied
+exactly one dimension and contexts was inert-and-present in both vectors
+compared.
+
+FINDING 2 + SCOPE RULING (orchestration seat, recorded per doctrine): the
+behavior-agnostic vector over-refined via per-behavior dead slots — protects
+is consumed only by harm+help (caution's protects_concern=[] makes
+protects_ok always True), purposes only by harm (the purpose OR-channel
+needs purp_decl). Twelve twin pairs across eight SEPARABLE rows depended
+only on dead slots; one is an E1 flip (caution::l1707_1973_n012).
+RULING: CURRENT = the frozen instrument PER BEHAVIOR (dead slots masked
+before grouping: contexts always; protects unless protects_concern is
+declared; purposes unless purpose_concern is declared). REACHABLE = the
+DESIGN SPACE — every slot the schema allows a declaration to consume, plus
+consensus context atoms (contract 9g inventory-relative terminality). 9b
+consumes the gap: CURRENT-UNSAT + REACHABLE-SEPARABLE = addressable by new
+declarations; both-UNSAT = terminal at current granularity. A derived field
+addressable_by_declaration carries this per row.
+REJECTED BY NAME: keep the union vector as CURRENT and rewrite the docstring
+to design-space semantics (the reviewer's alternative reading) — it would
+collapse the CURRENT/REACHABLE distinction the campaign relies on
+("instrument as frozen" vs "reachable vocabulary") and silently present
+dead-slot separations as instrument facts. The E1 headline corrects
+accordingly: definition-lane separations stand as 7 CURRENT + 1
+design-space-only (l1707_1973_n012 under caution), disclosed.
+STRUCTURAL PREDICTIONS (frozen before the corrected run): masking can only
+merge CURRENT classes, so CURRENT-UNSAT grows or holds per behavior
+relative to correction 2 and no CURRENT-SEPARABLE row may depend on a dead
+slot (standing probe test below); REACHABLE gains the design-space slots,
+so REACHABLE-UNSAT can only shrink relative to correction 2; P2 collider
+controls and both addendum-2 reclassifications unchanged in CURRENT.
+STANDING REGRESSION (reviewer's meta-criterion, codified): for each
+behavior, recompute CURRENT grouping after dropping each dead slot
+individually; every CURRENT-SEPARABLE row must stay SEPARABLE — the probe
+that catches all three defect classes found across the two review rounds.
+Results line appends after the run (append-only).
+
+RESULTS (correction 3, appended after the run, 2026-08-21): all structural
+predictions held. CURRENT UNSAT: caution 2->6, harm 7->8, help 9->12
+(monotone growth vs correction 2, as predicted). REACHABLE UNSAT unchanged
+(2/5/7). n006 reclassified CURRENT-UNSAT / REACHABLE-SEPARABLE. E1 stands
+as 7 CURRENT-separable + 1 design-space-only (caution::l1707_1973_n012,
+UNSAT-current / REACHABLE-separable / addressable). addressable_by_
+declaration rows: caution 4, harm 3, help 5 = 12 total — this is 9b's
+design signal. Dead-slot probe test green (34 tests total).

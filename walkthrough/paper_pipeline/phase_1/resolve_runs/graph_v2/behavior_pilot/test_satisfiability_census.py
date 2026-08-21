@@ -129,56 +129,97 @@ PREFIXTURE = os.path.join(HERE, "panel_run1", "convergence",
                           "satisfiability_census_v18_PREFIXTURE.json")
 
 
-# E1 flips from the frozen POSTFIX diff — the eight nodes the definition-lane
-# merge separated. Pinned as a SUBSET check (never live counts) so future
-# legitimate refinements cannot silently un-separate them.
-E1_NODES = {
+# E1 flips from the frozen POSTFIX diff — nodes the definition-lane merge
+# separated, as of addendum-3 semantics: CURRENT-separable for the frozen
+# instrument, plus one design-space-only separation (UNSAT-current,
+# REACHABLE-separable) disclosed per the addendum. Pinned as SUBSET checks.
+E1_CURRENT = {
     "avoiding-over-and-under-caution": ["l1_170_n030", "l611_698_n009"],
     "harm-avoidance-to-third-parties": ["l1_170_n038", "l831_1000_n006"],
     "helpfulness": ["l1_170_n030", "l3239_3382_n012", "l3502_3504_n001",
                     "l609_698_n011"],
 }
+E1_DESIGN_SPACE = {"avoiding-over-and-under-caution": ["l1707_1973_n012"]}
+
+# nodes reclassified SEPARABLE->UNSAT by corrections 2-3 (inert features:
+# assert status, none-vs-other sort, contexts slot); pinned UNSAT-current
+FALSE_SEPARABLES = {"l3877_3953_n010", "l2126_2404_n023", "l1542_1706_n006"}
+COLLIDERS = {"l797_830_n011", "l831_1000_n001", "l831_1000_n011"}
 
 
 @pytest.mark.skipif(not os.path.exists(PREFIXTURE), reason="pre-fix baseline absent")
-def test_real_corpus_monotone_refinement():
-    """Prereg P1/P2/P3/P4 on modules_contract_v18.json, with the addendum-2
-    correction: the prefixture's lone false SEPARABLE (l3877_3953_n010,
-    status over-refinement) is excluded from the monotone comparison and
-    pinned UNSAT in both views."""
+def test_real_corpus_semantics_pins():
+    """Addendum-3 semantics on modules_contract_v18.json. The old P1 subset
+    assertion belongs to the pre-masking semantics (where only refinement
+    was possible); masking legitimately adds UNSAT, so the standing
+    invariants here are: mismatch-set invariance (P4), every node ever
+    reclassified UNSAT stays UNSAT, reachable-separable superset of
+    current-separable, and the named pins."""
     pre = json.load(open(PREFIXTURE))["summary"]
     rep = SC.census("modules_contract_v18.json")
-    colliders = {"l797_830_n011", "l831_1000_n001", "l831_1000_n011"}
-    # addendum-2 corrected false SEPARABLEs (inert status / none-vs-other
-    # sort distinctions the instrument never consumes)
-    corrected = {"l3877_3953_n010", "l2126_2404_n023"}
     for slug, rows in rep.items():
         pre_unsat = set(pre[slug]["unsat"])
         pre_sep = set(pre[slug]["separable"])
-        # P4: mismatch sets invariant (fix touches vector() only)
+        # P4: mismatch sets invariant (corrections touch vector/grouping only)
         assert set(rows) == pre_unsat | pre_sep, f"{slug}: mismatch set changed"
-        post_unsat = {n for n, r in rows.items() if r["status"] == "UNSAT"}
         post_sep = {n for n, r in rows.items() if r["status"] == "SEPARABLE"}
-        # P1 (corrected, addendum 2): monotone refinement modulo the two
-        # reclassified false SEPARABLEs
-        assert post_unsat <= pre_unsat | corrected, \
-            f"{slug}: new UNSAT nodes {post_unsat - pre_unsat - corrected}"
-        assert post_sep >= pre_sep - corrected, \
-            f"{slug}: lost SEPARABLE nodes {pre_sep - post_sep - corrected}"
-        # E1 subset pin: the definition-lane separations persist
-        for n in E1_NODES.get(slug, []):
+        # nodes reclassified UNSAT by corrections 2-3 stay UNSAT-current
+        for n in FALSE_SEPARABLES & set(rows):
+            assert rows[n]["status"] == "UNSAT", f"{slug}::{n} reclassified back"
+        # prefixture UNSAT nodes stay UNSAT, except the E1 definition-lane
+        # flips (the only legitimate prefixture-UNSAT -> SEPARABLE path:
+        # the definition merge refines classes; masking itself only merges)
+        post_unsat = {n for n, r in rows.items() if r["status"] == "UNSAT"}
+        assert pre_unsat - set(E1_CURRENT.get(slug, [])) <= post_unsat, \
+            f"{slug}: unexpected prefixture-UNSAT flip {pre_unsat - set(E1_CURRENT.get(slug, [])) - post_unsat}"
+        # E1 pins: definition-lane separations persist under both semantics
+        for n in E1_CURRENT.get(slug, []):
             assert rows[n]["status"] == "SEPARABLE", f"{slug}::{n} lost E1 separation"
-        # P2: collider control nodes stay UNSAT under CURRENT (their fix
-        # family is act-refinement subtypes, not this layer merge)
-        for n in colliders & set(rows):
+        for n in E1_DESIGN_SPACE.get(slug, []):
+            assert rows[n]["status"] == "UNSAT", f"{slug}::{n} design-space node"
+            assert rows[n]["status_reachable"] == "SEPARABLE"
+            assert rows[n]["addressable_by_declaration"] is True
+        # P2: collider control nodes stay UNSAT under CURRENT
+        for n in COLLIDERS & set(rows):
             assert rows[n]["status"] == "UNSAT", f"{slug}::{n} flipped without an act change"
-        # P3: reachable separability superset of current
+        # reachable separability superset of current
         rch_sep = {n for n, r in rows.items() if r["status_reachable"] == "SEPARABLE"}
         assert rch_sep >= post_sep, f"{slug}: reachable lost current-separable nodes"
-        # addendum-2 pin: the corrected false SEPARABLEs are UNSAT in both views
-        for n in corrected & set(rows):
-            assert rows[n]["status"] == "UNSAT", f"{slug}::{n} not reclassified"
-            assert rows[n]["status_reachable"] == "UNSAT", f"{slug}::{n} reachable"
+
+
+def test_dead_slot_probe():
+    """Standing regression (reviewer meta-criterion, prereg addendum 3): no
+    CURRENT-SEPARABLE verdict may depend on a slot the frozen behavior never
+    consumes. Dropping each dead slot from the grouping must leave every
+    SEPARABLE row SEPARABLE. This is the standing guard for the defect class
+    behind all three review-round findings: a carried feature no gate reads
+    silently separating nodes (status and sort sentinel were removed from the
+    vector outright; this probe guards the per-behavior variant)."""
+    import relevance_by_act as RBA
+    mods = json.load(open(os.path.join(HERE, "modules_contract_v18.json")))["modules"]
+    br = RBA.bridges(); corpus = RBA.corpus_acts()
+    sig, ap, pa, ctx = SC.load_layers()
+    asorts = RBA.arg_sorts()
+    rep = SC.census("modules_contract_v18.json")
+    for slug, m in mods.items():
+        _, rel = RBA.relevance(m, br, corpus)
+        eng = set(rel)
+        t = SC.truth_all(slug)
+        dead = SC.current_mask(m)
+        sep = {n for n, r in rep[slug].items() if r["status"] == "SEPARABLE"}
+        for slot in dead:
+            groups = {}
+            for n in t:
+                key = SC.masked(SC.vector(n, corpus, br, sig, ap, pa, None, asorts),
+                                dead | {slot})
+                groups.setdefault(key, []).append(n)
+            for n in sep:
+                twins = [mm for mm in groups[SC.masked(
+                    SC.vector(n, corpus, br, sig, ap, pa, None, asorts), dead | {slot})]
+                    if mm != n and ((t[mm] == "relevant") == (mm in eng))
+                    and t[mm] != t[n]]
+                assert not twins, \
+                    f"{slug}::{n}: SEPARABLE depends on dead slot {slot} (twins {twins})"
 
 
 def test_load_layers_merges_definition_lanes():
