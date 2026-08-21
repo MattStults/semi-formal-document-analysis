@@ -135,3 +135,24 @@ form_equivalence) runs as the second blind signal; consensus-presence as
 always, disagreements recorded, never tiebroken. Disclosure: single human
 seat + mechanical screen replaces two model seats on these 15 nodes only,
 because no provider seat can read them.
+
+## ADDENDUM 3 — venue ruling: extension seats move to Claude-side sessions (2026-08-21)
+All four clean-chunk seats (164 nodes, the 15 known-hot nodes excluded) were
+ALSO rejected by provider input inspection: the assert-less extension stratum
+is the document's example layer, and the harness provider's inspection gate
+rejects far more of it than the keyword screen flagged. This is a venue
+problem, not a packet problem, and no further carving or sanitizing fixes it
+without systematically excluding exactly the prohibited-content examples the
+exhibit criterion exists to mark — a methodological bias, not an operational
+fix.
+RULING (orchestration seat): the extension annotation moves to the doctrinal
+annotation venue — Claude-side seats (the handoff's original "two-seat Opus
+annotation" design; campaign-subagent seats were the deviation, now
+abandoned for this lane). Seat brief: MINT_EXT_SEAT_BRIEF.md, run twice in
+fresh independent sessions (SEAT 1, SEAT 2), refusal-tolerant: unprocessable
+spans go to "refused" with a reason and the seat continues. Consensus rule
+unchanged (consensus-presence; disagreements recorded, never tiebroken).
+Refused nodes fall back to the human-seat packet (mint_ext_human_packet.json)
++ mechanical screen (mint_hot_mechanical_screen.json) exactly as addendum 2
+describes. First-pass results on the 583 assert-bearing nodes stand — the
+venue change applies only to the extension lane.
