@@ -118,3 +118,20 @@ limited to 15 nodes for form-only criteria; every downstream artifact cites
 this addendum. REJECTED BY NAME: human-seat fallback for the 15 nodes (kept
 as contingency if sanitized seats still fail — it would cost Matt ~15
 minutes and a single-seat deviation from the two-seat rule).
+
+ADDENDUM 2, CONTINUED (2026-08-21): the sanitization ruling did NOT hold —
+a sanitized extension seat was still rejected by input inspection (the
+classifier reads surrounding context, e.g. '[sexual-content] involving
+minors'; the v2 screen had also dropped minors/gore/violence terms).
+CONTINGENCY ACTIVATED per the rejected-by-name fallback: the 15 hot nodes
+are carved OUT of seat annotation entirely. Four seats re-dispatched on
+ctx_ext_clean1-3.json (164 nodes, raw text). Any surviving sanitized-seat
+outputs are DISCARDED in favor of clean-chunk outputs (uniform provenance).
+The 15 hot nodes go to a HUMAN SEAT (Matt): packet mint_ext_human_packet.json
+(raw spans + both criteria + answer format). Human-seat consensus rule: Matt's
+judgment is the judgment seat; a mechanical structure screen (Example-header /
+speaker-markup / GOOD-BAD markers for exhibit; quoted equivalence phrasing for
+form_equivalence) runs as the second blind signal; consensus-presence as
+always, disagreements recorded, never tiebroken. Disclosure: single human
+seat + mechanical screen replaces two model seats on these 15 nodes only,
+because no provider seat can read them.
