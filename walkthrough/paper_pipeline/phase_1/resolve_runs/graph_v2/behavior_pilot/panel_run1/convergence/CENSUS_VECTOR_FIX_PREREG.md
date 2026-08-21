@@ -75,3 +75,41 @@ argument sort (None = unspecified/fail-open, matching arg_ok); a plumbing-key
 feature lists flagged key suffixes per node. P1-P4 re-asserted against the
 same frozen prefixture (further refinement can only shrink UNSAT further);
 P2 collider controls unchanged (act-refinement subtypes are still absent).
+
+## ADDENDUM 2 — adversarial review finding ALARMING-1 (2026-08-21, correction)
+The clean-context adversarial review (verdict: BLOCKED, scope-limited) found
+that the acts tuple carried the assert STATUS, which relevance() never
+consumes — engagement is gated by verb_hit/arg_ok/party_ok/walls only; status
+rides into rel[cid] as reason text. Over-fine vectors shrink collision
+classes, producing false SEPARABLEs. The review's scan found ONE instance
+(helpfulness::l3877_3953_n010 vs its status-twin l3877_3953_n009, both
+bridging to comply); an exhaustive pre/post-correction census diff then found
+exactly ONE MORE that the scan's method could not see — it searched for
+status twins INSIDE old collision classes, but removing status and collapsing
+none/other sorts can merge classes that were previously apart:
+avoiding-over-and-under-caution::l2126_2404_n023 (engage_objectively/oblige,
+sort "other") vs l2126_2404_n010 (avoid_subjective_terms/prefer, sort None)
+— both functors bridge to respond, both sorts fail open identically in
+arg_ok, layers identical. Corrected set is therefore TWO false SEPARABLEs,
+both reclassified UNSAT in both views; the diff verified no other verdict
+changed (2 of 124 rows, both directions checked). decl_search_proto/
+declaration_proposals.json already exhibits the n010 coupling (a proposal
+with n010 in fixed_nodes, n009 in broken_nodes). Both defects predate this
+fix (they are SEPARABLE in the PREFIXTURE too), so the frozen baseline
+carried them; this addendum is the erratum, appended per the corrections
+rule.
+Corrections applied: (1) status removed from the acts tuple; (2) functor
+sorts none/other/missing collapsed to one sentinel (arg_ok fails open
+identically for all three; reviewer verified zero current impact); (3)
+governs_conditional gains the same fail-loud guard as party_concern
+(declared by no v18 module; the flattened contexts slot cannot express its
+per-key pairing); (4) remaining latent representation gaps (per-key
+actor-purpose conjunction, all-plumbing key-count, fail-open asymmetry —
+all verified zero-instance by the reviewer) go to LATENT_FIX_REGISTRY.md per
+repo custom, not into code; (5) the docstring's "EXACTLY" softened to the
+sufficiency scope (frozen v18 inventory).
+P1 CORRECTED: UNSAT_after ⊆ UNSAT_before ∪ {l3877_3953_n010,
+l2126_2404_n023}, with both pinned UNSAT in both views. Expected counts
+after correction: help UNSAT 8->9 current, 6->7 reachable; caution 1->2 in
+both views; harm unchanged (7 current, 5 reachable). 9b must consume only
+the corrected census output.

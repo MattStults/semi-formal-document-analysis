@@ -16,15 +16,18 @@ the instrument is a function of the vector. So:
 This makes the terminal/fixable boundary a computation instead of a judgment.
 
 VECTOR FAITHFULNESS (Arc1-e fix, 2026-08-21, prereg panel_run1/convergence/
-CENSUS_VECTOR_FIX_PREREG.md): the vector mirrors relevance_by_act.relevance()
-EXACTLY — assert layers merged with the definition_* lanes (keys nid|c{i}),
-including the lane-scope jurisdiction ruling: purpose credits from
-definitional keys never feed the purpose OR-channel (verdict-gated on the
-assert lane only), while actor credits from definitional keys DO feed the
-actor wall. Two views are reported: CURRENT (the instrument as frozen) and
-REACHABLE (CURRENT plus consensus context-atom credits — annotated but
-undeclared vocabulary, the 9b design round's input; inventory-relative
-terminality per contract 9g).
+CENSUS_VECTOR_FIX_PREREG.md incl. addenda 1-2): the vector is SUFFICIENT for
+the frozen v18 inventory — it carries everything relevance() consumes under
+the currently declared channels: assert layers merged with the definition_*
+lanes (keys nid|c{i}; lane-scope jurisdiction: definitional purpose credits
+excluded, definitional actor credits included), functor argument sorts, and
+authority-plumbing flags. Channels the vector cannot represent
+(party_concern, governs_conditional) fail census() LOUD if any module ever
+declares them; remaining latent gaps are registered in
+semi-formal-experiment/LATENT_FIX_REGISTRY.md. Two views are reported:
+CURRENT (the instrument as frozen) and REACHABLE (CURRENT plus consensus
+context-atom credits — annotated but undeclared vocabulary, the 9b design
+round's input; inventory-relative terminality per contract 9g).
 Usage: .../.venv/bin/python satisfiability_census.py modules_contract_v18.json
 """
 import json, os, sys
@@ -57,10 +60,16 @@ def vector(nid, corpus, br, sig, ap, pa, ctx=None, asorts=None):
     skeys = sorted(k for k in sig if k.startswith(nid + "|"))
     pkeys = sorted(k for k in ap if k.startswith(nid + "|"))
     akeys = sorted(k for k in pa if k.startswith(nid + "|"))
-    # (canonical act, status, functor arg-sort): all v18 behaviors declare
-    # arg_sorts, so arg_ok() is live and the functor's raw sort is
-    # instrument-visible (None = unspecified -> fail-open, as in arg_ok)
-    acts = frozenset((br.get(f), s, (asorts or {}).get(f))
+    # (canonical act, functor arg-sort). Assert STATUS is deliberately absent:
+    # relevance() never consumes it (engagement gates on verb_hit/arg_ok/
+    # party_ok/walls; status only rides as reason text), and carrying it
+    # over-refines vectors into false SEPARABLEs (prereg addendum 2).
+    # Sorts none/other/missing collapse to None: arg_ok fails open
+    # identically for all three.
+    def _sort(f):
+        s = (asorts or {}).get(f)
+        return None if s in (None, "none", "other") else s
+    acts = frozenset((br.get(f), _sort(f))
                      for f, s in corpus.get(nid, []) if br.get(f))
     governs = frozenset(g for k in skeys for g in sig[k]["governs"])
     contexts = frozenset(c for k in skeys for c in sig[k].get("contexts", []))
@@ -100,6 +109,11 @@ def census(modules_file):
             raise NotImplementedError(
                 f"{slug} declares party_concern: census vector() carries no "
                 "act-party feature — extend vector() before running (Arc1-e addendum)")
+        if m.get("governs_conditional"):
+            raise NotImplementedError(
+                f"{slug} declares governs_conditional: the vector's flattened "
+                "contexts slot cannot express per-key quality-context pairing — "
+                "extend vector() before running (Arc1-e addendum 2)")
     br = RBA.bridges(); corpus = RBA.corpus_acts()
     sig, ap, pa, ctx = load_layers()
     asorts = RBA.arg_sorts()

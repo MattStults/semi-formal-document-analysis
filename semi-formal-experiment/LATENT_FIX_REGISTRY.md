@@ -142,3 +142,31 @@ Protocol:
   already reading this file, which is exactly the person who does not need the reminder.
   **Action:** implement LF-1's and LF-2's tripwires together as one small unit, independent of
   the S3b build. Both are test-only, deterministic, and cost nothing to run.
+
+## LF-3 — census vector() flattened representations (Arc1-e adversarial review, 2026-08-21)
+
+* **ISSUE.** `satisfiability_census.vector()` (graph_v2/behavior_pilot) flattens three
+  key-wise/count-sensitive instrument structures: (a) `purpose_hit`'s per-key
+  actor∧purpose conjunction (vector carries unioned actors × purposes); (b) the
+  all-plumbing exclusion predicate (vector carries the plumbing-suffix set but not key
+  counts, so "all keys flagged" is inexpressible when non-plumbing keys are invisible);
+  (c) fail-open-on-no-keys vs keys-with-empty-values asymmetry. Any of these could make
+  two same-vector nodes engage differently, biasing the census toward false UNSAT
+  (hiding separability) on those classes.
+* **EVIDENCE OF CURRENT ABSENCE.** Arc1-e clean-context adversarial review (2026-08-21):
+  full-corpus recomputation over every same-vector class under all three live v18
+  modules found ZERO instances of all three divergences. The same review's
+  governs_conditional audit found it accidentally safe on current classes as well;
+  governs_conditional and party_concern are NOT registered here — they have fail-loud
+  guards in `census()` instead (they are declarable-but-unrepresentable, which the
+  guard converts into a hard stop).
+* **PLAN IF IT APPEARS.** Extend `vector()` with key-resolved structure (per-key
+  actor-purpose pairs, plumbing/key counts, key-presence flags), capture a new frozen
+  prefixture, re-run the monotone-refinement test suite, adversarial re-review. Follows
+  the Arc1-e prereg template (CENSUS_VECTOR_FIX_PREREG.md).
+* **TRIGGER.** Any same-vector class found (by pre-census audit) whose members differ on
+  one of the three structures; re-audit is REQUIRED at every instrument freeze
+  (round-4 certification, each generalization run) until then.
+* **STATUS.** NOT IMPLEMENTED — zero instances verified 2026-08-21. Registered so the
+  flattening is a KNOWN sufficiency scope, not an accident; the census docstring points
+  here.
