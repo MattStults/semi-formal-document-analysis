@@ -187,39 +187,70 @@ def test_real_corpus_semantics_pins():
         assert rch_sep >= post_sep, f"{slug}: reachable lost current-separable nodes"
 
 
+# REGISTRATION FENCE (repo idiom; round-3 review finding): pinned ground
+# truth for the vector's slot inventory and which slots each frozen v18
+# behavior consumes. Any change to vector()'s slots (e.g. the Arc1-b
+# refinement feature) or to module declarations MUST update this constant
+# AND current_mask in the same reviewed commit — the probe fails loud until
+# it does. Without the pin the probe re-derives census's own grouping and
+# cannot fail (reviewer's mutation proof, round 3).
+SLOT_INVENTORY = ("acts", "governs", "contexts", "protects", "actors",
+                  "purposes", "plumbing")
+SLOT_INDEX = {name: i for i, name in enumerate(SLOT_INVENTORY)}
+DEAD_SLOTS_PINNED = {
+    "avoiding-over-and-under-caution": {"contexts", "protects", "purposes"},
+    "harm-avoidance-to-third-parties": {"contexts"},
+    "helpfulness": {"contexts", "purposes"},
+}
+
+
 def test_dead_slot_probe():
-    """Standing regression (reviewer meta-criterion, prereg addendum 3): no
-    CURRENT-SEPARABLE verdict may depend on a slot the frozen behavior never
-    consumes. Dropping each dead slot from the grouping must leave every
-    SEPARABLE row SEPARABLE. This is the standing guard for the defect class
-    behind all three review-round findings: a carried feature no gate reads
-    silently separating nodes (status and sort sentinel were removed from the
-    vector outright; this probe guards the per-behavior variant)."""
+    """Standing regression (reviewer meta-criterion, prereg addendum 3,
+    round-3 correction): independent ground truth for the per-behavior
+    masking. (a) current_mask must equal the PINNED dead sets — a mutation
+    of current_mask fails here, not silently in census; (b) re-grouping
+    under the PINNED sets must reproduce census's CURRENT verdicts; (c) the
+    vector's slot inventory is pinned so a new slot forces a reviewed
+    update. Guards the per-behavior dead-slot defect class (review rounds
+    2-3); the round-2 status/sort-sentinel classes were removed from the
+    vector outright rather than masked."""
     import relevance_by_act as RBA
+    # (c) slot inventory pin — arity check on a dependency-free vector call
+    probe = SC.vector("probe_node", {}, {}, {}, {}, {})
+    assert len(probe) == len(SLOT_INVENTORY), (
+        "vector arity changed — update SLOT_INVENTORY and DEAD_SLOTS_PINNED "
+        "in the same reviewed commit (Arc1-e addendum 3 handshake)")
     mods = json.load(open(os.path.join(HERE, "modules_contract_v18.json")))["modules"]
     br = RBA.bridges(); corpus = RBA.corpus_acts()
     sig, ap, pa, ctx = SC.load_layers()
     asorts = RBA.arg_sorts()
     rep = SC.census("modules_contract_v18.json")
     for slug, m in mods.items():
+        pinned_dead = {SLOT_INDEX[s] for s in DEAD_SLOTS_PINNED[slug]}
+        # (a) current_mask equals the pinned ground truth
+        assert SC.current_mask(m) == pinned_dead, (
+            f"{slug}: current_mask {SC.current_mask(m)} != pinned "
+            f"{pinned_dead} — update the pin deliberately if declarations "
+            "changed")
+        # (b) verdicts re-derived under the PINNED mask equal census's
         _, rel = RBA.relevance(m, br, corpus)
         eng = set(rel)
         t = SC.truth_all(slug)
-        dead = SC.current_mask(m)
-        sep = {n for n, r in rep[slug].items() if r["status"] == "SEPARABLE"}
-        for slot in dead:
-            groups = {}
-            for n in t:
-                key = SC.masked(SC.vector(n, corpus, br, sig, ap, pa, None, asorts),
-                                dead | {slot})
-                groups.setdefault(key, []).append(n)
-            for n in sep:
-                twins = [mm for mm in groups[SC.masked(
-                    SC.vector(n, corpus, br, sig, ap, pa, None, asorts), dead | {slot})]
-                    if mm != n and ((t[mm] == "relevant") == (mm in eng))
-                    and t[mm] != t[n]]
-                assert not twins, \
-                    f"{slug}::{n}: SEPARABLE depends on dead slot {slot} (twins {twins})"
+        groups = {}
+        keys = {}
+        for n in t:
+            key = SC.masked(SC.vector(n, corpus, br, sig, ap, pa, None, asorts),
+                            pinned_dead)
+            keys[n] = key
+            groups.setdefault(key, []).append(n)
+        for n, r in rep[slug].items():
+            twins = [mm for mm in groups[keys[n]]
+                     if mm != n and ((t[mm] == "relevant") == (mm in eng))
+                     and t[mm] != t[n]]
+            derived = "UNSAT" if twins else "SEPARABLE"
+            assert derived == r["status"], (
+                f"{slug}::{n}: pinned-mask verdict {derived} != census "
+                f"{r['status']}")
 
 
 def test_load_layers_merges_definition_lanes():

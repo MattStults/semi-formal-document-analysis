@@ -135,7 +135,10 @@ behavior-agnostic vector over-refined via per-behavior dead slots — protects
 is consumed only by harm+help (caution's protects_concern=[] makes
 protects_ok always True), purposes only by harm (the purpose OR-channel
 needs purp_decl). Twelve twin pairs across eight SEPARABLE rows depended
-only on dead slots; one is an E1 flip (caution::l1707_1973_n012).
+only on dead slots. (Round-3 correction: caution::l1707_1973_n012 is among
+them but is prefixture-SEPARABLE — NOT an E1 flip, as round 2's report
+wrongly stated and this prereg inherited; it is one additional masking
+reclassification, disclosed as design-space-only below.)
 RULING: CURRENT = the frozen instrument PER BEHAVIOR (dead slots masked
 before grouping: contexts always; protects unless protects_concern is
 declared; purposes unless purpose_concern is declared). REACHABLE = the
@@ -148,26 +151,47 @@ REJECTED BY NAME: keep the union vector as CURRENT and rewrite the docstring
 to design-space semantics (the reviewer's alternative reading) — it would
 collapse the CURRENT/REACHABLE distinction the campaign relies on
 ("instrument as frozen" vs "reachable vocabulary") and silently present
-dead-slot separations as instrument facts. The E1 headline corrects
-accordingly: definition-lane separations stand as 7 CURRENT + 1
-design-space-only (l1707_1973_n012 under caution), disclosed.
+dead-slot separations as instrument facts. E1 is UNAFFECTED by this ruling:
+all 8 definition-lane separations stand CURRENT-separable (verified round
+3). One ADDITIONAL masking reclassification — caution::l1707_1973_n012,
+prefixture-SEPARABLE, not an E1 flip — is disclosed as design-space-only
+(UNSAT-current / REACHABLE-separable / addressable).
 STRUCTURAL PREDICTIONS (frozen before the corrected run): masking can only
 merge CURRENT classes, so CURRENT-UNSAT grows or holds per behavior
 relative to correction 2 and no CURRENT-SEPARABLE row may depend on a dead
 slot (standing probe test below); REACHABLE gains the design-space slots,
 so REACHABLE-UNSAT can only shrink relative to correction 2; P2 collider
 controls and both addendum-2 reclassifications unchanged in CURRENT.
-STANDING REGRESSION (reviewer's meta-criterion, codified): for each
-behavior, recompute CURRENT grouping after dropping each dead slot
-individually; every CURRENT-SEPARABLE row must stay SEPARABLE — the probe
-that catches all three defect classes found across the two review rounds.
-Results line appends after the run (append-only).
+STANDING REGRESSION (reviewer's meta-criterion, codified; round-3
+correction): the probe must carry INDEPENDENT ground truth — the first
+version re-derived census's own grouping (dead | {slot} == dead for slot in
+dead) and could not fail (reviewer's mutation proof). As corrected:
+SLOT_INVENTORY and DEAD_SLOTS_PINNED are registered constants in
+test_satisfiability_census.py; the probe asserts current_mask equals the
+pin, re-derives CURRENT verdicts under the pinned mask, and pins vector
+arity so any new slot (e.g. the Arc1-b refinement feature) forces a
+reviewed same-commit update or fails loud. Scope: guards the per-behavior
+dead-slot class (rounds 2-3); the status/sort-sentinel classes were removed
+from the vector outright rather than masked. Rows addressable only via
+guarded channels (governs_conditional) are addressable-in-principle:
+verifying them requires the vector extension (LF-3 territory) before 9b can
+measure. Results line appends after the run (append-only).
 
 RESULTS (correction 3, appended after the run, 2026-08-21): all structural
 predictions held. CURRENT UNSAT: caution 2->6, harm 7->8, help 9->12
 (monotone growth vs correction 2, as predicted). REACHABLE UNSAT unchanged
-(2/5/7). n006 reclassified CURRENT-UNSAT / REACHABLE-SEPARABLE. E1 stands
-as 7 CURRENT-separable + 1 design-space-only (caution::l1707_1973_n012,
-UNSAT-current / REACHABLE-separable / addressable). addressable_by_
-declaration rows: caution 4, harm 3, help 5 = 12 total — this is 9b's
-design signal. Dead-slot probe test green (34 tests total).
+(2/5/7). n006 reclassified CURRENT-UNSAT / REACHABLE-SEPARABLE (note:
+addressable-in-principle only — its separating declaration is a
+governs_conditional one, a guarded channel; verification needs the vector
+extension first). E1 UNAFFECTED: all 8 definition-lane separations stand
+CURRENT-separable; one additional masking reclassification
+(caution::l1707_1973_n012, prefixture-SEPARABLE, NOT an E1 flip) disclosed
+as design-space-only. addressable_by_declaration rows: caution 4, harm 3,
+help 5 = 12 total — this is 9b's design signal.
+RESULTS, ROUND-3 CORRECTION (2026-08-21, appended): the round-3 re-review
+verified every verdict, count, and artifact of correction 3 correct, and
+found (a) the standing probe tautological — corrected to carry pinned
+ground truth (SLOT_INVENTORY, DEAD_SLOTS_PINNED) plus the slot-arity
+handshake for the Arc1-b vector edit; (b) the "7+1" E1 headline above
+wrong as written (inherited from the round-2 report) — corrected in place
+per the erratum rule; the tests were already correct.
