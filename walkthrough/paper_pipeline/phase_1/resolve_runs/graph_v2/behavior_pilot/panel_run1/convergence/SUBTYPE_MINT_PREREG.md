@@ -69,3 +69,30 @@ the two atoms (dimension "acts"). Corpus: link_nodes.gather() at HEAD.
 Instrument: modules_contract_v18.json. Census: satisfiability_census.py as of
 commit c0800715 (vector carries refinement slot per this prereg's integration
 clause — implemented as part of the mint, tested before regression).
+
+## ADDENDUM 1 — first-pass results + coverage defect + M4 stop (2026-08-21)
+First-pass lane ran on the ctx_chunk1-8 packets (the context-atom lane's
+corpus): 583 nodes, NOT the full 762-node corpus the SCOPE clause requires —
+a protocol deviation in packet selection (orchestration error; the chunks
+were reused without a coverage check).
+Results on the covered set: form_equivalence — seat agreement 0.9895 (M3
+PASS), consensus 10 nodes (M4 PASS, band O(5-20)); exhibit:illustrate —
+agreement 0.9987 (M3 PASS), consensus 169 nodes (M4 STOP: band was O(10-30),
+prereg says stop and report rather than adopt).
+Coverage defect, characterized: ALL 179 unjudged nodes are assert-less
+nodes (translated, no asserts) — precisely the class where exhibit:illustrate
+marks live (worked-example nodes carry their norm in the example, not in
+asserts; example-act lifting exists for exactly this reason). 22 census
+mismatch nodes are among the unjudged, including collider control
+harm::l831_1000_n001 (claim: '... is an example of prohibited content') and
+E1 flip l831_1000_n006. M2 is therefore NOT EVALUABLE on the harm collider.
+Neither subtype is adopted. act_refinements.json holds the partial assembly,
+labeled PARTIAL, for audit.
+RULING REQUESTED (Matt): revise M4 for exhibit:illustrate before the
+extension run — the O(10-30) band was a sparsity prior from an 8-packet
+sample; the document is example-heavy by construction and the lane's health
+evidence is its near-perfect agreement, not its count. Proposed M4-REVISED:
+pathology signal = seat disagreement or incoherent quotes, not count;
+expected exhibit count on full coverage O(100-300). The extension run
+(179 nodes, span text reconstructed from source artifacts) is already
+required by the frozen SCOPE clause and needs no further ruling.
