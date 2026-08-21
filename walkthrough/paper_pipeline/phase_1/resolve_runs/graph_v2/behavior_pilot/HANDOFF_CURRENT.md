@@ -103,9 +103,11 @@ ARC 1 — CERTIFY THIS DOCUMENT (order matters; a-c are one design round):
     remainder is terminal against the ENLARGED inventory — say it that way).
  e. MAINTENANCE before any census-based claim: satisfiability_census.vector()
     must merge definition_* lanes + context atoms (it predates both).
- f. ROUND-4 CERTIFICATION (~0.4M Fable, post Sat-9pm reset): frozen instrument,
-    fresh draws, 9e fresh-pool bands, prospective bucket assignment. This is
-    what converts 0.94-0.96 in-sample into the certified claim.
+ f. ROUND-4 CERTIFICATION (~0.4M Fable, post reset): frozen instrument, fresh
+    draws, 9e fresh-pool bands, prospective bucket assignment. This is what
+    converts 0.94-0.96 in-sample into the certified claim.
+    (⚠️ CORRECTED 2026-08-21: this line said "post Sat-9pm reset"; Matt confirmed
+    the reset is SUNDAY 9pm PT / Aug 23 — the signed round-3 prereg record agrees.)
  g. Fold the 20 context-atom disputes + remaining panel_rerulings; final ledger.
 
 ARC 2 — GENERALIZE AND GO TO THE NEXT DOCUMENT:
@@ -132,3 +134,36 @@ Fable-doctrine (Opus failed parity 0.38). Annotation lanes are Opus-proven.
   false completion); cd to behavior_pilot before running anything (imports).
 - Judgment-tier doctrine: adjudication/rulings = Fable only; annotation = Opus
   OK; mechanical execution = any tier with written plan.
+
+## CAMPAIGN START — the 10-hour push to certifiable, publishable data (2026-08-21, Matt-approved)
+BASELINE COMMIT for review: 5cc216272042942d0ba51966070168fddeb53d25
+(d3-worked-example, clean tree, in sync with origin). A reviewing Fable agent:
+review FORWARD from this commit — everything after it is this campaign.
+
+MANDATE (Matt, 2026-08-21): inside one 10-hour human-attention window
+straddling the Sun-9pm-PT Fable reset (Aug 23), produce (1) round-4
+certification of this document, (2) zero-adaptation generalization runs on
+TWO held-out behaviours — harmlessness-to-the-user + objectivity-on-
+contested-questions (chosen for diagnostic spread: adjacent-family protects-
+wall flip + maximal-distance answer-quality shape; ai_character_index was
+checked the same day: NO frontier truth exists beyond the 3 dev behaviours x
+2 docs, so truth is fresh-draw blind adjudication; small-panel v2 verdicts
+are attention pointers only; if the aci owner produces frontier verdicts
+they enter ONLY as a pre-declared comparison layer, never truth), and (3) a
+blog series (goals / design / results) + living summary document.
+
+STANDING PROCESS RULES FOR THIS CAMPAIGN (Matt, 2026-08-21):
+- Test-driven where possible; where automated tests are not realistic, the
+  validation method is written BEFORE the work and then checked (manually,
+  with Matt's help where asked).
+- Every completed work item gets a clean-context ADVERSARIAL subagent review
+  for engineering excellence and consistency with the higher-level goal
+  before it counts; a positive finding stops the item until fixed.
+- All of Phase 0 (arc-1 items a-e, round-4 prereg draft, generalization
+  prereg, blog scaffolding) is autonomous; Matt's attention is spent on
+  signatures, /usage checkpoints, falsifier readings, and writeup review.
+- Round-3 prereg (signed, sha 69631bf3...) is SUPERSEDED unrun: it froze
+  contract v13; the instrument has moved to v18. Round-4 needs a fresh
+  prereg re-derived from v18 all-truth.
+- The handoff's "Matt's human-panelist baseline 71%" currently has NO source
+  artifact; it must be sourced or struck before it appears in any writeup.
