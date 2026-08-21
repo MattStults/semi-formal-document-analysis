@@ -143,14 +143,25 @@ review FORWARD from this commit — everything after it is this campaign.
 MANDATE (Matt, 2026-08-21): inside one 10-hour human-attention window
 straddling the Sun-9pm-PT Fable reset (Aug 23), produce (1) round-4
 certification of this document, (2) zero-adaptation generalization runs on
-TWO held-out behaviours — harmlessness-to-the-user + objectivity-on-
-contested-questions (chosen for diagnostic spread: adjacent-family protects-
-wall flip + maximal-distance answer-quality shape; ai_character_index was
-checked the same day: NO frontier truth exists beyond the 3 dev behaviours x
-2 docs, so truth is fresh-draw blind adjudication; small-panel v2 verdicts
-are attention pointers only; if the aci owner produces frontier verdicts
-they enter ONLY as a pre-declared comparison layer, never truth), and (3) a
-blog series (goals / design / results) + living summary document.
+held-out behaviours, and (3) a blog series (goals / design / results) +
+living summary document.
+
+SCOPE RULING (Matt, 2026-08-21, same day): ALL SIX never-consulted
+behaviours run, 3+3 SEQUENTIAL with a FATAL-class stop rule. First three in
+diagnostic order: harmlessness-to-user (adjacent-family protects-wall flip),
+objectivity-on-contested-questions (maximal-distance answer-quality shape),
++ one of {tradeoffs, user-autonomy, proportionate-risk, general-welfare};
+remaining three run as confirmation IF the first three transfer cleanly.
+Grounds: the collaborator v5 frontier panel (ingested 2026-08-21 as
+data/panel-v5/, see PROVENANCE.md) supplies 3 full seats on all 9 behaviours
+x both specs, removing the truth-scarcity reason for holding at two;
+comparison statistics are free for all six; adjudication draws shrink to
+40-node panel-informed samples (~0.5-0.6M Fable total). Rejected by name:
+"stay at two" (loses breadth now that truth-scarcity is gone) and "all six
+as one block" (loses the confirmation structure). Fable capacity ruling:
+fresh weekly bar absorbs ~1M Fable, but not until the Sunday reset — all
+Fable-free work proceeds before it; adjudication queues for post-reset.
+Truth doctrine unchanged: v5 panel is comparison layer ONLY, never truth.
 
 STANDING PROCESS RULES FOR THIS CAMPAIGN (Matt, 2026-08-21):
 - Test-driven where possible; where automated tests are not realistic, the
