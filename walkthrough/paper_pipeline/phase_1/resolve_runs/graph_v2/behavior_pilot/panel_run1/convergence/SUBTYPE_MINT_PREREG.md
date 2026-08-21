@@ -96,3 +96,8 @@ pathology signal = seat disagreement or incoherent quotes, not count;
 expected exhibit count on full coverage O(100-300). The extension run
 (179 nodes, span text reconstructed from source artifacts) is already
 required by the frozen SCOPE clause and needs no further ruling.
+
+M4-REVISED SIGNED by Matt 2026-08-21 ("Sign as proposed"). The exhibit stop
+is lifted; extension run proceeds on the 179 unjudged nodes with unchanged
+criterion, seats, and consensus rule. form_equivalence first-pass results on
+covered nodes stand; both subtypes re-assembled after the extension.
