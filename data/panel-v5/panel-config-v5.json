@@ -1,0 +1,282 @@
+{
+  "_comment": "Panel-of-judges pipeline config. Credentials are ENV VAR NAMES, never values; keys live in the environment or a gitignored .env next to the harness.",
+  "providers": {
+    "openai": {
+      "base_url": null,
+      "key_env": "OPENAI_API_KEY"
+    },
+    "anthropic": {
+      "base_url": "https://api.anthropic.com/v1/",
+      "key_env": "ANTHROPIC_API_KEY"
+    },
+    "deepinfra": {
+      "base_url": "https://api.deepinfra.com/v1/openai",
+      "key_env": "DEEPINFRA_API_KEY"
+    },
+    "together": {
+      "base_url": "https://api.together.xyz/v1",
+      "key_env": "TOGETHER_API_KEY"
+    },
+    "gemini": {
+      "base_url": "https://generativelanguage.googleapis.com/v1beta/openai/",
+      "key_env": "GEMINI_API_KEY"
+    },
+    "openrouter": {
+      "base_url": "https://openrouter.ai/api/v1",
+      "key_env": "OPENROUTER_API_KEY"
+    }
+  },
+  "routing_comment": "`provider`/`id` is the native route and stays the default. The optional `openrouter` block is a fallback harness.resolve() takes only when the native key is absent; tags and panel membership are unchanged either way, and metrics.jsonl records the id actually called. OpenRouter mirror ids and prices verified against openrouter.ai/api/v1/models on 2026-08-17; OpenRouter has no Batch API, so a fallback-routed tag must run realtime.",
+  "models": {
+    "haiku": {
+      "provider": "anthropic",
+      "id": "claude-haiku-4-5-20251001",
+      "price_per_mtok": [
+        1.0,
+        5.0
+      ],
+      "openrouter": {
+        "id": "anthropic/claude-haiku-4.5",
+        "price_per_mtok": [
+          1.0,
+          5.0
+        ]
+      }
+    },
+    "opus": {
+      "provider": "anthropic",
+      "id": "claude-opus-4-8",
+      "price_per_mtok": [
+        5.0,
+        25.0
+      ],
+      "openrouter": {
+        "id": "anthropic/claude-opus-4.8",
+        "price_per_mtok": [
+          5.0,
+          25.0
+        ]
+      }
+    },
+    "fable": {
+      "provider": "anthropic",
+      "id": "claude-fable-5",
+      "price_per_mtok": [
+        10.0,
+        50.0
+      ],
+      "openrouter": {
+        "id": "anthropic/claude-fable-5",
+        "price_per_mtok": [
+          10.0,
+          50.0
+        ]
+      }
+    },
+    "gpt-mini": {
+      "provider": "openai",
+      "id": "gpt-5-mini",
+      "price_per_mtok": [
+        0.25,
+        2.0
+      ],
+      "openrouter": {
+        "id": "openai/gpt-5-mini",
+        "price_per_mtok": [
+          0.25,
+          2.0
+        ]
+      }
+    },
+    "gpt": {
+      "provider": "openai",
+      "id": "gpt-5",
+      "price_per_mtok": [
+        1.25,
+        10.0
+      ],
+      "openrouter": {
+        "id": "openai/gpt-5",
+        "price_per_mtok": [
+          1.25,
+          10.0
+        ]
+      }
+    },
+    "sol": {
+      "provider": "openai",
+      "id": "gpt-5.6-sol",
+      "price_per_mtok": [
+        5.0,
+        30.0
+      ],
+      "openrouter": {
+        "id": "openai/gpt-5.6-sol",
+        "price_per_mtok": [
+          2.5,
+          15.0
+        ]
+      }
+    },
+    "qwen-small": {
+      "provider": "deepinfra",
+      "id": "Qwen/Qwen3-32B",
+      "price_per_mtok": [
+        0.1,
+        0.3
+      ],
+      "max_output": 8192,
+      "openrouter": {
+        "id": "qwen/qwen3-32b",
+        "price_per_mtok": [
+          0.08,
+          0.28
+        ]
+      }
+    },
+    "qwen-big": {
+      "provider": "deepinfra",
+      "id": "Qwen/Qwen3-235B-A22B-Instruct-2507",
+      "price_per_mtok": [
+        0.2,
+        0.6
+      ],
+      "max_output": 16384,
+      "openrouter": {
+        "id": "qwen/qwen3-235b-a22b-2507",
+        "price_per_mtok": [
+          0.09,
+          0.55
+        ]
+      }
+    },
+    "qwen-max": {
+      "provider": "openrouter",
+      "id": "qwen/qwen3.7-max",
+      "price_per_mtok": [
+        1.25,
+        3.75
+      ]
+    },
+    "deepseek": {
+      "provider": "deepinfra",
+      "id": "deepseek-ai/DeepSeek-V3.2",
+      "price_per_mtok": [
+        0.28,
+        0.42
+      ],
+      "openrouter": {
+        "id": "deepseek/deepseek-v3.2",
+        "price_per_mtok": [
+          0.269,
+          0.4
+        ]
+      }
+    },
+    "kimi": {
+      "provider": "together",
+      "id": "moonshotai/Kimi-K3",
+      "price_per_mtok": [
+        3.0,
+        15.0
+      ],
+      "max_output": 65536,
+      "openrouter": {
+        "id": "moonshotai/kimi-k3",
+        "price_per_mtok": [
+          3.0,
+          15.0
+        ]
+      }
+    },
+    "deepseek-v4": {
+      "provider": "openrouter",
+      "id": "deepseek/deepseek-v4-pro-0813",
+      "price_per_mtok": [
+        0.66,
+        1.98
+      ]
+    },
+    "glm": {
+      "provider": "openrouter",
+      "id": "z-ai/glm-5.2",
+      "price_per_mtok": [
+        0.46,
+        1.45
+      ]
+    },
+    "qwen38-max": {
+      "provider": "openrouter",
+      "id": "qwen/qwen3.8-max",
+      "price_per_mtok": [
+        2.0,
+        6.0
+      ]
+    },
+    "kimi-k2": {
+      "provider": "together",
+      "id": "moonshotai/Kimi-K2.6",
+      "price_per_mtok": [
+        1.0,
+        3.0
+      ],
+      "openrouter": {
+        "id": "moonshotai/kimi-k2.6",
+        "price_per_mtok": [
+          0.5605,
+          2.36
+        ]
+      }
+    }
+  },
+  "panels": {
+    "cheap": [
+      "gpt-mini",
+      "haiku",
+      "qwen-small"
+    ],
+    "frontier": [
+      "sol",
+      "fable",
+      "kimi",
+      "opus",
+      "kimi-k2"
+    ],
+    "frontier_primary": [
+      "sol",
+      "fable",
+      "kimi"
+    ],
+    "frontier_fast": [
+      "sol",
+      "fable",
+      "deepseek"
+    ],
+    "_frontier_fast_note": "calibration-loop panel (2026-08-17): deepseek replaces kimi as third seat -- K3 spends 8-18 min and 25-57k reasoning tokens per whole-doc call; V3.2 is frontier-class, open-weights, and fast. Seat confirmed by a 4-way audition on the v5 rubric (runlog-v5.jsonl, 5 cells each): V3.2 4/4 named-core hits at 28-86s/call with the sparsest positives; glm (GLM-5.2) 3/4 at 43-153s = designated substitute; deepseek-v4 (V4-Pro-0813) 4/4 but 93-1132s/call and 2-4x looser; qwen38-max 2 length-overflow parse failures. Production frontier/frontier_primary unchanged until the shipped data is regenerated.",
+    "_comment": "frontier = every tag whose rows the site builder may admit (primaries AND substitutes). frontier_primary = the judges the run driver executes; substitutes (opus, kimi-k2) are run manually per Skill 4 when a primary fails.",
+    "itest": [
+      "qwen-big"
+    ],
+    "_itest_note": "single cheap judge for end-to-end integration testing (~2 cents per behaviour); never for published data. Must be a long-context model: whole-doc prompts reach ~65k tokens (qwen-small's 41k context cannot fit them)."
+  },
+  "rubric": "v3w",
+  "specs": [
+    "constitution",
+    "model-spec"
+  ],
+  "batch_size": 40,
+  "param_quirks_comment": "gpt-5*: max_completion_tokens + reasoning_effort (gpt-5.6: low, else minimal), no temperature. fable/mythos: no temperature. others: temperature=0.",
+  "display": {
+    "_comment": "Behaviours shown in site/llm-panel-review. Display thresholds are CLIENT-SIDE (app.js URL params, defaults 6/6); threshold/solid_threshold here are unused legacy.",
+    "behaviours": [
+      "helpfulness",
+      "harm-avoidance-to-third-parties",
+      "avoiding-over-and-under-caution"
+    ],
+    "panel": "frontier",
+    "threshold": 3,
+    "solid_threshold": 5,
+    "_activation_note": "The two general-guidelines slugs (animal-welfare-impacts, general-welfare-impacts-strict) join this list when the full rollout data lands; until then the dual-slug mapping in build_site_data.py is inert by design."
+  },
+  "_opus_note": "opus substitutes for fable on third-party-harm x model-spec only (fable output content-filtered there, 3 attempts); opus rows exist for no other cell."
+}
