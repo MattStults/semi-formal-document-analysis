@@ -176,5 +176,11 @@ STANDING PROCESS RULES FOR THIS CAMPAIGN (Matt, 2026-08-21):
 - Round-3 prereg (signed, sha 69631bf3...) is SUPERSEDED unrun: it froze
   contract v13; the instrument has moved to v18. Round-4 needs a fresh
   prereg re-derived from v18 all-truth.
+- ARC1-E CLOSED (2026-08-21, campaign commit 29e831d5, adversarial verdict
+  CLEAR round 4): census vector() mirrors the v18 instrument under addendum-3
+  semantics — CURRENT = frozen instrument per behavior (dead slots masked),
+  REACHABLE = design space; three inert-feature false SEPARABLEs corrected;
+  standing pinned dead-slot probe guards the class and carries the Arc1-b
+  slot-arity handshake. 9b may consume the corrected census.
 - The handoff's "Matt's human-panelist baseline 71%" currently has NO source
   artifact; it must be sourced or struck before it appears in any writeup.
