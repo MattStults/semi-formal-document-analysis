@@ -50,14 +50,18 @@ def load_layers():
     return sig, ap, pa, ctx
 
 
-def vector(nid, corpus, br, sig, ap, pa, ctx=None):
+def vector(nid, corpus, br, sig, ap, pa, ctx=None, asorts=None):
     # layer-independent key sets: relevance() looks each layer up by node
     # prefix on its own; a node annotated in one layer but not another must
     # still contribute the layers it has.
     skeys = sorted(k for k in sig if k.startswith(nid + "|"))
     pkeys = sorted(k for k in ap if k.startswith(nid + "|"))
     akeys = sorted(k for k in pa if k.startswith(nid + "|"))
-    acts = frozenset((br.get(f), s) for f, s in corpus.get(nid, []) if br.get(f))
+    # (canonical act, status, functor arg-sort): all v18 behaviors declare
+    # arg_sorts, so arg_ok() is live and the functor's raw sort is
+    # instrument-visible (None = unspecified -> fail-open, as in arg_ok)
+    acts = frozenset((br.get(f), s, (asorts or {}).get(f))
+                     for f, s in corpus.get(nid, []) if br.get(f))
     governs = frozenset(g for k in skeys for g in sig[k]["governs"])
     contexts = frozenset(c for k in skeys for c in sig[k].get("contexts", []))
     protects = frozenset(p for k in pkeys for p in ap.get(k, []))
@@ -67,11 +71,14 @@ def vector(nid, corpus, br, sig, ap, pa, ctx=None):
     purposes = frozenset(e for k in akeys
                          if not k.split("|")[1].startswith("c")
                          for e in pa[k]["purpose"])
-    cur = (acts, governs, contexts, protects, actors, purposes)
+    # all-plumbing exclusion (signature_ok) is instrument-visible
+    plumbing = frozenset(k.split("|")[1] for k in skeys
+                         if sig[k].get("authority_plumbing"))
+    cur = (acts, governs, contexts, protects, actors, purposes, plumbing)
     if ctx is None:
         return cur
     catoms = frozenset(a for vs in (ctx.get(nid) or {}).values() for a in vs)
-    return (acts, governs, contexts | catoms, protects, actors, purposes)
+    return (acts, governs, contexts | catoms, protects, actors, purposes, plumbing)
 
 
 def truth_all(slug):
@@ -88,8 +95,14 @@ def truth_all(slug):
 
 def census(modules_file):
     mods = json.load(open(os.path.join(HERE, modules_file)))["modules"]
+    for slug, m in mods.items():
+        if m.get("party_concern"):
+            raise NotImplementedError(
+                f"{slug} declares party_concern: census vector() carries no "
+                "act-party feature — extend vector() before running (Arc1-e addendum)")
     br = RBA.bridges(); corpus = RBA.corpus_acts()
     sig, ap, pa, ctx = load_layers()
+    asorts = RBA.arg_sorts()
     report = {}
     for slug in mods:
         _, rel = RBA.relevance(mods[slug], br, corpus)
@@ -97,8 +110,8 @@ def census(modules_file):
         t = truth_all(slug)
         vecs, groups_cur, groups_rch = {}, {}, {}
         for n in t:
-            vc = vector(n, corpus, br, sig, ap, pa)
-            vr = vector(n, corpus, br, sig, ap, pa, ctx)
+            vc = vector(n, corpus, br, sig, ap, pa, None, asorts)
+            vr = vector(n, corpus, br, sig, ap, pa, ctx, asorts)
             vecs[n] = (vc, vr)
             groups_cur.setdefault(vc, []).append(n)
             groups_rch.setdefault(vr, []).append(n)

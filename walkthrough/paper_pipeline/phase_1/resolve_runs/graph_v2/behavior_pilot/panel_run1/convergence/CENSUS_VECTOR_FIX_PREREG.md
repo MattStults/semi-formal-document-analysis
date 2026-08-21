@@ -59,3 +59,19 @@ help l797_830_n011.
   reachable-only) + the P1/P3/P4 real-corpus property tests against the
   frozen prefixture.
 - Post-fix diff report: satisfiability_census_v18_POSTFIX_DIFF.json.
+
+## ADDENDUM 1 (2026-08-21, frozen before the extension runs)
+Post-first-implementation channel audit found TWO more live instrument-visible
+feature families the merged vector still omitted:
+(a) ARGUMENT SORTS — all three v18 modules declare arg_sorts, so arg_ok()
+    filters engagements by each functor's sort (act_arg_sorts.json);
+(b) AUTHORITY_PLUMBING — 71 merged keys are plumbing-flagged; the all-plumbing
+    exclusion in signature_ok() is instrument-visible.
+party_concern is declared by NO v18 module (party_ok inert); rather than
+encode a dead channel, census() must FAIL LOUD if any module ever declares
+it, since the vector would then be unfaithful.
+Extension, registered before running: acts entries gain the functor's raw
+argument sort (None = unspecified/fail-open, matching arg_ok); a plumbing-key
+feature lists flagged key suffixes per node. P1-P4 re-asserted against the
+same frozen prefixture (further refinement can only shrink UNSAT further);
+P2 collider controls unchanged (act-refinement subtypes are still absent).

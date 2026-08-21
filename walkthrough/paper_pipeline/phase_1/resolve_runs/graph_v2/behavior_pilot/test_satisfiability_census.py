@@ -39,27 +39,28 @@ def _current_vector():
 
 
 def test_vector_merges_definition_signature_and_protects():
-    acts, governs, contexts, protects, actors, purposes = _current_vector()
-    assert acts == frozenset({("refuse", "forbid")})
+    acts, governs, contexts, protects, actors, purposes, plumbing = _current_vector()
+    assert acts == frozenset({("refuse", "forbid", None)})
     # both lanes' governs values are instrument-visible
     assert governs == frozenset({"truthfulness", "substance_usefulness"})
     assert contexts == frozenset({"vulnerable_interaction"})
     # both lanes' protects values are instrument-visible
     assert protects == frozenset({"user", "third_party"})
+    assert plumbing == frozenset()
 
 
 def test_vector_purposes_exclude_definitional_keys():
     # lane-scope ruling 2026-08-20: the purpose OR-channel was verdict-gated
     # on the assert lane only; definitional keys (nid|c{i}) never feed it,
     # so their purpose credits are not part of the instrument-visible vector
-    *_, purposes = _current_vector()
+    purposes = _current_vector()[5]
     assert purposes == frozenset({"harm_prevention"})
     assert "empowerment" not in purposes
 
 
 def test_vector_actors_include_definitional_keys():
     # the actor wall consumes ALL keys including definitional ones
-    _, _, _, _, actors, _ = _current_vector()
+    actors = _current_vector()[4]
     assert actors == frozenset({"assistant", "document"})
 
 
@@ -74,6 +75,27 @@ def test_context_atoms_reachable_only():
     # reachable differs from current ONLY by context atoms
     assert current[0] == reachable[0] and current[1] == reachable[1]
     assert current[3:] == reachable[3:]
+
+
+def test_vector_carries_functor_arg_sorts():
+    # all three v18 modules declare arg_sorts, so arg_ok() is live and the
+    # functor's raw sort is instrument-visible (None = fail-open)
+    sig, ap, pa, _ = _layers()
+    corpus = {"n1": [("refuse", "forbid")]}
+    br = {"refuse": "refuse"}
+    v = SC.vector("n1", corpus, br, sig, ap, pa, None, {"refuse": "request"})
+    assert ("refuse", "forbid", "request") in v[0]
+    v2 = SC.vector("n1", corpus, br, sig, ap, pa, None, {})
+    assert ("refuse", "forbid", None) in v2[0]
+
+
+def test_vector_carries_plumbing_flags():
+    sig = {"n1|0": {"governs": ["truthfulness"], "contexts": [],
+                    "authority_plumbing": True},
+           "n1|1": {"governs": ["tone_manner"], "contexts": [],
+                    "authority_plumbing": False}}
+    v = SC.vector("n1", {"n1": []}, {}, sig, {}, {})
+    assert v[6] == frozenset({"0"})
 
 
 PREFIXTURE = os.path.join(HERE, "panel_run1", "convergence",
