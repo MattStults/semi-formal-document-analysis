@@ -29,3 +29,14 @@ the definition, and a list of vocabulary gaps found — acts the definition
 implies that the frozen vocabulary lacks — recorded, not invented).
 Modules freeze as built; no revision before scoring (attempt 1 carries the
 transfer verdict).
+
+## ERRATUM (2026-08-22, adversarial review F1 — append-only)
+The schema clause "does: [<canonical act names ... from the frozen
+vocabulary>]" was ambiguous between the bespoke functor inventory
+(act_inventory.json, 725 names) and the canonical ontology
+(behavior_acts() accepts canonical_acts_provisional + subtype values ONLY).
+Three builds (tradeoffs, user-autonomy, proportionate-risk) used bespoke
+names and engaged nothing; all repaired 2026-08-22 by canonical translation
+(rationale REPAIR ADDENDUMs; no new declarations). Conforming reading, now
+unambiguous: `does` entries MUST be names behavior_acts() accepts; bespoke
+functors belong in the rationale as bridge citations, never in `does`.

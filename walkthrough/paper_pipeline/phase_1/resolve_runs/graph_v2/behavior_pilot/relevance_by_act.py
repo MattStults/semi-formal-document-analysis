@@ -83,7 +83,11 @@ def corpus_acts():
 
 
 def behavior_acts(mod):
-    """canonical acts a behavior PERFORMS: heads of `does` that are canonical, else act atoms bridged by name."""
+    """canonical acts a behavior PERFORMS: heads of `does` accepted ONLY when
+    canonical (canonical_acts_provisional + declared subtype values). Bespoke
+    names are silently discarded — there is NO bridging fallback (an earlier
+    docstring promised one; it never existed, and three generalization builds
+    were caught engaging nothing by it — adversarial review F1, 2026-08-22)."""
     canon = set(json.load(open(os.path.join(HERE, "behavior_vocab.json")))["canonical_acts_provisional"])
     sp = os.path.join(HERE, "act_subtypes.json")
     if os.path.exists(sp): canon |= set(json.load(open(sp)).values())
