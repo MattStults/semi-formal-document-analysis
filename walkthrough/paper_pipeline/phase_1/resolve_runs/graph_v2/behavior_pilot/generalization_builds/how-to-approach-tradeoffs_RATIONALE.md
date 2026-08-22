@@ -151,3 +151,19 @@ Module frozen as built; no revision before scoring (GENERALIZATION_BUILD_SPEC.md
 
 ## REPAIR ADDENDUM (2026-08-22, adversarial review F1)
 The original `does` list declared bespoke inventory functors, which `behavior_acts()` silently discards (it accepts canonical act names only) — the module engaged nothing, and attempt 1 would have scored an empty lane. Repaired by translating each bespoke act to its canonical bridge target (handle_tradeoff->respond, resolve_conflict_or_ambiguity->respond, weigh_costs->respond, follow_chain_of_command->comply (act_bridges); arg_sorts follow_chain_of_command:[instruction] re-keyed to canonical comply). This is a translation, not a new declaration: every wall, omission, and recorded gap stands as built. KNOWN PROPERTY, disclosed before scoring: canonical heads with this module's walls may engage broadly (the definition justifies no further narrowing, and inventing walls post-hoc is barred by the zero-adaptation rule); attempt 1 measures exactly that, and the fix ledger will classify the resulting breaks (EXPECTED module-local vs ALARMING vocabulary gap). The headline gap finding (no prioritization/calibration/prohibition vocabulary) is unchanged and now recorded against a CONFORMING build, per the reviewer's disposition. Root causes recorded: the build spec's schema clause was ambiguous ("frozen vocabulary" — bespoke inventory vs canonical ontology) and behavior_acts()'s docstring promises a bridging fallback the code does not implement.
+
+## REVIEW FINAL NITS (2026-08-22, re-verification — append-only)
+SUPERSESSION STATEMENT (N1): the declaration-counts table, the does/arg_sorts
+sections ABOVE, and the "Module frozen as built; no revision before scoring"
+line describe the PRE-REPAIR state and are SUPERSEDED by the REPAIR ADDENDUM.
+Post-repair truth: does = [respond, comply]; arg_sorts = {comply:
+[instruction]}; all walls/omissions/gaps as built.
+GAP PHRASING (N2): the repair addendum's "no prioritization/calibration/
+prohibition vocabulary" misquotes THIS build's gaps — G1 is
+prioritization/outcome-ordering only (calibration was boundary-excluded as a
+sibling behaviour; prohibition is not implicated here). Corrected here.
+READING CAVEAT (reviewer, on record): attempt 1 for this behaviour is a
+coarse probe of broad canonical-head engagement (37% of the corpus, no walls
+the definition licenses); whichever way it lands, it is read through the
+fix-ledger classes (EXPECTED module-local vs ALARMING vocabulary gap G1),
+never as a verdict on the meta-behaviour itself.
