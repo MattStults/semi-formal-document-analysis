@@ -193,3 +193,44 @@ handshake worked as designed: SLOT_INVENTORY and DEAD_SLOTS_PINNED updated
 in the same commit as the vector edit; 35 tests green. Arc1-b integration
 COMPLETE, pending the standing adversarial review; the addressable rows are
 9b's design signal.
+
+## ADDENDUM 5 — adversarial review round 2 errata (2026-08-21)
+Re-review verified every measurement (lane integrity, M1, M2 incl. slot
+attributions, handshake, PARTIAL quarantine; 36/36 tests) and returned
+BLOCKED on record defects only. All four fixed here; no re-annotation.
+A2 ERRATUM (timing): addendum 4 claimed the M2 reconciliation was
+"registered BEFORE integration", but it first appears in the same commit as
+the integration (f463713e); the git record does not substantiate the
+timing. What the record DOES substantiate: the original frozen-body M1
+(charter bit-identity) was pre-registered; the reconciliation's predictions
+(CURRENT bit-identical; colliders CURRENT-UNSAT -> REACHABLE-SEPARABLE +
+addressable) are mechanically entailed by the census addendum-3 semantics
+committed earlier (4a83679e), and the results matched them exactly. The
+timing claim as written is retracted; the mechanical entailment is the
+actual ground.
+A3 ERRATUM (under-disclosure): the REACHABLE delta was FIVE rows, not three
+— the three colliders PLUS helpfulness::l3505_3595_n007 and
+helpfulness::l3877_3953_n010 (both exhibit-marked, twins unmarked; n010 is
+the census addendum-2 false-SEPARABLE node, now addressable via its mark).
+All five were in MINT_INTEGRATION_DIFF.json:addressable_rows from the start;
+the prose described only the colliders.
+A4 CAVEAT (independence, added per review): extension agreement 1.0 comes
+from two SAME-FAMILY Claude sessions — weaker evidence than cross-family
+agreement; a saturated 1.0 metric is non-diagnostic for shared interpretive
+bias. The lane design (fresh sessions, blind brief, sparse quote-gated
+output) bounds shared-context contamination and repo anchoring, not
+interpretive bias. The mechanical screen covers 15/179 nodes and disagrees
+with the seats on one (l2474_2554_n011: screen True, seats silent —
+recorded, never tiebroken). Containment: marks enter only the REACHABLE
+view, nothing is adopted, and the 9b justification + FP-adjudication gates
+stand downstream; act_refinements_FINAL.json's quarantine language ("no
+declaration consumes them yet") remains binding on 9b.
+N1 ERRATUM: first-pass agreement figures 0.9895/0.9987 were computed over
+the full 762-node corpus (vacuous agreement on the 179 nodes neither seat
+examined); over the 583 covered nodes they are 0.9863/0.9983. M3 (>=0.95)
+passes either way; denominators are stated here.
+N2 ERRATUM: the suite collects 36 tests, not 35 as stated in results lines.
+N3 ERRATUM: the mechanical screen carries 6 exhibit-true nodes, not 5 as
+stated in commit 7bff7acc; zero downstream impact (fallback never fired).
+N4 NOTE: raw seat outputs (Matt-run sessions) carry seat/subtype/
+nodes_examined but no "_" provenance field; left unmodified, noted here.

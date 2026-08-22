@@ -86,19 +86,37 @@ def moves_for(node, slug, mod, sig, ap, pa, corpus, br, engaged):
 # design round runs and this script is re-run with the new declarations in place.
 
 def pending_vocab_nodes():
-    """mismatch nodes reachable by the annotated-but-undeclared context atoms."""
+    """mismatch nodes reachable by annotated-but-undeclared vocabulary:
+    consensus context atoms (8-A3) and minted act-refinement marks (Arc1-b;
+    census addendum-3 REACHABLE view). Fenced per the 9g inventory-relativity
+    rule: a verdict EXPIRES when the inventory grows. Census source is the
+    contract-stamped output (addendum-3 semantics); falls back to the
+    v17-era file only if the stamped one is absent (old-state determinism)."""
     cp = os.path.join(HERE, "panel_run1", "convergence", "context_atoms_consensus.json")
-    sp = os.path.join(HERE, "panel_run1", "convergence", "satisfiability_census.json")
+    rp = os.path.join(HERE, "panel_run1", "convergence", "act_refinements_FINAL.json")
+    sp = os.path.join(HERE, "panel_run1", "convergence",
+                      "satisfiability_census_modules_contract_v18.json")
+    if not os.path.exists(sp):
+        sp = os.path.join(HERE, "panel_run1", "convergence", "satisfiability_census.json")
     if not (os.path.exists(cp) and os.path.exists(sp)): return {}
     ctx = json.load(open(cp))["credits"]
+    marks = {}
+    if os.path.exists(rp):
+        for st, rec in json.load(open(rp))["subtypes"].items():
+            for n in rec["consensus"]:
+                marks.setdefault(n, []).append(st)
     census = json.load(open(sp))["report"]
     out = {}
     for slug, d in census.items():
         for n, e in d.items():
             atoms = sorted({a for ats in ctx.get(n, {}).values() for a in ats})
-            coll = [c for c in e.get("colliding_correct_nodes", []) if c in ctx]
-            if atoms or coll:
-                out.setdefault(slug, {})[n] = {"self_atoms": atoms, "atom_bearing_colliders": coll}
+            self_marks = sorted(marks.get(n, []))
+            coll = [c for c in e.get("colliding_correct_nodes", [])
+                    if c in ctx or c in marks]
+            if atoms or self_marks or coll:
+                out.setdefault(slug, {})[n] = {"self_atoms": atoms,
+                                               "self_refinements": self_marks,
+                                               "vocab_bearing_colliders": coll}
     return out
 
 
@@ -160,12 +178,13 @@ if __name__ == "__main__":
                 row["verdict"] = "PENDING-VOCAB"
                 row["pending_vocab"] = pv[slug][n]
                 n_pv += 1
-    print(f"PENDING-VOCAB re-stamps (context atoms annotated, declarations undesigned): {n_pv}")
+    print(f"PENDING-VOCAB re-stamps (annotated-but-undeclared vocabulary): {n_pv}")
     json.dump({"_": "Mechanical terminality verification (verify_terminal.py). VERDICTS ARE "
                     "INVENTORY-RELATIVE: they expire when declaration slots or vocabulary grow. "
-                    "PENDING-VOCAB = reachable by an annotated-but-undeclared context atom (8-A3); "
-                    "not terminal until the declaration design round runs and this re-runs.",
+                    "PENDING-VOCAB = reachable by annotated-but-undeclared vocabulary — consensus "
+                    "context atoms (8-A3) or minted act-refinement marks (Arc1-b); not terminal "
+                    "until the declaration design round runs and this re-runs.",
                "mechanism_inventory": {"contract": "v18", "context_atoms": "context_atoms_consensus.json (4 atoms, undeclared)",
-                                        "act_refinements": "split_mining_candidates.json (2 proposed, unminted)"},
+                                        "act_refinements": "act_refinements_FINAL.json (2 MINTED: provide:forbid.form_equivalence 10 nodes, exhibit:illustrate 185; census REACHABLE-view vocabulary — no declaration consumes them yet)"},
                "report": rep}, open(out, "w"), indent=1)
     print("wrote", out)
