@@ -5255,7 +5255,7 @@ dead-slot probe carries pinned ground truth (SLOT_INVENTORY /
 DEAD_SLOTS_PINNED) and the slot-arity handshake for future vector edits.
 Outputs: `behavior_pilot/panel_run1/convergence/satisfiability_census_*`.
 
-**10. ARC1-B CLOSED PENDING REVIEW — act-refinement subtype mint.**
+**10. ARC1-B CLOSED (adversarial CLEAR-WITH-NITS, 2 rounds) — act-refinement subtype mint.**
 provide:forbid.form_equivalence (10-node consensus) and exhibit:illustrate
 (185 = 169 first-pass + 16 extension) minted by two-seat blind annotation;
 the extension lane moved to Claude-side seats after provider input
@@ -5264,7 +5264,9 @@ recorded in SUBTYPE_MINT_PREREG.md addenda, rejected alternatives named;
 extension seats: agreement 1.0, zero refusals). M1 held (CURRENT
 bit-identical), M2 held 3/3: all three collider mismatches now
 REACHABLE-separable and addressable_by_declaration. act_refinements_FINAL.json
-is the consensus of record.
+is the consensus of record. Closure record: same-family independence
+caveat and five-row REACHABLE delta in SUBTYPE_MINT_PREREG.md addendum 5;
+fence fail-open nit registered as LF-4.
 
 **11. QUOTA RECONCILIATION (review finding B-5):** the ~1M-Fable capacity
 ruling covers ADJUDICATION rulings only (Claude-side bar, post-reset). The

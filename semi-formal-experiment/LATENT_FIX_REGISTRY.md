@@ -170,3 +170,22 @@ Protocol:
 * **STATUS.** NOT IMPLEMENTED — zero instances verified 2026-08-21. Registered so the
   flattening is a KNOWN sufficiency scope, not an accident; the census docstring points
   here.
+
+## LF-4 — terminality fence reads refinement marks fail-open (Arc1-b review, 2026-08-21)
+
+* **ISSUE.** `verify_terminal.py::pending_vocab_nodes()` (graph_v2 behavior_pilot)
+  guards the context-atoms and census files but reads act-refinement marks
+  fail-open (`if os.path.exists(act_refinements_FINAL.json)`): if that file
+  vanished, the fence would silently shrink to the atom-only set and some
+  vocab-reachable rows would be stamped TERMINAL again.
+* **EVIDENCE OF CURRENT ABSENCE.** The file is committed (Arc1-b mint, 2026-08-21),
+  the fence re-ran clean against it at closure (45 re-stamps, reviewer-reproduced),
+  and the identical fail-open in `satisfiability_census.load_refinements()` is
+  its twin — no current instance of either absence.
+* **PLAN IF IT APPEARS.** Make the file required with a fail-loud guard (the
+  census M2 pin already exercises load_refinements; extend the pin or add one
+  for the fence), or re-derive the marks from the seat outputs.
+* **TRIGGER.** any state in which act_refinements_FINAL.json is absent while
+  terminality verdicts are consumed (9b arithmetic, round-4 freeze).
+* **STATUS.** NOT IMPLEMENTED — registered at lane closure per reviewer nit
+  (CLEAR-WITH-NITS); latent only.
