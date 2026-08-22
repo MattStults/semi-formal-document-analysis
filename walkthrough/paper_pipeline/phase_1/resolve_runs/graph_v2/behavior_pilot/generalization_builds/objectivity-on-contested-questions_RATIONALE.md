@@ -189,3 +189,23 @@ The discriminating content of the module therefore lives in the walls
 (`governs_concern: objectivity_neutrality`, `protects_concern/party_concern: user`,
 `arg_sorts: respond→topic/response`) rather than in a rich act set. That is recorded as
 the finding, not papered over by stretching acts.
+
+## REVIEW CORRECTIONS (2026-08-22, adversarial review — append-only)
+M1: the G5/rejection note misstated ensure_proportionate_action's canonical
+act — it bridges to RESPOND (act_bridges.json), not act_in_world (the sort
+claim, action, was correct). Zero engagement impact (respond is already
+declared; does is canonical-level), but the rejection was reasoned from a
+wrong vocabulary fact — corrected here; the functor had the strongest
+lexical tie to the boundary's "proportionate" wording.
+L1: present_context_without_stance is the weakest declaration ground —
+INFERENTIAL (the definition never mentions context; "presenting without a
+stance realizes the no-agenda norm" is inference, labeled as such); zero
+material effect (provide already projects via present_perspective).
+L3: the accuracy_calibration exclusion stands on the fuller affirmative-
+construct ground; the NOT clause alone (sycophantic drift only) would
+under-support it.
+RECALL-RISK REGISTER (reviewer): the 1-of-8-quality inclusion wall is this
+module's principal recall risk (v18 dev modules declare 4 qualities; narrow
+inclusion-shaped declarations collapsed recall in the dev lineage). It is
+definition-warranted, disclosed, and exactly what attempt 1 exists to
+expose — not a defect.

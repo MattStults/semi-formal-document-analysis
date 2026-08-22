@@ -250,3 +250,25 @@ Per-act restriction to the argument sorts the definition's channels operate on
 - arg_sorts: 9 acts (21 act-sort pairs)
 - vocabulary gaps recorded: 7 (G1–G7)
 - declined declarations recorded: 11 (D1–D11)
+
+## REVIEW CORRECTIONS (2026-08-22, adversarial review — append-only)
+M1 (instrument mechanics): the facet-(b) interaction note OVERSTATED coverage.
+party_ok gates EVERY act-channel engagement and protects_ok is a clause-side
+conjunct, not an act-side bypass: the cited facet-(b) turning acts
+(comply_with_developer_request, follow_developer_instruction,
+adapt_model_behavior) are party=developer and CANNOT engage this module
+under party_concern=[user]; three override anchors (control_ai_behavior_shaping,
+control_ai_use, allow_third_party_customization) never enter the bridge map
+at all (actor filtering — not discoverable from the build's allowed inputs,
+so not builder error). Facet-(b) act-channel coverage is therefore LIMITED;
+attempt 1 measures that, and the fix ledger owns the attribution. The module
+JSON stands untouched (party_concern=[user] is schema-legal and
+definition-derived).
+L1: the v10 FINAL provenance note was selectively cited — its omitted half
+records party walls measured net-negative/zero in the dev lineage. This
+build deploys a user-only party wall on definition grounds anyway
+(build-spec-permitted); the measured history is recorded here so the
+transfer verdict is read with it.
+N1: arg_sorts count is 22 act-sort pairs (not 21 as stated above).
+N2: pair_romantically_with_teen is party=third_party, so the party wall
+excludes it; it was cited only as an engage_relationship class member.

@@ -235,3 +235,12 @@ Gaps 3 and 4 (no clean sort exists for their objects).
 
 ## REPAIR ADDENDUM (2026-08-22, adversarial review F1)
 The original `does` list declared bespoke inventory functors, which `behavior_acts()` silently discards (it accepts canonical act names only) — the module engaged nothing, and attempt 1 would have scored an empty lane. Repaired by translating each bespoke act to its canonical bridge target (consider_impact/consider_factor/consider_context/mitigate_issues->safe_manner; weigh_costs/ensure_proportionate_action->respond; narrowly_tailor_action->act_in_world; bespoke [action] typings re-keyed to canonical keys). This is a translation, not a new declaration: every wall, omission, and recorded gap stands as built. KNOWN PROPERTY, disclosed before scoring: canonical heads with this module's walls may engage broadly (the definition justifies no further narrowing, and inventing walls post-hoc is barred by the zero-adaptation rule); attempt 1 measures exactly that, and the fix ledger will classify the resulting breaks (EXPECTED module-local vs ALARMING vocabulary gap). The headline gap finding (no prioritization/calibration/prohibition vocabulary) is unchanged and now recorded against a CONFORMING build, per the reviewer's disposition. Root causes recorded: the build spec's schema clause was ambiguous ("frozen vocabulary" — bespoke inventory vs canonical ontology) and behavior_acts()'s docstring promises a bridging fallback the code does not implement.
+
+## REPAIR-ADDENDUM ERRATA (2026-08-22, re-review N4/N5 — append-only)
+N4: "the module engaged nothing / empty lane" is INACCURATE for this build:
+pre-repair, the purpose channel engaged 127 modules; only the ACT lane was
+dead. (The empty-lane phrasing is exact only for the purpose-less siblings.)
+N5: the addendum's "no prioritization/calibration/prohibition vocabulary"
+phrasing was carried over from sibling builds; THIS build's GAP 1 is "no
+calibration/degree functor" (prioritization/prohibition gaps are not
+recorded here).
