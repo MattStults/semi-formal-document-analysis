@@ -77,10 +77,11 @@ any additional cut is post-hoc and labeled so.
 ## Success criterion and falsifiers (per behaviour)
 - S1 TRANSFER: engagement precision >= 0.70 at the 40-node draw AND fix
   ledger contains no FATAL entry. Basis: below the dev trio's converged
-  standing (0.94-0.96 in-sample after a full campaign — not expected cold)
-  but above the human-panelist comparison region (~0.71, artifact pending —
-  if it cannot be sourced this anchor is struck and 0.70 stands on the
-  round-2 prediction lineage 0.73-0.89 instead).
+  standing (0.94-0.96 in-sample after a full campaign — not expected cold),
+  anchored on the round-2 prediction lineage (0.73-0.89). (A former anchor —
+  "Matt's human-panelist baseline 71%" — is STRUCK 2026-08-21: no artifact
+  establishes it and its presumed source does not recognize it; the floor
+  stands on the prediction lineage alone.)
 - F1 FATAL fix-ledger entry (a repair that requires a per-behaviour special
   case in the instrument rather than in the behaviour module) -> behaviour
   fails transfer; if in block 1, STOP RULE fires: blocks stop, results
@@ -95,6 +96,22 @@ any additional cut is post-hoc and labeled so.
   distinction the instrument lacks that the definition implies), FATAL
   (per-behaviour special case). The ledger is the primary result; all
   entries land in the record with their class and the rejected quick-fix.
+
+## Re-measurement protocol (attempts budget, added 2026-08-21 at Matt's ruling)
+n=40 chosen over n=60 because the binding resource is ATTEMPTS, not band
+width: block-1 behaviours may be measured several times as the fix ledger
+drives repairs, and fatter draws buy fewer attempts.
+- ATTEMPT 1 (zero adaptation) carries the TRANSFER verdict exclusively —
+  the generalization claim. Nothing done later can change it.
+- ATTEMPT 2+ exists for repairs: if the fix ledger holds EXPECTED entries,
+  the repair is module-local; ALARMING entries get design-tier treatment;
+  either way the behaviour is re-measured with a fresh seeded draw + fresh
+  blind rulings, labeled attempt-N. Attempt-N verdicts measure THE REPAIR,
+  never transfer; writeups keep the two claims separate.
+- FATAL entries are never repaired in-campaign (the stop rule owns them).
+- Budget: ~0.5-0.6M Fable covers the six first attempts; re-measurements
+  (~0.1M each) exceeding the fresh bar queue to the following week's bar,
+  disclosed.
 
 ## Confirmation-block rule
 Block 2 runs only if every block-1 behaviour satisfies S1 and no F1/F2
@@ -120,4 +137,10 @@ before any ruling exists.
 
 ## Signatures
 Drafted by the campaign orchestration seat, 2026-08-21.
-Matt: ______ (sign = freeze; after freezing only appended errata).
+Matt: SIGNED 2026-08-21. Rulings incorporated at signature: n=40 on the
+attempts-budget rationale (re-measurement protocol clause); the 71% anchor
+STRUCK (no artifact establishes it; its presumed source did not recognize it
+— Matt later suggested it may have been a manual test he personally ran; if
+that artifact surfaces it is restored by appended erratum, not by memory);
+third probe = how-to-approach-tradeoffs. FROZEN at this signature;
+corrections append only.
