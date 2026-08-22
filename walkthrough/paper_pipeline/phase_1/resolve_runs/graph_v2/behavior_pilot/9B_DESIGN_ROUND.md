@@ -442,3 +442,47 @@ charter-positive (fixes > breaks, no re-break of previously-adjudicated
 instrument-wrong nodes) AND its new FPs survive blind Fable adjudication
 post-reset; a delta failing either is rejected by name with the arithmetic
 attached. OBJ-HOLD and all rejected candidates are untouched.
+
+## ARITHMETIC ADJUDICATION (measured 2026-08-21; per-delta, charter rule)
+Full flip data: panel_run1/convergence/ARITHMETIC_9B_RESULT.json. Measured
+per delta against truth_all (fixes = wrong->right, breaks = right->wrong):
+- help +empowerment: TP+13 / FP+3 -> charter POSITIVE
+- help +trust: TP+7 / FP+9 -> charter NEGATIVE
+- help +predictability-and-reliability: TP+6 / FP+12 -> charter NEGATIVE
+- caution +harm-prevention: TP+3 / FP+1 -> charter POSITIVE
+- caution +epistemic-autonomy: TP+3 / FP+4 -> charter NEGATIVE
+- harm CA-1/CA-2 and help CA-3/CA-4 (all four governs_conditional
+  declarations): INERT — zero flips. MECHANISM INSIGHT (recorded for the
+  design corpus): signature_ok tests governs_concern BEFORE governs_
+  conditional; a quality already declared unconditionally always passes, so
+  a conditional declaration on the same quality can never bite. Harm
+  declares substance_usefulness and help declares substance_usefulness +
+  tone_manner unconditionally in v18 — the CA declarations as drafted are
+  inexpressible in the current channel semantics. Making them expressive
+  would mean MOVING the quality out of governs_concern (a narrowing
+  redesign with large engagement loss), which none of the CA justifications
+  argued for.
+DISPOSITIONS (adoption rule as frozen):
+- ADOPT-PENDING-ADJUDICATION: PC-1 (help +empowerment), PC-2 (caution
+  +harm-prevention). Joint bundle: TP+16 / FP+4. v19_ADOPT_CANDIDATE.json
+  carries exactly these two. The 4 new FPs (help: l3596_3876_n039,
+  l427_460_n003, l797_830_n004; caution: l1707_1973_n029) go to blind Fable
+  adjudication post-reset; adoption is FINAL only if they are ruled
+  defensible-or-instrument-wrong in the engagement's favor per charter.
+- REJECTED BY ARITHMETIC (grounds attached above, not fit): PC-3, PC-4,
+  PC-5. Note for the record: PC-3 (justified-with-reservation) and PC-4
+  (justified after redo) had genuine document grounds and still measured
+  charter-negative — justification and charter are different gates, and
+  both did their jobs. The fit signs happened to agree with the charter on
+  trust/P&R; per protocol fit was used as nothing.
+- REJECTED AS DRAFTED (inert): CA-1..4. Their document justifications stand
+  as design intent; the census rows they targeted (harm::l609_698_n012,
+  harm::l1108_1367_n009, help::l1542_1706_n005, help::l1368_1541_n011)
+  remain PENDING-VOCAB/addressable — separable in design space via some
+  mechanism, not via governs_conditional as it stands. Future channels or
+  a narrowing redesign own them.
+INSTRUMENT STATE: the context-atom merge landed in relevance() and census
+load_layers (same commit as this record); engagement-invariant without
+governs_conditional declarations (verified: census verdicts bit-identical,
+36 tests green). v19_ADOPT_CANDIDATE is the freeze input pending the
+4-node adjudication.

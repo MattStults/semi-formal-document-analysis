@@ -260,6 +260,18 @@ def relevance(mod, br, corpus):
     sig = json.load(open(sig_path)) if os.path.exists(sig_path) else {}
     _d = os.path.join(HERE, "definition_signature.json")
     if os.path.exists(_d): sig = {**sig, **json.load(open(_d))}  # definitional lane, keys nid|c{i}
+    # CONTEXT-ATOM LANE (8-A3 consensus credits; 9b integration 2026-08-21):
+    # annotated-but-undeclared context atoms merge into signature contexts.
+    # Consumption stays declaration-gated (governs_conditional below), so any
+    # module not declaring governs_conditional is engagement-invariant.
+    _ca = os.path.join(HERE, "panel_run1", "convergence", "context_atoms_consensus.json")
+    if os.path.exists(_ca):
+        for _nid, _idxs in json.load(open(_ca)).get("credits", {}).items():
+            for _i, _atoms in _idxs.items():
+                _k = f"{_nid}|{_i}"
+                if _k in sig and _atoms:
+                    sig[_k] = {**sig[_k], "contexts":
+                               sorted(set(sig[_k].get("contexts", [])) | set(_atoms))}
     gov_decl = set(mod.get("governs_concern") or [])
 
     # governs_conditional (contract 9a purity migration, 2026-08-19): a quality may be

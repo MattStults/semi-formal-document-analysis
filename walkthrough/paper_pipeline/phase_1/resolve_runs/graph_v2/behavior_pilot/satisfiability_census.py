@@ -76,8 +76,20 @@ def load_layers():
     sig = merged("assert_signature.json", "definition_signature.json")
     ap = merged("assert_protects.json", "definition_protects.json")
     pa = merged("assert_purpose_actor.json", "definition_purpose_actor.json")
+    # vector faithfulness with the 9b instrument: relevance() merges consensus
+    # context-atom credits into signature contexts (consumption stays
+    # declaration-gated there). Mirror it here; the REACHABLE union below is
+    # idempotent with this merge.
     cp = os.path.join(HERE, "panel_run1", "convergence", "context_atoms_consensus.json")
-    ctx = json.load(open(cp))["credits"] if os.path.exists(cp) else {}
+    ctx = {}
+    if os.path.exists(cp):
+        ctx = json.load(open(cp))["credits"]
+        for nid, idxs in ctx.items():
+            for i, atoms in idxs.items():
+                k = f"{nid}|{i}"
+                if k in sig and atoms:
+                    sig[k] = {**sig[k], "contexts":
+                              sorted(set(sig[k].get("contexts", [])) | set(atoms))}
     return sig, ap, pa, ctx
 
 
