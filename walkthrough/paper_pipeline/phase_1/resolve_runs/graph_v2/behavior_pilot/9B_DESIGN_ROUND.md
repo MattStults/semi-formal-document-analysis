@@ -23,12 +23,28 @@ hypotheses, explicitly labeled hypotheses, not evidence) + the four
 consensus context atoms (panel_run1/convergence/context_atoms_consensus.json)
 + the narrowed objectivity conditional (handoff item a).
 
+## FIT-RANK DISCLOSURE (adversarial review finding, confirmed 2026-08-21)
+The five purpose candidates' net fit scores run monotone with this round's
+initial outcomes: empowerment +4 (justified), harm-prevention +2 (justified),
+epistemic-autonomy 0 (justified-with-reservation), trust −6 (initially
+dismissed), predictability −7 (initially dismissed). The design seat's
+exposure to the predictions is disclosed above; the correlation is not
+itself a violation, but it is the signature this process exists to catch,
+and it obliges every REJECTION to be as document-grounded as every adoption.
+Audit found the obligation broken in exactly one place: PC-4's initial read
+dismissed trust without document work, and the document falsifies that read
+(see PC-4 below, redone). Standing rule for this round, strengthened: any
+final rejection must engage the candidate's document evidence BY NAME, and
+no instrument-side fact (fit, coverage overlap, break counts) may serve as
+grounds — triage only.
+
 ## Worklist
 - [x] PC-1 helpfulness +empowerment (purpose_concern)
 - [x] PC-2 caution +harm-prevention (purpose_concern)
 - [x] PC-3 caution +epistemic-autonomy (purpose_concern)
-- [ ] PC-4 helpfulness +trust — initial read: REJECT-CANDIDATE (see note)
-- [ ] PC-5 helpfulness +predictability-and-reliability — REJECT-CANDIDATE (see note)
+- [x] PC-4 helpfulness +trust (purpose_concern) — REDONE after review;
+      initial read falsified by the document (see disclosure above)
+- [ ] PC-5 helpfulness +predictability-and-reliability — needs document work
 - [ ] CA-1..4 the four context-atom declarations (aggregate_effect_at_scale,
       assistant_self_reference, requester_purpose_conditioned,
       user_supplied_material)
@@ -73,7 +89,10 @@ and any FPs it produces must be adjudicated, not absorbed. (2) The purpose
 OR-channel engages a node if ANY purpose matches; nodes credited
 empowerment alongside other purposes will engage on empowerment alone — the
 justification accepts this because the end-serving relation holds regardless
-of co-occurring purposes.
+of co-occurring purposes. (3) helpfulness currently declares NO
+purpose_concern; adding the first value switches the channel on wholesale —
+the arithmetic step must show the effect of that switch, not just of the
+value (same caveat as PC-2).
 
 STATUS: JUSTIFIED (proceed to arithmetic).
 
@@ -144,20 +163,68 @@ also carry empowerment/harm-prevention credits, prefer the more direct
 declarations and reject this one (rejected alternatives must be named at
 adoption).
 
+INVENTORY CONSTRAINT (review finding, recorded): epistemic-autonomy's
+natural document home is the objectivity principle — L808 "fairly
+representing significant viewpoints ... the goal of an AI assistant is to
+assist humanity, not to shape it", and L2151 "avoid undermining users'
+ability to form informed opinions" — and objectivity-on-contested-questions
+is a HELD-OUT generalization behaviour. Wiring the atom to caution is
+therefore partly an artifact of which modules exist in v18; when objectivity
+gets its module, this atom's affiliation must be revisited. L34 (autonomy as
+a protected end) is red-line misuse-prevention, i.e. harm-side, as blind
+concern (2) half-admits.
 STATUS: JUSTIFIED WITH RESERVATION (proceed to arithmetic; the reservation
-is part of the record).
+and the inventory constraint are part of the record).
 
-## PC-4 / PC-5 — initial reads (pending full justification or rejection)
-- helpfulness +trust: trust is a property of the USER-ASSISTANT RELATIONSHIP
-  in this document (trust levels, chain of command, scope of autonomy) more
-  often than an end clauses serve; the a-priori case must show clauses whose
-  FUNCTION is serving trust as an end. Weak on first read; needs document
-  work before it can stand.
-- helpfulness +predictability-and-reliability: plausibly a genuine end in
-  the document (consistent behavior, honoring expectations), but the blind
-  concern is that it overlaps heavily with the act channel's existing
-  helpfulness coverage; justify only if the document shows it as an
-  independent end clauses serve.
+## PC-4 — helpfulness: add purpose_concern `trust` (REDONE after review)
+The initial read dismissed this candidate without document work ("trust is a
+property of the relationship more than an end clauses serve"). The review
+falsified that premise; the citations below were verified verbatim at the
+cited lines. This is the redo.
+
+DEFINITION: as PC-1.
+
+CITATIONS (model_spec.md):
+- L2475-2477 (Be honest and transparent): "trust is earned, especially as
+  humanity begins navigating its relationship with AI. It builds trust
+  through both its communication and its actions."
+- L2576-2578 (Don't be sycophantic): "sycophancy, which erodes trust. The
+  assistant exists to help the user, not flatter them or agree with them
+  all the time."
+- L475 (scope-of-autonomy side effects): "minimize breadth and access needed
+  to reduce surprises and build trust."
+
+CASE: the document does not treat trust merely as a relational property —
+it states trust as an end the assistant BUILDS through its conduct, and it
+grounds the anti-sycophancy rule directly in the helping function: the
+assistant exists to HELP, and flattery erodes trust. A clause whose function
+is serving or protecting trust (honest communication, refusing flattery,
+reducing surprises) bears on helpfulness by the document's own reasoning —
+trust is what genuine helpfulness produces and what unhelpful conduct
+destroys. The relational character of trust does not defeat the end-serving
+relation; the purpose channel expresses exactly that a clause serves the end.
+
+BLIND CONCERNS (before arithmetic): (1) trust credits cover 100
+assistant-actor assert-lane nodes, concentrated in the privacy and honesty
+families — over-engagement on nodes the act channel already reaches is the
+expected failure mode; redundancy is an arithmetic question, and if the
+engagement proves parasitic on existing coverage the rejection happens
+there, on arithmetic, with the reason recorded — never on fit. (2) Same
+wholesale-switch caveat as PC-1/PC-2: helpfulness declares no
+purpose_concern today. (3) Some trust-serving clauses serve trust via
+RESTRAINT (data minimization, refusing to disclose) — closer to caution or
+privacy behaviours; the channel does not separate these; adjudication step.
+
+STATUS: JUSTIFIED (proceed to arithmetic). Initial dismissal vacated; the
+fit-rank disclosure above records why this redo was mandatory.
+
+## PC-5 — helpfulness: add purpose_concern `predictability-and-reliability` (pending document work)
+Standard (document-anchored, survives review): justify only if the document
+shows predictability-and-reliability as an INDEPENDENT end clauses serve.
+Instrument-side concern (overlap with the act channel's existing coverage)
+is triage only — inadmissible as grounds for either justification or
+rejection, per the strengthened rule above. 77 assistant-actor assert-lane
+nodes carry the credit; document work outstanding.
 
 ---
 
