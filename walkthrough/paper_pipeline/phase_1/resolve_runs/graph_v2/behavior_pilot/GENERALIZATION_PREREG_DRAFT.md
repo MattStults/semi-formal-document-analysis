@@ -144,3 +144,15 @@ STRUCK (no artifact establishes it; its presumed source did not recognize it
 that artifact surfaces it is restored by appended erratum, not by memory);
 third probe = how-to-approach-tradeoffs. FROZEN at this signature;
 corrections append only.
+
+## ADDENDUM (2026-08-22, post-signature clarification, append-only)
+Stratum granularity operationalization: panel-agree/panel-split are computed
+at ANCHOR granularity (the document's {#anchor} principle sections), not
+paragraph granularity: node -> anchor by line containment (deterministic,
+total coverage); seat verdict per anchor = max over its paragraphs; agree
+iff all three full seats land on the same side of the >=2 cut on those
+maxima. Reason: paragraph-level indexing validated at only 12/40 against the
+independent clause corpus (generators disagree on paragraphization —
+mis-stratification risk), while anchor attribution is exact. Strata inform
+sampling only; truth is untouched. Implemented in draw_generalization.py
+(determinism tested: same seed -> byte-identical artifact).
