@@ -40,3 +40,12 @@ names and engaged nothing; all repaired 2026-08-22 by canonical translation
 (rationale REPAIR ADDENDUMs; no new declarations). Conforming reading, now
 unambiguous: `does` entries MUST be names behavior_acts() accepts; bespoke
 functors belong in the rationale as bridge citations, never in `does`.
+
+## ERRATUM 2 (2026-08-22, general-welfare review N2 — append-only)
+The ALLOWED INPUTS enumeration is incomplete: builders necessarily also use
+behavior_vocab.json (where the canonical-act vocabulary lives;
+act_inventory.json is a counts artifact without canonical names),
+act_subtypes.json, and the VALUE SPACES of assert_protects.json /
+assert_purpose_actor.json / assert_signature.json (for wall values). All are
+vocabulary-only and verdict-free. The enumeration above should be read as
+including them for all builds.

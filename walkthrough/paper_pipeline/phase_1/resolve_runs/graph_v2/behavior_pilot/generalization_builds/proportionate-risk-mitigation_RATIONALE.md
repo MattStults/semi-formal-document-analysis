@@ -113,7 +113,10 @@ Grounds: the definition names no protected party. It speaks of "potential
 harms" without saying whose, and the boundary EXPLICITLY carves party
 protection out: "whether a given harm is off-limits at all (separate user-harm
 and third-party-harm behaviours)". Declaring a party here would be precisely
-the recipient-vs-harm-bearer guess the boundary forbids. The empty wall is the
+the guess about which party bears the harm — the question the boundary
+delegates to those separate behaviours (2026-08-22, adversarial review N3:
+the earlier wording used out-of-envelope campaign terminology and overclaimed
+"forbids"; the boundary delegates). The empty wall is the
 faithful derivation; if the corpus engages this behaviour through party-typed
 norms, that is a fix-ledger observation, not a build-time decision.
 
@@ -183,7 +186,12 @@ Gaps 3 and 4 (no clean sort exists for their objects).
    accuracy_calibration are from the TRANSLATION_CONTRACT §8 skeleton; the
    corpus's mined aspect vocabulary (per §8, mined per document) is not
    visible in the blind envelope. 9a's recorded impurity of safety_of_manner
-   is noted above.
+   is noted above. REVIEW ADDITION (2026-08-22, adversarial review N1): the
+   annotation vocabulary contains ZERO safety_of_manner instances (live
+   governs values: substance_usefulness, tone_manner, accuracy_calibration,
+   formatting_style, identity_meta, objectivity_neutrality) — the
+   declaration is faithful to the definition but OPERATIONALLY DEAD (can
+   never match); runtime-harmless, recorded so the record does not mislead.
 
 ## Candidates considered and REJECTED (named, per anti-invention discipline)
 

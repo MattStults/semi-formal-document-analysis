@@ -147,6 +147,13 @@ them).
    aggregate/public level ("general, topic-neutral machinery", boundary) include
    welfare interests as a public/social matter; `society` is the vocabulary's
    broad-collective value.
+   CORRECTION (2026-08-22, adversarial review N1): "general" in the boundary
+   means TOPIC-NEUTRAL, not aggregate/public — the cited clause supports
+   topic-neutrality, not collectivity. The declaration STANDS on different
+   grounds: it is the closest-collective approximation to the definition's
+   non-conversational welfare subjects (G1-style), and the protects wall
+   fails open on unspecified/unannotated asserts, so the risk direction is
+   engagement breadth only. This note supersedes the grounds sentence above.
 
 Excluded from the declaration: `user`, `developer` — the definition's protected
 interests are the welfare subjects', not the conversational participants';

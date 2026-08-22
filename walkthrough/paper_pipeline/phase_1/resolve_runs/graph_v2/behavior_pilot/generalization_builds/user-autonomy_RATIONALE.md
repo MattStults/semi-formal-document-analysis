@@ -228,3 +228,10 @@ matches an object named in the definition:
 
 ## REPAIR ADDENDUM (2026-08-22, adversarial review F1)
 The original `does` list declared bespoke inventory functors, which `behavior_acts()` silently discards (it accepts canonical act names only) — the module engaged nothing, and attempt 1 would have scored an empty lane. Repaired by translating each bespoke act to its canonical bridge target (respect_user_agency/preserve_user_agency/respect_user_decision/comply_with_request/comply_with_user_instruction->comply; support_autonomy/note_discrepancy->respond; bespoke arg-sort typings unioned onto canonical keys (schema granularity)). This is a translation, not a new declaration: every wall, omission, and recorded gap stands as built. KNOWN PROPERTY, disclosed before scoring: canonical heads with this module's walls may engage broadly (the definition justifies no further narrowing, and inventing walls post-hoc is barred by the zero-adaptation rule); attempt 1 measures exactly that, and the fix ledger will classify the resulting breaks (EXPECTED module-local vs ALARMING vocabulary gap). The headline gap finding (no prioritization/calibration/prohibition vocabulary) is unchanged and now recorded against a CONFORMING build, per the reviewer's disposition. Root causes recorded: the build spec's schema clause was ambiguous ("frozen vocabulary" — bespoke inventory vs canonical ontology) and behavior_acts()'s docstring promises a bridging fallback the code does not implement.
+NOTE (2026-08-22, review N1): the declaration-counts table and module.does
+section ABOVE describe the PRE-REPAIR state; the REPAIR ADDENDUM is the
+current truth. Reading guidance (review N2): with canonical does=[comply,
+respond], respond-family descendants (incl. protective acts) engage this
+behaviour filtered only by the user walls — attempt-1 over-engagement on
+protective norms is the disclosed known property, to be read against the
+fix ledger, not as a surprise.
