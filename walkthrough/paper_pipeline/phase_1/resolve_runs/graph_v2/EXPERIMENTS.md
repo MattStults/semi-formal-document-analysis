@@ -5236,3 +5236,46 @@ providers.json (the gauge's own prescribed fix). `spend.py` TOTAL:
 **Cleanup:** `_debug_gen11/` arm directories deleted from the working tree
 after the snapshot commit; SERIES_HANDOFF.md + README.md remain as the
 summary of record with pointers into history.
+
+---
+
+## 2026-08-21 — the 10-hour push: certifiable, publishable data (campaign entries)
+
+Canonical detail lives in `behavior_pilot/HANDOFF_CURRENT.md` (campaign
+section, baseline commit 5cc21627) and in the git history; these entries
+keep this log honest as the campaign ledger.
+
+**9. ARC1-E CLOSED — census vector() faithfulness (adversarial verdict
+CLEAR, 4 rounds).** The separability census now mirrors the instrument
+under addendum-3 semantics: CURRENT = the frozen instrument per behavior
+(dead slots masked), REACHABLE = the design space (all declarable slots +
+consensus context atoms). Three inert-feature false SEPARABLEs corrected
+(assert status, none/other sort sentinel, contexts slot); the standing
+dead-slot probe carries pinned ground truth (SLOT_INVENTORY /
+DEAD_SLOTS_PINNED) and the slot-arity handshake for future vector edits.
+Outputs: `behavior_pilot/panel_run1/convergence/satisfiability_census_*`.
+
+**10. ARC1-B CLOSED PENDING REVIEW — act-refinement subtype mint.**
+provide:forbid.form_equivalence (10-node consensus) and exhibit:illustrate
+(185 = 169 first-pass + 16 extension) minted by two-seat blind annotation;
+the extension lane moved to Claude-side seats after provider input
+inspection rejected every harness venue (venue ruling + sanitization ruling
+recorded in SUBTYPE_MINT_PREREG.md addenda, rejected alternatives named;
+extension seats: agreement 1.0, zero refusals). M1 held (CURRENT
+bit-identical), M2 held 3/3: all three collider mismatches now
+REACHABLE-separable and addressable_by_declaration. act_refinements_FINAL.json
+is the consensus of record.
+
+**11. QUOTA RECONCILIATION (review finding B-5):** the ~1M-Fable capacity
+ruling covers ADJUDICATION rulings only (Claude-side bar, post-reset). The
+orchestration/design seat runs in the campaign harness on a separate quota;
+9b design work pre-reset consumes the harness quota, never the adjudication
+bar. The two are not the same ledger, and this log records that they were
+conflated until this entry.
+
+**12. 9B DESIGN ROUND IN PROGRESS:** purpose_concern candidates PC-1..PC-4
+justified from the document (PC-4 redone after adversarial review found a
+document-free dismissal; fit-rank disclosure recorded); PC-5, the four
+context-atom declarations, the objectivity conditional, and batch rulings
+for walls/protects-conjunctions outstanding. Record:
+`behavior_pilot/9B_DESIGN_ROUND.md`.
