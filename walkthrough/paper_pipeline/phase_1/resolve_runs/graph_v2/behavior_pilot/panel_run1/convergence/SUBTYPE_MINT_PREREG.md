@@ -156,3 +156,40 @@ Refused nodes fall back to the human-seat packet (mint_ext_human_packet.json)
 + mechanical screen (mint_hot_mechanical_screen.json) exactly as addendum 2
 describes. First-pass results on the 583 assert-bearing nodes stand — the
 venue change applies only to the extension lane.
+
+## ADDENDUM 4 — extension lane results + M2 reconciliation with census addendum-3 (2026-08-21)
+Extension seats ran on Matt's Claude sessions (doctrinal annotation venue),
+SEAT 1 and SEAT 2, 179/179 nodes each, 0 refusals (the human-seat fallback
+was never needed). Results: exhibit:illustrate — both seats annotated the
+SAME 16 nodes (agreement 1.0); form_equivalence — both seats annotated 0
+(agreement 1.0; consistent with the mechanical screen's zero phrase hits
+and with the first pass finding all 10 consensus marks in the assert-bearing
+stratum where equivalence rules live).
+FINAL CONSENSUS (full 762-node corpus): form_equivalence 10 nodes;
+exhibit:illustrate 169 (first pass, assert-bearing stratum) + 16 (extension,
+assert-less stratum) = 185 nodes. Domains disjoint, union exact.
+GATE RE-EVALUATION: M3 PASS (first pass 0.9895/0.9987; extension 1.0/1.0).
+M4-REVISED PASS (no seat disagreement, no incoherent quotes; exhibit count
+185 within the registered O(100-300) expectation for full coverage).
+M2 RECONCILIATION (registered BEFORE integration): this prereg predates the
+census addendum-3 semantics, which now govern. Under those semantics the
+refinement marks enter a NEW vector slot that no frozen module consumes
+(subtype-conditional declarations do not exist yet), so: M1 predicts
+engagement and all CURRENT-view verdicts bit-identical (relevance() consumes
+nothing new; census mismatch sets invariant); M2 predicts the collider
+mismatches separate in the REACHABLE view (design space: subtypes are
+declarable vocabulary) and carry addressable_by_declaration=true, while
+remaining CURRENT-UNSAT. Any CURRENT-view change is a wiring bug: STOP.
+
+RESULTS (appended after the integration run, 2026-08-21): M1 HELD — census
+mismatch sets and every CURRENT verdict bit-identical to the correction-3
+output; relevance_by_act.py untouched (git-verified). M2 HELD 3/3 (the
+registered minimum was 2/3): all three collider mismatches CURRENT-UNSAT ->
+REACHABLE-SEPARABLE with addressable_by_declaration=true —
+help::l797_830_n011 (form_equivalence mark on the mismatch node),
+harm::l831_1000_n001 (exhibit mark on the mismatch node),
+harm::l831_1000_n011 (exhibit mark on its twin l831_1000_n013). Slot
+handshake worked as designed: SLOT_INVENTORY and DEAD_SLOTS_PINNED updated
+in the same commit as the vector edit; 35 tests green. Arc1-b integration
+COMPLETE, pending the standing adversarial review; the addressable rows are
+9b's design signal.

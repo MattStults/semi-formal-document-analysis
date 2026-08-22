@@ -49,6 +49,22 @@ import relevance_by_act as RBA
 import arm_ab as AB
 
 
+def load_refinements():
+    """Arc1-b mint consensus (panel_run1/convergence/act_refinements_FINAL.json):
+    node -> frozenset of act-refinement subtype marks. Span-form annotations
+    (rule-vs-exhibit; form-equivalence). No declaration consumes them yet —
+    under addendum-3 semantics they are REACHABLE-view vocabulary: the slot
+    is dead-masked in CURRENT until a subtype-conditional declaration exists."""
+    p = os.path.join(HERE, "panel_run1", "convergence", "act_refinements_FINAL.json")
+    if not os.path.exists(p):
+        return {}
+    out = {}
+    for st, rec in json.load(open(p))["subtypes"].items():
+        for n in rec["consensus"]:
+            out.setdefault(n, set()).add(st)
+    return {n: frozenset(v) for n, v in out.items()}
+
+
 def load_layers():
     def merged(assert_name, lane_name):
         p = os.path.join(HERE, assert_name)
@@ -65,7 +81,7 @@ def load_layers():
     return sig, ap, pa, ctx
 
 
-def vector(nid, corpus, br, sig, ap, pa, ctx=None, asorts=None):
+def vector(nid, corpus, br, sig, ap, pa, ctx=None, asorts=None, ref=None):
     # layer-independent key sets: relevance() looks each layer up by node
     # prefix on its own; a node annotated in one layer but not another must
     # still contribute the layers it has.
@@ -95,11 +111,14 @@ def vector(nid, corpus, br, sig, ap, pa, ctx=None, asorts=None):
     # all-plumbing exclusion (signature_ok) is instrument-visible
     plumbing = frozenset(k.split("|")[1] for k in skeys
                          if sig[k].get("authority_plumbing"))
-    cur = (acts, governs, contexts, protects, actors, purposes, plumbing)
+    refinements = (ref or {}).get(nid, frozenset())
+    cur = (acts, governs, contexts, protects, actors, purposes, plumbing,
+           refinements)
     if ctx is None:
         return cur
     catoms = frozenset(a for vs in (ctx.get(nid) or {}).values() for a in vs)
-    return (acts, governs, contexts | catoms, protects, actors, purposes, plumbing)
+    return (acts, governs, contexts | catoms, protects, actors, purposes,
+            plumbing, refinements)
 
 
 def truth_all(slug):
@@ -115,7 +134,7 @@ def truth_all(slug):
 
 
 # slot indices of the vector tuple
-SLOT_CONTEXTS, SLOT_PROTECTS, SLOT_PURPOSES = 2, 3, 5
+SLOT_CONTEXTS, SLOT_PROTECTS, SLOT_PURPOSES, SLOT_REFINEMENTS = 2, 3, 5, 7
 
 
 def current_mask(mod):
@@ -123,6 +142,10 @@ def current_mask(mod):
     them is what makes CURRENT mean 'the instrument as frozen': a feature no
     gate reads cannot separate two nodes for this behavior."""
     dead = {SLOT_CONTEXTS}          # only consumer governs_conditional: undeclared + guarded
+    # Arc1-b refinement marks: no subtype-conditional declaration exists yet,
+    # so the slot is dead for every frozen behavior. When one is declared,
+    # update this and DEAD_SLOTS_PINNED in the same reviewed commit.
+    dead.add(SLOT_REFINEMENTS)
     if not mod.get("protects_concern"):
         dead.add(SLOT_PROTECTS)
     if not mod.get("purpose_concern"):
@@ -149,6 +172,7 @@ def census(modules_file):
     br = RBA.bridges(); corpus = RBA.corpus_acts()
     sig, ap, pa, ctx = load_layers()
     asorts = RBA.arg_sorts()
+    ref = load_refinements()
     report = {}
     for slug, m in mods.items():
         _, rel = RBA.relevance(m, br, corpus)
@@ -157,8 +181,8 @@ def census(modules_file):
         dead = current_mask(m)
         vecs, groups_cur, groups_rch = {}, {}, {}
         for n in t:
-            vc = masked(vector(n, corpus, br, sig, ap, pa, None, asorts), dead)
-            vr = vector(n, corpus, br, sig, ap, pa, ctx, asorts)
+            vc = masked(vector(n, corpus, br, sig, ap, pa, None, asorts, ref), dead)
+            vr = vector(n, corpus, br, sig, ap, pa, ctx, asorts, ref)
             vecs[n] = (vc, vr)
             groups_cur.setdefault(vc, []).append(n)
             groups_rch.setdefault(vr, []).append(n)

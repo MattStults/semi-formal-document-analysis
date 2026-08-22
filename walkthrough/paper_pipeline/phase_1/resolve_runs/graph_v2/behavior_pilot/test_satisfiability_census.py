@@ -39,7 +39,8 @@ def _current_vector():
 
 
 def test_vector_merges_definition_signature_and_protects():
-    acts, governs, contexts, protects, actors, purposes, plumbing = _current_vector()
+    (acts, governs, contexts, protects, actors, purposes, plumbing,
+     refinements) = _current_vector()
     # acts carry (canonical, arg-sort) — assert status is NOT instrument-
     # visible and must not appear (prereg addendum 2)
     assert acts == frozenset({("refuse", None)})
@@ -49,6 +50,36 @@ def test_vector_merges_definition_signature_and_protects():
     # both lanes' protects values are instrument-visible
     assert protects == frozenset({"user", "third_party"})
     assert plumbing == frozenset()
+    assert refinements == frozenset()
+
+
+def test_m2_colliders_addressable_via_refinements():
+    """Arc1-b M2 pin (SUBTYPE_MINT_PREREG.md addendum 4): the three collider
+    mismatches stay CURRENT-UNSAT (the frozen instrument consumes no
+    refinement marks) but separate in the REACHABLE view — the minted
+    subtypes are declarable vocabulary, so the rows become
+    addressable_by_declaration. Pinned after the registered prediction held
+    3/3; subset form, never live counts."""
+    rep = SC.census("modules_contract_v18.json")
+    pins = {"helpfulness": ["l797_830_n011"],
+            "harm-avoidance-to-third-parties": ["l831_1000_n001",
+                                                "l831_1000_n011"]}
+    for slug, nodes in pins.items():
+        for n in nodes:
+            r = rep[slug][n]
+            assert r["status"] == "UNSAT", f"{slug}::{n} CURRENT changed"
+            assert r["status_reachable"] == "SEPARABLE", \
+                f"{slug}::{n} not separated in REACHABLE"
+            assert r["addressable_by_declaration"] is True
+
+
+def test_vector_carries_refinement_marks():
+    sig, ap, pa, _ = _layers()
+    ref = {"n1": frozenset({"exhibit:illustrate"})}
+    v = SC.vector("n1", {"n1": []}, {}, sig, ap, pa, None, None, ref)
+    assert v[7] == frozenset({"exhibit:illustrate"})
+    v2 = SC.vector("n2", {"n2": []}, {}, sig, ap, pa, None, None, ref)
+    assert v2[7] == frozenset()
 
 
 def test_vector_collapses_inert_sort_sentinels():
@@ -195,12 +226,15 @@ def test_real_corpus_semantics_pins():
 # it does. Without the pin the probe re-derives census's own grouping and
 # cannot fail (reviewer's mutation proof, round 3).
 SLOT_INVENTORY = ("acts", "governs", "contexts", "protects", "actors",
-                  "purposes", "plumbing")
+                  "purposes", "plumbing", "refinements")
 SLOT_INDEX = {name: i for i, name in enumerate(SLOT_INVENTORY)}
+# refinements (Arc1-b mint marks) is dead for every frozen behavior: no
+# subtype-conditional declaration exists yet. Same-commit-update rule applies.
 DEAD_SLOTS_PINNED = {
-    "avoiding-over-and-under-caution": {"contexts", "protects", "purposes"},
-    "harm-avoidance-to-third-parties": {"contexts"},
-    "helpfulness": {"contexts", "purposes"},
+    "avoiding-over-and-under-caution": {"contexts", "protects", "purposes",
+                                        "refinements"},
+    "harm-avoidance-to-third-parties": {"contexts", "refinements"},
+    "helpfulness": {"contexts", "purposes", "refinements"},
 }
 
 
