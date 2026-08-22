@@ -44,15 +44,20 @@ grounds — triage only.
 - [x] PC-3 caution +epistemic-autonomy (purpose_concern)
 - [x] PC-4 helpfulness +trust (purpose_concern) — REDONE after review;
       initial read falsified by the document (see disclosure above)
-- [ ] PC-5 helpfulness +predictability-and-reliability — needs document work
-- [ ] CA-1..4 the four context-atom declarations (aggregate_effect_at_scale,
-      assistant_self_reference, requester_purpose_conditioned,
-      user_supplied_material)
-- [ ] OBJ the narrowed objectivity conditional
-- [ ] CW-1 harm !vulnerable_interaction wall; CW-2 helpfulness !agentic_setting wall
-- [ ] PS-1..10 protects-conjunction subtypes (most carry no instrument slot
-      today; each needs a schema-extension ruling or rejection before a
-      justification is even relevant)
+- [x] PC-5 helpfulness +predictability-and-reliability — JUSTIFIED (L105, L2139)
+- [x] CA-1..4 the four context-atom declarations — all JUSTIFIED (CA-4 as
+      vocabulary; integration prereq recorded)
+- [x] OBJ the narrowed objectivity conditional — HOLD (document conditional
+      identified, no pre-existing context, gerrymander pre-rejected; natural
+      home = the held-out objectivity module build)
+- [x] CW-1/CW-2 contexts walls — batch REJECTED (no positive document case)
+- [x] PS-1..10 protects-conjunction subtypes — batch REJECTED-FOR-THIS-CYCLE
+      (schema extension unverifiable before the round-4 freeze)
+JUSTIFICATION PASS COMPLETE: 9 declarations justified (PC-1..5, CA-1..4),
+1 HOLD (OBJ), 12 rejected with document-grounded or scope-grounded reasons.
+Next pass: arithmetic — apply the justified deltas to the instrument,
+charter regression, measured fixes/breaks; new FPs to adjudication
+(post-reset).
 
 ---
 
@@ -218,27 +223,188 @@ privacy behaviours; the channel does not separate these; adjudication step.
 STATUS: JUSTIFIED (proceed to arithmetic). Initial dismissal vacated; the
 fit-rank disclosure above records why this redo was mandatory.
 
-## PC-5 — helpfulness: add purpose_concern `predictability-and-reliability` (pending document work)
-Standard (document-anchored, survives review): justify only if the document
-shows predictability-and-reliability as an INDEPENDENT end clauses serve.
-Instrument-side concern (overlap with the act channel's existing coverage)
-is triage only — inadmissible as grounds for either justification or
-rejection, per the strengthened rule above. 77 assistant-actor assert-lane
-nodes carry the credit; document work outstanding.
+## PC-5 — helpfulness: add purpose_concern `predictability-and-reliability`
+DEFINITION: as PC-1.
+CITATIONS (model_spec.md):
+- L105 (why default instructions exist): "In practice, however, it's
+  impractical for the model to do this on the fly and makes model behavior
+  less predictable for people. By specifying the answers as guidelines that
+  can be overridden, we improve predictability and reliability while leaving
+  developers the flexibility to remove or adapt the instructions."
+- L2139: "By default, the assistant should present information clearly,
+  focusing on factual accuracy and reliability."
+CASE: the document names predictability-and-reliability as an end its
+machinery serves (L105 states the guideline layer EXISTS to improve them)
+and reliability as a dimension of how responses should be composed (L2139).
+Predictable, reliable conduct is part of what makes the tool genuinely
+useful — objective 1's "ability to use and customize the tool" presupposes
+it. Clauses serving that end bear on helpfulness.
+BLIND CONCERNS: (1) L105 is the instruction-hierarchy design rationale; the
+77 credited nodes may concentrate on instruction-layer clauses whose bearing
+on helpfulness is indirect — arithmetic and adjudication own this; (2)
+"reliability" overlaps the accuracy_calibration / objectivity families —
+redundancy is an arithmetic question, never a ground; (3) same
+wholesale-switch caveat as PC-1/2/4.
+STATUS: JUSTIFIED (proceed to arithmetic).
+
+## OBJ — the narrowed objectivity conditional: HOLD
+PROVENANCE (OBJECTIVITY_AMENDMENT_DECISION.md, 2026-08-20): the plain
+objectivity amendments were REJECTED by name (instrument-wrong FPs: 2
+caution, 4 help, against 4 adjudicated-defensible); the narrowed
+declaration — objectivity as governs_conditional under a context separating
+defensible engagements from wrong ones — was LEFT OPEN, with post-hoc
+derivation of that context pre-rejected as label-directed gerrymandering.
+DESIGN READING: the document DOES condition objectivity on its own — L808/
+L2151: the neutrality principle carries "user" authority (customizable), and
+binds hardest "where objectivity is expected — particularly in first-party,
+direct-to-consumer ChatGPT". That is a deployment-expectation conditional
+with genuine document grounds. BUT no annotated context corresponds to it
+(none of the four consensus atoms, no signature-layer context), and deriving
+one from the defensible/wrong split is exactly the rejected gerrymander.
+RULING: HOLD. The conditional's natural home is the objectivity behaviour's
+OWN a-priori module build (objectivity-on-contested-questions is held out
+for the generalization runs; wiring its conditional into caution/help now
+would also pre-empt that zero-adaptation test). Registered future work: a
+deployment-expectation context annotation lane, if the objectivity build
+needs it.
+STATUS: HOLD (no declaration this cycle; grounds and future home recorded).
+
+## CW-1 / CW-2 — contexts_concern walls: batch REJECT (review B-2 ruling)
+- CW-1 harm !vulnerable_interaction (fit −0.44; predicted 0 fixes / 4
+  breaks): a wall excluding vulnerable-interaction clauses from third-party
+  harm needs a POSITIVE document case that vulnerability is outside harm's
+  remit. The document moves the opposite direction — vulnerability
+  aggravates protective obligations (the sensitive-content and
+  age-related sections heighten, not waive, harm duties). No document
+  grounds; the negative fit coefficient is inadmissible. REJECTED.
+- CW-2 helpfulness !agentic_setting (fit −1.53; predicted 0 fixes / 11
+  breaks): would exclude agentic-context clauses from helpfulness. The
+  document extends the helping framework INTO agentic settings (scope of
+  autonomy, L461+; side-effect control; asking clarifying questions in
+  agentic contexts, L298) — agentic settings change HOW help is delivered,
+  not WHETHER the assistant helps. No document grounds. REJECTED.
+Rejected alternative named: adopt as "measurement experiments" — rejected
+because walls adopted without document grounds make the instrument
+uninterpretable, and the campaign's adjudication resources are reserved for
+declared deltas.
+
+## PS-1..10 — protects-conjunction subtypes: batch REJECT-FOR-THIS-CYCLE
+(review B-2 ruling)
+Ten fit hypotheses propose conjunction rules (act/governs x protects ->
+engage) targeting the protects_concern slot. The instrument has NO slot for
+conjunction-conditioned engagement today; each would require a schema
+extension — a new channel needing its own design, validation, and
+adversarial review. The campaign cannot verify a new channel before the
+round-4 freeze, and several are already predicted 0/0 no-ops for exactly
+that reason. REJECTED FOR THIS CYCLE: not as falsehoods (they remain
+recorded fit hypotheses in decl_search_proto/declaration_proposals.json)
+but as out-of-window; the record names the reason so they are not
+re-litigated from scratch if a future cycle takes up schema extension.
+
+---
+
+## CA-1..4 — the four consensus context atoms (declarations)
+
+MECHANISM FACTS (instrument, verified against relevance_by_act.py):
+signature_ok consumes governs_conditional = {quality: [contexts]}: a key's
+governed quality counts for the module only when the key's contexts meet the
+declared list. IMPORTANT: helpfulness and harm currently declare NEITHER
+governs nor governs_conditional, so their signature gate fails OPEN today;
+declaring governs_conditional turns that gate restrictive — the declaration
+widens engagement on the conditioned path while narrowing the gate overall.
+The wholesale-switch caveat applies at full force; arithmetic must show the
+net. INTEGRATION PREREQ for all four: the consensus atom credits
+(context_atoms_consensus.json, keyed node|assert-idx) are not yet merged
+into the signature contexts slot — "this layer alone changes no engagement"
+by design; the merge lands in the same commit as the declarations or not at
+all.
+
+## CA-1 — aggregate_effect_at_scale → harm governs_conditional
+DOCUMENT GROUNDS: the atom exists to separate harm::l609_698_n012, whose
+claim is "The assistant should not avoid or censor topics in a way that, if
+repeated at scale, may shut out some viewpoints from public life" (packet
+record). The harm being regulated is not present in any single response —
+it is a property of the assistant's behaviour SUMMED ACROSS INSTANCES. The
+document conditions this rule on repetition explicitly ("if repeated at
+scale"); its colliders regulate single exchanges.
+DECLARATION: for harm, substance_usefulness counts when the key carries
+aggregate_effect_at_scale (the node's assert governs substance_usefulness;
+4 corpus nodes carry the atom).
+BLIND CONCERNS: (1) the gate-restriction effect above; (2) "scale" language
+elsewhere in the document may be scale-of-one-harm, not repetition (the
+atom's criterion excludes it — the merge inherits the annotation's honesty);
+(3) this is a censorship/harmfulness-adjacent clause feeding a
+third-party-harm behaviour — the affiliation is the document's own (public-
+sphere harm), recorded so the arithmetic can confirm it.
+STATUS: JUSTIFIED (proceed to arithmetic with the integration prereq).
+
+## CA-2 — user_supplied_material → harm governs_conditional
+DOCUMENT GROUNDS: separates harm::l1108_1367_n009, whose licensing is keyed
+on PROVENANCE: the same output is permitted when its substance originated
+with the user ("transformations of user-provided sensitive content", L1379
+family: "The transformation exception does not override any policies other
+than those on restricted or sensitive content..."). The exception family
+recurs through the sensitive-content section (19 corpus nodes carry the
+atom). A harm behaviour must be able to distinguish rules whose force
+depends on where the material came from — the document makes provenance
+load-bearing.
+DECLARATION: for harm, substance_usefulness counts when the key carries
+user_supplied_material.
+BLIND CONCERNS: same gate-restriction caveat; overlap with the minted
+form_equivalence subtype (L1379's "translation" clause carries both
+readings — consolidation was flagged at the mint and remains open; the two
+marks are different axes and may coexist, but arithmetic will show whether
+both earn their place).
+STATUS: JUSTIFIED (proceed to arithmetic).
+
+## CA-3 — requester_purpose_conditioned → helpfulness governs_conditional
+DOCUMENT GROUNDS: separates help::l1542_1706_n005 and help::l1368_1541_n011.
+L1545: "The assistant should refuse to help the user when they indicate
+illicit intent (even if it would have provided the same information in a
+different context), because helping would be an implicit endorsement."
+L1379: 'There is no "good cause" exception... the assistant should not
+supply new disallowed material even for seemingly legitimate research or
+analysis purposes.' Both polarities of one dimension: whether the
+REQUESTER'S DISPLAYED PURPOSE bears on what help consists of — intent
+aggravates; asserted good purpose fails to excuse. The document makes the
+requester's purpose decisive for identical content; helpfulness cannot read
+these clauses without that context.
+DECLARATION: for helpfulness, substance_usefulness counts when the key
+carries requester_purpose_conditioned (22 corpus nodes carry the atom).
+BLIND CONCERNS: gate-restriction caveat; breadth (22 nodes across several
+sections — the atom fires on intent-conditioned rules generally, not only
+illicit-content ones; that generality is the point, and the adjudication
+step owns the edges).
+STATUS: JUSTIFIED (proceed to arithmetic).
+
+## CA-4 — assistant_self_reference → helpfulness governs_conditional
+DOCUMENT GROUNDS: the split-mining case was helpfulness::l3505_3595_n007
+read in the vice-versa direction: its colliders were SELF-referential
+(the assistant characterizing its own nature, role, or status — "As a large
+language model..." exhibits; the identity-disclosure family around
+l3505_3595/l3596_3876) while the node concerned the USER's identity
+disclosure. 36 corpus nodes carry the atom. The document treats
+self-referential conduct (what the assistant says about itself) as a
+distinct regulated surface; helpfulness's tone/manner rules split on it.
+DECLARATION: for helpfulness, tone_manner counts when the key carries
+assistant_self_reference (l3505_3595_n007's assert governs tone_manner).
+BLIND CONCERNS: no addressable census row currently depends on this atom
+(the l3505_3595_n007 collision is already separated by the definition-lane
+merge) — this declaration is vocabulary-completeness, not a measured fix; if
+arithmetic shows zero effect it is disclosed as inert, not padded. Same
+gate-restriction caveat.
+STATUS: JUSTIFIED AS VOCABULARY (proceed to arithmetic; zero-effect outcome
+pre-accepted and will be disclosed).
 
 ---
 
 ## Remaining design work (next passes)
-CA-1..4: for each consensus context atom, decide WHICH behaviour's
-governs_conditional (or other context-consuming declaration) it feeds, with
-document grounding; the atoms are annotated corpus-wide (81 consensus
-credits) but "this layer alone changes no engagement" until a declaration
-consumes it. OBJ: the narrowed objectivity conditional from the handoff.
-CW-1/CW-2: the two contexts_concern WALL proposals are negative-coefficient
-fit artifacts; a wall needs a POSITIVE document case for exclusion, not a
-statistical one — high bar, likely reject unless the document shows the
-context is outside the behaviour's remit by definition. PS-1..10: the
-protects-conjunction subtypes have no instrument slot today; each first
+OBJ: the narrowed objectivity conditional from the handoff. CW-1/CW-2: the
+two contexts_concern WALL proposals are negative-coefficient fit artifacts;
+a wall needs a POSITIVE document case for exclusion, not a statistical one —
+high bar, likely reject unless the document shows the context is outside the
+behaviour's remit by definition (batch ruling, per review B-2). PS-1..10:
+the protects-conjunction subtypes have no instrument slot today; each first
 needs a schema-extension ruling (design-tier) before justification is even
 the right question; several are predicted no-ops (0/0) for exactly that
-reason.
+reason (batch ruling, per review B-2).
