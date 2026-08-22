@@ -156,3 +156,14 @@ independent clause corpus (generators disagree on paragraphization —
 mis-stratification risk), while anchor attribution is exact. Strata inform
 sampling only; truth is untouched. Implemented in draw_generalization.py
 (determinism tested: same seed -> byte-identical artifact).
+
+## ADDENDUM 2 (2026-08-22, draw-machinery correction, append-only)
+First draw computation produced degenerate pools (objectivity: 0 engaged).
+Cause: strata were keyed on recurse/root/graph.json ids, whose segmentation
+generation differs from the translation corpus (L1108-1368 vs l1108_1367) —
+the id spaces do not match. Correction: node lines now parsed from the
+packet SOURCE-TEXT L-markers (ctx_chunk1-8 + ctx_ext1-3, total coverage
+762/762) and strata keyed on corpus ids. All six draws recomputed under the
+same registered seed (20260822); the pre-correction draw artifacts remain
+in git history as evidence. Anchor-granularity operationalization
+(addendum 1) unchanged.

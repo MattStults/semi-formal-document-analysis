@@ -109,10 +109,37 @@ def paragraph_index(regions, line):
     return None, None
 
 
+def node_lines():
+    """corpus node id -> (min_line, max_line), parsed from the packet SOURCE
+    TEXT L-markers (ctx_chunk1-8 + ctx_ext1-3 cover all 762 corpus nodes).
+    NOTE (2026-08-22): recurse/root/graph.json CANNOT be used for this join —
+    its segmentation generation differs from the translation corpus
+    (e.g. L1108-1368 vs l1108_1367) and its ids do not match corpus ids."""
+    import glob as _glob
+    out = {}
+    paths = sorted(_glob.glob(os.path.join(HERE, "panel_run1", "convergence", "ctx_chunk*.json"))) + \
+            sorted(_glob.glob(os.path.join(HERE, "panel_run1", "convergence", "ctx_ext[0-9].json")))
+    for p in paths:
+        for nid, pkt in json.load(open(p)).items():
+            span = pkt.get("span", "")
+            i = span.find("SOURCE TEXT")
+            seg = span[i:] if i >= 0 else span
+            ms = re.findall(r"L(\d+)-L(\d+)", seg)
+            if ms:
+                lo = min(int(a) for a, b in ms)
+                hi = max(int(b) for a, b in ms)
+                if nid in out:
+                    lo = min(lo, out[nid][0]); hi = max(hi, out[nid][1])
+                out[nid] = (lo, hi)
+    return out
+
+
 def v5_node_strata(v5_slug):
-    """node_id -> 'agree' | 'split', at ANCHOR granularity (see module
-    docstring operationalization). Anchor maxima over v5 paragraph verdicts;
-    every node maps (line containment in anchor regions is total)."""
+    """corpus node_id -> 'agree' | 'split', at ANCHOR granularity (see module
+    docstring operationalization). Node lines from packet L-markers; anchor
+    attribution by line containment (a node spanning several anchors collects
+    them all); anchor seat verdict = max over its paragraphs; agree iff all
+    three full seats land on the same side of the >=2 cut."""
     anchors = anchor_map()
     regions = anchor_regions(anchors)
     # anchor -> seat -> max verdict over paragraphs
@@ -132,27 +159,16 @@ def v5_node_strata(v5_slug):
         a = m.group(1)
         verd.setdefault(a, {})
         verd[a][r["model"]] = max(verd[a].get(r["model"], 0), int(r["verdict"]))
-    # node -> anchor by line containment
-    node_anchor = {}
-    g = json.load(open(GRAPH))
-    for node in g["nodes"]:
-        nid = node["id"].replace("L", "l", 1).replace("-", "_")
-        for span in node.get("spans", []):
-            for a, (s, e) in regions.items():
-                if s <= span["lines"][0] <= e:
-                    node_anchor.setdefault(nid, set()).add(a)
-                    break
     out = {}
-    for node in g["nodes"]:
-        nid = node["id"].replace("L", "l", 1).replace("-", "_")
-        anchs = node_anchor.get(nid, set())
+    for nid, (lo, hi) in node_lines().items():
+        anchs = {a for a, (s, e) in regions.items()
+                 if not (hi < s or lo > e)}
         seat_max = {}
         for a in anchs:
             for seat, v in verd.get(a, {}).items():
                 seat_max[seat] = max(seat_max.get(seat, 0), v)
         if len(seat_max) < len(FULL_SEATS):
-            # anchor has no full-seat coverage for this behaviour: treat as
-            # split (conservative for balance) — counted and disclosed
+            # no full-seat coverage for this behaviour: conservative split
             out[nid] = "split"
             continue
         sides = {v >= 2 for v in seat_max.values()}
