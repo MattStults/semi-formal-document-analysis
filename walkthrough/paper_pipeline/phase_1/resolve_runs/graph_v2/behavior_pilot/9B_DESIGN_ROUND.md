@@ -486,3 +486,31 @@ load_layers (same commit as this record); engagement-invariant without
 governs_conditional declarations (verified: census verdicts bit-identical,
 36 tests green). v19_ADOPT_CANDIDATE is the freeze input pending the
 4-node adjudication.
+
+## JOINT LATTICE ANALYSIS (2026-08-21; added after the coordination critique)
+Per-delta measurement is a coordinate projection, not the joint object; purpose
+channels are OR-additive, so every subset's flip set is exactly computable
+(instrument runs, not estimates). Full lattice: ARITHMETIC_9B_JOINT_LATTICE.json.
+  help: E 13/3 (+10) | T 7/9 (-2) | P&R 6/12 (-6) | E+T 20/12 (+8) |
+        E+P&R 17/15 (+2) | T+P&R 13/21 (-8) | E+T+P&R 24/24 (0)
+  caution: HP 3/1 (+2) | EA 3/4 (-1) | HP+EA 6/5 (+1)
+FINDING 1 (structure): all candidates' flip sets are pairwise DISJOINT —
+joint fixes/breaks equal the exact sums of the members' (E+T = 13+7 / 3+9;
+verified across every subset). No interaction exists in this space; the
+per-delta read was numerically right, but that is now PROVEN by the lattice
+rather than assumed.
+FINDING 2 (decision): three subsets are charter-positive beyond the singles
+(E+T, E+P&R, HP+EA), but in each, the ADDED delta's marginal contribution is
+negative in every context (T: 7/9 in all three contexts; P&R: 6/12; EA: 3/4)
+— they are carried by their partner, never earning their place. Adopting a
+negative-marginal delta means accepting false positives its own contribution
+causes, offset by another delta's fixes; if the carrying delta were later
+removed, the carried one breaks the charter alone. Selection under the
+campaign's discipline (each delta defensible on its own contribution; each
+new FP individually adjudicated; no quality lowering): E alone for help
+(best net + fewest FPs + positive marginal), HP alone for caution. The
+adoption candidate is UNCHANGED (v19_ADOPT_CANDIDATE.json); the greedy
+conclusion now rests on the exact joint object.
+FINDING 3 (boundary): the full help triple is exactly 24/24 — charter-zero —
+matching the earlier all-deltas bundle measurement; the disjointness also
+explains why.
