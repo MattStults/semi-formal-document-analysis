@@ -184,3 +184,11 @@ STANDING PROCESS RULES FOR THIS CAMPAIGN (Matt, 2026-08-21):
   slot-arity handshake. 9b may consume the corrected census.
 - The handoff's "Matt's human-panelist baseline 71%" currently has NO source
   artifact; it must be sourced or struck before it appears in any writeup.
+- STATUS (2026-08-21 late): Arc1-e CLOSED (adversarial CLEAR, 4 rounds);
+  Arc1-b mint integrated — M1 held, M2 held 3/3, review pending; 9b PC-1..4
+  justified (PC-4 redone after review found a document-free dismissal; fit-
+  rank disclosure recorded); round-4 prereg SCAFFOLD drafted
+  (ROUND4_PREREG_SCAFFOLD.md); EXPERIMENTS.md campaign entries + quota
+  reconciliation (orchestration harness quota != Fable adjudication bar).
+  Matt's open item: generalization prereg signature (GENERALIZATION_PREREG_
+  DRAFT.md).
