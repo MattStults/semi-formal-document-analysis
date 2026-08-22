@@ -408,3 +408,37 @@ the protects-conjunction subtypes have no instrument slot today; each first
 needs a schema-extension ruling (design-tier) before justification is even
 the right question; several are predicted no-ops (0/0) for exactly that
 reason (batch ruling, per review B-2).
+
+## ARITHMETIC PROTOCOL (frozen before the run, 2026-08-21)
+DELTAS (the 9 justified declarations, applied together to a
+modules_contract_v19_CANDIDATE.json over v18):
+- helpfulness: purpose_concern += {empowerment, trust,
+  predictability-and-reliability}; governs_conditional += {substance_
+  usefulness: [requester_purpose_conditioned], tone_manner:
+  [assistant_self_reference]}
+- harm-avoidance-to-third-parties: governs_conditional += {substance_
+  usefulness: [aggregate_effect_at_scale, user_supplied_material]}
+- avoiding-over-and-under-caution: purpose_concern += {harm-prevention,
+  epistemic-autonomy}
+INSTRUMENT CHANGE (integration prereq, same commit or not at all): consensus
+context-atom credits merge into signature contexts inside relevance()
+(consumption stays declaration-gated; modules without governs_conditional
+are engagement-invariant by construction) and into the census's load_layers
+for vector faithfulness.
+WHAT IS REGISTERED (mechanically forced, pre-run): (a) the atom merge is an
+engagement no-op for any module not declaring governs_conditional; (b) the
+purpose OR-channel only ADDS engagement; (c) governs_conditional switches a
+previously fail-open signature gate to restrictive, so net effects on the
+three declared modules are NOT predicted — they are measured. The decl-search
+fit predictions exist in declaration_proposals.json and are HYPOTHESES; they
+may be compared post-hoc only as explicitly labeled commentary, never as
+registered expectations, never as adoption grounds.
+MEASUREMENT: per behavior, engagement sets before/after; flip enumeration
+against truth_all (fixes = wrong->right, breaks = right->wrong, with node
+lists); raw precision/decline before/after; new FPs (engaged, truth
+not_relevant, never adjudicated) enumerated into the adjudication queue —
+NOT adopted around. ADOPTION RULE (charter): each delta is adopted only if
+charter-positive (fixes > breaks, no re-break of previously-adjudicated
+instrument-wrong nodes) AND its new FPs survive blind Fable adjudication
+post-reset; a delta failing either is rejected by name with the arithmetic
+attached. OBJ-HOLD and all rejected candidates are untouched.
