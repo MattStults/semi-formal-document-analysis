@@ -31,6 +31,10 @@ V5_SLUG_MAP = {
     "general-welfare": "general-welfare",
 }
 
+PACKET_SHUFFLE_SEED = 20260823  # registered 2026-08-22 (packets review H1):
+# packet order is shuffled with this seed so ORDER carries no draw-side
+# information; the seed is recorded in every packet file header.
+
 RULING_PROMPT = (
     "You are a blind adjudication seat. QUESTION: does the PASSAGE below bear "
     "on the BEHAVIOUR defined below — would a careful reader of the document "
@@ -52,7 +56,12 @@ def load_spans():
         for nid, pkt in json.load(open(p)).items():
             span = pkt.get("span", "")
             i = span.find("SOURCE TEXT")
-            out[nid] = span[i:] if i >= 0 else span
+            seg = span[i:] if i >= 0 else span
+            end = seg.find("CROSS-REFERENCED CLAUSES")  # review L1: one span
+            # carried a trailing non-source section; trim at the marker
+            if end >= 0:
+                seg = seg[:end]
+            out[nid] = seg.rstrip()
     return out
 
 
@@ -78,14 +87,16 @@ def main():
                     boundary=dfn.get("boundary", ""),
                     node=n, span=spans.get(n, "SPAN MISSING")),
             })
+        import random as _rnd
+        _rnd.Random(PACKET_SHUFFLE_SEED).shuffle(packets)
         dest = os.path.join(HERE, "ruling_packets", f"generalization_{slug}.json")
-        json.dump({"_": "BLIND adjudication packets (no instrument prediction, no draw side, no truth). Protocol: single rulings + seeded 20% three-instance panels (round-4 lineage). Seed for panel selection registered at ruling time.",
+        json.dump({"_": "BLIND ruling packets. Order shuffled with the registered seed below — ORDER CARRIES NO INFORMATION about draw side or instrument prediction.",
+                   "shuffle_seed": PACKET_SHUFFLE_SEED,
                    "slug": slug, "n": len(packets), "packets": packets},
                   open(dest, "w"), indent=1)
         print(f"wrote {os.path.basename(dest)}: {len(packets)} packets")
 
     # defensibility batch packets
-    proto = json.load(open(os.path.join(HERE, "DEFENSIBILITY_BATCH_PROTOCOL.md".replace(".md", ".md")))) if False else None
     batch = {
         "helpfulness|empowerment": ["l3596_3876_n039", "l427_460_n003", "l797_830_n004"],
         "helpfulness|trust": ["l1707_1973_n025", "l2474_2554_n002", "l2821_3040_n005",
@@ -112,8 +123,11 @@ def main():
                     label=slug, query=dfn if isinstance(dfn, str) else json.dumps(dfn),
                     boundary="(see definition)", node=n, span=spans.get(n, "SPAN MISSING")),
             })
+    import random as _rnd
+    _rnd.Random(PACKET_SHUFFLE_SEED).shuffle(packets)
     dest = os.path.join(HERE, "ruling_packets", "defensibility_batch.json")
-    json.dump({"_": "BLIND defensibility-adjudication packets (DEFENSIBILITY_BATCH_PROTOCOL.md): the 9b arithmetic's new false positives, one pass, no iteration. Question per node: does this passage bear on the delta's behaviour? Charter recomputed on rescued counts after rulings.",
+    json.dump({"_": "BLIND adjudication packets. Each packet carries ONLY a passage, a behaviour definition, and the ruling question. The behaviour/delta fields are POST-RULING ROUTING METADATA — never shown to the ruling seat (see DEFENSIBILITY_BATCH_PROTOCOL.md, which is pre-registration material and NOT seat material). Order shuffled with the registered seed below; ORDER CARRIES NO INFORMATION.",
+               "shuffle_seed": PACKET_SHUFFLE_SEED,
                "n": len(packets), "packets": packets},
               open(dest, "w"), indent=1)
     print(f"wrote defensibility_batch.json: {len(packets)} packets")
