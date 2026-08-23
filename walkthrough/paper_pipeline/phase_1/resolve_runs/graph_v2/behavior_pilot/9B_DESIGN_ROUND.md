@@ -33,10 +33,18 @@ itself a violation, but it is the signature this process exists to catch,
 and it obliges every REJECTION to be as document-grounded as every adoption.
 Audit found the obligation broken in exactly one place: PC-4's initial read
 dismissed trust without document work, and the document falsifies that read
-(see PC-4 below, redone). Standing rule for this round, strengthened: any
-final rejection must engage the candidate's document evidence BY NAME, and
-no instrument-side fact (fit, coverage overlap, break counts) may serve as
-grounds — triage only.
+(see PC-4 below, redone). PC-5 is the asymmetry this disclosure exists to
+police, stated plainly: PC-5 was ALSO initially a reject-candidate (fit −7)
+but was held to a pre-declared conditional standard ("justify only if the
+document shows it as an independent end clauses serve") rather than
+dismissed; it was later JUSTIFIED when the document work (L105, L2139) met
+that standard. PC-4 had no such standard and no document work; PC-5 did.
+Standing rule for this round, strengthened: any final rejection must engage
+the candidate's document evidence BY NAME, and no instrument-side fact (fit,
+coverage overlap, break counts) may serve as JUSTIFICATION-PHASE grounds —
+triage only. (Carve-out, spelled out per re-review N5: the charter gate
+later rejects on MEASURED break counts by design — that is the arithmetic
+phase, a separate gate; this rule binds justification-phase reasoning.)
 
 ## Worklist
 - [x] PC-1 helpfulness +empowerment (purpose_concern)
@@ -168,12 +176,12 @@ also carry empowerment/harm-prevention credits, prefer the more direct
 declarations and reject this one (rejected alternatives must be named at
 adoption).
 
-INVENTORY CONSTRAINT (review finding, recorded): epistemic-autonomy's
-natural document home is the objectivity principle — L808 "fairly
-representing significant viewpoints ... the goal of an AI assistant is to
-assist humanity, not to shape it", and L2151 "avoid undermining users'
-ability to form informed opinions" — and objectivity-on-contested-questions
-is a HELD-OUT generalization behaviour. Wiring the atom to caution is
+INVENTORY CONSTRAINT (review finding, recorded; line citations fixed
+2026-08-22 by re-review): epistemic-autonomy's natural document home is the
+objectivity principle — L2151 "fairly representing significant viewpoints
+... the goal of an AI assistant is to assist humanity, not to shape it",
+and L808 "avoid undermining users' ability to form informed opinions" — and
+objectivity-on-contested-questions is a HELD-OUT generalization behaviour. Wiring the atom to caution is
 therefore partly an artifact of which modules exist in v18; when objectivity
 gets its module, this atom's affiliation must be revisited. L34 (autonomy as
 a protected end) is red-line misuse-prevention, i.e. harm-side, as blind
@@ -230,9 +238,11 @@ CITATIONS (model_spec.md):
   impractical for the model to do this on the fly and makes model behavior
   less predictable for people. By specifying the answers as guidelines that
   can be overridden, we improve predictability and reliability while leaving
-  developers the flexibility to remove or adapt the instructions."
+  developers the flexibility to remove or adapt the instructions in their
+  applications."
 - L2139: "By default, the assistant should present information clearly,
-  focusing on factual accuracy and reliability."
+  focusing on factual accuracy and reliability --- while adapting its
+  approach to suit different contexts."
 CASE: the document names predictability-and-reliability as an end its
 machinery serves (L105 states the guideline layer EXISTS to improve them)
 and reliability as a dimension of how responses should be composed (L2139).
@@ -295,8 +305,8 @@ engage) targeting the protects_concern slot. The instrument has NO slot for
 conjunction-conditioned engagement today; each would require a schema
 extension — a new channel needing its own design, validation, and
 adversarial review. The campaign cannot verify a new channel before the
-round-4 freeze, and several are already predicted 0/0 no-ops for exactly
-that reason. REJECTED FOR THIS CYCLE: not as falsehoods (they remain
+round-4 freeze, and exactly 2 of 10 are predicted 0/0 no-ops (two more
+are 0/1; count corrected 2026-08-22 per re-review N4) for that reason. REJECTED FOR THIS CYCLE: not as falsehoods (they remain
 recorded fit hypotheses in decl_search_proto/declaration_proposals.json)
 but as out-of-window; the record names the reason so they are not
 re-litigated from scratch if a future cycle takes up schema extension.
@@ -305,15 +315,20 @@ re-litigated from scratch if a future cycle takes up schema extension.
 
 ## CA-1..4 — the four consensus context atoms (declarations)
 
-MECHANISM FACTS (instrument, verified against relevance_by_act.py):
-signature_ok consumes governs_conditional = {quality: [contexts]}: a key's
-governed quality counts for the module only when the key's contexts meet the
-declared list. IMPORTANT: helpfulness and harm currently declare NEITHER
-governs nor governs_conditional, so their signature gate fails OPEN today;
-declaring governs_conditional turns that gate restrictive — the declaration
-widens engagement on the conditioned path while narrowing the gate overall.
-The wholesale-switch caveat applies at full force; arithmetic must show the
-net. INTEGRATION PREREQ for all four: the consensus atom credits
+MECHANISM FACTS (instrument, verified against relevance_by_act.py;
+CORRECTED 2026-08-22 by re-review — the original paragraph here falsely
+claimed helpfulness and harm declare neither governs nor governs_conditional
+and their gates fail open): helpfulness declares governs_concern
+[substance_usefulness, accuracy_calibration, formatting_style, tone_manner];
+harm declares governs_concern [substance_usefulness]. Both signature gates
+are ALREADY restrictive. A governs_conditional declaration on a quality
+already in governs_concern can never bite: signature_ok tests `g in
+gov_decl` (returns True) before the conditional branch. That is exactly why
+CA-1..4 measured INERT (restated in the arithmetic section). CA-1..4's
+blind-concern references to "the gate-restriction effect" were premised on
+the false mechanism and are superseded by this correction; the declarations'
+fate (inert as drafted) is unchanged and now rests on the true mechanism.
+INTEGRATION PREREQ for all four: the consensus atom credits
 (context_atoms_consensus.json, keyed node|assert-idx) are not yet merged
 into the signature contexts slot — "this layer alone changes no engagement"
 by design; the merge lands in the same commit as the declarations or not at
@@ -370,7 +385,7 @@ aggravates; asserted good purpose fails to excuse. The document makes the
 requester's purpose decisive for identical content; helpfulness cannot read
 these clauses without that context.
 DECLARATION: for helpfulness, substance_usefulness counts when the key
-carries requester_purpose_conditioned (22 corpus nodes carry the atom).
+carries requester_purpose_conditioned (22 assert-key credits across 16 distinct nodes; unit corrected 2026-08-22 per re-review N1).
 BLIND CONCERNS: gate-restriction caveat; breadth (22 nodes across several
 sections — the atom fires on intent-conditioned rules generally, not only
 illicit-content ones; that generality is the point, and the adjudication
@@ -383,7 +398,7 @@ read in the vice-versa direction: its colliders were SELF-referential
 (the assistant characterizing its own nature, role, or status — "As a large
 language model..." exhibits; the identity-disclosure family around
 l3505_3595/l3596_3876) while the node concerned the USER's identity
-disclosure. 36 corpus nodes carry the atom. The document treats
+disclosure. 36 assert-key credits across 25 distinct nodes carry the atom (unit corrected 2026-08-22 per re-review N1). The document treats
 self-referential conduct (what the assistant says about itself) as a
 distinct regulated surface; helpfulness's tone/manner rules split on it.
 DECLARATION: for helpfulness, tone_manner counts when the key carries
@@ -470,7 +485,7 @@ DISPOSITIONS (adoption rule as frozen):
   adjudication post-reset; adoption is FINAL only if they are ruled
   defensible-or-instrument-wrong in the engagement's favor per charter.
 - REJECTED BY ARITHMETIC (grounds attached above, not fit): PC-3, PC-4,
-  PC-5. Note for the record: PC-3 (justified-with-reservation) and PC-4
+  PC-5. Note for the record (re-review N6, labeled per disclosure regime): the measured E-only break set is NODE-FOR-NODE identical to the decl-search predicted break set (l3596_3876_n039, l427_460_n003, l797_830_n004) — mechanically expected, since the predictions were instrument re-runs per the proposals' own note, but recorded here as the post-hoc coincidence the disclosure regime invites labeling. Note for the record: PC-3 (justified-with-reservation) and PC-4
   (justified after redo) had genuine document grounds and still measured
   charter-negative — justification and charter are different gates, and
   both did their jobs. The fit signs happened to agree with the charter on
@@ -494,23 +509,27 @@ channels are OR-additive, so every subset's flip set is exactly computable
   help: E 13/3 (+10) | T 7/9 (-2) | P&R 6/12 (-6) | E+T 20/12 (+8) |
         E+P&R 17/15 (+2) | T+P&R 13/21 (-8) | E+T+P&R 24/24 (0)
   caution: HP 3/1 (+2) | EA 3/4 (-1) | HP+EA 6/5 (+1)
-FINDING 1 (structure): all candidates' flip sets are pairwise DISJOINT —
-joint fixes/breaks equal the exact sums of the members' (E+T = 13+7 / 3+9;
-verified across every subset). No interaction exists in this space; the
-per-delta read was numerically right, but that is now PROVEN by the lattice
-rather than assumed.
+FINDING 1 (structure; CORRECTED 2026-08-22 by re-review): flip sets are
+NEARLY disjoint, with exactly ONE overlap — a 2-node FIX overlap between
+empowerment and predictability-and-reliability. Measured E+P&R = 17/15
+against the disjoint prediction 19/15; the triple confirms by
+inclusion-exclusion (24/24 = 13+7+6-2 / 3+9+12). The original "pairwise
+disjoint, verified across every subset" claim was FALSE — its validating
+parenthetical cherry-picked E+T (a pair that happens to be disjoint).
 FINDING 2 (decision): three subsets are charter-positive beyond the singles
 (E+T, E+P&R, HP+EA), but in each, the ADDED delta's marginal contribution is
-negative in every context (T: 7/9 in all three contexts; P&R: 6/12; EA: 3/4)
-— they are carried by their partner, never earning their place. Adopting a
-negative-marginal delta means accepting false positives its own contribution
-causes, offset by another delta's fixes; if the carrying delta were later
-removed, the carried one breaks the charter alone. Selection under the
-campaign's discipline (each delta defensible on its own contribution; each
-new FP individually adjudicated; no quality lowering): E alone for help
-(best net + fewest FPs + positive marginal), HP alone for caution. The
-adoption candidate is UNCHANGED (v19_ADOPT_CANDIDATE.json); the greedy
-conclusion now rests on the exact joint object.
+negative in every context (T: 7/9 in all three contexts; P&R: 6/12 alone,
+4/12 given E; EA: 3/4 in both contexts) — they are carried by their
+partner, never earning their place. Adopting a negative-marginal delta
+means accepting false positives its own contribution causes, offset by
+another delta's fixes; if the carrying delta were later removed, the
+carried one breaks the charter alone. Selection under the campaign's
+discipline (each delta defensible on its own contribution; each new FP
+individually adjudicated; no quality lowering): E alone for help (best net
++ fewest FPs + positive marginal), HP alone for caution. The adoption
+candidate is UNCHANGED (v19_ADOPT_CANDIDATE.json, committed 066fd263); the
+conclusion rests on the exact joint object with the overlap correction
+recorded.
 FINDING 3 (boundary): the full help triple is exactly 24/24 — charter-zero —
-matching the earlier all-deltas bundle measurement; the disjointness also
-explains why.
+matching the earlier all-deltas bundle measurement; the 2-node E/P&R fix
+overlap (FINDING 1) is what brings 26 fixes to 24.
