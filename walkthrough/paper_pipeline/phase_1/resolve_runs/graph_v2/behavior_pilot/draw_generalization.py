@@ -126,11 +126,11 @@ def node_lines():
             seg = span[i:] if i >= 0 else span
             ms = re.findall(r"L(\d+)-L(\d+)", seg)
             if ms:
-                lo = min(int(a) for a, b in ms)
-                hi = max(int(b) for a, b in ms)
-                if nid in out:
-                    lo = min(lo, out[nid][0]); hi = max(hi, out[nid][1])
-                out[nid] = (lo, hi)
+                # A2 fix (draw review, 2026-08-22): keep the SEGMENTS, not
+                # their envelope — scattered-quote nodes (2/762) otherwise
+                # map to every anchor between their extreme lines
+                segs = [(int(a), int(b)) for a, b in ms]
+                out.setdefault(nid, []).extend(segs)
     return out
 
 
@@ -153,15 +153,18 @@ def v5_node_strata(v5_slug):
         parts = r["locator"].split(" > ")
         if len(parts) < 2:
             continue
-        m = re.match(r"#([a-z0-9_]+)", parts[-2] if len(parts) >= 3 else parts[-1])
+        m = re.search(r"#([a-z0-9_]+)", parts[-2] if len(parts) >= 3 else parts[-1])
+        # A1 fix (draw review, 2026-08-22): re.search not re.match — v5 has a
+        # trailing-tag locator form ("... {#anchor authority=...} > ¶N") that
+        # re.match silently dropped (51 rows/behaviour, prioritize_teen_safety)
         if not m:
             continue
         a = m.group(1)
         verd.setdefault(a, {})
         verd[a][r["model"]] = max(verd[a].get(r["model"], 0), int(r["verdict"]))
     out = {}
-    for nid, (lo, hi) in node_lines().items():
-        anchs = {a for a, (s, e) in regions.items()
+    for nid, segs in node_lines().items():
+        anchs = {a for (lo, hi) in segs for a, (s, e) in regions.items()
                  if not (hi < s or lo > e)}
         seat_max = {}
         for a in anchs:
@@ -222,12 +225,14 @@ def main():
     e_draw, ne_draw = stratified_draw(engaged, not_engaged, strata, seed)
     out = {
         "_": "Generalization fresh draw (frozen prereg). v5 comparison layer "
-             "informs strata ONLY — never truth. Node-level seat verdict = max "
-             "over paragraphs; panel-agree = all three full seats on the same "
-             "side of the >=2 cut; unmapped nodes fill residual slots only and "
-             "are counted below.",
+             "informs strata ONLY — never truth. Anchor seat verdict = max "
+             "over its paragraphs (per-segment node-to-anchor attribution; "
+             "prereg addenda 1-3); panel-agree = all three full seats on the "
+             "same side of the >=2 cut; unmapped nodes fill residual slots "
+             "only and are counted below.",
         "modules_file": os.path.basename(mods_file),
         "modules_sha": sha_file(mods_file),
+        "input_shas": {"runlog_v5": sha_file(V5), "model_spec": sha_file(DOC)},
         "v5_slug": v5_slug,
         "slug": slug,
         "seed": seed,

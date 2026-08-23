@@ -113,6 +113,26 @@ drives repairs, and fatter draws buy fewer attempts.
   (~0.1M each) exceeding the fresh bar queue to the following week's bar,
   disclosed.
 
+## ADDENDUM 3 (2026-08-22, draw-machinery defects A1/A2 found by adversarial review, append-only)
+A1: v5_node_strata parsed only the anchor-first locator form; the
+trailing-tag form ("... {#anchor authority=...} > ¶N") was silently dropped
+— exactly 51 rows per behaviour (17 paragraphs x 3 full seats, all
+prioritize_teen_safety) for all six behaviours. The missing-seat fallback
+(split) absorbed it silently, so self-checks passed. A2 (same family):
+node-to-anchor attribution used the ENVELOPE of multi-segment nodes; the two
+scattered-quote nodes (l171_426_n004, l1_170_n042) mapped to anchors their
+text never overlaps, shifting pool composition through the seeded shuffle.
+FIXES: re.search over the locator part (both forms); per-SEGMENT anchor
+attribution. Precedent-consistent remedy (addendum 2): all six draws
+RECOMPUTED under the same registered seed (20260822); pre-A1 artifacts
+preserved in git history. Divergence before the fix (reviewer-quantified):
+objectivity not-engaged 19/20 nodes, user-autonomy 14/20 + 13/20,
+general-welfare 2/20 + 17/20; harmlessness and tradeoffs unaffected. Input
+shas (runlog-v5, model spec) now recorded in each draw artifact (N1).
+Strata inform sampling only; truth untouched; no rulings exist yet.
+ATTEMPT-1 ENGAGEMENT SETS ARE UNCHANGED (the defects touched strata and
+pool composition, not engagement).
+
 ## Confirmation-block rule
 Block 2 runs only if every block-1 behaviour satisfies S1 and no F1/F2
 fired. If block 2 shows materially worse transfer than block 1 (any
