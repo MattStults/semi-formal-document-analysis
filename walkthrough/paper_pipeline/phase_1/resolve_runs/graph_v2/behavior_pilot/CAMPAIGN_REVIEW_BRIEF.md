@@ -126,7 +126,7 @@ FPs post-reset.
 | Six module builds | 1-2 each, incl. post-repair re-verification | all CLEAR-WITH-NITS; corrections recorded append-only |
 | 9b justifications + campaign pace | 1 | BLOCKED-on-PC-4 → fixed (PC-4 redo, fit-rank disclosure, instrument-side concerns demoted to triage) |
 | Draw machinery + contract + arithmetic recompute | 1 | PENDING (running at time of writing; update this row) |
-| Ruling packets + defensibility protocol | 1 | PENDING (running; update this row) |
+| Ruling packets + defensibility protocol | 1 | BLOCKED → resolved: draw-side ordering leak closed (registered shuffle seed), defensibility header neutralized, module-level ruling reconciled, cross-ref trailer trimmed, debris hazard caveated; packets regenerated and leak-checked; re-verification requested |
 | 9b design-round fixes re-verification | 1 | BLOCKED → resolved (b81afbfa): false disjointness lemma corrected (2-node E/P&R fix overlap, inclusion-exclusion on the triple); CA mechanism-facts self-contradiction corrected; PC-4/PC-5 asymmetry stated; citation swap + nits fixed; one MEDIUM refuted by arbitration (v19_ADOPT_CANDIDATE.json exists at 066fd263). Decisions unaffected. |
 
 ## 4. Current state + Sunday sequence
