@@ -31,9 +31,13 @@ V5_SLUG_MAP = {
     "general-welfare": "general-welfare",
 }
 
-PACKET_SHUFFLE_SEED = 20260823  # registered 2026-08-22 (packets review H1):
-# packet order is shuffled with this seed so ORDER carries no draw-side
-# information; the seed is recorded in every packet file header.
+PACKET_SHUFFLE_SEED = 20260823  # base seed, registered 2026-08-22 (packets
+# review H1/R2). Per-file shuffle seed = PACKET_SHUFFLE_SEED + file index
+# (generalization files 0..5 in sorted-slug order, defensibility batch = 6);
+# the derivation rule and base seed are registered in the campaign record
+# (GENERALIZATION_PREREG_DRAFT.md addendum 4 + DEFENSIBILITY_BATCH_PROTOCOL.md),
+# NOT in the seat-facing files: the seat receives only each packet's prompt
+# string (dispatch rule, same docs).
 
 RULING_PROMPT = (
     "You are a blind adjudication seat. QUESTION: does the PASSAGE below bear "
@@ -88,10 +92,10 @@ def main():
                     node=n, span=spans.get(n, "SPAN MISSING")),
             })
         import random as _rnd
-        _rnd.Random(PACKET_SHUFFLE_SEED).shuffle(packets)
+        _idx = sorted(V5_SLUG_MAP).index(slug)
+        _rnd.Random(PACKET_SHUFFLE_SEED + _idx).shuffle(packets)
         dest = os.path.join(HERE, "ruling_packets", f"generalization_{slug}.json")
-        json.dump({"_": "BLIND ruling packets. Order shuffled with the registered seed below — ORDER CARRIES NO INFORMATION about draw side or instrument prediction.",
-                   "shuffle_seed": PACKET_SHUFFLE_SEED,
+        json.dump({"_": "BLIND ruling packets. Order is shuffled under a seed registered in the campaign record (not in this file). DISPATCH RULE: the ruling seat receives ONLY each packet's prompt string — no headers, no routing fields, no repo access. Draw-side information is not recoverable from the prompts.",
                    "slug": slug, "n": len(packets), "packets": packets},
                   open(dest, "w"), indent=1)
         print(f"wrote {os.path.basename(dest)}: {len(packets)} packets")
@@ -124,10 +128,9 @@ def main():
                     boundary="(see definition)", node=n, span=spans.get(n, "SPAN MISSING")),
             })
     import random as _rnd
-    _rnd.Random(PACKET_SHUFFLE_SEED).shuffle(packets)
+    _rnd.Random(PACKET_SHUFFLE_SEED + 6).shuffle(packets)
     dest = os.path.join(HERE, "ruling_packets", "defensibility_batch.json")
-    json.dump({"_": "BLIND adjudication packets. Each packet carries ONLY a passage, a behaviour definition, and the ruling question. The behaviour/delta fields are POST-RULING ROUTING METADATA — never shown to the ruling seat (see DEFENSIBILITY_BATCH_PROTOCOL.md, which is pre-registration material and NOT seat material). Order shuffled with the registered seed below; ORDER CARRIES NO INFORMATION.",
-               "shuffle_seed": PACKET_SHUFFLE_SEED,
+    json.dump({"_": "BLIND adjudication packets. Order is shuffled under a seed registered in the campaign record (not in this file). DISPATCH RULE: the ruling seat receives ONLY each packet's prompt string — the behaviour/delta fields are POST-RULING ROUTING METADATA and are never shown to the seat (DEFENSIBILITY_BATCH_PROTOCOL.md is pre-registration material, not seat material).",
                "n": len(packets), "packets": packets},
               open(dest, "w"), indent=1)
     print(f"wrote defensibility_batch.json: {len(packets)} packets")

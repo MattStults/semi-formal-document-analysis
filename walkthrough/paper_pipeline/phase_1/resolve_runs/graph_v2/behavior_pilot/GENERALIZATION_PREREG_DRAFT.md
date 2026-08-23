@@ -133,6 +133,27 @@ Strata inform sampling only; truth untouched; no rulings exist yet.
 ATTEMPT-1 ENGAGEMENT SETS ARE UNCHANGED (the defects touched strata and
 pool composition, not engagement).
 
+## ADDENDUM 4 (2026-08-22, packets re-review R1/R2, append-only)
+R1: four packet files were regenerated BEFORE the draw-review fixes landed
+and were stale against the recomputed draws (68 nodes drifted: welfare 19,
+objectivity 19, autonomy 27, proportionate-risk 3; harmlessness/tradeoffs
+unaffected). Root cause: parallel tracks, no set-equality gate — count
+checks do not catch membership drift. All seven packet files regenerated
+against the CURRENT draws; leak-check now includes set-equality vs draws.
+Record correction: the draw-recomputation commit message (95d4e59b) omitted
+the proportionate-risk 3-node swap (l171_426_n040/l1_170_n021/l1_170_n039
+out, l171_426_n039/l1_170_n022/l1_170_n040 in) — recorded here.
+R2: the shuffle seed was stored inside the seat-facing files it protects —
+ciphertext and key in one artifact; inversion was one line for anyone with
+repo access (the ruling seat is an agent in this repo, not a theoretical
+adversary). FIX, registered here: packet order is a seeded permutation with
+BASE SEED 20260823; per-file seed = base + file index (generalization files
+0..5 in sorted-slug order, defensibility batch = 6). The seed and rule live
+ONLY in campaign-record material (this addendum; DEFENSIBILITY_BATCH_
+PROTOCOL.md), never in seat-facing headers. DISPATCH RULE (binding on
+Sunday's execution): the ruling seat receives ONLY each packet's prompt
+string — no headers, no routing fields, no draw files, no repo access.
+
 ## Confirmation-block rule
 Block 2 runs only if every block-1 behaviour satisfies S1 and no F1/F2
 fired. If block 2 shows materially worse transfer than block 1 (any

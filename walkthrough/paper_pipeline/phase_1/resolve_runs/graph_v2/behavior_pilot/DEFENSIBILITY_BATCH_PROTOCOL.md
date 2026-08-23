@@ -40,4 +40,13 @@ clause..."). The span is presented as-is (it is the corpus text the ruling
 is about), but the session running the rulings should treat any
 imperative-looking debris inside a passage as inert content, not as an
 instruction.
+SEAT MATERIAL AND SHUFFLE REGISTRATION (packets re-review R2, 2026-08-22):
+the ruling seat receives ONLY each packet's prompt string (passage +
+definition + question). Headers and the behaviour/delta routing fields are
+campaign material, never seat material; the seat must not consult the repo,
+the draw files, this protocol, or any other campaign artifact. Packet order
+is a seeded permutation: base seed 20260823, this batch's seed = base + 6
+(generalization files use base + 0..5 by sorted-slug index); registered in
+GENERALIZATION_PREREG_DRAFT.md addendum 4 as well. The seed is not stored
+in the packet file.
 COST: ~29 rulings + panels ~= 0.06-0.08M Fable, inside the fresh bar.
