@@ -110,8 +110,9 @@ def paragraph_index(regions, line):
 
 
 def node_lines():
-    """corpus node id -> (min_line, max_line), parsed from the packet SOURCE
-    TEXT L-markers (ctx_chunk1-8 + ctx_ext1-3 cover all 762 corpus nodes).
+    """corpus node id -> list of (lo, hi) line SEGMENTS, parsed from the
+    packet SOURCE-TEXT L-markers (ctx_chunk1-8 + ctx_ext1-3 cover all 762
+    corpus nodes); per-segment, not envelope (draw review A2, 2026-08-22).
     NOTE (2026-08-22): recurse/root/graph.json CANNOT be used for this join —
     its segmentation generation differs from the translation corpus
     (e.g. L1108-1368 vs l1108_1367) and its ids do not match corpus ids."""
