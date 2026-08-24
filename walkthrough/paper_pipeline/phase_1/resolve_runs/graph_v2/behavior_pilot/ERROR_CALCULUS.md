@@ -173,3 +173,43 @@ TO BUILD (in order): (1) provenance-tiered ruling records + migration;
 driver glue chaining route→move→validate; (4) criticality brief pinning
 (unblocks V2 filtering); (5) the §6 gate grammar (v3 engine, with the
 next document).
+
+## 11. AMENDMENTS FROM MODEL CHECKING (2026-08-24, calculus_model.py — the
+## checker found two reachable-but-undefined outcomes; defined here)
+
+A1 (R3 exhaustion — "separable but no principled delta"). R3 carries a
+   DELTA BUDGET (2 attempts per mismatch; every attempt, pass or fail,
+   appends to HYPOTHESIS_LEDGER.jsonl, and a ledger entry may never be
+   retried). If the census says SEPARABLE but no candidate passes V1–V5
+   within budget, the certificate and the failure together are EVIDENCE OF
+   A MISSING INTENSION: the feature space distinguishes the nodes, but no
+   principled (class-card-passing) declaration carries the distinction —
+   the separation is gerrymander-only at the current concept vocabulary.
+   ROUTE: R3x → I3 (mint the concept; port P3), or if minting exhausts,
+   I4/DEFENSIBLE as in R5x. This closes outcome R3_NO_VALID_DELTA.
+A2 (revert re-entry). A delta reverted at V5 re-enters the router AS THE
+   SAME MISMATCH with its ledger entry recorded; by the no-retry rule the
+   failed delta is excluded, and the R3 budget decrements. Exhaustion
+   routes per A1. This closes outcome REVERTED_THEN and bounds the
+   adopt→revert cycle structurally: each traversal consumes budget, and
+   every terminal is a recorded outcome.
+A3 (model limitations, recorded): the checker models retranslation as
+   always yielding a faithful V (a still-unfaithful retranslation would
+   re-enter R2b; the audit lane's 85% gate governs there — flagged for the
+   v1 model), and treats census transitions on retranslation/minting as
+   fully nondeterministic (conservative: properties hold on all branches).
+   Checker: calculus_model.py; result after A1/A2: 0 gaps, 0 ambiguities,
+   0 cycles, 0 undefined outcomes over all reachable states.
+A4 (second checker pass — consumer builds are PER-FEATURE, not
+   per-mismatch). A mint (I3) can produce a distinction that is annotated
+   but unconsumed, returning the mismatch to REACHABLE with the prior
+   consumer already built: R4 as first written had no rule there. AMENDED:
+   R4 fires whenever census = REACHABLE, building the consumer for the
+   feature that currently certifies separability; its budget is per
+   FEATURE (finite because the inventory at any version is finite), and
+   overall termination holds because every R4 firing consumes a fresh
+   inventory feature and every R3/R5 firing consumes a mismatch-local
+   budget. Exhaustion (no unconsumed certifying feature left) is
+   impossible at census=REACHABLE by definition of the REACHABLE view —
+   the certificate names the feature. Checker updated; final result:
+   0 gaps, 0 ambiguities, 0 cycles, 0 undefined outcomes.
