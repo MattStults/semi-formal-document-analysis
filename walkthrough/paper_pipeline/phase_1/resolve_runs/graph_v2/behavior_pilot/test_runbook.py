@@ -22,8 +22,10 @@ def test_tools_expose_claimed_entry_points():
     assert getattr(rba, "DECLARABLE_MOVES", None)
 
 def test_lineage_instruction_is_verbatim_pinned():
-    t = open(os.path.join(HERE, "LINEAGE_SEAT_INSTRUCTION.md")).read()
-    assert "BLIND relevance adjudicator" in t and "governs, permits, forbids, scopes" in t
+    t = " ".join(open(os.path.join(HERE, "LINEAGE_SEAT_INSTRUCTION.md")).read().split())
+    # verbatim = token sequence, not byte layout (the file wraps lines)
+    assert "BLIND relevance adjudicator" in t
+    assert "governs, permits, forbids, scopes, or directly conditions" in t
 
 def test_runbook_carries_stop_conditions_and_registration_order():
     assert "STOP CONDITIONS" in RB
