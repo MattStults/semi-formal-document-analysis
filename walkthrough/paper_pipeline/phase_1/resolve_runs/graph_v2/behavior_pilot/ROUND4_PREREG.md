@@ -87,3 +87,34 @@ Drafted by the campaign orchestration seat, 2026-08-21 (scaffold);
 re-issued at freeze 2026-08-24 with the protocol verbatim.
 Matt: ______ (signature applies to this re-issue; the run may not start
 before it).
+
+## PRE-SIGNATURE AMENDMENTS (2026-08-24, appended before signature; the
+## protocol section above remains verbatim — these bind at signature)
+1. DEFENSIBILITY PASS (Matt's decision, 2026-08-24): round-4 misses receive a
+   pre-declared ONE-PASS blind Fable defensibility adjudication, same shape
+   and outcome-branch discipline as DEFENSIBILITY_BATCH_PROTOCOL.md (one
+   pass, no iteration, no second batch). HEADLINE metric =
+   match-or-adjudicated-defensible; RAW match is reported alongside in the
+   same table, always. The registered predictions above are RAW-basis; the
+   defensibility pass cannot move a cell below its raw value, only up, and
+   both numbers publish.
+2. BAND UNITS (Matt's decision): bands are in NODES (+-2 nodes per cell).
+   The "+-5 pts" gloss holds only at n=40; for harm's CLOSED engaged
+   population (n=17) the band is +-2 nodes = +-11.8 pts. Nodes are the
+   registered unit everywhere.
+3. COST MODEL CORRECTED (venue measurement): a fresh subagent seat measures
+   ~24k raw tokens (~20k identical harness prefix). Prompt caching bills
+   cache reads at 0.10x, so steady-state effective cost is ~6k-equivalent
+   per seat (empirical check: /usage movement from the 2026-08-24 37-seat
+   batch). A lean seat agent (.claude/agents/ruling-seat.md) is defined and
+   loads at next session start; its measured cost will be appended here
+   before the run starts. The scaffold's 0.37-0.4M estimate is superseded by
+   the measured figure; the go/hold checkpoints stand, plus a hard hold at
+   any /usage threshold Matt names at signature.
+4. SUBSTITUTION VALIDATION (disclosed, per the protocol's own rule):
+   cheap-tier parity was attempted 2026-08-24 against the blind Fable
+   defensibility rulings in production configuration and FAILED — Sonnet
+   2/5, Haiku 2/5 on hard rows, with the two cheap tiers agreeing on their
+   wrong answers (no cross-cheap escalation trigger exists). Substitution
+   REJECTED; all rulings are Fable. Artifact:
+   ruling_packets/parity_validation_2026-08-24.json.
