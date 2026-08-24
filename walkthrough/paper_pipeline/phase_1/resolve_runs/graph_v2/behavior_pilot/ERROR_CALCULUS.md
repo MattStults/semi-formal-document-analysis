@@ -274,3 +274,32 @@ A7 (mix->policy map; calculus_policy_map.py). The A5 ordering question
    premises (4u) are cheap against builds/mints (5-8u). The map is the
    standing tool for detecting when that flips (e.g., panel costs 3x, or
    cheap certified premise seats).
+A8 (CONVERGENCE DISCIPLINE — loops close on measured progress, not
+   counters; Matt's question 2026-08-24; verified in calculus_model_v2.py).
+   v0's budgets guaranteed termination crudely and conflated "proved no
+   distinction exists" with "stopped looking". Replaced by three rules:
+   (1) NO-REVISIT IS STRUCTURAL: the hypothesis ledger closes the delta
+   space (finite per inventory version, attempts never repeat); coined
+   criteria are recorded and novelty-checked. Budgets pace COST only.
+   (2) PER-PASS PROGRESS OBLIGATION: every coining pass on a collided
+   mismatch must STRICTLY SHRINK its collider set (computed exactly by the
+   census); a no-progress pass closes the branch immediately. Collider
+   count is a well-founded ranking ON THE PROBLEM — convergence in at most
+   |initial colliders| productive passes, "productive" measured not hoped.
+   The zero-collider case (separable but no principled delta validated,
+   A1's missing-intension) has a DIFFERENT progress metric — growth of the
+   delta candidate space — and gets exactly ONE coin per inventory
+   version. (The v2 checker CAUGHT the cycle this distinction prevents:
+   collider-ranking gives no room at X=0, and routing that case through
+   the collided track looped SEP->coin->SEP infinitely. Second time a
+   checker has corrected the calculus's author.)
+   (3) TWO EXHAUSTION TERMINALS, never conflated: TERMINAL-BY-DOCUMENT
+   requires the exhaustion CERTIFICATE (enumerable move space provably
+   emptied — verify_terminal.py's existing mechanism — plus audited V and
+   panel T); budget/ledger exhaustion WITHOUT a certificate yields
+   SUSPENDED-OPEN at inventory k — re-enterable when the inventory grows,
+   which is exactly the standing PENDING-VOCAB semantics (contract
+   9g-addendum) generalized to the whole calculus.
+   v2 checker results: 137 states, 0 gaps, 0 ambiguities, 0 cycles,
+   0 progress-monotonicity violations; terminals now include
+   SUSPENDED_OPEN and TERMINAL_DOC_CERTIFIED as distinct outcomes.
