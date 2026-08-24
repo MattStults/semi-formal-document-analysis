@@ -72,3 +72,56 @@ frontier spend concentrated in the >=15% spot-check.
 - First batch queued for the loop: tradeoffs' 12 FPs (attempt-2 repair),
   helpfulness's 9 separable FPs (pending mechanism), harm's 8 FNs
   (party-wall family), caution's 13 FPs.
+
+## v2 ADDENDA (2026-08-24, Matt's design review in session)
+
+### A. SUPERSESSION ARCHITECTURE (Matt's reframe: make errors free to fix,
+### rather than requiring cheap seats to be error-free)
+The parity measurements (below) show no cheap tier reaches ruling-grade
+parity even with the lineage brief and few-shot calibration. Instead of
+gating cheap tiers OUT, the architecture makes their errors COSTLESS:
+- TRUTH WITH PROVENANCE TIERS: every ruling is an append-only record
+  (node, behavior, verdict, grounds, seat-tier, brief-version). Precedence:
+  human > frontier panel > frontier single > cheap consensus > cheap
+  single. A higher tier supersedes; nothing is overwritten.
+- TOTAL RECOMPUTABILITY: everything downstream of truth (charter, cells,
+  census, certification) is deterministic scripts over the assembled
+  ledger. Flipping one verdict and recomputing the world costs seconds and
+  $0. Disagreeing with a DeepSeek decision = one frontier wave seat on that
+  node (cents) + rerun. THIS is why 0.75 does not hurt.
+- CHEAP TIERS DIRECT ATTENTION, NEVER TRUTH — the campaign's founding
+  doctrine applied to model tiers. Cheap seats prioritize where frontier
+  looks (first-pass sweeps, disagreement surfacing, triage); certified
+  CLAIMS are computed only over frontier-tier-or-better records, with the
+  cheap layer reducing frontier VOLUME (rule only where cheap tiers
+  disagree with the instrument, with each other, or with spot-checks).
+- MEASURED CERTIFICATES (2026-08-24, 20 ledger-known nodes, Fable ref
+  20/20): Haiku 0.85 plain / 0.80 few-shot (over-inclusive bias);
+  DeepSeek-V4-Flash 0.75 (mixed 1/4); Sonnet 0.70 (strict 0/6). Opposite
+  bias directions across tiers -> cross-tier disagreement is a stronger
+  escalation trigger than same-tier duplication (their errors decorrelate).
+  Artifacts: parity_cheap_tier_certificates.json, parity_*_rulings.json,
+  parity_deepseek_raw.txt.
+
+### B. REASON-PRESERVING VALIDATION (Matt: "changes must preserve not only
+### the right call but the right reasons")
+Verdict-preservation is insufficient: a delta can keep a node correctly
+engaged while silently REPLACING the mechanism that engages it (e.g. the
+semantically-right act path lost, a fail-open accident now carrying the
+node). Right call, wrong reason = a latent break that the next delta
+detonates. The instrument makes this checkable deterministically:
+explain_relevance computes each engagement's full path (bespoke act ->
+bridge -> canonical act -> walls admitted). VALIDATION STEP 3b (mandatory
+for every delta): diff the per-node REASON SIGNATURE before/after for all
+verdict-unchanged nodes; classify drift:
+  - none: same path -> pass silently;
+  - augmented: original path intact, new path added -> pass, logged;
+  - SUBSTITUTED: original path lost, verdict carried by a different
+    mechanism -> flagged for design-tier review before adoption (the
+    right-call-wrong-reason class);
+  - DEGRADED: verdict now carried by a fail-open (no-information) branch
+    -> treated as a BREAK regardless of the verdict bit.
+Truth-side analogue: seat grounds must quote the span (already enforced by
+the brief); a mechanical quote-presence check runs on every ruling batch,
+and superseding rulings record WHY the lower tier's grounds failed, so the
+brief improves from its own error ledger.
