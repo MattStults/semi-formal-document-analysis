@@ -303,3 +303,39 @@ A8 (CONVERGENCE DISCIPLINE — loops close on measured progress, not
    v2 checker results: 137 states, 0 gaps, 0 ambiguities, 0 cycles,
    0 progress-monotonicity violations; terminals now include
    SUSPENDED_OPEN and TERMINAL_DOC_CERTIFIED as distinct outcomes.
+A9 (EXTENSIONAL IDENTITY — the outcome space at every node, mechanically;
+   Matt's question 2026-08-24; measured by idea_space.py).
+   PRINCIPLE: for this instrument an idea IS its extension. The engine
+   consumes only feature vectors, so any two deltas, concepts, or
+   distinctions inducing the same partition of the corpus are THE SAME
+   ROUTE UNDER DIFFERENT NAMES — and identity is therefore a computation,
+   not a judgment. Consequences, per node type:
+   (a) CONFIG nodes (R3): the space is CLOSED and countable. Ledger
+       entries are re-keyed by EXTENSIONAL FINGERPRINT (sha of the induced
+       flip-set + reason-drift, which probe.py already computes) instead
+       of delta syntax — syntactically novel proposals with a
+       fingerprint already in the ledger are the same attempt and are
+       refused mechanically. Single-field spaces are enumerated outright
+       (verify_terminal.py); compound spaces are deduplicated to their
+       extension classes.
+   (b) MECHANISM nodes (R4): closed under the §6 gate grammar (kinds x
+       features, finite).
+   (c) COINING nodes (R5/R3x): the one place Matt's fallibility suspicion
+       is CORRECT and irreducible. The extension lattice bounds the space
+       above; mined candidates (split-mining over collider contrasts,
+       decl-search interactions) give a FINITE MEASURED FRONTIER; and
+       extensional dedup prevents re-coining an old concept under a new
+       name. But GROUNDABILITY — whether an extension can be annotated
+       consistently from source text — is a reading (port P3), so
+       "exhausted" at a coining node always means exhausted RELATIVE TO
+       THE MINED FRONTIER, recorded as such, EXCEPT where the
+       BYTE-IDENTITY CERTIFICATE applies: same-vector twins whose source
+       claims are byte-identical admit NO groundable distinction by any
+       reading — the only absolute closure a coining node can have.
+   MEASURED (2026-08-24, inventory v19-era, unmasked view): 762 nodes,
+   614 distinct vectors -> the instrument can express at most 614 ideas
+   over this corpus; 148 nodes sit in 45 provably-indistinguishable twin
+   classes; ZERO classes carry the byte-identity certificate — meaning
+   nothing in this corpus is currently provably terminal-by-document;
+   every standing "terminal" is SUSPENDED-OPEN under A8's semantics, a
+   distinction the calculus now enforces.
