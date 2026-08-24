@@ -91,3 +91,28 @@ T2+T3 CENSUS SEPARABILITY of the 12 indefensible misses (v19, R4 truth
    NET: 10 of 12 indefensible misses are fixable inside existing machinery;
    the canary's 0.625 raw cell is a configuration debt, not a translation
    failure — consistent with the pipeline-origin verdict above.
+
+## VERSION CURVE (2026-08-24): every instrument version vs the SAME fresh
+## 80-node truth (R4_VERSION_CURVE.json) — the overfit question, answered
+v10 0.637 acc / 0.509 prec -> v12 0.650/0.519 -> v13 0.700/0.568 ->
+v15 0.750/0.632 -> v19 0.750/0.625.
+1. NOT overfit: the curve is monotone on truth no version ever saw. Every
+   adopted fix family through v15 generalized (fresh accuracy +11.3pts over
+   the campaign; precision +12.3pts v12->v19). Nothing needs backtracking.
+2. SATURATION at the current fix families: v15->v19 (context atoms,
+   purposes, subtypes-era work) is flat on fresh truth — the last week
+   polished the ruled pool without moving the residual frontier.
+3. POOL HARDENING quantified: round-2's pool yielded 0.78 to v12; today's
+   residual pool yields 0.519 to the same v12 — the remaining unruled
+   population is ~26pts harder. Today's 0.625 on it is v19 doing real work
+   on the hardest residue, not a regression.
+4. HEADROOM: census says 9/11 residual FPs are separable with existing
+   features — the next fix family (bridge/wall configuration) is cheap and
+   already identified; it is simply not the family the last week worked on.
+CURVE IMPLICATION FOR NEW BEHAVIORS: within-document per-behavior effort is
+neither zero nor unbounded — the builders' ~40 gaps cluster in 5 families
+heavily SHARED across the six modules (party expressiveness in 3+,
+prohibition channel in 3, purpose blindness in 4), which predicts
+amortizing marginal cost. The generalization attempt-1 (staged, signed,
+~1pt in wave venue) is precisely the experiment that measures this curve;
+its fix-ledger classes are the curve's units.
