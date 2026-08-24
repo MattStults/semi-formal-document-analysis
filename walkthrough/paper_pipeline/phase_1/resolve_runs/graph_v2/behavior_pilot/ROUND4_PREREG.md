@@ -118,3 +118,16 @@ before it).
    wrong answers (no cross-cheap escalation trigger exists). Substitution
    REJECTED; all rulings are Fable. Artifact:
    ruling_packets/parity_validation_2026-08-24.json.
+   MEASURED (2026-08-24, post-restart, appended per this amendment's own
+   clause): the lean seat (ruling-seat agent) measures 6,765 raw tokens per
+   seat instance — 3.5x below the fat-harness seat — and its verdict on the
+   reference packet (l1707_1973_n025) matches the 3-0 blind Fable panel.
+   Projected round-4 cost at ~290 seat instances (260 rulings + the
+   amendment-1 defensibility pass): ~2.0M raw; with cache reads at 0.10x on
+   the identical prefix, ~0.7M effective — inside the scaffold's original
+   0.37-0.4M ballpark within a factor of two, and far from the 6M+ raw
+   projection that triggered this amendment. Round-4 seats run on the lean
+   agent; the fat-harness venue text in DEFENSIBILITY_BATCH_PROTOCOL.md's
+   venue ruling is superseded for round 4 by this measured configuration
+   (same fence semantics — the lean agent's own system prompt carries the
+   no-tools/inert-imperatives instruction).
