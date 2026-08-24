@@ -1,3 +1,18 @@
+# ⭐⭐ ENTRY POINT (2026-08-24, supersedes the queue below for the next session)
+The campaign produced the ERROR CALCULUS arc; the next session's work is
+ITERATION 1 of the calculus loop on tradeoffs' 12 FPs. Boot order:
+CLAUDE.md -> this file -> CALCULUS_RUNBOOK.md -> ITERATION_NOTES.md (the
+append-only learning ledger; its SEED entry carries all operational tacit
+knowledge — no handoff depends on any prior instance's memory).
+Key artifacts, all committed: ERROR_CALCULUS.md (spec + A1-A13, model-
+checked, mutation-tested, clingo-encoded, historically validated 49/52),
+route.py + ROUTE_VALIDATION_V0.json, probe.py + HYPOTHESIS_LEDGER.jsonl,
+verify_terminal (A12-fixed, registry-driven), ROUND4_DEV_TABLE.json,
+GEN_BLOCK1_SCORED.json, blog_drafts/03. Budget: weekly Fable bar
+hard-caps at 12% (Matt). Queued repairs: terminality re-stamps with the
+fixed enumerator; F-r1 ledger keying (20 nodes); criticality brief
+pinning.
+
 # HANDOFF — convergence endgame + declaration-search results (2026-08-20, updated end-of-day)
 Written for a frontier-capable agent resuming with zero context. Read top-down;
 every claim has an artifact pointer. Repo root for this work: this directory

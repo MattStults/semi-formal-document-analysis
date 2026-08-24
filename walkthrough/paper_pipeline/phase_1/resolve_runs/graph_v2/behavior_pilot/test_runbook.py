@@ -30,3 +30,12 @@ def test_lineage_instruction_is_verbatim_pinned():
 def test_runbook_carries_stop_conditions_and_registration_order():
     assert "STOP CONDITIONS" in RB
     assert RB.index("REGISTER the predicted") < RB.index("STEP 4")
+
+
+def test_notes_ledger_exists_and_runbook_binds_it():
+    assert os.path.exists(os.path.join(HERE, "ITERATION_NOTES.md"))
+    assert "ITERATION_NOTES.md" in RB or True
+    rb = open(os.path.join(HERE, "CALCULUS_RUNBOOK.md")).read()
+    assert "STEP 5b" in rb and "ITERATION_NOTES.md" in rb
+    notes = open(os.path.join(HERE, "ITERATION_NOTES.md")).read()
+    assert "SEED" in notes and "append-only" in notes

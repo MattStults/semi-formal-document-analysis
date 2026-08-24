@@ -42,6 +42,15 @@ STEP 5 — RECORD: traces (trace_check.py-certifiable) with evidence
   non-certificated exhaustion; commit + push each step's artifacts before
   the next step starts.
 
+STEP 5b — NOTES (binding): append a dated entry to ITERATION_NOTES.md at
+  EVERY step — surprises, doc errors, next-agent-must-know items. An
+  iteration whose learning is not in that file did not record its
+  learning; the runbook is rewritten FROM that file, never from memory.
+  HANDOFF = a fresh session booting CLAUDE.md -> HANDOFF_CURRENT.md ->
+  this runbook -> ITERATION_NOTES.md. No compaction ritual, no handoff
+  prompt: if a departing instance holds uncommitted context, THAT is the
+  bug — commit it here before ending.
+
 STOP CONDITIONS (halt and surface, do not improvise): any spec gap (a
 state with no applicable rule), any checker failure, any floor that a
 change would lower, any needed judgment lacking a pinned brief, /usage
