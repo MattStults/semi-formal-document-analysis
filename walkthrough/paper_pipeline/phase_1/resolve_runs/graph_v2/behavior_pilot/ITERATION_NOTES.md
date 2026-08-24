@@ -72,3 +72,19 @@ Batch: the 12 indefensible engaged-FPs of how-to-approach-tradeoffs
 - Prereg alignment: the predictions file blamed a meta/procedural
   no-walls mechanism; a walls-style C-D delta would classify the fix
   ledger entry EXPECTED (module-local), keeping attempt-2 in-protocol.
+
+## 0002 — BUDGET RULING (Matt, 2026-08-24, transcript->artifact)
+The 12% weekly-bar cap registered in the SEED entry was already crossed
+before iteration 1 spent anything: Matt pasted /usage = 23% Fable at the
+step-1 checkpoint. STOP CONDITION fired and was surfaced, not improvised
+past. Matt's ruling: ITERATION 1 MAY SPEND UP TO 3 POINTS — next hard
+halt at 26% — and should ideally land the COMPLETE fix arc (escalation,
+moves, V1-V5, confirmation wave) inside that envelope. This supersedes
+the 12% registration for this exercise only. Checkpoint discipline
+unchanged: ask Matt to paste /usage at every checkpoint; 26% is a
+halt-and-surface line, not a soft target.
+- BUDGET PLAN registered against SEED wave economics (40-node seat
+  ~35-70k raw, cache reads 0.10x): R1 escalation 3 seats x 9 nodes
+  ~0.5-1 pt; V4 per-flip adjudication ~0.5 pt; STEP-4 fresh
+  confirmation wave ~1-1.5 pt. Orchestration stays lean; every wave is
+  preceded by a /usage checkpoint.
