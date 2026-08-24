@@ -239,3 +239,38 @@ A5 (cost-ordering and batch semantics; calculus_cost_model.py,
    machine, plus MUTATION TESTING of both checkers (the dead-slot-probe
    lesson: an unmutated checker may be checking itself) and an ASP
    encoding so the project's own solver verifies its own repair calculus.
+A6 (verification stack COMPLETE + reuse corrections; 2026-08-24 second
+   session of model work). (a) ASP ENCODING: calculus.lp encodes the
+   machine declaratively; clingo independently confirms 0 gaps / 0
+   ambiguities / 0 cycles. (b) MUTATION TESTING: mutate_calculus.py plants
+   5 defect classes (dropped rule, dropped guard, double-fire, budget
+   removal/cycle, dead-end); the clingo checker catches 5/5 — the
+   dead-slot-probe tautology risk is retired for this checker. (c) TRACE
+   LEGALITY (the auditable §9 mechanism, Matt's design): historical
+   validation runs as (i) deterministic REPLAY — route.py derives each
+   historical mismatch's route purely from committed artifacts (census
+   recomputed at the historical contract version — demonstrated cheap by
+   the v10–v19 scoring, seconds per version; truth tiers from ledger
+   provenance; recorded audits/adjudications as port events); (ii) each
+   case emits a TRACE (transition sequence, each step carrying its
+   evidence pointer artifact+sha — the cycle.py typed-artifact
+   discipline applied to routing); (iii) trace_check.py certifies every
+   trace is a legal path of the SAME clingo machine (demonstrated: legal
+   trace certified, tampered step caught); (iv) predicted terminal vs
+   recorded resolution = the acceptance comparison. Cost: ~zero beyond
+   building route.py — all replay, no seats.
+   (d) REUSE CORRECTIONS (found by inventorying the repo's other
+   semi-formal models): verify_terminal.py ALREADY implements exhaustive
+   move-space enumeration proving terminality — route.py must call it,
+   not re-implement R3/R4 exhaustion; mutation_scope.py already implements
+   single-dimension sensitivity analysis; cycle.py is the standing typed-
+   artifact state machine whose discipline traces inherit. The calculus's
+   novelty is the PARTITION + PORTS + the verified router — not these
+   components, which predate it and are cited as its implementation base.
+A7 (mix->policy map; calculus_policy_map.py). The A5 ordering question
+   parameterized over failure-mix and environment rates: at MEASURED seat
+   costs EAGER (premises-first) wins at every tested mix and error rate —
+   the ordering is insensitive to mix in the current cost regime because
+   premises (4u) are cheap against builds/mints (5-8u). The map is the
+   standing tool for detecting when that flips (e.g., panel costs 3x, or
+   cheap certified premise seats).
