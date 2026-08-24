@@ -339,3 +339,30 @@ A9 (EXTENSIONAL IDENTITY — the outcome space at every node, mechanically;
    nothing in this corpus is currently provably terminal-by-document;
    every standing "terminal" is SUSPENDED-OPEN under A8's semantics, a
    distinction the calculus now enforces.
+A10 (coining bounds + capability routing; Matt's questions 2026-08-24).
+   (a) NO INTENSION-SIDE BOUND, STATED WHY: word-based bounds fail because
+   readings are not compositional in word senses (scope ambiguity grows
+   factorially; most sense-combinations are incoherent), distinctions are
+   often structural/pragmatic rather than lexical (exhibit:illustrate is
+   carried by document markup), and groundability is a property of the
+   READER-TEXT PAIR — a pinned brief eliciting consistent annotation —
+   not of the text alone (measured: 20/20 vs 15/24 on identical material
+   under different briefs). The operative bound is EXTENSIONAL (A9): a
+   coining node's outcome space is the set of cuts of its twin class,
+   <= 2^(c-1) for class size c (single digits for our measured classes) —
+   many names, few routes; the router traverses routes.
+   (b) CAPABILITY ROUTING — five questions, asked in order, deciding what
+   each decision node requires:
+   Q1 output a function of committed artifacts?        -> DETERMINISTIC.
+   Q2 judgment class has a pinned, stability-measured brief? if NOT ->
+      DESIGN TIER pins it first (unpinned judgment is unstable at every
+      tier; tier choice is meaningless before the instruction exists).
+   Q3 parity certificate for tier T on THIS brief (measured on
+      ledger-known cases, free)? -> CHEAPEST CERTIFIED TIER + seeded
+      spot-check + escalation tripwire. Certificates live in the repo and
+      re-measure when briefs change: the capability map is empirical and
+      self-updating, never a standing opinion.
+   Q4 decision GENERATIVE (naming a concept) rather than classificatory?
+      -> FRONTIER + human ratification (P3: no answer key can certify it).
+   Q5 decision binds future process (floor, prereg, exhaustion ruling)?
+      -> HUMAN signature.
