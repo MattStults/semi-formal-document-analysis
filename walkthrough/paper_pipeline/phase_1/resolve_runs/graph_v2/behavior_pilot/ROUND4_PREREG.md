@@ -189,3 +189,34 @@ E3 — SEAT-MATERIAL FORMAT PINNED (the gap the canary exposed: the prereg
    any dispatch; its output commits with the packets. Rejected
    alternative, by name: scoring the T-format canary as-is (option B) —
    it indicts the entire claim-aware truth ledger and proves too much.
+E4 — DIAGNOSIS CLOSED; LINEAGE VENUE RECOVERED AND REPLICATED (2026-08-24).
+   The pilot gate FAILED (T 0.75 / C 0.70 — format hypothesis refuted), and
+   the timeframe search Matt directed recovered the rounds-1-3 seat
+   instruction verbatim from the round-3 dispatch transcripts (it had
+   never been committed — a rulings-go-in-the-repo violation, cured by
+   LINEAGE_SEAT_INSTRUCTION.md). REPLICATION: one wave seat under the
+   recovered instruction scored 20/20 against the ledger on the pilot
+   nodes. Canary attempt 1's divergence is therefore fully attributed:
+   (a) an ad-hoc, stricter ruling question (the recovered criterion —
+   "governs, permits, forbids, scopes, or directly conditions" — is the
+   judge the ledger speaks); (b) mis-derived registered predictions: the
+   freeze script implemented "over all-truth" literally (0.9336) where
+   every actual fresh draw under the SAME judge landed 0.57-0.78 and prior
+   rounds registered lineage bands (round-2 passed at 0.78 in band
+   0.71-0.87) — the in-sample rate ignores the known generalization gap.
+   RE-REGISTration FOR THE CANARY RE-RUN (requires Matt's signature):
+   - Seat: LINEAGE_SEAT_INSTRUCTION.md verbatim, wave form (one blind
+     Fable seat per wave file; E3's packet anatomy stands, its
+     one-packet-per-seat dispatch form is superseded for round 4).
+   - Panels: the 19 already-registered panel nodes ruled by THREE
+     independent wave seats on a separate panel file; majority supersedes.
+   - Draw/seeds/exclusions: UNCHANGED (committed).
+   - REGISTERED PREDICTIONS, re-derived from lineage (supersede the
+     all-truth figures, which stand in the freeze section as a recorded
+     erratum): engaged precision band 0.71-0.87, decline-correctness band
+     0.61-0.77 (round-2's passed bands, the last same-judge fresh-draw
+     measurement; v19 carries every adopted improvement since v12, so
+     within-or-above band is the expectation and above-band triggers the
+     standing leak-signature check). F1/F2 read against these bands.
+   - Cost: wave form ~= 5 seats total (2 waves + 3 panel seats), ~0.2
+     points.
