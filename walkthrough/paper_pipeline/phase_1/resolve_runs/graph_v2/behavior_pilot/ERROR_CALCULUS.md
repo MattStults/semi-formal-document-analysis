@@ -392,3 +392,44 @@ A11 (§9 HISTORICAL VALIDATION v0 — EXECUTED; Opus build, Fable-verified;
    the full declarable move set and current truth, NO exhaustion
    certificate may cite it; A8's certified-terminal path is effectively
    closed pending that fix, and every standing terminal is SUSPENDED-OPEN.
+A12 (F-r2 STRUCTURAL FIX — data-driven move spaces; Matt's requirement:
+   "a decision from a previous search must immediately reflect in the
+   next one"). Implemented 2026-08-24:
+   - RBA.DECLARABLE_MOVES is THE single-source registry of engine-
+     consumable declaration channels; every enumerator derives from it.
+   - verify_terminal.py now: enumerates purpose_concern moves (the F-r2
+     omission); no longer forecloses act-unmatched nodes (the purpose
+     channel is act-independent — a second latent staleness found during
+     the fix); delegates truth to the maintained assembly (fresh_draw4 +
+     defensibility overlay — confirmed live: the rescued node reads
+     'relevant'); and every TERMINAL verdict now CARRIES ITS ENUMERATION
+     SCOPE in the verdict string — a certificate names what it exhausted,
+     so a subset enumeration can never again masquerade as an absolute
+     claim (A8 honesty, enforced syntactically).
+   - test_move_registry_handshake fails loud when the engine grows a
+     channel the registry lacks, or when verify_terminal's ENUMERATED +
+     KNOWN_UNENUMERATED stop covering the registry (the census
+     SLOT_INVENTORY handshake pattern, generalized). KNOWN_UNENUMERATED
+     (arg_sorts, party_concern, governs_conditional) are declared, so
+     their existence structurally blocks absolute terminality claims
+     until handlers exist.
+A13 (HUMAN-DENSITY DESIGN — Matt's iteration concern). Humans appear
+   slower-by-orders-of-magnitude ONLY if they sit inline. The calculus
+   places them differently:
+   (1) NEVER BLOCKING: no machine path waits on a human — anything
+   needing ratification lands in SUSPENDED-OPEN and the loop continues
+   on other tokens; human input is consumed ASYNCHRONOUSLY at batch
+   boundaries. Iteration speed = machine speed; human latency bounds
+   only how long suspensions sit, not throughput.
+   (2) BATCHED RATIFICATION, not per-decision: the P3 human role is
+   ratifying a BATCH of frontier-proposed intensions (the mint pipeline
+   already works this way — blind criteria designed at frontier, one
+   signature per prereg). Measured this campaign: ~4 human signatures
+   across three weeks against hundreds of machine decisions.
+   (3) MEASURED DELEGATION (design option, requires Matt's explicit
+   ruling since it samples HIS oversight): the parity-certificate logic
+   applies to the human port too — where frontier-vs-human agreement on
+   a decision class is measured high over history, the human moves from
+   gate to seeded auditor (spot-check with escalation tripwire), exactly
+   as cheap tiers relate to frontier. Red shrinks by measurement, never
+   by assumption.

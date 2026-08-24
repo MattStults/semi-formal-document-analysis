@@ -363,3 +363,27 @@ def test_defensibility_overlay_supersedes_with_precedence():
     # the overlay is surgical: a neighbouring adjudicated node is untouched
     t = SC.truth_all("helpfulness")
     assert t["l427_460_n003"] == "relevant"
+
+
+def test_move_registry_handshake():
+    """A12: every channel relevance() consumes as a module declaration must
+    appear in RBA.DECLARABLE_MOVES, and every enumerator must derive from
+    it. Fails loud when the engine grows a channel the registry lacks
+    (the F-r2 staleness class), and when verify_terminal's enumerated
+    subset plus its declared KNOWN_UNENUMERATED stop covering the
+    registry."""
+    import relevance_by_act as RBA
+    import verify_terminal as VT
+    import inspect
+    src = inspect.getsource(RBA.relevance) + inspect.getsource(RBA.behavior_acts)
+    consumed = {f for f in ("protects_concern", "governs_concern",
+                            "purpose_concern", "arg_sorts", "party_concern",
+                            "governs_conditional") if f in src}
+    missing = consumed - set(RBA.DECLARABLE_MOVES)
+    assert not missing, f"engine consumes undeclared-in-registry: {missing}"
+    covered = set(VT.ENUMERATED) | set(VT.KNOWN_UNENUMERATED)
+    assert covered == set(RBA.DECLARABLE_MOVES), \
+        f"verify_terminal enumeration diverged from registry: {covered ^ set(RBA.DECLARABLE_MOVES)}"
+    # verdicts must carry their enumeration scope (no absolute claims)
+    vsrc = inspect.getsource(VT)
+    assert 'ENUM_SCOPE' in vsrc and 'TERMINAL-DECL(" + ENUM_SCOPE' in vsrc

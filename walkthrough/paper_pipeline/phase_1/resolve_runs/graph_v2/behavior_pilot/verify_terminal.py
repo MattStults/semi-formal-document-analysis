@@ -26,6 +26,13 @@ PR = ["user","third_party","society","developer","minor"]
 
 
 def truth_all(slug):
+    # A12/F-r2 fix: delegate to the MAINTAINED assembly (fresh_draw overlays
+    # incl. round-4 + the defensibility precedence overlay) instead of a
+    # private stale copy.
+    import satisfiability_census as _SC
+    return dict(_SC.truth_all(slug))
+
+def _truth_all_stale_unused(slug):
     t = dict(AB.truth_for(slug))
     fmap = {"helpfulness": [("fresh_draw","HELP_RESULT"),("fresh_draw2","HELP_R2_RESULT"),("fresh_draw3","HELP_R3_RESULT")],
             "harm-avoidance-to-third-parties": [("fresh_draw2","HARM_R2_RESULT")],
@@ -42,20 +49,38 @@ def eng_set(mod, br, corpus):
     return set(rel)
 
 
+# A12 (F-r2 fix): the enumerated subset is DERIVED from the engine registry
+# and NAMED in every verdict. Channels in the registry without a handler
+# here are KNOWN_UNENUMERATED: their existence forbids any absolute
+# terminality claim (verdict strings carry the enumeration scope).
+ENUMERATED = ("protects_concern", "governs_concern", "purpose_concern")
+KNOWN_UNENUMERATED = tuple(sorted(set(RBA.DECLARABLE_MOVES) - set(ENUMERATED)))
+ENUM_SCOPE = "enumerated:" + ",".join(ENUMERATED)
+
 def moves_for(node, slug, mod, sig, ap, pa, corpus, br, engaged):
-    """Minimal single-field declaration moves that could flip `node`."""
+    """Minimal single-field declaration moves that could flip `node`.
+    Move space derived from RBA.DECLARABLE_MOVES (A12); handshake test
+    guards divergence."""
     keys = [k for k in sig if k.startswith(node + "|")]
     out = []
     if not engaged:
         # additions: the node's own blocked values
         if keys and not any(pa[k]["actor"] == "assistant" for k in keys):
             return []          # actor-excluded: TERMINAL-STRUCT
+        # purpose channel is act-INDEPENDENT (F-r2's second staleness: the
+        # old early-return on act mismatch wrongly foreclosed it)
+        ppv = {e for k in keys if not k.split("|")[1].startswith("c")
+               for e in pa[k]["purpose"]}
+        new_p = ppv - set(mod.get("purpose_concern") or [])
+        if new_p:
+            out.append(("purpose_concern",
+                        sorted(set(mod.get("purpose_concern") or []) | new_p)))
         canon = {br[f] for f, _ in corpus.get(node, []) if br.get(f)}
         acts, _ = RBA.behavior_acts(mod)
         pm = RBA.parent_map()
         vh = any(c in acts or (pm.get(c, set()) & acts) or any(c in pm.get(a, set()) for a in acts) for c in canon)
         if not vh:
-            return []          # no act match: TERMINAL-STRUCT (bridge/vocab space)
+            return out         # act channel closed; purpose moves (above) remain
         pv = {p for k in keys for p in ap.get(k, []) if p in PR}
         gv = {g for k in keys for g in sig[k]["governs"]}
         if mod.get("protects_concern") and not (pv & set(mod["protects_concern"])):
@@ -66,6 +91,12 @@ def moves_for(node, slug, mod, sig, ap, pa, corpus, br, engaged):
         # removals: drop the admitting values per field (may over-remove; that's the receipt)
         pv = {p for k in keys for p in ap.get(k, []) if p in PR}
         gv = {g for k in keys for g in sig[k]["governs"]}
+        ppv = {e for k in keys if not k.split("|")[1].startswith("c")
+               for e in pa[k]["purpose"]}
+        if mod.get("purpose_concern"):
+            keep_p = sorted(set(mod["purpose_concern"]) - ppv)
+            if keep_p != sorted(mod["purpose_concern"]):
+                out.append(("purpose_concern", keep_p))
         if mod.get("protects_concern"):
             keep = sorted(set(mod["protects_concern"]) - pv)
             if keep != sorted(mod["protects_concern"]):
@@ -136,7 +167,7 @@ def main(modules_file):
         for n in mism:
             mv = moves_for(n, slug, mod, sig, ap, pa, corpus, br, n in base)
             if not mv:
-                rows[n] = {"verdict": "TERMINAL-STRUCT",
+                rows[n] = {"verdict": "TERMINAL-STRUCT(" + ENUM_SCOPE + ")",
                            "note": "no declaration move can flip it (actor-excluded or no act match); bridge/vocabulary space fenced"}
                 continue
             receipts = []
@@ -152,7 +183,7 @@ def main(modules_file):
                 if rec["target_flipped"] and rec["net"] > 0 and (best is None or rec["net"] > best["net"]):
                     best = rec
             rows[n] = ({"verdict": f"FIXABLE", "best_move": best, "receipts": receipts} if best
-                       else {"verdict": "TERMINAL-DECL", "receipts": receipts,
+                       else {"verdict": "TERMINAL-DECL(" + ENUM_SCOPE + ")", "receipts": receipts,
                              "note": "every minimal declaration move is charter-negative; relative to current vocabularies"})
         report[slug] = rows
     return report

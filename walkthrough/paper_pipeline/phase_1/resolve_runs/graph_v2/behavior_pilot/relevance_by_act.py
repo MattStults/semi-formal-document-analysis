@@ -375,3 +375,22 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# ---------------------------------------------------------------------------
+# DECLARABLE-MOVE REGISTRY (calculus A12, 2026-08-24) — THE single source of
+# truth for what the engine can consume as declarations. Every enumerator
+# (verify_terminal, probe candidates, decl-search spaces, census REACHABLE)
+# MUST derive its move space from this registry, never hard-code it: F-r2
+# showed a hard-coded subset silently stales when the engine grows.
+# Adding a channel to relevance() REQUIRES adding it here in the same
+# reviewed commit; test_move_registry_handshake fails loud otherwise.
+#   name: (module_field, kind)  kind: 'wall' widens/narrows a restrictive
+#   set; 'or' adds an additive channel value; 'conditional' reserved.
+DECLARABLE_MOVES = {
+    "protects_concern":   ("protects_concern",   "wall"),
+    "governs_concern":    ("governs_concern",    "wall"),
+    "purpose_concern":    ("purpose_concern",    "or"),
+    "arg_sorts":          ("arg_sorts",          "wall"),
+    "party_concern":      ("party_concern",      "wall"),
+    "governs_conditional":("governs_conditional","conditional"),
+}
