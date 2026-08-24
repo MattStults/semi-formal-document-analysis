@@ -50,3 +50,26 @@ is a seeded permutation: base seed 20260823, this batch's seed = base + 6
 GENERALIZATION_PREREG_DRAFT.md addendum 4 as well. The seed is not stored
 in the packet file.
 COST: ~29 rulings + panels ~= 0.06-0.08M Fable, inside the fresh bar.
+
+OUTCOME BRANCHES, COMPLETE (top-review ALARMING-1, appended 2026-08-24
+BEFORE dispatch; approved by Matt "Do it"): the paragraph above stated only
+the positive branch. All branches, pre-declared:
+- A delta charter-positive after rescue is ADOPTABLE (unchanged, above).
+- A delta charter-NEGATIVE after rescue is FINALLY REJECTED for this cycle:
+  no re-adjudication, no widened batch, no alternative rescue path. Its
+  arithmetic (original and rescued) is recorded with the rejection.
+- FORESEEN OUTCOME, stated plainly: 25 of the 29 rows belong to the three
+  deltas the 9b arithmetic REJECTED (trust 9, predictability-and-reliability
+  12, epistemic-autonomy 4). The rescue arithmetic can flip a rejected delta
+  to charter-positive, making it adoptable. That is not a loophole; it is
+  the pre-frozen per-delta adoption rule applied to corrected truth, and it
+  is symmetric (blind rulings can also rescue nothing). Recorded here so a
+  rejected delta's adoption, if it happens, reads as the rule working, not
+  as fitting.
+- NO SECOND BATCH: this is the ONLY defensibility adjudication these 28
+  nodes will ever receive. A future cycle needing to revisit any of them
+  must say so in a new prereg naming this clause as the bar it is clearing.
+- Rejected alternative, by name: leaving the negative branch implicit
+  ("adjudicate-reject-adjudicate is already barred") — an unwritten branch
+  is where a disappointed result goes looking for room; the bar must be
+  written where the result will be read.

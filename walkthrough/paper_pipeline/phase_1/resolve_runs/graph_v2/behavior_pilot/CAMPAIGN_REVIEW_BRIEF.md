@@ -71,9 +71,16 @@ caution +harm-prevention 3/1 charter-positive; trust 7/9, predictability-
 reliability 6/12, epistemic-autonomy 3/4 negative; all four governs_
 conditional declarations INERT — unconditional governs_concern wins over
 governs_conditional in signature_ok, recorded as mechanism insight). Exact
-joint lattice enumerated (flip sets pairwise disjoint; the charter-positive
-bundles carry parasitic negative-marginal deltas — adoption restricted to
-positive-marginal deltas). v19_ADOPT_CANDIDATE.json = v18 + the two
+joint lattice enumerated (flip sets NEARLY disjoint — one 2-node E/P&R fix
+overlap, inclusion-exclusion on the triple; the charter-positive bundles
+carry parasitic negative-marginal deltas). [CORRECTED 2026-08-24 by
+top-review: this sentence originally repeated the stale "pairwise disjoint"
+lemma b81afbfa had already corrected in the record, and framed
+"positive-marginal" as the adoption rule — selection was in fact forced by
+the pre-frozen per-delta charter rule (9B_DESIGN_ROUND.md:455-459); the
+marginal analysis is post-hoc confirmatory. The bb6d7bab commit message
+carries the same stale lemma and cannot be amended; this note is its
+erratum.] v19_ADOPT_CANDIDATE.json = v18 + the two
 charter-positive deltas; adoption FINAL only after the 29-node
 defensibility batch (DEFENSIBILITY_BATCH_PROTOCOL.md) adjudicates the new
 FPs post-reset.
@@ -128,6 +135,7 @@ FPs post-reset.
 | Draw machinery + contract + arithmetic recompute | 2 | CLEAR-WITH-NITS: all fixes verified by two independent implementations (all six draws reproducible from raw inputs at the registered seed; full shas; correction record append-only); N5 formally withdrawn by the reviewer; residual nit (stale docstring) fixed. Cleared for attempt-1 rulings. |
 | Ruling packets + defensibility protocol | 3 | CLEAR: R1/R2 resolved and verified (set-equal to final draws; seed relocated to campaign-record material; dispatch rule binding — seat receives only the prompt string); all round-1/2 fixes held; blind, faithful, deterministically reproducible; ready for adjudication. Vigilance note: blindness rests on the procedural dispatch fence — check it at dispatch time. |
 | 9b design-round fixes re-verification | 1 | BLOCKED → resolved (b81afbfa): false disjointness lemma corrected (2-node E/P&R fix overlap, inclusion-exclusion on the triple); CA mechanism-facts self-contradiction corrected; PC-4/PC-5 asymmetry stated; citation swap + nits fixed; one MEDIUM refuted by arbitration (v19_ADOPT_CANDIDATE.json exists at 066fd263). Decisions unaffected. |
+| TOP-REVIEW (this brief's addressee; Fable, 2026-08-24) | 1 | CLEAR-WITH-NITS, one gate condition — met before dispatch. No FATAL. ALARMING-1: defensibility protocol lacked its negative branch + rescued-rejected-delta disclosure (25/29 rows belong to rejected deltas) → OUTCOME BRANCHES section appended to DEFENSIBILITY_BATCH_PROTOCOL.md. Attack targets: freeze/repair seam HOLDS (repair pre-dates all draws/rulings, higher-precedence stop rule; arg-sort union to be named in the transfer writeup); positive-marginal restriction post-hoc as FRAMED but decisions forced by the pre-frozen per-delta rule (framing corrected in §2); strata bias — no mechanism found (composition pinned a priori, fallback anti-flattering); truth doctrine — one-pass guard real, branches now written. Claim traces: packets recomputed independently (all seven set-equal to draws, shuffled, no seed anywhere); M2 record pointer corrected (lives in MINT_INTEGRATION_DIFF.json + pinned test, not terminality_verification.json; "36 tests" is the directory total, census file is 14); stale disjointness lemma in §2 fixed by erratum note. Nits: F1 naming collision disambiguated (build spec); 9B:474-475 under-enumerates help's governs (conclusion unaffected); dead-slot probe guards arity, not same-length slot reorder. Reviewer-independence caveat on record: the top-reviewer orchestrated much of the campaign — verification weighted toward mechanical recomputation and Opus-agent artifact tracing over recollection. |
 
 ## 4. Current state + Sunday sequence
 

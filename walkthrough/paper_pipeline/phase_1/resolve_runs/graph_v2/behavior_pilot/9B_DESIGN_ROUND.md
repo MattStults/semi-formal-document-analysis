@@ -530,6 +530,18 @@ individually adjudicated; no quality lowering): E alone for help (best net
 candidate is UNCHANGED (v19_ADOPT_CANDIDATE.json, committed 066fd263); the
 conclusion rests on the exact joint object with the overlap correction
 recorded.
+[FRAMING NOTE, appended 2026-08-24 by top-review: the "positive marginal"
+criterion in this FINDING first appears here, AFTER the arithmetic
+(git -S"marginal" resolves to bb6d7bab and later only) — it was NOT
+pre-declared, and this section should not be read as the selection rule.
+The selection was already forced by the pre-run FROZEN adoption rule above
+(each delta adopted only if charter-positive ON ITS OWN arithmetic): trust
+7/9, P&R 6/12, and EA 3/4 were rejected per-delta, and bundles were never
+adoptable objects under that rule. FINDING 2 is post-hoc confirmatory
+commentary explaining WHY the per-delta rule also lands where a
+marginal-contribution analysis lands; the adoption candidate predates this
+section. Recorded so the marginal language cannot later be mistaken for a
+registered criterion.]
 FINDING 3 (boundary): the full help triple is exactly 24/24 — charter-zero —
 matching the earlier all-deltas bundle measurement; the 2-node E/P&R fix
 overlap (FINDING 1) is what brings 26 fixes to 24.

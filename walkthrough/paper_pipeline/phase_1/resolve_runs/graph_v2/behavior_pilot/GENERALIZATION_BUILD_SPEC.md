@@ -49,3 +49,13 @@ act_subtypes.json, and the VALUE SPACES of assert_protects.json /
 assert_purpose_actor.json / assert_signature.json (for wall values). All are
 vocabulary-only and verdict-free. The enumeration above should be read as
 including them for all builds.
+
+## NAMING NOTE (2026-08-24, top-review — append-only)
+"F1" is overloaded in the campaign record: in THIS file and the per-module
+REPAIR ADDENDUMs it names the adversarial-review FINDING (bespoke does-names
+silently discarded; the 2026-08-22 repair), while in
+GENERALIZATION_PREREG_DRAFT.md "F1" names a FALSIFIER (a repair requiring a
+per-behaviour instrument special case → behaviour fails transfer; stop rule
+in block 1). They are unrelated. When the fix ledger is written, cite the
+falsifier as "prereg falsifier F1" and the build defect as "review finding
+F1 (build spec erratum)" so neither is mistaken for the other.
