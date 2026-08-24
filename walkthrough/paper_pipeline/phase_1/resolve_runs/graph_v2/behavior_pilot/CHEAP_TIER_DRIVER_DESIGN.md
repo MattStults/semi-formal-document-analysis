@@ -157,3 +157,37 @@ PROMOTION RULE: a hypothesis reaches level N only by passing N-1; a kill at
 any level is a committed ledger record, not a discarded experiment. The
 "one-off change to test before committing" is exactly an L0/L1 pass — the
 contract is never mutated below L2, so exploration is free AND safe.
+
+### D. CLASS-GENERALIZATION RULE (v3, Matt: "given this failure, is there a
+### systemic issue that would address the class — fix the generalized form")
+The recurring failure mode this campaign keeps re-catching is EXAMPLE
+FITTING: deriving a fix from the motivating instances and validating on
+those same instances. The funnel now bars it structurally. Every candidate
+that advances past L0 must carry a CLASS CARD:
+  (a) CLASS: which failure family this addresses, named against the
+      taxonomy (or a NEW family, explicitly minted);
+  (b) GENERAL FORM: the fix stated as a principle grounded in the document
+      or the schema — never as "handles nodes X, Y, Z" (the 9b
+      justification doctrine, applied to every fix, not just declarations);
+  (c) PREDICTED NON-MOTIVATING MEMBERS: other instances — in the ledger or
+      the unruled corpus — that the general form should also move, listed
+      BEFORE validation.
+VALIDATION SPLIT: the motivating instances are set aside; the fix passes
+L2 only if it moves the predicted NON-MOTIVATING members (held-out class
+test) AND the motivating ones. A fix that moves only its motivating
+examples is a gerrymander by measurement, killed with its ledger record.
+This is the transfer-proof structure applied at micro scale, and it is
+what makes "fix the generalized form" checkable rather than aspirational.
+
+### E. REASON-CRITICALITY CENSUS (v3, running 2026-08-24)
+Addendum B's drift classes treat all reason components alike; Matt's
+refinement: every change WILL move reasons — the question is which
+components are load-bearing. L1 micro-probe dispatched: 30 seeded engaged
+truth-relevant nodes, per-component ESSENTIAL/INCIDENTAL judgment (acts /
+quality-dimensions / protected-parties) by a Haiku census seat with an
+8-node seeded Fable spot-check (S-B guard). Outcomes: (i) stable a-priori
+patterns -> mechanical criticality rules in the reason-diff (drift on
+INCIDENTAL components passes silently; on ESSENTIAL components escalates);
+(ii) no stable pattern -> criticality itself becomes a per-node annotation
+lane; (iii) Haiku-Fable spot-check disagreement >2/8 -> census re-runs at
+frontier before any rule is adopted.
