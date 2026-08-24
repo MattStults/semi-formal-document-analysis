@@ -142,6 +142,16 @@ def truth_all(slug):
         p = os.path.join(HERE, "panel_run1", rd, f + ".json")
         if os.path.exists(p):
             t.update(json.load(open(p))["truth"])
+    # DEFENSIBILITY OVERLAY (2026-08-24, highest precedence): the blind Fable
+    # defensibility batch's rulings supersede the 9b-arithmetic break
+    # classifications for exactly the nodes listed in the artifact
+    # (DEFENSIBILITY_BATCH_PROTOCOL.md — ONE batch, one pass, no iteration;
+    # currently one rescue: helpfulness::l427_460_n003 -> relevant).
+    dp = os.path.join(HERE, "ruling_packets", "defensibility_rulings.json")
+    if os.path.exists(dp):
+        for u in json.load(open(dp)).get("truth_ledger_updates", []):
+            if u["behaviour"] == slug:
+                t[u["node"]] = u["truth"]
     return t
 
 

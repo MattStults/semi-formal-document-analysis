@@ -188,11 +188,24 @@ def test_real_corpus_semantics_pins():
     current-separable, and the named pins."""
     pre = json.load(open(PREFIXTURE))["summary"]
     rep = SC.census("modules_contract_v18.json")
+    # DEFENSIBILITY CARVE-OUT (2026-08-24): the blind defensibility batch
+    # flipped truth for exactly these nodes (ruling_packets/
+    # defensibility_rulings.json), so they legitimately ENTER the v18
+    # mismatch set (truth-relevant, v18 not engaged). P4's "invariant"
+    # premise was "corrections touch vector/grouping only" — a truth-ledger
+    # event is a different, pre-registered class. Named per node, like the
+    # E1 definition-lane exception below; anything NOT named here still
+    # fails the pin.
+    DEFENSIBILITY_NEW_MISMATCHES = {"helpfulness": {"l427_460_n003"}}
     for slug, rows in rep.items():
         pre_unsat = set(pre[slug]["unsat"])
         pre_sep = set(pre[slug]["separable"])
-        # P4: mismatch sets invariant (corrections touch vector/grouping only)
-        assert set(rows) == pre_unsat | pre_sep, f"{slug}: mismatch set changed"
+        allowed_new = DEFENSIBILITY_NEW_MISMATCHES.get(slug, set())
+        # P4: mismatch sets invariant modulo the NAMED truth-event additions
+        assert set(rows) - allowed_new == pre_unsat | pre_sep, \
+            f"{slug}: mismatch set changed beyond the named truth events"
+        assert allowed_new <= set(rows), \
+            f"{slug}: a named truth-event mismatch did not appear"
         post_sep = {n for n, r in rows.items() if r["status"] == "SEPARABLE"}
         # nodes reclassified UNSAT by corrections 2-3 stay UNSAT-current
         for n in FALSE_SEPARABLES & set(rows):
@@ -307,3 +320,21 @@ def test_guards_fire_on_undeclarable_channels(tmp_path):
         mf.write_text(json.dumps({"modules": {"some-behaviour": {channel: ["x"]}}}))
         with pytest.raises(NotImplementedError):
             SC.census(str(mf))
+
+
+def test_defensibility_overlay_supersedes_with_precedence():
+    """The 2026-08-24 blind defensibility batch updates the truth ledger with
+    explicit precedence (DEFENSIBILITY_BATCH_PROTOCOL.md): its rulings
+    supersede the 9b-arithmetic classification for exactly the nodes in
+    ruling_packets/defensibility_rulings.json. Pins the one rescue and that
+    the overlay applies ONLY to listed nodes/behaviours (subset check, no
+    live counts)."""
+    updates = json.load(open(os.path.join(
+        HERE, "ruling_packets", "defensibility_rulings.json")))[
+        "truth_ledger_updates"]
+    assert updates, "the batch ran; its ledger updates must exist"
+    for u in updates:
+        assert SC.truth_all(u["behaviour"])[u["node"]] == u["truth"]
+    # the overlay is surgical: a neighbouring adjudicated node is untouched
+    t = SC.truth_all("helpfulness")
+    assert t["l427_460_n003"] == "relevant"

@@ -104,3 +104,26 @@ independent subagent dispatches of the identical prompt. Rejected
 alternative, by name: human hand-pasting into a separate venue — strictly
 more transcription surface, no blinding advantage, and spends the scarce
 resource (Matt's time) the campaign is now explicitly optimizing.
+
+ADJUDICATION RESULT (2026-08-24, appended after the one pass — append-only):
+37 seat instances (25 singles + 4 unanimous 3-0 panels on rows 2/4/8/11),
+blind Fable subagents per the venue ruling, zero refusals, zero tool use.
+Rulings: 28 of 29 rows NOT_RELEVANT (breaks stand as real FPs); ONE rescue —
+row 23, helpfulness::l427_460_n003 RELEVANT ("time-on-site or click-through
+that is not user beneficial" demarcates genuine user benefit — bears on
+substantive helpfulness). Charter on rescued counts: empowerment 13/2
+POSITIVE (strengthened), harm-prevention 3/1 POSITIVE, trust 7/9 NEGATIVE,
+predictability-and-reliability 6/12 NEGATIVE, epistemic-autonomy 3/4
+NEGATIVE — zero rescues reached any rejected delta, so all three are
+FINALLY REJECTED under the outcome-branches clause (no re-adjudication).
+ADOPTION FINAL: v19_ADOPT_CANDIDATE (E + HP) unchanged — the foreseen
+rejected-delta-rescue outcome did not occur. Non-binding directional prior:
+DISAGREED on the trust uncertainty-expression family (l2821_3040
+n005/n019/n020/n027 previewed defensible); blind Fable ruled NOT_RELEVANT
+on all four — Fable wins without discussion, recorded. Panel stats: 4/4
+unanimous, 0 split 2-1 (F4-analog clear). Seat-hazard caveat applied on row
+25 (translation debris ruled around as inert). Truth-ledger update landed
+as the highest-precedence overlay in satisfiability_census.truth_all()
+with a pinned test; the v18 prefixture pin gains the NAMED truth-event
+carve-out (anything unnamed still fails). Artifact:
+ruling_packets/defensibility_rulings.json.
