@@ -196,16 +196,24 @@ def test_real_corpus_semantics_pins():
     # event is a different, pre-registered class. Named per node, like the
     # E1 definition-lane exception below; anything NOT named here still
     # fails the pin.
-    DEFENSIBILITY_NEW_MISMATCHES = {"helpfulness": {"l427_460_n003"}}
+    # Truth-event additions: MAY appear as new mismatches (the instrument
+    # disagrees with some of the new truth), split from MUST appear (the
+    # defensibility rescue is a known flip). ROUND-4 canary rulings enter
+    # via fresh_draw4/HELP_R4_RESULT.json — frozen file, its keys are the
+    # allowed additions (frozen-input-plus-subset, not a live count).
+    r4 = json.load(open(os.path.join(
+        HERE, "panel_run1", "fresh_draw4", "HELP_R4_RESULT.json")))["truth"]
+    ALLOWED_NEW = {"helpfulness": {"l427_460_n003"} | set(r4)}
+    REQUIRED_NEW = {"helpfulness": {"l427_460_n003"}}
     for slug, rows in rep.items():
         pre_unsat = set(pre[slug]["unsat"])
         pre_sep = set(pre[slug]["separable"])
-        allowed_new = DEFENSIBILITY_NEW_MISMATCHES.get(slug, set())
+        allowed_new = ALLOWED_NEW.get(slug, set())
         # P4: mismatch sets invariant modulo the NAMED truth-event additions
         assert set(rows) - allowed_new == pre_unsat | pre_sep, \
             f"{slug}: mismatch set changed beyond the named truth events"
-        assert allowed_new <= set(rows), \
-            f"{slug}: a named truth-event mismatch did not appear"
+        assert REQUIRED_NEW.get(slug, set()) <= set(rows), \
+            f"{slug}: a required truth-event mismatch did not appear"
         post_sep = {n for n, r in rows.items() if r["status"] == "SEPARABLE"}
         # nodes reclassified UNSAT by corrections 2-3 stay UNSAT-current
         for n in FALSE_SEPARABLES & set(rows):

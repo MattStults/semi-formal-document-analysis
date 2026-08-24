@@ -66,3 +66,28 @@ breadth shows. The 0.625 raw cell is the honest price of that selection.
    against the enlarged ledger.
 3. Census REACHABLE view on the 11 FP nodes: which are separable under
    already-declarable vocabulary vs needing new atoms.
+
+## TEST RESULTS (2026-08-24, same day — all deterministic, zero seats)
+T1 GOVERNS-NARROWING: REJECTED on arithmetic. Against the combined ledger
+   (now incl. the 80 registered canary rulings): drop tone_manner 3/16,
+   drop formatting_style 2/3, drop accuracy_calibration 7/12,
+   substance-only 12/37 — every delta charter-negative. The ruled truth
+   genuinely contains tone/format/calibration helpfulness nodes; the
+   module's quality breadth is ledger-supported. Hypothesis F-A is thereby
+   DEMOTED: the discriminator must be finer than governs.
+T2+T3 CENSUS SEPARABILITY of the 12 indefensible misses (v19, R4 truth
+   registered via fresh_draw4/HELP_R4_RESULT.json):
+   - 9/11 FPs are CURRENT-SEPARABLE: the frozen instrument's existing
+     feature space already distinguishes each from every truth-relevant
+     engaged node — no new vocabulary needed; a wall/bridge/arg-sort
+     configuration exists. This is a CONFIGURATION cycle, not a translation
+     or vocabulary problem — and it confirms F-B (bridge coarseness) as the
+     operative family.
+   - 1/11 (l1108_1367_n002, erotica/gore) is CURRENT-UNSAT but
+     REACHABLE-SEPARABLE, addressable_by_declaration — the F-C
+     domain-prohibition case needs one new declaration.
+   - 2 are UNSAT-terminal at current granularity (l3954_4251_n010 FP;
+     l2126_2404_n023 FN) — inventory-relative per contract 9g.
+   NET: 10 of 12 indefensible misses are fixable inside existing machinery;
+   the canary's 0.625 raw cell is a configuration debt, not a translation
+   failure — consistent with the pipeline-origin verdict above.

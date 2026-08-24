@@ -135,7 +135,7 @@ def vector(nid, corpus, br, sig, ap, pa, ctx=None, asorts=None, ref=None):
 
 def truth_all(slug):
     t = dict(AB.truth_for(slug))
-    fmap = {"helpfulness": [("fresh_draw", "HELP_RESULT"), ("fresh_draw2", "HELP_R2_RESULT"), ("fresh_draw3", "HELP_R3_RESULT")],
+    fmap = {"helpfulness": [("fresh_draw", "HELP_RESULT"), ("fresh_draw2", "HELP_R2_RESULT"), ("fresh_draw3", "HELP_R3_RESULT"), ("fresh_draw4", "HELP_R4_RESULT")],
             "harm-avoidance-to-third-parties": [("fresh_draw2", "HARM_R2_RESULT")],
             "avoiding-over-and-under-caution": [("fresh_draw2", "CAUTION_R2_RESULT")]}
     for rd, f in fmap[slug]:
