@@ -85,8 +85,21 @@ they are celebrated.
 ## Signatures
 Drafted by the campaign orchestration seat, 2026-08-21 (scaffold);
 re-issued at freeze 2026-08-24 with the protocol verbatim.
-Matt: ______ (signature applies to this re-issue; the run may not start
-before it).
+Matt: SIGNED 2026-08-24 ("(2) signed", in-session; applies to this re-issue
+WITH pre-signature amendments 1-4 and their measured addenda). REGISTERED
+HARD BUDGET (Matt, 2026-08-24, superseding the orchestration seat's initial
+50% proposal before it was ever committed): the experiment may consume AT
+MOST 5 additional points of the weekly Fable bar — the bar, at 7% at
+signature, HARD-CAPS AT 12%. Checked at every behaviour checkpoint and
+batch boundary. CANARY MEASUREMENT RULE: after the helpfulness canary's
+seats complete, actual bar movement is measured and the remaining run is
+re-projected; if the projection exceeds the cap, the run halts and the
+remainder moves past the Aug 30 weekly reset (the prereg does not expire —
+draws and seeds are deterministic and committed). BUDGET DISCIPLINE bound
+on the orchestration seat: maximal dispatch batching, minimal inter-batch
+output, results collected to files — today's cost was dominated by
+orchestration cache reads, not seats, and the discipline targets exactly
+that.
 
 ## PRE-SIGNATURE AMENDMENTS (2026-08-24, appended before signature; the
 ## protocol section above remains verbatim — these bind at signature)
