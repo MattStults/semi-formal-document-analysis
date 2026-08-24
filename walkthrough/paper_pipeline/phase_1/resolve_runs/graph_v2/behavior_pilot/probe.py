@@ -13,6 +13,11 @@ Usage:
   probe.py <slug> '<json delta>'          # delta = partial module dict,
                                           # e.g. '{"governs_concern": [...]}'
   probe.py <slug> --file delta.json
+  probe.py <slug> <delta...> --contract <file> --truth <file>
+      # iteration-1 extension (2026-08-24): probe a slug that lives in a
+      # different contract file and/or whose truth is not in truth_all's
+      # fmap (the generalization venue). --truth points at a committed
+      # {node: verdict} artifact; defaults unchanged.
 Appends one record to HYPOTHESIS_LEDGER.jsonl (append-only: hypothesis,
 charter, drift counts, verdict) so dead branches are never re-explored.
 """
@@ -26,11 +31,18 @@ def reasons(rel):
     return {n: frozenset(map(tuple, v)) for n, v in rel.items()}
 
 def main():
-    slug = sys.argv[1]
-    raw = open(sys.argv[3]).read() if sys.argv[2] == "--file" else sys.argv[2]
+    argv = list(sys.argv[1:])
+    contract, truth_file = "modules_contract_v19.json", None
+    if "--contract" in argv:
+        i = argv.index("--contract"); contract = argv[i + 1]; del argv[i:i + 2]
+    if "--truth" in argv:
+        i = argv.index("--truth"); truth_file = argv[i + 1]; del argv[i:i + 2]
+    slug = argv[0]
+    raw = open(argv[2]).read() if argv[1] == "--file" else argv[1]
     delta = json.loads(raw)
-    mods = json.load(open(os.path.join(HERE, "modules_contract_v19.json")))["modules"]
-    truth = SC.truth_all(slug)
+    mods = json.load(open(os.path.join(HERE, contract)))["modules"]
+    truth = (json.load(open(os.path.join(HERE, truth_file)))["truth"]
+             if truth_file else SC.truth_all(slug))
     br = RBA.bridges(); corpus = RBA.corpus_acts()
     _, rel0 = RBA.relevance(mods[slug], br, corpus)
     m = copy.deepcopy(mods[slug]); m.update(delta)
