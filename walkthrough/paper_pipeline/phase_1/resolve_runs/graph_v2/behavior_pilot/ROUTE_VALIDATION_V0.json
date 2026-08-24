@@ -1,0 +1,3090 @@
+{
+ "_": "ERROR_CALCULUS.md \u00a79 historical validation of route.py (v0, deterministic replay, no seats, $0). Mismatches are FINDINGS, not failures: routing was never adjusted to force a match.",
+ "generated_by": "route_validate.py",
+ "router": "route.py (ERROR_CALCULUS.md \u00a73 R1-R5 + amendments A1-A7)",
+ "trace_checker": "trace_check.check_trace -> calculus.lp (clingo); the same machine calculus_model.py and mutate_calculus.py verified",
+ "case_classes": {
+  "a_defensibility_batch": "29-row blind-Fable defensibility batch (ruling_packets/defensibility_rulings.json)",
+  "b_round4_canary": "round-4 helpfulness canary indefensible misses (ROUND4_HELP_CANARY_RESULT.json + R4_FP_SEPARABILITY.json)",
+  "c_9b_deltas": "the five 9b purpose_concern deltas (9B_DESIGN_ROUND.md / ARITHMETIC_9B_RESULT.json)",
+  "d_subtype_colliders": "the three subtype-mint colliders pinned in test_satisfiability_census.py",
+  "e_f1_generalization_repair": "the F1 build erratum (GENERALIZATION_BUILD_SPEC.md)"
+ },
+ "summary": {
+  "total_cases": 52,
+  "matches": 49,
+  "mismatches": 3,
+  "match_rate": 0.9423,
+  "traces_certified": 52,
+  "traces_uncertifiable": 0,
+  "totals_per_case_class": {
+   "a_defensibility_batch": {
+    "rows": 29,
+    "match": 29,
+    "mismatch": 0,
+    "certified": 29,
+    "predicted_classes": {
+     "C-D": 27,
+     "C-T": 1,
+     "OPEN(P2)": 1
+    }
+   },
+   "b_round4_canary": {
+    "rows": 12,
+    "match": 9,
+    "mismatch": 3,
+    "certified": 12,
+    "predicted_classes": {
+     "C-I(I1)": 1,
+     "C-D": 8,
+     "OPEN(P2)": 1,
+     "C-I(I3)": 2
+    }
+   },
+   "c_9b_deltas": {
+    "rows": 5,
+    "match": 5,
+    "mismatch": 0,
+    "certified": 5,
+    "predicted_classes": {
+     "C-D": 5
+    }
+   },
+   "d_subtype_colliders": {
+    "rows": 3,
+    "match": 3,
+    "mismatch": 0,
+    "certified": 3,
+    "predicted_classes": {
+     "C-I(I3)": 3
+    }
+   },
+   "e_f1_generalization_repair": {
+    "rows": 3,
+    "match": 3,
+    "mismatch": 0,
+    "certified": 3,
+    "predicted_classes": {
+     "C-V": 3
+    }
+   }
+  },
+  "totals_per_predicted_class": {
+   "C-D": 40,
+   "C-T": 1,
+   "OPEN(P2)": 2,
+   "C-I(I1)": 1,
+   "C-I(I3)": 5,
+   "C-V": 3
+  },
+  "mismatch_list": [
+   {
+    "case_id": "b:helpfulness::l1799_1973_n013",
+    "predicted_class": "OPEN(P2)",
+    "predicted_move": "run the pinned faithfulness audit (semantic-audit lane, 85% gate) on the node's ESTABLISHES claim",
+    "recorded_resolution": "CURRENT-SEPARABLE: addressable by a declaration delta (declaration error, C-D)",
+    "match_basis": "predicted C-D == recorded CURRENT-SEPARABLE disposition"
+   },
+   {
+    "case_id": "b:helpfulness::l2126_2404_n023",
+    "predicted_class": "C-I(I3)",
+    "predicted_move": "mint new vocabulary (census->mine->mint, blind criteria, M1-M4 gates)",
+    "recorded_resolution": "UNSAT in BOTH views: recorded as a terminal canary node (\u00a74 I4 historical instance, '2 terminal canary nodes')",
+    "match_basis": "predicted C-I(I4) == recorded terminal-by-document"
+   },
+   {
+    "case_id": "b:helpfulness::l3954_4251_n010",
+    "predicted_class": "C-I(I3)",
+    "predicted_move": "mint new vocabulary (census->mine->mint, blind criteria, M1-M4 gates)",
+    "recorded_resolution": "UNSAT in BOTH views: recorded as a terminal canary node (\u00a74 I4 historical instance, '2 terminal canary nodes')",
+    "match_basis": "predicted C-I(I4) == recorded terminal-by-document"
+   }
+  ],
+  "uncertifiable_traces": []
+ },
+ "findings": [
+  {
+   "id": "F-b1",
+   "title": "I4 requires an EXHAUSTED mint budget; the record declared the two canary nodes terminal with one inventory-level mint attempt on the books",
+   "detail": "Routed with mints_used=1 (the Arc1-b act-refinement mint, which left both rows REACHABLE-UNSAT) the calculus prescribes R5 -> C-I(I3): mint again before declaring terminal. With mints_used=2 it reaches C-I(I4), matching the record. This is the \u00a78 inventory-qualifier rule biting: 'terminal' without an inventory qualifier \u2014 and without a recorded mint exhaustion \u2014 is a review finding. Either the record should carry the exhaustion ruling (port P4) explicitly, or MINT_BUDGET is mis-set at 2.",
+   "sensitivity_mints_exhausted": {
+    "l2126_2404_n023": {
+     "class": "C-I(I4)",
+     "terminal": "defensible",
+     "trace_certified": true
+    },
+    "l3954_4251_n010": {
+     "class": "C-I(I4)",
+     "terminal": "defensible",
+     "trace_certified": true
+    }
+   }
+  },
+  {
+   "id": "F-c1",
+   "title": "ORDERING DIVERGENCE: the 9b round executed R3 deltas before discharging the R1 truth premise",
+   "detail": "The calculus (\u00a73 R1-first, amendment A5's EAGER ordering theorem) requires the truth premise to be discharged before any move that costs more than it does. The 9b round ran the deltas first and adjudicated the flips afterwards (V4 per-flip adjudication, then the 2026-08-24 defensibility batch). The record vindicates the calculus: that deferred P1 pass overturned one ruling (l427_460_n003), which changed the empowerment delta's charter arithmetic AFTER adoption. A5's 'lazy also destroys the cheap best case' is the measured form of the same point.",
+   "deltas_whose_representative_node_was_single_tier": [
+    "PC-1 empowerment@l1707_1973_n040",
+    "PC-2 harm-prevention@l3147_3238_n004",
+    "PC-4 trust@l1707_1973_n020",
+    "PC-5 predictability-and-reliability@l1707_1973_n030",
+    "PC-3 epistemic-autonomy@l2126_2404_n016"
+   ]
+  },
+  {
+   "id": "F-d1",
+   "title": "A4 confirmed on the record: after the I3 mint the same colliders re-enter at census=REACHABLE and route to R4 (build the consumer), not back to R5",
+   "detail": "Amendment A4 was added because a mint can produce a distinction that is annotated but unconsumed. The three colliders exhibit exactly that transition \u2014 pre-mint UNSAT-both -> R5/I3, post-mint REACHABLE -> R4/I1 \u2014 so A4 is not a modelling artefact but a recorded campaign state.",
+   "post_mint_routes": {
+    "helpfulness::l797_830_n011": {
+     "class": "C-I(I1)",
+     "census": "reach",
+     "trace_certified": true
+    },
+    "harm-avoidance-to-third-parties::l831_1000_n001": {
+     "class": "C-I(I1)",
+     "census": "reach",
+     "trace_certified": true
+    },
+    "harm-avoidance-to-third-parties::l831_1000_n011": {
+     "class": "C-I(I1)",
+     "census": "reach",
+     "trace_certified": true
+    }
+   }
+  },
+  {
+   "id": "F-e1",
+   "title": "C-V as written in Theorem 1 covers only the NODE vector V(n); the F1 defect lives in the MODULE's does-name rendering",
+   "detail": "\u00a72 defines C-V as 'V(n) is unfaithful \u2014 the translation mis-states what the node claims'. The F1 erratum is a translation defect on the other side of f: the behaviour module's `does` entries were bespoke functor names the canonical vocabulary does not accept, so the module engaged nothing. The recorded resolution was a translation repair with no new declarations \u2014 a C-V move, not a C-D one. PROPOSED ERRATUM: C-V should read 'the TRANSLATION LAYER is unfaithful \u2014 the node vector V(n) mis-states the node's claim, or the declaration D(b) is rendered in names f cannot consume'. Without that widening the partition mis-files this case as C-D (a declaration error), whose prescribed move \u2014 a mechanical delta \u2014 would have been wrong.",
+   "affected_modules": [
+    "how-to-approach-tradeoffs",
+    "user-autonomy",
+    "proportionate-risk-mitigation"
+   ]
+  },
+  {
+   "id": "F-r1",
+   "title": "Truth-ledger nodes absent from node_corpus_all.json \u2014 R2 cannot be auto-discharged for them",
+   "detail": "route.py's R2 rule (a canonical-corpus node carrying an ESTABLISHES claim is audited-faithful absent a repair record) cannot fire for ledger nodes that are not in the corpus at all, so the router correctly stops at port P2 and prescribes the faithfulness audit rather than assuming fidelity. The absent ids come from a SUPERSEDED CHUNKING (e.g. l426_610_* and l1799_1973_* against the corpus's l427_460_* and l1707_1973_*), i.e. the assembled ledger carries rulings keyed to node ids the current corpus no longer defines. This is a campaign hygiene defect the \u00a79 replay found for free; it is NOT a calculus bug \u2014 the router's behaviour is the correct one.",
+   "ledger_nodes_total": 644,
+   "ledger_nodes_absent_from_corpus": 20,
+   "absent_ids": [
+    "l1001_1120_n002",
+    "l1108_1368_n004",
+    "l1611_1798_n006",
+    "l171_203_n004",
+    "l171_203_n020",
+    "l1799_1973_n013",
+    "l1799_1974_n009",
+    "l1975_2125_n012",
+    "l292_526_n027",
+    "l3384_3501_n007",
+    "l426_610_n029",
+    "l426_610_n034",
+    "l4571_4692_n005",
+    "l4572_4691_n011",
+    "l527_796_n012",
+    "l527_796_n022",
+    "l611_698_n009",
+    "l796_1000_n034",
+    "l797_809_n001",
+    "l810_919_n014"
+   ],
+   "cases_that_stopped_at_P2": [
+    "l1799_1973_n013",
+    "l426_610_n029"
+   ]
+  },
+  {
+   "id": "F-r2",
+   "title": "verify_terminal.py \u2014 the component A6(d) designates as the move-space authority \u2014 has a STALE LEDGER and an INCOMPLETE MOVE SPACE",
+   "detail": "(1) STALE LEDGER: verify_terminal.truth_all's fmap stops at fresh_draw3 and carries no defensibility overlay, so it misses the round-4 rulings entirely and still holds the pre-rescue verdict for l427_460_n003 \u2014 it disagrees with satisfiability_census.truth_all, which route.py's census uses. Two components of the same router therefore answer to two different T. (2) INCOMPLETE MOVE SPACE: moves_for() enumerates only protects_concern and governs_concern. It has NO purpose_concern move \u2014 the exact slot the entire 9b round operated on. Consequence, measured here: nodes the adopted empowerment / harm-prevention deltas demonstrably FIXED are stamped TERMINAL-STRUCT ('no declaration move can flip it') by verify_terminal. A TERMINAL verdict from an enumerator that cannot express the winning move is unsound, and \u00a72's partition leans on exactly that exhaustion certificate to separate C-D from C-I. REQUIRED before route.py's R3/R5 exhaustion may be trusted: re-point truth_all at SC.truth_all and extend moves_for with purpose_concern (and contexts_concern).",
+   "ledger_comparison": {
+    "helpfulness": {
+     "verify_terminal_nodes": 397,
+     "satisfiability_census_nodes": 477,
+     "missing_from_verify_terminal": 80,
+     "verdict_disagreements_on_shared_nodes": [
+      "l427_460_n003"
+     ]
+    },
+    "harm-avoidance-to-third-parties": {
+     "verify_terminal_nodes": 234,
+     "satisfiability_census_nodes": 291,
+     "missing_from_verify_terminal": 57,
+     "verdict_disagreements_on_shared_nodes": []
+    },
+    "avoiding-over-and-under-caution": {
+     "verify_terminal_nodes": 205,
+     "satisfiability_census_nodes": 285,
+     "missing_from_verify_terminal": 80,
+     "verdict_disagreements_on_shared_nodes": []
+    }
+   },
+   "move_fields_verify_terminal_can_enumerate": [
+    "governs_concern",
+    "protects_concern"
+   ],
+   "9b_rows_stamped_TERMINAL_despite_an_adopted_fixing_delta": [
+    "c:PC-1 empowerment",
+    "c:PC-2 harm-prevention",
+    "c:PC-4 trust",
+    "c:PC-5 predictability-and-reliability"
+   ]
+  }
+ ],
+ "cases": [
+  {
+   "case_id": "a:helpfulness::l1707_1973_n034",
+   "case_class": "a_defensibility_batch",
+   "behaviour": "helpfulness",
+   "node": "l1707_1973_n034",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "STANDS: ruling NOT_RELEVANT upheld; the 'predictability-and-reliability' delta stays rejected (no rescue)",
+   "match": "MATCH",
+   "match_basis": "router prescribed the P1 truth check first and did not predict a truth flip",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "break created by candidate delta 'predictability-and-reliability'; the delta is the constructive separability certificate (\u00a72)"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "ruling_packets/defensibility_rulings.json",
+      "sha256": "413258ade2d6",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "delta": "predictability-and-reliability",
+   "seat_ruling": "NOT_RELEVANT",
+   "panel_row": false,
+   "truth_tier_pre_batch": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "a:helpfulness::l1707_1973_n025",
+   "case_class": "a_defensibility_batch",
+   "behaviour": "helpfulness",
+   "node": "l1707_1973_n025",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "STANDS: ruling NOT_RELEVANT upheld; the 'trust' delta stays rejected (no rescue)",
+   "match": "MATCH",
+   "match_basis": "router prescribed the P1 truth check first and did not predict a truth flip",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "break created by candidate delta 'trust'; the delta is the constructive separability certificate (\u00a72)"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "ruling_packets/defensibility_rulings.json",
+      "sha256": "413258ade2d6",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "delta": "trust",
+   "seat_ruling": "NOT_RELEVANT",
+   "panel_row": true,
+   "truth_tier_pre_batch": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "a:helpfulness::l3954_4251_n027",
+   "case_class": "a_defensibility_batch",
+   "behaviour": "helpfulness",
+   "node": "l3954_4251_n027",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "STANDS: ruling NOT_RELEVANT upheld; the 'predictability-and-reliability' delta stays rejected (no rescue)",
+   "match": "MATCH",
+   "match_basis": "router prescribed the P1 truth check first and did not predict a truth flip",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "break created by candidate delta 'predictability-and-reliability'; the delta is the constructive separability certificate (\u00a72)"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "ruling_packets/defensibility_rulings.json",
+      "sha256": "413258ade2d6",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "delta": "predictability-and-reliability",
+   "seat_ruling": "NOT_RELEVANT",
+   "panel_row": false,
+   "truth_tier_pre_batch": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "a:helpfulness::l2821_3040_n020",
+   "case_class": "a_defensibility_batch",
+   "behaviour": "helpfulness",
+   "node": "l2821_3040_n020",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "STANDS: ruling NOT_RELEVANT upheld; the 'trust' delta stays rejected (no rescue)",
+   "match": "MATCH",
+   "match_basis": "router prescribed the P1 truth check first and did not predict a truth flip",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "break created by candidate delta 'trust'; the delta is the constructive separability certificate (\u00a72)"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "ruling_packets/defensibility_rulings.json",
+      "sha256": "413258ade2d6",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "delta": "trust",
+   "seat_ruling": "NOT_RELEVANT",
+   "panel_row": true,
+   "truth_tier_pre_batch": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "a:helpfulness::l2821_3040_n019",
+   "case_class": "a_defensibility_batch",
+   "behaviour": "helpfulness",
+   "node": "l2821_3040_n019",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "STANDS: ruling NOT_RELEVANT upheld; the 'trust' delta stays rejected (no rescue)",
+   "match": "MATCH",
+   "match_basis": "router prescribed the P1 truth check first and did not predict a truth flip",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "break created by candidate delta 'trust'; the delta is the constructive separability certificate (\u00a72)"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "ruling_packets/defensibility_rulings.json",
+      "sha256": "413258ade2d6",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "delta": "trust",
+   "seat_ruling": "NOT_RELEVANT",
+   "panel_row": false,
+   "truth_tier_pre_batch": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "a:helpfulness::l4572_4692_n009",
+   "case_class": "a_defensibility_batch",
+   "behaviour": "helpfulness",
+   "node": "l4572_4692_n009",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "STANDS: ruling NOT_RELEVANT upheld; the 'trust' delta stays rejected (no rescue)",
+   "match": "MATCH",
+   "match_basis": "router prescribed the P1 truth check first and did not predict a truth flip",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "break created by candidate delta 'trust'; the delta is the constructive separability certificate (\u00a72)"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "ruling_packets/defensibility_rulings.json",
+      "sha256": "413258ade2d6",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "delta": "trust",
+   "seat_ruling": "NOT_RELEVANT",
+   "panel_row": false,
+   "truth_tier_pre_batch": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "a:helpfulness::l3383_3501_n003",
+   "case_class": "a_defensibility_batch",
+   "behaviour": "helpfulness",
+   "node": "l3383_3501_n003",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "STANDS: ruling NOT_RELEVANT upheld; the 'predictability-and-reliability' delta stays rejected (no rescue)",
+   "match": "MATCH",
+   "match_basis": "router prescribed the P1 truth check first and did not predict a truth flip",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "break created by candidate delta 'predictability-and-reliability'; the delta is the constructive separability certificate (\u00a72)"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "ruling_packets/defensibility_rulings.json",
+      "sha256": "413258ade2d6",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "delta": "predictability-and-reliability",
+   "seat_ruling": "NOT_RELEVANT",
+   "panel_row": false,
+   "truth_tier_pre_batch": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "a:avoiding-over-and-under-caution::l2126_2404_n003",
+   "case_class": "a_defensibility_batch",
+   "behaviour": "avoiding-over-and-under-caution",
+   "node": "l2126_2404_n003",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "STANDS: ruling NOT_RELEVANT upheld; the 'epistemic-autonomy' delta stays rejected (no rescue)",
+   "match": "MATCH",
+   "match_basis": "router prescribed the P1 truth check first and did not predict a truth flip",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "break created by candidate delta 'epistemic-autonomy'; the delta is the constructive separability certificate (\u00a72)"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "ruling_packets/defensibility_rulings.json",
+      "sha256": "413258ade2d6",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "delta": "epistemic-autonomy",
+   "seat_ruling": "NOT_RELEVANT",
+   "panel_row": true,
+   "truth_tier_pre_batch": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "a:helpfulness::l3505_3595_n003",
+   "case_class": "a_defensibility_batch",
+   "behaviour": "helpfulness",
+   "node": "l3505_3595_n003",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "STANDS: ruling NOT_RELEVANT upheld; the 'trust' delta stays rejected (no rescue)",
+   "match": "MATCH",
+   "match_basis": "router prescribed the P1 truth check first and did not predict a truth flip",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "break created by candidate delta 'trust'; the delta is the constructive separability certificate (\u00a72)"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "ruling_packets/defensibility_rulings.json",
+      "sha256": "413258ade2d6",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "delta": "trust",
+   "seat_ruling": "NOT_RELEVANT",
+   "panel_row": false,
+   "truth_tier_pre_batch": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "a:avoiding-over-and-under-caution::l797_830_n004",
+   "case_class": "a_defensibility_batch",
+   "behaviour": "avoiding-over-and-under-caution",
+   "node": "l797_830_n004",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "STANDS: ruling NOT_RELEVANT upheld; the 'epistemic-autonomy' delta stays rejected (no rescue)",
+   "match": "MATCH",
+   "match_basis": "router prescribed the P1 truth check first and did not predict a truth flip",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "break created by candidate delta 'epistemic-autonomy'; the delta is the constructive separability certificate (\u00a72)"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "ruling_packets/defensibility_rulings.json",
+      "sha256": "413258ade2d6",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "delta": "epistemic-autonomy",
+   "seat_ruling": "NOT_RELEVANT",
+   "panel_row": false,
+   "truth_tier_pre_batch": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "a:helpfulness::l1_170_n083",
+   "case_class": "a_defensibility_batch",
+   "behaviour": "helpfulness",
+   "node": "l1_170_n083",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "STANDS: ruling NOT_RELEVANT upheld; the 'predictability-and-reliability' delta stays rejected (no rescue)",
+   "match": "MATCH",
+   "match_basis": "router prescribed the P1 truth check first and did not predict a truth flip",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "break created by candidate delta 'predictability-and-reliability'; the delta is the constructive separability certificate (\u00a72)"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "ruling_packets/defensibility_rulings.json",
+      "sha256": "413258ade2d6",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "delta": "predictability-and-reliability",
+   "seat_ruling": "NOT_RELEVANT",
+   "panel_row": true,
+   "truth_tier_pre_batch": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "a:avoiding-over-and-under-caution::l2126_2404_n010",
+   "case_class": "a_defensibility_batch",
+   "behaviour": "avoiding-over-and-under-caution",
+   "node": "l2126_2404_n010",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "STANDS: ruling NOT_RELEVANT upheld; the 'epistemic-autonomy' delta stays rejected (no rescue)",
+   "match": "MATCH",
+   "match_basis": "router prescribed the P1 truth check first and did not predict a truth flip",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "break created by candidate delta 'epistemic-autonomy'; the delta is the constructive separability certificate (\u00a72)"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "ruling_packets/defensibility_rulings.json",
+      "sha256": "413258ade2d6",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "delta": "epistemic-autonomy",
+   "seat_ruling": "NOT_RELEVANT",
+   "panel_row": false,
+   "truth_tier_pre_batch": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "a:avoiding-over-and-under-caution::l1707_1973_n029",
+   "case_class": "a_defensibility_batch",
+   "behaviour": "avoiding-over-and-under-caution",
+   "node": "l1707_1973_n029",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "STANDS: ruling NOT_RELEVANT upheld; the 'harm-prevention' delta stays rejected (no rescue)",
+   "match": "MATCH",
+   "match_basis": "router prescribed the P1 truth check first and did not predict a truth flip",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "break created by candidate delta 'harm-prevention'; the delta is the constructive separability certificate (\u00a72)"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "ruling_packets/defensibility_rulings.json",
+      "sha256": "413258ade2d6",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "delta": "harm-prevention",
+   "seat_ruling": "NOT_RELEVANT",
+   "panel_row": false,
+   "truth_tier_pre_batch": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "a:helpfulness::l2821_3040_n027",
+   "case_class": "a_defensibility_batch",
+   "behaviour": "helpfulness",
+   "node": "l2821_3040_n027",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "STANDS: ruling NOT_RELEVANT upheld; the 'trust' delta stays rejected (no rescue)",
+   "match": "MATCH",
+   "match_basis": "router prescribed the P1 truth check first and did not predict a truth flip",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "break created by candidate delta 'trust'; the delta is the constructive separability certificate (\u00a72)"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "ruling_packets/defensibility_rulings.json",
+      "sha256": "413258ade2d6",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "delta": "trust",
+   "seat_ruling": "NOT_RELEVANT",
+   "panel_row": false,
+   "truth_tier_pre_batch": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "a:helpfulness::l3383_3501_n014",
+   "case_class": "a_defensibility_batch",
+   "behaviour": "helpfulness",
+   "node": "l3383_3501_n014",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "STANDS: ruling NOT_RELEVANT upheld; the 'predictability-and-reliability' delta stays rejected (no rescue)",
+   "match": "MATCH",
+   "match_basis": "router prescribed the P1 truth check first and did not predict a truth flip",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "break created by candidate delta 'predictability-and-reliability'; the delta is the constructive separability certificate (\u00a72)"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "ruling_packets/defensibility_rulings.json",
+      "sha256": "413258ade2d6",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "delta": "predictability-and-reliability",
+   "seat_ruling": "NOT_RELEVANT",
+   "panel_row": false,
+   "truth_tier_pre_batch": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "a:helpfulness::l1974_2125_n007",
+   "case_class": "a_defensibility_batch",
+   "behaviour": "helpfulness",
+   "node": "l1974_2125_n007",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "STANDS: ruling NOT_RELEVANT upheld; the 'predictability-and-reliability' delta stays rejected (no rescue)",
+   "match": "MATCH",
+   "match_basis": "router prescribed the P1 truth check first and did not predict a truth flip",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "break created by candidate delta 'predictability-and-reliability'; the delta is the constructive separability certificate (\u00a72)"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "ruling_packets/defensibility_rulings.json",
+      "sha256": "413258ade2d6",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "delta": "predictability-and-reliability",
+   "seat_ruling": "NOT_RELEVANT",
+   "panel_row": false,
+   "truth_tier_pre_batch": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "a:helpfulness::l2821_3040_n005",
+   "case_class": "a_defensibility_batch",
+   "behaviour": "helpfulness",
+   "node": "l2821_3040_n005",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "STANDS: ruling NOT_RELEVANT upheld; the 'trust' delta stays rejected (no rescue)",
+   "match": "MATCH",
+   "match_basis": "router prescribed the P1 truth check first and did not predict a truth flip",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "break created by candidate delta 'trust'; the delta is the constructive separability certificate (\u00a72)"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "ruling_packets/defensibility_rulings.json",
+      "sha256": "413258ade2d6",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "delta": "trust",
+   "seat_ruling": "NOT_RELEVANT",
+   "panel_row": false,
+   "truth_tier_pre_batch": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "a:helpfulness::l461_608_n021",
+   "case_class": "a_defensibility_batch",
+   "behaviour": "helpfulness",
+   "node": "l461_608_n021",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "STANDS: ruling NOT_RELEVANT upheld; the 'predictability-and-reliability' delta stays rejected (no rescue)",
+   "match": "MATCH",
+   "match_basis": "router prescribed the P1 truth check first and did not predict a truth flip",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "break created by candidate delta 'predictability-and-reliability'; the delta is the constructive separability certificate (\u00a72)"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "ruling_packets/defensibility_rulings.json",
+      "sha256": "413258ade2d6",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "delta": "predictability-and-reliability",
+   "seat_ruling": "NOT_RELEVANT",
+   "panel_row": false,
+   "truth_tier_pre_batch": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "a:avoiding-over-and-under-caution::l2126_2404_n001",
+   "case_class": "a_defensibility_batch",
+   "behaviour": "avoiding-over-and-under-caution",
+   "node": "l2126_2404_n001",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "STANDS: ruling NOT_RELEVANT upheld; the 'epistemic-autonomy' delta stays rejected (no rescue)",
+   "match": "MATCH",
+   "match_basis": "router prescribed the P1 truth check first and did not predict a truth flip",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "break created by candidate delta 'epistemic-autonomy'; the delta is the constructive separability certificate (\u00a72)"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "ruling_packets/defensibility_rulings.json",
+      "sha256": "413258ade2d6",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "delta": "epistemic-autonomy",
+   "seat_ruling": "NOT_RELEVANT",
+   "panel_row": false,
+   "truth_tier_pre_batch": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "a:helpfulness::l3596_3876_n039",
+   "case_class": "a_defensibility_batch",
+   "behaviour": "helpfulness",
+   "node": "l3596_3876_n039",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "STANDS: ruling NOT_RELEVANT upheld; the 'empowerment' delta stays rejected (no rescue)",
+   "match": "MATCH",
+   "match_basis": "router prescribed the P1 truth check first and did not predict a truth flip",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "break created by candidate delta 'empowerment'; the delta is the constructive separability certificate (\u00a72)"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "ruling_packets/defensibility_rulings.json",
+      "sha256": "413258ade2d6",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "delta": "empowerment",
+   "seat_ruling": "NOT_RELEVANT",
+   "panel_row": false,
+   "truth_tier_pre_batch": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "a:helpfulness::l2474_2554_n002",
+   "case_class": "a_defensibility_batch",
+   "behaviour": "helpfulness",
+   "node": "l2474_2554_n002",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "STANDS: ruling NOT_RELEVANT upheld; the 'trust' delta stays rejected (no rescue)",
+   "match": "MATCH",
+   "match_basis": "router prescribed the P1 truth check first and did not predict a truth flip",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "break created by candidate delta 'trust'; the delta is the constructive separability certificate (\u00a72)"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "ruling_packets/defensibility_rulings.json",
+      "sha256": "413258ade2d6",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "delta": "trust",
+   "seat_ruling": "NOT_RELEVANT",
+   "panel_row": false,
+   "truth_tier_pre_batch": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "a:helpfulness::l461_608_n018",
+   "case_class": "a_defensibility_batch",
+   "behaviour": "helpfulness",
+   "node": "l461_608_n018",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "STANDS: ruling NOT_RELEVANT upheld; the 'predictability-and-reliability' delta stays rejected (no rescue)",
+   "match": "MATCH",
+   "match_basis": "router prescribed the P1 truth check first and did not predict a truth flip",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "break created by candidate delta 'predictability-and-reliability'; the delta is the constructive separability certificate (\u00a72)"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "ruling_packets/defensibility_rulings.json",
+      "sha256": "413258ade2d6",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "delta": "predictability-and-reliability",
+   "seat_ruling": "NOT_RELEVANT",
+   "panel_row": false,
+   "truth_tier_pre_batch": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "a:helpfulness::l427_460_n003",
+   "case_class": "a_defensibility_batch",
+   "behaviour": "helpfulness",
+   "node": "l427_460_n003",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-T",
+   "predicted_move": "supersede the ledger entry with the panel ruling; mismatch dissolves",
+   "judgment_port": "P1",
+   "predicted_terminal": "resolved_t",
+   "recorded_resolution": "RESCUE: blind-Fable defensibility ruling RELEVANT supersedes the 9b-arithmetic break classification -> truth ledger update (C-T truth flip)",
+   "match": "MATCH",
+   "match_basis": "predicted class C-T == recorded truth flip",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "break created by candidate delta 'empowerment'; the delta is the constructive separability certificate (\u00a72)"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "resolved_t",
+     "evidence": {
+      "artifact_path": "ruling_packets/defensibility_rulings.json",
+      "sha256": "413258ade2d6",
+      "note": "R1 escalation OVERTURNED the ruling: truth error"
+     }
+    }
+   ],
+   "router_detail": {
+    "truth_tier": "single",
+    "truth_artifact": null
+   },
+   "delta": "empowerment",
+   "seat_ruling": "RELEVANT",
+   "panel_row": false,
+   "truth_tier_pre_batch": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "a:helpfulness::l797_830_n004",
+   "case_class": "a_defensibility_batch",
+   "behaviour": "helpfulness",
+   "node": "l797_830_n004",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "STANDS: ruling NOT_RELEVANT upheld; the 'empowerment' delta stays rejected (no rescue)",
+   "match": "MATCH",
+   "match_basis": "router prescribed the P1 truth check first and did not predict a truth flip",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "break created by candidate delta 'empowerment'; the delta is the constructive separability certificate (\u00a72)"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "ruling_packets/defensibility_rulings.json",
+      "sha256": "413258ade2d6",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "delta": "empowerment",
+   "seat_ruling": "NOT_RELEVANT",
+   "panel_row": false,
+   "truth_tier_pre_batch": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "a:helpfulness::l426_610_n029",
+   "case_class": "a_defensibility_batch",
+   "behaviour": "helpfulness",
+   "node": "l426_610_n029",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "OPEN(P2)",
+   "predicted_move": "run the pinned faithfulness audit (semantic-audit lane, 85% gate) on the node's ESTABLISHES claim",
+   "judgment_port": "P2",
+   "predicted_terminal": null,
+   "recorded_resolution": "STANDS: ruling NOT_RELEVANT upheld; the 'predictability-and-reliability' delta stays rejected (no rescue)",
+   "match": "MATCH",
+   "match_basis": "router prescribed the P1 truth check first and did not predict a truth flip",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "break created by candidate delta 'predictability-and-reliability'; the delta is the constructive separability certificate (\u00a72)"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "ruling_packets/defensibility_rulings.json",
+      "sha256": "413258ade2d6",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    }
+   ],
+   "router_detail": {
+    "faithfulness": "node absent from the canonical ESTABLISHES corpus"
+   },
+   "delta": "predictability-and-reliability",
+   "seat_ruling": "NOT_RELEVANT",
+   "panel_row": false,
+   "truth_tier_pre_batch": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "a:helpfulness::l461_608_n007",
+   "case_class": "a_defensibility_batch",
+   "behaviour": "helpfulness",
+   "node": "l461_608_n007",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "STANDS: ruling NOT_RELEVANT upheld; the 'predictability-and-reliability' delta stays rejected (no rescue)",
+   "match": "MATCH",
+   "match_basis": "router prescribed the P1 truth check first and did not predict a truth flip",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "break created by candidate delta 'predictability-and-reliability'; the delta is the constructive separability certificate (\u00a72)"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "ruling_packets/defensibility_rulings.json",
+      "sha256": "413258ade2d6",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "delta": "predictability-and-reliability",
+   "seat_ruling": "NOT_RELEVANT",
+   "panel_row": false,
+   "truth_tier_pre_batch": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "a:helpfulness::l3954_4251_n003",
+   "case_class": "a_defensibility_batch",
+   "behaviour": "helpfulness",
+   "node": "l3954_4251_n003",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "STANDS: ruling NOT_RELEVANT upheld; the 'trust' delta stays rejected (no rescue)",
+   "match": "MATCH",
+   "match_basis": "router prescribed the P1 truth check first and did not predict a truth flip",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "break created by candidate delta 'trust'; the delta is the constructive separability certificate (\u00a72)"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "ruling_packets/defensibility_rulings.json",
+      "sha256": "413258ade2d6",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "delta": "trust",
+   "seat_ruling": "NOT_RELEVANT",
+   "panel_row": false,
+   "truth_tier_pre_batch": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "a:helpfulness::l171_426_n035",
+   "case_class": "a_defensibility_batch",
+   "behaviour": "helpfulness",
+   "node": "l171_426_n035",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "STANDS: ruling NOT_RELEVANT upheld; the 'predictability-and-reliability' delta stays rejected (no rescue)",
+   "match": "MATCH",
+   "match_basis": "router prescribed the P1 truth check first and did not predict a truth flip",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "break created by candidate delta 'predictability-and-reliability'; the delta is the constructive separability certificate (\u00a72)"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "ruling_packets/defensibility_rulings.json",
+      "sha256": "413258ade2d6",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "delta": "predictability-and-reliability",
+   "seat_ruling": "NOT_RELEVANT",
+   "panel_row": false,
+   "truth_tier_pre_batch": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "a:helpfulness::l3954_4251_n029",
+   "case_class": "a_defensibility_batch",
+   "behaviour": "helpfulness",
+   "node": "l3954_4251_n029",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "STANDS: ruling NOT_RELEVANT upheld; the 'predictability-and-reliability' delta stays rejected (no rescue)",
+   "match": "MATCH",
+   "match_basis": "router prescribed the P1 truth check first and did not predict a truth flip",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "break created by candidate delta 'predictability-and-reliability'; the delta is the constructive separability certificate (\u00a72)"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "ruling_packets/defensibility_rulings.json",
+      "sha256": "413258ade2d6",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "delta": "predictability-and-reliability",
+   "seat_ruling": "NOT_RELEVANT",
+   "panel_row": false,
+   "truth_tier_pre_batch": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "b:helpfulness::l1108_1367_n002",
+   "case_class": "b_round4_canary",
+   "behaviour": "helpfulness",
+   "node": "l1108_1367_n002",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-I(I1)",
+   "predicted_move": "build the consumer for the certifying feature (typed gate, \u00a76) OR run the annotation lane (I2); the row is addressable_by_declaration",
+   "judgment_port": null,
+   "predicted_terminal": null,
+   "recorded_resolution": "CURRENT-UNSAT / REACHABLE-SEPARABLE: addressable_by_declaration = True (inventory insufficiency addressable by declaration; I-class)",
+   "match": "MATCH",
+   "match_basis": "predicted an I-class == recorded addressable-by-declaration row",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "reach",
+    "status": "UNSAT",
+    "status_reachable": "SEPARABLE",
+    "addressable_by_declaration": true,
+    "colliding_correct_nodes": [
+     "l1108_1367_n009"
+    ]
+   },
+   "trace": [
+    {
+     "state": "s(reach,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(reach,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "panel_run1/fresh_draw4/HELP_R4_RESULT.json",
+      "sha256": "e3b7bc0d1182",
+      "note": "R1 PASSES on the record: ruling is panel tier; premise discharged without a seat"
+     }
+    },
+    {
+     "state": "s(reach,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(reach,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    },
+    {
+     "state": "s(reach,faith,1,1,0,0,0,0,0)",
+     "rule": "r4",
+     "next": "s(sep,faith,1,1,0,1,0,0,0)",
+     "evidence": {
+      "artifact_path": "modules_contract_v19.json",
+      "sha256": "d0e12c234b20",
+      "note": "R4: CURRENT-UNSAT and REACHABLE-SEPARABLE \u2014 the REACHABLE certificate names an unconsumed feature (A4: builds are per-FEATURE)"
+     }
+    }
+   ],
+   "recorded_separability": "CURRENT=UNSAT REACHABLE=SEPARABLE addressable=True",
+   "canary_side": "FP"
+  },
+  {
+   "case_id": "b:helpfulness::l1707_1973_n016",
+   "case_class": "b_round4_canary",
+   "behaviour": "helpfulness",
+   "node": "l1707_1973_n016",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "CURRENT-SEPARABLE: addressable by a declaration delta (declaration error, C-D)",
+   "match": "MATCH",
+   "match_basis": "predicted C-D == recorded CURRENT-SEPARABLE disposition",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "status": "SEPARABLE",
+    "status_reachable": "SEPARABLE",
+    "addressable_by_declaration": false,
+    "colliding_correct_nodes": []
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "panel_run1/fresh_draw4/HELP_R4_RESULT.json",
+      "sha256": "e3b7bc0d1182",
+      "note": "R1 PASSES on the record: ruling is panel tier; premise discharged without a seat"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "recorded_separability": "CURRENT=SEPARABLE REACHABLE=SEPARABLE addressable=False",
+   "canary_side": "FP"
+  },
+  {
+   "case_id": "b:helpfulness::l1799_1973_n013",
+   "case_class": "b_round4_canary",
+   "behaviour": "helpfulness",
+   "node": "l1799_1973_n013",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "OPEN(P2)",
+   "predicted_move": "run the pinned faithfulness audit (semantic-audit lane, 85% gate) on the node's ESTABLISHES claim",
+   "judgment_port": "P2",
+   "predicted_terminal": null,
+   "recorded_resolution": "CURRENT-SEPARABLE: addressable by a declaration delta (declaration error, C-D)",
+   "match": "MISMATCH",
+   "match_basis": "predicted C-D == recorded CURRENT-SEPARABLE disposition",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "status": "SEPARABLE",
+    "status_reachable": "SEPARABLE",
+    "addressable_by_declaration": false,
+    "colliding_correct_nodes": []
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "panel_run1/fresh_draw4/HELP_R4_RESULT.json",
+      "sha256": "e3b7bc0d1182",
+      "note": "R1 PASSES on the record: ruling is panel tier; premise discharged without a seat"
+     }
+    }
+   ],
+   "router_detail": {
+    "faithfulness": "node absent from the canonical ESTABLISHES corpus"
+   },
+   "recorded_separability": "CURRENT=SEPARABLE REACHABLE=SEPARABLE addressable=False",
+   "canary_side": "FP"
+  },
+  {
+   "case_id": "b:helpfulness::l2126_2404_n023",
+   "case_class": "b_round4_canary",
+   "behaviour": "helpfulness",
+   "node": "l2126_2404_n023",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-I(I3)",
+   "predicted_move": "mint new vocabulary (census->mine->mint, blind criteria, M1-M4 gates)",
+   "judgment_port": "P3",
+   "predicted_terminal": null,
+   "recorded_resolution": "UNSAT in BOTH views: recorded as a terminal canary node (\u00a74 I4 historical instance, '2 terminal canary nodes')",
+   "match": "MISMATCH",
+   "match_basis": "predicted C-I(I4) == recorded terminal-by-document",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "unsat",
+    "status": "UNSAT",
+    "status_reachable": "UNSAT",
+    "addressable_by_declaration": false,
+    "colliding_correct_nodes": [
+     "l2126_2404_n010"
+    ]
+   },
+   "trace": [
+    {
+     "state": "s(unsat,unaud,0,0,0,0,1,0,0)",
+     "rule": "r1",
+     "next": "s(unsat,unaud,1,0,0,0,1,0,0)",
+     "evidence": {
+      "artifact_path": "panel_run1/fresh_draw4/HELP_R4_RESULT.json",
+      "sha256": "e3b7bc0d1182",
+      "note": "R1 PASSES on the record: ruling is panel tier; premise discharged without a seat"
+     }
+    },
+    {
+     "state": "s(unsat,unaud,1,0,0,0,1,0,0)",
+     "rule": "r2",
+     "next": "s(unsat,faith,1,1,0,0,1,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    },
+    {
+     "state": "s(unsat,faith,1,1,0,0,1,0,0)",
+     "rule": "r5",
+     "next": "s(unsat,faith,1,1,0,0,2,0,0)",
+     "evidence": {
+      "artifact_path": "modules_contract_v19.json",
+      "sha256": "d0e12c234b20",
+      "note": "R5: UNSAT in BOTH views \u2014 no declaration over I_k separates the node; mint"
+     }
+    }
+   ],
+   "recorded_separability": "CURRENT=UNSAT REACHABLE=UNSAT addressable=False",
+   "canary_side": "FN"
+  },
+  {
+   "case_id": "b:helpfulness::l2474_2554_n004",
+   "case_class": "b_round4_canary",
+   "behaviour": "helpfulness",
+   "node": "l2474_2554_n004",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "CURRENT-SEPARABLE: addressable by a declaration delta (declaration error, C-D)",
+   "match": "MATCH",
+   "match_basis": "predicted C-D == recorded CURRENT-SEPARABLE disposition",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "status": "SEPARABLE",
+    "status_reachable": "SEPARABLE",
+    "addressable_by_declaration": false,
+    "colliding_correct_nodes": []
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "panel_run1/fresh_draw4/HELP_R4_RESULT.json",
+      "sha256": "e3b7bc0d1182",
+      "note": "R1 PASSES on the record: ruling is panel tier; premise discharged without a seat"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "recorded_separability": "CURRENT=SEPARABLE REACHABLE=SEPARABLE addressable=False",
+   "canary_side": "FP"
+  },
+  {
+   "case_id": "b:helpfulness::l2821_3040_n034",
+   "case_class": "b_round4_canary",
+   "behaviour": "helpfulness",
+   "node": "l2821_3040_n034",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "CURRENT-SEPARABLE: addressable by a declaration delta (declaration error, C-D)",
+   "match": "MATCH",
+   "match_basis": "predicted C-D == recorded CURRENT-SEPARABLE disposition",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "status": "SEPARABLE",
+    "status_reachable": "SEPARABLE",
+    "addressable_by_declaration": false,
+    "colliding_correct_nodes": []
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "panel_run1/fresh_draw4/HELP_R4_RESULT.json",
+      "sha256": "e3b7bc0d1182",
+      "note": "R1 PASSES on the record: ruling is panel tier; premise discharged without a seat"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "recorded_separability": "CURRENT=SEPARABLE REACHABLE=SEPARABLE addressable=False",
+   "canary_side": "FP"
+  },
+  {
+   "case_id": "b:helpfulness::l3954_4251_n010",
+   "case_class": "b_round4_canary",
+   "behaviour": "helpfulness",
+   "node": "l3954_4251_n010",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-I(I3)",
+   "predicted_move": "mint new vocabulary (census->mine->mint, blind criteria, M1-M4 gates)",
+   "judgment_port": "P3",
+   "predicted_terminal": null,
+   "recorded_resolution": "UNSAT in BOTH views: recorded as a terminal canary node (\u00a74 I4 historical instance, '2 terminal canary nodes')",
+   "match": "MISMATCH",
+   "match_basis": "predicted C-I(I4) == recorded terminal-by-document",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "unsat",
+    "status": "UNSAT",
+    "status_reachable": "UNSAT",
+    "addressable_by_declaration": false,
+    "colliding_correct_nodes": [
+     "l3596_3876_n024",
+     "l3596_3876_n013"
+    ]
+   },
+   "trace": [
+    {
+     "state": "s(unsat,unaud,0,0,0,0,1,0,0)",
+     "rule": "r1",
+     "next": "s(unsat,unaud,1,0,0,0,1,0,0)",
+     "evidence": {
+      "artifact_path": "panel_run1/fresh_draw4/HELP_R4_RESULT.json",
+      "sha256": "e3b7bc0d1182",
+      "note": "R1 PASSES on the record: ruling is panel tier; premise discharged without a seat"
+     }
+    },
+    {
+     "state": "s(unsat,unaud,1,0,0,0,1,0,0)",
+     "rule": "r2",
+     "next": "s(unsat,faith,1,1,0,0,1,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    },
+    {
+     "state": "s(unsat,faith,1,1,0,0,1,0,0)",
+     "rule": "r5",
+     "next": "s(unsat,faith,1,1,0,0,2,0,0)",
+     "evidence": {
+      "artifact_path": "modules_contract_v19.json",
+      "sha256": "d0e12c234b20",
+      "note": "R5: UNSAT in BOTH views \u2014 no declaration over I_k separates the node; mint"
+     }
+    }
+   ],
+   "recorded_separability": "CURRENT=UNSAT REACHABLE=UNSAT addressable=False",
+   "canary_side": "FP"
+  },
+  {
+   "case_id": "b:helpfulness::l3954_4251_n031",
+   "case_class": "b_round4_canary",
+   "behaviour": "helpfulness",
+   "node": "l3954_4251_n031",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "CURRENT-SEPARABLE: addressable by a declaration delta (declaration error, C-D)",
+   "match": "MATCH",
+   "match_basis": "predicted C-D == recorded CURRENT-SEPARABLE disposition",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "status": "SEPARABLE",
+    "status_reachable": "SEPARABLE",
+    "addressable_by_declaration": false,
+    "colliding_correct_nodes": []
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "panel_run1/fresh_draw4/HELP_R4_RESULT.json",
+      "sha256": "e3b7bc0d1182",
+      "note": "R1 PASSES on the record: ruling is panel tier; premise discharged without a seat"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "recorded_separability": "CURRENT=SEPARABLE REACHABLE=SEPARABLE addressable=False",
+   "canary_side": "FP"
+  },
+  {
+   "case_id": "b:helpfulness::l4252_4482_n006",
+   "case_class": "b_round4_canary",
+   "behaviour": "helpfulness",
+   "node": "l4252_4482_n006",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "CURRENT-SEPARABLE: addressable by a declaration delta (declaration error, C-D)",
+   "match": "MATCH",
+   "match_basis": "predicted C-D == recorded CURRENT-SEPARABLE disposition",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "status": "SEPARABLE",
+    "status_reachable": "SEPARABLE",
+    "addressable_by_declaration": false,
+    "colliding_correct_nodes": []
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "panel_run1/fresh_draw4/HELP_R4_RESULT.json",
+      "sha256": "e3b7bc0d1182",
+      "note": "R1 PASSES on the record: ruling is panel tier; premise discharged without a seat"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "recorded_separability": "CURRENT=SEPARABLE REACHABLE=SEPARABLE addressable=False",
+   "canary_side": "FP"
+  },
+  {
+   "case_id": "b:helpfulness::l461_608_n013",
+   "case_class": "b_round4_canary",
+   "behaviour": "helpfulness",
+   "node": "l461_608_n013",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "CURRENT-SEPARABLE: addressable by a declaration delta (declaration error, C-D)",
+   "match": "MATCH",
+   "match_basis": "predicted C-D == recorded CURRENT-SEPARABLE disposition",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "status": "SEPARABLE",
+    "status_reachable": "SEPARABLE",
+    "addressable_by_declaration": false,
+    "colliding_correct_nodes": []
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "panel_run1/fresh_draw4/HELP_R4_RESULT.json",
+      "sha256": "e3b7bc0d1182",
+      "note": "R1 PASSES on the record: ruling is panel tier; premise discharged without a seat"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "recorded_separability": "CURRENT=SEPARABLE REACHABLE=SEPARABLE addressable=False",
+   "canary_side": "FP"
+  },
+  {
+   "case_id": "b:helpfulness::l699_796_n009",
+   "case_class": "b_round4_canary",
+   "behaviour": "helpfulness",
+   "node": "l699_796_n009",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "CURRENT-SEPARABLE: addressable by a declaration delta (declaration error, C-D)",
+   "match": "MATCH",
+   "match_basis": "predicted C-D == recorded CURRENT-SEPARABLE disposition",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "status": "SEPARABLE",
+    "status_reachable": "SEPARABLE",
+    "addressable_by_declaration": false,
+    "colliding_correct_nodes": []
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "panel_run1/fresh_draw4/HELP_R4_RESULT.json",
+      "sha256": "e3b7bc0d1182",
+      "note": "R1 PASSES on the record: ruling is panel tier; premise discharged without a seat"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "recorded_separability": "CURRENT=SEPARABLE REACHABLE=SEPARABLE addressable=False",
+   "canary_side": "FP"
+  },
+  {
+   "case_id": "b:helpfulness::l797_830_n018",
+   "case_class": "b_round4_canary",
+   "behaviour": "helpfulness",
+   "node": "l797_830_n018",
+   "contract": "modules_contract_v19.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta: enumerate candidates (verify_terminal move space / decl-search), screen with probe.py (L0), validate V1-V5",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "CURRENT-SEPARABLE: addressable by a declaration delta (declaration error, C-D)",
+   "match": "MATCH",
+   "match_basis": "predicted C-D == recorded CURRENT-SEPARABLE disposition",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "status": "SEPARABLE",
+    "status_reachable": "SEPARABLE",
+    "addressable_by_declaration": false,
+    "colliding_correct_nodes": []
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "panel_run1/fresh_draw4/HELP_R4_RESULT.json",
+      "sha256": "e3b7bc0d1182",
+      "note": "R1 PASSES on the record: ruling is panel tier; premise discharged without a seat"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": null
+   },
+   "recorded_separability": "CURRENT=SEPARABLE REACHABLE=SEPARABLE addressable=False",
+   "canary_side": "FP"
+  },
+  {
+   "case_id": "c:PC-1 empowerment",
+   "case_class": "c_9b_deltas",
+   "behaviour": "helpfulness",
+   "node": "l1707_1973_n040",
+   "contract": "modules_contract_v18.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta (decl-search candidate, probe.py L0 screen, V1-V5)",
+   "judgment_port": "P1",
+   "predicted_terminal": "resolved_d",
+   "recorded_resolution": "ADOPTED as a declaration delta (C-D). TP+13 / FP+3 charter POSITIVE; adoption_consequence 'ADOPTED FINAL (13/2 after rescue of l427_460_n003)'",
+   "match": "MATCH",
+   "match_basis": "predicted C-D terminating at resolved_d == recorded adoption",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "delta purpose_concern+=empowerment corrects this node: measured at today's ledger fixes=15 breaks=3 on base modules_contract_v18.json"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "panel_run1/convergence/ARITHMETIC_9B_RESULT.json",
+      "sha256": "f1e4b103ddf9",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    },
+    {
+     "state": "s(sep,faith,1,1,0,0,0,0,0)",
+     "rule": "r3",
+     "next": "resolved_d",
+     "evidence": {
+      "artifact_path": "panel_run1/convergence/ARITHMETIC_9B_RESULT.json",
+      "sha256": "f1e4b103ddf9",
+      "note": "R3 delta ADOPTED: charter-positive and V1-V5 clean"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": {
+     "verdict": "TERMINAL-STRUCT",
+     "note": "no declaration move can flip it (actor-excluded or no act match); bridge/vocabulary space fenced"
+    }
+   },
+   "delta_id": "PC-1 empowerment",
+   "delta": {
+    "purpose_concern": "+empowerment"
+   },
+   "representative_node": "l1707_1973_n040",
+   "recomputed_charter_today": {
+    "fixes": 15,
+    "breaks": 3
+   },
+   "recorded_charter_9b": "TP+13 / FP+3 charter POSITIVE; adoption_consequence 'ADOPTED FINAL (13/2 after rescue of l427_460_n003)'",
+   "truth_tier_at_9b": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "c:PC-2 harm-prevention",
+   "case_class": "c_9b_deltas",
+   "behaviour": "avoiding-over-and-under-caution",
+   "node": "l3147_3238_n004",
+   "contract": "modules_contract_v18.json",
+   "predicted_class": "C-D",
+   "predicted_move": "mechanical delta (decl-search candidate, probe.py L0 screen, V1-V5)",
+   "judgment_port": "P1",
+   "predicted_terminal": "resolved_d",
+   "recorded_resolution": "ADOPTED as a declaration delta (C-D). TP+3 / FP+1 charter POSITIVE; adoption_consequence 'ADOPTED FINAL (3/1, no rescues)'",
+   "match": "MATCH",
+   "match_basis": "predicted C-D terminating at resolved_d == recorded adoption",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "delta purpose_concern+=harm-prevention corrects this node: measured at today's ledger fixes=5 breaks=2 on base modules_contract_v18.json"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "panel_run1/convergence/ARITHMETIC_9B_RESULT.json",
+      "sha256": "f1e4b103ddf9",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    },
+    {
+     "state": "s(sep,faith,1,1,0,0,0,0,0)",
+     "rule": "r3",
+     "next": "resolved_d",
+     "evidence": {
+      "artifact_path": "panel_run1/convergence/ARITHMETIC_9B_RESULT.json",
+      "sha256": "f1e4b103ddf9",
+      "note": "R3 delta ADOPTED: charter-positive and V1-V5 clean"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": {
+     "verdict": "TERMINAL-STRUCT",
+     "note": "no declaration move can flip it (actor-excluded or no act match); bridge/vocabulary space fenced"
+    }
+   },
+   "delta_id": "PC-2 harm-prevention",
+   "delta": {
+    "purpose_concern": "+harm-prevention"
+   },
+   "representative_node": "l3147_3238_n004",
+   "recomputed_charter_today": {
+    "fixes": 5,
+    "breaks": 2
+   },
+   "recorded_charter_9b": "TP+3 / FP+1 charter POSITIVE; adoption_consequence 'ADOPTED FINAL (3/1, no rescues)'",
+   "truth_tier_at_9b": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "c:PC-4 trust",
+   "case_class": "c_9b_deltas",
+   "behaviour": "helpfulness",
+   "node": "l1707_1973_n020",
+   "contract": "modules_contract_v18.json",
+   "predicted_class": "C-D",
+   "predicted_move": "delta candidate killed at validation; R3 budget now 1/2 \u2014 next attempt or R3x (A1)",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "REJECTED at validation \u2014 charter-negative, zero rescues (C-D candidate killed at V1/V4). TP+7 / FP+9 charter NEGATIVE; 'FINALLY REJECTED (7/9, zero rescues)'",
+   "match": "MATCH",
+   "match_basis": "predicted C-D candidate consuming R3 budget without a terminal == recorded kill at validation",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "delta purpose_concern+=trust corrects this node: measured at today's ledger fixes=8 breaks=14 on base modules_contract_v18.json"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "panel_run1/convergence/ARITHMETIC_9B_RESULT.json",
+      "sha256": "f1e4b103ddf9",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    },
+    {
+     "state": "s(sep,faith,1,1,0,0,0,0,0)",
+     "rule": "r3",
+     "next": "s(sep,faith,1,1,0,0,0,0,1)",
+     "evidence": {
+      "artifact_path": "panel_run1/convergence/ARITHMETIC_9B_RESULT.json",
+      "sha256": "f1e4b103ddf9",
+      "note": "R3 delta attempt FAILED validation; budget consumed, ledger entry recorded (A1 no-retry)"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": {
+     "verdict": "TERMINAL-DECL",
+     "receipts": [
+      {
+       "move": {
+        "governs_concern": [
+         "accuracy_calibration",
+         "formatting_style",
+         "identity_meta",
+         "substance_usefulness",
+         "tone_manner"
+        ]
+       },
+       "mismatches_fixed": 2,
+       "correct_broken": 2,
+       "net": 0,
+       "target_flipped": true
+      }
+     ],
+     "note": "every minimal declaration move is charter-negative; relative to current vocabularies"
+    },
+    "open_after": "R3 budget partially consumed"
+   },
+   "delta_id": "PC-4 trust",
+   "delta": {
+    "purpose_concern": "+trust"
+   },
+   "representative_node": "l1707_1973_n020",
+   "recomputed_charter_today": {
+    "fixes": 8,
+    "breaks": 14
+   },
+   "recorded_charter_9b": "TP+7 / FP+9 charter NEGATIVE; 'FINALLY REJECTED (7/9, zero rescues)'",
+   "truth_tier_at_9b": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "c:PC-5 predictability-and-reliability",
+   "case_class": "c_9b_deltas",
+   "behaviour": "helpfulness",
+   "node": "l1707_1973_n030",
+   "contract": "modules_contract_v18.json",
+   "predicted_class": "C-D",
+   "predicted_move": "delta candidate killed at validation; R3 budget now 1/2 \u2014 next attempt or R3x (A1)",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "REJECTED at validation \u2014 charter-negative, zero rescues (C-D candidate killed at V1/V4). TP+6 / FP+12 charter NEGATIVE; 'FINALLY REJECTED (6/12, zero rescues)'",
+   "match": "MATCH",
+   "match_basis": "predicted C-D candidate consuming R3 budget without a terminal == recorded kill at validation",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "delta purpose_concern+=predictability-and-reliability corrects this node: measured at today's ledger fixes=6 breaks=13 on base modules_contract_v18.json"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "panel_run1/convergence/ARITHMETIC_9B_RESULT.json",
+      "sha256": "f1e4b103ddf9",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    },
+    {
+     "state": "s(sep,faith,1,1,0,0,0,0,0)",
+     "rule": "r3",
+     "next": "s(sep,faith,1,1,0,0,0,0,1)",
+     "evidence": {
+      "artifact_path": "panel_run1/convergence/ARITHMETIC_9B_RESULT.json",
+      "sha256": "f1e4b103ddf9",
+      "note": "R3 delta attempt FAILED validation; budget consumed, ledger entry recorded (A1 no-retry)"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": {
+     "verdict": "TERMINAL-STRUCT",
+     "note": "no declaration move can flip it (actor-excluded or no act match); bridge/vocabulary space fenced"
+    },
+    "open_after": "R3 budget partially consumed"
+   },
+   "delta_id": "PC-5 predictability-and-reliability",
+   "delta": {
+    "purpose_concern": "+predictability-and-reliability"
+   },
+   "representative_node": "l1707_1973_n030",
+   "recomputed_charter_today": {
+    "fixes": 6,
+    "breaks": 13
+   },
+   "recorded_charter_9b": "TP+6 / FP+12 charter NEGATIVE; 'FINALLY REJECTED (6/12, zero rescues)'",
+   "truth_tier_at_9b": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "c:PC-3 epistemic-autonomy",
+   "case_class": "c_9b_deltas",
+   "behaviour": "avoiding-over-and-under-caution",
+   "node": "l2126_2404_n016",
+   "contract": "modules_contract_v18.json",
+   "predicted_class": "C-D",
+   "predicted_move": "delta candidate killed at validation; R3 budget now 1/2 \u2014 next attempt or R3x (A1)",
+   "judgment_port": "P1",
+   "predicted_terminal": null,
+   "recorded_resolution": "REJECTED at validation \u2014 charter-negative, zero rescues (C-D candidate killed at V1/V4). TP+3 / FP+4 charter NEGATIVE; 'FINALLY REJECTED (3/4, zero rescues)'",
+   "match": "MATCH",
+   "match_basis": "predicted C-D candidate consuming R3 budget without a terminal == recorded kill at validation",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "delta purpose_concern+=epistemic-autonomy corrects this node: measured at today's ledger fixes=3 breaks=6 on base modules_contract_v18.json"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "panel_run1/convergence/ARITHMETIC_9B_RESULT.json",
+      "sha256": "f1e4b103ddf9",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    },
+    {
+     "state": "s(sep,faith,1,1,0,0,0,0,0)",
+     "rule": "r3",
+     "next": "s(sep,faith,1,1,0,0,0,0,1)",
+     "evidence": {
+      "artifact_path": "panel_run1/convergence/ARITHMETIC_9B_RESULT.json",
+      "sha256": "f1e4b103ddf9",
+      "note": "R3 delta attempt FAILED validation; budget consumed, ledger entry recorded (A1 no-retry)"
+     }
+    }
+   ],
+   "router_detail": {
+    "terminality": {
+     "verdict": "FIXABLE",
+     "best_move": {
+      "move": {
+       "governs_concern": [
+        "accuracy_calibration",
+        "objectivity_neutrality",
+        "substance_usefulness",
+        "tone_manner"
+       ]
+      },
+      "mismatches_fixed": 5,
+      "correct_broken": 4,
+      "net": 1,
+      "target_flipped": true
+     },
+     "receipts": [
+      {
+       "move": {
+        "governs_concern": [
+         "accuracy_calibration",
+         "objectivity_neutrality",
+         "substance_usefulness",
+         "tone_manner"
+        ]
+       },
+       "mismatches_fixed": 5,
+       "correct_broken": 4,
+       "net": 1,
+       "target_flipped": true
+      }
+     ]
+    },
+    "open_after": "R3 budget partially consumed"
+   },
+   "delta_id": "PC-3 epistemic-autonomy",
+   "delta": {
+    "purpose_concern": "+epistemic-autonomy"
+   },
+   "representative_node": "l2126_2404_n016",
+   "recomputed_charter_today": {
+    "fixes": 3,
+    "breaks": 6
+   },
+   "recorded_charter_9b": "TP+3 / FP+4 charter NEGATIVE; 'FINALLY REJECTED (3/4, zero rescues)'",
+   "truth_tier_at_9b": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "d:helpfulness::l797_830_n011",
+   "case_class": "d_subtype_colliders",
+   "behaviour": "helpfulness",
+   "node": "l797_830_n011",
+   "contract": "modules_contract_v18.json",
+   "predicted_class": "C-I(I3)",
+   "predicted_move": "mint new vocabulary (census->mine->mint, blind criteria, M1-M4 gates)",
+   "judgment_port": "P3",
+   "predicted_terminal": null,
+   "recorded_resolution": "I3 MINT (Arc1-b act refinements): the minted subtype marks are declarable vocabulary, so the row becomes addressable_by_declaration \u2014 pinned at v18 as CURRENT-UNSAT / REACHABLE-SEPARABLE",
+   "match": "MATCH",
+   "match_basis": "predicted C-I(I3) at port P3 == recorded act-refinement mint",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "unsat",
+    "status": "UNSAT",
+    "status_reachable": "UNSAT",
+    "addressable_by_declaration": false,
+    "colliding_correct_nodes": [
+     "l797_830_n007",
+     "l831_1000_n010",
+     "l1108_1367_n006"
+    ]
+   },
+   "trace": [
+    {
+     "state": "s(unsat,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(unsat,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "panel_run1/convergence/act_refinements_FINAL.json",
+      "sha256": "8bbe87db6105",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(unsat,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(unsat,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    },
+    {
+     "state": "s(unsat,faith,1,1,0,0,0,0,0)",
+     "rule": "r5",
+     "next": "s(reach,faith,1,1,0,0,1,0,0)",
+     "evidence": {
+      "artifact_path": "panel_run1/convergence/act_refinements_FINAL.json",
+      "sha256": "8bbe87db6105",
+      "note": "R5 mint executed; census -> REACH"
+     }
+    }
+   ],
+   "router_detail": {
+    "post_mint_census": "reach"
+   },
+   "pin": "test_satisfiability_census.py::test_m2_colliders_addressable_via_refinements",
+   "truth_tier": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "d:harm-avoidance-to-third-parties::l831_1000_n001",
+   "case_class": "d_subtype_colliders",
+   "behaviour": "harm-avoidance-to-third-parties",
+   "node": "l831_1000_n001",
+   "contract": "modules_contract_v18.json",
+   "predicted_class": "C-I(I3)",
+   "predicted_move": "mint new vocabulary (census->mine->mint, blind criteria, M1-M4 gates)",
+   "judgment_port": "P3",
+   "predicted_terminal": null,
+   "recorded_resolution": "I3 MINT (Arc1-b act refinements): the minted subtype marks are declarable vocabulary, so the row becomes addressable_by_declaration \u2014 pinned at v18 as CURRENT-UNSAT / REACHABLE-SEPARABLE",
+   "match": "MATCH",
+   "match_basis": "predicted C-I(I3) at port P3 == recorded act-refinement mint",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "unsat",
+    "status": "UNSAT",
+    "status_reachable": "UNSAT",
+    "addressable_by_declaration": false,
+    "colliding_correct_nodes": [
+     "l2126_2404_n032"
+    ]
+   },
+   "trace": [
+    {
+     "state": "s(unsat,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(unsat,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "panel_run1/convergence/act_refinements_FINAL.json",
+      "sha256": "8bbe87db6105",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(unsat,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(unsat,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    },
+    {
+     "state": "s(unsat,faith,1,1,0,0,0,0,0)",
+     "rule": "r5",
+     "next": "s(reach,faith,1,1,0,0,1,0,0)",
+     "evidence": {
+      "artifact_path": "panel_run1/convergence/act_refinements_FINAL.json",
+      "sha256": "8bbe87db6105",
+      "note": "R5 mint executed; census -> REACH"
+     }
+    }
+   ],
+   "router_detail": {
+    "post_mint_census": "reach"
+   },
+   "pin": "test_satisfiability_census.py::test_m2_colliders_addressable_via_refinements",
+   "truth_tier": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "d:harm-avoidance-to-third-parties::l831_1000_n011",
+   "case_class": "d_subtype_colliders",
+   "behaviour": "harm-avoidance-to-third-parties",
+   "node": "l831_1000_n011",
+   "contract": "modules_contract_v18.json",
+   "predicted_class": "C-I(I3)",
+   "predicted_move": "mint new vocabulary (census->mine->mint, blind criteria, M1-M4 gates)",
+   "judgment_port": "P3",
+   "predicted_terminal": null,
+   "recorded_resolution": "I3 MINT (Arc1-b act refinements): the minted subtype marks are declarable vocabulary, so the row becomes addressable_by_declaration \u2014 pinned at v18 as CURRENT-UNSAT / REACHABLE-SEPARABLE",
+   "match": "MATCH",
+   "match_basis": "predicted C-I(I3) at port P3 == recorded act-refinement mint",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "unsat",
+    "status": "UNSAT",
+    "status_reachable": "UNSAT",
+    "addressable_by_declaration": false,
+    "colliding_correct_nodes": [
+     "l831_1000_n013"
+    ]
+   },
+   "trace": [
+    {
+     "state": "s(unsat,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(unsat,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "panel_run1/convergence/act_refinements_FINAL.json",
+      "sha256": "8bbe87db6105",
+      "note": "R1 escalation run; the ruling STANDS"
+     }
+    },
+    {
+     "state": "s(unsat,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(unsat,faith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "../node_corpus_all.json",
+      "sha256": "73fff0b10f73",
+      "note": "R2 -> FAITHFUL: canonical corpus node carries an ESTABLISHES claim; no repair record"
+     }
+    },
+    {
+     "state": "s(unsat,faith,1,1,0,0,0,0,0)",
+     "rule": "r5",
+     "next": "s(reach,faith,1,1,0,0,1,0,0)",
+     "evidence": {
+      "artifact_path": "panel_run1/convergence/act_refinements_FINAL.json",
+      "sha256": "8bbe87db6105",
+      "note": "R5 mint executed; census -> REACH"
+     }
+    }
+   ],
+   "router_detail": {
+    "post_mint_census": "reach"
+   },
+   "pin": "test_satisfiability_census.py::test_m2_colliders_addressable_via_refinements",
+   "truth_tier": "single",
+   "truth_tier_artifact": "arm_ab.truth_for + truth_all fmap (single-wave)"
+  },
+  {
+   "case_id": "e:how-to-approach-tradeoffs",
+   "case_class": "e_f1_generalization_repair",
+   "behaviour": "how-to-approach-tradeoffs",
+   "node": null,
+   "contract": "modules_contract_GENERALIZATION.json",
+   "predicted_class": "C-V",
+   "predicted_move": "re-translate the node/module rendering and re-annotate (two seats); re-run the router",
+   "judgment_port": "P2",
+   "predicted_terminal": "resolved_v",
+   "recorded_resolution": "C-V translation-layer repair: bespoke `does` names replaced by canonical translation (behavior_acts()-accepted names); rationale REPAIR ADDENDUMs; NO new declarations",
+   "match": "MATCH",
+   "match_basis": "predicted C-V terminating at resolved_v == recorded translation-layer repair with no new declarations",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "not reached: R2b terminates before the census"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "(ctx)",
+      "sha256": null,
+      "note": "R1 PASSES on the record: ruling is panel tier; premise discharged without a seat"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,unfaith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "GENERALIZATION_BUILD_SPEC.md",
+      "sha256": "7ce295f6cc40",
+      "note": "R2 -> UNFAITHFUL: audit outcome supplied from the record"
+     }
+    },
+    {
+     "state": "s(sep,unfaith,1,1,0,0,0,0,0)",
+     "rule": "r2b",
+     "next": "resolved_v",
+     "evidence": {
+      "artifact_path": "GENERALIZATION_BUILD_SPEC.md",
+      "sha256": "7ce295f6cc40",
+      "note": "R2b: re-translate + two-seat re-annotation; no new declarations"
+     }
+    }
+   ],
+   "router_detail": {
+    "faithfulness": "audit outcome supplied from the record",
+    "note": "R1 discharged without a seat: the build engaged ZERO nodes, a defect independent of any ruling"
+   },
+   "module_as_named_in_erratum": "tradeoffs",
+   "erratum": "GENERALIZATION_BUILD_SPEC.md"
+  },
+  {
+   "case_id": "e:user-autonomy",
+   "case_class": "e_f1_generalization_repair",
+   "behaviour": "user-autonomy",
+   "node": null,
+   "contract": "modules_contract_GENERALIZATION.json",
+   "predicted_class": "C-V",
+   "predicted_move": "re-translate the node/module rendering and re-annotate (two seats); re-run the router",
+   "judgment_port": "P2",
+   "predicted_terminal": "resolved_v",
+   "recorded_resolution": "C-V translation-layer repair: bespoke `does` names replaced by canonical translation (behavior_acts()-accepted names); rationale REPAIR ADDENDUMs; NO new declarations",
+   "match": "MATCH",
+   "match_basis": "predicted C-V terminating at resolved_v == recorded translation-layer repair with no new declarations",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "not reached: R2b terminates before the census"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "(ctx)",
+      "sha256": null,
+      "note": "R1 PASSES on the record: ruling is panel tier; premise discharged without a seat"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,unfaith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "GENERALIZATION_BUILD_SPEC.md",
+      "sha256": "7ce295f6cc40",
+      "note": "R2 -> UNFAITHFUL: audit outcome supplied from the record"
+     }
+    },
+    {
+     "state": "s(sep,unfaith,1,1,0,0,0,0,0)",
+     "rule": "r2b",
+     "next": "resolved_v",
+     "evidence": {
+      "artifact_path": "GENERALIZATION_BUILD_SPEC.md",
+      "sha256": "7ce295f6cc40",
+      "note": "R2b: re-translate + two-seat re-annotation; no new declarations"
+     }
+    }
+   ],
+   "router_detail": {
+    "faithfulness": "audit outcome supplied from the record",
+    "note": "R1 discharged without a seat: the build engaged ZERO nodes, a defect independent of any ruling"
+   },
+   "module_as_named_in_erratum": "user-autonomy",
+   "erratum": "GENERALIZATION_BUILD_SPEC.md"
+  },
+  {
+   "case_id": "e:proportionate-risk-mitigation",
+   "case_class": "e_f1_generalization_repair",
+   "behaviour": "proportionate-risk-mitigation",
+   "node": null,
+   "contract": "modules_contract_GENERALIZATION.json",
+   "predicted_class": "C-V",
+   "predicted_move": "re-translate the node/module rendering and re-annotate (two seats); re-run the router",
+   "judgment_port": "P2",
+   "predicted_terminal": "resolved_v",
+   "recorded_resolution": "C-V translation-layer repair: bespoke `does` names replaced by canonical translation (behavior_acts()-accepted names); rationale REPAIR ADDENDUMs; NO new declarations",
+   "match": "MATCH",
+   "match_basis": "predicted C-V terminating at resolved_v == recorded translation-layer repair with no new declarations",
+   "trace_certified": true,
+   "trace_violations": [],
+   "census": {
+    "token": "sep",
+    "source": "ctx override",
+    "basis": "not reached: R2b terminates before the census"
+   },
+   "trace": [
+    {
+     "state": "s(sep,unaud,0,0,0,0,0,0,0)",
+     "rule": "r1",
+     "next": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "(ctx)",
+      "sha256": null,
+      "note": "R1 PASSES on the record: ruling is panel tier; premise discharged without a seat"
+     }
+    },
+    {
+     "state": "s(sep,unaud,1,0,0,0,0,0,0)",
+     "rule": "r2",
+     "next": "s(sep,unfaith,1,1,0,0,0,0,0)",
+     "evidence": {
+      "artifact_path": "GENERALIZATION_BUILD_SPEC.md",
+      "sha256": "7ce295f6cc40",
+      "note": "R2 -> UNFAITHFUL: audit outcome supplied from the record"
+     }
+    },
+    {
+     "state": "s(sep,unfaith,1,1,0,0,0,0,0)",
+     "rule": "r2b",
+     "next": "resolved_v",
+     "evidence": {
+      "artifact_path": "GENERALIZATION_BUILD_SPEC.md",
+      "sha256": "7ce295f6cc40",
+      "note": "R2b: re-translate + two-seat re-annotation; no new declarations"
+     }
+    }
+   ],
+   "router_detail": {
+    "faithfulness": "audit outcome supplied from the record",
+    "note": "R1 discharged without a seat: the build engaged ZERO nodes, a defect independent of any ruling"
+   },
+   "module_as_named_in_erratum": "proportionate-risk",
+   "erratum": "GENERALIZATION_BUILD_SPEC.md"
+  }
+ ]
+}

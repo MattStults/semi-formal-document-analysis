@@ -366,3 +366,29 @@ A10 (coining bounds + capability routing; Matt's questions 2026-08-24).
       -> FRONTIER + human ratification (P3: no answer key can certify it).
    Q5 decision binds future process (floor, prereg, exhaustion ruling)?
       -> HUMAN signature.
+A11 (§9 HISTORICAL VALIDATION v0 — EXECUTED; Opus build, Fable-verified;
+   ROUTE_VALIDATION_V0.json). 52 historical cases across all five recorded
+   classes routed from committed artifacts: 49/52 (94.2%) match the
+   recorded resolutions; 52/52 traces clingo-certified (independently
+   re-checked on a sample). The three mismatches are FINDINGS FOR the
+   calculus, not against it: two are the canary "terminal" nodes, which
+   the router sends to I3-coining while the record stamped I4-terminal
+   WITHOUT a logged mint exhaustion — i.e., history violated A8's
+   certificate rule and A9 already showed those stamps overclaimed (zero
+   byte-identity certificates exist); the record is what needs the
+   erratum. The third is a node absent from the canonical corpus (P2
+   port fires correctly on a real keying gap).
+   STRUCTURAL FINDINGS (route-validate F-r1/F-r2, both actionable):
+   F-r1: 20 of 644 assembled-ledger nodes key to a superseded chunking
+   (l426_610_* vs l427_460_*) — a truth-ledger hygiene item.
+   F-r2 (serious): verify_terminal.py — designated the move-space
+   authority in A6(d) — enumerates only protects/governs moves; it has no
+   purpose_concern move and stamps TERMINAL-STRUCT on 4 nodes the adopted
+   9b purpose deltas demonstrably fixed; its truth assembly is also stale
+   (no fresh_draw4, no defensibility overlay). Its terminality
+   certificates are UNSOUND at the current inventory — the exact
+   inventory-relative staleness contract 9g warned about, now caught by
+   the calculus's own validation. Until verify_terminal is extended to
+   the full declarable move set and current truth, NO exhaustion
+   certificate may cite it; A8's certified-terminal path is effectively
+   closed pending that fix, and every standing terminal is SUSPENDED-OPEN.
