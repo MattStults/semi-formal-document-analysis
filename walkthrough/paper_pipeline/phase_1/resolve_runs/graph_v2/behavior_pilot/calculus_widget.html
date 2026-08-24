@@ -8,6 +8,7 @@
       bears on a behavior, that's a <b>reported failure</b>. This machine decides <i>what kind
       of failure it is</i> and <i>what to do about it</i> — mostly by computation, calling an
       expensive frontier-model "judgment seat" only at four specific points.
+      Box borders show the <b>required judge</b> (green ⚙ deterministic · blue ◇ certified cheap tier · amber ★ frontier · red ★+H frontier+human).
       <b>You play the environment</b>: at each step the router (blue box) asks one question,
       and you pick which answer the world gives. Costs accumulate in "units" (u), roughly
       the price of one frontier ruling. Every path provably ends at a green terminal —
@@ -40,6 +41,14 @@
   var LBL={r1:'R1 verify truth',r2:'R2 verify translation',r2b:'R2b retranslate',
            r3:'R3 config fix',r3x:'R3x coin concept',r4:'R4 build consumer',
            r5:'R5 coin concept',r5x:'R5x final ruling'};
+  var JUDGE={r1:'front',r2:'front',r2b:'cheap',r3:'det',r3x:'human',
+             r4:'det',r5:'human',r5x:'human',DONE:'det'};
+  var JCOLOR={det:'#16a34a',cheap:'#3b82f6',front:'#d97706',human:'#dc2626'};
+  var JBADGE={det:'⚙',cheap:'◇',front:'★',human:'★+H'};
+  var JDESC={det:'deterministic — computed from committed artifacts, no model',
+             cheap:'cheapest CERTIFIED tier (measured parity certificate on the pinned brief) + frontier spot-check',
+             front:'frontier-only — cheap tiers measured and failed parity on this brief',
+             human:'frontier + HUMAN — generative naming or process-binding decision'};
   var DESC={
    r1:'JUDGMENT PORT. Before trusting the failure report, check the judge: a 3-seat panel re-rules the passage (3u). If the panel overturns the original ruling, there was never a real failure — the "truth" was wrong. Runs FIRST because everything downstream builds on this ruling.',
    r2:'JUDGMENT PORT. Check the other premise: does our formal encoding of the passage faithfully say what the document says? An audit seat compares them (1u). Runs before any expensive fix — fixing against a mistranslation is wasted work.',
@@ -107,16 +116,19 @@
     Object.keys(NODES).forEach(function(k){
       var p=NODES[k], active=cur&&cur.r===k, isDone=k==='DONE';
       var g=el('g',{style:'cursor:help'});
-      var port=DESC[k].indexOf('JUDGMENT PORT')===0;
+      var jc=JCOLOR[JUDGE[k]];
       g.appendChild(el('rect',{x:p[0]-58,y:p[1]-16,width:116,height:32,rx:8,
         fill:active?'#3b82f6':(isDone&&S.done?'#16a34a':'transparent'),
-        stroke:port?'#d97706':'currentColor','stroke-width':port?1.6:1,'stroke-opacity':active?0:(port?.9:.4)}));
+        stroke:jc,'stroke-width':1.8,'stroke-opacity':active?0:.9}));
+      var badge=el('text',{x:p[0]+52,y:p[1]-6,'text-anchor':'end','font-size':9,
+        fill:active?'#fff':jc});
+      badge.textContent=JBADGE[JUDGE[k]]; g.appendChild(badge);
       var t=el('text',{x:p[0],y:p[1]+4,'text-anchor':'middle','font-size':11,
         fill:(active||(isDone&&S.done))?'#fff':'currentColor'});
       t.textContent=isDone?(S.done||'terminals'):(LBL[k]+' · '+COST[k]+'u');
       g.appendChild(t);
       var tip=el('title',{}); tip.textContent=DESC[k]; g.appendChild(tip);
-      g.onmouseenter=function(){hov.textContent=(isDone?'Terminals: ':LBL[k]+' — ')+DESC[k];};
+g.onmouseenter=function(){hov.textContent=(isDone?'Terminals: ':LBL[k]+' ['+JBADGE[JUDGE[k]]+' '+JDESC[JUDGE[k]]+'] — ')+DESC[k];};
       svg.appendChild(g);
     });
     document.getElementById('ec-state').innerHTML=
@@ -132,7 +144,7 @@
       btn.style.cssText='padding:3px 10px;border-radius:6px;border:1px solid rgba(128,128,128,.4);cursor:pointer;font:inherit;background:transparent;color:inherit';
       btn.onclick=function(){S.cost+=COST[cur.r];trace.push(LBL[cur.r]+' → '+b.label);b.apply();render();};
       bd.appendChild(btn);});}
-    document.getElementById('ec-trace').textContent=trace.length?('path so far: '+trace.join('  ▸  ')):'Amber-bordered boxes are the four judgment ports (where a frontier seat is provably required); plain boxes are pure computation.';
+    document.getElementById('ec-trace').textContent=trace.length?('path so far: '+trace.join('  ▸  ')):'Border color = required judge: green ⚙ deterministic · blue ◇ cheapest certified tier · amber ★ frontier-only · red ★+H frontier plus human.';
   }
   var ps=document.getElementById('ec-presets');
   [['SEP (config can fix)','SEP'],['REACH (needs a consumer)','REACH'],['UNSAT (needs a concept)','UNSAT']].forEach(function(pr){
