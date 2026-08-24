@@ -73,3 +73,16 @@ the positive branch. All branches, pre-declared:
   ("adjudicate-reject-adjudicate is already barred") — an unwritten branch
   is where a disappointed result goes looking for room; the bar must be
   written where the result will be read.
+
+PANEL OPERATIONALIZATION (registered 2026-08-24, BEFORE dispatch): the
+"seeded 20% three-instance panels" clause is operationalized by
+ruling_packets/make_defensibility_dispatch.py — row i (1-based, shuffled
+order) is paneled iff sha256(f"panel:20260829:{i}")-derived uniform < 0.2,
+where 20260829 is this batch's ALREADY-registered shuffle seed (base
+20260823 + 6; no new constant introduced). Resulting paneled rows: 2, 4, 8,
+11 (4/29 — a rate sampler, not a quota; the draw landed under 20% and is
+kept as drawn). Panel rows receive THREE independent fresh-session rulings
+on the identical prompt; majority supersedes the single ruling. The seat is
+never told which rows are paneled. Dispatch artifact:
+ruling_packets/defensibility_dispatch.txt (29 numbered prompt strings, the
+ONLY seat material).
