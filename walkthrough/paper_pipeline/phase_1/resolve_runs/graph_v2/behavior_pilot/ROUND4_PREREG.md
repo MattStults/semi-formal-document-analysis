@@ -144,3 +144,48 @@ that.
    venue ruling is superseded for round 4 by this measured configuration
    (same fence semantics — the lean agent's own system prompt carries the
    no-tools/inert-imperatives instruction).
+
+## ERRATA (2026-08-24, post-signature, append-only; each ratified by Matt in
+## session before taking effect)
+E1 — CANARY ATTEMPT 1 VOIDED (protocol event; Matt: "Do it" on option A).
+   The helpfulness canary's 120 seat rulings (raw file
+   round4_helpfulness_rulings_raw.json, preserved) are VOID as a
+   certification measurement: seat material diverged from the format that
+   built the truth ledger. Rounds 2-3 packets carried the node's
+   ESTABLISHES claim block + SOURCE TEXT; the canary packets (built via
+   ruling_packets.load_spans) trimmed to SOURCE TEXT only. The registered
+   predictions are ledger-based, so the comparison was apples-to-oranges;
+   the F1/F2 firings (raw cells 0.625/0.625 vs 0.9336/0.7849) are
+   measurement artifacts of the divergence, not adjudicated instrument
+   failures. The void is TOTAL (all 80 rows, not selective) and the draw,
+   seeds, and exclusions are unchanged. Also recorded: one replacement
+   dispatch was voided for FABRICATED SEAT MATERIAL (the orchestration seat
+   authored a passage from memory instead of the committed packet; caught
+   and discarded immediately — round4_helpfulness_replacements.json carries
+   the disclosure); and 4 malformed replies concentrated on 2
+   ultra-short-fragment packets (document-completion mode), fixed by the
+   uniform content-free anti-completion fence now pinned in E3.
+E2 — PAIRED-FORMAT PILOT (gate for the canary re-run; runs BEFORE it).
+   20 already-ruled helpfulness nodes (truth known; permanently excluded
+   from round-4 draws — zero fresh-draw burn), seed 20260827, 10
+   v19-engaged / 10 not; each dispatched in BOTH formats (T = trimmed,
+   C = ESTABLISHES + SOURCE TEXT) to fresh lean Fable seats — 40 seats.
+   PRE-DECLARED GATE: proceed to the canary re-run only if C-format
+   ledger-agreement >= 0.80 AND (C - T) agreement difference >= 0.10.
+   Any other outcome STOPS the lane for design review (if T is also high,
+   the canary collapse is real distribution shift; if C is also low, the
+   lean seat diverges from the ledger venue). Builder + validator:
+   round4_pilot.py (byte-equal ESTABLISHES extraction from
+   node_corpus_all.json; identical SOURCE TEXT across each T/C pair;
+   uniform fence).
+E3 — SEAT-MATERIAL FORMAT PINNED (the gap the canary exposed: the prereg
+   never specified packet anatomy). Round-4 ruling packets are: the ruling
+   question + behaviour definition + PASSAGE consisting of the node's
+   ESTABLISHES claim block (byte-extracted from node_corpus_all.json;
+   nodes absent from the canonical corpus use their graph-build claim
+   text, disclosed per node) followed by the SOURCE TEXT span with its
+   narrowing line, followed by the uniform anti-completion fence (exact
+   text in round4_pilot.py FENCE). A committed validator must pass before
+   any dispatch; its output commits with the packets. Rejected
+   alternative, by name: scoring the T-format canary as-is (option B) —
+   it indicts the entire claim-aware truth ledger and proves too much.
