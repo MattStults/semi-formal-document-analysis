@@ -125,3 +125,35 @@ Truth-side analogue: seat grounds must quote the span (already enforced by
 the brief); a mechanical quote-presence check runs on every ruling batch,
 and superseding rulings record WHY the lower tier's grounds failed, so the
 brief improves from its own error ledger.
+
+### C. THE ITERATION FUNNEL (v3, 2026-08-24 — Matt: fast cheap hypothesis
+### paths through an explosively large representation space)
+The search space (declarations x vocabulary x mechanisms x exposures) is
+far too large for adopt-and-measure iteration. The funnel makes hypothesis
+COST proportional to hypothesis SURVIVAL — most die free:
+
+L0  SECONDS, $0 — probe.py: any hypothesis expressible as a module delta
+    gets its complete counterfactual vs the assembled ledger (~640 ruled
+    nodes) with NO contract file touched: charter, affected nodes, and the
+    reason-signature diff (augmented / SUBSTITUTED / DEGRADED). Candidate
+    generation at this level is the L1 optimizer (decl-search) + the census
+    discriminator analysis; screening is probe.py. Every probe appends to
+    HYPOTHESIS_LEDGER.jsonl (append-only) so dead branches are never
+    re-explored and rejected-by-name is automatic.
+    VALIDATED 2026-08-24: probe.py reproduced the governs-narrowing
+    arithmetic exactly (3/16) and additionally surfaced 15 DEGRADED nodes
+    the hand check missed.
+L1  MINUTES, CENTS — micro-probe on live judgment: hypotheses needing NEW
+    information (an unannotated atom, a judge's reading of a proposed
+    distinction) run on a seeded 10-30 node micro-sample; cheap seats
+    first-pass, frontier only on the decisive nodes. (Today's 20-node
+    parity probes and the 40-seat paired-format pilot were L1 runs.)
+L2  TENS OF MINUTES, ~0.1pt — full validation: charter + reason-diff over
+    the whole ledger, per-flip adjudication, ONE fresh confirmation wave
+    (registered prediction first). Only here does a contract file change.
+L3  HOURS, ~0.5-1pt — certification-grade: registered bands, fresh draws,
+    falsifiers, defensibility (the round-4 machinery).
+PROMOTION RULE: a hypothesis reaches level N only by passing N-1; a kill at
+any level is a committed ledger record, not a discarded experiment. The
+"one-off change to test before committing" is exactly an L0/L1 pass — the
+contract is never mutated below L2, so exploration is free AND safe.
