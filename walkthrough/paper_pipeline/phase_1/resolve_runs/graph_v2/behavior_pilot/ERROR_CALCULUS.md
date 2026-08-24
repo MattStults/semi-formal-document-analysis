@@ -433,3 +433,35 @@ A13 (HUMAN-DENSITY DESIGN — Matt's iteration concern). Humans appear
    gate to seeded auditor (spot-check with escalation tripwire), exactly
    as cheap tiers relate to frontier. Red shrinks by measurement, never
    by assumption.
+A14 (EXPLICIT PRECONDITIONS — Matt's question 2026-08-24: the machine's
+   implicit requirements, made explicit and validated; preflight.py is the
+   mechanical gate, run before ANY iteration).
+   THE MACHINE IS A REPAIR CALCULUS, NOT A CONSTRUCTION CALCULUS. It
+   cannot start from zero nodes: a reported failure is E(n,b) != T(n,b),
+   which presupposes E computable — i.e., a constructed instrument.
+   Preconditions, each mechanically checked:
+   P1 DECOMPOSITION: canonical node corpus with stable ids, verbatim
+      source spans, source-document sha pinned.
+   P2 TRANSLATION LIVENESS: every node carries bridgeable acts and every
+      behaviour module engages >0 nodes (the F1 silent-empty-lane class —
+      liveness, NOT quality: quality is what the machine improves; a bad
+      translation just routes heavy C-V, the machine still operates).
+   P3 KEYING CONSISTENCY: annotation layers and the truth ledger key to
+      the canonical corpus; known drift is FROZEN by name
+      (F_R1_KNOWN_DRIFT.json — 20 nodes, repair queued); any NEW drift
+      fails preflight. (Building this check immediately caught that its
+      first version compared against the wrong corpus and passed
+      spuriously — the validator was itself validated against F-r1.)
+   P4 MODULES: definition text present; declarations within
+      DECLARABLE_MOVES.
+   P5 TRUTH + PINNED BRIEF: a ruling brief with a MEASURED stability
+      record. Truth itself is the ONE cold-startable component: from zero
+      rulings the machine manufactures truth through the pinned brief.
+      An unpinned brief is a hard precondition failure (the judge is the
+      instruction).
+   P6 HARNESS: census/probe/verify_terminal/trace/route importable;
+      registry handshake holds.
+   P7 GOVERNANCE: hypothesis + notes ledgers, runbook, stop conditions.
+   Nothing here is arbitrary: P1-P4 are what makes E computable, P5 is
+   what makes T meaningful, P6-P7 are what makes repair auditable. Current
+   repo status: 7/7 pass (P3 with the named F-r1 warning).
