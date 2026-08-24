@@ -1,14 +1,34 @@
-<!-- ERROR-CALCULUS ROUTER — interactive state machine widget.
-     Paste-able into a Jekyll/markdown post (inline script, no build step).
-     Mirrors calculus_model.py / calculus.lp transitions exactly. -->
-<div style="max-width:640px;margin:1.2em auto;font:14px/1.45 system-ui,sans-serif;border:1px solid rgba(128,128,128,.35);border-radius:10px;padding:14px">
+<!-- ERROR-CALCULUS ROUTER — interactive state machine widget (v2, with explanations).
+     Paste-able into a Jekyll/markdown post (inline script, no build step). -->
+<div style="max-width:680px;margin:1.2em auto;font:14px/1.5 system-ui,sans-serif;border:1px solid rgba(128,128,128,.35);border-radius:10px;padding:14px">
+  <details style="margin-bottom:10px;font-size:13px" open>
+    <summary style="cursor:pointer;font-weight:600">What am I looking at?</summary>
+    <div style="opacity:.85;margin-top:6px">
+      When the relevance instrument disagrees with a blind judge about whether a passage
+      bears on a behavior, that's a <b>reported failure</b>. This machine decides <i>what kind
+      of failure it is</i> and <i>what to do about it</i> — mostly by computation, calling an
+      expensive frontier-model "judgment seat" only at four specific points.
+      <b>You play the environment</b>: at each step the router (blue box) asks one question,
+      and you pick which answer the world gives. Costs accumulate in "units" (u), roughly
+      the price of one frontier ruling. Every path provably ends at a green terminal —
+      hover any box for what it does.
+      <div style="margin-top:6px"><b>Census verdicts</b> (computed free, no model):
+      <b>SEP</b> = the failing passage is distinguishable from all correctly-handled ones
+      using levers we can already pull → a small config change can fix it;
+      <b>REACH</b> = distinguishable, but only by a feature nothing consumes yet → build
+      the consumer first; <b>UNSAT</b> = indistinguishable with today's vocabulary → we
+      must coin a new distinction, or accept the document doesn't support one.</div>
+    </div>
+  </details>
   <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
-    <strong style="margin-right:auto">Error-calculus router</strong>
+    <strong style="margin-right:auto">Try a failure whose census verdict is:</strong>
     <span id="ec-presets"></span>
     <button id="ec-reset" style="padding:2px 10px;border-radius:6px;border:1px solid rgba(128,128,128,.4);cursor:pointer;font:inherit;background:transparent;color:inherit">reset</button>
   </div>
   <svg id="ec-svg" viewBox="0 0 620 300" style="width:100%;height:auto;display:block"></svg>
+  <div id="ec-hover" style="min-height:2.6em;font-size:12.5px;opacity:.75;margin:4px 0;border-left:3px solid rgba(128,128,128,.3);padding-left:8px">hover a box for its description</div>
   <div id="ec-state" style="margin:8px 0 4px;font-size:13px;opacity:.85"></div>
+  <div id="ec-ask" style="font-size:13px;margin:8px 0 4px"></div>
   <div id="ec-branches" style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0"></div>
   <div id="ec-trace" style="font-size:12px;opacity:.7;margin-top:6px"></div>
 </div>
@@ -17,48 +37,58 @@
   var NS='http://www.w3.org/2000/svg';
   var svg=document.getElementById('ec-svg');
   var COST={r1:3,r2:1,r2b:2,r3:1,r3x:8,r4:5,r5:8,r5x:0};
-  var LBL={r1:'R1 panel',r2:'R2 audit',r2b:'R2b retranslate',r3:'R3 delta',
-           r3x:'R3x mint (missing intension)',r4:'R4 build consumer',r5:'R5 mint',r5x:'R5x exhaustion'};
-  // state: {c:census, v, panel, aud, retr, built, mints, deltas, cost, done}
+  var LBL={r1:'R1 verify truth',r2:'R2 verify translation',r2b:'R2b retranslate',
+           r3:'R3 config fix',r3x:'R3x coin concept',r4:'R4 build consumer',
+           r5:'R5 coin concept',r5x:'R5x final ruling'};
+  var DESC={
+   r1:'JUDGMENT PORT. Before trusting the failure report, check the judge: a 3-seat panel re-rules the passage (3u). If the panel overturns the original ruling, there was never a real failure — the "truth" was wrong. Runs FIRST because everything downstream builds on this ruling.',
+   r2:'JUDGMENT PORT. Check the other premise: does our formal encoding of the passage faithfully say what the document says? An audit seat compares them (1u). Runs before any expensive fix — fixing against a mistranslation is wasted work.',
+   r2b:'The translation was wrong: re-encode the passage from the document (2u). Sometimes that alone resolves the failure; otherwise the corrected encoding re-enters the pipeline with a fresh census verdict.',
+   r3:'FULLY MECHANICAL. The census certified a separating configuration exists — an optimizer proposes a small declaration change, exact arithmetic validates it against every past ruling (fixes must outnumber breaks, reasons must be preserved, and it must also fix predicted OTHER instances, not just this one). Budget of 2 attempts; every attempt is ledgered and never retried.',
+   r3x:'JUDGMENT PORT (naming). Both config attempts failed even though the features distinguish the passage — meaning no PRINCIPLED rule carries the distinction. That is evidence a concept is missing from the vocabulary: coin it (8u, blind two-seat pipeline). A human/frontier seat chooses what the new concept MEANS; everything around that choice is procedure.',
+   r4:'ONE-TIME BUILD, then mechanical forever. The distinguishing feature exists but nothing in the engine consumes it — build the consumer (a new wall/gate type, 5u incl. review). Shared: every behavior can use it afterwards for the price of one declaration line.',
+   r5:'JUDGMENT PORT (naming). No existing feature distinguishes this passage from correctly-handled ones — the vocabulary lacks a concept. Same coining pipeline as R3x (8u). Budget of 2 attempts.',
+   r5x:'JUDGMENT PORT (ruling). Concept-coining is exhausted. A final seat rules: either the DOCUMENT genuinely does not support the distinction (terminal — reported as an instrument finding, not hidden), or the miss is DEFENSIBLE (a reasonable index could go either way).',
+   DONE:'Every path ends here, provably (the machine is model-checked: no gaps, no infinite loops). Terminals: RESOLVED (by truth-fix, translation-fix, or config-fix), TERMINAL-BY-DOCUMENT, or DEFENSIBLE.'};
   var S, trace;
   function init(c){S={c:c,v:'unaudited',panel:0,aud:0,retr:0,built:0,mints:0,deltas:0,cost:0,done:null};trace=[];render();}
-  function rule(){ // -> {r, branches:[{label, apply}]}
+  function rule(){
     if(S.done) return null;
     var s=S;
     function nb(label,f){return {label:label,apply:f};}
-    if(!s.panel) return {r:'r1',branches:[
-      nb('panel OVERTURNS → resolved (truth error)',function(){s.done='RESOLVED-T';}),
-      nb('panel stands',function(){s.panel=1;})]};
-    if(!s.aud) return {r:'r2',branches:[
-      nb('translation faithful',function(){s.aud=1;s.v='faithful';}),
-      nb('UNFAITHFUL found',function(){s.aud=1;s.v='unfaithful';})]};
-    if(s.v==='unfaithful') return {r:'r2b',branches:[
-      nb('retranslation resolves it',function(){s.done='RESOLVED-V';}),
-      nb('persists → census SEP',function(){s.v='faithful';s.retr=1;s.c='SEP';}),
-      nb('persists → REACH',function(){s.v='faithful';s.retr=1;s.c='REACH';}),
-      nb('persists → UNSAT',function(){s.v='faithful';s.retr=1;s.c='UNSAT';})]};
+    if(!s.panel) return {r:'r1',ask:'A 3-seat panel re-rules the passage. Does the original ruling hold?',branches:[
+      nb('panel OVERTURNS it → no real failure',function(){s.done='RESOLVED (truth was wrong)';}),
+      nb('panel confirms → failure is real',function(){s.panel=1;})]};
+    if(!s.aud) return {r:'r2',ask:'An audit seat compares the formal encoding against the document. Faithful?',branches:[
+      nb('faithful',function(){s.aud=1;s.v='faithful';}),
+      nb('MISTRANSLATED',function(){s.aud=1;s.v='unfaithful';})]};
+    if(s.v==='unfaithful') return {r:'r2b',ask:'Re-encode the passage from the document. Then?',branches:[
+      nb('corrected encoding resolves the failure',function(){s.done='RESOLVED (translation fixed)';}),
+      nb('failure persists; new census: SEP',function(){s.v='faithful';s.retr=1;s.c='SEP';}),
+      nb('… new census: REACH',function(){s.v='faithful';s.retr=1;s.c='REACH';}),
+      nb('… new census: UNSAT',function(){s.v='faithful';s.retr=1;s.c='UNSAT';})]};
     if(s.c==='SEP'){
-      if(s.deltas<2) return {r:'r3',branches:[
-        nb('delta validates → resolved',function(){s.done='RESOLVED-D';}),
-        nb('fails / reverts (ledgered, budget −1)',function(){s.deltas++;})]};
-      if(s.mints<2) return {r:'r3x',branches:[
-        nb('minted concept separates → SEP',function(){s.mints++;s.deltas=0;s.c='SEP';}),
-        nb('mint lands REACH (needs consumer)',function(){s.mints++;s.deltas=0;s.c='REACH';}),
-        nb('mint fails → UNSAT',function(){s.mints++;s.deltas=0;s.c='UNSAT';})]};
-      return {r:'r5x',branches:[
-        nb('rule: terminal-by-document',function(){s.done='TERMINAL-DOC';}),
-        nb('rule: defensible',function(){s.done='DEFENSIBLE';})]};
+      if(s.deltas<2) return {r:'r3',ask:'The optimizer proposes a config change; exact arithmetic validates it against every past ruling. Does it validate?',branches:[
+        nb('validates on held-out cases too → fixed',function(){s.done='RESOLVED (config fix)';}),
+        nb('fails validation (ledgered; '+(1-s.deltas)+' attempt left)',function(){s.deltas++;})]};
+      if(s.mints<2) return {r:'r3x',ask:'Features distinguish it but no principled rule does — a concept is missing. Coin one. Does the new concept separate the passage?',branches:[
+        nb('yes → back to config fixing',function(){s.mints++;s.deltas=0;s.c='SEP';}),
+        nb('yes, but its feature needs a consumer built',function(){s.mints++;s.deltas=0;s.c='REACH';}),
+        nb('no (budget −1)',function(){s.mints++;s.deltas=0;s.c='UNSAT';})]};
+      return {r:'r5x',ask:'Coining exhausted. Final ruling on this passage:',branches:[
+        nb('the document does not support the distinction',function(){s.done='TERMINAL (by document)';}),
+        nb('the miss is defensible',function(){s.done='DEFENSIBLE';})]};
     }
-    if(s.c==='REACH') return {r:'r4',branches:[
-      nb('consumer built → SEP',function(){s.built=1;s.c='SEP';})]};
+    if(s.c==='REACH') return {r:'r4',ask:'The distinguishing feature exists but nothing consumes it. Build the consumer (one-time, shared by all behaviors).',branches:[
+      nb('built → census becomes SEP',function(){s.built=1;s.c='SEP';})]};
     if(s.c==='UNSAT'){
-      if(s.mints<2) return {r:'r5',branches:[
-        nb('mint separates → SEP',function(){s.mints++;s.deltas=0;s.c='SEP';}),
-        nb('mint → REACH',function(){s.mints++;s.deltas=0;s.c='REACH';}),
-        nb('mint fails → UNSAT',function(){s.mints++;s.deltas=0;s.c='UNSAT';})]};
-      return {r:'r5x',branches:[
-        nb('rule: terminal-by-document',function(){s.done='TERMINAL-DOC';}),
-        nb('rule: defensible',function(){s.done='DEFENSIBLE';})]};
+      if(s.mints<2) return {r:'r5',ask:'No existing feature distinguishes this passage. Coin a new concept ('+(2-s.mints)+' attempts left). Does it separate?',branches:[
+        nb('yes → SEP (config fixing)',function(){s.mints++;s.deltas=0;s.c='SEP';}),
+        nb('yes, but needs a consumer → REACH',function(){s.mints++;s.deltas=0;s.c='REACH';}),
+        nb('no',function(){s.mints++;s.deltas=0;s.c='UNSAT';})]};
+      return {r:'r5x',ask:'Coining exhausted. Final ruling on this passage:',branches:[
+        nb('the document does not support the distinction',function(){s.done='TERMINAL (by document)';}),
+        nb('the miss is defensible',function(){s.done='DEFENSIBLE';})]};
     }
     return null;
   }
@@ -68,6 +98,7 @@
              ['r4','r3'],['r3x','r4'],['r3x','r5x'],['r2','r5'],['r5','r3'],
              ['r5','r4'],['r5','r5x'],['r5x','DONE'],['r3','DONE'],['r1','DONE'],['r2b','DONE']];
   function el(n,a){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);return e;}
+  var hov=document.getElementById('ec-hover');
   function render(){
     svg.innerHTML='';
     var cur=rule();
@@ -75,19 +106,25 @@
       svg.appendChild(el('line',{x1:a[0],y1:a[1],x2:b[0],y2:b[1],stroke:'currentColor','stroke-opacity':.15}));});
     Object.keys(NODES).forEach(function(k){
       var p=NODES[k], active=cur&&cur.r===k, isDone=k==='DONE';
-      var g=el('g',{});
+      var g=el('g',{style:'cursor:help'});
+      var port=DESC[k].indexOf('JUDGMENT PORT')===0;
       g.appendChild(el('rect',{x:p[0]-58,y:p[1]-16,width:116,height:32,rx:8,
         fill:active?'#3b82f6':(isDone&&S.done?'#16a34a':'transparent'),
-        stroke:'currentColor','stroke-opacity':active?0:.4}));
+        stroke:port?'#d97706':'currentColor','stroke-width':port?1.6:1,'stroke-opacity':active?0:(port?.9:.4)}));
       var t=el('text',{x:p[0],y:p[1]+4,'text-anchor':'middle','font-size':11,
         fill:(active||(isDone&&S.done))?'#fff':'currentColor'});
-      t.textContent=isDone?(S.done||'terminal'):(LBL[k]+' ('+COST[k]+'u)');
-      g.appendChild(t); svg.appendChild(g);
+      t.textContent=isDone?(S.done||'terminals'):(LBL[k]+' · '+COST[k]+'u');
+      g.appendChild(t);
+      var tip=el('title',{}); tip.textContent=DESC[k]; g.appendChild(tip);
+      g.onmouseenter=function(){hov.textContent=(isDone?'Terminals: ':LBL[k]+' — ')+DESC[k];};
+      svg.appendChild(g);
     });
     document.getElementById('ec-state').innerHTML=
-      'census <b>'+S.c+'</b> · translation <b>'+S.v+'</b> · panel '+(S.panel?'✓':'—')+
-      ' · audit '+(S.aud?'✓':'—')+' · delta budget '+(2-S.deltas)+'/2 · mint budget '+(2-S.mints)+
-      '/2 · <b>cost '+S.cost+'u</b>'+(S.done?' · <b style="color:#16a34a">'+S.done+'</b>':'');
+      'census <b>'+S.c+'</b> · translation <b>'+S.v+'</b> · truth verified '+(S.panel?'✓':'—')+
+      ' · translation verified '+(S.aud?'✓':'—')+' · config attempts left '+(2-S.deltas)+
+      ' · coin attempts left '+(2-S.mints)+' · <b>cost so far '+S.cost+'u</b>'+
+      (S.done?' · <b style="color:#16a34a">'+S.done+'</b>':'');
+    document.getElementById('ec-ask').innerHTML=cur?('<b>'+LBL[cur.r]+':</b> '+cur.ask):'';
     var bd=document.getElementById('ec-branches'); bd.innerHTML='';
     if(cur){cur.branches.forEach(function(b){
       var btn=document.createElement('button');
@@ -95,11 +132,11 @@
       btn.style.cssText='padding:3px 10px;border-radius:6px;border:1px solid rgba(128,128,128,.4);cursor:pointer;font:inherit;background:transparent;color:inherit';
       btn.onclick=function(){S.cost+=COST[cur.r];trace.push(LBL[cur.r]+' → '+b.label);b.apply();render();};
       bd.appendChild(btn);});}
-    document.getElementById('ec-trace').textContent=trace.length?('trace: '+trace.join('  ▸  ')):'click a branch to step the machine (the environment chooses outcomes; the router chooses rules)';
+    document.getElementById('ec-trace').textContent=trace.length?('path so far: '+trace.join('  ▸  ')):'Amber-bordered boxes are the four judgment ports (where a frontier seat is provably required); plain boxes are pure computation.';
   }
   var ps=document.getElementById('ec-presets');
-  [['SEP','SEP'],['REACH','REACH'],['UNSAT','UNSAT']].forEach(function(pr){
-    var b=document.createElement('button');b.textContent='start: '+pr[0];
+  [['SEP (config can fix)','SEP'],['REACH (needs a consumer)','REACH'],['UNSAT (needs a concept)','UNSAT']].forEach(function(pr){
+    var b=document.createElement('button');b.textContent=pr[0];
     b.style.cssText='padding:2px 10px;border-radius:6px;border:1px solid rgba(128,128,128,.4);cursor:pointer;font:inherit;background:transparent;color:inherit';
     b.onclick=function(){init(pr[1]);};ps.appendChild(b);});
   document.getElementById('ec-reset').onclick=function(){init(S?S.c:'SEP');};
