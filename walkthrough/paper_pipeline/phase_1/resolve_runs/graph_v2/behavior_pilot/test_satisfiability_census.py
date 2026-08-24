@@ -164,6 +164,12 @@ PREFIXTURE = os.path.join(HERE, "panel_run1", "convergence",
 # separated, as of addendum-3 semantics: CURRENT-separable for the frozen
 # instrument, plus one design-space-only separation (UNSAT-current,
 # REACHABLE-separable) disclosed per the addendum. Pinned as SUBSET checks.
+# R4 TRUTH-EVENT EXCEPTION (2026-08-24): caution::l611_698_n009 lost its E1
+# CURRENT separation legitimately — three R4-ruled not_relevant nodes
+# (l1_170_n017/n018, l2126_2404_n037) share its vector and are correctly
+# declined, so it is UNSAT-current post-R4 (REACHABLE-separable,
+# addressable_by_declaration). Named singly; any OTHER E1 loss still fails.
+E1_R4_LOST = {"avoiding-over-and-under-caution": {"l611_698_n009"}}
 E1_CURRENT = {
     "avoiding-over-and-under-caution": ["l1_170_n030", "l611_698_n009"],
     "harm-avoidance-to-third-parties": ["l1_170_n038", "l831_1000_n006"],
@@ -203,7 +209,13 @@ def test_real_corpus_semantics_pins():
     # allowed additions (frozen-input-plus-subset, not a live count).
     r4 = json.load(open(os.path.join(
         HERE, "panel_run1", "fresh_draw4", "HELP_R4_RESULT.json")))["truth"]
-    ALLOWED_NEW = {"helpfulness": {"l427_460_n003"} | set(r4)}
+    r4h = json.load(open(os.path.join(
+        HERE, "panel_run1", "fresh_draw4", "HARM_R4_RESULT.json")))["truth"]
+    r4c = json.load(open(os.path.join(
+        HERE, "panel_run1", "fresh_draw4", "CAUTION_R4_RESULT.json")))["truth"]
+    ALLOWED_NEW = {"helpfulness": {"l427_460_n003"} | set(r4),
+                   "harm-avoidance-to-third-parties": set(r4h),
+                   "avoiding-over-and-under-caution": set(r4c)}
     REQUIRED_NEW = {"helpfulness": {"l427_460_n003"}}
     for slug, rows in rep.items():
         pre_unsat = set(pre[slug]["unsat"])
@@ -226,6 +238,11 @@ def test_real_corpus_semantics_pins():
             f"{slug}: unexpected prefixture-UNSAT flip {pre_unsat - set(E1_CURRENT.get(slug, [])) - post_unsat}"
         # E1 pins: definition-lane separations persist under both semantics
         for n in E1_CURRENT.get(slug, []):
+            if n in E1_R4_LOST.get(slug, set()):
+                # legitimately UNSAT-current post-R4 truth event (see above);
+                # must remain REACHABLE-separable or the loss is a real bug
+                assert rows[n]["status_reachable"] == "SEPARABLE",                     f"{slug}::{n} lost even REACHABLE separation"
+                continue
             assert rows[n]["status"] == "SEPARABLE", f"{slug}::{n} lost E1 separation"
         for n in E1_DESIGN_SPACE.get(slug, []):
             assert rows[n]["status"] == "UNSAT", f"{slug}::{n} design-space node"
