@@ -213,3 +213,29 @@ A4 (second checker pass — consumer builds are PER-FEATURE, not
    impossible at census=REACHABLE by definition of the REACHABLE view —
    the certificate names the feature. Checker updated; final result:
    0 gaps, 0 ambiguities, 0 cycles, 0 undefined outcomes.
+A5 (cost-ordering and batch semantics; calculus_cost_model.py,
+   2026-08-24). (a) ORDERING THEOREM (verified in the cost model): the
+   premise checks R1/R2 must precede any move whose cost exceeds theirs —
+   deferring them past a consumer build or mint pays the expensive move on
+   unverified premises and redoes it (measured in-model: worst case 48 vs
+   43 wave-units from REACHABLE; lazy also destroys the cheap best case,
+   48 vs 3). The R1->R5 order is therefore near-cost-optimal at measured
+   seat costs (panel 3, audit 1 < build 5, mint 8); if seat economics ever
+   invert, the rule generalizes to threshold form: premises before any
+   move costing more than they do. Both policies provably reach identical
+   terminal sets — the ordering question is pure cost, never soundness.
+   (b) BATCH SEMANTICS (v0 gap, defined here): the per-mismatch machine is
+   the projection of a coupled system sharing inventory state. Batch
+   processing MUST: (i) sequence inventory-level moves (I1 builds, I3
+   mints) BEFORE the per-mismatch deltas that depend on them — an
+   inventory transition k->k+1 invalidates delta validations performed at
+   k (redo cost), so the dependency order is topological, fundamental
+   changes first; (ii) select moves by MEASURED COVERAGE, not per-mismatch
+   routing: every candidate move's exact fix-set is computable (probe.py),
+   so batch selection is weighted set-cover over (moves x mismatches) —
+   a mint fixing 12 mismatches beats 12 deltas even at 8x unit cost.
+   The v1 model obligation: a multi-token (Petri-style) checker verifying
+   (i)-(ii) the way calculus_model.py verifies the single-mismatch
+   machine, plus MUTATION TESTING of both checkers (the dead-slot-probe
+   lesson: an unmutated checker may be checking itself) and an ASP
+   encoding so the project's own solver verifies its own repair calculus.
