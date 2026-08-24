@@ -119,3 +119,40 @@ nodes present, all verdicts valid.
   NO single governs wall separates. The C-D candidate must come from
   finer structure (functor/arg-sort/purpose/context combinations);
   class card required before anything L2.
+
+## 0004 — ITERATION 1, STEPS 2b-3 (C-D MOVE + V1-V4) and STEP-4 PREP, 2026-08-24
+- ESCALATION-2 (~82k raw, 3 seats, 1 node): before choosing between delta
+  candidates, the single-wave TP the leading census-expressible candidate
+  would break (l1368_1541_n018) was panel-escalated: 3-0 RELEVANT. This is
+  the iteration's second premises-before-moves win — the candidate choice
+  became a truth fact instead of a driver judgment. PATTERN FOR THE RUNBOOK:
+  when candidates differ only on nodes with single-tier truth, escalate
+  those nodes BEFORE deciding.
+- ADOPTED (pending V5): candidate B = governs_concern wall + the corpus's
+  FIRST live governs_conditional (tone_manner:[vulnerable_interaction]).
+  V1 5/0, V2 drift 0/0/0, V3 held-out 48/48 (all lost nodes tone_manner/
+  identity_meta-only), V4 zero new ruled flips. Full grounds + rejected
+  candidates by name: ITERATION1_CD_DECISION.md. TOOLING CONSEQUENCE the
+  next agent must know: SC.census REFUSES contracts declaring
+  governs_conditional (Arc1-e guard) and verify_terminal lists it
+  KNOWN_UNENUMERATED — census-based routing of the repaired module is
+  blocked until vector() learns conditional contexts. The engine itself
+  consumes it fine.
+- probe.py extended with --contract/--truth (defaults untouched) — the
+  same gen-venue gap as route.py, same fix pattern. 4 candidates
+  fingerprinted into HYPOTHESIS_LEDGER.jsonl.
+- 4 residuals SUSPENDED-OPEN at this inventory (n030/n007/n038/l4572),
+  verify_terminal scoped TERMINAL-STRUCT(enumerated: protects, governs,
+  purpose); the visible separator (purposes slot) has NO consuming gate —
+  a future I1 consumer build re-enters them.
+- RUNBOOK ERRATUM (STEP 4): nothing documents how attempt-1 wave items
+  were built from ctx packets. Reverse-engineered: ESTABLISHES paragraph +
+  SOURCE TEXT section, ALL-CAPS-header segmentation, blank-line
+  normalization — verified byte-identical on all 40 attempt-1 items before
+  use (11 packets carry GRAPH NODE preambles and PROVIDES/NEEDS middle
+  sections that must be dropped). Builder lives in the STEP-4 pre-dispatch
+  commit; fold into ruling_packets.py at the runbook rewrite.
+- V5 prediction registered (ITERATION1_V5_PREDICTION.json) BEFORE any
+  attempt-2 ruling: P1 revert line >= 0.55 venue-matched, point 0.65±0.10,
+  P3 mechanism (fixed class cannot recur), P4 decline >= 0.80. Draw seed
+  20260824; pools 231/531; 5 ruled-ledger overlaps (fresh rulings anyway).
