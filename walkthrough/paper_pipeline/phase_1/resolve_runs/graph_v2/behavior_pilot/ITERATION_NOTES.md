@@ -88,3 +88,34 @@ halt-and-surface line, not a soft target.
   ~0.5-1 pt; V4 per-flip adjudication ~0.5 pt; STEP-4 fresh
   confirmation wave ~1-1.5 pt. Orchestration stays lean; every wave is
   preceded by a /usage checkpoint.
+
+## 0003 — ITERATION 1, STEP 2a (R1 ESCALATION), 2026-08-24
+3 fresh Fable seats, LINEAGE_SEAT_INSTRUCTION verbatim, packet =
+committed 9-node subset of the attempt-1 lineage wave packet. Raw seat
+spend ~98k tokens (32.8/33.1/32.1k). Machine-checked: 3x9 rulings, all
+nodes present, all verdicts valid.
+- RESULT: 3 OVERTURNS -> C-T dissolved (l2126_2404_n034 3-0,
+  l3239_3382_n005 3-0, l3877_3953_n002 2-1 SPLIT); 6 stand, now
+  panel-tier. Artifact: fresh_draw4/ITER1_TRADEOFFS_ESCALATION_RESULT
+  .json — supersedes single-wave entries FOR REPAIR ROUTING ONLY; the
+  attempt-1 transfer claim (0.40, F2) stays frozen.
+- A5 PREMISES-FIRST, CONCRETELY VINDICATED (blog-post material): the
+  natural pre-escalation delta was a governs_concern wall excluding
+  formatting_style/objectivity_neutrality — and two of the three
+  overturned nodes are EXACTLY formatting_style/objectivity_neutrality
+  carriers (l3877_3953_n002, l2126_2404_n034). A delta designed before
+  the premise check would have validated against wrong truth and been
+  reverted at V5. The 25%-of-batch overturn rate also says single-wave
+  FP truth on a THIN engaged draw is noisy — future batches should
+  expect R1 escalation to dissolve a nontrivial fraction.
+- Queue r2 (ITERATION1_ROUTED_QUEUE_R2.json): 9 nodes, all panel-tier,
+  all C-D SEPARABLE-both-views. iteration1_triage.py now overlays the
+  escalation result (repair-ledger truth = frozen attempt-1 verdicts +
+  panel supersessions) and emits the r2 queue when the result file
+  exists.
+- Discriminator snapshot AT UPDATED TRUTH: remaining-FP governs =
+  tone_manner x6, accuracy_calibration x2, formatting_style x1; but TPs
+  now carry tone_manner, formatting_style, accuracy_calibration too —
+  NO single governs wall separates. The C-D candidate must come from
+  finer structure (functor/arg-sort/purpose/context combinations);
+  class card required before anything L2.

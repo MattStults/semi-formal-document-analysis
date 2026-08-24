@@ -43,8 +43,16 @@ SLUG = "how-to-approach-tradeoffs"
 SCORED = "GEN_BLOCK1_SCORED.json"
 GEN_CONTRACT = "modules_contract_GENERALIZATION.json"
 DERIVED_CONTRACT = "iteration1_tradeoffs_contract.json"
-QUEUE_OUT = "ITERATION1_ROUTED_QUEUE.json"
 FD4 = os.path.join("panel_run1", "fresh_draw4")
+
+# R2 (post-escalation): the R1 escalation panel's majorities supersede the
+# single-wave entries FOR THE REPAIR LEDGER (the attempt-1 transfer claim
+# stays frozen). When the result file exists the driver overlays it, routes
+# only the still-standing FPs, and writes the r2 queue.
+ESCALATION_RESULT = os.path.join(FD4, "ITER1_TRADEOFFS_ESCALATION_RESULT.json")
+QUEUE_OUT = ("ITERATION1_ROUTED_QUEUE_R2.json"
+             if os.path.exists(os.path.join(HERE, ESCALATION_RESULT))
+             else "ITERATION1_ROUTED_QUEUE.json")
 
 
 def derive_contract():
@@ -65,12 +73,22 @@ def derive_contract():
 
 def attempt1_truth():
     d = json.load(open(os.path.join(HERE, SCORED)))
-    return dict(d["results"][SLUG]["verdicts"])
+    t = dict(d["results"][SLUG]["verdicts"])
+    p = os.path.join(HERE, ESCALATION_RESULT)
+    if os.path.exists(p):
+        t.update(json.load(open(p))["truth"])
+    return t
 
 
 def batch():
     d = json.load(open(os.path.join(HERE, SCORED)))
-    return list(d["results"][SLUG]["misses"]["engaged_FP"])
+    fps = list(d["results"][SLUG]["misses"]["engaged_FP"])
+    p = os.path.join(HERE, ESCALATION_RESULT)
+    if os.path.exists(p):
+        esc = json.load(open(p))["truth"]
+        # OVERTURN -> C-T resolved: no longer a mismatch, drops from the queue
+        fps = [n for n in fps if esc.get(n) != "relevant"]
+    return fps
 
 
 def truth_tier_gen(node):
@@ -81,6 +99,12 @@ def truth_tier_gen(node):
         panels[L] = json.load(open(os.path.join(HERE, f)))["rulings"]
     wave_f = os.path.join(FD4, f"gen_{SLUG}_wave_rulings.json")
     wave = json.load(open(os.path.join(HERE, wave_f)))["rulings"]
+    if os.path.exists(os.path.join(HERE, ESCALATION_RESULT)):
+        esc = json.load(open(os.path.join(HERE, ESCALATION_RESULT)))
+        if node in esc["truth"]:
+            row = next(r for r in esc["panel"] if r["node"] == node)
+            return "panel", ESCALATION_RESULT, \
+                {"panel_verdicts": row["seat_verdicts"]}
     if node in panels["A"]:
         vs = [panels[L][node]["verdict"] for L in "ABC"]
         art = os.path.join(FD4, f"gen_{SLUG}_panel_A_rulings.json")
