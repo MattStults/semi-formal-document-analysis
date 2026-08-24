@@ -42,3 +42,33 @@ rewrites; learning that is not an artifact here does not exist.)
   the checkpoint instruction; the first coordinator ran end-write-only
   until amended mid-flight.
 - /usage cannot be read by the agent: ask Matt to paste it at checkpoints.
+
+## 0001 — ITERATION 1, STEP 1 (TRIAGE), 2026-08-24
+Batch: the 12 indefensible engaged-FPs of how-to-approach-tradeoffs
+(GEN_BLOCK1_SCORED.json), attempt-2 repair under the signed gen prereg.
+- RUNBOOK ERRATUM (first command, first failure): STEP 1's
+  `route.py <slug> <node>` KeyErrors for generalization slugs —
+  SC.truth_all's fmap only knows the three round-4 behaviours. The
+  §9-precedented fix (route_validate.py case e) is route()'s ctx
+  port-record mechanism. iteration1_triage.py goes one better: it keeps
+  the census REAL by (a) projecting the tradeoffs module into a derived
+  single-module contract (iteration1_tradeoffs_contract.json — same
+  wrapper schema as v19, byte-identical module dict) and (b) injecting
+  the FROZEN attempt-1 verdicts into SC.truth_all for this slug only
+  (read-only consumption; the transfer claim is untouched). Only
+  truth_tier is ctx-supplied, from the committed gen ruling files.
+- TIER SPLIT: 3 of 12 FPs are panel-tier (l3596_3876_n037 3-0,
+  l3954_4251_n008 3-0, l3954_4251_n038 2-1) -> route C-D directly.
+  9 are wave-single -> router stops OPEN(P1): R1 prescribes 3-seat
+  panel escalation BEFORE any move (A5 ordering: premises first).
+- CENSUS CAVEAT (next agent must know): all 12 are SEPARABLE in both
+  views, but the certificate is relative to the 40-node attempt-1 truth
+  set, not the 640-node ledger — separability is cheap at n=40. V1
+  charter arithmetic for any delta must run on this same 40-node ledger
+  (it is the only truth these nodes have); the real test is V5's fresh
+  draw, exactly as the prereg's attempt-2 protocol demands.
+- Census mismatch count 15 = 12 FPs + the 3 not_engaged_FNs (FNs are
+  NOT in this batch; they stay unrouted).
+- Prereg alignment: the predictions file blamed a meta/procedural
+  no-walls mechanism; a walls-style C-D delta would classify the fix
+  ledger entry EXPECTED (module-local), keeping attempt-2 in-protocol.
