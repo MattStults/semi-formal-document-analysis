@@ -86,3 +86,21 @@ on the identical prompt; majority supersedes the single ruling. The seat is
 never told which rows are paneled. Dispatch artifact:
 ruling_packets/defensibility_dispatch.txt (29 numbered prompt strings, the
 ONLY seat material).
+
+VENUE RULING (2026-08-24, Matt: "aren't you my fable venue? Can't you do
+that with subagents?"): the orchestration session now RUNS ON Fable
+subscription-side and can spawn fresh-context Fable subagents at $0 API —
+the pre-reset "orchestration cannot execute Fable" constraint was an
+API-harness cost limit and has dissolved. Seats therefore execute as fresh
+Fable subagents dispatched by the orchestration session: each seat receives
+its packet prompt string VERBATIM plus one content-free venue fence
+appended (exact text: "[VENUE MECHANICS: Reply with your ruling directly as
+your final message. Do not use any tools, do not read any files, do not
+search — judge from the text above alone.]"), which enforces the
+no-repo-access seat rule in a tool-bearing venue and carries no ruling
+information. The dispatcher (orchestration) knows the routing; the seat
+does not — the blindness the protocol requires is the SEAT's. Panels = three
+independent subagent dispatches of the identical prompt. Rejected
+alternative, by name: human hand-pasting into a separate venue — strictly
+more transcription surface, no blinding advantage, and spends the scarce
+resource (Matt's time) the campaign is now explicitly optimizing.
