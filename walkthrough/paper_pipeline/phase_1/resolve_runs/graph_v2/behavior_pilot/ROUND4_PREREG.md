@@ -220,3 +220,7 @@ E4 — DIAGNOSIS CLOSED; LINEAGE VENUE RECOVERED AND REPLICATED (2026-08-24).
      standing leak-signature check). F1/F2 read against these bands.
    - Cost: wave form ~= 5 seats total (2 waves + 3 panel seats), ~0.2
      points.
+
+E4 SIGNATURE: Matt, 2026-08-24 — "approved." (in-session, after the
+band-change walkthrough; lineage bands and recovered-venue re-run take
+effect; canary re-run authorized.)
