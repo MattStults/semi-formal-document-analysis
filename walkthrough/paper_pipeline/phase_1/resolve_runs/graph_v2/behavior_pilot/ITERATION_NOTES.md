@@ -367,3 +367,28 @@ spot-checks + tripwire. Remaining Fable this week: two spot-check seats
 (with 0009's): when surfacing a halt, name the CONSTRAINT STRUCTURE
 (which standing rulings conflict), never a design menu — two of the
 three "options" I offered were not mine to offer.
+
+## 0014 — ITERATION 3 CLOSE, 2026-08-24
+Attempt-4 (certified-Opus venue per A10 Q3, coverage-valid registration):
+ENGAGED PRECISION 0.85 (P1 pass; P2 exceeded on the HIGH side), DECLINE
+0.70 (P4 pass; was 0.35-0.50 panel-tier), P3 move gate 10/14 extension
+nodes relevant — the arbitrates_channel adoption REALIZED AND KEPT.
+Wave spot-check 1/8 (certificate held again). Attempt series:
+0.40 transfer -> 0.70 -> 0.55 -> 0.85/0.895.
+- TRIPWIRE WORKED AS DESIGNED (blog material): the dispute-class
+  spot-check fired (4/9) — the Opus certificate measurably does NOT
+  cover the boundary-item annotation sliver, exactly the population
+  2-seat disagreement selects for. Response was mechanical: quarantine
+  the 43 dispute resolutions (assembly's own rule), marks 283->260,
+  engagement 393->384; the only measured affected node was a fresh FP,
+  so the quarantine RAISED the adjusted precision to 0.895 and P3 holds
+  at 10/12. Lesson for certificates: measure parity ON THE DISPUTE
+  CLASS separately before letting a cheap tier resolve escalations —
+  consensus items and boundary items are different tasks.
+- OPEN AT CLOSE: 43 suspended dispute marks (Fable-tier resolvable,
+  ~0.5pt, next bar); the 8-node relevant-by-example FN class (second
+  concept, future mint); the single-consideration FP family (unchanged,
+  SUSPENDED-OPEN); C-V definitional-lane pair; runbook rewrite from
+  notes 0001-0014 now carrying FOUR banked errata.
+- Fable spend this block: 2 spot-check seats (~64k raw, ~0.6pt from
+  30%). Everything else Opus.
