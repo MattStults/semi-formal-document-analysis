@@ -603,3 +603,10 @@ the batch — DISCLOSED; the cost-estimation erratum is now twice
 repeated: #17, fix the model before the next sizing).
 NEXT ($0 until the confirmation): FP triage -> repair arc on lookups ->
 seal confirmation -> prediction final scoring + Q1 errata count.
+
+## 0027 — V5-AS-TRUTH MEASURED (Matt's question), 2026-08-24
+Answered with data: the shelf panel projects to node level at 0.50-0.75
+agreement (granularity smearing) — unusable as truth, the prereg's
+closure now measured-correct. ERRATUM #18: measure shelf data sources'
+certificate-ability BEFORE the dominant spend, not after the question.
+Artifact: V5_TRUTH_TIER_MEASUREMENT.json.
