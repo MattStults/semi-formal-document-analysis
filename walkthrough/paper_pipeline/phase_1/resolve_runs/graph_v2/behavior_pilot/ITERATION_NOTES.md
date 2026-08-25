@@ -526,3 +526,18 @@ venue-economics options to Matt: (a) asymmetric certificate + Fable
 escalation of Opus-relevants (~2.5pt, mostly next bar), (b) full Fable
 engaged set (~4-5pt), (c) park UA at the honest attempt-1 record.
 Fable spent this block so far: 3 key seats ~1.3pt (-> ~34.3 est.).
+
+## 0023 — DISPUTE QUARANTINE CLOSED + BLOCK WRAP, 2026-08-24
+Trusted-tier resolution of the 43 ARB disputes: 9 yes / 34 no — the
+Opus boundary-class permissiveness bias measured a SECOND time,
+independently, same direction as the UA gate failure. Marks final r3 =
+269; tradeoffs r4 engagement 384->386 (both truth-carrying changes
+consistent: l699_796_n010 relevant+engages; l1_170_n042 relevant but
+still act/wall-blocked — stays in the FN reach class). CONVERGENT
+FINDING FOR THE CERTIFICATE DOCTRINE: two independent measurements now
+show Opus over-marking/over-including on BOUNDARY items specifically —
+per-task-class AND per-brief certification is not optional caution, it
+is the measured shape of the capability gap.
+BLOCK LEDGER: 4 Fable seats spent (~1.7pt: 3 key + 1 dispute) ->
+~34.7% est.; reserve intact; envelope 36 respected. HALTED on the UA
+venue-economics decision (options in notes 0022 / the halt report).
