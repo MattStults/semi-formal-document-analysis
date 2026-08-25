@@ -446,3 +446,24 @@ contract-level predictions against the engine before freezing (the
 check was one line and I skipped it). This is the per-clause scoring
 rule doing its job — a methodology hit taken in public before a single
 seat was spent on it.
+
+## 0018 — USER-AUTONOMY ATTEMPT-1 (PROVISIONAL) + ERRATUM #14, 2026-08-24
+Venue executed as amended; all seats machine-checked. PROVISIONAL result:
+engaged precision 0.60 (WITHIN the frozen 0.55-0.75 band — prediction
+clause (c) holds provisionally), decline 0.55, panel splits 3/10.
+- TRIPWIRE FIRED (3/8 wave spot-check) AND IT IS RIGHT: the Opus parity
+  certificate was measured on the TRADEOFFS brief; I deployed it on the
+  user-autonomy brief without re-measurement. ERRATUM #14 (runbook):
+  parity certificates are BEHAVIOUR-BRIEF-LOCAL — a new behaviour's
+  venue needs its own (cheap: the panel rows are the free key). The
+  spot-check architecture caught the stretch at a cost of one seat.
+- Scoring stands PROVISIONAL pending post-reset Fable verification:
+  (a) brief-local parity vs the 10 panel-tier rows, (b) re-verification
+  of the 3 disputed rulings, (c) the deferred 43-dispute re-resolution.
+  ~1-1.5pt next bar, none of it urgent.
+- Q1 DATA POINT: this fresh run produced one new erratum — the process
+  layer is STILL amending (errata series 4,4,4,2*,1 — trending down,
+  not yet zero; *0013/0009 counted to their iterations). The automation
+  decision correctly waits.
+- Budget: envelope respected — spot-check dispatched (~32.4 est.),
+  dispute ride-along deferred at the 32% paste per the halt line.
