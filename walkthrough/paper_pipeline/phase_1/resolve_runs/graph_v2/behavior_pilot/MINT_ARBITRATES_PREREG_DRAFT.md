@@ -85,3 +85,38 @@ out (definitional-lane act gap; C-V lane, separately queued).
   BOUNDARY ruling on concessive single norms).
 - The two consumption mechanisms as declarable, registry-fenced channels.
 Signature line: ____________________ (Matt, date)
+
+
+## ADDENDUM 1 — CALIBRATION MEASUREMENT (2026-08-24, pre-signature, append-only)
+Matt required the brief be measured before signing. 3 blind Opus seats,
+54-node packet (families hidden; committed pre-dispatch with thresholds).
+RESULTS (MINT_ARB_CALIBRATION_SCORE.json): stability mean pairwise 0.926
+(gate 0.80, PASS); separation: FP yes-rate 0.14 PASS, TN 0.20 PASS, TP
+0.80 PASS, FN 0.60 (0.56 excl. in-brief give-aways) FAIL vs 0.70.
+READING: clean precision instrument, PARTIAL recall instrument — 8/20
+FNs are relevant WITHOUT claim-level arbitration structure
+(relevant-by-example/application class).
+
+## ADDENDUM 2 — SCOPING AT SIGNATURE (binding)
+- SCOPED PREDICTIONS (replace the draft's directional paragraph): on the
+  calibration set the adopted mint is expected to fix ~12/14 FPs and
+  ~12/20 FNs, break <=2 TPs (one being the thrice-contested
+  l3877_3953_n002), and add <=2 engagements from marked TNs (one being
+  l171_426_n018, itself independently flagged by the parity seats).
+  Exact bands are set in the V5 registration AFTER regression
+  arithmetic, per the notes-0009 coverage rule.
+- THE 8 UNREACHED FNs become a NEWLY CHARACTERIZED SUSPENDED-OPEN class
+  ("relevant-by-example/application, not by claim structure":
+  l1_170_n017, l2126_2404_n002, l2126_2404_n012, l3596_3876_n003,
+  l3596_3876_n013, l3954_4251_n013, l4252_4482_n022, l699_796_n008) with
+  its own re-entry: a future SECOND concept, never a broadening of this
+  mark (gerrymander direction rejected by name at signature).
+- LEDGER WATCH ITEMS: l3877_3953_n002 and l171_426_n018 each now carry
+  three independent contrary signals against their ledger entries;
+  flagged for future panel-of-record attention, not resolved here.
+
+## Signatures
+Matt: SIGNED (scoped), 2026-08-24 — "sign scoped", this session;
+intension + frozen criteria (incl. the concessive-norm hard boundary) +
+the two registry-fenced consumption channels, under the Addendum-2 scope.
+FROZEN at this signature; corrections append only.
