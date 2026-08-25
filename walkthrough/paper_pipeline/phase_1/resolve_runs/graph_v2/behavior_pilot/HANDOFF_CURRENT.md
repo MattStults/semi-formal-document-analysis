@@ -13,7 +13,13 @@ only 23/39, masked by pooling. What survives: 39/39 blind coverage
 with ZERO new coinages, mid reuse 0.57 — necessary conditions only.
 NEW BINDING RULE: every separability claim ships with a matched-
 granularity random-partition null and is only as strong as its margin
-over it. Licensing experiments L1/L2 registered in the disposition.
+over it. L1/L2 were then THEMSELVES reviewed and WITHDRAWN
+(DOES-NOT-LICENSE; L1L2_ADVERSARIAL_REVIEW.md + disposition, notes
+0043): Q-B is untestable without out-of-corpus panel truth (none
+exists — the corpus's adria: block covers every truth-bearing
+behaviour); replacement package = F18 reliability gate -> F17
+blind-readout ablation -> F19 scaling pre-flight + A14 out-of-corpus
+truth purchase; funding rule: all three pass.
 Earlier arc: query-class bound (24 dims x 105 values, open-coded,
 place-blind); value hierarchy (0040). PARKED FOR MATT: UA mint
 (0.98-stable, consumption redesign), prop-risk frozen test, L1/L2,

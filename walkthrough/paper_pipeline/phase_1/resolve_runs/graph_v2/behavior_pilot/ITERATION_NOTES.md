@@ -895,3 +895,45 @@ tool-use), both parked for Matt. Erratum #21: the third instance this
 session of a pass condition that could not fail (designer vocabulary,
 grandfathered places, now a noise-satisfiable census) — the fix each
 time was the same shape: build the null first.
+
+## 0043 — L1/L2 THEMSELVES FAIL REVIEW: DOES-NOT-LICENSE, 2026-08-25
+Matt (correctly) declined to fund a retranslation campaign on the
+0042 licensing experiments and asked whether L1/L2 would actually
+answer his questions. Clean-context Opus review (full text:
+L1L2_ADVERSARIAL_REVIEW.md, 36 findings + 20 amendments): verdict
+DOES-NOT-LICENSE, accepted after CoVe (L1L2_REVIEW_DISPOSITION.md).
+The four decisive defects: (1) L1's relevance clause is met on a
+point-estimate reading by the very numbers 0042 dismissed as base
+rate — and my CoVe found those numbers are p~0.15 vs baseline, i.e.
+not even significant — a pass condition that cannot fail, erratum
+#21's FOURTH recurrence, this time authored in the same document
+that adopted the null-model rule; (2) L2 has no null and its
+coverage clause is elastic (undefined_harmfulness_catch_all exists;
+the two dimensions L2 exists to stress fire 1/100 each); (3) Q-B is
+untestable by construction — the corpus's adria: block means every
+truth-bearing behaviour is in-corpus and NO out-of-corpus panel
+truth exists in the repo; (4) L1 presupposes the campaign (only
+183/773 nodes ever translated; "half the spec" doesn't exist).
+Also surfaced: THREE incompatible relevance ledgers (node ledger
+0.443-0.560 positive vs panel-v5 majority 0.008-0.114 vs rubric-v3w)
+with L1 naming none — truth-shopping surface; assembled truth_all()
+is composition-biased (positives/negatives acquired by different
+processes) — score only on the ~537 single-process fresh-draw
+rulings; live red gates (block-1 STOP RULE, metric0 FAILx3) that
+L1/L2 would have bypassed; the UA seal needed a guard. Reviewer
+errors corrected in disposition: its panel-v5 rates and its 1-NN
+p-values were wrong (findings survive on my re-derived numbers).
+REPLACEMENT PACKAGE adopted (dependency order): F18 reliability gate
+(fresh uniform 60-node draw, 2 blind seats, alpha>=0.67, ~$0 — may
+kill the campaign before any spend); F17 blind-readout ablation
+(Arm T raw-text ceiling / Arm R signature-only / Arm N permuted
+null; MCC(R)>=MCC(T)-0.05 AND >99th null pct, worst-behaviour
+headline, ceiling-relative) — the actual Q-A construct; F19 scaling
+pre-flight; A14 out-of-corpus truth purchase (>=3 behaviours x ~80
+uniform ruled nodes, ~0.4-0.5M Fable) — the ONLY path to Q-B.
+FUNDING RULE: F18 pass AND F17 pass AND scaling inside budget.
+LEARNING: I wrote L1/L2 in the same commit that adopted "build the
+null first" and still gave L1 a bar already met and L2 no null —
+adopting a method rule is not applying it; every registered pass
+condition now gets the explicit question "could this have passed on
+the data we already rejected?" before commit.
