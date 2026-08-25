@@ -97,3 +97,15 @@ protects, party — the most-walled module in the corpus) over a small
 dominating (narrow pool + welfare-adjacency is contextual, not
 structural). The prereg ADDENDUM-5 gate ("measurable only after its
 C-V repair") is discharged vacuously: no repair exists to perform.
+
+
+## CORRECTION 2 (2026-08-24, append-only, pre-measurement; adversarial-review F4/F5)
+- Clause (a) is scored on RATE-NORMALIZED class rates (FP rate among
+  ruled engaged vs FN rate among ruled declined), acquisition weights
+  disclosed — raw counts under asymmetric truth acquisition never
+  decide dominance.
+- Clause (c) for user-autonomy is scored ONLY on the attempt-1 n=20
+  number under its venue-verification outcome (certify -> 0.60 stands;
+  fail -> one deterministic rescoring with corrected rulings). The
+  exhaustive engaged-set precision is a separate metric and never
+  substitutes. Registered before any further ruling exists.

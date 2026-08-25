@@ -128,11 +128,17 @@ draw's already-ruled nodes are lookups, never re-buys. (b) Rule at
 PANEL TIER the FIRST time (certified venue): single-wave truth cannot
 be memoized (0.846 self-agreement) and buying it first just prepays an
 upgrade. (c) Acquire truth ENGAGED-SET-FIRST per behaviour — precision
-becomes exact and noise-free at ~12 off-bar seats; the decline side
+becomes exact OVER THE RULED SET at ~12 off-bar seats (2-1 majorities
+memoize tagged SPLIT; entries carry definition-sha + brief-version +
+venue and are voided by definition changes; a SEEDED 25% of every
+exhaustive purchase is SEALED as held-out until a registered stopping
+point — deltas tune only against the visible partition); the decline side
 fills memoized-incrementally with twin-class propagation (~15-20%
-saved). (d) Once coverage is complete, every realization/validation is
-a $0 lookup — the noise apparatus (coverage rules, probes,
-re-measures) applies only while coverage is partial.
+saved). (d) Coverage is a property of a MODULE VERSION: nodes a repair newly
+engages enter the unruled dispatch queue and a move's adoption blocks
+until its gained nodes are ruled (the V5 coverage rule, composed).
+Within a version with full visible coverage, validation is a $0
+lookup; STEP-4 confirmation scores on the SEALED partition, once.
 
 STOP CONDITIONS (halt and surface, do not improvise): any spec gap (a
 state with no applicable rule), any checker failure, any floor that a

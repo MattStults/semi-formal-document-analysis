@@ -488,3 +488,18 @@ only; carrying it into repair attempts was inertia.
   precision, then the repair arc on lookups; (iii) if parity fails:
   surface — the UA venue economics change and Matt decides;
   (iv) 43-dispute re-resolution rides the first Fable seat.
+
+## 0020 — ADVERSARIAL REVIEW OF THE PLAN: BLOCKING, LARGELY UPHELD, 2026-08-24
+Clean-context Opus review returned 8 findings; CoVe verified every
+factual claim before disposition (all checked out — incl. the exact
+split-node names and the cap arithmetic). 5 accepted, 2 partial, 1
+sub-claim rejected with the existing mechanism cited
+(UA_PLAN_REVIEW_DISPOSITION.md). The big catches: my parity-key design
+was UNSOUND (single Fable seat as key — the exact single-wave noise the
+memoization rule itself names); the held-out seal requirement (tuning
+against a fully visible key is Goodhart bait the anti-cheat perimeter
+already names); the clause-(a)/(c) scoring holes; the moving-boundary
+correction. Plan v2 committed; BLOCKED pending Matt's fresh envelope
+(~2.5-3 pt — the sound key design costs more than the unsound one).
+Q1 note: the review+CoVe cycle added 4 process rules in one pass —
+the errata series is NOT converged; manual driving remains correct.
