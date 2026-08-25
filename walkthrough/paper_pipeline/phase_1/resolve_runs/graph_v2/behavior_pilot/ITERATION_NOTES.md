@@ -392,3 +392,24 @@ Wave spot-check 1/8 (certificate held again). Attempt series:
   notes 0001-0014 now carrying FOUR banked errata.
 - Fable spend this block: 2 spot-check seats (~64k raw, ~0.6pt from
   30%). Everything else Opus.
+
+## 0015 — QUIESCENCE + RUNBOOK v1, 2026-08-24
+Following the machine's own prescription (Matt: "continue to follow the
+state machine"):
+- STEP-1 triage of attempt-4 misses: 9/9 into standing states, no new
+  mechanism -> the tradeoffs loop is at its QUIESCENT FIXED POINT at
+  inventory k (ITER4_MISS_TRIAGE.json). Escalations deferred per A5
+  (nothing to pay for), required before any future fix.
+- CALCULUS_RUNBOOK v1 rewritten FROM notes 0001-0014 (execution-derived;
+  docs-tests 5/5). Carries: gen-venue truth-injection pattern, refilter-
+  before-routing, escalate-before-choosing, certificates are task-class-
+  local, measure-criteria-before-signing, consumption mechanisms
+  validated individually, the binding V5 coverage rule, same-samples-
+  higher-tier re-measurement, defensible-by-contradiction, quiescent-
+  fixed-point language, constraint-structure-not-menus, tripwires never
+  silently passed.
+- REMAINING MAINTENANCE (queued, named): census/vector extension for
+  party_concern, governs_conditional, machinery_concern, arbitrates_*
+  (the Arc1-e build — design-tier, needed before census-based routing
+  of the r4 module); trace-audit extension over iterations 2-3; the
+  Fable-tier dispute re-resolution (~0.5pt, next bar).
