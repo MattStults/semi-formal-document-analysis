@@ -812,3 +812,20 @@ STANDING FOR MATT: the new-dimension candidates' implications for the
 INSTRUMENT (evaluation_unit especially — trajectory-class behaviours
 are outside the node-relevance design entirely); the UA mint decision;
 the prop-risk test. Fable spent this AFK drive: 0.
+
+## 0039 — SEPARABILITY VERDICT CORRECTED: THE VALUE LAYER IS ENTROPY, 2026-08-25
+The vacuousness audit (applied at BOTH levels after the node run
+repeated the fingerprint pattern) downgrades the headline: value-level
+separability is mostly per-item uniqueness (nodes: 0 reuse; defs: 20%
+reuse). Defensible numbers: dimension-set separability 0.37-0.40
+(definitions) / 0.85 (nodes). STRUCTURAL FINDING, twice-measured:
+content values at separating granularity almost never recur — fine
+enough to separate = too fine to share. THE ONTOLOGY THAT EXISTS is
+the DIMENSION layer (24+1 place-blind, dual-coder-stable, now with a
+document-side discovery: age_or_vulnerability_class_of_the_user).
+Values are high-entropy content where exact-vocabulary matching cannot
+work; query-node value matching needs lossy coarse classes (with
+measured loss) or judgment at match time — the information floor
+(0036) reappearing at the value layer. Also: the audit habit is now
+proven twice — EVERY separability claim must ship with its value-reuse
+audit (method rule).
