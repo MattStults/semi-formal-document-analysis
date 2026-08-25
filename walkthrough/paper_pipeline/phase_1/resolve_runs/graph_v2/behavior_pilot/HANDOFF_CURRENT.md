@@ -1,20 +1,19 @@
-# ⭐⭐ ENTRY POINT (2026-08-25 late; query-class arc CLOSED, zero Fable)
+# ⭐⭐ ENTRY POINT (2026-08-25 end; INTEGRATION TEST PASSED)
 Boot: CLAUDE.md -> this file -> CALCULUS_RUNBOOK.md -> ITERATION_NOTES
-0001-0038. THE MEASURED BOUND (QC_SEPARABILITY_FINAL.json): the
-character-spec query class = 24 place-blind emergent dimensions x 105
-canonical values; 100 real definitions separate 94/100 with ALL
-collisions being cross-source same-construct duplicates (zero
-different-construct collisions). NINE dimensions have no counterpart
-in the designer places (qc_open_alignment.json) — evaluation_unit
-(the instrument is utterance-locked; trajectory/dialogue behaviours
-are structurally out of scope of node-relevance) and
-subject_matter_class are the load-bearing discoveries. PARKED FOR
-MATT: (1) UA mint (0.98-stable OPERATIVE_TARGET, consumption redesign
-needed); (2) query-class consequences for the instrument roadmap;
-(3) prop-risk frozen transfer test; (4) round-4 certification.
-Method rule now standing (3 catches): derivation/annotation/
-canonicalization each blind to the layer above; prior vocabularies
-enter only at analysis. AFK drive total Fable: 0 of the 5pt envelope.
+0001-0041. HEADLINE (RETRANS_INTEGRATION_CENSUS.json): blind
+retranslation of the 39 truth-bearing nodes under the combined
+representation (graph inputs/outputs/atoms + the 24 place-blind
+emergent dimensions) separates 1.00 at the bridge-lattice MID level
+with 0.57 vocabulary reuse and ZERO truth-distinct collisions at any
+level, both seats — the non-vacuous sufficiency result, and the first
+end-to-end dry run of the next-document recipe (five-field translate ->
+lattice merge -> match at declared levels). Full arc this session:
+query-class bound (24 dims x 105 values, open-coded, place-blind);
+value-layer entropy resolved into hierarchy (0040); vacuousness audits
+now mandatory on separability claims. PARKED FOR MATT: UA mint
+(0.98-stable, consumption redesign), prop-risk frozen test, corpus-
+scale lattice (the generalization test), round-4 certification.
+AFK-drive Fable total: 0.
 # HANDOFF — convergence endgame + declaration-search results (2026-08-20, updated end-of-day)
 Written for a frontier-capable agent resuming with zero context. Read top-down;
 every claim has an artifact pointer. Repo root for this work: this directory

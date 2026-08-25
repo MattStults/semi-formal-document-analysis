@@ -846,3 +846,18 @@ phenomenon at three vocabularies. NEXT-DOCUMENT DESIGN CONSEQUENCE:
 new dimensions' value merges emit subsumption lattices from the start
 (the acts pipeline generalized), and per-query matching-level
 selection is a first-class declaration.
+
+## 0041 — INTEGRATION TEST PASSES: THE MID LEVEL, 2026-08-25
+Matt's real question answered (RETRANS_INTEGRATION_CENSUS.json): blind
+retranslation (claim + inputs/outputs + free atoms + 24 dimensions) ->
+bridge lattice (leaf/mid/top, aggregating mids, cross-seat mid overlap
+0.84-0.98) -> census with reuse audits: MID LEVEL = separability 1.00
+on BOTH seats at 0.57-0.58 vocabulary reuse; ZERO truth-distinct
+collisions at ANY level (even the 9-class top). The combined
+representation addresses the truth-bearing sample non-vacuously at a
+matching-suitable granularity. Caveats recorded: n=39; sample-induced
+mids (corpus scale is the generalization test — reuse should RISE);
+separability is necessary-not-sufficient (matching rules per behaviour
+remain). This is the first end-to-end dry run of the next-document
+recipe: translate five-field, merge to lattice, match at declared
+levels.
