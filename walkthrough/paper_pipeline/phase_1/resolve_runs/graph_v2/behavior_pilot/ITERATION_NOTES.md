@@ -683,3 +683,23 @@ seal's truth was pre-bought). A mint, if the R3 space exhausts, gets
 designed + calibrated on Opus and PARKS at the P3 signature for Matt.
 No /usage pastes available -> no Fable dispatch at all this block
 (strictly safer than the cap).
+
+## 0033 — UA ARC (AFK block): MOVE-1 ADOPTED; TARGET MINT CALIBRATED AND HELD, 2026-08-25
+- R3 enumeration (64 compounds, $0): admissible optimum = governs wall
+  {substance, tone, objectivity}: 18/90 fixes, 0 breaks, 0 new FPs.
+  ADOPTED (UA_REPAIR_MOVE1.json, ua_contract_r2.json). Seal UNTOUCHED.
+- OPERATIVE_TARGET mint calibration (3 Opus seats, thresholds
+  pre-stated): STABILITY 0.98 mean pairwise, ZERO 3-way splits — the
+  most stable layer ever measured here. FP-side separation PASSES
+  (0.20 <= 0.30). TP-side coverage FAILS the gate: 0.67 vs >=0.70 —
+  5/15 UA TPs are relevant via other targets (incl. machinery-class
+  and assistant-output-with-deference-content), so a PURE WALL is
+  inadmissible (would break 5 TPs). HELD FOR MATT with the honest
+  numbers: the concept is real and crisp; the consumption design needs
+  a second disjunct (e.g. wall scoped to a sub-channel, or
+  target-OR-machinery composite). The calibration-before-signature
+  discipline did its job: a gate miss surfaced BEFORE any corpus
+  annotation was bought.
+- Tradeoffs cross-check (descriptive): the enum classifies the
+  cross-behaviour recurrers as assistant_output — consistent with the
+  amortization hypothesis.
