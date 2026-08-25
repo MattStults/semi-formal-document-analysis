@@ -350,21 +350,39 @@ def relevance(mod, br, corpus):
         return [(f, br.get(f), st) for f, st in rows
                 if br.get(f) in mach_decl]
 
+    # ARBITRATES CHANNELS (iteration-3 mint, MINT_ARBITRATES_PREREG_DRAFT.md,
+    # Matt-signed-scoped 2026-08-24). Layer: arb_marks_final.json {node: true}
+    # (two-seat consensus + escalation-panel majorities; disputed nodes carry
+    # no mark until resolved). Two declarations, both inert unless present:
+    #   "arbitrates_wall": true    — act-channel engagement additionally
+    #       requires the node to carry the mark (precision side).
+    #   "arbitrates_channel": true — a marked node engages act-independently
+    #       (purpose-channel pattern; actor + protects walls preserved)
+    #       (recall side).
+    _arb_path = os.path.join(HERE, "arb_marks_final.json")
+    arb_marks = (json.load(open(_arb_path))["marks"]
+                 if os.path.exists(_arb_path) else {})
+    arb_wall = bool(mod.get("arbitrates_wall"))
+    arb_chan = bool(mod.get("arbitrates_channel"))
+
     rel = {}
     for cid, rows in corpus.items():
         mreasons = machinery_reasons(cid, rows)
+        arb = bool(arb_marks.get(cid))
         if not actor_ok(cid):
             if mreasons and protects_ok(cid):
                 rel[cid] = mreasons
             continue
         act_reasons = []
-        if protects_ok(cid) and signature_ok(cid):
+        if protects_ok(cid) and signature_ok(cid) and not (arb_wall and not arb):
             act_reasons = [(f, br.get(f), st) for f, st in rows
                            if br.get(f) is not None and verb_hit(br[f]) and arg_ok(f, br[f]) and party_ok(f)]
         if act_reasons:
             rel[cid] = act_reasons
         elif mreasons and protects_ok(cid):
             rel[cid] = mreasons
+        elif arb_chan and arb and protects_ok(cid):
+            rel[cid] = [("__arbitrates__", "arbitrates_channel", "mark")]
         elif purpose_hit(cid) and protects_ok(cid):
             # purpose channel is act-independent but the beneficiary wall still
             # applies to every channel (9d: unwalled purpose flooded harm, prec
@@ -423,4 +441,6 @@ DECLARABLE_MOVES = {
     "party_concern":      ("party_concern",      "wall"),
     "governs_conditional":("governs_conditional","conditional"),
     "machinery_concern":  ("machinery_concern",  "or"),
+    "arbitrates_wall":    ("arbitrates_wall",    "wall"),
+    "arbitrates_channel": ("arbitrates_channel", "or"),
 }
