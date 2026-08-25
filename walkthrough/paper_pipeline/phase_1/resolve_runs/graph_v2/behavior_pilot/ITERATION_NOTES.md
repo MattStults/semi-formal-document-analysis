@@ -333,3 +333,26 @@ Applied append-only to ITER2_REMEASURE_SCORED.json: pooled
 match-or-defensible engaged = 24/38 = 0.632; registered final numbers
 untouched. RUNBOOK RULE CANDIDATE: check every truth supersession for
 the opposing-unanimous pattern before letting recency precedence decide.
+
+## 0012 — ITERATION 3 OPENED: TRIAGE + MINT DESIGN, 2026-08-24
+- Queue refiltered against the CURRENT module first (lesson: never route
+  a stale miss list) — 3 FNs already resolved by the kept iter-2 move;
+  n005 out as defensible-by-contradiction; final 14 FP + 20 FN, all
+  panel-tier (R1 free).
+- ROUTE: C-I(I3) unified mint. Contrast analysis supports ONE
+  distinction serving BOTH directions: FN spans carry
+  ordering/exception/bounded-permission structure ("never refuse
+  unless…", "allowed as long as not…"), FP spans are single
+  prescriptions. Drafted as MINT_ARBITRATES_PREREG_DRAFT.md — per-assert
+  ARBITRATES mark, consumed as an act-channel wall (precision) + an
+  additive channel (recall). The hard boundary (concessive single norms,
+  "comply even if long") is ruled NO in the brief with the panel-tier
+  case that forces it.
+- AWAITING MATT'S P3 SIGNATURE — the annotation lanes do not run
+  without it (A10 Q4/Q5). Post-signature pipeline is Opus-dominant
+  (two-seat corpus lane + certified-Opus escalations); Fable only for
+  spot-checks and the attempt-4 headline wave.
+- Convergence note for the writeup: l831_1000_n011 sits in BOTH this
+  queue and split mining's deferred provide:forbid.form_equivalence
+  list — the third time two blind-to-each-other methods named the same
+  fix family.
