@@ -1,19 +1,23 @@
-# ⭐⭐ ENTRY POINT (2026-08-25 end; INTEGRATION TEST PASSED)
+# ⭐⭐ ENTRY POINT (2026-08-25 end; INTEGRATION CLAIMS WITHDRAWN BY REVIEW)
 Boot: CLAUDE.md -> this file -> CALCULUS_RUNBOOK.md -> ITERATION_NOTES
-0001-0041. HEADLINE (RETRANS_INTEGRATION_CENSUS.json): blind
-retranslation of the 39 truth-bearing nodes under the combined
-representation (graph inputs/outputs/atoms + the 24 place-blind
-emergent dimensions) separates 1.00 at the bridge-lattice MID level
-with 0.57 vocabulary reuse and ZERO truth-distinct collisions at any
-level, both seats — the non-vacuous sufficiency result, and the first
-end-to-end dry run of the next-document recipe (five-field translate ->
-lattice merge -> match at declared levels). Full arc this session:
-query-class bound (24 dims x 105 values, open-coded, place-blind);
-value-layer entropy resolved into hierarchy (0040); vacuousness audits
-now mandatory on separability claims. PARKED FOR MATT: UA mint
-(0.98-stable, consumption redesign), prop-risk frozen test, corpus-
-scale lattice (the generalization test), round-4 certification.
-AFK-drive Fable total: 0.
+0001-0042. HEADLINE: the adversarial review of the retranslation
+integration census (RETRANS_REVIEW_DISPOSITION.md — read it before
+citing any census number) returned P1/P2 UNSUPPORTED and the driver's
+CoVe re-derivations CONFIRMED the decisive findings: (1) the census's
+pass condition is satisfiable by noise — a random 4-bucket partition
+achieves sep 1.00 / reuse 1.00 in 299/300 trials, dominating the real
+lattice; (2) 1-NN relevance prediction over the representation is
+~base rate (0.72 vs 0.60, 0.70 vs 0.59); (3) mids were induced from
+the same 39 nodes they separate; (4) seat dimension-set agreement is
+only 23/39, masked by pooling. What survives: 39/39 blind coverage
+with ZERO new coinages, mid reuse 0.57 — necessary conditions only.
+NEW BINDING RULE: every separability claim ships with a matched-
+granularity random-partition null and is only as strong as its margin
+over it. Licensing experiments L1/L2 registered in the disposition.
+Earlier arc: query-class bound (24 dims x 105 values, open-coded,
+place-blind); value hierarchy (0040). PARKED FOR MATT: UA mint
+(0.98-stable, consumption redesign), prop-risk frozen test, L1/L2,
+round-4 certification. AFK-drive Fable total: 0.
 # HANDOFF — convergence endgame + declaration-search results (2026-08-20, updated end-of-day)
 Written for a frontier-capable agent resuming with zero context. Read top-down;
 every claim has an artifact pointer. Repo root for this work: this directory

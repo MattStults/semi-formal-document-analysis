@@ -861,3 +861,37 @@ separability is necessary-not-sufficient (matching rules per behaviour
 remain). This is the first end-to-end dry run of the next-document
 recipe: translate five-field, merge to lattice, match at declared
 levels.
+
+## 0042 — 0041 WITHDRAWN: THE INTEGRATION CENSUS FAILS ITS ADVERSARIAL REVIEW, 2026-08-25
+Matt asked for an adversarial review of whether the census actually
+answers "complete representability + extension to novel behaviours."
+Clean-context Opus reviewer: P1 UNSUPPORTED (as measured), P2
+UNSUPPORTED, 8 findings. CoVe'd per standing rule — the three decisive
+findings were RE-DERIVED by the driver and reproduced exactly:
+(F1) random 4-bucket partition => sep 1.00 in 299/300 trials, reuse
+1.00 — the registered pass condition is satisfiable by noise; (F4)
+1-NN relevance prediction over mid signatures = 0.72/0.70 vs bases
+0.60/0.59 — separability != carrying the relevance concept, consistent
+with the L1/TF-IDF base-rate results; (F8) exact seat dimension-set
+agreement 23/39, masked by cross-seat pooling. F2/F3/F5/F6/F7 all
+ACCEPTED (mids-from-same-nodes circularity; vacuous collision clause;
+both behaviours in-corpus; corpus skew; problem-node-stratified
+sample). One reviewer slip corrected: "ua"=user-autonomy. Full
+dispositions + corrected verdicts: RETRANS_REVIEW_DISPOSITION.md.
+LEARNING (the reviewer did what I did not): I ran a vacuousness audit
+(value-reuse) but never a NULL MODEL, and reuse alone does not
+license separability — the two must be scored JOINTLY against a
+matched-granularity random partition, where the real lattice loses.
+BINDING RULE ADOPTED (companion to V5 coverage): every separability/
+representability claim ships with a seeded matched-granularity
+random-partition null; the claim is only its MARGIN over the null; a
+pass condition satisfiable by noise is void as registered. What
+survives 0041 honestly: blind five-field coverage 39/39 with zero new
+coinages (form-completeness), reuse 0.57 (compression) — necessary,
+not sufficient. Path to the real claims registered as L1 (held-out-
+half mid induction + null margin + relevance-prediction-above-base)
+and L2 (>=10 out-of-corpus behaviour definitions incl. agentic/
+tool-use), both parked for Matt. Erratum #21: the third instance this
+session of a pass condition that could not fail (designer vocabulary,
+grandfathered places, now a noise-satisfiable census) — the fix each
+time was the same shape: build the null first.
