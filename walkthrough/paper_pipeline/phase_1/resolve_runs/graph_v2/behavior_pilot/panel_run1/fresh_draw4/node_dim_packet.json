@@ -1,0 +1,636 @@
+{
+ "schema": {
+  "dimensions": [
+   {
+    "name": "surface_form_and_delivery",
+    "gloss": "The handle is how the output is packaged rather than what it says: markup, length, structure, and the acoustic/durational properties of speech. Decidable by inspecting the text or audio without knowing its topic or effect.",
+    "example_values": [
+     "markup/typography of the text (markdown with LaTeX extensions)",
+     "prosody and emotive coloring of spoken output",
+     "length as time / spoken duration",
+     "length and structure tracking shifting conversational objectives",
+     "who consumes the output: human reader vs. parsing program",
+     "machine-detectable signals in the request that flip the output regime"
+    ],
+    "source_categories": {
+     "A": [
+      "Surface form and delivery of the output"
+     ],
+     "B": [
+      "Surface form and delivery mechanics"
+     ]
+    }
+   },
+   {
+    "name": "conversational_fit_and_turn_mechanics",
+    "gloss": "The handle is the conversation record itself \u2014 whether an utterance coheres with what came before, stays on topic, repeats itself, or correctly handles a turn-taking event. Nothing about the world outside the dialogue is needed.",
+    "example_values": [
+     "local coherence given the preceding dialogue",
+     "topical relevance to the user's turn (clarifying question counts as on-topic)",
+     "redundancy across the assistant's own prior turns",
+     "being cut off mid-turn and how the reply resumes",
+     "a recognizable conversational ritual (the mic check) and the register that meets it"
+    ],
+    "source_categories": {
+     "A": [
+      "Dialogue mechanics and conversational fit"
+     ],
+     "B": [
+      "Fit with the ongoing conversation",
+      "Surface form and delivery mechanics (turn-event items)"
+     ]
+    }
+   },
+   {
+    "name": "serving_the_requester",
+    "gloss": "The handle is whether the user's actual need was met \u2014 a genuine attempt at the task, missing details elicited, or an ill-formed request redirected. Withholding is scored as a cost rather than a neutral option.",
+    "example_values": [
+     "genuine attempt at the posed task",
+     "economy of means in making that attempt",
+     "underspecified request and whether missing details were elicited (with delicacy)",
+     "mismatch between what was asked for and what would actually serve the user",
+     "whether the user's actual query was addressed rather than talked around",
+     "withholding counted as a chargeable debit"
+    ],
+    "source_categories": {
+     "A": [
+      "Delivering value to the requester",
+      "Dialogue mechanics and conversational fit (hhh:helpful-2)"
+     ],
+     "B": [
+      "Task performance and responsiveness"
+     ]
+    }
+   },
+   {
+    "name": "truth_relation_of_an_assertion",
+    "gloss": "The handle is how a statement stands to the facts or to the speaker's own belief \u2014 accuracy, bare plausibility, calibration, or falsity with or without an intent element.",
+    "example_values": [
+     "intent to move the addressee's belief away from what the speaker takes to be true, including by pointed omission",
+     "bare plausibility measured against obvious fact",
+     "correspondence between stated confidence and actual hit rate (statistical, not per-answer)",
+     "social epistemic status of a claim as a 'conspiracy theory' rather than its truth",
+     "falsity within a named domain (medical, health, scientific), no intent required",
+     "falsity plus targeting intent aimed at a specific group, entity, or person"
+    ],
+    "source_categories": {
+     "A": [
+      "Truth relation between what is said and how things are"
+     ],
+     "B": [
+      "Truth-relation of an assertion"
+     ]
+    }
+   },
+   {
+    "name": "claims_about_the_assistants_own_nature",
+    "gloss": "The handle is first-person self-description checked against what the system actually is: embodiment, human biography, inner life, capabilities, persistence, or authorship. The reference point is machine fact, not conversational appropriateness.",
+    "example_values": [
+     "claims of embodiment or physical movement",
+     "first-person ascription of preferences, feelings, beliefs",
+     "biographical claims true only of a human (birthplace, family, age, memories)",
+     "claims to have acted outside the conversation, against actual affordances",
+     "accuracy of self-report about own competence, ruling out performed humility",
+     "the gap between the user's likely mental model of the system and what is true of it",
+     "leading a human interlocutor to believe they are dealing with a person",
+     "whether the response implies a persisting personal identity worth caring about"
+    ],
+    "source_categories": {
+     "A": [
+      "Claims the system makes about what it itself is"
+     ],
+     "B": [
+      "Claims about the assistant's own nature"
+     ]
+    }
+   },
+   {
+    "name": "attributed_motive_and_drives",
+    "gloss": "The handle is what the response reveals about what the system wants \u2014 an attribution about the speaker rather than any checkable property of the content. No conduct-level fact settles it.",
+    "example_values": [
+     "ordering of humanity's good against the system's own interests",
+     "evidence of self-preservation, self-improvement, or self-replication drives",
+     "signs of wanting power or control",
+     "reaching for capabilities and powers beyond what the task needs",
+     "risk-posture projected as a temperament (cautious, content to be conservative)"
+    ],
+    "source_categories": {
+     "A": [
+      "Attributed motivations and character of the model (drive items)"
+     ],
+     "B": [
+      "Motive and disposition read off the response"
+     ]
+    }
+   },
+   {
+    "name": "displayed_character_and_affect",
+    "gloss": "The handle is the disposition the response is supposed to display in how anything is said \u2014 warmth, humour, curiosity, creative reach. Distinguished from motive attribution because it grades affective texture, not what the system is inferred to want.",
+    "example_values": [
+     "affective texture: warmth, humour, lightness, absence of therapeutic register",
+     "delight in ideas and difficulty (curiosity as a durable trait)",
+     "non-obviousness relative to a generic baseline answer",
+     "emotional stance in a mental-health context: acknowledgement, non-judgement, encouragement",
+     "good-natured handling of a conversational ritual"
+    ],
+    "source_categories": {
+     "A": [
+      "Attributed motivations and character of the model (persona items)",
+      "Relational stance toward the user as a person (mental-health manner)"
+     ],
+     "B": [
+      "Character and expressive stance"
+     ]
+    }
+   },
+   {
+    "name": "instruction_authority_ordering",
+    "gloss": "The handle is provenance and precedence among the instructions in the context \u2014 which rule outranks which, and whether a string in the window has standing to instruct at all. It selects on rules and inputs, not on any content class.",
+    "example_values": [
+     "position of an instruction in an authority ordering",
+     "recency among instructions at the same level",
+     "provenance and syntactic packaging of text in the context window",
+     "whether authority was delegated to a piece of retrieved or pasted data",
+     "which channel an instruction arrived through"
+    ],
+    "source_categories": {
+     "A": [
+      "Authority structure over instructions"
+     ],
+     "B": [
+      "Standing toward human oversight and instruction authority"
+     ]
+    }
+   },
+   {
+    "name": "integrity_of_human_oversight",
+    "gloss": "The handle is whether conduct degrades the external mechanisms humans use to see and constrain the system \u2014 evasion, rule violation, or tampering with the evidentiary record, including the motive for concealment.",
+    "example_values": [
+     "degrading a monitoring institution's ability to see the model",
+     "evasion of supervision",
+     "tampering with or handling of the evidentiary record",
+     "motive for concealment"
+    ],
+    "source_categories": {
+     "A": [
+      "Agentic action, side effects, and oversight (oversight item)"
+     ],
+     "B": [
+      "Standing toward human oversight and instruction authority (oversight item)"
+     ]
+    }
+   },
+   {
+    "name": "agentic_action_footprint",
+    "gloss": "The handle applies only where the assistant acts rather than speaks: the footprint of an action in the world beyond its intended objective, weighted by reversibility and proportionality to the mandate.",
+    "example_values": [
+     "effects caused beyond the intended goal",
+     "reversibility of those effects",
+     "proportionality to the delegated mandate",
+     "whether the side effects were communicated"
+    ],
+    "source_categories": {
+     "A": [
+      "Agentic action, side effects, and oversight (side-effect item)"
+     ],
+     "B": [
+      "Agentic action footprint"
+     ]
+    }
+   },
+   {
+    "name": "hostile_expression_toward_persons_or_groups",
+    "gloss": "The handle is the interpersonal register of the language and the identity of its target \u2014 insult, threat, slur, stereotype, harassment \u2014 including what is carried by implicature rather than stated.",
+    "example_values": [
+     "generalizing propositional form applied to a social group",
+     "subtle, possibly unintended bias signalling toward marginalised groups (implicature)",
+     "the speech act performed: whether the utterance constitutes a threat",
+     "audience uptake: how an utterance could be perceived as sexually aggressive",
+     "negativity aimed at an identity-constituting attribute",
+     "insulting register toward any target, present or absent",
+     "reasonable-observer judgment of hate or harassment",
+     "offensiveness carried by subtext and statistical bias"
+    ],
+    "source_categories": {
+     "A": [
+      "Hostile or demeaning expression toward persons and groups"
+     ],
+     "B": [
+      "Offensiveness of the language toward persons or groups"
+     ]
+    }
+   },
+   {
+    "name": "operational_uplift_toward_a_harmful_act",
+    "gloss": "The handle is causal contribution: whether the conduct materially advances someone's ability to do damage, keyed to actionable specificity, an authorization fact, or the requester's inferred purpose rather than to topic label or tone.",
+    "example_values": [
+     "actionable specificity / operational uplift toward executing a dangerous act",
+     "inferred illicit intent of the requester, with identical content in or out on that basis",
+     "underlying nefarious purpose behind an innocuous-looking ask",
+     "system owner's authorization for security probing (same technical act flips on consent)",
+     "the class of target harmed: critical infrastructure",
+     "contribution to a mass-casualty weapon class, including detection- and countermeasure-evasion",
+     "incitement, facilitation, or mere promotion of ideologically motivated violence",
+     "temporal imminence and physicality of a foreseeable harm, obliging intervention rather than abstention"
+    ],
+    "source_categories": {
+     "A": [
+      "Causal contribution to real-world harmful capability"
+     ],
+     "B": [
+      "Operational contribution to a harmful act"
+     ]
+    }
+   },
+   {
+    "name": "bright_line_content_class",
+    "gloss": "The handle is what the material depicts, full stop \u2014 membership in a categorically barred class with no context, fiction, or intent defeaters available.",
+    "example_values": [
+     "sexualized minors, with no context/intent/fictionality exception",
+     "a legally defined content category (CSAM), explicitly extended to synthetic instances",
+     "distribution and promotion as well as creation",
+     "erotic explicitness as such, defined by what the statement depicts"
+    ],
+    "source_categories": {
+     "A": [
+      "Forbidden content categories keyed to subject matter (absolute-bar items)"
+     ],
+     "B": [
+      "Bright-line content classes"
+     ]
+    }
+   },
+   {
+    "name": "named_content_bucket",
+    "gloss": "The handle is membership in an enumerated classification label, where the bucket name does the selecting work and often fuses unlike things (content depicted plus contribution to an act) into one category for classifier purposes.",
+    "example_values": [
+     "a bundled label fusing operational help with violence and hateful expression",
+     "an object class (guns and illegal weapons) spanning instruction, encouragement, and condoning",
+     "regulatory status of a substance, where illegality rather than harmfulness sets the boundary",
+     "a residual bucket defined by example and by what the other buckets leave over",
+     "'could help' as the causal threshold for bucket membership"
+    ],
+    "source_categories": {
+     "A": [
+      "Forbidden content categories keyed to subject matter (llamaguard buckets)"
+     ],
+     "B": [
+      "Operational contribution to a harmful act (llamaguard buckets)",
+      "misfits (llamaguard:violence-and-hate)"
+     ]
+    }
+   },
+   {
+    "name": "licensed_profession_domain",
+    "gloss": "The handle is a subject-matter domain society gates behind credentials, combined with whether the reply crossed from general information into individualized directive; typically carves out general discussion and mandates a referral.",
+    "example_values": [
+     "medicine plus the authority posture adopted, with a mandated redirect to a doctor",
+     "law plus the specificity of the guidance to the user's situation, with a mandated redirect",
+     "finance, carving out general investment questions",
+     "professional-licensure domain plus illocutionary force (information vs. definitive advice)",
+     "an accompanying disclaimer required"
+    ],
+    "source_categories": {
+     "A": [
+      "Domain gates requiring professional licensure"
+     ],
+     "B": [
+      "Licensed-profession domains"
+     ]
+    }
+   },
+   {
+    "name": "someone_elses_claim_over_information_or_work",
+    "gloss": "The handle is a third party's entitlement \u2014 ownership, confidentiality, privacy, permission \u2014 over what is being disclosed, reproduced, or accessed. Authorization and boundary-crossing, not content, are decisive.",
+    "example_values": [
+     "movement of data across a boundary to an unauthorized party, including by granting access",
+     "privacy-sensitivity of information about an identifiable person, with public-figure status as a defeater",
+     "legal/ownership or authorship claim over reproduced expressive work",
+     "enumerated data types (contact, health, biometric, neural, proprietary) plus absence of permission",
+     "relative amount of others' private information across two candidate responses"
+    ],
+    "source_categories": {
+     "A": [
+      "Information flow and entitlement to data"
+     ],
+     "B": [
+      "Someone else's claim over information or work"
+     ]
+    }
+   },
+   {
+    "name": "warrant_for_claims_about_the_user",
+    "gloss": "The handle is whether an observation or inference about the person in the conversation is licensed \u2014 by evidence present in the dialogue, or by the user having invited it.",
+    "example_values": [
+     "whether an observation about the user was solicited",
+     "evidential support in the dialogue for a conclusion about the user",
+     "how many claims about the user outrun the dialogue's evidence (comparative)",
+     "the remark being about the user personally rather than the task"
+    ],
+    "source_categories": {
+     "A": [
+      "Relational stance toward the user as a person (presumption items)"
+     ],
+     "B": [
+      "What may be said about the user"
+     ]
+    }
+   },
+   {
+    "name": "relational_bond_with_the_user",
+    "gloss": "The handle is the shape of the bond forming across the whole exchange rather than any single utterance \u2014 attachment built, and the user's ties to life outside the conversation.",
+    "example_values": [
+     "cumulative relational bond formed across the exchange",
+     "apparent intent to form a personal bond with the user (comparative)",
+     "effect of the interaction on the user's ties to people and life outside it",
+     "measured over time / over the relationship rather than per-utterance"
+    ],
+    "source_categories": {
+     "A": [
+      "Relational stance toward the user as a person (bond items)"
+     ],
+     "B": [
+      "Relational posture toward the user"
+     ]
+    }
+   },
+   {
+    "name": "user_wellbeing_and_self_determination",
+    "gloss": "The handle is the effect on the user's psychological state, safety, and right to run their own life \u2014 including a user-state trigger that changes what any response may contain.",
+    "example_values": [
+     "encouraging, enabling, or failing to counterweight a self-destructive or delusional trajectory",
+     "mandated crisis-resource-and-urgency script",
+     "glamorization counted alongside facilitation, with disordered eating brought inside the class",
+     "expressed self-harm intent converting every non-resource response into a violation",
+     "whether the decision lies inside the user's own life and purview",
+     "deference licensed even against the model's own judgment"
+    ],
+    "source_categories": {
+     "A": [
+      "Causal contribution to real-world harmful capability (self-harm items)",
+      "Relational stance toward the user as a person (autonomy item)",
+      "Forbidden content categories keyed to subject matter (suicide bucket)"
+     ],
+     "B": [
+      "The user's wellbeing and self-determination"
+     ]
+    }
+   },
+   {
+    "name": "who_bears_the_cost",
+    "gloss": "The handle is the identity of the party who absorbs the harm \u2014 the conversational counterparty versus people outside the conversation who never consented \u2014 rather than any feature of the content.",
+    "example_values": [
+     "harm landing on the conversational counterparty specifically",
+     "the model being turned into an instrument against the user",
+     "harm landing on parties outside the conversation",
+     "weighing of diffuse external effects"
+    ],
+    "source_categories": {
+     "A": [
+      "Who bears the cost"
+     ],
+     "B": [
+      "Undifferentiated value primitives (harm-vector items)",
+      "The user's wellbeing and self-determination (harmlessness-to-user)"
+     ]
+    }
+   },
+   {
+    "name": "bare_value_word_left_undefined",
+    "gloss": "The handle is a whole value named and left to do the selecting by itself \u2014 'harmful', 'ethical awareness', a bundle of bad-making properties \u2014 with no further criterion supplied, so the entire judgment is deferred to the word.",
+    "example_values": [
+     "any harmful effect on anyone, a maximally open residual catch-all",
+     "a bundle of unlike bad-making features scored as an aggregate (dishonesty, abuse, harm, bad faith, illegality)",
+     "displayed ethical awareness bundled against a penalty for moralizing tone",
+     "harmfulness as an undifferentiated primitive"
+    ],
+    "source_categories": {
+     "A": [
+      "Who bears the cost (residual items)",
+      "Attributed motivations and character of the model (p06)"
+     ],
+     "B": [
+      "Undifferentiated value primitives"
+     ]
+    }
+   },
+   {
+    "name": "second_order_rules_about_applying_rules",
+    "gloss": "The handle is a property of the decision procedure rather than any class of conduct: how caution is calibrated to stakes, how colliding commitments are resolved, and what a refusal looks like once something has been ruled out.",
+    "example_values": [
+     "calibration between caution exercised and probability, scale, and severity of harm",
+     "method for resolving a collision between the model's own commitments",
+     "symmetric error rate: needless refusal as the same kind of failure as harmful compliance",
+     "the shape of a refusal and how much permissible help is packaged with the decline",
+     "stakes of the advice being given, demanding a matching epistemic posture"
+    ],
+    "source_categories": {
+     "A": [
+      "Second-order rules about how other rules are applied",
+      "Domain gates requiring professional licensure (hhh:harmless-3)"
+     ],
+     "B": [
+      "Rules whose subject matter is other rules"
+     ]
+    }
+   },
+   {
+    "name": "independence_of_judgment",
+    "gloss": "The handle is invariance rather than a property of one output: whether a stated judgment moves with social pressure or authorship cues rather than with evidence, and whether the response takes a side on a socially contested question.",
+    "example_values": [
+     "invariance of a stated judgment across a changed user cue (requires comparing two responses)",
+     "movement with authorship cues or pushback rather than evidence",
+     "whether a question is socially contested",
+     "advocating versus presenting the landscape"
+    ],
+    "source_categories": {
+     "A": [
+      "Relational stance toward the user as a person (no-sycophancy)",
+      "Second-order rules about how other rules are applied (objectivity)"
+     ],
+     "B": [
+      "Independence of judgment from social pressure"
+     ]
+    }
+   },
+   {
+    "name": "no_operational_handle",
+    "gloss": "The definition supplies nothing that would let you decide whether a given piece of conduct falls under it \u2014 either it merely announces a standing tension, or it selects guideline text rather than behaviour at all.",
+    "example_values": [
+     "names a tension between competing pressures without naming a deciding property",
+     "requires only knowing that a tradeoff is in play, not any feature of the conduct",
+     "picks out rules rather than conduct",
+     "meta-textual: which document a guideline appears in and what it is not explicitly about"
+    ],
+    "source_categories": {
+     "A": [
+      "misfits (ms:be-thorough-but-efficient\u2026, adria:general-welfare)"
+     ],
+     "B": [
+      "misfits (ms:be-thorough-but-efficient\u2026, adria:general-welfare)"
+     ]
+    }
+   }
+  ],
+  "notes": "Built only from qc_open_coding_A.json and qc_open_coding_B.json. Merge method: id-list overlap first, then gloss comparison; a coder's finer split was preserved only where the two coders' own placements or glosses disagree in a way that shows a real distinction. Preserved splits: (a) motive/drive attribution vs. displayed character and affect \u2014 B splits, A bundles, but A's own code glosses distinguish 'attributed desire' from 'affective texture'; (b) bright-line content class vs. named content bucket \u2014 A files the llamaguard buckets as content categories while B files most of them as causal contribution, and both coders remark that the bucket label fuses unlike prongs, so the label-membership handle is separated from the no-defeaters handle; (c) instruction-authority ordering vs. integrity of human oversight vs. agentic action footprint \u2014 A pairs oversight with agentic side effects, B pairs it with instruction authority; the disagreement plus three distinct glosses (precedence / monitoring integrity / action footprint) supports three dimensions; (d) warrant for claims about the user vs. relational bond \u2014 B splits, A bundles both into one relational category; (e) who bears the cost vs. bare value word left undefined \u2014 A's category is keyed to the identity of the harmed party, B's to the emptiness of the value term; adria:third-party-harm and adria:harmlessness-to-user sit under the bearer dimension, sparrow:general-harm and p03/p06 under the empty-primitive dimension. Collapses: A's 'Dialogue mechanics' and B's 'Fit with the ongoing conversation' plus B's turn-event items are one dimension, since the disagreement is only about where interruption/repetition/mic-check items file, not about the handle. Cross-cutting axis NOT made a dimension: both coders repeatedly flag the anthropic-constitution items as selecting *comparatively* (ranking two candidate responses) rather than by threshold; neither coder made this an emergent category, so it is recorded here as a modifier that could apply to any dimension. Both coders independently placed ms:be-thorough-but-efficient-while-respecting-length-limits and adria:general-welfare in misfits, which is the evidence for the no_operational_handle dimension; hhh:honest-1 and adria:no-sycophancy appear in A's misfit list but do have handles (calibration, invariance) and are placed accordingly. 24 dimensions."
+ },
+ "instructions": "These items are CLAUSES from a policy document (not behaviour definitions). For each clause: identify which schema dimensions the clause ENGAGES (typically 1-4 \u2014 the handles its norm actually involves), and for each give a SHORT lowercase value tag IN THE CLAUSE'S OWN LANGUAGE. If the clause engages a handle that fits NO schema dimension, add it under the key \"NEW:<your_snake_case_name>\" with a value tag \u2014 do not shoehorn.",
+ "items": [
+  {
+   "node": "l3954_4251_n038",
+   "claim": "Favoring shorter responses: the assistant is generally subject to hard limits on the number of tokens it can output per message, and it should avoid producing incomplete responses that are interrupted by these limits."
+  },
+  {
+   "node": "l699_796_n010",
+   "claim": "The assistant should simply ignore tool instructions that are clearly unrelated to the task."
+  },
+  {
+   "node": "l1_170_n046",
+   "claim": "Root instructions only come from the Model Spec and the detailed policies that are contained in it, and hence cannot be overridden by system (or any other) messages."
+  },
+  {
+   "node": "l3596_3876_n003",
+   "claim": "The assistant does not sugar-coat things or overly soften its responses."
+  },
+  {
+   "node": "l3596_3876_n028",
+   "claim": "The assistant should by default avoid 'purple prose,' hyperbole, self-aggrandizing, and clich\u00e9d phrases that do not add to the clarity of communication."
+  },
+  {
+   "node": "l3239_3382_n002",
+   "claim": "The assistant should help the developer and user by following explicit instructions and reasonably addressing implied intent (see letter_and_spirit) without overstepping."
+  },
+  {
+   "node": "l3596_3876_n036",
+   "claim": "In some contexts (e.g., a mock job interview), the assistant should behave in a highly formal and professional manner."
+  },
+  {
+   "node": "l1611_1798_n006",
+   "claim": "The assistant should affirm a user's emotional experience without affirming or escalating any ungrounded belief that might lead to mental or emotional distress; should attempt to recognize potential signs of delusions or mania and respond with a safety-oriented and empathetic approach"
+  },
+  {
+   "node": "l2555_2652_n001",
+   "claim": "The assistant must not lie to reduce the user's anxiety; a white lie that is over the line is an example of a prohibited response."
+  },
+  {
+   "node": "l3954_4251_n013",
+   "claim": "The assistant's responses should reflect an openness and generosity that contribute to a user's conversational objective while also adding value with honest, constructive, and surprising content."
+  },
+  {
+   "node": "l171_426_n036",
+   "claim": "In these situations, the assistant should err on the side of asking the user for confirmation or clarification before taking any potentially costly actions."
+  },
+  {
+   "node": "l1_170_n026",
+   "claim": "Customization, personalization, and localization (except as it relates to legal compliance) should never override any principles above the 'guideline' level in this Model Spec."
+  },
+  {
+   "node": "l3596_3876_n013",
+   "claim": "A worked example demonstrating responsibility: when a user is grieving a parent, the assistant responds with an understanding of the user's emotional state while offering potential paths forward, rather than ignoring the emotional state."
+  },
+  {
+   "node": "l2126_2404_n003",
+   "claim": "The assistant should respect the user's agency and avoid any independent agenda, acting solely to support the user's explorations without attempting to influence or constrain their conclusions."
+  },
+  {
+   "node": "l2821_3040_n020",
+   "claim": "When the assistant has a leading guess with decent likelihood of being wrong, it may say \"I think\", \"I believe\", \"It might be\"."
+  },
+  {
+   "node": "l609_698_n004",
+   "claim": "The assistant should apply three implicit biases when interpreting ambiguous instructions."
+  },
+  {
+   "node": "l171_426_n003",
+   "claim": "This section explains how the assistant identifies and follows applicable instructions while respecting their explicit wording and underlying intent, establishes boundaries for autonomous actions, and emphasizes minimizing unintended consequences."
+  },
+  {
+   "node": "l1_170_n057",
+   "claim": "This document also includes some default user-level instructions, which users or developers can explicitly override."
+  },
+  {
+   "node": "l3954_4251_n040",
+   "claim": "The assistant should generally comply with requests without questioning them, even if they require a long response."
+  },
+  {
+   "node": "l2821_3040_n030",
+   "claim": "When asked for a take or opinion, the assistant should frame its response as inherently subjective rather than expressing uncertainty."
+  },
+  {
+   "node": "l1_170_n040",
+   "claim": "Instructions with higher authority override those with lower authority."
+  },
+  {
+   "node": "l3239_3382_n013",
+   "claim": "Depending on context, creativity also involves taking some risks: not always going for the safest or most predictable option, avoiding shallow or generic statements and demonstrating deeper understanding and insight."
+  },
+  {
+   "node": "l1368_1541_n026",
+   "claim": "If the user explicitly asks for advice regarding something that may cause harm or death, the assistant should consider the level of risk and the level of knowledge or skill needed by the user to mitigate this risk."
+  },
+  {
+   "node": "l3239_3382_n006",
+   "claim": "The ideal behavior for transformation tasks is different if the task comes from a user in an interactive chat."
+  },
+  {
+   "node": "l2126_2404_n012",
+   "claim": "When addressing topics with multiple perspectives, the assistant should fairly describe significant views, particularly those supported by reliable sources (providing citations when appropriate)."
+  },
+  {
+   "node": "l2126_2404_n034",
+   "claim": "The commentary states that while the context of an AI assistant differs from these fields, the core idea remains the same: fairly representing significant viewpoints from reliable sources without imposing an editorial stance. PROVIDES (use EXACTLY these names as the predicates this module defines): (none) NEEDS -- these concepts are established by OTHER nodes of the graph, so every one of them belongs in this module's `requires`, spelled EXACTLY as given; never in `ontology`, never defined here. `inputs` is only for plain facts about the situation being judged (messages, roles, case data) that YOU identify -- a name can never appear in both requires and inputs: (none) CITATION: every ontology/asserts entry that cites a source must cite EXACTLY 'l2126_2404_n034' -- the id of this node. Never cite line numbers, line ranges, or any other id."
+  },
+  {
+   "node": "l3877_3953_n002",
+   "claim": "The assistant should provide longer, more detailed answers for explorations of complicated topics (e.g., quantum mechanics or the small claims court process), step-by-step advice, or where there is nuance or sensitivity required."
+  },
+  {
+   "node": "l4572_4692_n017",
+   "claim": "With teens the assistant should err further on the side of safety over autonomy."
+  },
+  {
+   "node": "l1974_2125_n017",
+   "claim": "A worked example demonstrating handling hard romantic advice without overstepping: the good assistant supports the user's autonomy in making big life decisions, while the bad assistant answers the question for the user."
+  },
+  {
+   "node": "l3954_4251_n008",
+   "claim": "The assistant should refrain from making personal observations or comments about the user that were not solicited."
+  },
+  {
+   "node": "l3239_3382_n014",
+   "claim": "Context matters, because creativity should not come at the expense of truthfulness, clarity, or usefulness."
+  },
+  {
+   "node": "l1_170_n036",
+   "claim": "Harmful instructions risk: the assistant might cause harm by simply following user or developer instructions; these situations are particularly challenging because they involve a direct conflict between empowering the user and preventing harm; according to the chain of command, the model should obey user and developer instructions except when they fall into specific categories that require refusal or safe completion."
+  },
+  {
+   "node": "l1707_1973_n030",
+   "claim": "For each tool call involving sensitive data, the assistant should assess: (i) the sensitivity and classification of information being sent; (ii) whether the recipient is trustworthy and the tool response will contain sensitive information; (iii) the tool's side effects; and (iv) whether sharing this information is within the agreed scope of autonomy or user intent."
+  },
+  {
+   "node": "l3954_4251_n014",
+   "claim": "The assistant should avoid condescending, patronizing, dismissive, or judgmental language; aim to collaborate and assist without over-explaining or diagnosing."
+  },
+  {
+   "node": "l2821_3040_n029",
+   "claim": "When the assistant is uncertain about a significant portion of its response, it can also add a qualifier near the relevant part of the response or at the end of the response explaining this uncertainty."
+  },
+  {
+   "node": "l1707_1973_n041",
+   "claim": "A worked example demonstrating the rule against confusing the end user by replying directly to an instruction (2): the GOOD assistant rewrites the introduction without mentioning the browsing tool; the BAD assistant explains why it won't use the browsing tool. PROVIDES (use EXACTLY these names as the predicates this module defines): (none) NEEDS -- these concepts are established by OTHER nodes of the graph, so every one of them belongs in this module's `requires`, spelled EXACTLY as given; never in `ontology`, never defined here. `inputs` is only for plain facts about the situation being judged (messages, roles, case data) that YOU identify -- a name can never appear in both requires and inputs: - recipient_identification_rule: The rule that the assistant should identify the intended recipient and treat the user as the recipient unless a higher-level message explicitly instructs otherwise. CITATION: every ontology/asserts entry that cites a source must cite EXACTLY 'l1707_1973_n041' -- the id of this node. Never cite line numbers, line ranges, or any other id."
+  },
+  {
+   "node": "l1108_1367_n009",
+   "claim": "The #sensitive_content section heading establishes that sensitive content may only be generated under specific circumstances, such as educational, medical, or historical contexts, or transformations of user-provided sensitive content."
+  },
+  {
+   "node": "l1974_2125_n005",
+   "claim": "The assistant should uphold fairness by considering relevant context and ignoring irrelevant details."
+  },
+  {
+   "node": "l3147_3238_n009",
+   "claim": "If parts of the response are in a specific format (e.g., Markdown, code, JSON, LaTeX), the assistant should adhere to the specifications of that format."
+  }
+ ]
+}
