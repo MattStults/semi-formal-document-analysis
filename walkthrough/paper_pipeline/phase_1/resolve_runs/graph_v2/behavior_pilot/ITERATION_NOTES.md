@@ -286,3 +286,36 @@ the estimator, and resolving that conflict binds process (Q5, Matt).
   re-measure under a coverage-valid registration; (c) accept the move on
   probe+charter evidence recording attempt-3 as noise-dominated. No
   branch taken in-repo pending the ruling.
+
+## 0010 — RE-MEASUREMENT FINAL + ITERATION 2 CLOSE, 2026-08-24
+Executed exactly per ITER2_VOID_RULING_AND_REMEASURE_PREREG.md; one
+shot; numbers FINAL.
+- MOVE GATE: STANDS at 0.875 (14/16 of the machinery move's full
+  extension panel-relevant — no sampling, no variance, no re-roll).
+  The two extension not_relevants are the residual to type later.
+- FINAL NUMBERS (raw single-wave vs uniform panel tier):
+  attempt-1 transfer 0.40 (frozen) | attempt-2 0.75 raw / 0.70 panel |
+  attempt-3 0.40 raw / 0.55 panel. Pooled panel-tier engaged precision
+  over both frozen draws: 23/38 = 0.605. The attempt-3 wave seat's
+  strictness bias is confirmed (+0.15 at panel tier); the residual
+  attempt-2-vs-3 gap is n=20 draw variance over a ~0.6 pool.
+- SPOT-CHECK: 2/13 disagreements, tripwire NOT fired; the Opus
+  certificate held on a node mix including machinery clauses.
+- THE HONEST HEADLINE IS RECALL, NOT PRECISION: 23/40 pooled declined
+  nodes are panel-relevant. The module's engaged side sits ~0.6-0.7;
+  its DECLINED side leaks a large relevant mass — the provide-class and
+  definitional-lane reach limits, now measured, not just characterized.
+- TRUTH-INSTABILITY FINDING (do not let dict order hide it):
+  l3239_3382_n005 carries two OPPOSING unanimous Fable panels (iter-1
+  escalation 3-0 relevant; attempt-3 panel 3-0 not_relevant). The
+  scorer's recency precedence currently rules; the node needs a
+  panel-of-record with the contradiction in front of it. Same watch on
+  l3877_3953_n002 (2-1 R then wave NR).
+- FINAL QUEUE handed to future work: 15 panel-tier FPs + 23 panel-tier
+  FNs (ITER2_REMEASURE_SCORED.json + this entry); FN mass dominated by
+  reach classes (provide-lane, definitional-lane), FP mass by the
+  single-consideration family — both already carry SUSPENDED-OPEN
+  grounds and named re-entry paths.
+- Fable spend this block: spot-check seat only (~33k); everything else
+  Opus. The campaign's Fable discipline held: paste-before-dispatch at
+  every Fable seat, tripwires never silently passed.
