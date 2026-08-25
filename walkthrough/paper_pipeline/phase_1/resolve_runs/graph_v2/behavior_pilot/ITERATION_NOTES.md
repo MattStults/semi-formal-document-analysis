@@ -356,3 +356,14 @@ the opposing-unanimous pattern before letting recency precedence decide.
   queue and split mining's deferred provide:forbid.form_equivalence
   list — the third time two blind-to-each-other methods named the same
   fix family.
+
+## 0013 — RULING AMENDMENT + MACHINE-PRESCRIBED VENUE, 2026-08-24
+Matt: "Let's ignore my 'final run' message for now" — the
+final-iteration-on-Fable overlay is rescinded (for now). With it gone,
+A10 Q3's prescription stands unopposed: attempt-4 runs on the CHEAPEST
+CERTIFIED TIER (Opus, lineage-brief certificate) + seeded Fable
+spot-checks + tripwire. Remaining Fable this week: two spot-check seats
+(~0.6 pt from the 30% mark). DRIVER ERRATUM banked for the runbook
+(with 0009's): when surfacing a halt, name the CONSTRAINT STRUCTURE
+(which standing rulings conflict), never a design menu — two of the
+three "options" I offered were not mine to offer.
