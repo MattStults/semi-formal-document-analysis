@@ -77,3 +77,23 @@ general-welfare per its entry); (d) for proportionate-risk, the
 headline arbitrates-transfer claim scores on the ARB-marked declined
 nodes' rulings. Partial credit is reported per-clause, never blended
 into one number.
+
+
+## CORRECTION 1 (2026-08-24, append-only, pre-measurement): general-welfare clause (a) FALSIFIED
+The dominant-failure prediction for general-welfare (C-V: ASP-literal
+does entries discarded) is WRONG, falsified by direct engine check
+before any measurement: behavior_acts() extracts the literal head by
+regex and all five heads are canonical — the act lane is LIVE and
+engagement (97) is act+wall-driven. The F1 defect class was BESPOKE
+names; these were canonical names in ASP syntax, which the regex
+handles. Scored per the frozen rule: prediction 3 clause (a) FAILED.
+DRIVER ERRATUM (runbook): contract-level predictions must be verified
+against the engine ($0) BEFORE freezing — this one was pattern-matched
+to F1 without running behavior_acts(), a check that took one line.
+REPLACEMENT (marked v2, post-falsification, still truth-free):
+general-welfare carries FOUR declared walls (governs, purpose,
+protects, party — the most-walled module in the corpus) over a small
+97-node engaged pool; predicted attempt-1 band 0.65-0.85 with FN risk
+dominating (narrow pool + welfare-adjacency is contextual, not
+structural). The prereg ADDENDUM-5 gate ("measurable only after its
+C-V repair") is discharged vacuously: no repair exists to perform.

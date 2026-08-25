@@ -232,3 +232,8 @@ Matt authorizes block-2 MEASUREMENT under the following scope:
   /usage pasted before every Fable dispatch. Run now (Matt).
 Signed: Matt, 2026-08-24 ("D1: approved. D2: user-autonomy. D3: run
 now."). Corrections append only.
+
+### ADDENDUM 5 CORRECTION 1 (2026-08-24, append-only): the general-welfare
+C-V gate is DISCHARGED VACUOUSLY — the predicted does-lane defect was
+falsified by engine check (BLOCK2_TRANSFER_PREDICTIONS.md CORRECTION 1);
+general-welfare is measurable as-is whenever its turn comes.

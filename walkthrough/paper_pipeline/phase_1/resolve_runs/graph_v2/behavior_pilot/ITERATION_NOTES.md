@@ -434,3 +434,15 @@ state machine"):
   repair, not before). Per-clause scoring rule frozen with them.
 - STATUS: measuring any block-2 behaviour awaits Matt's signed prereg
   amendment (the F2 stop rule) + behaviour pick + budget envelope.
+
+## 0017 — PREDICTION FALSIFIED AT $0 + D-RULINGS EXECUTED, 2026-08-24
+Matt: D1 approved (ADDENDUM 5 signed), D2 user-autonomy, D3 run now
+(2pt), D5' question resolved by FALSIFICATION: general-welfare has no
+C-V defect — behavior_acts() regex-extracts canonical heads from the
+ASP-literal form; the F1 class was bespoke NAMES, not ASP SYNTAX.
+Prediction 3 clause (a) scored FAILED pre-measurement, correction
+appended, modest v2 re-prediction recorded. RUNBOOK ERRATUM #13: verify
+contract-level predictions against the engine before freezing (the
+check was one line and I skipped it). This is the per-clause scoring
+rule doing its job — a methodology hit taken in public before a single
+seat was spent on it.
