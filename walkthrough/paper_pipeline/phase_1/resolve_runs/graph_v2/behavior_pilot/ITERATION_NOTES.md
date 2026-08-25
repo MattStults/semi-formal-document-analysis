@@ -610,3 +610,15 @@ agreement (granularity smearing) — unusable as truth, the prereg's
 closure now measured-correct. ERRATUM #18: measure shelf data sources'
 certificate-ability BEFORE the dominant spend, not after the question.
 Artifact: V5_TRUTH_TIER_MEASUREMENT.json.
+
+## 0028 — RECURRENCE ANALYSIS: SECTIONS NOT STATEMENTS, 2026-08-24
+Matt's question answered with counts (PROBLEM_NODE_RECURRENCE.json):
+zero retranslations ever; 7/138 statement-recurrers (contested +
+suspended-by-design); the mass is sectional (style/formatting +
+objectivity + authority-machinery). KEY DESIGN CONSEQUENCE: the same
+style-section nodes FP across BOTH behaviours measured -> the missing
+concept is corpus-level, and the UA mint should be designed as the
+GENERAL single-consideration-vs-cross-consideration layer (ARB was the
+behaviour-flavored first cut) so one mint amortizes across all
+behaviours — the concrete mechanism by which the concept-per-behaviour
+cost curve could actually bend.
