@@ -467,3 +467,24 @@ clause (c) holds provisionally), decline 0.55, panel splits 3/10.
   decision correctly waits.
 - Budget: envelope respected — spot-check dispatched (~32.4 est.),
   dispute ride-along deferred at the 32% paste per the halt line.
+
+## 0019 — TRUTH ECONOMICS RULING (Matt) + ERRATUM #15, 2026-08-24
+Matt caught the overlap/tier waste: attempts re-ruled ruled nodes
+(~30-40 node-rulings of pure overlap waste) and, worse, bought
+single-wave truth first then paid to upgrade it (escalations, the
+62-node re-measure). RULING: memoize-at-panel-tier, dispatch only
+unruled nodes, engaged-set-first acquisition — identical total rulings
+to bulk up-front but deferred, abandonment-safe, and rerun potential
+preserved; runs get monotonically cheaper and end at $0 lookups.
+Runbook amended (TRUTH ECONOMICS block). ERRATUM #15: the prereg's
+fresh-rulings-per-attempt clause was justified for attempt-1 transfer
+only; carrying it into repair attempts was inertia.
+- EXECUTION PLAN (post-reset, TONIGHT 9pm PT): (i) brief-local Fable
+  parity key for user-autonomy (~0.5pt — 1 seat over ~20 nodes incl.
+  the 10 Opus panel rows; the erratum-#14 tripwire makes certifying
+  BEFORE the 150-node Opus purchase mandatory, not optional);
+  (ii) if certified: Opus panel-tier purchase of the remaining ~150
+  engaged nodes (off-bar) + Fable spot-check (~0.5pt) -> exact UA
+  precision, then the repair arc on lookups; (iii) if parity fails:
+  surface — the UA venue economics change and Matt decides;
+  (iv) 43-dispute re-resolution rides the first Fable seat.

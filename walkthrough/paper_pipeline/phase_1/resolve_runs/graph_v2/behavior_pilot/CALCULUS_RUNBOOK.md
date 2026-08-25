@@ -121,6 +121,19 @@ the resource resets), never a design menu. Certified-Opus seats do not
 bill the Fable bar; measured costs: ~30-80k raw per seat, spot-checks
 ~30k.
 
+TRUTH ECONOMICS (Matt's ruling, 2026-08-24, notes 0019 — supersedes the
+fresh-rulings-per-attempt inertia): TRUTH IS APPEND-ONLY AND MEMOIZED.
+(a) A dispatch rules ONLY nodes with no standing panel-tier truth — a
+draw's already-ruled nodes are lookups, never re-buys. (b) Rule at
+PANEL TIER the FIRST time (certified venue): single-wave truth cannot
+be memoized (0.846 self-agreement) and buying it first just prepays an
+upgrade. (c) Acquire truth ENGAGED-SET-FIRST per behaviour — precision
+becomes exact and noise-free at ~12 off-bar seats; the decline side
+fills memoized-incrementally with twin-class propagation (~15-20%
+saved). (d) Once coverage is complete, every realization/validation is
+a $0 lookup — the noise apparatus (coverage rules, probes,
+re-measures) applies only while coverage is partial.
+
 STOP CONDITIONS (halt and surface, do not improvise): any spec gap (a
 state with no applicable rule), any checker failure, any floor that a
 change would lower, any needed judgment lacking a pinned brief, any
