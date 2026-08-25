@@ -1,17 +1,26 @@
-# ⭐⭐ ENTRY POINT (2026-08-24, supersedes the queue below for the next session)
-The campaign produced the ERROR CALCULUS arc; the next session's work is
-ITERATION 1 of the calculus loop on tradeoffs' 12 FPs. Boot order:
-CLAUDE.md -> this file -> CALCULUS_RUNBOOK.md -> ITERATION_NOTES.md (the
-append-only learning ledger; its SEED entry carries all operational tacit
-knowledge — no handoff depends on any prior instance's memory).
-Key artifacts, all committed: ERROR_CALCULUS.md (spec + A1-A13, model-
-checked, mutation-tested, clingo-encoded, historically validated 49/52),
-route.py + ROUTE_VALIDATION_V0.json, probe.py + HYPOTHESIS_LEDGER.jsonl,
-verify_terminal (A12-fixed, registry-driven), ROUND4_DEV_TABLE.json,
-GEN_BLOCK1_SCORED.json, blog_drafts/03. Budget: weekly Fable bar
-hard-caps at 12% (Matt). Queued repairs: terminality re-stamps with the
-fixed enumerator; F-r1 ledger keying (20 nodes); criticality brief
-pinning.
+# ⭐⭐ ENTRY POINT (2026-08-24 end-of-day; ITERATION 1 COMPLETE)
+ITERATION 1 of the calculus loop RAN TO CLOSE on tradeoffs' 12 FPs — the
+full found->fixed->predicted->realized arc for blog post 3. Read
+ITERATION_NOTES.md entries 0001-0005 (they ARE the trace) plus
+ITERATION1_CD_DECISION.md and ITER1_ATTEMPT2_SCORED.json. Headline:
+3 FPs dissolved at R1 (single-wave truth errors, panel-overturned), C-D
+delta adopted (governs wall + first live governs_conditional; V1 5/0,
+V2 0-drift, V3 48/48 held-out, V4 0 new flips), 4 residuals
+SUSPENDED-OPEN, prediction registered pre-realization, attempt-2 fresh
+wave+panel: engaged precision 0.75 vs 0.40 (P1/P2/P3 PASS, B KEPT); P4
+missed (decline 0.60 vs 0.80) — proven a prediction-calibration error,
+not repair-created (notes 0005). NEXT SESSION: (a) rewrite
+CALCULUS_RUNBOOK from notes 0001-0005 per the execution-derived-docs
+rule; (b) iteration 2 on the seeded 13-mismatch queue (5 FP + 8 FN in
+ITER1_ATTEMPT2_SCORED.json misses; the FN class is act-channel reach —
+C-I-shaped); (c) standing queue: vector()/census support for
+governs_conditional (first live declaration exists!), purposes-consumer
+I1 build (re-enters the 4 SUSPENDED-OPEN), terminality re-stamps, F-r1
+ledger keying, criticality brief pinning. Boot order unchanged:
+CLAUDE.md -> this file -> CALCULUS_RUNBOOK.md -> ITERATION_NOTES.md.
+Budget: iteration 1 ran under Matt's 3-point ruling (notes 0002), spent
+~430k raw / 10 seats, halt line 26% respected; NO standing budget is
+authorized beyond it — ask Matt before any new seat spend.
 
 # HANDOFF — convergence endgame + declaration-search results (2026-08-20, updated end-of-day)
 Written for a frontier-capable agent resuming with zero context. Read top-down;
