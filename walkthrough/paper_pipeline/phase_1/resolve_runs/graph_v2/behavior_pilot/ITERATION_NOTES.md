@@ -653,3 +653,22 @@ vs epistemic modality). Proposal: derive the next document's schema
 from the completed frame; kill-criterion upgraded to
 zero-slots-outside-the-theory-frame. DRAFT-FROM-MODEL-KNOWLEDGE:
 requires a literature-verification pass before anything binds.
+
+## 0031 — THEORY REVIEW + SPOT-CHECK: BOTH LANDED, MUTUALLY CONFIRMING, 2026-08-24
+The web-verified adversarial review found: one doctrinal error (Hohfeld
+privilege/claim-right conflation), one unsupported attribution (locus as
+von Wright content-object), one wrong equivalence (ARB=defeasibility),
+category mixing (components/relations/types/attributes flattened into
+peer slots), a near-unfalsifiable kill-criterion, and the wrong
+comparanda (validate vs LegalRuleML/ODRL, not 1963). The blind
+spot-check then CONFIRMED the two testable charges from data:
+defeasibility 0.38 stability (relation-as-property fails), machinery=
+constitutive 1/5. And the decisive separation result: NO canon form
+field carves behaviour relevance (best 0.70 vs 0.59 base) — norm FORM
+annotates cheaply and stably (7/8 fields 0.87-0.97, straight into the
+next document's schema) but relevance lives on the CONTENT side
+(target/locus), whose proper homes are ODRL target + frame semantics.
+Map corrected append-only (C1-C7). NET for Matt's directional question:
+the theory gives us the form layer a priori and free; it does NOT hand
+us the relevance-carrying dimensions — those remain to be designed, now
+against engineered standards instead of minted from misses.

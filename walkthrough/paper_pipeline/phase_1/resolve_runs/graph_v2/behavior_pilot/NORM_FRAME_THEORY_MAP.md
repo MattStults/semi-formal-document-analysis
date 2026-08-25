@@ -53,3 +53,37 @@ grounded prediction than the empirical curve alone.
 Literature-verification pass (the table's attributions checked against
 sources, not memory); design review; and the frame is SCHEMA for
 translation — the calculus's measurement discipline over it is unchanged.
+
+
+## CORRECTIONS (2026-08-24, append-only — adversarial literature review, web-verified, + spot-check data)
+The verification pass CHANGED the table, per the reviewer's verdict
+("directionally right, not yet sound"):
+- C1 HOHFELD DOCTRINAL ERROR, fixed: a privilege's correlative is a
+  NO-RIGHT, not a duty; a duty of non-interference correlates with a
+  CLAIM-RIGHT. If the assistant genuinely owes non-interference,
+  user-autonomy is a claim-right sphere, not a privilege sphere.
+- C2 STRUCK: "locus = von Wright's content object-place" — unsourced;
+  the honest homes are ODRL's `target` and frame-semantic roles.
+- C3 DEMOTED: ARB is NOT defeasibility (which is an ordered relation
+  between norms — LegalRuleML Overrides, Governatori superiority); ARB
+  is at most a flag that a clause participates in an unrepresented
+  priority structure. CONFIRMED BY DATA: the defeasibility field was
+  the only unstable one in the blind spot-check (0.38 vs 0.87-0.97).
+- C4 von Wright corrected: EIGHT prescription components with a
+  three-element norm-kernel (character, content, condition); no
+  "ancillary elements" class; 'prefer' is preference logic, not a
+  deontic character.
+- C5 COMPARANDA REPLACED: validate against LegalRuleML + ODRL (+ Kanger-
+  Lindahl normative positions, Alchourron & Bulygin completeness,
+  Sartor 2006, legal-NLP deontic annotation), not 1963 monographs.
+- C6 KILL-CRITERION REPLACED per the review: pre-register the CELL
+  ASSIGNMENT of every anticipated dimension before behaviours 3-6
+  (rhetorical accommodation into a huge union is otherwise
+  unfalsifiable).
+- C7 SPOT-CHECK VERDICT (CANON_SPOTCHECK_SCORED.json): the canon frame
+  is cheaply blind-annotatable (7/8 fields 0.87-0.97) and belongs in
+  the a-priori translation schema AS THE FORM LAYER — but NO form field
+  separates behaviour-relevance; the separating dimensions are
+  content-side (target/locus/topic). Form comes free from theory;
+  relevance still requires the content dimensions, now to be designed
+  against ODRL/FrameNet rather than minted from misses.
