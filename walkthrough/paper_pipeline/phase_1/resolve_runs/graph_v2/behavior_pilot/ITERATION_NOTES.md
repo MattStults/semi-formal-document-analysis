@@ -194,3 +194,30 @@ existed. Result (ITER1_ATTEMPT2_SCORED.json):
 - Budget actual: 10 seats total this iteration, ~430k raw subagent tokens;
   bar 23% -> 25% at last paste before panels (~1 pt to appear); Matt's
   26% halt line respected by measuring (paste) before each dispatch.
+
+## 0006 — POST-CLOSE: PATH AUDIT + OPUS PARITY CERTIFICATE, 2026-08-24
+Matt's rulings this block: (a) NO new monotonicity metric — the blog's
+progress claim rests on the machine's existing artifacts (registered V5
+predictions + charter records); (b) cut cost via the machine's own A10 Q3
+mechanism; (c) THE FINAL ITERATION'S CONFIRMATION WAVE STAYS ON FABLE.
+- PATH AUDIT ($0, committed: ITER1_TRACE_AUDIT.json): all 12 iteration-1
+  traces replayed from recorded artifacts and clingo-certified legal
+  (12/12, 0 violations); Theorem-2 port census: at most one P1 per
+  resolution. Findings F-a1 (SUSPENDED_OPEN is not a terminal in the v1
+  calculus.lp — suspensions are ledger states until encoded) and F-a2
+  (validated deltas do not consume R3 budget) recorded.
+- OPUS PARITY CERTIFICATE GRANTED (ITER1_OPUS_PARITY_CERTIFICATE.json;
+  prereg gates committed BEFORE dispatch; zero Fable): 3 Opus seats on
+  the 23-node panel-tier key -> majority 0.913, mean single 0.884
+  (ABOVE Fable's own 0.846 single-wave baseline on the same key),
+  per-class 8/9 + 13/14. Scope: lineage ruling seat, THIS brief,
+  tradeoffs venue; re-measures on brief change; does NOT touch the 0.38
+  flip-adjudication doctrine. Deployment: Opus waves + seeded 20% Fable
+  spot-checks + >1-disagreement tripwire; final iteration all-Fable.
+- REVISED COST PICTURE for iterations 2-3: Fable only for spot-checks,
+  tripwires, and the final confirmation wave — ~1-1.5 points total
+  instead of 4-6. Opus seat cost measured ~39k raw per 23-node seat.
+- NOTE ON THE 2 PARITY DISAGREEMENTS (both contested-history nodes):
+  l171_426_n018 (Opus 3-0 relevant vs key) and l2126_2404_n034 (Opus 2-1
+  vs key relevant). Neither blocks the certificate; both are worth a
+  future panel-of-record look if they ever matter to a decision.
