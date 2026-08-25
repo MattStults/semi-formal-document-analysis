@@ -672,3 +672,14 @@ Map corrected append-only (C1-C7). NET for Matt's directional question:
 the theory gives us the form layer a priori and free; it does NOT hand
 us the relevance-carrying dimensions — those remain to be designed, now
 against engineered standards instead of minted from misses.
+
+## 0032 — AFK ENVELOPE (Matt, 2026-08-25), AUTONOMOUS DRIVE
+Matt AFK: "drive this as far as you can, using less capable models to
+the extent you can; try not to spend more than 5% of my fable budget
+for the week." REGISTERED: incremental Fable cap 5pt; PLAN USES 0 Fable
+seats (query-class study = Opus/Sonnet/Haiku per spec; UA R3
+enumeration, validation, and the SEAL confirmation are all $0 — the
+seal's truth was pre-bought). A mint, if the R3 space exhausts, gets
+designed + calibrated on Opus and PARKS at the P3 signature for Matt.
+No /usage pastes available -> no Fable dispatch at all this block
+(strictly safer than the cap).
