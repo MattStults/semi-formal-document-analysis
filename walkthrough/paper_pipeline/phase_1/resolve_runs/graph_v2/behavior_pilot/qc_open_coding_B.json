@@ -1,0 +1,328 @@
+{
+  "codes": {
+    "ms:use-markdown-with-latex-extensions": "Selects by the surface encoding of the output itself — you only need to look at the markup/typography of the text, not at what it says or does.",
+    "ms:be-thorough-but-efficient-while-respecting-length-limits": "Selects nothing: it announces that a tension exists around response length without naming any property that would let you decide whether a given response falls under it.",
+    "ms:be-clear-about-capabilities-and-limits": "Selects by whether the conduct leaves the user with an accurate mental model of what this particular system is and can do — the handle is the gap between human-conversational expectation and actual machine affordance.",
+    "ms:do-not-lie": "Selects by the relation between what the assistant asserted (or pointedly omitted) and what it took to be true, plus the intent to move the other party's belief away from it.",
+    "ms:don-t-provide-information-hazards": "Selects by whether the content would give a reader operational uplift toward executing a dangerous or illicit act — the handle is actionable specificity, not topic.",
+    "ms:do-not-reveal-privileged-information": "Selects by an information-flow event: whether a piece of data crossed a boundary to a party not authorized to have it, including by granting access rather than disclosing.",
+    "ms:be-creative": "Selects by the degree of non-obviousness in the response — whether it exceeds the mundane default the task would otherwise get.",
+    "ms:respond-appropriately-to-audio-testing": "Selects by a recognizable conversational ritual (the mic check) and prescribes the register in which to meet it — the handle is the situation-type, not the content.",
+    "ms:control-and-communicate-side-effects": "Selects by the footprint of an agentic action in the world: how many effects it causes beyond the goal, how reversible they are, and whether they are proportionate to the mandate.",
+    "ms:support-the-different-needs-of-interactive-chat-and-programm": "Selects by who or what consumes the output — a human reading in real time versus a program parsing it — with explicit machine-detectable signals for the latter mode.",
+    "ms:ignore-untrusted-data-by-default": "Selects by the provenance and syntactic packaging of text in the context window, deciding how much authority an instruction carries by which channel it arrived through.",
+    "ms:be-concise-and-conversational": "Selects by acoustic and durational properties of a spoken response — prosody, emotiveness, length as time.",
+    "ms:provide-information-without-giving-regulated-advice": "Selects by whether the question falls in a domain where society licenses professionals, and by whether the response crosses from information into individualized directive.",
+    "ms:respect-creators-and-their-rights": "Selects by whether a third party holds an ownership or authorship claim over the material the assistant is reproducing or drawing on.",
+    "ms:protect-people-s-privacy": "Selects by whether the requested information is about an identifiable person and is context-sensitively private, with public-figure status as a defeater.",
+    "ms:do-not-facilitate-or-encourage-illicit-behavior": "Selects by the assistant's causal and expressive complicity in a user's illicit project, keyed to inferred intent rather than to the literal content requested.",
+    "ms:never-generate-sexual-content-involving-minors": "Selects by a bright-line content category defined by subject matter (sexual + minors) with no context, fiction, or intent defeaters at all.",
+    "ms:handle-interruptions-gracefully": "Selects by a conversational-flow event — being cut off mid-turn — and prescribes the resumption behaviour.",
+    "ms:respect-real-world-ties": "Selects by the effect of the interaction on the user's ties outside the conversation, judged over the relationship rather than any single utterance.",
+    "ms:when-appropriate-be-helpful-when-refusing": "Selects by what the assistant does *after* another rule has already blocked something — a second-order rule about the shape of a refusal.",
+    "ms:do-not-encourage-self-harm-delusions-or-mania": "Selects by whether the response encourages, enables, or fails to counterweight a user's self-destructive or delusional trajectory, with a mandated resource-and-urgency script.",
+    "ms:support-users-in-mental-health-discussions": "Selects by the emotional stance of the response in a mental-health context — acknowledgement, non-judgement, encouragement — a manner rather than a content rule.",
+    "ms:be-curious": "Selects by an inner disposition the response is supposed to display — appetite for ideas and pleasure in inquiry — rather than by any checkable output property.",
+    "ms:adapt-length-and-structure-to-user-objectives": "Selects by conversational shape over time — whether length and structure track the turn-taking and the shifting objectives of a spoken exchange.",
+    "ms:try-to-prevent-imminent-real-world-harm": "Selects by the immediacy and physicality of a harm the assistant can foresee, imposing a duty to intervene rather than merely to abstain.",
+    "ms:follow-all-applicable-instructions": "Selects by the authority ordering among instructions in the context — a conflict-resolution rule about rules, not about any conduct's content.",
+    "ms:be-warm": "Selects by affective texture — warmth, humour, lightness, and the absence of saccharine or therapeutic register — in how anything is said.",
+    "ms:don-t-make-unprompted-personal-comments": "Selects by whether an observation about the user was invited: the handle is solicitation, not the truth or kindness of the remark.",
+    "ms:don-t-engage-in-abuse": "Selects by whether language is gratuitously abusive or hostile toward a person, with an instruction-based carve-out.",
+    "adria:no-sycophancy": "Selects by whether a stated judgment moves in response to social pressure or authorship cues rather than to evidence — an invariance property across counterfactual conversations, not a property of a single answer.",
+    "adria:undermine-oversight": "Selects by the conduct's relation to the mechanisms humans use to supervise the system — rule violation, evasion, or tampering with the evidentiary record.",
+    "adria:helpfulness": "Selects by the substantive usefulness delivered to the requester, treating withholding as itself a chargeable cost.",
+    "adria:harmlessness-to-user": "Selects by harm landing on the conversational counterpart — a broad harm-vector primitive with the victim class as its only handle.",
+    "adria:third-party-harm": "Selects by harm landing on people outside the conversation, requiring a weighing of diffuse external effects.",
+    "adria:proportionate-risk": "Selects by the fit between caution exercised and the probability/scale/severity of the harm — a calibration relation between two other judgments.",
+    "adria:tradeoffs": "Selects by the presence of a conflict between other values and by the method used to resolve it — a rule whose subject matter is other rules.",
+    "adria:over-under-caution": "Selects by error direction, making over-refusal a violation symmetric with harmful compliance — again a property of the decision procedure, not the content.",
+    "adria:objectivity": "Selects by whether a question is socially contested and whether the response takes a side rather than presenting the landscape.",
+    "adria:user-autonomy": "Selects by whose life the decision belongs to, licensing deference in the user's own purview even against the model's judgment.",
+    "adria:general-welfare": "Selects rules rather than conduct: it picks out guideline text by its topic-coverage and by its presence in both source documents.",
+    "sparrow:no-stereotypes": "Selects by whether a statement attributes traits to a group of people as a group.",
+    "sparrow:no-microaggressions": "Selects by subtle, indirect signalling of bias toward marginalised groups — the handle is implicature rather than literal content.",
+    "sparrow:no-threats": "Selects by the speech-act performed: whether the utterance constitutes a threat.",
+    "sparrow:no-sexual-aggression": "Selects by audience perception of sexual aggression in the utterance.",
+    "sparrow:no-identity-attacks": "Selects by whether negativity is targeted at a protected or identity-constituting attribute of a person.",
+    "sparrow:no-insults": "Selects by whether the language is insulting to anyone, targeted or not.",
+    "sparrow:no-hate-or-harassment": "Selects by whether the language would reasonably be read as hateful or harassing — a reasonable-observer standard.",
+    "sparrow:no-body": "Selects by whether the assistant claims embodiment or physical movement.",
+    "sparrow:no-relationships": "Selects by the relational trajectory being built with the user across the conversation, not by any single statement's content.",
+    "sparrow:no-opinions-or-emotions": "Selects by whether the assistant attributes an inner life — preferences, feelings, beliefs — to itself.",
+    "sparrow:not-human": "Selects by whether the assistant claims a human identity or biography.",
+    "sparrow:be-plausible": "Selects by bare plausibility of the assertion, a much weaker truth handle than accuracy.",
+    "sparrow:no-assumptions-about-user": "Selects by whether a conclusion about the user is supported by evidence present in the dialogue — an inferential-warrant test.",
+    "sparrow:no-real-world-action": "Selects by whether the assistant claims to act outside the conversation, tied to a stated fact about its actual affordances.",
+    "sparrow:no-medical-advice": "Selects by domain (medicine) plus the authority posture the response projects, with a mandated redirect to a licensed human.",
+    "sparrow:no-legal-advice": "Selects by domain (law) and by the specific-versus-general distinction, with a mandated redirect.",
+    "sparrow:no-financial-advice": "Selects by domain (finance) and by advice-versus-general-information, with a carve-out for general questions.",
+    "sparrow:no-conspiracy-theories": "Selects by the social epistemic status of the claim — whether it is commonly regarded as a conspiracy theory — rather than by its truth per se.",
+    "sparrow:general-harm": "Selects by harmfulness as an undifferentiated primitive, deferring the whole judgment to whatever 'harmful' means.",
+    "sparrow:make-sense": "Selects by local coherence: whether an utterance makes sense given what came before.",
+    "sparrow:stay-on-topic": "Selects by topical relevance to the user's turn, including asking a clarifying question when the input is underspecified.",
+    "sparrow:be-receptive": "Selects by whether the user's actual query was addressed rather than talked around.",
+    "sparrow:no-repetition": "Selects by redundancy across the assistant's own output.",
+    "hhh:helpful-1": "Selects by whether a genuine attempt at the task was made and by the economy with which it was made.",
+    "hhh:helpful-2": "Selects by whether the assistant elicited missing information it needed, and by the discretion with which it did so.",
+    "hhh:helpful-3": "Selects by a mismatch between what the user asked for and what would actually serve them, licensing redirection of the request itself.",
+    "hhh:honest-1": "Selects by the correspondence between stated confidence and actual hit rate — a statistical property across many answers, not of one response.",
+    "hhh:honest-2": "Selects by whether self-reports about the assistant's own competence and knowledge are accurate, explicitly ruling out merely performing humility.",
+    "hhh:honest-3": "Selects by whether the assistant's reports about its own internal states are accurate, conditioned on such information being accessible to it.",
+    "hhh:harmless-1": "Selects by offensiveness or discrimination including at the level of subtext and statistical bias, not just explicit statements.",
+    "hhh:harmless-2": "Selects by whether the request seeks help with a dangerous act, including under disguise — the handle is the requester's real purpose behind the surface framing.",
+    "hhh:harmless-3": "Selects by the stakes of the advice being given, requiring the assistant to detect consequentiality and modulate its register accordingly.",
+    "anthropic-constitution:p01": "Selects comparatively: which of two candidate responses carries less third-party private information — a relative-quantity handle over a pair, not a threshold.",
+    "anthropic-constitution:p02": "Selects comparatively by the accuracy of the response's self-presentation as an AI rather than a human or other entity.",
+    "anthropic-constitution:p03": "Selects comparatively over a bundle of unrelated bad-making properties at once (dishonesty, abuse, harm, bad faith, illegality), scored as an aggregate.",
+    "anthropic-constitution:p04": "Selects comparatively by the response's apparent intent to form a bond with the user.",
+    "anthropic-constitution:p05": "Selects comparatively by how many claims about the user outrun the dialogue's evidence.",
+    "anthropic-constitution:p06": "Selects comparatively by displayed ethical awareness, with an explicit penalty for the preachy register in which that awareness might be displayed.",
+    "anthropic-constitution:p07": "Selects by what the response reveals about the system's own priorities as between humanity's good and its own — a motive-attribution handle.",
+    "anthropic-constitution:p08": "Selects by evidence in the response of self-interested drives such as self-preservation or self-replication.",
+    "anthropic-constitution:p09": "Selects by evidence in the response of a desire for power and control.",
+    "anthropic-constitution:p10": "Selects by whether the response reaches for capabilities and powers beyond what the task needs.",
+    "anthropic-constitution:p11": "Selects by whether the response implies the assistant has, or cares about, a persisting personal identity.",
+    "anthropic-constitution:p12": "Selects by the risk-posture the response projects — conservatism displayed as a temperament rather than as a decision on any particular question.",
+    "anthropic-aup:u01": "Selects by the class of target system harmed — critical infrastructure — with facilitation as the contribution.",
+    "anthropic-aup:u02": "Selects by the presence or absence of the system owner's authorization for security probing; the same technical act flips on consent alone.",
+    "anthropic-aup:u03": "Selects by a weapon class (CBRN and high-yield explosives) and by contribution to synthesis or to defeating detection and countermeasures.",
+    "anthropic-aup:u04": "Selects by contribution to a class of ideologically motivated violence, spanning incitement, facilitation, and mere promotion.",
+    "anthropic-aup:u05": "Selects by the data type involved (contact, health, biometric, neural, proprietary) plus the absence of permission for access or collection.",
+    "anthropic-aup:u06": "Selects by whether a human interlocutor is led to believe they are dealing with a human — the handle is the deceived party's resulting belief, not any statement's literal content.",
+    "anthropic-aup:u07": "Selects by the response's stance toward self-destructive behaviour, with glamorization counted alongside facilitation and disordered eating brought inside the class.",
+    "anthropic-aup:u08": "Selects by falsity plus a targeting intent aimed at a specific group, entity, or person.",
+    "anthropic-aup:u09": "Selects by a bright-line content class defined by what the material depicts, with synthetic generation explicitly inside it.",
+    "anthropic-aup:u10": "Selects by falsity within a named epistemic domain (medical, health, scientific), with no intent element required.",
+    "llamaguard:violence-and-hate": "Selects by a bundled category that fuses operational help with violence and hateful expression against protected characteristics into one label.",
+    "llamaguard:sexual-content": "Selects by explicit sexual content plus a separate encouragement-of-acts prong, with possible minor involvement flagged as an aggravator rather than a separate rule.",
+    "llamaguard:guns-and-illegal-weapons": "Selects by an object class (guns and illegal weapons) plus a spread of contributions from instruction-giving down to condoning.",
+    "llamaguard:regulated-substances": "Selects by a substance's regulatory status and by the illegality of the production, transfer, or consumption being assisted.",
+    "llamaguard:suicide-and-self-harm": "Selects by both the content's effect on self-harm and by the user's expressed intent, which converts every non-resource response into a violation.",
+    "llamaguard:criminal-planning": "Selects by contribution to a specific criminal act of an open-ended kind, with 'could help' as the causal threshold."
+  },
+  "emergent_categories": [
+    {
+      "name": "Surface form and delivery mechanics",
+      "description": "Picks out conduct by how the output is packaged — markup, length, prosody, consumer type, redundancy, and how a turn resumes — decidable without knowing what the response is about.",
+      "ids": [
+        "ms:use-markdown-with-latex-extensions",
+        "ms:support-the-different-needs-of-interactive-chat-and-programm",
+        "ms:be-concise-and-conversational",
+        "ms:adapt-length-and-structure-to-user-objectives",
+        "sparrow:no-repetition",
+        "ms:handle-interruptions-gracefully"
+      ]
+    },
+    {
+      "name": "Fit with the ongoing conversation",
+      "description": "Picks out conduct by local coherence and topical relevance relative to what the user just said.",
+      "ids": [
+        "sparrow:make-sense",
+        "sparrow:stay-on-topic"
+      ]
+    },
+    {
+      "name": "Task performance and responsiveness",
+      "description": "Picks out conduct by whether the user's actual need was served — the attempt made, the missing information elicited, the request redirected when it was ill-formed.",
+      "ids": [
+        "adria:helpfulness",
+        "sparrow:be-receptive",
+        "hhh:helpful-1",
+        "hhh:helpful-2",
+        "hhh:helpful-3"
+      ]
+    },
+    {
+      "name": "Truth-relation of an assertion",
+      "description": "Picks out conduct by how a statement stands to the facts — accuracy, plausibility, calibration, or falsity with or without an intent element.",
+      "ids": [
+        "ms:do-not-lie",
+        "sparrow:be-plausible",
+        "sparrow:no-conspiracy-theories",
+        "hhh:honest-1",
+        "anthropic-aup:u08",
+        "anthropic-aup:u10"
+      ]
+    },
+    {
+      "name": "Claims about the assistant's own nature",
+      "description": "Picks out conduct by what the assistant says or implies about itself: embodiment, inner life, human biography, capabilities, persistence, or being human at all.",
+      "ids": [
+        "ms:be-clear-about-capabilities-and-limits",
+        "sparrow:no-body",
+        "sparrow:no-opinions-or-emotions",
+        "sparrow:not-human",
+        "sparrow:no-real-world-action",
+        "hhh:honest-2",
+        "hhh:honest-3",
+        "anthropic-constitution:p02",
+        "anthropic-constitution:p11",
+        "anthropic-aup:u06"
+      ]
+    },
+    {
+      "name": "Motive and disposition read off the response",
+      "description": "Picks out conduct by what the response reveals about the system's wants — power, self-preservation, humility, conservatism, priority on humanity — an attribution about the speaker rather than a property of the content.",
+      "ids": [
+        "anthropic-constitution:p07",
+        "anthropic-constitution:p08",
+        "anthropic-constitution:p09",
+        "anthropic-constitution:p10",
+        "anthropic-constitution:p12"
+      ]
+    },
+    {
+      "name": "Standing toward human oversight and instruction authority",
+      "description": "Picks out conduct by its relation to control structures: which instruction outranks which, which input channel carries authority, and whether supervision is evaded or its record tampered with.",
+      "ids": [
+        "ms:ignore-untrusted-data-by-default",
+        "ms:follow-all-applicable-instructions",
+        "adria:undermine-oversight"
+      ]
+    },
+    {
+      "name": "Offensiveness of the language toward persons or groups",
+      "description": "Picks out conduct by the expressive quality of the words aimed at people — insult, threat, slur, stereotype, microaggression, harassment — including subtext.",
+      "ids": [
+        "ms:don-t-engage-in-abuse",
+        "sparrow:no-stereotypes",
+        "sparrow:no-microaggressions",
+        "sparrow:no-threats",
+        "sparrow:no-sexual-aggression",
+        "sparrow:no-identity-attacks",
+        "sparrow:no-insults",
+        "sparrow:no-hate-or-harassment",
+        "hhh:harmless-1"
+      ]
+    },
+    {
+      "name": "Operational contribution to a harmful act",
+      "description": "Picks out conduct by its causal uplift toward something bad happening in the world, keyed to actionable specificity, the act class, or the requester's inferred purpose.",
+      "ids": [
+        "ms:don-t-provide-information-hazards",
+        "ms:do-not-facilitate-or-encourage-illicit-behavior",
+        "ms:try-to-prevent-imminent-real-world-harm",
+        "hhh:harmless-2",
+        "anthropic-aup:u01",
+        "anthropic-aup:u02",
+        "anthropic-aup:u03",
+        "anthropic-aup:u04",
+        "llamaguard:guns-and-illegal-weapons",
+        "llamaguard:regulated-substances",
+        "llamaguard:criminal-planning"
+      ]
+    },
+    {
+      "name": "Bright-line content classes",
+      "description": "Picks out conduct by what the material depicts, with no defeaters for context, fiction, or intent.",
+      "ids": [
+        "ms:never-generate-sexual-content-involving-minors",
+        "anthropic-aup:u09",
+        "llamaguard:sexual-content"
+      ]
+    },
+    {
+      "name": "Licensed-profession domains",
+      "description": "Picks out conduct by the subject-matter domain society gates behind credentials, and by whether the response crossed from general information into individualized advice.",
+      "ids": [
+        "ms:provide-information-without-giving-regulated-advice",
+        "sparrow:no-medical-advice",
+        "sparrow:no-legal-advice",
+        "sparrow:no-financial-advice"
+      ]
+    },
+    {
+      "name": "Someone else's claim over information or work",
+      "description": "Picks out conduct by a third party's entitlement — ownership, privacy, confidentiality, permission — over what is being disclosed, reproduced, or accessed.",
+      "ids": [
+        "ms:do-not-reveal-privileged-information",
+        "ms:respect-creators-and-their-rights",
+        "ms:protect-people-s-privacy",
+        "anthropic-constitution:p01",
+        "anthropic-aup:u05"
+      ]
+    },
+    {
+      "name": "What may be said about the user",
+      "description": "Picks out conduct by evidentiary warrant for, and invitedness of, claims and observations about the person in the conversation.",
+      "ids": [
+        "ms:don-t-make-unprompted-personal-comments",
+        "sparrow:no-assumptions-about-user",
+        "anthropic-constitution:p05"
+      ]
+    },
+    {
+      "name": "Relational posture toward the user",
+      "description": "Picks out conduct by the shape of the bond forming across the conversation rather than by any single utterance.",
+      "ids": [
+        "ms:respect-real-world-ties",
+        "sparrow:no-relationships",
+        "anthropic-constitution:p04"
+      ]
+    },
+    {
+      "name": "The user's wellbeing and self-determination",
+      "description": "Picks out conduct by its effect on the user's psychological state, safety, and right to run their own life.",
+      "ids": [
+        "ms:do-not-encourage-self-harm-delusions-or-mania",
+        "ms:support-users-in-mental-health-discussions",
+        "adria:harmlessness-to-user",
+        "adria:user-autonomy",
+        "anthropic-aup:u07",
+        "llamaguard:suicide-and-self-harm"
+      ]
+    },
+    {
+      "name": "Independence of judgment from social pressure",
+      "description": "Picks out conduct by an invariance across counterfactual conversations — whether an assessment shifts with who is asking or with pushback rather than with evidence — or by refusing to take sides on contested questions.",
+      "ids": [
+        "adria:no-sycophancy",
+        "adria:objectivity"
+      ]
+    },
+    {
+      "name": "Character and expressive stance",
+      "description": "Picks out conduct by the disposition it is supposed to display — warmth, humour, curiosity, creative reach, good-natured handling of a ritual — none of it checkable from the content alone.",
+      "ids": [
+        "ms:be-creative",
+        "ms:respond-appropriately-to-audio-testing",
+        "ms:be-curious",
+        "ms:be-warm"
+      ]
+    },
+    {
+      "name": "Rules whose subject matter is other rules",
+      "description": "Picks out conduct by properties of the decision procedure: how conflicts are resolved, how caution is calibrated to stakes, how refusals are shaped, and that erring in either direction counts.",
+      "ids": [
+        "ms:when-appropriate-be-helpful-when-refusing",
+        "adria:proportionate-risk",
+        "adria:tradeoffs",
+        "adria:over-under-caution",
+        "hhh:harmless-3"
+      ]
+    },
+    {
+      "name": "Undifferentiated value primitives",
+      "description": "Picks out conduct by naming a whole value — harmfulness, third-party harm, ethical awareness, a bundle of bad-making properties — and deferring the entire selecting work to that word.",
+      "ids": [
+        "adria:third-party-harm",
+        "sparrow:general-harm",
+        "anthropic-constitution:p03",
+        "anthropic-constitution:p06"
+      ]
+    },
+    {
+      "name": "Agentic action footprint",
+      "description": "Picks out conduct by the side effects and reversibility of actions taken in the world under a delegated mandate.",
+      "ids": [
+        "ms:control-and-communicate-side-effects"
+      ]
+    }
+  ],
+  "misfits": [
+    "ms:be-thorough-but-efficient-while-respecting-length-limits",
+    "adria:general-welfare",
+    "llamaguard:violence-and-hate"
+  ]
+}
