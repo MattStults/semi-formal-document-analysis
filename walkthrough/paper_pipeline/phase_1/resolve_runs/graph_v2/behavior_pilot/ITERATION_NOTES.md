@@ -769,3 +769,21 @@ layer, truth memoization, validation-by-lookup, Opus extraction at
 still blocked on cross-behaviour truth overlap (4 common nodes) — an
 argument for ruling a common node panel across behaviours if the
 low-rank question ever needs settling.
+
+## 0037 — ERRATUM #20: CLOSED-VOCABULARY CIRCULARITY (Matt's suspicion, upheld), 2026-08-25
+Matt flagged the too-tidy "last dimension defined just as you asked."
+Upheld on inspection, two mechanisms: (a) ENDOGENEITY — his questions
+caused this week's analyses; the tidy picture is authorship, not
+coincidence; (b) CIRCULARITY — the query-class study's 10-place coding
+vocabulary was written by the designer WITH knowledge of the built
+layers; forced-choice coding into it structurally CANNOT discover an
+out-of-vocabulary place (shoehorning presents as coder disagreement —
+some of the tripwire noise may be exactly that). Therefore "100
+definitions need no new places" bounds the query class RELATIVE TO the
+designer's vocabulary only. RULE: saturation studies with closed
+vocabularies measure vocabulary coverage, never space completeness;
+unknown-dimension detection needs open coding or external falsifiers.
+The claims that survive: TARGET's blind calibration (predates the
+study), and the three EXTERNAL tests (TARGET at scale, prop-risk
+transfer, next-document misses) — which do not share the designer's
+vocabulary and can falsify what internal analyses cannot.
