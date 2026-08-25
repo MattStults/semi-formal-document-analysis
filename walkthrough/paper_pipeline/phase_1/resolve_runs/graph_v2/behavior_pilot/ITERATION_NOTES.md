@@ -568,3 +568,17 @@ venue-economics decision (options in notes 0022 / the halt report).
   truth) -> exact precision -> FP-population triage -> repair arc on
   lookups -> single seal-scored confirmation -> prediction §1 final
   scoring + the Q1 errata datum.
+
+## 0025 — ERRATUM #16 (stale reset belief) + CONTINUE RULING, 2026-08-24
+Matt: there is NO upcoming 9pm reset — the Sunday-9pm reset in my notes
+was LAST week's (Aug 23, already passed); I carried it forward as a
+stale belief through several plans. ERRATUM #16: budget scheduling must
+use dates, not remembered anchors; the bar's actual reset schedule is
+Matt's to state. RULING: continue now — remaining 53 escalations
+(~2pt, est landing ~38.5%). EXPECTATIONS RECALIBRATION recorded: raw
+zero-adaptation transfer is weak (UA exhaustive ~0.3 vs the 0.55-0.75
+band — second optimistic band; mechanism: protects(user) walls fail
+open nearly everywhere for comply/respond heads); the failure SHAPE
+was predicted exactly; the program's value claim is cheap verified
+repair (0.3-0.8 -> 0.85+ in ~2 iterations at 2-4pt), not first-shot
+transfer.
