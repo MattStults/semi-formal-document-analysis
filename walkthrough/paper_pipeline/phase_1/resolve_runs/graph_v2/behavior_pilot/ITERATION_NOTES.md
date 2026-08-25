@@ -582,3 +582,24 @@ open nearly everywhere for comply/respond heads); the failure SHAPE
 was predicted exactly; the program's value claim is cheap verified
 repair (0.3-0.8 -> 0.85+ in ~2 iterations at 2-4pt), not first-shot
 transfer.
+
+## 0026 — UA ENGAGED-SET TRUTH COMPLETE: EXACT PRECISION 0.262, 2026-08-24
+All 77 escalations done (batch2: 27 confirmed / 26 downgraded — Fable
+downgraded 36/77 Opus-relevants overall, the permissiveness now
+measured at scale). THE NUMBER: visible engaged precision is EXACTLY
+32/122 = 0.262 (seal: 38 nodes untouched, single-use). The sample
+series that pointed here: 0.60 (n=20 wave) -> 0.45 (corrected) ->
+0.262 (exhaustive). NO SAMPLE WAS CLOSE. Prediction §1 standing:
+clause (a) FP-dominant CONFIRMED emphatically (90 FPs vs 3 sampled
+FNs); clause (c) band FAILED by >2x (already scored); clause (b)
+scores at repair time. The module engages 160 nodes to find ~40
+relevant — the repair arc's task is now a fully-enumerated,
+truth-complete FP population of 90 visible nodes, routable at $0.
+Escalation seat costs ran ~60k each (note: 53-node packets; the
+per-seat overhead model needs the node-count term — see the batch1
+sizing miss, notes 0024). Budget: est ~40.4% (2pt authorized -> ~38.5
+est; actuals nearly 60k/seat -> overshoot ~1.9pt vs estimate across
+the batch — DISCLOSED; the cost-estimation erratum is now twice
+repeated: #17, fix the model before the next sizing).
+NEXT ($0 until the confirmation): FP triage -> repair arc on lookups ->
+seal confirmation -> prediction final scoring + Q1 errata count.
