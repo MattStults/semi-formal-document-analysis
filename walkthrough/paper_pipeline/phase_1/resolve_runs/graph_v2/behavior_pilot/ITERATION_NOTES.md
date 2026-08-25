@@ -156,3 +156,41 @@ nodes present, all verdicts valid.
   attempt-2 ruling: P1 revert line >= 0.55 venue-matched, point 0.65±0.10,
   P3 mechanism (fixed class cannot recur), P4 decline >= 0.80. Draw seed
   20260824; pools 231/531; 5 ruled-ledger overlaps (fresh rulings anyway).
+
+## 0005 — ITERATION 1, STEPS 4-5 (REALIZATION + CLOSE), 2026-08-24
+Confirmation venue as registered: 1 wave seat (40 nodes, ~55k raw) +
+3 panel seats (8 pre-registered rows, ~93k raw). Wave rulings were
+committed and the venue decision (dispatch panels vs wave-only) was made
+on budget alone BEFORE any scoring — keep that sequencing; it removes the
+optional-stopping question entirely. Scorer was committed before rulings
+existed. Result (ITER1_ATTEMPT2_SCORED.json):
+- ENGAGED PRECISION 0.75 (attempt-1: 0.40). P1 PASS (>=0.55), P2 within
+  band (point was 0.65), P3 PASS (zero fixed-class recurrence among the 5
+  fresh engaged-FPs), panel split 1/8. Also clears S1's 0.70 bar at the
+  repair venue — reported as exactly that, never as a transfer claim.
+- VERDICT: candidate B KEPT. The V5 keep/revert line was P1, and P1 passed.
+- P4 FAILED (decline_correctness 0.60 vs predicted >=0.80) and the failure
+  is a PREDICTION-CALIBRATION error, not a repair defect, shown three
+  ways: (i) all 8 fresh FNs were un-engaged BEFORE the repair too (the
+  wall created none of them — they are pre-existing act-channel misses:
+  substance/identity/objectivity clauses the does=[respond,comply] lanes
+  never reached); (ii) zero of the 48 walled nodes were ruled relevant
+  anywhere in the fresh draw; (iii) the one walled node the declined draw
+  sampled (l3954_4251_n012, a fixed FP) was freshly, blindly re-ruled
+  not_relevant — the fix confirmed on unseen truth. LESSON FOR THE
+  RUNBOOK: predict decline_correctness from the POST-REPAIR pool
+  composition, not by carrying over the prior attempt's figure — the
+  attempt-1 0.85 was one draw of a different pool; single-wave FN noise
+  on decline sides is real (this is the mirror of the 3/9 FP overturn
+  rate found at R1).
+- NEW MISMATCH QUEUE SEEDED (iteration 2): 5 engaged-FPs (l2821_3040_n029,
+  l3147_3238_n009, l3596_3876_n028, l3954_4251_n038 AGAIN — the standing
+  SUSPENDED-OPEN residual, drawn and re-confirmed FP at panel tier
+  3-0 not_relevant, its wave+panel unanimous, l3954_4251_n040)
+  + 8 not-engaged-FNs (list in scored file). Truth tier: wave-single
+  except panel rows. These route through the calculus next iteration;
+  the FN class (act-channel reach) is C-I-shaped, not C-D — the wall
+  cannot cause or cure it.
+- Budget actual: 10 seats total this iteration, ~430k raw subagent tokens;
+  bar 23% -> 25% at last paste before panels (~1 pt to appear); Matt's
+  26% halt line respected by measuring (paste) before each dispatch.
