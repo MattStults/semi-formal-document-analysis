@@ -256,3 +256,33 @@ mechanism; (c) THE FINAL ITERATION'S CONFIRMATION WAVE STAYS ON FABLE.
 authorization for the final all-Fable block (~2 points: spot-check 3,
 wave 40, 3x panel 8, probe 5), expected landing ~29%. This supersedes
 the iteration-1 26% halt line for this block only.
+
+## 0009 — ITERATION 2, STEP 4 REALIZATION: STOP CONDITION FIRED, 2026-08-24
+Attempt-3 (all-Fable venue as registered): engaged precision 0.40 — P1
+(>=0.60) FAILS, registered consequence = REVERT the batch move. NOT
+EXECUTED: halt-and-surface, because the move-level evidence contradicts
+the estimator, and resolving that conflict binds process (Q5, Matt).
+- THE ESTIMATOR CARRIED NO SIGNAL ABOUT THE MOVE: the seeded draw
+  sampled 0/16 of the move's gained nodes and the move lost 0 — engaged
+  precision was measured on a sample causally disconnected from the
+  delta it gates. MY REGISTRATION ERROR: the pre-ruling addendum caught
+  exactly this for P3 (added the machinery probe) and did not extend the
+  same coverage requirement to P1/P2. RUNBOOK RULE (bind it): a V5
+  primary metric MUST have measured coverage of the move's extension
+  (gains/losses sampled, or scored on a registered probe), else the
+  registration is invalid-by-construction.
+- MOVE-LEVEL EVIDENCE, all committed: machinery probe 5/5 relevant
+  (blind Fable, the card's thesis in the seat's own grounds); spot-check
+  3/3; charter +3/0 on panel-tier truth; V2 clean.
+- SEAT NOISE IS REAL AND MEASURED: this wave seat agrees 4/7 with
+  standing ledger truth on the draw's known nodes, contradicting TWO
+  panel-tier rulings (l3877_3953_n002, l3239_3382_n005). Baseline
+  single-wave-vs-panel is 0.846. Corrected estimator (panel-tier truth
+  substituted): 0.50 — still sub-line; n=20 draws carry ±~0.2; attempts
+  2 (0.75) and 3 (0.40) are compatible with pool precision ~0.55-0.60.
+  V5's own text warned it is 'a measurement, not a proof'.
+- OPTIONS SURFACED TO MATT (his ruling required): (a) execute the
+  registered revert; (b) rule the P1 realization void-for-coverage and
+  re-measure under a coverage-valid registration; (c) accept the move on
+  probe+charter evidence recording attempt-3 as noise-dominated. No
+  branch taken in-repo pending the ruling.
