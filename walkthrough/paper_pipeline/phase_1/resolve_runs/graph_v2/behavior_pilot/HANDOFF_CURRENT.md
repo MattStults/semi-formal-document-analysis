@@ -1,24 +1,25 @@
-# ⭐⭐ ENTRY POINT (2026-08-24 final; UA truth purchase in progress)
-Boot: CLAUDE.md -> this file -> CALCULUS_RUNBOOK.md (v1 + TRUTH
-ECONOMICS) -> ITERATION_NOTES.md 0001-0024. STATE: tradeoffs arc
-complete (0.85/0.895 kept); block-2 predictions frozen with 3 honest
-per-clause scorings; UA venue NOT certified symmetrically — the FIRST
-ASYMMETRIC CERTIFICATE is registered and validated in use
-(UA_ASYMMETRIC_CERT_REGISTRATION.json: Opus negatives trusted
-10/10-spot-checked; Opus relevants escalate to Fable panels; Opus
-permissiveness on boundary/relevant items measured three independent
-times). UA TRUTH LEDGER v1 (ua_truth_visible/sealed.json): 122 ruled
-(98 visible + 24 SEALED — the seal is single-use at the registered
-confirmation, never loaded into visible truth), 53 escalations PENDING
-(~1.8-2pt, NEXT BAR — resets Sun 9pm PT). Early disclosed-partial
-projection: UA engaged precision heading ~0.25-0.30 (module massively
-over-engages; prediction clause (a) confirmed, clause (c) already
-FAILED). NEXT SESSION: (1) paste /usage; (2) run the 53 escalations
-(seeded order in UA_PURCHASE_MAJORITIES.json) + fold into the ledger;
-(3) exact precision + FP triage + repair arc on lookups + seal-scored
-confirmation; (4) prediction §1 final scoring + Q1 errata count.
-Budget: this bar ended ~36.4% est (0.4pt over the 36 line — disclosed,
-notes 0024); NO standing authorization.
+# ⭐⭐ ENTRY POINT (2026-08-25; AFK block closed, three decisions parked for Matt)
+Boot: CLAUDE.md -> this file -> CALCULUS_RUNBOOK.md -> ITERATION_NOTES
+0001-0034. ZERO Fable spent this block (5pt envelope). PARKED DECISIONS:
+(1) UA MINT (TARGET_CALIBRATION_SCORE.json): OPERATIVE_TARGET concept
+stability 0.98, FP-separation passes, TP-coverage 0.67 vs 0.70 gate —
+pure wall inadmissible; needs a consumption redesign (second disjunct)
++ P3 signature. UA arc state: move-1 wall adopted (UA_REPAIR_MOVE1),
+72 residual FPs, SEAL UNTOUCHED (single-use, for the full arc).
+(2) QUERY-CLASS BOUND (QUERY_CLASS_STUDY_STATUS.json): 100-def corpus;
+v2 vocabulary reliable at primary-place x verb (0.93/1.00) but
+tripwired twice at full-pattern granularity — choose: coarse bound now
+/ brief v3 / accept-with-noise. Descriptive: 9 primary places, top-3
+= governed_quality/object_sphere/act (bounded-frame-consistent).
+(3) Standing from before: proportionate-risk ARB-transfer test
+(frozen, the sharpest Q2 claim); round-4 certification; dispute-class
+doctrine. Fable queue when budget returns: none REQUIRED — the UA
+seal confirmation is $0, the mint corpus annotation is Opus.
+KEY SESSION FINDINGS BANKED: form-vs-content split (canon frame
+annotates 0.87-0.97 but doesn't separate relevance); relational-atoms
+translation design for the next document; truth-memoization economics;
+per-brief AND per-task-class certificates (three tripwires, all
+correct); no cheap tier certifies definition-coding.
 # HANDOFF — convergence endgame + declaration-search results (2026-08-20, updated end-of-day)
 Written for a frontier-capable agent resuming with zero context. Read top-down;
 every claim has an artifact pointer. Repo root for this work: this directory

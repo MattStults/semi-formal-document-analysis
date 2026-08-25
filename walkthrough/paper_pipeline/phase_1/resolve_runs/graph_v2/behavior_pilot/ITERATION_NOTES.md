@@ -703,3 +703,28 @@ No /usage pastes available -> no Fable dispatch at all this block
 - Tradeoffs cross-check (descriptive): the enum classifies the
   cross-behaviour recurrers as assistant_output — consistent with the
   amortization hypothesis.
+
+## 0034 — AFK BLOCK CLOSE, 2026-08-25
+Full block ran at ZERO Fable (envelope was 5pt). State at close, all
+parked honestly:
+- UA ARC: move-1 adopted (18/0/0); OPERATIVE_TARGET mint calibrated
+  (stability 0.98 — best ever; FP-side passes; TP-side 0.67 vs 0.70
+  gate -> pure wall inadmissible) -> HELD at Matt's signature with the
+  second-disjunct design question. Seal untouched. 72 residual FPs.
+- QUERY-CLASS STUDY: 100-def corpus built (exemplary Opus coordinator
+  run); v1 vocabulary tripwired (my spec defect — under-determination,
+  Opus-vs-Opus 0.47); v2 fix raised calibration to 0.87 and bulk pairs
+  to 0.78 but the INDEPENDENT spot-check tripwired again at full-pattern
+  granularity (0.36 vs 0.20). Halted without publishing a bound.
+  MEASURED: verb 1.00, primary-place 0.93/0.75, full pattern 0.78/0.64
+  — the reliable resolution is primary x verb; secondaries are the
+  noise. DESCRIPTIVE (non-binding): 9 primary places observed over 100
+  definitions, dominated by governed_quality (29), object_sphere (16),
+  act (13) — shape-consistent with the bounded-frame hypothesis.
+  DECISION PARKED: accept coarse bound / brief v3 / accept-with-noise.
+- Tier data: no cheap tier certifies definition-coding (Sonnet 0.13,
+  Haiku 0.00 at v1) — the first measured negative for the down-tier
+  program on a design-adjacent task.
+- Errata: #19 (my coding vocabulary under-specified — same lesson as
+  the mint-criteria discipline: MEASURE the brief before scaling, which
+  the phased design did, catching it at 15 items not 100).
