@@ -1,29 +1,26 @@
-# ⭐⭐ ENTRY POINT (2026-08-24 night; ITERATIONS 1-3 COMPLETE — the full calculus arc)
-THREE iterations of the error-calculus loop ran to close on tradeoffs.
-Trace: ITERATION_NOTES.md 0001-0014 + the three decision records
-(ITERATION1/2_CD_DECISION.md, ITERATION3_CONSUMPTION_VALIDATION.json) +
-MINT_ARBITRATES_PREREG_DRAFT.md (signed-scoped, calibration-measured).
-ATTEMPT SERIES (blog post 3): 0.40 transfer (frozen) -> 0.70 -> 0.55 ->
-0.85 (0.895 tripwire-quarantine-adjusted); decline 0.85 -> 0.50/0.35 ->
-0.70. Kept instrument (iteration3_tradeoffs_contract_r4.json +
-arb_marks_final.json r2): governs wall + tone conditional (iter-1),
-does+override + machinery_concern typed gate (iter-2), MINT-ARB
-arbitrates_channel over 260 consensus marks (iter-3; the wall variant
-KILLED at validation on flip content — the codified radicalization rule
-firing mechanically). PROCESS EVENTS the blog needs: 3 R1 overturns;
-void-for-coverage ruling + one-shot re-measurement; Opus parity
-certificate + TWO tripwire events (never silently passed — the second
-QUARANTINED 43 boundary-item resolutions and raised adjusted precision);
-defensible-by-contradiction rule (n005); a P3 mint signed only after a
-blind calibration measurement (0.926 stability) at Matt's insistence;
-12/12 clingo-certified traces (iter-1; extend for 2-3).
-OPEN QUEUE: 43 suspended dispute marks (Fable ~0.5pt next bar);
-relevant-by-example FN class (second concept); single-consideration FP
-family; C-V definitional pair; RUNBOOK REWRITE from notes 0001-0014
-(four banked errata: gen-venue truth injection, V5 coverage rule,
-constraint-structure-not-menus, dispute-class certificates);
-census/vector support for the three new channels.
-Budget: session ended ~30.6% Fable; NO standing authorization.
+# ⭐⭐ ENTRY POINT (2026-08-24 end; through USER-AUTONOMY attempt-1)
+Boot: CLAUDE.md -> this file -> CALCULUS_RUNBOOK.md (v1,
+execution-derived) -> ITERATION_NOTES.md 0001-0018 (the full trace).
+STATE: tradeoffs arc COMPLETE (0.40->0.70->0.55->0.85/0.895; three kept
+moves; queue quiescent, all suspensions have named re-entries). Arc1-e
+census extension LANDED (12-slot vector, guards discharged, 43 tests).
+BLOCK2_TRANSFER_PREDICTIONS frozen + first per-clause hit taken at $0
+(general-welfare C-V clause falsified by engine check — erratum #13).
+ADDENDUM 5 signed: block-2 measurable, scoped repair-arc reporting.
+USER-AUTONOMY attempt-1 RUN and PROVISIONAL: 0.60 engaged (WITHIN the
+frozen band), decline 0.55 — held provisional because the spot-check
+tripwire fired 3/8: the Opus certificate is BEHAVIOUR-BRIEF-LOCAL and
+was scope-stretched (erratum #14; the architecture caught it for one
+seat). NEXT SESSION (post Sunday-9pm-PT reset, ~1-1.5pt Fable):
+(a) brief-local Opus parity measurement for user-autonomy (free key =
+the 10 committed panel rows) -> confirms or re-runs the wave;
+(b) re-verify the 3 disputed rulings; (c) the deferred 43-dispute
+Fable re-resolution; then route the UA misses (frozen prediction:
+single-consideration FPs + machinery FNs, existing channels, 0 mints)
+and run the repair arc — its errata count is the Q1 automation
+measurement (series so far 4,4,4,2,1: trending down, not zero).
+Budget: session ended ~32.4% est. (envelope respected; halt line was
+32.6); NO standing authorization.
 # HANDOFF — convergence endgame + declaration-search results (2026-08-20, updated end-of-day)
 Written for a frontier-capable agent resuming with zero context. Read top-down;
 every claim has an artifact pointer. Repo root for this work: this directory
