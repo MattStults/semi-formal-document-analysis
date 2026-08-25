@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""query_class_analysis.py — P5 of QUERY_CLASS_STUDY_SPEC.md.
+"""query_class_analysis.py — P5 of QUERY_CLASS_STUDY_SPEC.md (v2-vocabulary
+edition: reads the v2 recode files after the v1 tripwire and vocabulary fix).
 Deterministic, $0. Committed BEFORE any coding exists.
 
 Consensus: a definition's pattern = the two seats' pattern when equal;
@@ -22,19 +23,19 @@ def main():
     corpus = json.load(open(os.path.join(HERE, "query_class_corpus.json")))
     ids = [e["id"] for e in corpus["entries"]]
     seats = {}
-    for f in ("qc_calib_opusA", "qc_calib_opusB", "qc_bulk_A", "qc_bulk_B",
-              "qc_spotcheck_opus"):
+    for f in ("qc_calib_v2_opusA", "qc_calib_v2_opusB", "qc_bulk_v2_A",
+              "qc_bulk_v2_B", "qc_spotcheck_v2_opus"):
         p = os.path.join(HERE, f + ".json")
         if os.path.exists(p):
             seats[f] = json.load(open(p))["codings"]
     opus_ref = {}
-    for f in ("qc_calib_opusA", "qc_calib_opusB", "qc_spotcheck_opus"):
+    for f in ("qc_calib_v2_opusA", "qc_calib_v2_opusB", "qc_spotcheck_v2_opus"):
         for i, r in seats.get(f, {}).items():
             opus_ref.setdefault(i, []).append(pat(r))
     cons, unresolved = {}, []
     for i in ids:
         cands = []
-        for f in ("qc_calib_opusA", "qc_calib_opusB"):
+        for f in ("qc_calib_v2_opusA", "qc_calib_v2_opusB"):
             if i in seats.get(f, {}):
                 cands.append(pat(seats[f][i]))
         if len(cands) == 2:
@@ -43,8 +44,8 @@ def main():
             else:
                 unresolved.append(i)
             continue
-        a = seats.get("qc_bulk_A", {}).get(i)
-        b = seats.get("qc_bulk_B", {}).get(i)
+        a = seats.get("qc_bulk_v2_A", {}).get(i)
+        b = seats.get("qc_bulk_v2_B", {}).get(i)
         if a and b:
             pa_, pb_ = pat(a), pat(b)
             if pa_ == pb_:
