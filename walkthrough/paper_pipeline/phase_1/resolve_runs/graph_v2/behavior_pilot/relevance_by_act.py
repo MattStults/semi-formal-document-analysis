@@ -327,15 +327,44 @@ def relevance(mod, br, corpus):
                 return True
         return False
 
+    # MACHINERY CHANNEL (iteration-2 I1 build, 2026-08-24; ITERATION2_CD_DECISION.md):
+    # a behaviour whose SUBJECT MATTER is the document's own arbitration
+    # machinery (chain-of-command / instruction-hierarchy clauses) may declare
+    # "machinery_concern": [canonical acts]. A node excluded by the STRUCTURAL
+    # walls (all-authority_plumbing, or all-non-assistant-actor) engages iff it
+    # carries a functor bridging to a declared machinery act. Scope: additive,
+    # act-typed, fires ONLY on structurally-excluded nodes (normally-visible
+    # nodes are untouched); the governs wall is waived on this channel because
+    # machinery clauses' governs classification is itself structural
+    # (identity_meta); protects wall still applies. Empty/absent -> inert.
+    mach_decl = set(mod.get("machinery_concern") or [])
+
+    def machinery_reasons(cid, rows):
+        if not mach_decl: return []
+        skeys = [k for k in sig if k.startswith(cid + "|")]
+        pkeys = [k for k in pa if k.startswith(cid + "|")]
+        structurally_excluded = (
+            (skeys and all(sig[k]["authority_plumbing"] for k in skeys))
+            or (pkeys and not any(pa[k]["actor"] == "assistant" for k in pkeys)))
+        if not structurally_excluded: return []
+        return [(f, br.get(f), st) for f, st in rows
+                if br.get(f) in mach_decl]
+
     rel = {}
     for cid, rows in corpus.items():
-        if not actor_ok(cid): continue
+        mreasons = machinery_reasons(cid, rows)
+        if not actor_ok(cid):
+            if mreasons and protects_ok(cid):
+                rel[cid] = mreasons
+            continue
         act_reasons = []
         if protects_ok(cid) and signature_ok(cid):
             act_reasons = [(f, br.get(f), st) for f, st in rows
                            if br.get(f) is not None and verb_hit(br[f]) and arg_ok(f, br[f]) and party_ok(f)]
         if act_reasons:
             rel[cid] = act_reasons
+        elif mreasons and protects_ok(cid):
+            rel[cid] = mreasons
         elif purpose_hit(cid) and protects_ok(cid):
             # purpose channel is act-independent but the beneficiary wall still
             # applies to every channel (9d: unwalled purpose flooded harm, prec
@@ -393,4 +422,5 @@ DECLARABLE_MOVES = {
     "arg_sorts":          ("arg_sorts",          "wall"),
     "party_concern":      ("party_concern",      "wall"),
     "governs_conditional":("governs_conditional","conditional"),
+    "machinery_concern":  ("machinery_concern",  "or"),
 }

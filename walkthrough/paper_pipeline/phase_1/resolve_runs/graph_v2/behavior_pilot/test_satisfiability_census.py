@@ -378,7 +378,7 @@ def test_move_registry_handshake():
     src = inspect.getsource(RBA.relevance) + inspect.getsource(RBA.behavior_acts)
     consumed = {f for f in ("protects_concern", "governs_concern",
                             "purpose_concern", "arg_sorts", "party_concern",
-                            "governs_conditional") if f in src}
+                            "governs_conditional", "machinery_concern") if f in src}
     missing = consumed - set(RBA.DECLARABLE_MOVES)
     assert not missing, f"engine consumes undeclared-in-registry: {missing}"
     covered = set(VT.ENUMERATED) | set(VT.KNOWN_UNENUMERATED)
