@@ -728,3 +728,18 @@ parked honestly:
 - Errata: #19 (my coding vocabulary under-specified — same lesson as
   the mint-criteria discipline: MEASURE the brief before scaling, which
   the phased design did, catching it at 15 items not 100).
+
+## 0035 — COMPOSITIONAL-SUFFICIENCY PROBE + PROGRAM VERDICT, 2026-08-25
+Matt asked whether the build-our-own-ontology idea failed. $0 probe:
+best compact principled DNF over ALL existing layers on UA truth =
+OR(gov_substance, gov_tone, head_comply): 23 fixes / 1 break — beats
+the adopted wall (18/0) but leaves ~65/90 FPs untouched; the engine's
+conjunctive-gate weakness was NOT the main bottleneck for UA.
+VERDICT (recorded): layers succeed as annotation (stable, signal-
+bearing); the instrument succeeded once (tradeoffs 0.85); the PROGRAM
+is unproven at scale — cost curve unbent, one concept per behaviour so
+far. DECISIVE PENDING EXPERIMENTS (both cheap, both designed):
+corpus-wide OPERATIVE_TARGET (blocked on Matt's mint decision) and the
+frozen prop-risk ARB-transfer test. Both land -> program stands; both
+miss -> content doesn't compile and the instrument's role shrinks to
+form-layer + audit over direct frontier relevance.
