@@ -1,27 +1,30 @@
-# ⭐⭐ ENTRY POINT (2026-08-24 end-of-day; ITERATION 1 COMPLETE)
-ITERATION 1 of the calculus loop RAN TO CLOSE on tradeoffs' 12 FPs — the
-full found->fixed->predicted->realized arc for blog post 3. Read
-ITERATION_NOTES.md entries 0001-0005 (they ARE the trace) plus
-ITERATION1_CD_DECISION.md and ITER1_ATTEMPT2_SCORED.json. Headline:
-3 FPs dissolved at R1 (single-wave truth errors, panel-overturned), C-D
-delta adopted (governs wall + first live governs_conditional; V1 5/0,
-V2 0-drift, V3 48/48 held-out, V4 0 new flips), 4 residuals
-SUSPENDED-OPEN, prediction registered pre-realization, attempt-2 fresh
-wave+panel: engaged precision 0.75 vs 0.40 (P1/P2/P3 PASS, B KEPT); P4
-missed (decline 0.60 vs 0.80) — proven a prediction-calibration error,
-not repair-created (notes 0005). NEXT SESSION: (a) rewrite
-CALCULUS_RUNBOOK from notes 0001-0005 per the execution-derived-docs
-rule; (b) iteration 2 on the seeded 13-mismatch queue (5 FP + 8 FN in
-ITER1_ATTEMPT2_SCORED.json misses; the FN class is act-channel reach —
-C-I-shaped); (c) standing queue: vector()/census support for
-governs_conditional (first live declaration exists!), purposes-consumer
-I1 build (re-enters the 4 SUSPENDED-OPEN), terminality re-stamps, F-r1
-ledger keying, criticality brief pinning. Boot order unchanged:
-CLAUDE.md -> this file -> CALCULUS_RUNBOOK.md -> ITERATION_NOTES.md.
-Budget: iteration 1 ran under Matt's 3-point ruling (notes 0002), spent
-~430k raw / 10 seats, halt line 26% respected; NO standing budget is
-authorized beyond it — ask Matt before any new seat spend.
-
+# ⭐⭐ ENTRY POINT (2026-08-24 late; ITERATIONS 1-2 + RE-MEASUREMENT COMPLETE)
+The calculus loop ran TWO full iterations on tradeoffs plus a
+void-and-remeasure arc. Read ITERATION_NOTES.md 0001-0010 (the trace),
+ITERATION1_CD_DECISION.md, ITERATION2_CD_DECISION.md,
+ITER2_VOID_RULING_AND_REMEASURE_PREREG.md, ITER2_REMEASURE_SCORED.json,
+ITER1_TRACE_AUDIT.json, ITER1_OPUS_PARITY_CERTIFICATE.json.
+FINAL NUMBERS (blog post 3): attempt-1 transfer 0.40 (frozen);
+attempt-2 0.75 raw / 0.70 panel-tier; attempt-3 0.40 raw / 0.55
+panel-tier; pooled panel-tier engaged 0.605; machinery move VALIDATED
+at 0.875 on its full 16-node extension (no revert). Honest headline:
+recall — 23/40 pooled declined nodes are panel-relevant (provide-lane +
+definitional-lane reach, both SUSPENDED-OPEN with named re-entries).
+KEPT MOVES: iter-1 governs wall + tone conditional; iter-2 does+override
++ machinery_concern typed gate (new engine channel, registry-fenced).
+PROCESS EVENTS THE BLOG NEEDS: 3 R1 overturns (iter-1); estimator
+void-for-coverage ruling + one-shot re-measurement (Matt-signed, notes
+0009-0010); Opus parity certificate (0.913/0.884 vs Fable 0.846) with
+spot-check tripwires that never fired; 12/12 clingo-certified traces.
+NEXT SESSION QUEUE: (a) runbook rewrite from notes 0001-0010 (binding
+coverage rule for V5 registrations; escalate-before-choosing; probe
+registration pattern); (b) panel-of-record for l3239_3382_n005 (two
+opposing unanimous panels) and l3877_3953_n002; (c) the 15-FP/23-FN
+queue routes through the calculus when work resumes (FN reach classes
+first); (d) census/vector support for governs_conditional +
+machinery_concern; (e) iteration-2 trace-audit extension.
+Budget: all envelopes consumed as ruled (notes 0002/0008); NO standing
+authorization — ask Matt before any seat spend.
 # HANDOFF — convergence endgame + declaration-search results (2026-08-20, updated end-of-day)
 Written for a frontier-capable agent resuming with zero context. Read top-down;
 every claim has an artifact pointer. Repo root for this work: this directory
