@@ -413,3 +413,24 @@ state machine"):
   (the Arc1-e build — design-tier, needed before census-based routing
   of the r4 module); trace-audit extension over iterations 2-3; the
   Fable-tier dispute re-resolution (~0.5pt, next bar).
+
+## 0016 — ITEMS 1+2 COMPLETE (census extension + frozen transfer predictions), 2026-08-24
+- Arc1-e MAINTENANCE BUILD landed: vector() 8->12 slots (append-only;
+  pinned indices untouched), current_mask consumes every DECLARABLE_MOVES
+  channel, guards lifted-with-reasons-discharged, registration fence
+  updated same-commit, guard test rewritten to the structural form (every
+  registry channel must map to a live-when-declared slot — new channels
+  now fail loud here too). 43 tests green. FIRST census over a
+  new-channel contract (r4): runs; 35 mismatches, incl. 1 UNSAT-both
+  (future R5 datum). Census-routability of user-autonomy (party_concern)
+  unblocked as a side effect.
+- BLOCK2_TRANSFER_PREDICTIONS.md FROZEN before any block-2 ruling:
+  user-autonomy (single-consideration FPs + machinery FNs; existing
+  channels; 0 mints; 0.55-0.75), proportionate-risk (HEADLINE: the
+  tradeoffs ARB mint transfers as a zero-annotation arbitrates_channel
+  declaration — calibration IS arbitration; 0.60-0.80), general-welfare
+  (C-V: does still carries ASP-literal names, the F1 class unrepaired in
+  this module — checkable from the contract file alone; measure-after-
+  repair, not before). Per-clause scoring rule frozen with them.
+- STATUS: measuring any block-2 behaviour awaits Matt's signed prereg
+  amendment (the F2 stop rule) + behaviour pick + budget envelope.
