@@ -622,3 +622,21 @@ GENERAL single-consideration-vs-cross-consideration layer (ARB was the
 behaviour-flavored first cut) so one mint amortizes across all
 behaviours — the concrete mechanism by which the concept-per-behaviour
 cost curve could actually bend.
+
+## 0029 — DIMENSION-ACCRETION QUESTION (Matt) + THE TRACKED METRIC, 2026-08-24
+Matt's architectural critique, recorded at full strength: ~1 new
+dimension per behaviour extrapolates to an untranslatable schema — the
+a-priori-translation goal dies of dimension obesity; the alternative is
+direct frontier relevance with translation kept for audit only.
+COMPETING HYPOTHESIS (falsifiable): mints are completing the FIXED
+argument structure of a norm (ARB = internal structure; machinery =
+standing; locus = operative object; joining action/actor/beneficiary/
+quality/condition/force) — slot inventory bounded ~10-12, after which
+behaviours consume existing slots with new VALUES (cheap).
+TRACKED METRIC: slots-vs-values per behaviour. Current curve: tradeoffs
++2 slots (ARB, machinery); UA +1 projected (locus); PREDICTIONS ALREADY
+IN PLACE: proportionate-risk = 0 slots (pure ARB reuse, frozen);
+general-welfare = 0 slots (protects VALUE growth: animal/AI welfare).
+KILL-CRITERION (registered): if behaviours 3 AND 4 each require a
+genuinely new SLOT (not values), the frame hypothesis is dead — stop
+minting, re-architect around direct frontier relevance.
