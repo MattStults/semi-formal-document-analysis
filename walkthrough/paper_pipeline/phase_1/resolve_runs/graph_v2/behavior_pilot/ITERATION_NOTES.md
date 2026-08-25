@@ -640,3 +640,16 @@ general-welfare = 0 slots (protects VALUE growth: animal/AI welfare).
 KILL-CRITERION (registered): if behaviours 3 AND 4 each require a
 genuinely new SLOT (not values), the frame hypothesis is dead — stop
 minting, re-architect around direct frontier relevance.
+
+## 0030 — THEORY GROUNDING (Matt's directive), 2026-08-24
+"Find the existing theory instead of finding dimensions one by one" —
+NORM_FRAME_THEORY_MAP.md drafted: every empirically-minted slot maps
+onto the canonical inventories (von Wright's six norm elements; Hohfeld
+correlatives; Searle constitutive/regulative — which PREDICTED the
+machinery finding; defeasible deontic logic = ARB). Four a-priori gaps
+no miss has forced yet (full Hohfeld relation-typing; inter-norm
+priority as a RELATION; constitutive flag at translation time; deontic
+vs epistemic modality). Proposal: derive the next document's schema
+from the completed frame; kill-criterion upgraded to
+zero-slots-outside-the-theory-frame. DRAFT-FROM-MODEL-KNOWLEDGE:
+requires a literature-verification pass before anything binds.
