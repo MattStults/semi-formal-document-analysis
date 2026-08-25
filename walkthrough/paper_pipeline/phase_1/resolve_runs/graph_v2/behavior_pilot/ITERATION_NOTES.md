@@ -503,3 +503,10 @@ correction. Plan v2 committed; BLOCKED pending Matt's fresh envelope
 (~2.5-3 pt — the sound key design costs more than the unsound one).
 Q1 note: the review+CoVe cycle added 4 process rules in one pass —
 the errata series is NOT converged; manual driving remains correct.
+
+## 0021 — ENVELOPE + PLAN-V2 DISPATCH, 2026-08-24
+Matt: "ok do it" at 33% for the ~2.5-3pt plan-v2 -> registered envelope
+3pt, halt-and-surface ~36%. Dispatching: 3 Fable key seats (24 nodes),
+3 Opus seats (the 14 key nodes lacking Opus majorities), 1 fresh Fable
+dispute seat (43 ARB items). Spot-check seat follows the Opus purchase;
+0.5pt reserve held for one tripwire response.
