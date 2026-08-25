@@ -743,3 +743,29 @@ corpus-wide OPERATIVE_TARGET (blocked on Matt's mint decision) and the
 frozen prop-risk ARB-transfer test. Both land -> program stands; both
 miss -> content doesn't compile and the instrument's role shrinks to
 form-layer + audit over direct frontier relevance.
+
+## 0036 — REPRESENTATION PROBES: THE INFORMATION FLOOR, 2026-08-25
+Three $0 probes (Matt's optimization/latent questions):
+- L1 over the FULL symbolic feature space (48 features, all sparsity
+  levels): CV ceiling 0.76 vs 0.74 base — the annotations do not
+  contain UA relevance; the guessed-library probe's conclusion was
+  right for the right reason. (Convex fit; no initialization issue —
+  features are deterministic indicators of committed layers.)
+- TF-IDF text features (uni+bigram): CV 0.74 = base. Surface lexical
+  content doesn't carry it either.
+- Pairwise behaviour phi: 0.04-0.29 (help x caution 0.55 the sole
+  exception) — behaviours are near-ORTHOGONAL dichotomies. Matt's
+  log2(n) low-rank hypothesis has measured evidence AGAINST it; ~1
+  load-bearing dimension per behaviour is geometry, not pathology.
+SYNTHESIS (the session's clearest statement of what minting IS):
+a mint = frontier judgment used as a feature extractor for ONE named,
+blind-reproducible, auditable bit per node. The concept lives in deep
+semantics (seats judge it at 0.9+; no shallow space reaches base+0.02);
+embeddings would separate but collapse the instrument into direct-ask-
+in-vector-form. THE COST FLOOR: ~one frontier-extracted dimension per
+orthogonal behaviour + validation; everything around the floor (form
+layer, truth memoization, validation-by-lookup, Opus extraction at
+0.98) is what the program has successfully cheapened. Rank test proper
+still blocked on cross-behaviour truth overlap (4 common nodes) — an
+argument for ruling a common node panel across behaviours if the
+low-rank question ever needs settling.
