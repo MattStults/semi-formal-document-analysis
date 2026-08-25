@@ -40,7 +40,14 @@ def _current_vector():
 
 def test_vector_merges_definition_signature_and_protects():
     (acts, governs, contexts, protects, actors, purposes, plumbing,
-     refinements) = _current_vector()
+     refinements, gc_pairs, arb, mach, party_pairs) = _current_vector()
+    # Arc1-e slots on the synthetic node: gc_pairs carry the per-assert
+    # (quality, contexts) pairing; the node is not structurally excluded and
+    # unmarked, so mach is empty and arb false
+    assert ("truthfulness", frozenset({"vulnerable_interaction"})) in gc_pairs \
+        or ("substance_usefulness", frozenset({"vulnerable_interaction"})) in gc_pairs \
+        or gc_pairs  # at least one pairing present
+    assert arb is False and mach == frozenset()
     # acts carry (canonical, arg-sort) — assert status is NOT instrument-
     # visible and must not appear (prereg addendum 2)
     assert acts == frozenset({("refuse", None)})
@@ -264,15 +271,20 @@ def test_real_corpus_semantics_pins():
 # it does. Without the pin the probe re-derives census's own grouping and
 # cannot fail (reviewer's mutation proof, round 3).
 SLOT_INVENTORY = ("acts", "governs", "contexts", "protects", "actors",
-                  "purposes", "plumbing", "refinements")
+                  "purposes", "plumbing", "refinements",
+                  # Arc1-e extension 2026-08-24 (reviewed same-commit update):
+                  "gc_pairs", "arb", "mach", "party_pairs")
 SLOT_INDEX = {name: i for i, name in enumerate(SLOT_INVENTORY)}
 # refinements (Arc1-b mint marks) is dead for every frozen behavior: no
-# subtype-conditional declaration exists yet. Same-commit-update rule applies.
+# subtype-conditional declaration exists yet. The four Arc1-e slots are dead
+# for every v18 behavior (none declares their consumers). Same-commit-update
+# rule applies.
+_EXT_DEAD = {"gc_pairs", "arb", "mach", "party_pairs"}
 DEAD_SLOTS_PINNED = {
     "avoiding-over-and-under-caution": {"contexts", "protects", "purposes",
-                                        "refinements"},
-    "harm-avoidance-to-third-parties": {"contexts", "refinements"},
-    "helpfulness": {"contexts", "purposes", "refinements"},
+                                        "refinements"} | _EXT_DEAD,
+    "harm-avoidance-to-third-parties": {"contexts", "refinements"} | _EXT_DEAD,
+    "helpfulness": {"contexts", "purposes", "refinements"} | _EXT_DEAD,
 }
 
 
@@ -340,11 +352,31 @@ def test_load_layers_merges_definition_lanes():
 
 
 def test_guards_fire_on_undeclarable_channels(tmp_path):
-    for channel in ("party_concern", "governs_conditional"):
-        mf = tmp_path / f"mods_{channel}.json"
-        mf.write_text(json.dumps({"modules": {"some-behaviour": {channel: ["x"]}}}))
-        with pytest.raises(NotImplementedError):
-            SC.census(str(mf))
+    """Arc1-e 2026-08-24: the party_concern / governs_conditional guards are
+    LIFTED — vector() carries party_pairs and gc_pairs. The defect class the
+    guards covered (a declared channel the vector cannot express) is now
+    covered structurally: every DECLARABLE_MOVES channel must map to a live
+    slot under current_mask when declared, dead when not."""
+    import relevance_by_act as RBA
+    consumer_slot = {
+        "protects_concern": SC.SLOT_PROTECTS,
+        "purpose_concern": SC.SLOT_PURPOSES,
+        "governs_conditional": SC.SLOT_GC_PAIRS,
+        "party_concern": SC.SLOT_PARTY,
+        "machinery_concern": SC.SLOT_MACH,
+        "arbitrates_wall": SC.SLOT_ARB,
+        "arbitrates_channel": SC.SLOT_ARB,
+        "governs_concern": None,   # governs slot is always live
+        "arg_sorts": None,         # expressed inside the acts slot
+    }
+    missing = set(RBA.DECLARABLE_MOVES) - set(consumer_slot)
+    assert not missing, f"new channel lacks a census slot mapping: {missing}"
+    for field, slot in consumer_slot.items():
+        if slot is None:
+            continue
+        assert slot in SC.current_mask({}), f"{field}: slot live when undeclared"
+        assert slot not in SC.current_mask({field: ["x"]}), \
+            f"{field}: slot dead when declared"
 
 
 def test_defensibility_overlay_supersedes_with_precedence():

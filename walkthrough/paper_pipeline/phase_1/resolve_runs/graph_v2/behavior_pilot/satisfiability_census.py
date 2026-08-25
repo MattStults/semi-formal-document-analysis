@@ -124,13 +124,57 @@ def vector(nid, corpus, br, sig, ap, pa, ctx=None, asorts=None, ref=None):
     plumbing = frozenset(k.split("|")[1] for k in skeys
                          if sig[k].get("authority_plumbing"))
     refinements = (ref or {}).get(nid, frozenset())
+    # Arc1-e extension (2026-08-24, iteration-3 maintenance; ITERATION_NOTES
+    # 0015): four appended slots so the census can express every channel in
+    # RBA.DECLARABLE_MOVES. APPEND-ONLY — indices 0-7 are pinned by
+    # test_dead_slot_probe and unchanged.
+    #  8 gc_pairs: per-assert (governs quality, frozenset(contexts)) pairs —
+    #    the exact feature governs_conditional consumes (flattened slots 1-2
+    #    cannot express the pairing; the old census guard's reason).
+    #  9 arb: the ARBITRATES mark (arb_marks_final.json), consumed by
+    #    arbitrates_wall / arbitrates_channel.
+    # 10 mach: the machinery feature — the node's canonical act heads IF it
+    #    is structurally excluded (all-plumbing or all-non-assistant-actor),
+    #    else empty; consumed by machinery_concern.
+    # 11 party_pairs: (canonical act, act-party) pairs, consumed by
+    #    party_concern.
+    _load_ext_layers()
+    gc_pairs = frozenset((g, frozenset(sig[k].get("contexts", [])))
+                         for k in skeys for g in sig[k]["governs"])
+    arb = bool((_ARB or {}).get(nid))
+    struct_excluded = (
+        (skeys and all(sig[k]["authority_plumbing"] for k in skeys))
+        or (akeys and not any(pa[k]["actor"] == "assistant" for k in akeys)))
+    heads = frozenset(br.get(f) for f, s in corpus.get(nid, []) if br.get(f))
+    mach = heads if struct_excluded else frozenset()
+    party_pairs = frozenset((br.get(f), (_PARTY or {}).get(f, "unspecified"))
+                            for f, s in corpus.get(nid, []) if br.get(f))
     cur = (acts, governs, contexts, protects, actors, purposes, plumbing,
-           refinements)
+           refinements, gc_pairs, arb, mach, party_pairs)
     if ctx is None:
         return cur
     catoms = frozenset(a for vs in (ctx.get(nid) or {}).values() for a in vs)
     return (acts, governs, contexts | catoms, protects, actors, purposes,
-            plumbing, refinements)
+            plumbing, refinements, gc_pairs, arb, mach, party_pairs)
+
+
+# layers for the appended slots, loaded once (empty-safe: absent files make
+# the slots constant, which masking already treats as uninformative)
+_ARB = None
+_PARTY = None
+
+
+def _load_ext_layers():
+    global _ARB, _PARTY
+    if _ARB is None:
+        p = os.path.join(HERE, "arb_marks_final.json")
+        _ARB = json.load(open(p)).get("marks", {}) if os.path.exists(p) else {}
+    if _PARTY is None:
+        try:
+            _PARTY = RBA.act_party()
+        except Exception:
+            _PARTY = {}
+    return _ARB, _PARTY
 
 
 def truth_all(slug):
@@ -157,13 +201,18 @@ def truth_all(slug):
 
 # slot indices of the vector tuple
 SLOT_CONTEXTS, SLOT_PROTECTS, SLOT_PURPOSES, SLOT_REFINEMENTS = 2, 3, 5, 7
+SLOT_GC_PAIRS, SLOT_ARB, SLOT_MACH, SLOT_PARTY = 8, 9, 10, 11
 
 
 def current_mask(mod):
     """Slots the FROZEN behavior never consumes (addendum-3 ruling). Masking
     them is what makes CURRENT mean 'the instrument as frozen': a feature no
     gate reads cannot separate two nodes for this behavior."""
-    dead = {SLOT_CONTEXTS}          # only consumer governs_conditional: undeclared + guarded
+    dead = set()
+    # contexts + gc_pairs: consumed only via governs_conditional
+    if not mod.get("governs_conditional"):
+        dead.add(SLOT_CONTEXTS)
+        dead.add(SLOT_GC_PAIRS)
     # Arc1-b refinement marks: no subtype-conditional declaration exists yet,
     # so the slot is dead for every frozen behavior. When one is declared,
     # update this and DEAD_SLOTS_PINNED in the same reviewed commit.
@@ -172,6 +221,12 @@ def current_mask(mod):
         dead.add(SLOT_PROTECTS)
     if not mod.get("purpose_concern"):
         dead.add(SLOT_PURPOSES)
+    if not (mod.get("arbitrates_wall") or mod.get("arbitrates_channel")):
+        dead.add(SLOT_ARB)
+    if not mod.get("machinery_concern"):
+        dead.add(SLOT_MACH)
+    if not mod.get("party_concern"):
+        dead.add(SLOT_PARTY)
     return dead
 
 
@@ -181,16 +236,10 @@ def masked(vec, dead):
 
 def census(modules_file):
     mods = json.load(open(os.path.join(HERE, modules_file)))["modules"]
-    for slug, m in mods.items():
-        if m.get("party_concern"):
-            raise NotImplementedError(
-                f"{slug} declares party_concern: census vector() carries no "
-                "act-party feature — extend vector() before running (Arc1-e addendum)")
-        if m.get("governs_conditional"):
-            raise NotImplementedError(
-                f"{slug} declares governs_conditional: the vector's flattened "
-                "contexts slot cannot express per-key quality-context pairing — "
-                "extend vector() before running (Arc1-e addendum 2)")
+    # Arc1-e extension 2026-08-24: the party_concern and governs_conditional
+    # guards are LIFTED — vector() now carries party_pairs and gc_pairs (plus
+    # arb and mach for the iteration-2/3 channels); current_mask consumes the
+    # declarations. The guards' reasons are discharged, not bypassed.
     br = RBA.bridges(); corpus = RBA.corpus_acts()
     sig, ap, pa, ctx = load_layers()
     asorts = RBA.arg_sorts()
