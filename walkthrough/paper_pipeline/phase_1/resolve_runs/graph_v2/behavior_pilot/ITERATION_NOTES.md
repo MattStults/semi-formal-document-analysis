@@ -541,3 +541,30 @@ is the measured shape of the capability gap.
 BLOCK LEDGER: 4 Fable seats spent (~1.7pt: 3 key + 1 dispute) ->
 ~34.7% est.; reserve intact; envelope 36 respected. HALTED on the UA
 venue-economics decision (options in notes 0022 / the halt report).
+
+## 0024 — OPTION (a) EXECUTED: UA TRUTH LEDGER v1 + BLOCK CLOSE, 2026-08-24
+- ASYMMETRIC CERTIFICATE VALIDATED IN USE: negative spot-check 10/10
+  (tripwire clear) -> 74 Opus negatives memoized as trusted truth at
+  ~zero Fable. Escalation batch 1: Fable downgrades 10/24 Opus-relevants
+  — the Opus permissiveness on this brief measured a THIRD independent
+  time (gate 5/10, dispute class 9-vs-23, now 14/24).
+- LEDGER: 122/175 relevant-side+key nodes ruled (98 visible + 24
+  sealed); 53 escalations PENDING next bar (~1.8-2pt).
+- HONEST EARLY PROJECTION (disclosed-partial, firms up with the 53):
+  visible engaged precision-so-far 13/83 = 0.16, and even projecting
+  batch-1's 58% escalation-confirm rate onto the pending nodes the
+  engaged precision lands ~0.25-0.30 — the user-autonomy module
+  OVER-ENGAGES far more than any sample suggested (attempt-1 said
+  0.60; corrected said 0.45; the exhaustive ledger is heading to
+  ~0.3). Prediction clause (a) (FP-dominant) is being confirmed
+  emphatically; the band in clause (c) was optimistic by 2x. THE
+  MEMOIZED-EXHAUSTIVE ARCHITECTURE JUST EARNED ITS KEEP: no n=20
+  sample was ever going to reveal a 0.3-precision module reliably.
+- BUDGET DISCLOSURE: escalation seats ran ~41k vs the ~33k estimate ->
+  est ~36.4%, ~0.4pt past the 36 line. The overshoot is mine (batch
+  sized on stale per-seat costs); logged, not hidden. NO further Fable
+  this bar.
+- NEXT BAR QUEUE: 53 escalations (completes the visible+sealed engaged
+  truth) -> exact precision -> FP-population triage -> repair arc on
+  lookups -> single seal-scored confirmation -> prediction §1 final
+  scoring + the Q1 errata datum.

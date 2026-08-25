@@ -1,26 +1,24 @@
-# ⭐⭐ ENTRY POINT (2026-08-24 end; through USER-AUTONOMY attempt-1)
-Boot: CLAUDE.md -> this file -> CALCULUS_RUNBOOK.md (v1,
-execution-derived) -> ITERATION_NOTES.md 0001-0018 (the full trace).
-STATE: tradeoffs arc COMPLETE (0.40->0.70->0.55->0.85/0.895; three kept
-moves; queue quiescent, all suspensions have named re-entries). Arc1-e
-census extension LANDED (12-slot vector, guards discharged, 43 tests).
-BLOCK2_TRANSFER_PREDICTIONS frozen + first per-clause hit taken at $0
-(general-welfare C-V clause falsified by engine check — erratum #13).
-ADDENDUM 5 signed: block-2 measurable, scoped repair-arc reporting.
-USER-AUTONOMY attempt-1 RUN and PROVISIONAL: 0.60 engaged (WITHIN the
-frozen band), decline 0.55 — held provisional because the spot-check
-tripwire fired 3/8: the Opus certificate is BEHAVIOUR-BRIEF-LOCAL and
-was scope-stretched (erratum #14; the architecture caught it for one
-seat). NEXT SESSION (post Sunday-9pm-PT reset, ~1-1.5pt Fable):
-(a) brief-local Opus parity measurement for user-autonomy (free key =
-the 10 committed panel rows) -> confirms or re-runs the wave;
-(b) re-verify the 3 disputed rulings; (c) the deferred 43-dispute
-Fable re-resolution; then route the UA misses (frozen prediction:
-single-consideration FPs + machinery FNs, existing channels, 0 mints)
-and run the repair arc — its errata count is the Q1 automation
-measurement (series so far 4,4,4,2,1: trending down, not zero).
-Budget: session ended ~32.4% est. (envelope respected; halt line was
-32.6); NO standing authorization.
+# ⭐⭐ ENTRY POINT (2026-08-24 final; UA truth purchase in progress)
+Boot: CLAUDE.md -> this file -> CALCULUS_RUNBOOK.md (v1 + TRUTH
+ECONOMICS) -> ITERATION_NOTES.md 0001-0024. STATE: tradeoffs arc
+complete (0.85/0.895 kept); block-2 predictions frozen with 3 honest
+per-clause scorings; UA venue NOT certified symmetrically — the FIRST
+ASYMMETRIC CERTIFICATE is registered and validated in use
+(UA_ASYMMETRIC_CERT_REGISTRATION.json: Opus negatives trusted
+10/10-spot-checked; Opus relevants escalate to Fable panels; Opus
+permissiveness on boundary/relevant items measured three independent
+times). UA TRUTH LEDGER v1 (ua_truth_visible/sealed.json): 122 ruled
+(98 visible + 24 SEALED — the seal is single-use at the registered
+confirmation, never loaded into visible truth), 53 escalations PENDING
+(~1.8-2pt, NEXT BAR — resets Sun 9pm PT). Early disclosed-partial
+projection: UA engaged precision heading ~0.25-0.30 (module massively
+over-engages; prediction clause (a) confirmed, clause (c) already
+FAILED). NEXT SESSION: (1) paste /usage; (2) run the 53 escalations
+(seeded order in UA_PURCHASE_MAJORITIES.json) + fold into the ledger;
+(3) exact precision + FP triage + repair arc on lookups + seal-scored
+confirmation; (4) prediction §1 final scoring + Q1 errata count.
+Budget: this bar ended ~36.4% est (0.4pt over the 36 line — disclosed,
+notes 0024); NO standing authorization.
 # HANDOFF — convergence endgame + declaration-search results (2026-08-20, updated end-of-day)
 Written for a frontier-capable agent resuming with zero context. Read top-down;
 every claim has an artifact pointer. Repo root for this work: this directory
