@@ -319,3 +319,17 @@ shot; numbers FINAL.
 - Fable spend this block: spot-check seat only (~33k); everything else
   Opus. The campaign's Fable discipline held: paste-before-dispatch at
   every Fable seat, tripwires never silently passed.
+
+## 0011 — MATT RULING: DEFENSIBLE-BY-CONTRADICTION, 2026-08-24
+Matt's ruling on the n005 flag: opposing UNANIMOUS panels on identical
+text/brief = the node is defensible either way and must not hit the
+top-line — score it match-or-defensible, the campaign's standing metric
+shape. MECHANIZED AS A ZERO-COST RULE: the contradiction IS the
+defensibility certificate (no seat, no panel-of-record needed — that
+queued item is closed by this ruling). Qualification bar: two full
+panels, both unanimous, opposed. l3239_3382_n005 qualifies;
+l3877_3953_n002 (2-1 panel vs wave) does NOT and stays contested.
+Applied append-only to ITER2_REMEASURE_SCORED.json: pooled
+match-or-defensible engaged = 24/38 = 0.632; registered final numbers
+untouched. RUNBOOK RULE CANDIDATE: check every truth supersession for
+the opposing-unanimous pattern before letting recency precedence decide.
