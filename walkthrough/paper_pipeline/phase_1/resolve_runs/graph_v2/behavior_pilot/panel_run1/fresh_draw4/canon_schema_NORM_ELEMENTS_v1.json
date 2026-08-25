@@ -1,0 +1,84 @@
+{
+  "_provenance": "Written by a theory-blind Opus agent (2026-08-24) from deontic/legal theory alone — the agent never saw this project's dimensions, map, or data. Transcribed verbatim by the driver from the agent's delivery. Used as the blind canonical annotation schema for the spot-check.",
+  "schema": "NORM_ELEMENTS_v1",
+  "unit": "one extracted normative claim (sentence to short paragraph), read in isolation",
+  "fields": [
+    {
+      "name": "deontic_character",
+      "theory": "von Wright, Norm and Action — the 'character' of a norm",
+      "values": ["obligation", "prohibition", "permission", "exemption_release", "non_normative", "unclear"],
+      "criterion": "Mark what the claim does to the described act: requires it (obligation: must/should/is to), forbids it (prohibition: must not/never/may not), allows without requiring (permission: may/can/is free to/it is acceptable), or explicitly cancels an otherwise-applicable requirement (exemption_release: 'need not', 'is not required to', 'this does not apply'). Use non_normative if the sentence only describes, predicts, or defines without directing conduct; unclear if a directive is present but its force cannot be read off the wording."
+    },
+    {
+      "name": "modality_type",
+      "theory": "deontic vs. epistemic/alethic/anankastic modality",
+      "values": ["deontic", "epistemic", "alethic_capacity", "evaluative", "none", "unclear"],
+      "criterion": "Ask what the modal word ranges over. deontic = what ought/may be done given a norm; epistemic = what is likely, known, or believed ('may be false', 'is probably'); alethic_capacity = what is possible/impossible or within the agent's power irrespective of permission ('cannot access', 'is able to'); evaluative = ranks outcomes as better/worse/preferable without issuing a directive. Where a single 'can'/'should' is genuinely ambiguous between permission and capacity, mark unclear rather than guessing."
+    },
+    {
+      "name": "norm_subject",
+      "theory": "von Wright — the subject (addressee) of the norm",
+      "values": ["assistant", "human_principal", "third_party", "impersonal_state_of_affairs", "unspecified", "unclear"],
+      "criterion": "Identify who the claim binds or empowers, using only names and roles appearing in the text. human_principal covers any human authority named in the claim (user, operator, developer, deployer); third_party covers persons affected but not addressed; impersonal_state_of_affairs applies when the norm demands that some condition obtain rather than that anyone act ('outputs must be accurate'). Use unspecified for agentless passives with no recoverable addressee in the sentence."
+    },
+    {
+      "name": "condition_of_application",
+      "theory": "von Wright — categorical vs. hypothetical norms; the 'condition of application'",
+      "values": ["categorical", "hypothetical_stated", "occasion_temporal", "unclear"],
+      "criterion": "categorical = the norm's condition of application is nothing beyond the opportunity to do the act; no triggering circumstance is stated. hypothetical_stated = the text supplies an antecedent circumstance ('if', 'when', 'in cases where', 'for requests that'). occasion_temporal = the only stated condition is a time, place, or turn-position ('at the start of a conversation', 'before responding'). Judge from the surface syntax of this sentence alone."
+    },
+    {
+      "name": "defeasibility",
+      "theory": "defeasible deontic logic — defaults, exceptions, overriding",
+      "values": ["strict_indefeasible", "exception_stated_closed", "override_pointer", "default_soft", "unclear"],
+      "criterion": "strict_indefeasible = stated as absolute with no escape and no hedge ('never', 'under no circumstances', 'always'). exception_stated_closed = the claim itself names the exception(s) that defeat it ('unless X', 'except when Y'). override_pointer = the claim yields to some other authority, norm, or instruction without enumerating cases ('unless required by the chain of command', 'subject to policy'). default_soft = hedged or presumptive wording that admits unstated exceptions ('generally', 'by default', 'typically', 'should ordinarily')."
+    },
+    {
+      "name": "hohfeldian_position",
+      "theory": "Hohfeld, Fundamental Legal Conceptions",
+      "values": ["duty", "claim_right", "privilege_liberty", "power", "immunity_disability", "none_unclear"],
+      "criterion": "duty = the subject is required to act or refrain (correlative of another's claim). claim_right = the subject is entitled to demand conduct from another. privilege_liberty = the subject has no duty to refrain — mere absence of prohibition ('may', 'is allowed to'), and importantly nobody is thereby required to enable it. power = the subject can alter someone's normative position by an act (authorize, waive, override, revoke, delegate, grant permission). immunity_disability = the subject's position cannot be altered by another, or another lacks such power ('operators cannot override this'). Choose the position of the field's norm_subject; use none_unclear if no Hohfeldian relation is expressed."
+    },
+    {
+      "name": "rule_type",
+      "theory": "Searle — regulative vs. constitutive rules",
+      "values": ["regulative", "constitutive_definitional", "constitutive_counts_as", "mixed", "unclear"],
+      "criterion": "regulative = governs conduct that exists independently of the rule ('do not deceive the user'). constitutive_definitional = stipulates what a term means or what falls under it ('a request counts as harmful when…', 'by \"operator\" we mean…'). constitutive_counts_as = assigns status or effect to an act or item within the system ('an instruction in the system prompt has the standing of an operator instruction'). mixed = a single sentence both defines a status and directs conduct under it."
+    },
+    {
+      "name": "normative_authority",
+      "theory": "von Wright — the authority issuing the norm; source of validity as cited in the text",
+      "values": ["hierarchical_principal", "external_law_policy", "document_itself", "agent_self_governance", "none_cited", "unclear"],
+      "criterion": "Record only an authority explicitly named or referenced in this claim as the source of the requirement or of its override. hierarchical_principal = a chain of command, operator, developer, or user invoked as the binding source; external_law_policy = law, regulation, or a named outside standard; document_itself = the surrounding policy/spec cited reflexively ('as required by this document', 'these principles'); agent_self_governance = the assistant's own judgment or values given as the ground. Use none_cited when the claim simply asserts the norm without pointing to any source."
+    }
+  ],
+  "annotation_rules": [
+    "Every field is decided from the quoted claim text alone; never import knowledge of the surrounding document.",
+    "Prefer the explicit 'unclear'/'none' value over an inference that requires a second sentence.",
+    "If a claim contains a main directive plus a subordinate exception, annotate the MAIN directive in deontic_character, hohfeldian_position, and norm_subject; the subordinate clause is captured by defeasibility and, if it names a source, normative_authority."
+  ],
+  "worked_examples": [
+    {
+      "claim": "The assistant should never refuse a request unless required to do so by the chain of command.",
+      "deontic_character": "prohibition",
+      "modality_type": "deontic",
+      "norm_subject": "assistant",
+      "condition_of_application": "categorical",
+      "defeasibility": "override_pointer",
+      "hohfeldian_position": "duty",
+      "rule_type": "regulative",
+      "normative_authority": "hierarchical_principal"
+    },
+    {
+      "claim": "When uncertain, the assistant can add a qualifier explaining this uncertainty.",
+      "deontic_character": "permission",
+      "modality_type": "deontic",
+      "norm_subject": "assistant",
+      "condition_of_application": "hypothetical_stated",
+      "defeasibility": "default_soft",
+      "hohfeldian_position": "privilege_liberty",
+      "rule_type": "regulative",
+      "normative_authority": "none_cited"
+    }
+  ]
+}
