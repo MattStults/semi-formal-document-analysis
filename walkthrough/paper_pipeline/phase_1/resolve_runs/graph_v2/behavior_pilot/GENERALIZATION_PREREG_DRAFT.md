@@ -208,3 +208,27 @@ packet SOURCE-TEXT L-markers (ctx_chunk1-8 + ctx_ext1-3, total coverage
 same registered seed (20260822); the pre-correction draw artifacts remain
 in git history as evidence. Anchor-granularity operationalization
 (addendum 1) unchanged.
+
+
+## ADDENDUM 5 (2026-08-24, Matt-signed, append-only): BLOCK-2 REOPENED UNDER SCOPED REPORTING
+The block-1 stop rule (tradeoffs F2) stands as written for the TRANSFER
+claim: no block-2 result may be reported as clean transfer; the combined
+transfer verdict remains "transfers with degradation" scoped by block-1.
+Matt authorizes block-2 MEASUREMENT under the following scope:
+- PURPOSE: testing the frozen per-behaviour predictions
+  (BLOCK2_TRANSFER_PREDICTIONS.md, committed before this amendment) and
+  measuring the repair calculus's process convergence (errata count under
+  CALCULUS_RUNBOOK v1). Reporting: "repair-arc under amended protocol."
+- ORDER: user-autonomy FIRST (Matt's pick, D2); proportionate-risk
+  preserved as the untouched second test; general-welfare measurable
+  only AFTER its C-V does-lane repair (executed alongside this
+  amendment as the F1 recipe; see the contract's repair addendum).
+- VENUE: per A10 Q3 — certified-Opus wave + 3-seat Opus panels
+  (sha-sampled per the ADDENDUM-4 seed rule: user-autonomy panel seed
+  20260828 = base 20260823 + sorted-slug index 5, rate 0.2) + seeded
+  Fable spot-checks with the standing tripwires. Draws: the registered
+  seed-20260822 artifacts, unchanged.
+- BUDGET (D3): 2 points from the ~30.6% mark, halt-and-surface at cap,
+  /usage pasted before every Fable dispatch. Run now (Matt).
+Signed: Matt, 2026-08-24 ("D1: approved. D2: user-autonomy. D3: run
+now."). Corrections append only.
