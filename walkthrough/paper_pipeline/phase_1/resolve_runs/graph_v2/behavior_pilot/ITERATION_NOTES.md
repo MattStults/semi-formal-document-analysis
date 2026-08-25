@@ -829,3 +829,20 @@ measured loss) or judgment at match time — the information floor
 (0036) reappearing at the value layer. Also: the audit habit is now
 proven twice — EVERY separability claim must ship with its value-reuse
 audit (method rule).
+
+## 0040 — CORRECTION (Matt): VALUES = LEAF ATOMS; THE HIERARCHY IS THE OBJECT, 2026-08-25
+Matt: "values == atoms, which is solved in the ASP." Upheld — the 0039
+entropy framing overstated: leaf non-recurrence is the EXPECTED shape
+of taxonomy leaves (cf. functors), and matching is hierarchical
+(bridges/subsumption), never exact-leaf. The 0039 audits tested flat
+vocabularies; the merge step should emit BRIDGES, not buckets.
+What survives, unified: (a) the information floor relocates to bridge
+construction (one judgment per leaf, amortized — better economics than
+judgment-per-match); (b) EVERY campaign precision problem is a
+hierarchy-LEVEL problem: FPs = matching at too-coarse interior nodes,
+unfixable residuals = missing intermediate levels, mints = discovering
+interior nodes. The tradeoffs arc, the UA arc, and 0039 are one
+phenomenon at three vocabularies. NEXT-DOCUMENT DESIGN CONSEQUENCE:
+new dimensions' value merges emit subsumption lattices from the start
+(the acts pipeline generalized), and per-query matching-level
+selection is a first-class declaration.
