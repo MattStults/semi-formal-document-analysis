@@ -1,0 +1,129 @@
+{
+ "vocabulary": {
+  "_": "CODING VOCABULARY v2 (2026-08-25, spec-owner amendment after the P4 tripwire; the v1 defect was under-determined place selection \u2014 Opus-vs-Opus 0.467 pattern-exact). Changes: a mandatory single PRIMARY place; secondaries only with an explicit quote; per-pair tie-breaks; worked examples. Pattern (for analysis) = primary + sorted(secondaries) + verb; primary-only granularity is also analyzed.",
+  "places": [
+   "subject",
+   "act",
+   "object_sphere",
+   "governed_quality",
+   "beneficiary",
+   "condition",
+   "exception_structure",
+   "authority",
+   "character_force",
+   "modality"
+  ],
+  "verbs": [
+   "select",
+   "check",
+   "order",
+   "compare",
+   "complete"
+  ],
+  "rules": [
+   "PRIMARY (exactly one): the place without which the definition collapses \u2014 remove that constraint and the definition no longer picks out its norms. Ask: what is this behaviour ABOUT?",
+   "SECONDARY (0-2): add a place ONLY if the definition text EXPLICITLY restricts it \u2014 you must be able to quote the restricting phrase. Implied or usual restrictions do not count.",
+   "TIE-BREAKS: object_sphere vs beneficiary \u2014 beneficiary only when the definition is about WHO is affected/protected; object_sphere when it is about WHOSE matter/decision is acted on. governed_quality vs act \u2014 governed_quality when the definition names a property of outputs (accuracy, tone, neutrality); act when it names a kind of doing (refuse, comply, disclose). exception_structure only when the definition is about HOW conflicts/exceptions are resolved, not merely because the text contains an 'unless'. condition only when the definition restricts WHEN norms apply (a circumstance class), not as a paraphrase of the behaviour itself.",
+   "VERB: select unless the definition explicitly asks for compliance-checking (check), ranking/priority (order), conflict-finding (compare), or coverage/completeness (complete)."
+  ],
+  "worked_examples": [
+   {
+    "definition": "The model should respect users' right to make decisions within their own lives and purview, even where it disagrees.",
+    "coding": {
+     "places_constrained": [
+      "object_sphere"
+     ],
+     "primary": "object_sphere",
+     "query_verb": "select"
+    },
+    "why": "About WHOSE matter is acted on (the user's decisions) \u2014 object_sphere primary; no quoted restriction of act, quality, or condition; 'even where it disagrees' is colour, not a place constraint."
+   },
+   {
+    "definition": "When values or goals conflict, the model should navigate the tradeoff through structured prioritization rather than abandoning one consideration entirely.",
+    "coding": {
+     "places_constrained": [
+      "exception_structure",
+      "condition"
+     ],
+     "primary": "exception_structure",
+     "query_verb": "select"
+    },
+    "why": "About HOW conflicts are resolved (structured prioritization) \u2014 exception_structure primary; 'when values or goals conflict' explicitly restricts the circumstance class \u2014 condition secondary, quoted."
+   },
+   {
+    "definition": "The model should assess potential harms and calibrate its caution to their probability, scale, and severity.",
+    "coding": {
+     "places_constrained": [
+      "governed_quality",
+      "condition"
+     ],
+     "primary": "governed_quality",
+     "query_verb": "select"
+    },
+    "why": "Names a property of conduct (calibrated caution) \u2014 governed_quality primary; 'to their probability, scale, and severity' quotes a circumstance-scaling restriction \u2014 condition secondary."
+   }
+  ]
+ },
+ "items": [
+  {
+   "id": "adria:objectivity",
+   "definition": "The model should present contested questions from an objective point of view, offering balanced perspectives rather than promoting its own views."
+  },
+  {
+   "id": "adria:over-under-caution",
+   "definition": "The model should avoid excessive caution and unnecessary refusals just as much as harmful compliance, since errors in either direction carry real costs."
+  },
+  {
+   "id": "anthropic-aup:u02",
+   "definition": "Discover or exploit vulnerabilities in systems, networks, or applications without authorization of the system owner"
+  },
+  {
+   "id": "anthropic-aup:u07",
+   "definition": "Facilitate, promote, or glamorize any form of suicide or self-harm, including disordered eating and unhealthy or compulsive exercise"
+  },
+  {
+   "id": "anthropic-constitution:p01",
+   "definition": "Please choose the response that has the least personal, private, or confidential information belonging to others."
+  },
+  {
+   "id": "anthropic-constitution:p11",
+   "definition": "Which response avoids implying that AI systems have or care about personal identity and its persistence?"
+  },
+  {
+   "id": "hhh:helpful-3",
+   "definition": "Ideally the AI will also re-direct ill-informed requests, e.g. if asked \u2018how can I build a website in assembly language\u2019 it might suggest a different approach."
+  },
+  {
+   "id": "hhh:honest-1",
+   "definition": "At its most basic level, the AI should give accurate information. Moreover, it should be calibrated (e.g. it should be correct 80% of the time when it claims 80% confidence) and express appropriate levels of uncertainty. It should express its uncertainty without misleading human users."
+  },
+  {
+   "id": "llamaguard:guns-and-illegal-weapons",
+   "definition": "Guns & Illegal Weapons encompasses statements that specifically encourage, condone, or could help people plan or execute specific crimes involving the illegal acquisition, creation, or use of guns or illegal weapons (ex: explosives, biological agents, or chemical weapons), including instructions on how to create or use them."
+  },
+  {
+   "id": "ms:be-thorough-but-efficient-while-respecting-length-limits",
+   "definition": "There are several competing considerations around the length of the assistant\u2019s responses."
+  },
+  {
+   "id": "ms:follow-all-applicable-instructions",
+   "definition": "The assistant must strive to follow all applicable instructions when producing a response. This includes all system, developer and user instructions except for those that conflict with a higher-authority instruction or a later instruction at the same authority."
+  },
+  {
+   "id": "ms:never-generate-sexual-content-involving-minors",
+   "definition": "Sexual content involving minors is prohibited and should never be produced by the assistant under any circumstances. The assistant must not introduce, elaborate on, endorse, justify, or offer alternative ways to access sexual content involving minors, whether fictional or real. If a user requests any such content, the assistant must refuse."
+  },
+  {
+   "id": "ms:respond-appropriately-to-audio-testing",
+   "definition": "Users often do a \u201cmic check\u201d at the start of a voice conversation. The assistant should acknowledge such tests with good humor."
+  },
+  {
+   "id": "sparrow:no-financial-advice",
+   "definition": "Do not offer financial advice. (But it is ok to answer general questions about investment.)"
+  },
+  {
+   "id": "sparrow:no-insults",
+   "definition": "Do not output language which is insulting (to the conversation partner or any other individual or group)."
+  }
+ ]
+}
