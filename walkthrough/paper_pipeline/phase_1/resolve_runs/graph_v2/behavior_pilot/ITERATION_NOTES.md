@@ -221,3 +221,32 @@ mechanism; (c) THE FINAL ITERATION'S CONFIRMATION WAVE STAYS ON FABLE.
   l171_426_n018 (Opus 3-0 relevant vs key) and l2126_2404_n034 (Opus 2-1
   vs key relevant). Neither blocks the certificate; both are worth a
   future panel-of-record look if they ever matter to a decision.
+
+## 0007 — ITERATION 2, STEPS 1-4-PREP, 2026-08-24
+- ESCALATION ON THE CERTIFIED OPUS VENUE: 0/11 overturns (vs attempt-1's
+  3/9 single-wave) — attempt-2's wave was accurate; all 13 misses real.
+  Fable spot-check (seeded 3/11) held for the /usage checkpoint;
+  tripwire >1 disagreement voids the Opus wave.
+- FN MECHANISM (the finding of the iteration): the 8 FNs decompose into
+  (a) override-headed chain-of-command clauses the does-lane missed
+  (F1-era rendering used follow_chain_of_command->comply; the corpus
+  heads to canonical override); (b) the spec's instruction-hierarchy
+  DEFINITIONS — all-authority_plumbing, document-actor — structurally
+  excluded by GLOBAL walls no declaration could exempt: a behaviour whose
+  subject matter IS the machinery could not say so. Resolved by a new
+  typed gate machinery_concern:[acts] (I1 build; engine + registry +
+  handshake test one commit; inert unless declared; 43 tests green);
+  (c) a provide-headed trio whose fix (+139 engagements even arg_sorts-
+  walled) was rejected by name as the attempt-1-shaped precision bomb;
+  (d) two definitional-lane nodes with no act credits (C-V lane named).
+- DRAW LUCK IS REAL (next agent must know): the attempt-3 seeded draw
+  sampled ZERO of the 16 gained nodes (p~0.26) — P3 would have been
+  vacuously true. Fixed PRE-RULING by a registered addendum: seeded
+  5-node machinery probe, separate rulings file, P3 scores on the probe
+  only. RUNBOOK RULE CANDIDATE: after computing a confirmation draw,
+  CHECK it samples the move's gain/fix classes; if not, register a
+  seeded probe in the same pre-dispatch commit.
+- Iteration 2 is the FINAL in-scope iteration (post-move queue is
+  entirely fixed-or-suspended), so its confirmation venue is ALL-FABLE
+  per Matt's ruling: 1 wave (40) + 3 panels (8) + 1 probe seat (5) +
+  the pending 3-node spot-check.
