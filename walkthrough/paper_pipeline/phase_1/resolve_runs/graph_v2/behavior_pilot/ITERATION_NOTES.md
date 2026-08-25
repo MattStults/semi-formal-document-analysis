@@ -787,3 +787,28 @@ The claims that survive: TARGET's blind calibration (predates the
 study), and the three EXTERNAL tests (TARGET at scale, prop-risk
 transfer, next-document misses) — which do not share the designer's
 vocabulary and can falsify what internal analyses cannot.
+
+## 0038 — QUERY-CLASS ARC CLOSED: THE MEASURED BOUND, 2026-08-25
+Matt's arc (open coding -> place-blind schema -> annotate -> separate)
+completed end-to-end, all Opus, $0 Fable:
+- DISCOVERY WORKED where my closed vocabulary could not: 24 emergent
+  dimensions, 9 with no counterpart in my ten places (evaluation_unit
+  and subject_matter_class the load-bearing two, dual-coder evidenced;
+  our instrument is measurably utterance-locked).
+- The vacuousness trap was caught (free-text values = fingerprints,
+  zero reuse) and fixed by canonicalization (105 values, 46% merger,
+  seat-independent 115/115).
+- FINAL: separability 94/100 both seats identically; all 6 collisions
+  are cross-source SAME-CONSTRUCT duplicates (the census doubling as
+  corpus dedup); zero different-construct collisions. THE BOUND:
+  24 dimensions x 105 values addresses the sampled character-spec
+  query class completely, ~1.2 handles/definition.
+- Errata this arc: designer-vocabulary smuggling caught THREE times
+  (Matt twice, the vacuousness check once) — the standing rule: schema
+  derivation, annotation, and canonicalization must each be blind to
+  the layer above; comparison to prior vocabularies happens only at
+  analysis, as a finding.
+STANDING FOR MATT: the new-dimension candidates' implications for the
+INSTRUMENT (evaluation_unit especially — trajectory-class behaviours
+are outside the node-relevance design entirely); the UA mint decision;
+the prop-risk test. Fable spent this AFK drive: 0.

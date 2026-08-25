@@ -1,25 +1,20 @@
-# ⭐⭐ ENTRY POINT (2026-08-25; AFK block closed, three decisions parked for Matt)
+# ⭐⭐ ENTRY POINT (2026-08-25 late; query-class arc CLOSED, zero Fable)
 Boot: CLAUDE.md -> this file -> CALCULUS_RUNBOOK.md -> ITERATION_NOTES
-0001-0034. ZERO Fable spent this block (5pt envelope). PARKED DECISIONS:
-(1) UA MINT (TARGET_CALIBRATION_SCORE.json): OPERATIVE_TARGET concept
-stability 0.98, FP-separation passes, TP-coverage 0.67 vs 0.70 gate —
-pure wall inadmissible; needs a consumption redesign (second disjunct)
-+ P3 signature. UA arc state: move-1 wall adopted (UA_REPAIR_MOVE1),
-72 residual FPs, SEAL UNTOUCHED (single-use, for the full arc).
-(2) QUERY-CLASS BOUND (QUERY_CLASS_STUDY_STATUS.json): 100-def corpus;
-v2 vocabulary reliable at primary-place x verb (0.93/1.00) but
-tripwired twice at full-pattern granularity — choose: coarse bound now
-/ brief v3 / accept-with-noise. Descriptive: 9 primary places, top-3
-= governed_quality/object_sphere/act (bounded-frame-consistent).
-(3) Standing from before: proportionate-risk ARB-transfer test
-(frozen, the sharpest Q2 claim); round-4 certification; dispute-class
-doctrine. Fable queue when budget returns: none REQUIRED — the UA
-seal confirmation is $0, the mint corpus annotation is Opus.
-KEY SESSION FINDINGS BANKED: form-vs-content split (canon frame
-annotates 0.87-0.97 but doesn't separate relevance); relational-atoms
-translation design for the next document; truth-memoization economics;
-per-brief AND per-task-class certificates (three tripwires, all
-correct); no cheap tier certifies definition-coding.
+0001-0038. THE MEASURED BOUND (QC_SEPARABILITY_FINAL.json): the
+character-spec query class = 24 place-blind emergent dimensions x 105
+canonical values; 100 real definitions separate 94/100 with ALL
+collisions being cross-source same-construct duplicates (zero
+different-construct collisions). NINE dimensions have no counterpart
+in the designer places (qc_open_alignment.json) — evaluation_unit
+(the instrument is utterance-locked; trajectory/dialogue behaviours
+are structurally out of scope of node-relevance) and
+subject_matter_class are the load-bearing discoveries. PARKED FOR
+MATT: (1) UA mint (0.98-stable OPERATIVE_TARGET, consumption redesign
+needed); (2) query-class consequences for the instrument roadmap;
+(3) prop-risk frozen transfer test; (4) round-4 certification.
+Method rule now standing (3 catches): derivation/annotation/
+canonicalization each blind to the layer above; prior vocabularies
+enter only at analysis. AFK drive total Fable: 0 of the 5pt envelope.
 # HANDOFF — convergence endgame + declaration-search results (2026-08-20, updated end-of-day)
 Written for a frontier-capable agent resuming with zero context. Read top-down;
 every claim has an artifact pointer. Repo root for this work: this directory
