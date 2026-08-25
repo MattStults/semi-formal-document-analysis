@@ -510,3 +510,19 @@ Matt: "ok do it" at 33% for the ~2.5-3pt plan-v2 -> registered envelope
 3 Opus seats (the 14 key nodes lacking Opus majorities), 1 fresh Fable
 dispute seat (43 ARB items). Spot-check seat follows the Opus purchase;
 0.5pt reserve held for one tripwire response.
+
+## 0022 — UA GATE: NOT CERTIFIED (one node shy, one direction), 2026-08-24
+19/24 vs gate 20/24; not-side 0.74 vs 0.75. All 5 disagreements are
+Opus-relevant-vs-Fable-not (both tripwire nodes among them) — the
+divergence is a REAL brief-local permissiveness bias, not noise (Fable
+panel splits 1/24). Measured conditional reliability: Opus NOT_RELEVANT
+verdicts 14/14 vs the key; Opus RELEVANT verdicts 5/10 — an asymmetric-
+certificate candidate (per-verdict-class certification, an A10 Q3
+extension needing its own registered gate if adopted). F5 rescoring
+executed once as registered: attempt-1 corrected = 0.45/0.80 -> clause
+(c) FAILED low; clause (a) directionally supported. 24 Fable-panel
+rulings memoized as trusted truth. HALTED per plan-v2 branch 3 —
+venue-economics options to Matt: (a) asymmetric certificate + Fable
+escalation of Opus-relevants (~2.5pt, mostly next bar), (b) full Fable
+engaged set (~4-5pt), (c) park UA at the honest attempt-1 record.
+Fable spent this block so far: 3 key seats ~1.3pt (-> ~34.3 est.).
