@@ -250,3 +250,9 @@ mechanism; (c) THE FINAL ITERATION'S CONFIRMATION WAVE STAYS ON FABLE.
   entirely fixed-or-suspended), so its confirmation venue is ALL-FABLE
   per Matt's ruling: 1 wave (40) + 3 panels (8) + 1 probe seat (5) +
   the pending 3-node spot-check.
+
+## 0008 — FINAL-BLOCK BUDGET CHECKPOINT (Matt, 2026-08-24)
+/usage pasted at 27% Fable; Matt: "Please continue." — explicit
+authorization for the final all-Fable block (~2 points: spot-check 3,
+wave 40, 3x panel 8, probe 5), expected landing ~29%. This supersedes
+the iteration-1 26% halt line for this block only.
