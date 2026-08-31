@@ -55,9 +55,8 @@ cd semi-formal-experiment && .venv/bin/python measure_join.py
 .venv/bin/python machine/query.py seats
 ```
 
-(`machine/check_model.py`, the companion source-check for step 5, currently
-exits nonzero on 23 drifted doc references — being repaired; the query layer
-above runs clean.)
+(`machine/check_model.py`, the companion source-check for step 5, also runs
+clean — all four checks pass.)
 
 ## Two arcs
 
@@ -133,8 +132,8 @@ cd ../walkthrough && ../semi-formal-experiment/.venv/bin/python -m pytest -q
 # arc-2 suite; see CI for current counts
 ```
 
-CI runs both suites plus the demo path on every push *(badge added at
-publication)*.
+CI runs both suites plus the citation and graph checks from the demo path on
+every push *(badge added at publication)*.
 
 ⚠️ **Two different files are named `behaviours.json` and they are NOT
 interchangeable** — `data/behaviours.json` (the panel roster) and
