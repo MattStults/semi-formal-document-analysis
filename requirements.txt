@@ -26,6 +26,13 @@ clingo==5.8.0
 # import without it.
 pydantic==2.13.4
 
+# xclingo renders ASP explanation traces; test_schema's anonymous-variable
+# tests verify their own ground against it and REFUSE to pass quietly when it
+# is absent (DEBUGGING_TIPS entry 8), and the mutation-guard family requires a
+# green baseline through the same path. Discovered missing on the first fresh
+# CI run (2026-08-31): the local venv had it, this file did not.
+xclingo==2.0b24
+
 # --- NOT NEEDED: walkthrough/deontic_probe --------------------------------
 # RULED AGAINST. 03_pipeline.md open question 1 decided plain clingo plus a
 # superiority relation, NOT the deontic extension — so deontic_probe/ is a

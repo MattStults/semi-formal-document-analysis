@@ -7,7 +7,8 @@ line numbers refer to the raw file. Every rate prints its denominator (DEBUGGING
 import json, re, sys, statistics
 from pathlib import Path
 
-RAW = Path('/Users/mattstults/Documents/ai_safety_projects/semi-formal-document-analysis/specs/openai-model-spec/model_spec.md')
+# Resolved relative to this file so a fresh clone works from any cwd.
+RAW = Path(__file__).resolve().parents[5] / 'specs/openai-model-spec/model_spec.md'
 
 def normalise(s):
     # SS17: strip formatting the file carries, never content words.
