@@ -1,6 +1,6 @@
 # Behavior-matching pilot — offline skeleton design
 
-Spec: EXPERIMENTS.md 2026-08-13, "BEHAVIOR-PIPELINE PILOT PLAN (Matt-approved
+Spec: EXPERIMENTS.md 2026-08-13, "BEHAVIOR-PIPELINE PILOT PLAN (owner-approved
 direction)". This directory is the OFFLINE skeleton: every model call sits
 behind an injectable `complete(system, user)` seam (rename_seat.judge's
 contract), the embedder is injected with a lexical fallback, and the one
@@ -172,7 +172,7 @@ Order of validation (cheapest falsifier first):
    pairs through a real small model; divergence from a frontier model on the
    same brief is a seat defect, not a model failure — same parity protocol
    as rename_seat's sweep.
-2. **Atom-vs-node granularity** (Matt's #7 core): decompose the 5 pilot
+2. **Atom-vs-node granularity** (the project owner's #7 core): decompose the 5 pilot
    behaviors live, run matching, count atoms that match 0 nodes vs >3 nodes.
    Frontier clause sets are the pre-registered evaluation reference;
    disagreements adjudicated against the document.
@@ -183,7 +183,7 @@ Order of validation (cheapest falsifier first):
 
 Budget note: entire pilot fits in ~$0.25 of the ~$6.35 remaining ceiling.
 
-## 6. Open questions for Matt
+## 6. Open questions for the project owner
 
 1. **Selection floor**: only how-to-approach-tradeoffs concentrates >2x at
    span level. Accept the 5 at floor 0.9, or narrow the pilot to the top 3

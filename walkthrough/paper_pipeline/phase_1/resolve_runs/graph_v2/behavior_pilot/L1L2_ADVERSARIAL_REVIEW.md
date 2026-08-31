@@ -54,7 +54,7 @@ addendum):
   `atoms_frontier_frozen.json`, `PREREG_panel_equivalence.{md,sha256}`
 - `.../behavior_pilot/panel_run1/` (adjudication + fresh_draw / fresh_draw2 /
   fresh_draw3 / fresh_draw4 result blocks, `agreed_negative_rulings.json`,
-  `panel_rerulings.json`, `REGISTERED_RESULT.json`, `spotcheck_matt_result.json`)
+  `panel_rerulings.json`, `REGISTERED_RESULT.json`, `spotcheck_owner_result.json`)
 - `.../behavior_pilot/ua_truth_visible.json`, `ua_truth_sealed.json`,
   `ITER1_TRADEOFFS_REPAIR_TRUTH.json`, `ITER2_TRADEOFFS_REPAIR_TRUTH.json`,
   `GEN_BLOCK1_SCORED.json`, `ITER*_SCORED.json`, `round4_*_scored*.json`,
@@ -83,7 +83,7 @@ two parts; where the addendum corrects the main review it says so explicitly.
 # ADVERSARIAL REVIEW — licensing experiments L1 / L2
 
 Ground-truth artifacts consulted:
-`/Users/mattstults/Documents/ai_safety_projects/semi-formal-document-analysis/walkthrough/paper_pipeline/phase_1/resolve_runs/graph_v2/behavior_pilot/` — `RETRANS_REVIEW_DISPOSITION.md`, `ITERATION_NOTES.md` (0031, 0036, 0042), `qc_canonical_values.json`, `qc_emergent_schema.json`, `qc_emergent_ann_{A,B}.json`, `query_class_corpus.json`, `qc_separability_census.py`, `RETRANS_INTEGRATION_CENSUS.json`; and `/Users/mattstults/.../semi-formal-experiment/spend.py`.
+`/Users/mattstults/Documents/ai_safety_projects/semi-formal-document-analysis/walkthrough/paper_pipeline/phase_1/resolve_runs/graph_v2/behavior_pilot/` — `RETRANS_REVIEW_DISPOSITION.md`, `ITERATION_NOTES.md` (0031, 0036, 0042), `qc_canonical_values.json`, `qc_emergent_schema.json`, `qc_emergent_ann_{A,B}.json`, `query_class_corpus.json`, `qc_separability_census.py`, `RETRANS_INTEGRATION_CENSUS.json`; and `semi-formal-experiment/spend.py`.
 
 ---
 
@@ -282,8 +282,8 @@ one, which removes an objection.*
 
 ## Corrections to the main review
 
-**C1 — Cost premise (affects F17, A12).** Panel adjudication is **$0 API**. The $17.179/$25.00 in `spend.py` is corpus translation and matching spend (DeepSeek-V4-Flash bulk translation alone is $13.73); `usage.jsonl` has essentially no rows during the periods when the round-3/4, generalization, UA, and tradeoffs panels ran. Panel truth is produced by **Fable/Opus subagent seats**, and the real budget is Matt's Fable envelope (notes 0032: 5%/week cap), pre-registered at **~0.13–0.17M Fable tokens per 80-node panel round**, ~0.08–0.10M per 40-node generalization behaviour. My F17 experiment is therefore **not** dollar-constrained — but it must be registered against the **Fable** budget, and that is a real constraint the L1/L2 registrations also omit entirely.
-**Fix.** Every registered experiment states its Fable-token cost estimate alongside its $ cost, per the existing prereg pattern.
+**C1 — Cost premise (affects F17, A12).** Panel adjudication is **$0 API**. The $17.179/$25.00 in `spend.py` is corpus translation and matching spend (DeepSeek-V4-Flash bulk translation alone is $13.73); `usage.jsonl` has essentially no rows during the periods when the round-3/4, generalization, UA, and tradeoffs panels ran. Panel truth is produced by **Fable/Opus subagent seats**, and the operative constraint is the frontier-seat allocation (notes 0032), with **a pre-registered per-round seat-token allocation**. My F17 experiment is therefore **not** dollar-constrained — but it must be registered against the **seat-capacity** budget, and that is a real constraint the L1/L2 registrations also omit entirely.
+**Fix.** Every registered experiment states its compute-cost estimate alongside its $ cost, per the existing prereg pattern.
 
 **C2 — Scale (affects F5, F7).** The graph is **773 nodes** (`graph_v2/node_corpus_all.json`; 593 at root unwind per `GRAPH_OVERVIEW.md`), not ~600. More importantly: `behavior_pilot/coverage_translated.json` records **`translated_nodes: 183`**. See F32.
 
@@ -304,7 +304,7 @@ Three artifacts, three constructs, all called "relevance." L1 says "relevance pr
 ### F29. Q-B is circular by construction: every behaviour with panel truth is IN the 100-definition corpus, because 11 corpus entries ARE the project's own behaviour set.
 **Defect.** `query_class_corpus.json`'s 100 ids break down as `ms:` 29, `sparrow:` 24, `anthropic-constitution:` 12, `anthropic-aup:` 10, **`adria:` 11**, `hhh:` 9, `llamaguard:` 6. Every behaviour with adjudicated node truth maps into the `adria:` block: helpfulness, third-party-harm, over-under-caution, tradeoffs, user-autonomy, harmlessness-to-user, objectivity, general-welfare, proportionate-risk. panel-v5's two additional defined behaviours (`no-sycophancy`, `undermine-oversight`) are *also* in the corpus and have **zero rulings** in the runlog. The one behaviour outside the 100 — `animal-welfare-impacts` — has citation coverage only (`data/panel-coverage.json`) and **zero** adjudicated relevant/not_relevant rulings anywhere.
 **Why it matters for Q-B.** The 24×105 ontology was open-coded from a corpus that includes the definitions of the very behaviours it is scored against. There is **no out-of-corpus panel truth in this repo at all**. L2 as written does not fix this, because L2 never produces a relevance judgment (F12) — so if L2 passes, Q-B remains untested by construction, not merely under-tested.
-**Fix.** Register explicitly: **Q-B cannot be answered by any experiment that does not create new out-of-corpus panel truth.** Minimum: 3 out-of-corpus behaviours × a uniformly drawn, fully ruled node block (the fresh-draw pattern, ~80 nodes each ⇒ ~0.4–0.5M Fable, $0 API), with the behaviour definitions selected per F14 and frozen pre-annotation. `no-sycophancy` and `undermine-oversight` are **not** eligible (in-corpus). This is the single largest gap in the licensing plan and it is affordable.
+**Fix.** Register explicitly: **Q-B cannot be answered by any experiment that does not create new out-of-corpus panel truth.** Minimum: 3 out-of-corpus behaviours × a uniformly drawn, fully ruled node block (the fresh-draw pattern, ~80 nodes each), with the behaviour definitions selected per F14 and frozen pre-annotation. `no-sycophancy` and `undermine-oversight` are **not** eligible (in-corpus). This is the single largest gap in the licensing plan and it is affordable.
 
 ### F30. `panel-v5` is a large, pinned, externally-authored truth set that neither L1 nor L2 uses.
 **Defect.** 9 behaviours × 589 model-spec passages, 3 judges each (5 for proportionate-risk), rubric committed, provenance byte-identical to an external repo — i.e. truth the project did not author, already frozen, at $0. It is unexploited.
@@ -344,9 +344,9 @@ The graph-node ledger holds 477 / 291 / 285 truth-bearing nodes (union 644 acros
 F17 stands as the single strongest experiment, with these revisions from the inventory:
 
 - **Items:** the F31 clean uniform fresh-draw partitions (~537 rulings across helpfulness / harm-avoidance / caution), **not** the assembled `truth_all()` ledger; panel-v5 (589 passages × 9 behaviours) as a pre-registered replication tier after a committed join audit.
-- **Cost:** $0 API. Register the **Fable-token** estimate instead (~0.13–0.17M per 80-node ruled block is the project's own measured unit; the two readout arms are judge calls over already-ruled nodes, so the marginal cost is arm-count × block size).
+- **Cost:** $0 API. Register the **compute-cost** estimate instead (the project's own measured per-block unit; the two readout arms are judge calls over already-ruled nodes, so the marginal cost is arm-count × block size).
 - **Behaviour count:** 9 behaviours have some truth, so A3's "≥5 behaviours" is achievable today at $0.
-- **Added, non-optional (F29):** ≥3 **out-of-corpus** behaviours with new fresh-draw panel truth. Without this, Q-B is untestable by construction, and it is the cheapest high-value spend available (~0.4–0.5M Fable, $0 API).
+- **Added, non-optional (F29):** ≥3 **out-of-corpus** behaviours with new fresh-draw panel truth. Without this, Q-B is untestable by construction, and it is the cheapest high-value spend available.
 
 ---
 
@@ -367,6 +367,6 @@ Meanwhile L1's relevance clause is (a) already passed by the demolished numbers,
 - **A17 (F32).** Restructure L1 as a staged translation pre-flight that yields the licensing measurement and the scaling estimate together, with its cost stated as a fraction of the full campaign.
 - **A18 (F33).** Void L1/L2 unless the block-1 STOP RULE and the `metric0: FAIL` results are cleared or superseded by signed ruling; the decision memo enumerates every red gate.
 - **A19 (F35).** The UA seal is off-limits to L1/L2, enforced by a registered test.
-- **A20 (C1).** Every registration states its Fable-token cost, not only its $ cost.
+- **A20 (C1).** Every registration states its compute cost, not only its $ cost.
 
 **A14 is the load-bearing one.** Without it, L1 and L2 can both pass and Q-B will be exactly as open as it is today.

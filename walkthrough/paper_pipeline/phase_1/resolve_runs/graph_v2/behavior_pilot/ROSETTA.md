@@ -1,6 +1,6 @@
 # ROSETTA — global behavior atoms bound per-document (design intent, 2026-08-18)
 
-Matt's framing: different documents may use one word with different meanings
+The project owner's framing: different documents may use one word with different meanings
 and require different ontologies, so a single global atom vocabulary may be
 unnecessarily hard or impossible — but worth trying, and the ATTEMPT should be
 structured so the second document meets a schema, not a blank page. Until a
@@ -37,14 +37,14 @@ note records the direction and the honest caveat.
 The generalization claim itself — global atoms binding meaningfully across
 documents with different ontologies. Needs the second document (candidate:
 the Anthropic constitution; `panel_v2.py`'s panel-coverage data already
-scores 9 behaviours against both specs). **Gate (Matt, 2026-08-18): the tuned
+scores 9 behaviours against both specs). **Gate (project owner, 2026-08-18): the tuned
 instrument must first get close enough on the Model Spec to make the second
 document worthwhile.** Honest expected outcome: some atoms will prove
 spec-shaped and the stone's true form may be a per-document TRANSLATION of
 each atom rather than a shared vocabulary; "no counterpart in document B" is
 itself information.
 
-## CORRECTION (Matt, 2026-08-18): the behavior is an ASP MODULE, not a bag of atoms
+## CORRECTION (project owner, 2026-08-18): the behavior is an ASP MODULE, not a bag of atoms
 
 The intended pipeline is **Behavior → ASP module written in lingua-franca
 (global-atom) predicates → the stone binds each global predicate to

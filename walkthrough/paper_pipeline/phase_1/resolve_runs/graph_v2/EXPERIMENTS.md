@@ -471,7 +471,7 @@ rule each was verified against code/behavior before anything was applied:
   Module._coherent only runs once sub-models validate. PARTIALLY DEFERRED:
   validate_all's docstring records this scope as deliberate (fabricated
   findings on half-validated values were considered and REJECTED), so the
-  full collect-then-raise refactor is a design decision for Matt, not an
+  full collect-then-raise refactor is a design decision for the project owner, not an
   autonomous fix.
 - F2 CONFIRMED + FIXED (walkthrough/link.py CLINGO_ERR): clingo `note:`
   lines (the actual diagnosis, e.g. "'A' is unsafe") are now captured into
@@ -570,9 +570,9 @@ descriptions state the bare-name contract; node_worked_example.md flagship
 now demonstrates forbid_body populated ({permit, best_intentions_bias})
 with a when-to-use note. Example gate 10/10; phase_1 suite 737 passed.
 
-## GO DECISION + FULL DEEPSEEK BUILD LAUNCH (2026-08-10, Matt AFK)
+## GO DECISION + FULL DEEPSEEK BUILD LAUNCH (2026-08-10, unattended run)
 
-Matt's checklist before launch, and how each was met:
+The project owner's checklist before launch, and how each was met:
 1. Spot-check sufficiency: all THREE phases now live-probed.
    - Phase D root: cardinality fixed by grammar+dispatch (3/3 children;
      one cut == the Haiku original's 170).
@@ -1336,9 +1336,9 @@ run-over-run. The estimator lesson from ds5 stands beside it: repair
 rounds near the root cost ~$0.03/draw (221k-token prompts), so lowering
 error counts IS the cost model.
 
-**Dense-leaf ruling (risk #1): the normal recursion absorbs it.** Matt:
-"why can't the existing process just continue to break it down?" -- it
-now does. Serial: build() catches the dense failure and falls through to
+**Dense-leaf ruling (risk #1): the normal recursion absorbs it.** The
+project owner asked why the existing process could not simply continue to
+break it down -- it now does. Serial: build() catches the dense failure and falls through to
 the ordinary Phase D on the same span. Core: the leaf state MORPHS in
 place into the division dispatch (`_division_state` + `DispatchState._morph`,
 executor holds the same object). A dense-morphed division answering
@@ -1688,14 +1688,15 @@ frontier pass):
 4. K3 frontier pass on risk_queue.json: BATCHED (50% discount),
    10-item parity sample first, then the curated top slice (~150 items,
    ~$1.80); full-queue K3 (~$4.80) needs a budget bump past $10 --
-   Matt's call. Tier spot check says K3 sens 1.00 vs Flash 0.90 on this
-   task; Flash is the breadth tier next campaign.
-5. Production-graph verdict for Matt: ds7 + frontier fixes (his #3/#4
-   rulings); then the full-corpus steps 1-4 decision (his #7).
+   the project owner's call. Tier spot check says K3 sens 1.00 vs Flash 0.90
+   on this task; Flash is the breadth tier next campaign.
+5. Production-graph verdict for the project owner: ds7 + frontier fixes (the
+   #3/#4 rulings); then the full-corpus steps 1-4 decision (#7).
 
 STANDING DECISIONS previously transcript-only:
-* Matt: keep building on the walkthrough-prototype branch (PR #1 stays
-  open as the review surface; do not merge without his word).
+* The project owner directed: keep building on the walkthrough-prototype
+  branch (PR #1 stays open as the review surface; do not merge without the
+  owner's word).
 * F4 comparator authority-collapse: still UNBUILT and now possibly moot
   post-restructure -- re-measure plumbing noise on ds7's compare before
   deciding; treat raw edge metrics as noisy until then.
@@ -1769,10 +1770,10 @@ correctly refused a rename to unprovided canonical name
 authority_level_ordering -- post-restructure, models prefer canonical
 authority rename targets even where unprovided; watch the class.
 
-## 2026-08-14: restart #2 diagnosis CORRECTED by replay evidence (Matt's challenge)
+## 2026-08-14: restart #2 diagnosis CORRECTED by replay evidence (the project owner's challenge)
 
-Matt: "we shouldn't just increase token limit -- sign of a bigger
-problem." Replay of the EXACT laden transcript at 16384: 1,776-char
+The project owner objected that simply raising the token limit would be a
+sign of a bigger problem. Replay of the EXACT laden transcript at 16384: 1,776-char
 CORRECT reply (empty resolutions -- drops the bad rename), $0.005. The
 content never needed 8k. The seven truncations were BYTE-IDENTICAL
 retries at temp 0 -- the provider's stochastic-truncation pathology,
@@ -1794,7 +1795,7 @@ formerly wedged dispatch is completed and cached. Any future restart
 runs at the code-default caps (division 16384 / leaf 24576 / unwind
 8192). The real fix remains the queued ladder-truncation restart/vary.
 
-## 2026-08-14: IDENTICAL-RETRY GUARD design (Matt: make the mistake impossible)
+## 2026-08-14: IDENTICAL-RETRY GUARD design (owner rule: make the mistake impossible, not unlikely)
 
 Post-ds7 (ds8-era) change, specified before implementation: at the
 client SEND SEAM (the one path every request traverses -- ladders,
@@ -2261,8 +2262,8 @@ Pins: promise 24 -> **37** (13 new); graph_v2 suite 232 -> **245**.
 
 ## 2026-08-14: standing directive -- translation is DRIVER-RUN, after graph validation
 
-Matt: the translation pipeline is to be driven by the coordinating
-instance (not handed to an external agent) once the graph is FULLY
+The project owner directed that the translation pipeline be driven by the
+coordinating instance (not handed to an external agent) once the graph is FULLY
 VALIDATED. TRANSLATION_RUNBOOK.md therefore serves as the checklist the
 driver follows, not as a hand-off package. Ordering is binding: no
 corpus translation until the ds7 repair + verification cycle closes and
@@ -2721,7 +2722,8 @@ against runs/ds7/root_graph.production.json):
   (~$40 at 5 attempts x the out-cap) is deliberately NOT the ceiling
   because the MEASURED gate in Client._log_usage (routing-gap F2)
   backstops it mid-flight.
-* graveyard cap 40 -> 10 (Matt: "stop every 10 and fix them"). Five
+* graveyard cap 40 -> 10 (the project owner's direction: stop every 10 and
+  fix them). Five
   entries left open by the 08-12 rerun were diagnosed and cleared first
   so the run starts with a full budget of 10: four converged-after-repair
   (note-severity residue), one genuine DIAGNOSED-UNCONVERGED
@@ -2729,17 +2731,17 @@ against runs/ds7/root_graph.production.json):
   attempts) -- that class becomes a tracked census category with a prompt
   lever if it recurs.
 * checkpoint_every 10, checkpoint_pause TRUE.
-* EXECUTION MODE: LIVE (not batch). Grounds: Matt sees no reason to batch
+* EXECUTION MODE: LIVE (not batch). Grounds: the project owner sees no reason to batch
   further, AND review defect 4a makes a pause in BATCH mode discard
   already-paid collected rows -- live is the reviewed-clean pause path,
   so we get stopping checkpoints now with zero exposure to 4a. Cost of
   the choice: no 50% batch discount (~$3 live vs ~$1.5 batched),
-  affordable within the raised ceiling and squarely inside Matt's
-  "don't block on 4a unless it wastes money".
+  affordable within the raised ceiling and squarely inside the project
+  owner's direction not to block on 4a unless it wastes money.
 
 ## 2026-08-14: corpus translation STOPPED after 12 modules -- waiting for batching
 
-Matt: "we should probably wait for batching given the cost." Live
+The project owner directed waiting for batching given the cost. Live
 concurrent slice 1 stopped at 12 translated modules, $0.026 spent (they
 are on disk and --only-stale will skip them, so the work is banked, not
 lost). Campaign $9.20 of $20.
@@ -2749,7 +2751,7 @@ batch_min_pending=8.
 ⛔ BINDING CONSEQUENCE, recorded at the config: checkpoint_pause is now
 FALSE. In batch mode a pause aborts _collect's routing loop and discards
 already-paid collected rows (review defect 4a, reproduced) -- exactly the
-"wasted money" case Matt's ruling carved out. So the corpus run waits on
+"wasted money" case the project owner's ruling carved out. So the corpus run waits on
 the 4a fix (already dispatched), and until it lands the ONLY safe batch
 configuration is record-only checkpoints. The graveyard cap (10) still
 stops the run for diagnosis regardless of mode -- that mechanism is
@@ -2882,8 +2884,8 @@ NEW DEFECT recorded, promise_repair only, does NOT gate this run:
 COST GATE (which writes paused=None + stopped_by_cost_gate) re-draws and
 re-pays every plan -- contradicting its own "the paid work survives"
 comment. One-line fix queued for the repair thread.
-CADENCE CORRECTED (my misreading): Matt's "stop every 10 and fix them"
-was about the GRAVEYARD CAP, not checkpoints. checkpoint_pause -> FALSE
+CADENCE CORRECTED (my misreading): the project owner's stop-every-10-and-fix
+direction was about the GRAVEYARD CAP, not checkpoints. checkpoint_pause -> FALSE
 (record-only every 10: done/remaining, spend vs ceiling, failures by
 category, graveyard depth). Pausing every 10 clauses would have meant
 ~77 manual restarts. The STOPS come from the graveyard cap of 10,
@@ -2918,7 +2920,7 @@ Over 773 modules that is ~130-190 entries, i.e. ~13-19 stops at cap 10 --
 almost all of them benign convergences like these two. The cap's stated
 purpose ("a hundred uninspected non-convergences is not a corpus") is
 aimed at the FAILURE case, which these are not.
-OPTIONS for Matt: (a) keep cap 10 and accept ~15 diagnosis stops (his
+OPTIONS for the project owner: (a) keep cap 10 and accept ~15 diagnosis stops (the
 stated preference for frequent stops, and each stop is cheap when the
 entries are clean); (b) raise the cap to ~30 -- still bounded, ~5 stops;
 (c) leave the cap and let the census distinguish -- an UNREPAIRED entry is
@@ -5268,11 +5270,11 @@ is the consensus of record. Closure record: same-family independence
 caveat and five-row REACHABLE delta in SUBTYPE_MINT_PREREG.md addendum 5;
 fence fail-open nit registered as LF-4.
 
-**11. QUOTA RECONCILIATION (review finding B-5):** the ~1M-Fable capacity
-ruling covers ADJUDICATION rulings only (Claude-side bar, post-reset). The
-orchestration/design seat runs in the campaign harness on a separate quota;
-9b design work pre-reset consumes the harness quota, never the adjudication
-bar. The two are not the same ledger, and this log records that they were
+**11. TWO-LEDGER RECONCILIATION (review finding B-5):** the registered
+capacity ruling covers ADJUDICATION rulings only. The orchestration/design
+seat runs in the campaign harness against a separate registered allocation;
+design work consumes the harness allocation, never the adjudication one.
+The two are not the same ledger, and this log records that they were
 conflated until this entry.
 
 **12. 9B DESIGN ROUND IN PROGRESS:** purpose_concern candidates PC-1..PC-4

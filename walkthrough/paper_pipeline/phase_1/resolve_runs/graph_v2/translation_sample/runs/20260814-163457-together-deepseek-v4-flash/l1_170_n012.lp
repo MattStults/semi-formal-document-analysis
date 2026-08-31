@@ -1,3 +1,0 @@
-%% clause: l1_170_n012   section: graph_node   kind: conditional
-%% ABSTAIN: This clause is a statement of intent about the document's own maintenance process, not a normative rule. It says the Model Spec will be continuously updated based on feedback and lessons from serving users. It imposes no obligation, permission, prohibition, or preference on any act, and it does not define any class or priority. Encoding it as a rule would require inventing a normative force the text does not state.
-% version: contract=125908f0e486b26a provenance=71e808c1fe729ae8   (the record is .version.json; this line is a courtesy)

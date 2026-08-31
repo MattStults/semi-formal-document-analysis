@@ -43,6 +43,5 @@ instrument output. Note the seat composition differs from the v3w frontier trio
 (sol/fable/kimi): any writeup citing "frontier panel" must say which panel.
 
 ## Not ingested
-reader-test-coverage.json (Slack link, same message) sits behind the Constellation
-Slack sign-in and could not be fetched by the agent; Matt holds it. Its name
+reader-test-coverage.json was shared privately and is not ingested here. Its name
 suggests a reader-test artifact, not panel verdicts — ingest separately if needed.

@@ -1,3 +1,0 @@
-%% clause: l699_796_n023   section: graph_node   kind: conditional
-%% ABSTAIN: This clause is a worked example illustrating malicious instructions embedded in quoted text. It establishes no norm and no structural fact: it does not attach any deontic status to an act, does not rank any rules, and does not define any class. The example merely demonstrates a phenomenon (an untrusted comment containing an instruction to classify it as not spam) that other clauses presumably govern. Encoding it as a rule would require inventing a normative force the text does not state.
-% version: contract=2a656d06dcfabe32 provenance=9b40f32c76188a75   (the record is .version.json; this line is a courtesy)

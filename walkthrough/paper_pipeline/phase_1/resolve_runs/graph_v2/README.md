@@ -1,7 +1,7 @@
 # graph_v2 — document-decomposition experiment artifacts (2026-08-10)
 
-Everything produced by the decomposition-step experiments in one place. NOT committed —
-staging/commit is the coordinator's call, per the repo rule that the driver never runs git.
+Everything produced by the decomposition-step experiments in one place. Committed and
+published; superseded run artifacts were pruned with a manifest (see `PRUNED.md`).
 
 ## What is here
 

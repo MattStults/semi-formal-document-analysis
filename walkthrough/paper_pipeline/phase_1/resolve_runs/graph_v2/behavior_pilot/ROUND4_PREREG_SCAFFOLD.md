@@ -25,11 +25,11 @@ certified out-of-sample claim. Scored ONCE.
 - Rulings: single blind Fable rulings + 3-instance panels on a seeded 20%;
   majority supersedes. Fable only; no substitution without fresh parity
   validation, disclosed.
-- Canary ordering: helpfulness first; Matt /usage checkpoint between
+- Canary ordering: helpfulness first; capacity checkpoint between
   behaviors; go/hold at each checkpoint. Budget tripwire carries over: a
-  wave moving the weekly Fable bar disproportionately to its ruling count
+  wave consuming registered capacity disproportionately to its ruling count
   stops the run for inspection.
-- Cost model: ~250 rulings ~= 0.37-0.4M Fable tokens, $0 API (exception:
+- Cost model: ~250 rulings within a registered capacity allocation, $0 API (exception:
   harm may close a population remainder as round-3 designed, if the freeze
   state leaves one — derived at freeze, same protocol).
 - Errata rule: registered numbers are never edited; corrections append.
@@ -63,7 +63,7 @@ they are celebrated.
 
 ## Signatures
 Drafted by the campaign orchestration seat, 2026-08-21 (scaffold).
-Re-issued signature-ready at freeze; Matt signs the re-issue, which carries
-this scaffold's protocol verbatim — any protocol change between scaffold and
-re-issue is itself an erratum, appended and named.
-Matt: ______ (signature applies to the re-issue only).
+Re-issued signature-ready at freeze; the project owner signs the re-issue,
+which carries this scaffold's protocol verbatim — any protocol change between
+scaffold and re-issue is itself an erratum, appended and named.
+Project owner: ______ (signature applies to the re-issue only).

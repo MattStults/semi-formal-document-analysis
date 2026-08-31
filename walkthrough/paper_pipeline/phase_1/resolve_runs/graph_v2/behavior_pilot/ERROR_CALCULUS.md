@@ -426,8 +426,8 @@ A13 (HUMAN-DENSITY DESIGN — Matt's iteration concern). Humans appear
    already works this way — blind criteria designed at frontier, one
    signature per prereg). Measured this campaign: ~4 human signatures
    across three weeks against hundreds of machine decisions.
-   (3) MEASURED DELEGATION (design option, requires Matt's explicit
-   ruling since it samples HIS oversight): the parity-certificate logic
+   (3) MEASURED DELEGATION (design option, requires the overseer's
+   explicit ruling, since it samples their own oversight): the parity-certificate logic
    applies to the human port too — where frontier-vs-human agreement on
    a decision class is measured high over history, the human moves from
    gate to seeded auditor (spot-check with escalation tripwire), exactly

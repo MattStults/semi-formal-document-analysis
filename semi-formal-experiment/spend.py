@@ -29,9 +29,9 @@ USAGE = os.path.join(HERE, "usage.jsonl")
 #:          ($0.55) covered only the annotation half
 #:   $10.00 2026-08-12, campaign extension (resolve_runs/graph_v2/
 #:          EXPERIMENTS.md:1291 "Matt extended the campaign authorization")
-#:   $20.00 2026-08-14, "+$5" for the full-corpus translation (EXPERIMENTS.md
-#:          "Budget raised to $20.00 (Matt +$5)", ~line 2712)
-#:   $25.00 2026-08-16, Matt: "spend up to $25 if necessary" (decision D6,
+#:   $20.00 2026-08-14, +$5 authorized for the full-corpus translation
+#:          (EXPERIMENTS.md "Budget raised to $20.00", ~line 2712)
+#:   $25.00 2026-08-16, authorized to $25.00 (decision D6,
 #:          bulk-completion run before the DeepSeek price change; session
 #:          record in graph_v2/EXPERIMENTS.md "THE PIVOT BACK TO THE
 #:          DELIVERABLE" era)

@@ -8,7 +8,7 @@ engagement pools (attempt-1-era artifacts, truth-free): user-autonomy
 taxonomy and channel inventory from iterations 1-3. Corrections append,
 never edit. These freeze NOW regardless of when — or whether — block 2
 is measured; the prereg's stop rule means measuring any of them needs
-Matt's signed amendment with scoped reporting.)
+the project owner's signed amendment with scoped reporting.)
 
 ## 1. user-autonomy (does comply/respond; protects_concern + party_concern declared)
 - DOMINANT PREDICTED FAILURE: engaged-FP, single-consideration class —

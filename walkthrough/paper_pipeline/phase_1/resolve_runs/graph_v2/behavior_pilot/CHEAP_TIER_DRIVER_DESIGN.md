@@ -1,6 +1,6 @@
-# CHEAP-TIER FIX + CERTIFICATION DRIVER — design (2026-08-24, Matt's directive)
+# CHEAP-TIER FIX + CERTIFICATION DRIVER — design (2026-08-24, the project owner's directive)
 
-GOAL (Matt): a mechanical batch process that (1) takes a batch of found
+GOAL (project owner): a mechanical batch process that (1) takes a batch of found
 issues, fixes and validates them using cheap models (Haiku / DeepSeek-class)
 wherever possible, and (2) certifies mechanically, cheap-first, engaging
 frontier models only where necessary plus spot checks — with the blog-grade
@@ -57,8 +57,8 @@ S-F ESCALATION IS PRE-ROUTED, NOT DISCRETIONARY: census triage routes each
    with rulings at the certified-cheapest tier + frontier spot-checks.
 
 ## COST MODEL (measured basis)
-Wave seat rules 40 nodes/call. Haiku wave ~= 1/30 the weekly-bar weight of
-a Fable wave; a full behavior certification ~5 waves. If Haiku holds a
+Wave seat rules 40 nodes/call. A cheap-tier wave carries ~1/30 the capacity
+weight of a frontier wave; a full behavior certification ~5 waves. If Haiku holds a
 parity certificate, per-behavior certification cost approaches noise, with
 frontier spend concentrated in the >=15% spot-check.
 
@@ -73,9 +73,9 @@ frontier spend concentrated in the >=15% spot-check.
   helpfulness's 9 separable FPs (pending mechanism), harm's 8 FNs
   (party-wall family), caution's 13 FPs.
 
-## v2 ADDENDA (2026-08-24, Matt's design review in session)
+## v2 ADDENDA (2026-08-24, the project owner's design review in session)
 
-### A. SUPERSESSION ARCHITECTURE (Matt's reframe: make errors free to fix,
+### A. SUPERSESSION ARCHITECTURE (the project owner's reframe: make errors free to fix,
 ### rather than requiring cheap seats to be error-free)
 The parity measurements (below) show no cheap tier reaches ruling-grade
 parity even with the lineage brief and few-shot calibration. Instead of
@@ -103,8 +103,8 @@ gating cheap tiers OUT, the architecture makes their errors COSTLESS:
   Artifacts: parity_cheap_tier_certificates.json, parity_*_rulings.json,
   parity_deepseek_raw.txt.
 
-### B. REASON-PRESERVING VALIDATION (Matt: "changes must preserve not only
-### the right call but the right reasons")
+### B. REASON-PRESERVING VALIDATION (the project owner's rule: changes must
+### preserve not only the right call but the right reasons)
 Verdict-preservation is insufficient: a delta can keep a node correctly
 engaged while silently REPLACING the mechanism that engages it (e.g. the
 semantically-right act path lost, a fail-open accident now carrying the
@@ -126,8 +126,8 @@ the brief); a mechanical quote-presence check runs on every ruling batch,
 and superseding rulings record WHY the lower tier's grounds failed, so the
 brief improves from its own error ledger.
 
-### C. THE ITERATION FUNNEL (v3, 2026-08-24 — Matt: fast cheap hypothesis
-### paths through an explosively large representation space)
+### C. THE ITERATION FUNNEL (v3, 2026-08-24 — the project owner's direction:
+### fast cheap hypothesis paths through an explosively large representation space)
 The search space (declarations x vocabulary x mechanisms x exposures) is
 far too large for adopt-and-measure iteration. The funnel makes hypothesis
 COST proportional to hypothesis SURVIVAL — most die free:
@@ -148,18 +148,18 @@ L1  MINUTES, CENTS — micro-probe on live judgment: hypotheses needing NEW
     distinction) run on a seeded 10-30 node micro-sample; cheap seats
     first-pass, frontier only on the decisive nodes. (Today's 20-node
     parity probes and the 40-seat paired-format pilot were L1 runs.)
-L2  TENS OF MINUTES, ~0.1pt — full validation: charter + reason-diff over
+L2  TENS OF MINUTES, a small registered-capacity charge — full validation: charter + reason-diff over
     the whole ledger, per-flip adjudication, ONE fresh confirmation wave
     (registered prediction first). Only here does a contract file change.
-L3  HOURS, ~0.5-1pt — certification-grade: registered bands, fresh draws,
+L3  HOURS, a larger registered-capacity charge — certification-grade: registered bands, fresh draws,
     falsifiers, defensibility (the round-4 machinery).
 PROMOTION RULE: a hypothesis reaches level N only by passing N-1; a kill at
 any level is a committed ledger record, not a discarded experiment. The
 "one-off change to test before committing" is exactly an L0/L1 pass — the
 contract is never mutated below L2, so exploration is free AND safe.
 
-### D. CLASS-GENERALIZATION RULE (v3, Matt: "given this failure, is there a
-### systemic issue that would address the class — fix the generalized form")
+### D. CLASS-GENERALIZATION RULE (v3, the project owner's direction: given a
+### failure, ask whether a systemic issue addresses the class — fix the generalized form)
 The recurring failure mode this campaign keeps re-catching is EXAMPLE
 FITTING: deriving a fix from the motivating instances and validating on
 those same instances. The funnel now bars it structurally. Every candidate
@@ -180,8 +180,8 @@ This is the transfer-proof structure applied at micro scale, and it is
 what makes "fix the generalized form" checkable rather than aspirational.
 
 ### E. REASON-CRITICALITY CENSUS (v3, running 2026-08-24)
-Addendum B's drift classes treat all reason components alike; Matt's
-refinement: every change WILL move reasons — the question is which
+Addendum B's drift classes treat all reason components alike; the project
+owner's refinement: every change WILL move reasons — the question is which
 components are load-bearing. L1 micro-probe dispatched: 30 seeded engaged
 truth-relevant nodes, per-component ESSENTIAL/INCIDENTAL judgment (acts /
 quality-dimensions / protected-parties) by a Haiku census seat with an

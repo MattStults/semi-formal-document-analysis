@@ -1,6 +1,6 @@
 # ⭐⭐ ENTRY POINT (2026-08-25 end; INTEGRATION CLAIMS WITHDRAWN BY REVIEW)
 Boot: CLAUDE.md -> this file -> CALCULUS_RUNBOOK.md -> ITERATION_NOTES
-0001-0042. HEADLINE: the adversarial review of the retranslation
+0000-0043. HEADLINE: the adversarial review of the retranslation
 integration census (RETRANS_REVIEW_DISPOSITION.md — read it before
 citing any census number) returned P1/P2 UNSUPPORTED and the driver's
 CoVe re-derivations CONFIRMED the decisive findings: (1) the census's
@@ -21,9 +21,9 @@ behaviour); replacement package = F18 reliability gate -> F17
 blind-readout ablation -> F19 scaling pre-flight + A14 out-of-corpus
 truth purchase; funding rule: all three pass.
 Earlier arc: query-class bound (24 dims x 105 values, open-coded,
-place-blind); value hierarchy (0040). PARKED FOR MATT: UA mint
+place-blind); value hierarchy (0040). PARKED FOR SIGN-OFF: UA mint
 (0.98-stable, consumption redesign), prop-risk frozen test, L1/L2,
-round-4 certification. AFK-drive Fable total: 0.
+round-4 certification.
 # HANDOFF — convergence endgame + declaration-search results (2026-08-20, updated end-of-day)
 Written for a frontier-capable agent resuming with zero context. Read top-down;
 every claim has an artifact pointer. Repo root for this work: this directory
@@ -104,7 +104,7 @@ round (9b, design tier) is expected to convert PENDING-VOCAB nodes.
     blind-to-each-other methods agree on nodes and fix family. No open search
     remains; it is a closed work list.
 - CRITERION STANDING (in-sample, all-truth): caution 0.941, harm 0.953, help
-  0.960 under match-or-adjudicated-defensible; raw match 0.81-0.85; Matt's
+  0.960 under match-or-adjudicated-defensible; raw match 0.81-0.85; the
   human-panelist baseline 71%. NOT yet certified — that is round-4's job.
 
 ## THE HIGHER-LEVEL GOAL and the path from here
@@ -129,11 +129,9 @@ ARC 1 — CERTIFY THIS DOCUMENT (order matters; a-c are one design round):
     remainder is terminal against the ENLARGED inventory — say it that way).
  e. MAINTENANCE before any census-based claim: satisfiability_census.vector()
     must merge definition_* lanes + context atoms (it predates both).
- f. ROUND-4 CERTIFICATION (~0.4M Fable, post reset): frozen instrument, fresh
+ f. ROUND-4 CERTIFICATION (post reset): frozen instrument, fresh
     draws, 9e fresh-pool bands, prospective bucket assignment. This is what
     converts 0.94-0.96 in-sample into the certified claim.
-    (⚠️ CORRECTED 2026-08-21: this line said "post Sat-9pm reset"; Matt confirmed
-    the reset is SUNDAY 9pm PT / Aug 23 — the signed round-3 prereg record agrees.)
  g. Fold the 20 context-atom disputes + remaining panel_rerulings; final ledger.
 
 ARC 2 — GENERALIZE AND GO TO THE NEXT DOCUMENT:
@@ -143,11 +141,12 @@ ARC 2 — GENERALIZE AND GO TO THE NEXT DOCUMENT:
  i. OPERATIONALIZE THE HARNESS for the next document: the loop is now fully
     scripted piecewise (census -> split-mining -> two-seat lanes -> escalation
     -> charter regression -> verify_terminal; decl_search_proto as the
-    declaration-search inner step). Wire a driver; Matt's approved division:
-    Opus executes written specs, Fable only for adjudication/rulings/design.
+    declaration-search inner step). Wire a driver; the approved division:
+    mid tier executes written specs, frontier only for
+    adjudication/rulings/design.
  j. Constitution translation per the standing estimate (graph creation + doc
     translation, Opus-driven with Fable spot-audits; semantic-audit parity
-    pre-test first, ~0.05M).
+    pre-test first).
 
 MODEL-TIER REMINDERS: 9b design round and any one-shot measurement design are
 design-tier work — do NOT push onto Opus. Adjudication/flip rulings are
@@ -161,18 +160,18 @@ Fable-doctrine (Opus failed parity 0.38). Annotation lanes are Opus-proven.
 - Judgment-tier doctrine: adjudication/rulings = Fable only; annotation = Opus
   OK; mechanical execution = any tier with written plan.
 
-## CAMPAIGN START — the 10-hour push to certifiable, publishable data (2026-08-21, Matt-approved)
+## CAMPAIGN START — the 10-hour push to certifiable, publishable data (2026-08-21, approved)
 BASELINE COMMIT for review: 5cc216272042942d0ba51966070168fddeb53d25
 (d3-worked-example, clean tree, in sync with origin). A reviewing Fable agent:
 review FORWARD from this commit — everything after it is this campaign.
 
-MANDATE (Matt, 2026-08-21): inside one 10-hour human-attention window
-straddling the Sun-9pm-PT Fable reset (Aug 23), produce (1) round-4
+MANDATE (2026-08-21): inside one bounded human-attention window
+straddling a provider capacity reset, produce (1) round-4
 certification of this document, (2) zero-adaptation generalization runs on
 held-out behaviours, and (3) a blog series (goals / design / results) +
 living summary document.
 
-SCOPE RULING (Matt, 2026-08-21, same day): ALL SIX never-consulted
+SCOPE RULING (2026-08-21): ALL SIX never-consulted
 behaviours run, 3+3 SEQUENTIAL with a FATAL-class stop rule. First three in
 diagnostic order: harmlessness-to-user (adjacent-family protects-wall flip),
 objectivity-on-contested-questions (maximal-distance answer-quality shape),
@@ -182,23 +181,23 @@ Grounds: the collaborator v5 frontier panel (ingested 2026-08-21 as
 data/panel-v5/, see PROVENANCE.md) supplies 3 full seats on all 9 behaviours
 x both specs, removing the truth-scarcity reason for holding at two;
 comparison statistics are free for all six; adjudication draws shrink to
-40-node panel-informed samples (~0.5-0.6M Fable total). Rejected by name:
+40-node panel-informed samples. Rejected by name:
 "stay at two" (loses breadth now that truth-scarcity is gone) and "all six
-as one block" (loses the confirmation structure). Fable capacity ruling:
-fresh weekly bar absorbs ~1M Fable, but not until the Sunday reset — all
-Fable-free work proceeds before it; adjudication queues for post-reset.
+as one block" (loses the confirmation structure). Capacity ruling:
+adjudication queues until after the next capacity reset; all
+reset-independent work proceeds before it.
 Truth doctrine unchanged: v5 panel is comparison layer ONLY, never truth.
 
-STANDING PROCESS RULES FOR THIS CAMPAIGN (Matt, 2026-08-21):
+STANDING PROCESS RULES FOR THIS CAMPAIGN (2026-08-21):
 - Test-driven where possible; where automated tests are not realistic, the
   validation method is written BEFORE the work and then checked (manually,
-  with Matt's help where asked).
+  with human help where asked).
 - Every completed work item gets a clean-context ADVERSARIAL subagent review
   for engineering excellence and consistency with the higher-level goal
   before it counts; a positive finding stops the item until fixed.
 - All of Phase 0 (arc-1 items a-e, round-4 prereg draft, generalization
-  prereg, blog scaffolding) is autonomous; Matt's attention is spent on
-  signatures, /usage checkpoints, falsifier readings, and writeup review.
+  prereg, blog scaffolding) is autonomous; human attention is spent on
+  signatures, falsifier readings, and writeup review.
 - Round-3 prereg (signed, sha 69631bf3...) is SUPERSEDED unrun: it froze
   contract v13; the instrument has moved to v18. Round-4 needs a fresh
   prereg re-derived from v18 all-truth.
@@ -208,13 +207,12 @@ STANDING PROCESS RULES FOR THIS CAMPAIGN (Matt, 2026-08-21):
   REACHABLE = design space; three inert-feature false SEPARABLEs corrected;
   standing pinned dead-slot probe guards the class and carries the Arc1-b
   slot-arity handshake. 9b may consume the corrected census.
-- The handoff's "Matt's human-panelist baseline 71%" currently has NO source
+- The handoff's "the human-panelist baseline 71%" currently has NO source
   artifact; it must be sourced or struck before it appears in any writeup.
 - STATUS (2026-08-21 late): Arc1-e CLOSED (adversarial CLEAR, 4 rounds);
   Arc1-b mint CLOSED (adversarial CLEAR-WITH-NITS, 2 rounds: M1 held, M2 held 3/3, errata addendum 5); 9b PC-1..4
   justified (PC-4 redone after review found a document-free dismissal; fit-
   rank disclosure recorded); round-4 prereg SCAFFOLD drafted
-  (ROUND4_PREREG_SCAFFOLD.md); EXPERIMENTS.md campaign entries + quota
-  reconciliation (orchestration harness quota != Fable adjudication bar).
-  Matt's open item: generalization prereg signature (GENERALIZATION_PREREG_
+  (ROUND4_PREREG_SCAFFOLD.md); EXPERIMENTS.md campaign entries.
+  Open item: generalization prereg signature (GENERALIZATION_PREREG_
   DRAFT.md).

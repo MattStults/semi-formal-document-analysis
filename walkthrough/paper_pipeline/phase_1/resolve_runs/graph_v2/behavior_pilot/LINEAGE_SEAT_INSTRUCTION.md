@@ -2,7 +2,7 @@
 
 PROVENANCE: recovered verbatim from the round-3 wave dispatch transcript
 (session subagent record, 2026-08-19; located by seeded-timeframe search at
-Matt's direction after the round-4 canary divergence). Its absence from the
+the project owner's direction after the round-4 canary divergence). Its absence from the
 repo was a rulings-go-in-the-repo violation, cured by this file. This
 instruction produced the fresh-draw truth of rounds 1-3 and (with
 adjudication_run2 lineage) the assembled truth ledger.

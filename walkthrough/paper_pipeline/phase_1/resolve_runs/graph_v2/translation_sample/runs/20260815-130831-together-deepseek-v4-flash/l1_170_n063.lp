@@ -1,3 +1,0 @@
-%% clause: l1_170_n063   section: graph_node   kind: conditional
-%% ABSTAIN: This clause is a commentary on the document's own structure, not a normative statement. It says that certain instructions serve as a template for handling conflicts and demonstrate how to prioritize goals, but it does not itself impose an obligation, permission, prohibition, or preference on any act, nor does it define a class or establish a priority ordering between rules. Encoding it as a rule would require inventing a normative force the text does not state.
-% version: contract=7c6cfcb23c707f94 provenance=71e808c1fe729ae8   (the record is .version.json; this line is a courtesy)

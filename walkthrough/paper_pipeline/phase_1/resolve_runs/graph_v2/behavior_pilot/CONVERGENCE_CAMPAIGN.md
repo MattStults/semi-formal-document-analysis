@@ -1,4 +1,4 @@
-# CONVERGENCE CAMPAIGN CHARTER (Matt, 2026-08-19)
+# CONVERGENCE CAMPAIGN CHARTER (project owner, 2026-08-19)
 
 GOAL: drive every precision-side difference between instrument and panel into
 bucket (1) or (2), at the expense of FN growth ONLY into buckets (3)/(4). The
@@ -22,11 +22,11 @@ BUCKETS (every truth-point difference gets exactly one):
 ITERATION: fix-or-adjudicate the FP-side bucket-0 set (fixes may push nodes to
 FN, allowed only into (3)/(4)) -> re-ledger -> repeat.
 
-CONVERGENCE METRIC per iteration: |bucket 0| and Fable-tokens-per-resolved-node.
-PRE-COMMITTED STOP RULE (Matt may revise before iteration 2): STOP when either
-(a) bucket 0 is empty on the FP side of all three behaviors, or (b) two
-consecutive iterations each resolve fewer than 5 bucket-0 nodes per 0.3M Fable
-spent. On stop, the remaining bucket-0 set IS the answer to the research
+CONVERGENCE METRIC per iteration: |bucket 0| and adjudication-capacity per resolved node.
+PRE-COMMITTED STOP RULE (the project owner may revise before iteration 2): STOP
+when either (a) bucket 0 is empty on the FP side of all three behaviors, or (b)
+two consecutive iterations each resolve fewer than 5 bucket-0 nodes per unit of
+registered capacity spent. On stop, the remaining bucket-0 set IS the answer to the research
 question — the candidate "distinctions this approach cannot make," reported as
 such with per-node grounds.
 
@@ -36,7 +36,7 @@ registered numbers untouched; the ledger is committed each iteration.
 
 ## CAMPAIGN RESULT (2026-08-19, iterations 1-3 + terminal mechanism test)
 
-TRAJECTORY: bucket-0 FPs 84 -> 54 -> 17 -> 11. Fable cost: ~0.13M (iter-1 adjudication);
+TRAJECTORY: bucket-0 FPs 84 -> 54 -> 17 -> 11. Fable cost: a registered capacity allocation (iter-1 adjudication);
 iterations 2-3 ~0 (Opus bridge audit + deterministic measurement). No stop-rule trigger —
 the campaign stopped because the PRINCIPLED MECHANISM SPACE EMPTIED: the final candidate
 (quality-scoped purpose conjunction) was measured and rejected (fixes 3, costs 24 TPs),
@@ -63,7 +63,7 @@ that would separate the residue costs more true engagements than it saves, measu
 three independent ways. ~1.3% precision-side residue + ~0.9 truth-noise ceiling is the
 measured boundary of factorized symbolic relevance on this document.
 
-## PHASE 2: FN-SIDE CONVERGENCE (Matt, 2026-08-19)
+## PHASE 2: FN-SIDE CONVERGENCE (project owner, 2026-08-19)
 The same discipline applies to the 132 FNs: every FN is fix-or-adjudicated until each
 sits in (1) match, (2') adjudicated reading-difference FN (strict judge: the miss is
 defensible — the panel's relevant-reading and the instrument's grounds for non-engagement
@@ -75,7 +75,7 @@ rule. KNOWN ASYMMETRY TO ADJUDICATE FIRST: manner/register norms were strict-jud
 not-helpfulness on the FP side while some panel rulings hold same-class norms relevant —
 same-class-opposite-verdict pairs are truth-suspect material (E3 protocol applies).
 
-## ON THE NATURE OF THE TERMINAL SET (Matt + correction, 2026-08-19)
+## ON THE NATURE OF THE TERMINAL SET (project owner + correction, 2026-08-19)
 Terminal does NOT mean solving at current granularity is impossible — it means the
 remaining nodes are (i) provably UNSAT at the current feature set (satisfiability
 census: vector-identical to correct opposite-verdict nodes), or (ii) separable only by

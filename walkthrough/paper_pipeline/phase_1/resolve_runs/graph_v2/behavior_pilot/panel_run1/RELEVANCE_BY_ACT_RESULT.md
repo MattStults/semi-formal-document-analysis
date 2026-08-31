@@ -1,6 +1,6 @@
 # RELEVANCE BY ASP — first result, 2026-08-18
 
-Matt: "without relevance using ASP most of the pipeline was irrelevant." This
+The project owner's framing: without symbolic relevance, most of the pipeline was irrelevant. This
 is the first measurement where the translated corpus is on the critical path
 for relevance. Method: 720 bespoke act functors classified into 11 canonical
 acts (act_bridges.lp, 718 bridges, generated beside the corpus); the three

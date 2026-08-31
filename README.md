@@ -1,127 +1,188 @@
 # Semi-formal document analysis
 
-> **Agents and new contributors: start with [`AGENTS.md`](AGENTS.md).** It is the read
-> order plus the short list of rules whose violation silently corrupts a result — the
-> landmines are not obvious from the code, and several are contracts that *look* like
-> bugs. (`CLAUDE.md` is a symlink to it, so Claude Code auto-loads the same content.
-> Point any other tool's convention at the same file with a symlink, never a copy.)
+A label-free tool that answers *which clauses of a model spec bear on a given
+behavior?* mechanically: read the document once into a symbolic representation,
+then answer deterministically, with a citable span and a stated reason for every
+hit. Frontier-model panels were the calibration instrument — the tool should
+match the panel, or give an answer a frontier model would accept as justifiable.
 
-Can a **semi-formal ontology** extracted from a model spec answer *"which passages of this
-document bear on behaviour X?"* as well as a panel of frontier models — but instantly,
-offline, and with an auditable reason for every answer?
+Six weeks; it did not reach that bar. This repo is the complete record of the
+attempt: the machinery, the measurements, and the discipline that kept the
+measurements honest — including the results that were withdrawn when adversarial
+review showed they were noise. The full commit history is published unrewritten
+so that every dated claim, pin, and withdrawal is externally checkable;
+operational details (usage plumbing, working notes) were redacted in the
+current files and remain in history by choice. The write-up is in two blog posts:
+[the retrospective](#) and [where the work goes next](#) *(links added at
+publication)*.
 
-Where it stands: **the label-free tool reaches +0.31 MCC against a +0.555 frontier-panel
-bar** (dev cells, true universe) — and the more important products turned out to be the
-measurement instruments and the iteration process around the tool. See
-`semi-formal-experiment/HANDOFF.md` for state, `ITERATION_LOOP.md` for the loop and its
-policy, `REPRODUCIBILITY.md` for the process rules, and `CYCLE_DESIGN.md` for the
-orchestrator.
+What held up and what didn't, in one paragraph: the symbolic engine (ASP/clingo
+evaluation, conflict enumeration with witness scenarios, satisfiability checks)
+worked — its failures were refusals, not wrong answers. Segmentation of both
+specs into typed clause inventories worked after repair. Matching behaviors to
+passages did not beat a single frontier judge; an ontology open-coded from 100
+behavior definitions covered every sampled span but failed every separability
+test once a matched random-partition null was run against it. The measurement
+discipline — pre-registered predictions, blind adjudication seats, adversarial
+review before every close, an append-only ledger with an erratum list — is the
+part that transferred: it caught and withdrew three headline claims, and it is
+the reason the numbers in this repo can be read at face value.
 
-## The idea
+## Start here (5 minutes)
 
-Read the spec once. Segment it into clauses. Have a cheap model annotate each clause with
-typed **atoms** — `situation`, `act`, `entity`, `value`, now carrying deontic force,
-principal chains and condition/exception roles. A query then selects atoms for the
-*behaviour* and matches structurally. No model call at query time, and every hit traces
-back to a licensing span of source text.
+Everything below is deterministic re-analysis of committed data: no API keys, no
+network, no model calls.
 
-## Results, in brief (2026-08-04)
+```bash
+# 0. environment check (~3 s; full setup: bash setup_env.sh)
+bash setup_env.sh --check
 
-Relevance (9 behaviours judged; 3 frontier dev cells quoted, true 589-passage universe):
+# 1. every claim about a spec resolves to verbatim text
+python3 engine/spec-cite/cite.py outline model-spec
+python3 engine/spec-cite/cite.py resolve "model-spec@2025-12-18 > #avoid_sycophancy > ¶2 s1"
 
-| | MCC |
-|---|---:|
-| frontier judges — the bar | +0.555 |
-| the tool, audited selection (dev) | **+0.309** |
-| the tool, first shipped config | +0.28 |
-| bag-of-words control | **+0.108** |
+# 2. the 773-node document graph, every span checked against the source
+python3 walkthrough/paper_pipeline/phase_1/resolve_runs/graph_v2/graph_check.py \
+  walkthrough/paper_pipeline/phase_1/resolve_runs/graph_v2/runs/ds7/root_graph.production.json
 
-⚠️ **Corrected 2026-08-05.** This row previously read **+0.19**, which was `HANDOFF.md`'s
-"lexical control +0.185" — a **9-behaviour, 5-atom-draw** figure sitting in a table of
-3-DEV-cell numbers. Re-measured twice (`benchmark.py --control`, true 589-passage universe):
-**+0.096 / +0.200 / +0.027, mean +0.108**. The correction is in the tool's favour: the real
-lift over bag-of-words is **~2.9×**, not ~1.6×. See `semi-formal-experiment/RELEVANCE_QUALITY_READ.md`.
+# 3. the measurement instrument, and its recall ceiling (98.4% join, misses printed by name)
+cd semi-formal-experiment && .venv/bin/python measure_join.py
 
-⚠️ **And read that report before quoting the +0.309 as a trajectory.** The six cycles closed
-since 2026-08-04 moved it by **+0.0003 in total**, against a measured noise floor of
-0.032–0.037. The only real gain in the record (+0.072) came from re-selecting an instrument,
-not from a mechanism fix.
+# 4. the arc-1 headline result, reproduced from disk (MCC by threshold, true vs published universe)
+.venv/bin/python benchmark.py --tool --annotations annotations_b8.json --behaviour-atoms behavior_atoms_b8.json
 
-Translation quality, against hand-authored golden sets with a **measured two-author
-human ceiling** (names 0.29 / spans 0.79 / structure 0.91):
+# 5. the governance model as a queryable logic program (note the seat it reports as unvalidated)
+.venv/bin/python machine/query.py seats
+```
 
-| axis | extractor | human ceiling |
-|---|---:|---:|
-| location (span F1) | 0.86 | 0.79 |
-| structure (span+force/party/role) | 0.59 | 0.91 |
+(`machine/check_model.py`, the companion source-check for step 5, currently
+exits nonzero on 23 drifted doc references — being repaired; the query layer
+above runs clean.)
 
-A 294-case causal census of every tool-vs-panel disagreement (Haiku-run, blind-validated
-seats): ~63% matching precision, ~20% threshold calibration, ~15% vocabulary/naming,
-~2% plumbing. A human-expert review of the panel product independently found the judges
-**over-flag and flatten salience** — the bar itself is imperfect, and the endorsed use
-case is ranked first-pass auditing, not judge replacement.
+## Two arcs
+
+| Arc | Where | What |
+|---|---|---|
+| 1 (July–early Aug) | `semi-formal-experiment/` | Constitution pilot (616 clauses, 16-rule ASP fragment, conflict enumeration, expressibility triage) and the Model Spec relevance benchmark against a frontier-judge panel on the full 589-passage universe. |
+| 2 (mid–late Aug) | `walkthrough/paper_pipeline/phase_1/resolve_runs/graph_v2/behavior_pilot/` | Document-graph translation (773 nodes), panel-adjudicated repair iterations, minted-dimension experiments, the query-class ontology study, and the adversarial reviews that ended the headline claims. |
+
+The two share a corpus and nothing else. Different representation, different
+failure modes, different evidence.
+
+## Reading order
+
+1. The blog retrospective *(link at publication)* — the narrative.
+2. [`ITERATION_NOTES.md`](walkthrough/paper_pipeline/phase_1/resolve_runs/graph_v2/behavior_pilot/ITERATION_NOTES.md)
+   (also linked as `LEDGER.md` at root) — the append-only ledger, entries
+   0000–0043: every step, every erratum, every withdrawal, written at the time.
+   This is the primary artifact.
+3. [`L1L2_ADVERSARIAL_REVIEW.md`](walkthrough/paper_pipeline/phase_1/resolve_runs/graph_v2/behavior_pilot/L1L2_ADVERSARIAL_REVIEW.md)
+   and [its disposition](walkthrough/paper_pipeline/phase_1/resolve_runs/graph_v2/behavior_pilot/L1L2_REVIEW_DISPOSITION.md)
+   — what a withdrawal looks like here: the review, the independent
+   re-derivation of each decisive finding, the corrected verdicts.
+4. [`semi-formal-experiment/REPRODUCIBILITY.md`](semi-formal-experiment/REPRODUCIBILITY.md)
+   — the sandwich rule, constant governance, determinism requirements.
+
+For depth after those: `semi-formal-experiment/MODULE_MAP.md` (§0 how to run
+anything, §1b what each module is, §11 anti-rules — read before "fixing"
+anything that looks wrong), `semi-formal-experiment/CYCLE_DESIGN.md` (how a
+change cycle runs), and the two handoffs — `ARC2_HANDOFF.md` (root link) and
+`semi-formal-experiment/HANDOFF.md`. **Read only the top starred block of each
+handoff**: everything below is stacked historical state, self-marked and partly
+superseded — an archive, not a read.
+
+`ARTIFACTS.md` at root is the full routing table.
+
+## Results, and what was withdrawn
+
+Arc-1 benchmark (Model Spec, 589-passage universe, MCC): the tool reached
++0.32 in-sample (+0.278 label-free); the frontier judges' leave-one-out mean was
++0.555, and the judges beat the tool in all nine behavior-gold cells at the
+judge's own false-positive rate. Arc-2 repair loop (engaged precision, one
+behavior): 0.40 → 0.70 → 0.55 → 0.85 across four adjudicated attempts — with
+the ledger's own honest headline being recall, not precision (23 of 40 declined
+passages were panel-relevant).
+
+**Withdrawn, by its own review process:**
+
+- The separability census ("integration test passed") — withdrawn in
+  `bf0d4978`: its pass condition was satisfiable by noise (random partition
+  passed 299/300 trials); relevance prediction over the representation ran at
+  base rate.
+- The L1/L2 licensing experiments — withdrawn in `365d68b3`: DOES-NOT-LICENSE;
+  one bar was already met by numbers indistinguishable from noise, the other
+  had no null.
+- The query-class saturation claim — bounded in `1143a921` (erratum #20): the
+  "no new places" result was relative to the designer's own vocabulary, not the
+  question space.
+
+The binding rule that came out of these: a separability claim is only as strong
+as its margin over a matched-granularity random-partition null, and a pass
+condition that cannot fail is void.
+
+## Running it
+
+```bash
+bash setup_env.sh            # creates semi-formal-experiment/.venv from requirements.txt
+bash setup_env.sh --check    # verifies, ~3 s
+
+cd semi-formal-experiment && .venv/bin/python -m pytest -q
+# 2,270 passed, 1 skipped (4-10 min depending on machine; measured 2026-08-30)
+
+cd ../walkthrough && ../semi-formal-experiment/.venv/bin/python -m pytest -q
+# arc-2 suite; see CI for current counts
+```
+
+CI runs both suites plus the demo path on every push *(badge added at
+publication)*.
+
+⚠️ **Two different files are named `behaviours.json` and they are NOT
+interchangeable** — `data/behaviours.json` (the panel roster) and
+`engine/panel/behaviours.json` (the vendored harness's own copy); the
+experiment's query-side definitions are a differently named third file:
+`semi-formal-experiment/behaviours_query.json`. Loading the wrong one produces
+a silently de-behaviourised score.
 
 ## Layout
 
 ```
-data/                      panel judgements and behaviour definitions (the instrument)
-specs/                     the documents under analysis
-engine/                    vendored panel harness
-semi-formal-experiment/    everything else:
-  *.py + test_*.py           tools and their suites (2,156 tests, 2026-08-04)
-  briefs/                    written contracts for every LLM judgment seat
-  golden_*.json              hand-authored translation gold (Model Spec + constitution)
-  snapshots/, dossiers/      the iteration loop's frozen states and adjudications
-  audit_dossiers/            the disagreement census
-  select_audit/              query-selection sweep instrument
-  cycle.py, CYCLE_DESIGN.md  the fix-cycle orchestrator (state machine over artifacts)
+engine/            spec-cite (locator → verbatim text) and the vendored panel harness
+specs/             the analyzed source documents, with their upstream licenses
+data/              panel verdicts (roster + panel-v5) and coverage artifacts
+semi-formal-experiment/   arc 1: DSL, checker, translator, benchmark, cycles, machine/
+walkthrough/       arc 2: graph pipeline, runs, behavior_pilot/ (see its README)
+ARTIFACTS.md       routing table for every star artifact
+LEDGER.md          → the arc-2 append-only ledger (symlink)
+ARC2_HANDOFF.md    → the arc-2 handoff (symlink)
 ```
 
-⚠️ **Three different files are named `behaviours.json` and they are NOT
-interchangeable** — `data/behaviours.json` (the panel roster), `engine/panel/behaviours.json`
-(the vendored harness's own copy) and `site/spec-reader-test/data/behaviours.json` (the
-reader prototype's). The experiment's query-side definitions are a FOURTH, differently
-named file: `semi-formal-experiment/behaviours_query.json`. Loading the wrong one produces
-a silently de-behaviourised score. (The earlier text here pointed at "the warning in
-earlier revisions", which pointed nowhere.) Also, historically: `*_dry-run` invocations of the annotation tools
-wrote 0-atom stub artifacts to their default output paths, and one such stub silently
-clobbered the shipped `behavior_atoms.json` (restored). **The guard is no longer pending**
-— as of 2026-08-04 (TOOLING_BATCH_DESIGN §4) a dry run writes to `<name>.dryrun.json`, and
-no write, dry or live, may overwrite a non-stub artifact without `--force`.
+Large superseded run artifacts were pruned for publication with a signed
+manifest — see
+[`PRUNED.md`](walkthrough/paper_pipeline/phase_1/resolve_runs/graph_v2/PRUNED.md)
+for what was removed and how to restore any of it from history.
 
-## Running it
+## Third-party content
 
-**There is no `requirements.txt`** (an earlier revision of this file told you to install
-one). The dependency list is short enough to write out, and the venv the suite actually
-runs under lives inside `semi-formal-experiment/`, not at the repo root:
+- `specs/openai-model-spec/` and `specs/claude-constitution/` are CC0 1.0
+  public-domain documents, redistributed with their upstream licence statements and README
+  files intact, for reproducibility of the clause inventories.
+- `data/panel-v5/` redistributes data from
+  [ai-character-index](https://github.com/AndresCotton/ai-character-index)
+  (Andres Cotton), Apache-2.0 — see the LICENSE and NOTICE files in that
+  directory.
 
-```bash
-python -m venv semi-formal-experiment/.venv
-semi-formal-experiment/.venv/bin/pip install pytest clingo
-semi-formal-experiment/.venv/bin/python -m pytest semi-formal-experiment -q
-# 2,156 passed, 3 skipped (measured 2026-08-04 — counts drift; the command is the
-# source of truth, not this number)
-```
+Everything else: MIT (see `LICENSE`).
 
-`clingo` is only needed for the parked ASP path (`emit_asp.py` and its tests). One
-diagnostic module, `weight_diag.py`, additionally wants `numpy` + `scikit-learn` and
-imports them lazily, so the suite passes without them. Provider calls go through stdlib
-`urllib` — there is no vendor SDK to install. Most tools import each other by bare module
-name, so **run them from inside `semi-formal-experiment/`** (pytest is the exception —
-it can be pointed at the directory from the repo root, as above).
+## For agents
 
-API keys are read from environment variables named in config; no key is stored here.
-Every live run is billed against a hard budget (`spend.py`), preflighted, and logged.
+`AGENTS.md` (symlinked as `CLAUDE.md`) is the canonical brief: read it before
+acting in this repo.
 
-## What this repo is really about
+## What this repo does not establish
 
-The negative results, the guards, and the process. Highlights of what was true at some
-point and is not true now: a silently truncated evaluation universe; an error-rate "win"
-that reversed under MCC; a supervised +0.59 "ceiling" that proved separability, not
-semantics; a translation score of 0.21 measured against a naming axis where humans
-themselves only reach 0.29. Every headline here was overturned at least once — always by
-asking what an existing number actually measures — and the machinery that survives is
-the part built in response: anti-cheat scans that have caught real planted leaks and
-real agent mistakes, sha-frozen prompts and gold standards, blind two-coder protocols,
-certified small-model judgment seats, and a cycle orchestrator whose gates exist because
-every recorded operator error was an orchestration error.
+That the approach is impossible. The withdrawn results are defects in
+measurements, not proofs about the ontology. It establishes that the specific
+demonstrations attempted here did not survive their own review process, and it
+documents that process well enough to be reused. Claims are scoped throughout:
+every separability claim requires its null; every "unresolved conflict" is a
+claim about an encoding and a fragment, not about the document.

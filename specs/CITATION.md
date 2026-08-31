@@ -100,9 +100,9 @@ the exact span, `resolve` the locator, and store the resolver's output as the qu
 
 ## Where citations are used
 
-- Notion DB **Spec Coverage by Behaviour**: each row's page body lists every excerpt
+- The coverage tracker: each behaviour's entry lists every excerpt
   as locator + verbatim quote.
-- Sweep records (`research/sweeps/*.md`) and the "Behaviours to track" page.
+- Sweep records (`research/sweeps/*.md`) and the behaviours-to-track list.
 - `data/coverage.json` (Phase 1): each coverage entry stores `locator` + `quote`, and
   CI re-resolves locators against `specs/` so a spec update that moves text fails
   loudly instead of silently.

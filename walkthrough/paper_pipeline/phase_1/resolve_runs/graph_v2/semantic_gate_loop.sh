@@ -1,5 +1,5 @@
 #!/bin/bash
-# Session-independent stage-4 loop (Matt's AFK directive, 2026-08-16):
+# Session-independent stage-4 loop (owner directive, unattended block, 2026-08-16):
 # every 5 minutes, semantically gate any translated modules the two-pass
 # DeepSeek gate has not yet seen (new bulk chunks land continuously).
 # Exits when the bulk run has finished AND nothing remains ungated.

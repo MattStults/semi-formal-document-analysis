@@ -97,7 +97,7 @@ STEP 5 — RECORD: traces (trace_check.py-certifiable) with evidence
   pointers; verdicts carrying enumeration scopes; SUSPENDED-OPEN for
   every non-certificated exhaustion, each with a NAMED RE-ENTRY;
   opposing UNANIMOUS panels on identical text = DEFENSIBLE-BY-
-  CONTRADICTION, no seat spent, excluded from top-line error (Matt's
+  CONTRADICTION, no seat spent, excluded from top-line error (standing
   ruling, notes 0011); commit + push each step's artifacts before the
   next step starts. The loop's healthy terminal is the QUIESCENT FIXED
   POINT: every open mismatch in a recorded suspension awaiting
@@ -112,16 +112,16 @@ STEP 5b — NOTES (binding): append a dated entry to ITERATION_NOTES.md at
   prompt: if a departing instance holds uncommitted context, THAT is
   the bug — commit it here before ending.
 
-BUDGET DISCIPLINE (notes 0002/0008/0013): the agent cannot read /usage —
-ask the human to paste it before EVERY Fable dispatch. When a standing
-budget cap and a standing venue ruling conflict, that is a conflict
-between two HUMAN rulings: surface the CONSTRAINT STRUCTURE (which
-rulings collide, what the machine's default is — usually suspend until
-the resource resets), never a design menu. Certified-Opus seats do not
-bill the Fable bar; measured costs: ~30-80k raw per seat, spot-checks
-~30k.
+CONSTRAINT DISCIPLINE (notes 0013; entries 0002/0008 are redacted stubs): the agent cannot read its
+own resource meter — confirm remaining capacity with the human before
+every frontier dispatch. When a standing capacity cap and a standing
+venue ruling conflict, that is a conflict between two HUMAN rulings:
+surface the CONSTRAINT STRUCTURE (which rulings collide, what the
+machine's default is — usually suspend until the resource resets), never
+a design menu. Certified cheap-tier seats do not draw on the frontier
+allocation.
 
-TRUTH ECONOMICS (Matt's ruling, 2026-08-24, notes 0019 — supersedes the
+TRUTH ECONOMICS (standing ruling, 2026-08-24, notes 0019 — supersedes the
 fresh-rulings-per-attempt inertia): TRUTH IS APPEND-ONLY AND MEMOIZED.
 (a) A dispatch rules ONLY nodes with no standing panel-tier truth — a
 draw's already-ruled nodes are lookups, never re-buys. (b) Rule at
@@ -143,6 +143,6 @@ lookup; STEP-4 confirmation scores on the SEALED partition, once.
 STOP CONDITIONS (halt and surface, do not improvise): any spec gap (a
 state with no applicable rule), any checker failure, any floor that a
 change would lower, any needed judgment lacking a pinned brief, any
-fired tripwire, any measurement failing its coverage criterion, /usage
+fired tripwire, any measurement failing its coverage criterion, resource usage
 crossing the registered cap, and any conflict between standing human
 rulings.

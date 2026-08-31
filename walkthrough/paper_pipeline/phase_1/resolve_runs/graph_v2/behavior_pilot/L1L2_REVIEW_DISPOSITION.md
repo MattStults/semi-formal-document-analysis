@@ -1,5 +1,5 @@
 # DISPOSITION — adversarial review of the L1/L2 licensing experiments
-(2026-08-25. Matt's question: would passing L1/L2 as registered
+(2026-08-25. The question put to review: would passing L1/L2 as registered
 actually support answering Q-A (complete representability for
 separation under full retranslation) and Q-B (extension to novel
 behaviours)? Clean-context Opus reviewer's full report:
@@ -72,16 +72,16 @@ CORRECTED against the reviewer (findings survive, numbers replaced):
   (L1/L2-successor results VOID unless the block-1 STOP RULE and
   metric0 FAILs are cleared or superseded by signed ruling; decision
   memo enumerates every red gate), A19 (UA seal off-limits, enforced
-  by a registered test), A20 (every registration states Fable-token
+  by a registered test), A20 (every registration states compute
   cost as well as $).
 - ACCEPT the false-negative protections F20-F27 (readout family with
   frontier-judge arm decisive; MCC/F1 primary; ceiling-relative
   scoring; both split types reported; behaviour-shaped pre-screen;
   seat parity checks before reading results; one-run-per-registration).
 - NOTE the reviewer's F17 cost paragraph inherits the pre-C1 premise
-  (its $ arithmetic is about API spend; panel/judge seats are Fable
-  subagents at $0 API). Per C1/A20 the F17 registration must carry a
-  Fable-token estimate; the ~550 short judge calls are seat calls,
+  (its $ arithmetic is about API spend; panel/judge seats are
+  subscription-side subagents at no API cost). Per C1/A20 the F17
+  registration must carry a token estimate; the ~550 short judge calls are seat calls,
   and tier routing (certified cheap tier + frontier parity subsample)
   follows the project's standing pattern.
 

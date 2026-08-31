@@ -1,9 +1,9 @@
 # PRE-REGISTRATION — "frontier-panel-equivalent" relevance quality
 
-Drafted 2026-08-16 under Matt's D3 ruling ("draft and hash; scoring waits
-for sign-off"). ⛔ **This measurement is scored ONCE, on the full translated
+Drafted 2026-08-16 under the project owner's D3 ruling: draft and hash, with
+scoring waiting for sign-off. ⛔ **This measurement is scored ONCE, on the full translated
 corpus, after the bulk run and the D5 matching fix land. Nothing here may be
-scored, peeked at, or partially computed before Matt approves this document.
+scored, peeked at, or partially computed before the project owner approves this document.
 Editing this file after approval voids the registration.** The sha256 of
 this file at registration is committed beside it; verify before scoring.
 
@@ -20,9 +20,9 @@ tier that is independent of both.
 Blind Fable-tier adjudicators, one clean context per behavior, given ONLY
 the behavior definition and each node's ESTABLISHES + SOURCE TEXT. Never
 shown seat verdicts, panel citations, or queue membership (protocol as run
-2026-08-16, `panel_run1/adjudication.json`). Matt's stratified spot-check (2026-08-18, `panel_run1/spotcheck_matt_result.json`):
+2026-08-16, `panel_run1/adjudication.json`). The project owner's stratified spot-check (2026-08-18, `panel_run1/spotcheck_owner_result.json`):
 21/22 agreement with the tier across four strata and three behaviors; one
-disagreement (Fable not_relevant, Matt relevant). Calibration rule adopted for
+disagreement (Fable not_relevant, owner relevant). Calibration rule adopted for
 the tier's brief: judge relevance against the ESTABLISHES claim, source text
 as interpretive evidence only; contract-suspect nodes flagged to the graph
 queue. Known scope limit: relevance hinging on terms defined in other nodes.
@@ -41,7 +41,7 @@ ground. Every node in the adjudicated set receives a blind ruling.
 
 ## Metrics (all reported; the equivalence claim is metric 0)
 
-0. **Defensibility (PRIMARY — Matt's ruling, 2026-08-18):** for every
+0. **Defensibility (PRIMARY — the project owner's ruling, 2026-08-18):** for every
    deviation the tool makes from the truth tier, is it an ERROR or a
    DEFENSIBLE INTERPRETATION? Two rates per behavior:
    * engagement defensibility = share of tool engagements the truth tier
@@ -58,7 +58,7 @@ ground. Every node in the adjudicated set receives a blind ruling.
    model, blind, re-rules a stratified sample of the disagreement rows; the
    Fable defensibility calls must survive that reader at >= 80% agreement
    or the truth tier is reported as single-model and the claim downgraded.
-   Matt's own stratified spot-check (a few clear-relevant, a few
+   The project owner's own stratified spot-check (a few clear-relevant, a few
    clear-irrelevant, a few borderline in each direction) is recorded
    alongside as the human calibration.
 
@@ -94,7 +94,7 @@ The following are reported beside metric 0, not as the claim:
   states the inputs). Nothing in the matching layer may change after this
   registration is signed, and no matching parameter may be tuned against
   these numbers.
-* **Q3 ruled (Matt, 2026-08-18): the cold-start matching layer is scored AS
+* **Q3 ruled (project owner, 2026-08-18): the cold-start matching layer is scored AS
   BLIND-DECOMPOSED.** The known precision and recall errors catalogued in
   `panel_run1/THREEWAY_REPORT.md` (27 scope/structural, 73 seat-miss) are
   counted against the cold-start number by design; the general fixes they
@@ -106,7 +106,7 @@ The following are reported beside metric 0, not as the claim:
 * The n=1-style caveat is standing: three behaviors is the panel's own
   limit, and the conclusion is scoped to them.
 
-## Second arm (Matt's ruling, 2026-08-17): the TUNED number
+## Second arm (the project owner's ruling, 2026-08-17): the TUNED number
 
 Behaviors are query-side artifacts built to be written and iterated freely
 — that is the product feature (DESIGN.md stage 4: "feedback refines the
@@ -118,7 +118,7 @@ answering two different questions:
   judges also got one pass.
 * **Tuned (arm 2):** what a user reaches by iterating the behavior. The
   atoms/definition for each behavior may be revised freely for up to 3
-  rounds. The tuning signal is FABLE ADJUDICATION, not the panel (Matt's
+  rounds. The tuning signal is FABLE ADJUDICATION, not the panel (the project owner's
   amendment, 2026-08-17: tuning against panel citations would import the
   panel's measured defects — strict-tier under-citation, the truncated
   universe — into the behavior; the tuned arm must make sense on its own,
@@ -148,8 +148,8 @@ an instrument being compared, not a bar being assumed.
 
 ---
 
-**SIGNED — Matt Stults, 2026-08-18.** Content sha256 at signing:
-`6848fb5a489aad2935ae2759f7daf2c14265abb94ebf1ecfb99f5989e54a80f3`. Signed via the coordinator on Matt's instruction ("ok sign it") after
+**SIGNED 2026-08-18 (project owner).** Content sha256 at signing:
+`6848fb5a489aad2935ae2759f7daf2c14265abb94ebf1ecfb99f5989e54a80f3`. Signed via the coordinator on the owner's instruction after
 Q1 (defensibility metric), Q2 (21/22 spot-check calibration) and Q3
 (cold-start layer scored as blind-decomposed) were each ruled and recorded
 above. From this line on, the registration is FROZEN: any edit to the

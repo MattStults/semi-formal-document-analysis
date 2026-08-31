@@ -1,3 +1,0 @@
-%% clause: l1_170_n009   section: graph_node   kind: conditional
-%% ABSTAIN: This clause is a factual status report, not a normative statement. It asserts that production models do not yet fully reflect the Model Spec and that OpenAI is continually refining systems toward alignment. It imposes no obligation, permission, prohibition, preference, or priority on any act, and it defines no class. Encoding it as a rule would require inventing a normative force the text does not state.
-% version: contract=f2b27d35ebc7b453 provenance=71e808c1fe729ae8   (the record is .version.json; this line is a courtesy)

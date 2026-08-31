@@ -14,7 +14,7 @@
 > (validate_ontology.py / validate_behavior_module.py / corpus_gate M30)
 > before the first chunk seals.
 >
-> **2026-08-19 addition — contract §8, NORM SIGNATURE (Matt's ruling: happens
+> **2026-08-19 addition — contract §8, NORM SIGNATURE (ruling by the project owner: happens
 > for EVERY document).** Every assert emits its full signature at translation
 > time: (act, actor, protects, governs-aspect, scope, force, authority).
 > Measured basis: the FP dimension census closed 74/75 observed false
@@ -35,7 +35,7 @@
 > 28a30a27; helpfulness F1 FIRED at 0.57 — the governs gap, now §8).
 
 
-**Matt took the scope decision that the 2026-08-05 section (“THE DECISION FOR MATT”) said an agent
+**The project owner took the scope decision that the 2026-08-05 section (“THE SCOPE DECISION”) said an agent
 must not resolve.** The answer is option 3: **restate the goal.**
 
 ### The old goal is retired
@@ -85,7 +85,7 @@ consistent formal system must not do.
   configuration. Logic-first is the contract, not a new idea.
 * **`relevance.py` (bag scorer) becomes a disabled-but-retained reference module.** Disabling means
   a *registration* change in the same diff, per AGENTS.md — not merely ceasing to call it.
-* **Clingo is adopted** (Matt, explicit, 2026-08-06) — satisfying `MODULE_MAP.md` §4’s requirement.
+* **Clingo is adopted** (project owner, explicit, 2026-08-06) — satisfying `MODULE_MAP.md` §4’s requirement.
   Note §5: the live path already imports `dsl`/`checker` via `extract_section`, so this promotes an
   existing dependency rather than reactivating dead code.
 * **Ladder cycles aimed at closing the MCC gap (S5, S6, S3b, implied-effects) are re-scoped**, not
@@ -126,7 +126,7 @@ Tier-2 has run, and §9 still reads "awaiting adversarial re-review") plus the
 implied-effects layer's receiver readiness, which is at REVISE with four blocking
 findings. The order was also ruled the other way: **S4 first, then S3b**
 (`BUILD_OVERVIEW.md` §0). Current state and open decisions live in
-`OUTSTANDING_WORK.md` and `DECISIONS_FOR_MATT.md` (repo root).
+`OUTSTANDING_WORK.md` and `SCOPE_DECISIONS.md` (repo root).
 
 ## ⭐⭐ STATE AS OF 2026-08-04 LATE — the fix ladder in execution. READ THIS FIRST.
 
@@ -419,7 +419,7 @@ mechanically re-selected from.
 
 ### The first human-expert signal
 
-`expert_salience.json` (2026-08-04, relayed by Matt): a domain expert reviewed the
+`expert_salience.json` (2026-08-04, relayed by the project owner): a domain expert reviewed the
 published panel product — the panel's failure mode is **salience flattening** (it
 over-flags; fails to distinguish THE core passage), so the bar itself is imperfect;
 endorsed use case is ranked first-pass auditing, not judge replacement. Two expert
@@ -779,7 +779,7 @@ at **+0.278**. That gap was attributed to two recoverable items. **Both have now
 measured and both are dead ends** — by proof, not by failure to try.
 
 ### Lead 3 — "there is unmined MEANING in the document". Tested 2026-08-06. ⚠️ UNREVIEWED.
-Raised by Matt against the argument above, and the objection was **correct as stated**: the
+Raised by the project owner against the argument above, and the objection was **correct as stated**: the
 near-injectivity of the atom index (534/589) and the supervised ceiling prove the atoms
 *distinguish* the passages and that a rule over them exists — **neither shows the document
 cannot supply that rule**. The whole enumeration behind "both leads closed" changed only the
@@ -916,7 +916,7 @@ including the base-rate story that had to be demoted to a hypothesis. 9 behaviou
    said `verdicts` was a string repr — that was wrong, an artifact of a pretty-printer calling
    `str()` on it. `panel_v2.parse_verdicts` accepts both shapes and uses `ast.literal_eval`,
    never `eval`, for the string path. Verdict scale is
-   **2 = relevant, 1 = tangentially related, 0 = not related** (confirmed by Matt), matching
+   **2 = relevant, 1 = tangentially related, 0 = not related** (confirmed by the project owner), matching
    the existing panel's core/related/not-relevant.
 
 ### Wired: `panel_v2.py` (+ `benchmark.py --panel-v2`)
@@ -1139,7 +1139,7 @@ floor and not the other.** Do not call it a win.
 The 0.0295 quoted earlier is the optimistic end. State verdicts so they hold at 0.037.
 
 
-## ⭐ THE DECISION FOR MATT — everything else in this file is input to it
+## ⭐ THE SCOPE DECISION — everything else in this file is input to it
 
 Every fact below is measured and recorded elsewhere in this document. No page previously put
 them together as a choice, so here it is.
@@ -1261,7 +1261,7 @@ claim is:
 > 294-case census) scores through `relevance.RelevanceIndex`, optionally through
 > `containment.ContainmentIndex` — the bag-scorer path — not `section.py`. No recorded
 > decision reverses this paragraph; the two simply have not been reconciled. If you are
-> choosing a query module, surface this to Matt rather than resolving it silently.
+> choosing a query module, surface this to the project owner rather than resolving it silently.
 
 **n=9 is the binding constraint on every remaining question.** More passages buy nothing; more
 behaviours buy everything.
@@ -1447,7 +1447,7 @@ See `MODULE_MAP.md` for what every module is and which capability it serves.
 ~~3. Print the floor in the ablation table.~~ DONE — and `ablate` now ranks on MCC, not F1.
 4. ~~Build the tool → `ConflictFinding` adapter.~~ **DONE** — `conflict_adapter.py`. `ConflictFinding` is constructed by hand
    only in `make_conflict_sample.py` ("not a tool run"); nothing generates a panel from a real
-   tool run. Priority 2 is blocked on THIS, not only on Matt's two decisions. Also unfixed:
+   tool run. Priority 2 is blocked on THIS, not only on the two open decisions. Also unfixed:
    the sample ships 1:2 negatives while the README states and argues for 1:1, and every
    negative carries `adjacent: False` — a tell to any human reader.
 5. ~~**Nested/held-out threshold selection.** Every lift currently quoted is a

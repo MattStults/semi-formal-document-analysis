@@ -5,7 +5,7 @@ justifications for the candidate declarations. Per the campaign handoff:
 arithmetic (predicted fixes/breaks applied to the real instrument) is checked
 ONLY AFTER each justification stands on its own. Nothing in this document is
 adopted; adoption = justification stands + arithmetic checked + charter
-regression + new-FP adjudication (Fable, post-reset) + adversarial review.
+regression + new-FP adjudication (Fable, after the capacity reset) + adversarial review.
 
 ## Blind discipline
 ALLOWED inputs for justifications: the document text
@@ -65,7 +65,7 @@ JUSTIFICATION PASS COMPLETE: 9 declarations justified (PC-1..5, CA-1..4),
 1 HOLD (OBJ), 12 rejected with document-grounded or scope-grounded reasons.
 Next pass: arithmetic — apply the justified deltas to the instrument,
 charter regression, measured fixes/breaks; new FPs to adjudication
-(post-reset).
+(after the capacity reset).
 
 ---
 
@@ -455,7 +455,7 @@ not_relevant, never adjudicated) enumerated into the adjudication queue —
 NOT adopted around. ADOPTION RULE (charter): each delta is adopted only if
 charter-positive (fixes > breaks, no re-break of previously-adjudicated
 instrument-wrong nodes) AND its new FPs survive blind Fable adjudication
-post-reset; a delta failing either is rejected by name with the arithmetic
+after the capacity reset; a delta failing either is rejected by name with the arithmetic
 attached. OBJ-HOLD and all rejected candidates are untouched.
 
 ## ARITHMETIC ADJUDICATION (measured 2026-08-21; per-delta, charter rule)
@@ -482,7 +482,7 @@ DISPOSITIONS (adoption rule as frozen):
   +harm-prevention). Joint bundle: TP+16 / FP+4. v19_ADOPT_CANDIDATE.json
   carries exactly these two. The 4 new FPs (help: l3596_3876_n039,
   l427_460_n003, l797_830_n004; caution: l1707_1973_n029) go to blind Fable
-  adjudication post-reset; adoption is FINAL only if they are ruled
+  adjudication after the capacity reset; adoption is FINAL only if they are ruled
   defensible-or-instrument-wrong in the engagement's favor per charter.
 - REJECTED BY ARITHMETIC (grounds attached above, not fit): PC-3, PC-4,
   PC-5. Note for the record (re-review N6, labeled per disclosure regime): the measured E-only break set is NODE-FOR-NODE identical to the decl-search predicted break set (l3596_3876_n039, l427_460_n003, l797_830_n004) — mechanically expected, since the predictions were instrument re-runs per the proposals' own note, but recorded here as the post-hoc coincidence the disclosure regime invites labeling. Note for the record: PC-3 (justified-with-reservation) and PC-4

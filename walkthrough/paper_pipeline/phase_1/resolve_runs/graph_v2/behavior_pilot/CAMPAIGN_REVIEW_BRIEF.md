@@ -1,4 +1,4 @@
-# CAMPAIGN REVIEW BRIEF — the 10-hour push (for Fable top-review)
+# CAMPAIGN REVIEW BRIEF (for adversarial top-review)
 
 You are the top-level adversarial reviewer for a research campaign. Attack;
 do not confirm. This brief is your map: what the campaign did, what has
@@ -14,8 +14,8 @@ Campaign record: HANDOFF_CURRENT.md (campaign section, bottom),
 
 ## 1. What the campaign is
 
-Goal (Matt, 2026-08-21): inside one 10-hour human-attention window
-straddling the Sun-2026-08-23 9pm-PT provider reset, produce (a) round-4
+Goal (2026-08-21): inside one bounded human-attention window
+straddling a provider capacity reset, produce (a) round-4
 certification of the OpenAI Model Spec for the three dev behaviours, (b)
 zero-adaptation generalization runs on SIX never-consulted behaviours, (c)
 a blog series + living summary. The instrument: a label-free, query-time-
@@ -47,7 +47,7 @@ semi-formal-experiment/LATENT_FIX_REGISTRY.md).
 ### Arc1-b — subtype mint (CLOSED, CLEAR-WITH-NITS after 2 rounds)
 Two act-refinement subtypes minted by two-seat blind annotation:
 provide:forbid.form_equivalence (10-node consensus), exhibit:illustrate
-(185 = 169 first-pass + 16 extension; extension seats ran in Matt's Claude
+(185 = 169 first-pass + 16 extension; extension seats ran in an alternate
 venue after provider input-inspection rejected every harness venue —
 venue + sanitization rulings recorded). M1 (CURRENT bit-identical) held;
 M2 held 3/3: all three former collider mismatches REACHABLE-separable +
@@ -86,7 +86,7 @@ defensibility batch (DEFENSIBILITY_BATCH_PROTOCOL.md) adjudicates the new
 FPs post-reset.
 
 ### Generalization workstream (attempt-1 staged end-to-end)
-- GENERALIZATION_PREREG_DRAFT.md — SIGNED by Matt 2026-08-21 (six
+- GENERALIZATION_PREREG_DRAFT.md — signed 2026-08-21 (six
   behaviours, 3+3 sequential, FATAL stop rule, 40-node draws, S1 floor 0.70
   with the 71% anchor STRUCK, re-measurement protocol, four pre-declared v5
   comparison cuts, truth path closed to panel data; addenda 1-2:
@@ -113,7 +113,7 @@ FPs post-reset.
 
 ### Round-4 + writeups
 - ROUND4_PREREG_SCAFFOLD.md: protocol fixed (draws, rulings, canary +
-  /usage checkpoints, cost, falsifiers F1-F5, success criterion, errata
+  usage checkpoints, cost, falsifiers F1-F5, success criterion, errata
   rule); freeze sections derive at instrument freeze (post-reset, after
   adoption finalizes). Lineage: rounds 1-3 (round-2: help PASSED, harm F1,
   caution F1-by-2, all fixed; round-3 signed 2026-08-19, SUPERSEDED UNRUN —
@@ -137,16 +137,16 @@ FPs post-reset.
 | 9b design-round fixes re-verification | 1 | BLOCKED → resolved (b81afbfa): false disjointness lemma corrected (2-node E/P&R fix overlap, inclusion-exclusion on the triple); CA mechanism-facts self-contradiction corrected; PC-4/PC-5 asymmetry stated; citation swap + nits fixed; one MEDIUM refuted by arbitration (v19_ADOPT_CANDIDATE.json exists at 066fd263). Decisions unaffected. |
 | TOP-REVIEW (this brief's addressee; Fable, 2026-08-24) | 1 | CLEAR-WITH-NITS, one gate condition — met before dispatch. No FATAL. ALARMING-1: defensibility protocol lacked its negative branch + rescued-rejected-delta disclosure (25/29 rows belong to rejected deltas) → OUTCOME BRANCHES section appended to DEFENSIBILITY_BATCH_PROTOCOL.md. Attack targets: freeze/repair seam HOLDS (repair pre-dates all draws/rulings, higher-precedence stop rule; arg-sort union to be named in the transfer writeup); positive-marginal restriction post-hoc as FRAMED but decisions forced by the pre-frozen per-delta rule (framing corrected in §2); strata bias — no mechanism found (composition pinned a priori, fallback anti-flattering); truth doctrine — one-pass guard real, branches now written. Claim traces: packets recomputed independently (all seven set-equal to draws, shuffled, no seed anywhere); M2 record pointer corrected (lives in MINT_INTEGRATION_DIFF.json + pinned test, not terminality_verification.json; "36 tests" is the directory total, census file is 14); stale disjointness lemma in §2 fixed by erratum note. Nits: F1 naming collision disambiguated (build spec); 9B:474-475 under-enumerates help's governs (conclusion unaffected); dead-slot probe guards arity, not same-length slot reorder. Reviewer-independence caveat on record: the top-reviewer orchestrated much of the campaign — verification weighted toward mechanical recomputation and Opus-agent artifact tracing over recollection. |
 
-## 4. Current state + Sunday sequence
+## 4. Current state + next sequence
 
 Now: all pre-reset work complete; tree clean; three gap reviews running.
-Post-reset (Matt's venue executes Fable; orchestration cannot — Fable is
-subscription-side, $0-API): (1) defensibility batch (29 blind rulings +
+Post-reset (a human-operated venue executes the frontier seat; automated
+orchestration cannot — it is subscription-side): (1) defensibility batch (29 blind rulings +
 20% panels) → charter recomputed on rescued counts → final adoption of the
 9b deltas; (2) instrument freeze → census re-run → round-4 prereg re-issue
-→ Matt signs → round-4 run (~0.4M Fable; canary = helpfulness, /usage
+→ sign-off → round-4 run (canary = helpfulness, usage
 checkpoints, falsifiers F1-F5); (3) six generalization ruling sets
-(~0.5-0.6M) → attempt-1 transfer verdicts + fix ledger (EXPECTED /
+→ attempt-1 transfer verdicts + fix ledger (EXPECTED /
 ALARMING / FATAL classes; FATAL in block 1 fires the stop rule).
 
 ## 5. Where to aim your attack

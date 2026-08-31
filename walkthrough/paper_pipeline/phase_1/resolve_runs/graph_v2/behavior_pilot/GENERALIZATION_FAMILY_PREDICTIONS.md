@@ -49,7 +49,7 @@ fractions (census, per behavior): majority of misses
 separable-or-addressable, minority terminal — mirroring helpfulness's
 10-of-12.
 
-## VENUE ADDENDUM (binding for these runs; Matt: "Do it" on the stated plan)
+## VENUE ADDENDUM (binding for these runs; the stated plan approved by the project owner)
 All canary and generalization rulings execute as LINEAGE wave seats
 (LINEAGE_SEAT_INSTRUCTION.md verbatim; ESTABLISHES+SOURCE spans; panels =
 three independent wave seats on a panel file; packet-order shuffle and

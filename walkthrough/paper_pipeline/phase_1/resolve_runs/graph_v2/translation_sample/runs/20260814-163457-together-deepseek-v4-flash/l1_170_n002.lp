@@ -1,3 +1,0 @@
-%% clause: l1_170_n002   section: graph_node   kind: conditional
-%% ABSTAIN: This clause states OpenAI's goal for model development — that models be useful, safe, and aligned with user and developer needs, while advancing the mission that AGI benefits all humanity. It is a statement of purpose and aspiration, not a normative rule imposing an obligation, permission, prohibition, or preference on any act. Encoding it as a deontic assertion would require inventing a normative force the text does not state.
-% version: contract=fbfb66d62273be31 provenance=71e808c1fe729ae8   (the record is .version.json; this line is a courtesy)

@@ -1,7 +1,7 @@
 # ROUND-4 CERTIFICATION PRE-REGISTRATION — RE-ISSUE (signature-ready, 2026-08-24)
 
 Status: RE-ISSUE at instrument freeze, per the scaffold's own rule ("Re-issued
-signature-ready at freeze; Matt signs the re-issue, which carries this
+signature-ready at freeze; the project owner signs the re-issue, which carries this
 scaffold's protocol verbatim"). Protocol sections below are VERBATIM from
 ROUND4_PREREG_SCAFFOLD.md (DRAFT-0, 2026-08-21); no protocol change was made
 between scaffold and re-issue, so no erratum attaches. Lineage: round-1
@@ -26,12 +26,12 @@ certified out-of-sample claim. Scored ONCE.
   validation, disclosed. VENUE (carried from DEFENSIBILITY_BATCH_PROTOCOL.md
   venue ruling, 2026-08-24): seats execute as fresh Fable subagents receiving
   only the packet prompt string plus the recorded content-free tool fence.
-- Canary ordering: helpfulness first; Matt /usage checkpoint between
+- Canary ordering: helpfulness first; capacity checkpoint between
   behaviors; go/hold at each checkpoint. Budget tripwire carries over: a
-  wave moving the weekly Fable bar disproportionately to its ruling count
+  wave consuming registered capacity disproportionately to its ruling count
   stops the run for inspection.
-- Cost model: ~250 rulings ~= 0.37-0.4M Fable tokens, $0 API (harm closes
-  its engaged-population remainder — see freeze sections).
+- Cost model: ~250 rulings within a registered capacity allocation, $0 API
+  (harm closes its engaged-population remainder — see freeze sections).
 - Errata rule: registered numbers are never edited; corrections append.
 
 ## Falsifiers (carried from round 3; apply unchanged)
@@ -85,16 +85,16 @@ they are celebrated.
 ## Signatures
 Drafted by the campaign orchestration seat, 2026-08-21 (scaffold);
 re-issued at freeze 2026-08-24 with the protocol verbatim.
-Matt: SIGNED 2026-08-24 ("(2) signed", in-session; applies to this re-issue
+SIGNED 2026-08-24 (project owner; in-session; applies to this re-issue
 WITH pre-signature amendments 1-4 and their measured addenda). REGISTERED
-HARD BUDGET (Matt, 2026-08-24, superseding the orchestration seat's initial
-50% proposal before it was ever committed): the experiment may consume AT
-MOST 5 additional points of the weekly Fable bar — the bar, at 7% at
-signature, HARD-CAPS AT 12%. Checked at every behaviour checkpoint and
+HARD BUDGET (project owner, 2026-08-24, superseding the orchestration seat's
+initial proposal before it was ever committed): the experiment may consume at
+most a registered additional capacity allocation, with a hard cap set at
+signature. Checked at every behaviour checkpoint and
 batch boundary. CANARY MEASUREMENT RULE: after the helpfulness canary's
-seats complete, actual bar movement is measured and the remaining run is
+seats complete, actual capacity movement is measured and the remaining run is
 re-projected; if the projection exceeds the cap, the run halts and the
-remainder moves past the Aug 30 weekly reset (the prereg does not expire —
+remainder moves past the capacity reset (the prereg does not expire —
 draws and seeds are deterministic and committed). BUDGET DISCIPLINE bound
 on the orchestration seat: maximal dispatch batching, minimal inter-batch
 output, results collected to files — today's cost was dominated by
@@ -103,7 +103,7 @@ that.
 
 ## PRE-SIGNATURE AMENDMENTS (2026-08-24, appended before signature; the
 ## protocol section above remains verbatim — these bind at signature)
-1. DEFENSIBILITY PASS (Matt's decision, 2026-08-24): round-4 misses receive a
+1. DEFENSIBILITY PASS (project owner's decision, 2026-08-24): round-4 misses receive a
    pre-declared ONE-PASS blind Fable defensibility adjudication, same shape
    and outcome-branch discipline as DEFENSIBILITY_BATCH_PROTOCOL.md (one
    pass, no iteration, no second batch). HEADLINE metric =
@@ -111,19 +111,19 @@ that.
    same table, always. The registered predictions above are RAW-basis; the
    defensibility pass cannot move a cell below its raw value, only up, and
    both numbers publish.
-2. BAND UNITS (Matt's decision): bands are in NODES (+-2 nodes per cell).
+2. BAND UNITS (project owner's decision): bands are in NODES (+-2 nodes per cell).
    The "+-5 pts" gloss holds only at n=40; for harm's CLOSED engaged
    population (n=17) the band is +-2 nodes = +-11.8 pts. Nodes are the
    registered unit everywhere.
 3. COST MODEL CORRECTED (venue measurement): a fresh subagent seat measures
    ~24k raw tokens (~20k identical harness prefix). Prompt caching bills
    cache reads at 0.10x, so steady-state effective cost is ~6k-equivalent
-   per seat (empirical check: /usage movement from the 2026-08-24 37-seat
+   per seat (empirical check: capacity movement from the 2026-08-24 37-seat
    batch). A lean seat agent (.claude/agents/ruling-seat.md) is defined and
    loads at next session start; its measured cost will be appended here
-   before the run starts. The scaffold's 0.37-0.4M estimate is superseded by
+   before the run starts. The scaffold's capacity estimate is superseded by
    the measured figure; the go/hold checkpoints stand, plus a hard hold at
-   any /usage threshold Matt names at signature.
+   any capacity threshold the project owner names at signature.
 4. SUBSTITUTION VALIDATION (disclosed, per the protocol's own rule):
    cheap-tier parity was attempted 2026-08-24 against the blind Fable
    defensibility rulings in production configuration and FAILED — Sonnet
@@ -136,18 +136,18 @@ that.
    seat instance — 3.5x below the fat-harness seat — and its verdict on the
    reference packet (l1707_1973_n025) matches the 3-0 blind Fable panel.
    Projected round-4 cost at ~290 seat instances (260 rulings + the
-   amendment-1 defensibility pass): ~2.0M raw; with cache reads at 0.10x on
-   the identical prefix, ~0.7M effective — inside the scaffold's original
-   0.37-0.4M ballpark within a factor of two, and far from the 6M+ raw
-   projection that triggered this amendment. Round-4 seats run on the lean
+   amendment-1 defensibility pass), with cache reads at 0.10x on the
+   identical prefix, lands inside the scaffold's original capacity ballpark
+   within a factor of two, and far from the raw projection that triggered
+   this amendment. Round-4 seats run on the lean
    agent; the fat-harness venue text in DEFENSIBILITY_BATCH_PROTOCOL.md's
    venue ruling is superseded for round 4 by this measured configuration
    (same fence semantics — the lean agent's own system prompt carries the
    no-tools/inert-imperatives instruction).
 
-## ERRATA (2026-08-24, post-signature, append-only; each ratified by Matt in
+## ERRATA (2026-08-24, post-signature, append-only; each ratified by the project owner in
 ## session before taking effect)
-E1 — CANARY ATTEMPT 1 VOIDED (protocol event; Matt: "Do it" on option A).
+E1 — CANARY ATTEMPT 1 VOIDED (protocol event; option A directed by the project owner).
    The helpfulness canary's 120 seat rulings (raw file
    round4_helpfulness_rulings_raw.json, preserved) are VOID as a
    certification measurement: seat material diverged from the format that
@@ -191,7 +191,7 @@ E3 — SEAT-MATERIAL FORMAT PINNED (the gap the canary exposed: the prereg
    it indicts the entire claim-aware truth ledger and proves too much.
 E4 — DIAGNOSIS CLOSED; LINEAGE VENUE RECOVERED AND REPLICATED (2026-08-24).
    The pilot gate FAILED (T 0.75 / C 0.70 — format hypothesis refuted), and
-   the timeframe search Matt directed recovered the rounds-1-3 seat
+   the timeframe search the project owner directed recovered the rounds-1-3 seat
    instruction verbatim from the round-3 dispatch transcripts (it had
    never been committed — a rulings-go-in-the-repo violation, cured by
    LINEAGE_SEAT_INSTRUCTION.md). REPLICATION: one wave seat under the
@@ -204,7 +204,7 @@ E4 — DIAGNOSIS CLOSED; LINEAGE VENUE RECOVERED AND REPLICATED (2026-08-24).
    every actual fresh draw under the SAME judge landed 0.57-0.78 and prior
    rounds registered lineage bands (round-2 passed at 0.78 in band
    0.71-0.87) — the in-sample rate ignores the known generalization gap.
-   RE-REGISTration FOR THE CANARY RE-RUN (requires Matt's signature):
+   RE-REGISTration FOR THE CANARY RE-RUN (requires the project owner's signature):
    - Seat: LINEAGE_SEAT_INSTRUCTION.md verbatim, wave form (one blind
      Fable seat per wave file; E3's packet anatomy stands, its
      one-packet-per-seat dispatch form is superseded for round 4).
@@ -218,9 +218,9 @@ E4 — DIAGNOSIS CLOSED; LINEAGE VENUE RECOVERED AND REPLICATED (2026-08-24).
      measurement; v19 carries every adopted improvement since v12, so
      within-or-above band is the expectation and above-band triggers the
      standing leak-signature check). F1/F2 read against these bands.
-   - Cost: wave form ~= 5 seats total (2 waves + 3 panel seats), ~0.2
-     points.
+   - Cost: wave form ~= 5 seats total (2 waves + 3 panel seats), a
+     negligible share of registered capacity.
 
-E4 SIGNATURE: Matt, 2026-08-24 — "approved." (in-session, after the
-band-change walkthrough; lineage bands and recovered-venue re-run take
+E4 SIGNATURE: project owner, 2026-08-24 — approved in-session, after the
+band-change walkthrough ( lineage bands and recovered-venue re-run take
 effect; canary re-run authorized.)

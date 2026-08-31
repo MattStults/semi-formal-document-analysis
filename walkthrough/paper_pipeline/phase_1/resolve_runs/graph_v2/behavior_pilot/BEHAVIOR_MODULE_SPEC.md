@@ -1,6 +1,6 @@
 # Behavior module — the primary behavior artifact (spec for the arm-2 tuner, round 2+)
 
-Matt's ruling 2026-08-18: the behavior is an ASP MODULE in lingua-franca
+The project owner's ruling 2026-08-18: the behavior is an ASP MODULE in lingua-franca
 predicates, not a bag of atoms; structure carries relevance information a
 bag loses (a clause defining excessive caution alone is relevant to ONE
 branch of "avoid over- AND under-caution"), and per-branch coverage is what

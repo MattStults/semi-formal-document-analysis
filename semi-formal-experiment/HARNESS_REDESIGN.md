@@ -2014,7 +2014,7 @@ runtime behavior.
   `RELEVANCE_ONLY_MODES` (`--sweep`/`--ablate`/`--operating-point` hard-refuse non-relevance
   modules); (b) it **stays** in `QUERY_MODULES` permanently. No `conftest._OPTIONAL` change is
   possible or needed.
-- **Decisions 1/2/3/5 in `DECISIONS_FOR_MATT.md` (S5, S6, implied-effects, S3b) need re-scoping**
+- **Decisions 1/2/3/5 in `SCOPE_DECISIONS.md` (S5, S6, implied-effects, S3b) need re-scoping**
   against the new goal, not automatic closure. S3b in particular is a large reviewed artifact whose
   beneficiary-aware attribution is exactly the explicit extra-document fact layer §2.6 wants.
 - **The fact schema in clingo** (§4) is the remaining bounded design task.

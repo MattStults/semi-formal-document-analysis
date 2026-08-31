@@ -1,6 +1,6 @@
 # VOID-FOR-COVERAGE RULING + RE-MEASUREMENT PREREG (2026-08-24)
 
-## The ruling (Matt, accepted this session; drafted by the driver)
+## The ruling (project owner, accepted this session; drafted by the driver)
 The attempt-3 P1 realization (ITERATION2_V5_PREDICTION.json /
 ITER2_ATTEMPT3_SCORED.json, measured 0.40) is VOID FOR COVERAGE: its
 estimator sampled 0 of the batch move's 16 gained nodes and the move

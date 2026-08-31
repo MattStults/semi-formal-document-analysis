@@ -86,7 +86,7 @@ act-channel-only, matching everything its calibration validated. The tempting
 alternative — flipping this one node's actor to organization — is rejected BY NAME
 as label-directed annotation editing; seat-2 may reach that actor independently.
 
-## TWO-SEAT BROADENING RESULT (2026-08-20, Matt: "Proceed" + "ok")
+## TWO-SEAT BROADENING RESULT (2026-08-20, approved (project owner))
 Seat-2 (independent Opus) annotated all 179; seat-1 completed the 141 remainder.
 Blind agreement: actor 0.95, acts 0.92, contexts 0.98, governs 0.88, protects 0.87,
 purpose 0.81 (396 claims). Consensus = intersection; 268 field-level disagreements

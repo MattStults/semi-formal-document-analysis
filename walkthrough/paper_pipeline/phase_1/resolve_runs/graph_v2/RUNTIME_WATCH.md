@@ -41,7 +41,7 @@ Fix policy, decided here so the watcher never improvises:
   plus a restart; a 4th identical draw is spend without information.
 * **Prompt-class diagnoses** (the failure implicates instruction text)
   are QUEUED for the owner — prompt files are guard-watched and D7 excludes
-  prompt edits while Matt is AFK.
+  prompt edits while unattended.
 * Diagnoses and outcomes append to `graveyard_watch.json` beside this file.
 
 Budget note: redraws under this policy ride the bulk run's authorization
@@ -49,7 +49,7 @@ Budget note: redraws under this policy ride the bulk run's authorization
 
 ---
 
-## AMENDED 2026-08-16 (Matt's AFK directive): step 4 is machine-driven
+## AMENDED 2026-08-16 (owner directive, unattended block): step 4 is machine-driven
 
 Watcher 1's audit DISPATCH is no longer session-bound. Three layers:
 

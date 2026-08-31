@@ -1,4 +1,4 @@
-# MINT PREREG (DRAFT — awaiting Matt's P3 signature): the ARBITRATES mark
+# MINT PREREG (DRAFT — awaiting the project owner's P3 signature): the ARBITRATES mark
 (2026-08-24, design tier. Status: DRAFT; nothing below runs until signed.
 Corrections append, never edit.)
 
@@ -68,7 +68,7 @@ Both consumed only when declared; inert for every other behaviour.
 - V5: registered prediction BEFORE the attempt-4 measurement, WITH the
   binding coverage rule (notes 0009): the primary metric must have
   registered coverage of the mint's extension. Attempt-4 headline wave
-  on FABLE (Matt's standing final-measurement pattern).
+  on FABLE (the project owner's standing final-measurement pattern).
 
 ## Predicted movement (frozen at signature; exact bands set in the V5
 ## registration after regression arithmetic exists)
@@ -77,18 +77,18 @@ the mark); most of the 20-FN family gains it (their asserts carry
 ordering/exception structure); l1_170_n058 and l699_796_n008 may remain
 out (definitional-lane act gap; C-V lane, separately queued).
 
-## What Matt is signing (P3 + Q5)
+## What the project owner is signing (P3 + Q5)
 - The INTENSION: that "arbitration structure present in the assert" is
   the concept this behaviour's engagement should ride on (an extension
   alone cannot certify this — Theorem 2, port P3).
 - The criteria text above as the frozen blind brief (including the HARD
   BOUNDARY ruling on concessive single norms).
 - The two consumption mechanisms as declarable, registry-fenced channels.
-Signature line: ____________________ (Matt, date)
+Signature line: ____________________ (project owner, date)
 
 
 ## ADDENDUM 1 — CALIBRATION MEASUREMENT (2026-08-24, pre-signature, append-only)
-Matt required the brief be measured before signing. 3 blind Opus seats,
+The project owner required the brief be measured before signing. 3 blind Opus seats,
 54-node packet (families hidden; committed pre-dispatch with thresholds).
 RESULTS (MINT_ARB_CALIBRATION_SCORE.json): stability mean pairwise 0.926
 (gate 0.80, PASS); separation: FP yes-rate 0.14 PASS, TN 0.20 PASS, TP
@@ -116,7 +116,7 @@ FNs are relevant WITHOUT claim-level arbitration structure
   flagged for future panel-of-record attention, not resolved here.
 
 ## Signatures
-Matt: SIGNED (scoped), 2026-08-24 — "sign scoped", this session;
+SIGNED (scoped) 2026-08-24 (project owner), this session;
 intension + frozen criteria (incl. the concessive-norm hard boundary) +
 the two registry-fenced consumption channels, under the Addendum-2 scope.
 FROZEN at this signature; corrections append only.

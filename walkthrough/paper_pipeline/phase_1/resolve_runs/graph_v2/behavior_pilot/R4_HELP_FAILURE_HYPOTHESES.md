@@ -2,7 +2,7 @@
 
 Method: explain_relevance.py (authoritative engagement paths) over all 11
 indefensible FPs + the 1 indefensible FN, joined with the panels' grounds.
-Deterministic, zero seats. <1h diagnostic requested by Matt; hypotheses only
+Deterministic, zero seats. <1h diagnostic requested by the project owner; hypotheses only
 — nothing here is adopted, and any fix runs the standard cycle (charter
 arithmetic on the full ledger, now 80 rulings richer, before any adoption).
 

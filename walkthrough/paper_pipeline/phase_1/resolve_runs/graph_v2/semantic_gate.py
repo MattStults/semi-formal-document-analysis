@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Automated stage-4 semantic gate — DeepSeek two-pass critique with an
-alarm queue for frontier audit. Matt's directive (2026-08-16, AFK note):
+alarm queue for frontier audit. owner directive (2026-08-16, unattended block):
 step 4 must run fully automated on the cheap tier, using disagreement /
 volume / truncation across parallel runs as the routing signal (logprobs
 are unavailable for this model on this provider), putting suspects into a

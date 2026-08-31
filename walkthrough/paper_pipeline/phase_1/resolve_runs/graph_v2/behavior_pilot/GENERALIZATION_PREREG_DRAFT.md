@@ -1,4 +1,4 @@
-# GENERALIZATION PRE-REGISTRATION — zero-adaptation runs on six never-consulted behaviours (DRAFT, awaits Matt's signature)
+# GENERALIZATION PRE-REGISTRATION — zero-adaptation runs on six never-consulted behaviours (DRAFT, awaits the project owner's signature)
 
 Campaign: 10-hour push (HANDOFF_CURRENT.md campaign section, baseline commit
 5cc21627, scope ruling same day: all six, 3+3 sequential, FATAL stop rule).
@@ -44,7 +44,7 @@ definition text (engine/panel + v3w/v5 definitions where they exist), the
 contract, the frozen act/context vocabulary. Inputs FORBIDDEN: instrument
 outputs on this behaviour, any panel verdict, any truth. Execution tier:
 written-spec execution (annotation-class seats); adversarial review per
-module; Fable spot-audit queued post-reset (its absence at run time is
+module; Fable spot-audit queued after the capacity reset (its absence at run time is
 recorded, not hidden). Modules are frozen as built — no revision before
 scoring.
 
@@ -58,7 +58,7 @@ scoring.
   the >=2-relevant cut) and panel-split (anything else), drawn 50/50 where
   population allows. Determinism: seeded draw script, seed + input shas
   recorded; same seed -> byte-identical sample (tested before use).
-- Rulings: blind Fable adjudication post-reset, single rulings + seeded 20%
+- Rulings: blind Fable adjudication after the capacity reset, single rulings + seeded 20%
   three-instance panels (per-ruling noise measurement, falsifier F5 in the
   round-4 lineage). Fable only; no substitution without a fresh parity
   validation, disclosed.
@@ -79,7 +79,7 @@ any additional cut is post-hoc and labeled so.
   ledger contains no FATAL entry. Basis: below the dev trio's converged
   standing (0.94-0.96 in-sample after a full campaign — not expected cold),
   anchored on the round-2 prediction lineage (0.73-0.89). (A former anchor —
-  "Matt's human-panelist baseline 71%" — is STRUCK 2026-08-21: no artifact
+  "the human-panelist baseline 71%" — is STRUCK 2026-08-21: no artifact
   establishes it and its presumed source does not recognize it; the floor
   stands on the prediction lineage alone.)
 - F1 FATAL fix-ledger entry (a repair that requires a per-behaviour special
@@ -97,7 +97,7 @@ any additional cut is post-hoc and labeled so.
   (per-behaviour special case). The ledger is the primary result; all
   entries land in the record with their class and the rejected quick-fix.
 
-## Re-measurement protocol (attempts budget, added 2026-08-21 at Matt's ruling)
+## Re-measurement protocol (attempts budget, added 2026-08-21 at the project owner's ruling)
 n=40 chosen over n=60 because the binding resource is ATTEMPTS, not band
 width: block-1 behaviours may be measured several times as the fix ledger
 drives repairs, and fatter draws buy fewer attempts.
@@ -109,8 +109,8 @@ drives repairs, and fatter draws buy fewer attempts.
   blind rulings, labeled attempt-N. Attempt-N verdicts measure THE REPAIR,
   never transfer; writeups keep the two claims separate.
 - FATAL entries are never repaired in-campaign (the stop rule owns them).
-- Budget: ~0.5-0.6M Fable covers the six first attempts; re-measurements
-  (~0.1M each) exceeding the fresh bar queue to the following week's bar,
+- Budget: a registered capacity allocation covers the six first attempts;
+  re-measurements exceeding it queue to the next registered allocation,
   disclosed.
 
 ## ADDENDUM 3 (2026-08-22, draw-machinery defects A1/A2 found by adversarial review, append-only)
@@ -151,7 +151,7 @@ BASE SEED 20260823; per-file seed = base + file index (generalization files
 0..5 in sorted-slug order, defensibility batch = 6). The seed and rule live
 ONLY in campaign-record material (this addendum; DEFENSIBILITY_BATCH_
 PROTOCOL.md), never in seat-facing headers. DISPATCH RULE (binding on
-Sunday's execution): the ruling seat receives ONLY each packet's prompt
+the scheduled execution): the ruling seat receives ONLY each packet's prompt
 string — no headers, no routing fields, no draw files, no repo access.
 
 ## Confirmation-block rule
@@ -164,24 +164,25 @@ as "transfers with degradation" and the blog claim is scoped to match.
 - v5 frontier panel (data/panel-v5/, PROVENANCE.md): comparison layer as
   above. Seat composition (sol/fable/deepseek + partials) differs from the
   v3w trio; writeups name the panel they cite.
-- Any further frontier data (e.g. the Slack reader-test-coverage.json Matt
-  holds, or new aci runs): enters ONLY under the same comparison rule, or
+- Any further frontier data (e.g. the reader-test-coverage.json held out of
+  band, or new aci runs): enters ONLY under the same comparison rule, or
   not at all. Truth path is closed to it by this prereg.
 - Round-4 results: independent; this prereg neither reads nor is read by the
   round-4 prereg. Both may be cited together afterward.
 
 ## Cost and timing
-~0.5-0.6M Fable tokens across six 40-node draws + panels; all post-reset
-(Sun 9pm PT Aug 23). Module builds, instrument runs, v5 comparison: Fable-
-free and proceed before the reset. Draws are computed and sha-recorded
+A registered capacity allocation covers six 40-node draws + panels; all run
+after the capacity reset. Module builds, instrument runs, v5 comparison:
+Fable-free and proceed before the reset. Draws are computed and sha-recorded
 before any ruling exists.
 
 ## Signatures
 Drafted by the campaign orchestration seat, 2026-08-21.
-Matt: SIGNED 2026-08-21. Rulings incorporated at signature: n=40 on the
+SIGNED 2026-08-21 (project owner). Rulings incorporated at signature: n=40 on the
 attempts-budget rationale (re-measurement protocol clause); the 71% anchor
 STRUCK (no artifact establishes it; its presumed source did not recognize it
-— Matt later suggested it may have been a manual test he personally ran; if
+— the project owner later suggested it may have been a manual test run
+personally; if
 that artifact surfaces it is restored by appended erratum, not by memory);
 third probe = how-to-approach-tradeoffs. FROZEN at this signature;
 corrections append only.
@@ -210,16 +211,16 @@ in git history as evidence. Anchor-granularity operationalization
 (addendum 1) unchanged.
 
 
-## ADDENDUM 5 (2026-08-24, Matt-signed, append-only): BLOCK-2 REOPENED UNDER SCOPED REPORTING
+## ADDENDUM 5 (2026-08-24, owner-signed, append-only): BLOCK-2 REOPENED UNDER SCOPED REPORTING
 The block-1 stop rule (tradeoffs F2) stands as written for the TRANSFER
 claim: no block-2 result may be reported as clean transfer; the combined
 transfer verdict remains "transfers with degradation" scoped by block-1.
-Matt authorizes block-2 MEASUREMENT under the following scope:
+The project owner authorizes block-2 MEASUREMENT under the following scope:
 - PURPOSE: testing the frozen per-behaviour predictions
   (BLOCK2_TRANSFER_PREDICTIONS.md, committed before this amendment) and
   measuring the repair calculus's process convergence (errata count under
   CALCULUS_RUNBOOK v1). Reporting: "repair-arc under amended protocol."
-- ORDER: user-autonomy FIRST (Matt's pick, D2); proportionate-risk
+- ORDER: user-autonomy FIRST (the project owner's pick, D2); proportionate-risk
   preserved as the untouched second test; general-welfare measurable
   only AFTER its C-V does-lane repair (executed alongside this
   amendment as the F1 recipe; see the contract's repair addendum).
@@ -228,10 +229,11 @@ Matt authorizes block-2 MEASUREMENT under the following scope:
   20260828 = base 20260823 + sorted-slug index 5, rate 0.2) + seeded
   Fable spot-checks with the standing tripwires. Draws: the registered
   seed-20260822 artifacts, unchanged.
-- BUDGET (D3): 2 points from the ~30.6% mark, halt-and-surface at cap,
-  /usage pasted before every Fable dispatch. Run now (Matt).
-Signed: Matt, 2026-08-24 ("D1: approved. D2: user-autonomy. D3: run
-now."). Corrections append only.
+- BUDGET (D3): a registered capacity allocation from the current position,
+  halt-and-surface at cap, capacity checked before every Fable dispatch.
+  Run now.
+Signed 2026-08-24 (project owner: D1 approved, D2 user-autonomy, D3 run
+now). Corrections append only.
 
 ### ADDENDUM 5 CORRECTION 1 (2026-08-24, append-only): the general-welfare
 C-V gate is DISCHARGED VACUOUSLY — the predicted does-lane defect was

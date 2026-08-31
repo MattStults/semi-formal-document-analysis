@@ -34,7 +34,8 @@ collect `engine/`'s vendored suites, and (c) every relative argument in these do
   Omitting it today gets you `REFUSED: 2 open cycles (…) — pass --cycle NAME.` Always pass it.
 - Dependencies are `pytest` and `clingo` (the ASP path in §4); `weight_diag.py` alone wants
   `numpy` + `scikit-learn` and imports them lazily, so the suite runs without them. Provider
-  calls use stdlib `urllib` — there is no SDK to install and **no `requirements.txt`**.
+  calls use stdlib `urllib` — there is no SDK to install; the pinned dependency list is the
+  root `requirements.txt` (installed by `setup_env.sh`).
 - The venv at `semi-formal-experiment/.venv` is the one the suite is run under.
 
 **Nothing here is dead code to be deleted on sight.** The repo carries three capabilities
@@ -131,17 +132,17 @@ without the fence firing.
 | `golden_expansion_a.json`, `golden_constitution.json` | hand-authored, panel-blind golden expansions (structure-rich Model-Spec picks; constitution side) |
 | `expert_salience.json` | the first HUMAN-expert relevance signal: the salience-flattening finding + **4 core-passage anchors — THREE anthropic-side (two pinned by `expert_core_passage_starts`, one qualitative/unpinned) plus ONE openai-side**. "Two anchors" was a miscount (PORTFOLIO_REVIEW addendum ruling 1); corrected here 2026-08-04. The three anthropic anchors are sealed with the constitution TEST; the openai anchor is consumed EXACTLY ONCE, at the generalization evaluation. Nothing may be fitted to any of them |
 
-## 2. Priority 2 — BEHAVIOUR-VS-DOCUMENT CONFLICT (built, blocked on Matt)
+## 2. Priority 2 — BEHAVIOUR-VS-DOCUMENT CONFLICT (built, blocked on a pending decision)
 
 | module | loc | role |
 |---|---|---|
 | `conflict_output.py` | 1647 | blinded emitter + side-car + validator + judge prompt |
 | `make_conflict_sample.py` | 201 | regenerates the sample and side-car reproducibly |
-| `conflict_adapter.py` | new | **the tool → `ConflictFinding` adapter. IT EXISTS** — earlier text saying Matt must write one before judging is obsolete. |
+| `conflict_adapter.py` | new | **the tool → `ConflictFinding` adapter. IT EXISTS** — earlier text saying one had to be written before judging is obsolete. |
 
 **Adapter status: BUILT** (`conflict_adapter.py`). Earlier text here said no tool →
-`ConflictFinding` adapter existed and Matt would have to write one before judging — that is
-**obsolete**. What remains are Matt's two decisions (human vs model judges; which `conduct`
+`ConflictFinding` adapter existed and one would have to be written before judging — that is
+**obsolete**. What remains are two open decisions (human vs model judges; which `conduct`
 vignettes) and one honesty caveat preserved in `conflict_adapter.py`: the score it emits is a
 **relevance** score, not a violation model, so the panel measures precision over a
 relevance-ranked candidate list. See `CONFLICT_PANEL_README.md`.

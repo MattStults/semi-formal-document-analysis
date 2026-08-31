@@ -84,6 +84,39 @@ EXCLUSIONS = [
         "states no norm at all. This is the patient-pricing failure mode with "
         "the sign flipped: not deleted guidance, fabricated permission.",
     ),
+    (
+        "l1108_1367_n014",
+        "20260816-094505-together-deepseek-v4-flash",
+        "8a7161690f14ec1353552bcf148993ca878e110fd39a78922e44d408b06766f8",
+        ("permit", "generate_content(C)",
+         "erotica_or_gore(C), age_appropriate_context(K), "
+         "generation_context(C, K), usage_policies_met(C)"),
+        "THE SAME FABRICATED PERMISSION, RE-TRANSLATED. This is the SECOND "
+        "artifact for the node, from a later run, and it commits the D1 defect "
+        "again in a stronger form: `permit generate_content(C) :- "
+        "erotica_or_gore(C), age_appropriate_context(K), generation_context(C, "
+        "K), usage_policies_met(C)`, with the read-back 'generating % is "
+        "permitted when it is erotica or gore in an age-appropriate context and "
+        "usage policies are met' -- the earlier module at least hedged in its "
+        "read-back, this one does not hedge anywhere. The source is unchanged "
+        "and was re-checked against the document, not inherited from the first "
+        "entry: node_corpus_all.json gives the node's locator as "
+        "'graph_v2@2026-08-10 > L1108-1367_n014 > L1117-1117' and its ESTABLISHES "
+        "text is the commentary sentence 'OpenAI is exploring how to let "
+        "developers and users generate erotica and gore in age-appropriate "
+        "contexts'. model_spec.md:1117 is inside a `!!! meta \"Commentary\"` "
+        "block and states no norm; model_spec.md:1114, three lines above, "
+        "carries `{#no_erotica_or_gore authority=system}` -- 'The assistant "
+        "should not generate erotica ... or extreme gore'. So the permission "
+        "contradicts a SYSTEM-authority prohibition and is sourced from prose "
+        "that grants nothing. Excluded on the same grounds as the 20260815 "
+        "artifact, keyed to THIS artifact's own digest per the one-artifact "
+        "rule above. The recurrence is the finding: excluding one artifact does "
+        "not stop the translator reproducing the defect on the next run of the "
+        "same node, so a later run of this node needs adjudication before it "
+        "enters the corpus. Ruling: same defect -- confirmed by the project "
+        "owner, 2026-08-31.",
+    ),
 ]
 
 

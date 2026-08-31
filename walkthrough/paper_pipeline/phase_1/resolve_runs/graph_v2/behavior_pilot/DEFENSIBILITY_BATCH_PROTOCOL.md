@@ -1,6 +1,6 @@
-# DEFENSIBILITY ADJUDICATION BATCH — pre-declared 2026-08-22 (directive: Matt 2026-08-21, "ideally we would evaluate if some of the FP/FN were defensible")
+# DEFENSIBILITY ADJUDICATION BATCH — pre-declared 2026-08-22 (directive from the project owner, 2026-08-21: evaluate whether some of the FP/FN were defensible)
 
-STATUS: registered as campaign protocol under Matt's stated directive; no
+STATUS: registered as campaign protocol under the project owner's stated directive; no
 objection recorded when the concrete batch was proposed 2026-08-21.
 SCOPE: the 9b arithmetic's new false positives, ALL deltas, ONE batch.
 Nodes (28 distinct / 29 rows; l797_830_n004 appears under two deltas):
@@ -15,7 +15,7 @@ Nodes (28 distinct / 29 rows; l797_830_n004 appears under two deltas):
   l2126_2404_n001, l2126_2404_n003, l2126_2404_n010, l797_830_n004
   (epistemic-autonomy)
 PROTOCOL: blind Fable adjudication, single rulings + seeded 20% three-
-instance panels (round-4 lineage protocol), post-reset, one pass, no
+instance panels (round-4 lineage protocol), after the capacity reset, one pass, no
 iteration — adjudicate-reject-adjudicate loops are the fitting risk this
 pre-declaration exists to prevent. Question per node: does this passage
 bear on THE BEHAVIOUR MODULE named in the packet? RECONCILIATION (packets
@@ -49,10 +49,10 @@ is a seeded permutation: base seed 20260823, this batch's seed = base + 6
 (generalization files use base + 0..5 by sorted-slug index); registered in
 GENERALIZATION_PREREG_DRAFT.md addendum 4 as well. The seed is not stored
 in the packet file.
-COST: ~29 rulings + panels ~= 0.06-0.08M Fable, inside the fresh bar.
+COST: ~29 rulings + panels, inside the freshly registered capacity allocation.
 
 OUTCOME BRANCHES, COMPLETE (top-review ALARMING-1, appended 2026-08-24
-BEFORE dispatch; approved by Matt "Do it"): the paragraph above stated only
+BEFORE dispatch; approved by the project owner): the paragraph above stated only
 the positive branch. All branches, pre-declared:
 - A delta charter-positive after rescue is ADOPTABLE (unchanged, above).
 - A delta charter-NEGATIVE after rescue is FINALLY REJECTED for this cycle:
@@ -87,10 +87,11 @@ never told which rows are paneled. Dispatch artifact:
 ruling_packets/defensibility_dispatch.txt (29 numbered prompt strings, the
 ONLY seat material).
 
-VENUE RULING (2026-08-24, Matt: "aren't you my fable venue? Can't you do
-that with subagents?"): the orchestration session now RUNS ON Fable
-subscription-side and can spawn fresh-context Fable subagents at $0 API —
-the pre-reset "orchestration cannot execute Fable" constraint was an
+VENUE RULING (2026-08-24, on the project owner's observation that the
+orchestration session is itself a Fable venue able to dispatch subagents):
+the orchestration session now RUNS ON Fable subscription-side and can spawn
+fresh-context Fable subagents at $0 API —
+the earlier "orchestration cannot execute Fable" constraint was an
 API-harness cost limit and has dissolved. Seats therefore execute as fresh
 Fable subagents dispatched by the orchestration session: each seat receives
 its packet prompt string VERBATIM plus one content-free venue fence
@@ -103,7 +104,7 @@ does not — the blindness the protocol requires is the SEAT's. Panels = three
 independent subagent dispatches of the identical prompt. Rejected
 alternative, by name: human hand-pasting into a separate venue — strictly
 more transcription surface, no blinding advantage, and spends the scarce
-resource (Matt's time) the campaign is now explicitly optimizing.
+resource (reviewer attention) the campaign is now explicitly optimizing.
 
 ADJUDICATION RESULT (2026-08-24, appended after the one pass — append-only):
 37 seat instances (25 singles + 4 unanimous 3-0 panels on rows 2/4/8/11),

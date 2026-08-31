@@ -13,7 +13,7 @@ spec bear on a given behaviour. Most work happens in `semi-formal-experiment/`.
 
 ## Read in this order
 
-1. **`semi-formal-experiment/HANDOFF.md`** — its ⭐⭐ top section only. Current state,
+1. **`semi-formal-experiment/HANDOFF.md`** — its top starred section only. Current state,
    what is closed, what is parked, and the standing rulings. Everything below that
    section is history (self-marked, some superseded).
 2. **`semi-formal-experiment/CYCLE_DESIGN.md`** — how a change cycle runs. Read the
@@ -73,7 +73,7 @@ spec bear on a given behaviour. Most work happens in `semi-formal-experiment/`.
 # from the repo root
 python3 -m venv semi-formal-experiment/.venv
 semi-formal-experiment/.venv/bin/pip install pytest clingo
-cd semi-formal-experiment && .venv/bin/python -m pytest -q      # ~2,156 pass, 4 min
+cd semi-formal-experiment && .venv/bin/python -m pytest -q      # ~2,270 pass, ~8 min
 ```
 
 `clingo` is only needed for the ASP-solver tests; everything else runs without it (those
@@ -83,7 +83,7 @@ Provider calls use stdlib `urllib`, no vendor SDK. `numpy`/`scikit-learn` are im
 lazily by `weight_diag.py` only.
 
 **API spend:** this project has a hard budget ceiling and it is `spend.py:BUDGET` — the ONE
-ceiling the machine reads ($25.00 as of 2026-08-16; the authorization history is in the
+ceiling the machine reads (the authorization history is in the
 constant's comment, and `spend.py` reports the current figure — quote the constant, never a
 second number). Nearly all work — every cycle, every audit, every number in the
 writeups — is deterministic re-analysis of data already on disk and costs nothing. If you

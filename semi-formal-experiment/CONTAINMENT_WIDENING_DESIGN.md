@@ -69,7 +69,7 @@ decoration-blind join, not by v1.1].
 > **not chosen here**.
 >
 > **Pending decision.** See `S5_ADVERSARIAL_REVIEW.md` (SCI-B1, SCI-M3, and
-> item 6 of SHORTEST PATH TO READY-FOR-OPEN) and `DECISIONS_FOR_MATT.md`
+> item 6 of SHORTEST PATH TO READY-FOR-OPEN) and `SCOPE_DECISIONS.md`
 > **Decision 1**. Everything below §0.5 that describes S5 is written to be
 > *accurate and openable* under whichever way Decision 1 is ruled; the
 > pre-registration in §0.5.2 is explicitly **conditional** on that ruling.

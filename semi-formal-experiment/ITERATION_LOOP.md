@@ -85,7 +85,7 @@ review's finding 1 (candidate provenance) by design rather than by fence:
    expert_salience.json holds three anthropic-side anchors plus one
    openai-side.]
 6. **Fallback, explicit.** If exhaustive delta adjudication proves too
-   expensive in practice, the fallback is Matt's to invoke — demote further
+   expensive in practice, the fallback is the project owner's to invoke — demote further
    toward dev-set iteration knowingly, never by drift.
 
 ## Components, in build order

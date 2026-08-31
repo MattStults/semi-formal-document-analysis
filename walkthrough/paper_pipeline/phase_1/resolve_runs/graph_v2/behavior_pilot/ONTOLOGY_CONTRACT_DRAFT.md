@@ -1,6 +1,6 @@
-# ONTOLOGY CONTRACT — situation concepts + ACTS — draft for Matt's ruling (2026-08-18)
+# ONTOLOGY CONTRACT — situation concepts + ACTS — draft for the project owner's ruling (2026-08-18)
 
-Matt's observation: the "act seam contract" and the behavior atoms' act
+The project owner's observation: the "act seam contract" and the behavior atoms' act
 vocabulary are ONE thing — an ontology of acts. SEAM_CONTRACT.json is the
 situation-concept half (root_authority/1, authority_levels_hierarchy/2 …);
 this file is the act half. Together they are the document's shared

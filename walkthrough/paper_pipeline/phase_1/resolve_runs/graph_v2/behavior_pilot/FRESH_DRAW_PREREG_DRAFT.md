@@ -1,6 +1,6 @@
-# FRESH-DRAW RE-REGISTRATION — arm-3 instrument, post-fix certification (DRAFT for Matt's signature)
+# FRESH-DRAW RE-REGISTRATION — arm-3 instrument, post-fix certification (DRAFT for the project owner's signature)
 
-Date drafted: 2026-08-19. Purpose: certify Matt's gate ("the 3 behaviors all match
+Date drafted: 2026-08-19. Purpose: certify the project owner's gate ("the 3 behaviors all match
 perfectly or have valid explanations") with an honest number from the FIXED instrument on
 nodes it has never been tuned or adjudicated against. This is the measurement the next
 behavior/document is gated on.
@@ -35,8 +35,8 @@ ONLY — no instrument output, no engagement state, no design docs). Additionall
 RANDOM 20% of nodes per behavior (seed 20260819, drawn with the sample) get a 3-instance
 panel; the panel ruling supersedes the single ruling on those nodes, and the observed
 single-vs-panel overturn rate is the measured per-ruling noise. Estimated cost: ~336
-rulings ≈ 0.5M Fable tokens, $0 API. EXECUTION IS BATCHED per Matt (2026-08-19): run
-behavior 1 (~0.17M), Matt checks /usage delta, then go/hold on behaviors 2–3. A hold is
+rulings within a registered capacity allocation, $0 API. EXECUTION IS BATCHED per the
+project owner (2026-08-19): run behavior 1, capacity checked, then go/hold on behaviors 2–3. A hold is
 not a protocol violation: each behavior's result is complete on its own; unscored
 behaviors stay unscored (no partial peeking).
 
@@ -72,9 +72,9 @@ perimeter) before being celebrated.
 ## Errata rule
 Registered numbers are never edited; corrections append.
 
-Signature: SIGNED by Matt ("sign"), 2026-08-19. sha256 of this file at the moment of
+Signature: SIGNED 2026-08-19 (project owner). sha256 of this file at the moment of
 signing (this line and below excluded from the hash, per the arm-3 convention):
 28a30a27aca7b572cf4fa432a4d44699abd23c91e48e874f6da37b209f8fc5b4
-Budget tripwire agreed at signing: helpfulness runs as 3 agent-waves; if wave 1 moves the
-weekly Fable bar >=2 points, STOP (projects >5%, Matt's hard line) and fall back to the
-Opus-escalation design for remaining behaviors.
+Budget tripwire agreed at signing: helpfulness runs as 3 agent-waves; if wave 1 consumes
+a disproportionate share of registered capacity, STOP (the project owner's hard line) and
+fall back to the Opus-escalation design for remaining behaviors.

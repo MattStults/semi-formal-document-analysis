@@ -5,14 +5,14 @@ behaviors_canonical_v7 (census scaffold) / act_bridges.lp (actor-gated,
 repair-7 acts) / relevance_by_act.py ARG_WALLS_ENABLED=False /
 situation_types.json r2 / arm_ab.py / relevance_by_dependency.py (input
 channel, own column); validation ledger attached
-(ARM3_ROUND_LEDGER.md, frozen at r6). Test slice scored ONCE after Matt's
-signature, by `arm_ab.py --slice test --canonical behaviors_canonical_v7.json
+(ARM3_ROUND_LEDGER.md, frozen at r6). Test slice scored ONCE after the
+project owner's signature, by `arm_ab.py --slice test --canonical behaviors_canonical_v7.json
 --modules modules_contract_v7.json` at the freeze commit, plus the
-input-relevance channel reported as its own labeled column. Matt's rulings incorporated: Q1 both sub-arms (2026-08-18);
-arm (b) redefined as MUTATION-BASED scope discrimination (Matt's design,
-2026-08-18 — "changing the target to something the ontology defines as
-clearly different and seeing if it still succeeds"); Q2 refinement to
-plateau on a three-way split (Matt: "why not the 3 way split?").
+input-relevance channel reported as its own labeled column. The project owner's rulings incorporated: Q1 both sub-arms (2026-08-18);
+arm (b) redefined as MUTATION-BASED scope discrimination (the project owner's
+design, 2026-08-18 — changing the target to something the ontology defines as
+clearly different and seeing if it still succeeds); Q2 refinement to
+plateau on a three-way split, at the project owner's direction.
 
 ## The claim
 Relevance computed FROM the translated ASP corpus — no LLM anywhere in the
@@ -100,10 +100,9 @@ the same test slice, same truth.
 
 ---
 
-**SIGNED — Matt Stults, 2026-08-18.** Content sha256 at signing:
+**SIGNED 2026-08-18 (project owner).** Content sha256 at signing:
 `a05adfcc50186b05fb4b0a8d9825eb7a3d8112e1dc6d4fa6014cf9d666f0179d`.
-Signed via the coordinator on Matt's instruction ("Ok sign it and get the
-numbers") after the per-behavior predictions, the nine disclosed defects,
+Signed via the coordinator on the owner's instruction after the per-behavior predictions, the nine disclosed defects,
 and the falsifier consistency fix were each reviewed in-session. From this
 line on the registration is FROZEN: the instruments named above may not
 change; the test slice is scored ONCE, by the command named above, at this

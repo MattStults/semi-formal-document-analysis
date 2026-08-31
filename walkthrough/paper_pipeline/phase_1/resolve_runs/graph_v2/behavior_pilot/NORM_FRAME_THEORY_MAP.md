@@ -1,7 +1,7 @@
 # NORM-FRAME THEORY MAP — grounding the slot inventory in existing theory
-(2026-08-24, design tier, Matt's directive: "we are almost certainly not
-the first to diagram these — find the existing theory instead of finding
-dimensions one by one." STATUS: DRAFT FROM MODEL KNOWLEDGE — the
+(2026-08-24, design tier, the project owner's directive: this is almost
+certainly not the first attempt to diagram these, so find the existing
+theory instead of finding dimensions one by one. STATUS: DRAFT FROM MODEL KNOWLEDGE — the
 citations below are standard and old, but this document requires a
 literature-verification pass before anything BINDS to it; nothing here
 is seat material.)

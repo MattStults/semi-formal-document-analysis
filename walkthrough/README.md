@@ -44,9 +44,11 @@ rather than a document finding, the seat-contract format. The rule is that repo 
    source and its n. Every check is shown failing for its named reason before it is trusted. A
    claim inferred from code structure is marked inferred until it is run.
 
-**If you are citing this directory elsewhere:** don't, yet, except as a prototype. Part 6 of the
-pipeline document is the honest status — three components of roughly fifteen have running code, and
-the first stage has never been executed.
+**If you are citing this directory elsewhere:** it is published as the record of arc 2 — the
+graph pipeline and the behavior pilot. Start at
+`paper_pipeline/phase_1/resolve_runs/graph_v2/behavior_pilot/README.md` for the index; the
+sentence at the top of this file (an early-stage caution) survives below for parts of the
+pipeline document that never ran, which Part 6 identifies honestly.
 
 ## What is here
 

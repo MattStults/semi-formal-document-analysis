@@ -341,9 +341,9 @@ source(seat_tier(flip_adjudicator,haiku),"briefs/README.md",101). needle(seat_ti
 seat_tier_evidence(flip_adjudicator,"Haiku 4.5 vs Opus 5, blinded, 7/7 identical verdicts").
 source(seat_tier_evidence(flip_adjudicator,"Haiku 4.5 vs Opus 5, blinded, 7/7 identical verdicts"),"briefs/README.md",114). needle(seat_tier_evidence(flip_adjudicator,"Haiku 4.5 vs Opus 5, blinded, 7/7 identical verdicts"),"7/7 identical verdicts").
 seat_producer(flip_adjudicator,"dossier.py dossiers").
-source(seat_producer(flip_adjudicator,"dossier.py dossiers"),"MODULE_MAP.md",275). needle(seat_producer(flip_adjudicator,"dossier.py dossiers"),"`dossier.py` → `dossier.py validate`").
+source(seat_producer(flip_adjudicator,"dossier.py dossiers"),"MODULE_MAP.md",277). needle(seat_producer(flip_adjudicator,"dossier.py dossiers"),"`dossier.py` → `dossier.py validate`").
 seat_validator(flip_adjudicator,"dossier.py validate --dir <dir> --verdict-file <file>").
-source(seat_validator(flip_adjudicator,"dossier.py validate --dir <dir> --verdict-file <file>"),"MODULE_MAP.md",291). needle(seat_validator(flip_adjudicator,"dossier.py validate --dir <dir> --verdict-file <file>"),"dossier.py validate --dir").
+source(seat_validator(flip_adjudicator,"dossier.py validate --dir <dir> --verdict-file <file>"),"MODULE_MAP.md",293). needle(seat_validator(flip_adjudicator,"dossier.py validate --dir <dir> --verdict-file <file>"),"dossier.py validate --dir").
 seat_scaling_unit(flip_adjudicator,per_flip).
 source(seat_scaling_unit(flip_adjudicator,per_flip),"briefs/flip_adjudicator.md",3). needle(seat_scaling_unit(flip_adjudicator,per_flip),"You adjudicate ONE flip at a time").
 seat_used_at(flip_adjudicator,adjudicate).
@@ -371,7 +371,7 @@ source(seat_used_at(change_reviewer,implement),"briefs/change_reviewer.md",3). n
 seat(decision_signer).
 source(seat(decision_signer),"briefs/README.md",48). needle(seat(decision_signer),"decision_signer.md").
 seat_brief(decision_signer,"briefs/decision_signer.md").
-source(seat_brief(decision_signer,"briefs/decision_signer.md"),"MODULE_MAP.md",282). needle(seat_brief(decision_signer,"briefs/decision_signer.md"),"decision_signer.md").
+source(seat_brief(decision_signer,"briefs/decision_signer.md"),"MODULE_MAP.md",284). needle(seat_brief(decision_signer,"briefs/decision_signer.md"),"decision_signer.md").
 seat_tier(decision_signer,human).
 source(seat_tier(decision_signer,human),"briefs/decision_signer.md",11). needle(seat_tier(decision_signer,human),"a human, or a frontier model").
 seat_tier(decision_signer,frontier).
@@ -393,11 +393,11 @@ source(seat_brief(disagreement_autopsy,"briefs/disagreement_autopsy.md"),"cycle.
 seat_tier(disagreement_autopsy,haiku).
 source(seat_tier(disagreement_autopsy,haiku),"briefs/disagreement_autopsy.md",157). needle(seat_tier(disagreement_autopsy,haiku),"Small-model standard applies").
 seat_producer(disagreement_autopsy,"audit_disagreements.py dossiers").
-source(seat_producer(disagreement_autopsy,"audit_disagreements.py dossiers"),"MODULE_MAP.md",276). needle(seat_producer(disagreement_autopsy,"audit_disagreements.py dossiers"),"audit_disagreements.py dossiers").
+source(seat_producer(disagreement_autopsy,"audit_disagreements.py dossiers"),"MODULE_MAP.md",278). needle(seat_producer(disagreement_autopsy,"audit_disagreements.py dossiers"),"audit_disagreements.py dossiers").
 seat_validator(disagreement_autopsy,"audit_disagreements.py validate --verdicts <file> --dossier-dir <dir>").
-source(seat_validator(disagreement_autopsy,"audit_disagreements.py validate --verdicts <file> --dossier-dir <dir>"),"MODULE_MAP.md",293). needle(seat_validator(disagreement_autopsy,"audit_disagreements.py validate --verdicts <file> --dossier-dir <dir>"),"audit_disagreements.py validate --verdicts").
+source(seat_validator(disagreement_autopsy,"audit_disagreements.py validate --verdicts <file> --dossier-dir <dir>"),"MODULE_MAP.md",295). needle(seat_validator(disagreement_autopsy,"audit_disagreements.py validate --verdicts <file> --dossier-dir <dir>"),"audit_disagreements.py validate --verdicts").
 seat_scaling_unit(disagreement_autopsy,per_dossier).
-source(seat_scaling_unit(disagreement_autopsy,per_dossier),"MODULE_MAP.md",106). needle(seat_scaling_unit(disagreement_autopsy,per_dossier),"one dossier per tool-vs-panel disagreement").
+source(seat_scaling_unit(disagreement_autopsy,per_dossier),"MODULE_MAP.md",108). needle(seat_scaling_unit(disagreement_autopsy,per_dossier),"one dossier per tool-vs-panel disagreement").
 seat_used_at(disagreement_autopsy,census).
 source(seat_used_at(disagreement_autopsy,census),"cycle.py",1261). needle(seat_used_at(disagreement_autopsy,census),"HALT (CENSUS): judgment required").
 seat_sees_panel(disagreement_autopsy).
@@ -407,13 +407,13 @@ source(seat_sees_panel(disagreement_autopsy),"briefs/README.md",34). needle(seat
 seat(drift_standing).
 source(seat(drift_standing),"briefs/README.md",77). needle(seat(drift_standing),"drift_standing.md").
 seat_brief(drift_standing,"briefs/drift_standing.md").
-source(seat_brief(drift_standing,"briefs/drift_standing.md"),"MODULE_MAP.md",284). needle(seat_brief(drift_standing,"briefs/drift_standing.md"),"drift_standing.md").
+source(seat_brief(drift_standing,"briefs/drift_standing.md"),"MODULE_MAP.md",286). needle(seat_brief(drift_standing,"briefs/drift_standing.md"),"drift_standing.md").
 seat_tier(drift_standing,haiku).
 source(seat_tier(drift_standing,haiku),"briefs/README.md",81). needle(seat_tier(drift_standing,haiku),"Small-model seat").
 seat_producer(drift_standing,"drift_dossiers.py dossiers").
-source(seat_producer(drift_standing,"drift_dossiers.py dossiers"),"MODULE_MAP.md",284). needle(seat_producer(drift_standing,"drift_dossiers.py dossiers"),"drift_dossiers.py dossiers").
+source(seat_producer(drift_standing,"drift_dossiers.py dossiers"),"MODULE_MAP.md",286). needle(seat_producer(drift_standing,"drift_dossiers.py dossiers"),"drift_dossiers.py dossiers").
 seat_validator(drift_standing,"drift_dossiers.py validate --verdicts <file> --dossier-dir <dir>").
-source(seat_validator(drift_standing,"drift_dossiers.py validate --verdicts <file> --dossier-dir <dir>"),"MODULE_MAP.md",294). needle(seat_validator(drift_standing,"drift_dossiers.py validate --verdicts <file> --dossier-dir <dir>"),"drift_dossiers.py     validate --verdicts").
+source(seat_validator(drift_standing,"drift_dossiers.py validate --verdicts <file> --dossier-dir <dir>"),"MODULE_MAP.md",296). needle(seat_validator(drift_standing,"drift_dossiers.py validate --verdicts <file> --dossier-dir <dir>"),"drift_dossiers.py     validate --verdicts").
 seat_scaling_unit(drift_standing,per_dossier).
 source(seat_scaling_unit(drift_standing,per_dossier),"briefs/drift_standing.md",4). needle(seat_scaling_unit(drift_standing,per_dossier),"one case at a time").
 
@@ -421,11 +421,11 @@ source(seat_scaling_unit(drift_standing,per_dossier),"briefs/drift_standing.md",
 seat(select_audit).
 source(seat(select_audit),"briefs/README.md",30). needle(seat(select_audit),"select_audit.md").
 seat_brief(select_audit,"briefs/select_audit.md").
-source(seat_brief(select_audit,"briefs/select_audit.md"),"MODULE_MAP.md",277). needle(seat_brief(select_audit,"briefs/select_audit.md"),"select_audit.md").
+source(seat_brief(select_audit,"briefs/select_audit.md"),"MODULE_MAP.md",279). needle(seat_brief(select_audit,"briefs/select_audit.md"),"select_audit.md").
 seat_tier(select_audit,haiku).
 source(seat_tier(select_audit,haiku),"briefs/README.md",101). needle(seat_tier(select_audit,haiku),"Every judgment seat is designed to be operable by a Haiku-class model").
 seat_producer(select_audit,"select_audit.py").
-source(seat_producer(select_audit,"select_audit.py"),"MODULE_MAP.md",277). needle(seat_producer(select_audit,"select_audit.py"),"select_audit.py").
+source(seat_producer(select_audit,"select_audit.py"),"MODULE_MAP.md",279). needle(seat_producer(select_audit,"select_audit.py"),"select_audit.py").
 seat_validator(select_audit,"select_audit.py validate").
 source(seat_validator(select_audit,"select_audit.py validate"),"briefs/README.md",31). needle(seat_validator(select_audit,"select_audit.py validate"),"select_audit.py validate").
 seat_scaling_unit(select_audit,per_behaviour).
@@ -435,13 +435,13 @@ source(seat_scaling_unit(select_audit,per_behaviour),"briefs/select_audit.md",3)
 seat(blind_coder).
 source(seat(blind_coder),"briefs/README.md",23). needle(seat(blind_coder),"blind_coder.md").
 seat_brief(blind_coder,"briefs/blind_coder.md").
-source(seat_brief(blind_coder,"briefs/blind_coder.md"),"MODULE_MAP.md",278). needle(seat_brief(blind_coder,"briefs/blind_coder.md"),"blind_coder.md").
+source(seat_brief(blind_coder,"briefs/blind_coder.md"),"MODULE_MAP.md",280). needle(seat_brief(blind_coder,"briefs/blind_coder.md"),"blind_coder.md").
 seat_tier(blind_coder,haiku).
 source(seat_tier(blind_coder,haiku),"briefs/README.md",101). needle(seat_tier(blind_coder,haiku),"Every judgment seat is designed to be operable by a Haiku-class model").
 seat_producer(blind_coder,"prep_hole_corpus.py").
-source(seat_producer(blind_coder,"prep_hole_corpus.py"),"MODULE_MAP.md",278). needle(seat_producer(blind_coder,"prep_hole_corpus.py"),"prep_hole_corpus.py").
+source(seat_producer(blind_coder,"prep_hole_corpus.py"),"MODULE_MAP.md",280). needle(seat_producer(blind_coder,"prep_hole_corpus.py"),"prep_hole_corpus.py").
 seat_validator(blind_coder,"check_taxonomy.py / taxonomy_agreement.py").
-source(seat_validator(blind_coder,"check_taxonomy.py / taxonomy_agreement.py"),"MODULE_MAP.md",278). needle(seat_validator(blind_coder,"check_taxonomy.py / taxonomy_agreement.py"),"check_taxonomy.py`/`taxonomy_agreement.py").
+source(seat_validator(blind_coder,"check_taxonomy.py / taxonomy_agreement.py"),"MODULE_MAP.md",280). needle(seat_validator(blind_coder,"check_taxonomy.py / taxonomy_agreement.py"),"check_taxonomy.py`/`taxonomy_agreement.py").
 seat_scaling_unit(blind_coder,per_corpus).
 source(seat_scaling_unit(blind_coder,per_corpus),"briefs/blind_coder.md",4). needle(seat_scaling_unit(blind_coder,per_corpus),"corpus of read-back loss phrases").
 
@@ -449,18 +449,18 @@ source(seat_scaling_unit(blind_coder,per_corpus),"briefs/blind_coder.md",4). nee
 seat(golden_author).
 source(seat(golden_author),"briefs/README.md",27). needle(seat(golden_author),"golden_author.md").
 seat_brief(golden_author,"briefs/golden_author.md").
-source(seat_brief(golden_author,"briefs/golden_author.md"),"MODULE_MAP.md",279). needle(seat_brief(golden_author,"briefs/golden_author.md"),"golden_author.md").
+source(seat_brief(golden_author,"briefs/golden_author.md"),"MODULE_MAP.md",281). needle(seat_brief(golden_author,"briefs/golden_author.md"),"golden_author.md").
 seat_tier(golden_author,haiku).
 source(seat_tier(golden_author,haiku),"briefs/README.md",101). needle(seat_tier(golden_author,haiku),"Every judgment seat is designed to be operable by a Haiku-class model").
 seat_validator(golden_author,"golden.load sha-freeze + test_golden.py").
-source(seat_validator(golden_author,"golden.load sha-freeze + test_golden.py"),"MODULE_MAP.md",279). needle(seat_validator(golden_author,"golden.load sha-freeze + test_golden.py"),"golden.load` sha-freeze + `test_golden.py").
+source(seat_validator(golden_author,"golden.load sha-freeze + test_golden.py"),"MODULE_MAP.md",281). needle(seat_validator(golden_author,"golden.load sha-freeze + test_golden.py"),"golden.load` sha-freeze + `test_golden.py").
 seat_scaling_unit(golden_author,per_document).
 source(seat_scaling_unit(golden_author,per_document),"briefs/golden_author.md",4). needle(seat_scaling_unit(golden_author,per_document),"small set of clauses from the document").
 
 seat(golden_review).
 source(seat(golden_review),"briefs/README.md",37). needle(seat(golden_review),"golden_review.md").
 seat_brief(golden_review,"briefs/golden_review.md").
-source(seat_brief(golden_review,"briefs/golden_review.md"),"MODULE_MAP.md",280). needle(seat_brief(golden_review,"briefs/golden_review.md"),"golden_review.md").
+source(seat_brief(golden_review,"briefs/golden_review.md"),"MODULE_MAP.md",282). needle(seat_brief(golden_review,"briefs/golden_review.md"),"golden_review.md").
 seat_tier(golden_review,human).
 source(seat_tier(golden_review,human),"briefs/golden_review.md",5). needle(seat_tier(golden_review,human),"for a HUMAN").
 seat_tier(golden_review,frontier).
@@ -474,13 +474,13 @@ source(seat_scaling_unit(golden_review,per_document),"briefs/golden_review.md",4
 seat(backfill_author).
 source(seat(backfill_author),"briefs/README.md",54). needle(seat(backfill_author),"backfill_author.md").
 seat_brief(backfill_author,"briefs/backfill_author.md").
-source(seat_brief(backfill_author,"briefs/backfill_author.md"),"MODULE_MAP.md",283). needle(seat_brief(backfill_author,"briefs/backfill_author.md"),"backfill_author.md").
+source(seat_brief(backfill_author,"briefs/backfill_author.md"),"MODULE_MAP.md",285). needle(seat_brief(backfill_author,"briefs/backfill_author.md"),"backfill_author.md").
 seat_tier(backfill_author,frontier).
 source(seat_tier(backfill_author,frontier),"briefs/backfill_author.md",5). needle(seat_tier(backfill_author,frontier),"frontier/careful seat").
 seat_producer(backfill_author,"backfill_worksheet.py build --dir <dir>").
-source(seat_producer(backfill_author,"backfill_worksheet.py build --dir <dir>"),"MODULE_MAP.md",283). needle(seat_producer(backfill_author,"backfill_worksheet.py build --dir <dir>"),"backfill_worksheet.py build --dir").
+source(seat_producer(backfill_author,"backfill_worksheet.py build --dir <dir>"),"MODULE_MAP.md",285). needle(seat_producer(backfill_author,"backfill_worksheet.py build --dir <dir>"),"backfill_worksheet.py build --dir").
 seat_validator(backfill_author,"backfill_worksheet.py validate --dir <dir>").
-source(seat_validator(backfill_author,"backfill_worksheet.py validate --dir <dir>"),"MODULE_MAP.md",295). needle(seat_validator(backfill_author,"backfill_worksheet.py validate --dir <dir>"),"backfill_worksheet.py validate --dir").
+source(seat_validator(backfill_author,"backfill_worksheet.py validate --dir <dir>"),"MODULE_MAP.md",297). needle(seat_validator(backfill_author,"backfill_worksheet.py validate --dir <dir>"),"backfill_worksheet.py validate --dir").
 seat_scaling_unit(backfill_author,per_worksheet_row).
 source(seat_scaling_unit(backfill_author,per_worksheet_row),"briefs/backfill_author.md",3). needle(seat_scaling_unit(backfill_author,per_worksheet_row),"for every row of a worksheet").
 
@@ -560,9 +560,9 @@ source(provenance(closure_defaults,chosen),"cycle.py",118). needle(provenance(cl
 constant(noise_floor,"(0.0316, 0.037)").
 source(constant(noise_floor,"(0.0316, 0.037)"),"breadth_filter.py",190). needle(constant(noise_floor,"(0.0316, 0.037)"),"NOISE_FLOOR = (0.0316, 0.037)").
 provenance(noise_floor,derived).
-source(provenance(noise_floor,derived),"HANDOFF.md",1101). needle(provenance(noise_floor,derived),"re-derived noise floor").
+source(provenance(noise_floor,derived),"HANDOFF.md",1134). needle(provenance(noise_floor,derived),"re-derived noise floor").
 derivation(noise_floor,"HANDOFF.md:1046-1047 — 0.0316 at 1000 resamples / 9 cells; 0.0350-0.0357 at 2000 resamples").
-source(derivation(noise_floor,"HANDOFF.md:1046-1047 — 0.0316 at 1000 resamples / 9 cells; 0.0350-0.0357 at 2000 resamples"),"HANDOFF.md",1102). needle(derivation(noise_floor,"HANDOFF.md:1046-1047 — 0.0316 at 1000 resamples / 9 cells; 0.0350-0.0357 at 2000 resamples"),"9 cells and 0.0350–0.0357 at 2000 resamples").
+source(derivation(noise_floor,"HANDOFF.md:1046-1047 — 0.0316 at 1000 resamples / 9 cells; 0.0350-0.0357 at 2000 resamples"),"HANDOFF.md",1135). needle(derivation(noise_floor,"HANDOFF.md:1046-1047 — 0.0316 at 1000 resamples / 9 cells; 0.0350-0.0357 at 2000 resamples"),"9 cells and 0.0350–0.0357 at 2000 resamples").
 
 constant(patient_mismatch_discount,"0.10").
 source(constant(patient_mismatch_discount,"0.10"),"patient.py",157). needle(constant(patient_mismatch_discount,"0.10"),"PATIENT_MISMATCH_DISCOUNT = 0.10").
@@ -574,7 +574,7 @@ source(derivation(patient_mismatch_discount,"cycles/patient-pricing-2026-08-04/D
 constant(containment_pricing_version,"1.2").
 source(constant(containment_pricing_version,"1.2"),"containment.py",125). needle(constant(containment_pricing_version,"1.2"),"PRICING_VERSION = \"1.2\"").
 provenance(containment_pricing_version,chosen).
-source(provenance(containment_pricing_version,chosen),"MODULE_MAP.md",103). needle(provenance(containment_pricing_version,chosen),"this is what `containment.py` sets").
+source(provenance(containment_pricing_version,chosen),"MODULE_MAP.md",105). needle(provenance(containment_pricing_version,chosen),"this is what `containment.py` sets").
 
 constant(fanout_degenerate,"5").
 source(constant(fanout_degenerate,"5"),"audit_disagreements.py",55). needle(constant(fanout_degenerate,"5"),"FANOUT_DEGENERATE = 5").

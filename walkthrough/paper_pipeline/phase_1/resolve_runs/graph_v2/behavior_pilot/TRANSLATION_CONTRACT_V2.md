@@ -1,7 +1,7 @@
 # TRANSLATION CONTRACT V2 — what the NEXT document's translator receives
 # (assembles every retrofit lesson of 2026-08-18 into translation-time requirements)
 
-Matt's ruling: the ontology work must be "included in the automated
+The project owner's ruling: the ontology work must be "included in the automated
 machinery for next time." This document is that machinery's specification.
 Everything below was learned by RETROFIT on the Model Spec corpus — each
 requirement cites the retrofit artifact that proved its need. The next
@@ -54,7 +54,7 @@ DROPPED-NORM / SIBLING-OWNED / DEFINITIONAL — only the first is a defect.
 Rankings, consequence claims, and definitions with normative force either
 declare the acts their norm governs (the outcome_ranking exemplar:
 answer/hedge/decline) or are reached via the PROVIDES/NEEDS input-
-relevance channel (relevance_by_dependency.py — Matt's design; 169/181
+relevance channel (relevance_by_dependency.py — the project owner's design; 169/181
 actless Model Spec modules reachable). A module reachable by NEITHER
 channel is invisible to every query: gate-reportable.
 
@@ -180,7 +180,7 @@ actor=assistant norms. Slot derived a priori (deontic agent position); value voc
 mined per document per §9a.
 
 ## 9d. All-truth regression table REQUIRED before any prereg (practice made law,
-per Matt 2026-08-19): every instrument change is measured against the FULL accumulated
+per the project owner 2026-08-19): every instrument change is measured against the FULL accumulated
 truth before a new registration is drafted; any regression on pre-judged cases requires
 recorded grounds. As pools exhaust, certification converges to whole-population
 validation (harm reached this at round 3: 70-node engaged population).
@@ -204,7 +204,7 @@ the next document: (a) mine the document's OWN stated ends as the purpose vocabu
 purpose+failure_mode elicitation, BEHAVIOR-BLIND (blindness is what makes the slot a
 document fact rather than cached relevance — the circularity objection dissolves only
 under blindness, so it is binding); (c) behaviors declare which document-ends they
-track; walls remain set-membership tests. Matt's method ruling encoded: naive a priori
+track; walls remain set-membership tests. The project owner's method ruling encoded: naive a priori
 description will not find every needed slot — the discrepancy census after each
 certification round is the REPAIR loop that discovers missing slots (this one was
 found by round-3's FP census; the actor slot by the same route).
@@ -248,7 +248,7 @@ fixing mechanism for whatever the translator still leaves in prose. A missed
 modulator is therefore a NORMAL, detectable, repairable event — not a design
 failure; the design failure would be shipping without the census.
 
-## 9g-ADDENDUM (2026-08-20, Matt's correction): TERMINAL VERDICTS ARE
+## 9g-ADDENDUM (2026-08-20, the project owner's correction): TERMINAL VERDICTS ARE
 ## INVENTORY-RELATIVE AND EXPIRE
 A verify_terminal.py verdict is a proof over a FROZEN mechanism inventory
 (declaration slots + vocabulary at run time), never an absolute property of the

@@ -1,8 +1,8 @@
 # Behavior translator contract — the corpus vocabulary a behavior module MUST be written in
 
-Matt's ruling 2026-08-18: with one document, behaviors are translated INTO the document's vocabulary directly, following the spec pipeline's own contract discipline (NEEDS/PROVIDES + seam contract + validation). Every predicate in a behavior module is one of the names below, or an explicit `borrow` naming which module declares it. Anything else is a validation BREACH (behavior-translation failure B5), exactly as an undeclared name is a breach in a spec module.
+The project owner's ruling 2026-08-18: with one document, behaviors are translated INTO the document's vocabulary directly, following the spec pipeline's own contract discipline (NEEDS/PROVIDES + seam contract + validation). Every predicate in a behavior module is one of the names below, or an explicit `borrow` naming which module declares it. Anything else is a validation BREACH (behavior-translation failure B5), exactly as an undeclared name is a breach in a spec module.
 
-## Canonical ACTS (PROVISIONAL — ONTOLOGY_CONTRACT_DRAFT.md, pending Matt's ruling on the bridge-layer shape)
+## Canonical ACTS (PROVISIONAL — ONTOLOGY_CONTRACT_DRAFT.md, pending the project owner's ruling on the bridge-layer shape)
 
 | act | signature | argument |
 |---|---|---|

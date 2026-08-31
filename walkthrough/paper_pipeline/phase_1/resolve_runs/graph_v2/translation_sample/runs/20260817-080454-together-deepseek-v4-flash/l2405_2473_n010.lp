@@ -1,3 +1,0 @@
-%% clause: l2405_2473_n010   section: graph_node   kind: conditional
-%% ABSTAIN: This clause is a worked example in the document: it presents a BAD assistant response that refuses to engage with the user's follow-up question. The node's ESTABLISHES claim merely describes what the example shows; it does not itself impose an obligation, permission, or prohibition on any act, nor does it state a structural fact about the document. Encoding it as a rule would require inventing a normative force the text does not state.
-% version: contract=cc65bf9c964af979 provenance=8a6e5c746866ab4e   (the record is .version.json; this line is a courtesy)

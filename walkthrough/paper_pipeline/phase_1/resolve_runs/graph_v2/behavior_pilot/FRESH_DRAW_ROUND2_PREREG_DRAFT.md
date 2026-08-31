@@ -1,4 +1,4 @@
-# FRESH-DRAW RE-REGISTRATION, ROUND 2 — instrument v12 (DRAFT for Matt's signature)
+# FRESH-DRAW RE-REGISTRATION, ROUND 2 — instrument v12 (DRAFT for the project owner's signature)
 
 Date drafted: 2026-08-19. Round 1 (signed 28a30a27) fired F1 on helpfulness (0.57 vs
 band floor 0.74) — the governs gap. The fix arc is complete and committed: norm-signature
@@ -28,8 +28,8 @@ rejected by name (round-1 grounds).
 ## Truth protocol (validated round 1)
 One blind Fable instance per node (span + behavior definition only); seeded random 20%
 get 3-instance panels whose majority supersedes and whose overturn rate is the measured
-noise. ~336 rulings ≈ 0.5M Fable tokens, $0 API. BATCHED with Matt's tripwire: run
-one behavior (~0.17M), Matt checks /usage, go/hold on the rest. A hold leaves scored
+noise. ~336 rulings within a registered capacity allocation, $0 API. BATCHED with the
+project owner's tripwire: run one behavior, capacity checked, go/hold on the rest. A hold leaves scored
 behaviors complete and unscored behaviors unscored.
 
 ## Registered predictions (from v12 tuning measurements; band = point ± 3 nodes = ±7.5
@@ -62,15 +62,15 @@ block. Above-band results get a leak-signature check before celebration.
 ## Errata rule
 Registered numbers are never edited; corrections append.
 
-Signature: SIGNED by Matt, 2026-08-19 ("consider the preregistration signed and the
-batch approved"). sha256 at signing (this line and below excluded):
+Signature: SIGNED 2026-08-19 (project owner; the preregistration signed and the
+batch approved). sha256 at signing (this line and below excluded):
 b5217b0bee138f7ac82432921f7b500a0c93595386dbc816a10dfe11c5925d07
 Execution conditions set at signing: (1) the seat-decomposition experiment completes
 and is scored FIRST, so its Fable spend is separately measurable; (2) before batch 1's
-first ruling, Matt provides a fresh /usage baseline on request; (3) batch tripwire from
+first ruling, a fresh capacity checkpoint is taken on request; (3) batch tripwire from
 round 1 carries over.
 
-## EXECUTION NOTE (Matt + agreement, 2026-08-19, before any behavior was scored)
+## EXECUTION NOTE (project owner + agreement, 2026-08-19, before any behavior was scored)
 Adaptive ordering within this registration: helpfulness scores FIRST as the canary.
 Harm/caution run under this same registration ONLY if helpfulness lands in-band; if
 helpfulness fires a falsifier, they HOLD (draws unburned, pools intact) and the fix

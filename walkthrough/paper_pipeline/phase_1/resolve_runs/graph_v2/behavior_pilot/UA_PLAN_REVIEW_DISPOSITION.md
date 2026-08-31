@@ -53,9 +53,9 @@ the amendments here.)
   composed), and post-move precision states its ruled/unruled split.
   The notes-0019 claim "identical total rulings to bulk up-front" is
   CORRECTED: it holds only at a fixed module version.
-- F8 (budget conflict; bundled seat; key selection) — ACCEPT on all
-  three: (a) the ADDENDUM-5 cap (32.6) is crossed at 33% — a fresh
-  envelope is REQUIRED from Matt before any Fable dispatch, and the
+- F8 (capacity conflict; bundled seat; key selection) — ACCEPT on all
+  three: (a) the standing cap is crossed — a fresh
+  allocation is REQUIRED before any frontier dispatch, and the
   revised plan is costlier (below); (b) the 43-dispute re-resolution
   is UNBUNDLED to its own fresh Fable seat (it is boundary-class work
   at the trusted tier, never shared with the key seats); (c) the 3
@@ -63,15 +63,15 @@ the amendments here.)
   disconfirming evidence would be selection; the key tier (Fable
   panels) is the trusted tier by standing doctrine.
 
-## PLAN v2 (blocked pending Matt's envelope)
+## PLAN v2 (blocked pending a fresh allocation)
 1. KEY: 24 nodes (10 + 3 + 11 seeded, packet committed pre-dispatch).
-   3 Opus seats rule the 14 new nodes (off-bar); 3 FABLE seats rule all
-   24 (~1.2 pt). Certification per the F3 gate.
+   3 Opus seats rule the 14 new nodes (off-bar); 3 frontier seats rule
+   all 24. Certification per the F3 gate.
 2. If certified: Opus panel-tier purchase of the remaining ~136 engaged
-   nodes (off-bar) with the seeded 25% SEAL; Fable spot-check (~0.5 pt).
+   nodes (off-bar) with the seeded 25% SEAL; frontier spot-check.
    Attempt-1 clause (c) scored per F5. Repair arc on visible truth;
    confirmation on the seal, once.
-3. If not certified: halt — the UA venue economics go to Matt.
-4. Separate Fable seat re-resolves the 43 quarantined disputes (~0.5 pt).
-5. Reserve ~0.5 pt for one tripwire response (the last two waves both
-   fired). TOTAL FABLE: ~2.5-3 pt, against a fresh envelope.
+3. If not certified: halt — the UA venue economics go to the project owner.
+4. Separate Fable seat re-resolves the 43 quarantined disputes.
+5. Reserve capacity for one tripwire response (the last two waves both
+   fired), against a fresh allocation.

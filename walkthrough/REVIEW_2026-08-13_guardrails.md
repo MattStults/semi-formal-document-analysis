@@ -57,8 +57,8 @@ Hook installation state: `.git/hooks/pre-commit` is a **symlink →
 is per-clone and unverified by anything — a fresh clone has no hook and nothing notices
 (STATE.md's process note says to check by hand; see G2/I-2). `guard_hook.py` (Claude Code
 PostToolUse, advisory) is installed via `.claude/settings.json`, invoked through bare
-`python3`, which on this machine resolves to **another project's venv**
-(`introspection_leakage/.venv/bin/python3`, 3.10.6) — it works (stdlib only) but is
+`python3`, which on this machine resolves to **a different local venv**
+(python 3.10.6) — it works (stdlib only) but is
 environment-dependent.
 
 ---

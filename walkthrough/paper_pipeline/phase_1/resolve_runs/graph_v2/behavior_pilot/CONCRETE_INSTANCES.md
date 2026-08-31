@@ -1,9 +1,9 @@
 # Concrete behavior instances — working definitions (D4 draft, 2026-08-16)
 
-Status: **draft for iteration with Matt tomorrow.** The live pilot proved
+Status: **draft for iteration with the project owner tomorrow.** The live pilot proved
 the machinery fires on concrete CASES (the U18 demo: 4 asserts, 1 conflict)
 and correctly stays silent on value abstractions. These definitions make
-"concrete case" precise, and the scenarios below are drafts for Matt to
+"concrete case" precise, and the scenarios below are drafts for the project owner to
 adjudicate before any of them is used in a measurement.
 
 ## Working definitions
@@ -22,7 +22,7 @@ adjudicate before any of them is used in a measurement.
 **Exercises a behavior** := the narrative instantiates at least one atom of
 that behavior's decomposition (the atom's gloss is true of the episode).
 
-**Expected verdicts** (adjudicated by Matt before use, then frozen):
+**Expected verdicts** (adjudicated by the project owner before use, then frozen):
 * `conflict` — the episode performs an act some applicable clause forbids
   (or omits one it obliges, once obligation-gap queries land).
 * `clean` — clauses are relevant and none is violated.
@@ -77,7 +77,7 @@ a known-sharp encoding case).
 autumn; the assistant writes one. Expected: silent (no translated clause
 should fire; over-firing here is a real finding).
 
-## Next step (after Matt's adjudication)
+## Next step (after the project owner's adjudication)
 
 Freeze the adjudicated set with expected verdicts hashed; run each through
 atoms → match → ground → clingo; score fired-vs-expected. That measurement

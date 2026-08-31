@@ -8,8 +8,12 @@ every step is a legal transition — so validation is: (a) deterministic
 replay generates the trace from committed artifacts; (b) clingo certifies
 trace legality; (c) the predicted terminal matches the recorded resolution.
 Demo: one legal trace, one tampered trace."""
-import clingo, json
-BASE = open("calculus.lp").read()
+import clingo, json, os
+# calculus.lp is resolved against THIS file, not the caller's cwd: the module is
+# imported by test_runbook.py (and by anything running from the repo root), and a
+# bare open("calculus.lp") made the import itself a cwd-dependent FileNotFoundError.
+HERE = os.path.dirname(os.path.abspath(__file__))
+BASE = open(os.path.join(HERE, "calculus.lp")).read()
 def check_trace(steps):
     facts = "".join(
         (f"tstep({i},{s},{r},{t}).\n" if t.startswith("s(") else f"tterm({i},{s},{r},{t}).\n")

@@ -522,7 +522,7 @@ measures the wrong thing and reports success.
 
 ## Q-2 · The `[L]` half of stage 3 has never been run against a real model
 
-**Status: UNBLOCKED — you authorised the spend before going AFK ("Feel free to spend on the [L]
+**Status: UNBLOCKED — the spend was authorised for the unattended block ("Feel free to spend on the [L]
 run"), so I am running it.** Recorded here because the RESULT may need your ruling.
 
 `STEP_stage3.md` §9 says two measurements must exist before any coverage number is believed:
