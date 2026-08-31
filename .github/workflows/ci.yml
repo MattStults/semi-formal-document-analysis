@@ -10,17 +10,17 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: "3.10" }
-      - run: pip install -r requirements.txt
-      - run: cd semi-formal-experiment && python -m pytest -q
+      - run: bash setup_env.sh
+      - run: cd semi-formal-experiment && .venv/bin/python -m pytest -q
   walkthrough:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: "3.10" }
-      - run: pip install -r requirements.txt
-      - run: cd walkthrough && python -m pytest -q
+      - run: bash setup_env.sh
+      - run: cd walkthrough && ../semi-formal-experiment/.venv/bin/python -m pytest -q
   demo-path:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -28,6 +28,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: "3.10" }
-      - run: pip install -r requirements.txt
-      - run: python3 engine/spec-cite/cite.py resolve "model-spec@2025-12-18 > #avoid_sycophancy > ¶2 s1"
-      - run: python3 walkthrough/paper_pipeline/phase_1/resolve_runs/graph_v2/graph_check.py walkthrough/paper_pipeline/phase_1/resolve_runs/graph_v2/runs/ds7/root_graph.production.json
+      - run: bash setup_env.sh
+      - run: |
+          python3 engine/spec-cite/cite.py resolve 'model-spec@2025-12-18 > #avoid_sycophancy > ¶2 s1'
+      - run: |
+          python3 walkthrough/paper_pipeline/phase_1/resolve_runs/graph_v2/graph_check.py walkthrough/paper_pipeline/phase_1/resolve_runs/graph_v2/runs/ds7/root_graph.production.json
