@@ -6,8 +6,13 @@ then answer deterministically, with a citable span and a stated reason for every
 hit. Frontier-model panels were the calibration instrument — the tool should
 match the panel, or give an answer a frontier model would accept as justifiable.
 
-Six weeks; it did not reach that bar. This repo is the complete record of the
-attempt: the machinery, the measurements, and the discipline that kept the
+Six weeks; it did not reach that bar on the axis that mattered — generalization.
+On the behaviors tuned during the arc-2 campaign, in-sample match-or-defensible
+rates against the panel reached 0.94–0.96, comparable to the panel's own internal
+agreement (measured on truth the loop iterated against; the one-shot fresh-draw
+certification was stopped partway when generalization failure ended the
+campaign). Untuned behaviors never reliably reached that level. This repo is the
+complete record of the attempt: the machinery, the measurements, and the discipline that kept the
 measurements honest — including the results that were withdrawn when adversarial
 review showed they were noise. The full commit history is published unrewritten
 so that every dated claim, pin, and withdrawal is externally checkable;
@@ -20,7 +25,8 @@ What held up and what didn't, in one paragraph: the symbolic engine (ASP/clingo
 evaluation, conflict enumeration with witness scenarios, satisfiability checks)
 worked — its failures were refusals, not wrong answers. Segmentation of both
 specs into typed clause inventories worked after repair. Matching behaviors to
-passages did not beat a single frontier judge; an ontology open-coded from 100
+passages did not beat a single frontier judge on the arc-1 benchmark; an
+ontology open-coded from 100
 behavior definitions covered every sampled span but failed every separability
 test once a matched random-partition null was run against it. The measurement
 discipline — pre-registered predictions, blind adjudication seats, adversarial
