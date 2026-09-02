@@ -6,12 +6,12 @@ then answer deterministically, with a citable span and a stated reason for every
 hit. Frontier-model panels were the calibration instrument — the tool should
 match the panel, or give an answer a frontier model would accept as justifiable.
 
-Six weeks; it did not reach that bar on the axis that mattered — generalization.
+It did not reach that bar on the axis that mattered — generalization.
 On the behaviors tuned during the arc-2 campaign, in-sample match-or-defensible
 rates against the panel reached 0.94–0.96, comparable to the panel's own internal
-agreement (measured on truth the loop iterated against; the one-shot fresh-draw
-certification was stopped partway when generalization failure ended the
-campaign). Untuned behaviors never reliably reached that level. This repo is the
+agreement (measured on truth the loop iterated against; raw-match certification ran
+to completion on the three tuned behaviors, and the registered
+match-or-defensible pass never ran). Untuned behaviors never reliably reached that level. This repo is the
 complete record of the attempt: the machinery, the measurements, and the discipline that kept the
 measurements honest — including the results that were withdrawn when adversarial
 review showed they were noise. The full commit history is published unrewritten
