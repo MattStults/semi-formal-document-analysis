@@ -18,8 +18,7 @@ review showed they were noise. The full commit history is published unrewritten
 so that every dated claim, pin, and withdrawal is externally checkable;
 operational details (usage plumbing, working notes) were redacted in the
 current files and remain in history by choice. The write-up is in two blog posts:
-[the retrospective](#) and [where the work goes next](#) *(links added at
-publication)*.
+[the retrospective](https://mattstults.github.io/2026/08/30/spec-retrospective.html) and [where the work goes next](https://mattstults.github.io/2026/08/30/checkable-investigations.html).
 
 What held up and what didn't, in one paragraph: the symbolic engine (ASP/clingo
 evaluation, conflict enumeration with witness scenarios, satisfiability checks)
@@ -76,7 +75,7 @@ failure modes, different evidence.
 
 ## Reading order
 
-1. The blog retrospective *(link at publication)* — the narrative.
+1. [The blog retrospective](https://mattstults.github.io/2026/08/30/spec-retrospective.html) — the narrative.
 2. [`ITERATION_NOTES.md`](walkthrough/paper_pipeline/phase_1/resolve_runs/graph_v2/behavior_pilot/ITERATION_NOTES.md)
    (also linked as `LEDGER.md` at root) — the append-only ledger, entries
    0000–0043: every step, every erratum, every withdrawal, written at the time.
@@ -139,7 +138,8 @@ cd ../walkthrough && ../semi-formal-experiment/.venv/bin/python -m pytest -q
 ```
 
 CI runs both suites plus the citation and graph checks from the demo path on
-every push *(badge added at publication)*.
+every push:
+[![CI](https://github.com/MattStults/semi-formal-document-analysis/actions/workflows/ci.yml/badge.svg)](https://github.com/MattStults/semi-formal-document-analysis/actions/workflows/ci.yml)
 
 ⚠️ **Two different files are named `behaviours.json` and they are NOT
 interchangeable** — `data/behaviours.json` (the panel roster) and
